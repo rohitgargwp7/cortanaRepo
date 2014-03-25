@@ -1634,7 +1634,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FREE SMS.
+        ///   Looks up a localized string similar to free sms.
         /// </summary>
         public static string Free_SMS_Txt {
             get {
@@ -1652,7 +1652,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn additional free SMS for every friend who joins hike because of you.
+        ///   Looks up a localized string similar to earn additional free SMS for every friend who joins hike because of you.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk {
             get {
@@ -1706,7 +1706,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free Worldwide.
+        ///   Looks up a localized string similar to free worldwide.
         /// </summary>
         public static string FreeSMS_H2HText_TxtBlk {
             get {
@@ -1724,7 +1724,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep using hike to earn more free SMS.
+        ///   Looks up a localized string similar to earn unlimited free sms.
+        /// </summary>
+        public static string FreeSMS_H2SSubHeader_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2SSubHeader_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the more you hike, the more you earn!.
         /// </summary>
         public static string FreeSMS_H2SText_TxtBlk {
             get {
@@ -1733,7 +1742,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Free SMS can only be sent to India at the moment.
+        ///   Looks up a localized string similar to free, only to India.
         /// </summary>
         public static string FreeSMS_IndiaOnly_TxtBlk {
             get {
@@ -1751,7 +1760,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite via SMS.
+        ///   Looks up a localized string similar to invite via SMS.
         /// </summary>
         public static string FreeSMS_InviteSMS_TxtBlk {
             get {
@@ -1787,7 +1796,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited.
+        ///   Looks up a localized string similar to unlimited.
         /// </summary>
         public static string FreeSMS_unlimitedTxtBlck_TxtBlk {
             get {
@@ -4465,6 +4474,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to start hiking.
+        /// </summary>
+        public static string Start_Hiking_Button_Txt {
+            get {
+                return ResourceManager.GetString("Start_Hiking_Button_Txt", resourceCulture);
             }
         }
         

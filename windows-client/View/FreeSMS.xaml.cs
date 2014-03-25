@@ -22,39 +22,39 @@ namespace windows_client.View
         private readonly SolidColorBrush connStatusNotConnectedWhite = new SolidColorBrush(Color.FromArgb(255, 0xb4, 0xb4, 0xb4));
         private readonly SolidColorBrush connStatusConnectedWhite = new SolidColorBrush(Color.FromArgb(255, 0x48, 0x48, 0x48));
 
-        private bool _isFacebookConnected = false;
-        private bool IsFacebookConnected
-        {
-            get
-            {
-                return _isFacebookConnected;
-            }
-            set
-            {
-                if (value != _isFacebookConnected)
-                {
-                    _isFacebookConnected = value;
-                    showFacebook(_isFacebookConnected);
-                }
-            }
-        }
+        //private bool _isFacebookConnected = false;
+        //private bool IsFacebookConnected
+        //{
+        //    get
+        //    {
+        //        return _isFacebookConnected;
+        //    }
+        //    set
+        //    {
+        //        if (value != _isFacebookConnected)
+        //        {
+        //            _isFacebookConnected = value;
+        //            showFacebook(_isFacebookConnected);
+        //        }
+        //    }
+        //}
 
-        private bool _isTwitterConnected = false;
-        private bool IsTwitterConnected
-        {
-            get
-            {
-                return _isTwitterConnected;
-            }
-            set
-            {
-                if (value != _isTwitterConnected)
-                {
-                    _isTwitterConnected = value;
-                    showTwitter(_isTwitterConnected);
-                }
-            }
-        }
+        //private bool _isTwitterConnected = false;
+        //private bool IsTwitterConnected
+        //{
+        //    get
+        //    {
+        //        return _isTwitterConnected;
+        //    }
+        //    set
+        //    {
+        //        if (value != _isTwitterConnected)
+        //        {
+        //            _isTwitterConnected = value;
+        //            showTwitter(_isTwitterConnected);
+        //        }
+        //    }
+        //}
 
         public enum SocialState
         {
@@ -71,60 +71,60 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
-            {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
-                ChangeElementsState(false);
-                object oo;
-                SocialState ss = SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
-                {
-                    ss = (SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
-                }
-                switch (ss)
-                {
-                    case SocialState.FB_LOGIN:
-                        ChangeElementsState(false);
-                        JObject oj = new JObject();
-                        oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
-                        oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
-                        break;
-                    case SocialState.FB_LOGOUT:
-                        ChangeElementsState(false);
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
-                        break;
-                    case SocialState.TW_LOGIN:
-                        JObject ojj = new JObject();
-                        ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
-                        break;
-                    default:
-                        ChangeElementsState(true);
-                        break;
-                }
-            }
-            else
-            {
-                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                {
-                    IsFacebookConnected = true;
-                }
-                else
-                {
-                    IsFacebookConnected = false;
-                }
-                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
-                {
-                    IsTwitterConnected = true;
-                }
-                else
-                {
-                    IsTwitterConnected = false;
-                }
-            }
+            //if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            //{
+            //    PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+            //    ChangeElementsState(false);
+            //    object oo;
+            //    SocialState ss = SocialState.DEFAULT;
+            //    if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+            //    {
+            //        ss = (SocialState)oo;
+            //        PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+            //    }
+            //    switch (ss)
+            //    {
+            //        case SocialState.FB_LOGIN:
+            //            ChangeElementsState(false);
+            //            JObject oj = new JObject();
+            //            oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
+            //            oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+            //            AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+            //            break;
+            //        case SocialState.FB_LOGOUT:
+            //            ChangeElementsState(false);
+            //            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+            //            break;
+            //        case SocialState.TW_LOGIN:
+            //            JObject ojj = new JObject();
+            //            ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+            //            ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+            //            AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+            //            break;
+            //        default:
+            //            ChangeElementsState(true);
+            //            break;
+            //    }
+            //}
+            //else
+            //{
+            //    if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            //    {
+            //        IsFacebookConnected = true;
+            //    }
+            //    else
+            //    {
+            //        IsFacebookConnected = false;
+            //    }
+            //    if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+            //    {
+            //        IsTwitterConnected = true;
+            //    }
+            //    else
+            //    {
+            //        IsTwitterConnected = false;
+            //    }
+            //}
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -169,26 +169,22 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             initializeCredits();
-            if (Utils.isDarkTheme())
-            {
-                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
-                bottomLine.Fill = UI_Utils.Instance.Black;
-                fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedBlack;
-                upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
-                lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
-            }
-            else
-            {
-                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
-                bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
-                fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedWhite;
-                upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
-                lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-            }
-        }
-
-        private void inviteBtn_Click(object sender, RoutedEventArgs e)
-        {
+            //if (Utils.isDarkTheme())
+            //{
+            //    upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
+            //    bottomLine.Fill = UI_Utils.Instance.Black;
+            //    fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedBlack;
+            //    upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
+            //    lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
+            //}
+            //else
+            //{
+            //    upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
+            //    bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+            //    fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedWhite;
+            //    upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
+            //    lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
+            //}
         }
 
         public void onEventReceived(string type, object obj)
@@ -215,106 +211,106 @@ namespace windows_client.View
             }
         }
 
-        private void facebookBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
-            {
-                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
-                if (res != MessageBoxResult.OK)
-                    return;
-            }
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
-            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-        }
+        //private void facebookBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+        //    {
+        //        MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
+        //        if (res != MessageBoxResult.OK)
+        //            return;
+        //    }
+        //    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+        //    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        //}
 
-        public void SocialPostFB(JObject obj)
-        {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    IsFacebookConnected = true;
-                    ChangeElementsState(true);
-                    MessageBox.Show(AppResources.FreeSMS_FbPostSuccess_MsgBx, AppResources.FreeSMS_FbPost_MsgBxCaption, MessageBoxButton.OK);
-                });
-            }
-            else
-            {
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-                App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        IsFacebookConnected = false;
-                        ChangeElementsState(true);
-                    });
-            }
+        //public void SocialPostFB(JObject obj)
+        //{
+        //    if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+        //    {
+        //        Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //        {
+        //            IsFacebookConnected = true;
+        //            ChangeElementsState(true);
+        //            MessageBox.Show(AppResources.FreeSMS_FbPostSuccess_MsgBx, AppResources.FreeSMS_FbPost_MsgBxCaption, MessageBoxButton.OK);
+        //        });
+        //    }
+        //    else
+        //    {
+        //        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+        //        App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+        //        Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //            {
+        //                IsFacebookConnected = false;
+        //                ChangeElementsState(true);
+        //            });
+        //    }
 
-        }
+        //}
 
-        public void SocialDeleteFB(JObject obj)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    IsFacebookConnected = false;
-                    ChangeElementsState(true);
-                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
-                });
-        }
+        //public void SocialDeleteFB(JObject obj)
+        //{
+        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //        {
+        //            IsFacebookConnected = false;
+        //            ChangeElementsState(true);
+        //            MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
+        //        });
+        //}
 
-        private void twitterBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
-            {
-                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
-                if (res != MessageBoxResult.OK)
-                    return;
-                else
-                {
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
-                    App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-                    AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
-                    return;
-                }
-            }
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
-            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-        }
+        //private void twitterBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+        //    {
+        //        MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
+        //        if (res != MessageBoxResult.OK)
+        //            return;
+        //        else
+        //        {
+        //            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+        //            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+        //            App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+        //            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
+        //            return;
+        //        }
+        //    }
+        //    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+        //    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        //}
 
-        public void SocialPostTW(JObject obj)
-        {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    IsTwitterConnected = true;
-                    ChangeElementsState(true);
-                    MessageBox.Show(AppResources.FreeSMS_TwPostSuccess_MsgBx, AppResources.FreeSMS_TwPost_MsgBxCaption, MessageBoxButton.OK);
-                });
-            }
-            else
-            {
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
-                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+        //public void SocialPostTW(JObject obj)
+        //{
+        //    if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+        //    {
+        //        Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //        {
+        //            IsTwitterConnected = true;
+        //            ChangeElementsState(true);
+        //            MessageBox.Show(AppResources.FreeSMS_TwPostSuccess_MsgBx, AppResources.FreeSMS_TwPost_MsgBxCaption, MessageBoxButton.OK);
+        //        });
+        //    }
+        //    else
+        //    {
+        //        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+        //        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+        //        App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
                 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    IsTwitterConnected = false;
-                    ChangeElementsState(true);
-                });
-            }
-        }
+        //        Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //        {
+        //            IsTwitterConnected = false;
+        //            ChangeElementsState(true);
+        //        });
+        //    }
+        //}
 
-        public void SocialDeleteTW(JObject obj)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                IsTwitterConnected = false;
-                ChangeElementsState(true);
-                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
-            });
-        }
+        //public void SocialDeleteTW(JObject obj)
+        //{
+        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+        //    {
+        //        IsTwitterConnected = false;
+        //        ChangeElementsState(true);
+        //        MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
+        //    });
+        //}
 
         private void initializeCredits()
         {
@@ -334,115 +330,111 @@ namespace windows_client.View
                 }
             }
             long val = ((long)creditsRemaining * 435) / max;
-            creditsRemainingBar.Width = val;
-            if (435 - creditsRemainingBar.Width > 0)
-            {
-                maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
-            }
-            else
-            {
-                maxCreditsBar.Width = 0;
-                creditsRemainingBar.Width = 435;
-            }
         }
 
-        private void showFacebook(bool isConnected)
+        private void startChat_Click(object sender, RoutedEventArgs e)
         {
-            if (isConnected)
-            {
-                fbConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
-                fbConnImage.Visibility = Visibility.Visible;
-                if (Utils.isDarkTheme())
-                {
-                    fbConnStatus.Foreground = connStatusConnectedBlack;
-                }
-                else
-                {
-                    fbConnStatus.Foreground = connStatusConnectedWhite;
-                }
-            }
-            else
-            {
-                fbConnStatus.Text = AppResources.FreeSMS_fbConnStatus_TxtBlk;
-                fbConnImage.Visibility = Visibility.Collapsed;
-                if (Utils.isDarkTheme())
-                {
-                    fbConnStatus.Foreground = connStatusNotConnectedBlack;
-                }
-                else
-                {
-                    fbConnStatus.Foreground = connStatusNotConnectedWhite;
-                }
-            }
+            App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
-        private void showTwitter(bool isConnected)
-        {
-            if (isConnected)
-            {
-                twConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
-                twConnImage.Visibility = Visibility.Visible;
-                if (Utils.isDarkTheme())
-                {
-                    twConnStatus.Foreground = connStatusConnectedBlack;
-                }
-                else
-                {
-                    twConnStatus.Foreground = connStatusConnectedWhite;
-                }
+        //private void showFacebook(bool isConnected)
+        //{
+        //    if (isConnected)
+        //    {
+        //        fbConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
+        //        fbConnImage.Visibility = Visibility.Visible;
+        //        if (Utils.isDarkTheme())
+        //        {
+        //            fbConnStatus.Foreground = connStatusConnectedBlack;
+        //        }
+        //        else
+        //        {
+        //            fbConnStatus.Foreground = connStatusConnectedWhite;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        fbConnStatus.Text = AppResources.FreeSMS_fbConnStatus_TxtBlk;
+        //        fbConnImage.Visibility = Visibility.Collapsed;
+        //        if (Utils.isDarkTheme())
+        //        {
+        //            fbConnStatus.Foreground = connStatusNotConnectedBlack;
+        //        }
+        //        else
+        //        {
+        //            fbConnStatus.Foreground = connStatusNotConnectedWhite;
+        //        }
+        //    }
+        //}
 
-            }
-            else
-            {
-                twConnStatus.Text = AppResources.FreeSMS_twConnStatus_TxtBlk;
-                twConnImage.Visibility = Visibility.Collapsed;
-                if (Utils.isDarkTheme())
-                {
-                    twConnStatus.Foreground = connStatusNotConnectedBlack;
-                }
-                else
-                {
-                    twConnStatus.Foreground = connStatusNotConnectedWhite;
-                }
-            }
-        }
+        //private void showTwitter(bool isConnected)
+        //{
+        //    if (isConnected)
+        //    {
+        //        twConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
+        //        twConnImage.Visibility = Visibility.Visible;
+        //        if (Utils.isDarkTheme())
+        //        {
+        //            twConnStatus.Foreground = connStatusConnectedBlack;
+        //        }
+        //        else
+        //        {
+        //            twConnStatus.Foreground = connStatusConnectedWhite;
+        //        }
 
-        private void twitter_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (canGoBack)
-            {
-                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
-                {
-                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
-                    if (res != MessageBoxResult.OK)
-                        return;
-                    else
-                    {
-                        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
-                        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
-                        App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
-                        return;
-                    }
-                }
-                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
-                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-            }
-        }
+        //    }
+        //    else
+        //    {
+        //        twConnStatus.Text = AppResources.FreeSMS_twConnStatus_TxtBlk;
+        //        twConnImage.Visibility = Visibility.Collapsed;
+        //        if (Utils.isDarkTheme())
+        //        {
+        //            twConnStatus.Foreground = connStatusNotConnectedBlack;
+        //        }
+        //        else
+        //        {
+        //            twConnStatus.Foreground = connStatusNotConnectedWhite;
+        //        }
+        //    }
+        //}
 
-        private void facebook_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (canGoBack)
-            {
-                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
-                {
-                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
-                    if (res != MessageBoxResult.OK)
-                        return;
-                }
-                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
-                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-            }
-        }
+        //private void twitter_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    if (canGoBack)
+        //    {
+        //        if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+        //        {
+        //            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
+        //            if (res != MessageBoxResult.OK)
+        //                return;
+        //            else
+        //            {
+        //                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+        //                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+        //                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+        //                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
+        //                return;
+        //            }
+        //        }
+        //        PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+        //        NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        //    }
+        //}
+
+        //private void facebook_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    if (canGoBack)
+        //    {
+        //        if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+        //        {
+        //            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
+        //            if (res != MessageBoxResult.OK)
+        //                return;
+        //        }
+        //        PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+        //        NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        //    }
+        //}
     }
 }
