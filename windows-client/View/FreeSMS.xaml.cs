@@ -344,7 +344,6 @@ namespace windows_client.View
                 maxCreditsBar.Width = 0;
                 creditsRemainingBar.Width = 435;
             }
-            maxCreditsTxtBlck.Text = max.ToString() + "+";
         }
 
         private void showFacebook(bool isConnected)
