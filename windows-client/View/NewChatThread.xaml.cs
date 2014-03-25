@@ -1248,6 +1248,7 @@ namespace windows_client.View
 
                 spContactTransfer.IsHitTestVisible = true;
                 spContactTransfer.Opacity = 1;
+                chatPaint.Opacity = 1;
 
                 if (appBar.MenuItems.Contains(inviteMenuItem))
                     appBar.MenuItems.Remove(inviteMenuItem);
