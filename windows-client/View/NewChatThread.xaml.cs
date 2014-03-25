@@ -1005,21 +1005,18 @@ namespace windows_client.View
                     lastSeenTxt.Text = String.Empty;
 
                 _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
-
-                sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
+
+            sendMsgTxtbox.Hint = hintText = isGroupChat ? ON_GROUP_TEXT : (isOnHike ? ON_HIKE_TEXT : ON_SMS_TEXT);
+
 
             if (!isOnHike)
             {
-                sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
-            {
                 chatThemeTip.Visibility = Visibility.Visible;
-                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
-            }
 
             initBlockUnblockState();
 
