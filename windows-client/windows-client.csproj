@@ -539,7 +539,6 @@
     <Content Include="View\images\chatBackgrounds\Background\cbExam.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbExam.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbFriends.jpg" />
-    <Content Include="View\images\chatBackgrounds\Background\cbFriends.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbHikinCouple.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbILoveU.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbMountain.jpg" />
