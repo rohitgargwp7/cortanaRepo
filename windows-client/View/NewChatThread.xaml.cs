@@ -2937,17 +2937,17 @@ namespace windows_client.View
                 {
 
                     if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                        obj.LastMessage = HikeConstants.IMAGE;
+                        obj.LastMessage = AppResources.Image_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                        obj.LastMessage = HikeConstants.AUDIO;
+                        obj.LastMessage = AppResources.Audio_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                        obj.LastMessage = HikeConstants.VIDEO;
+                        obj.LastMessage = AppResources.Video_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        obj.LastMessage = HikeConstants.CONTACT;
+                        obj.LastMessage = AppResources.ContactTransfer_Text;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                        obj.LastMessage = HikeConstants.LOCATION;
+                        obj.LastMessage = AppResources.Location_Txt;
                     else
-                        obj.LastMessage = HikeConstants.UNKNOWN_FILE;
+                        obj.LastMessage = AppResources.UnknownFile_txt;
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
