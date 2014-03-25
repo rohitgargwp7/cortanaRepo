@@ -558,8 +558,8 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
-                                                        <Grid Grid.Column="1" Background="#edecec">
-                                                            <Grid Margin="10,5,0,5" Width="180">
+                                                        <Grid Grid.Column="1" Background="#dddddd">
+                                                            <Grid Margin="5" Width="180">
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto" />
                                                                     <RowDefinition Height="Auto" />
@@ -998,8 +998,8 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
-                                                    <Grid Grid.Column="1" Background="#edecec">
-                                                        <Grid Margin="10,5,0,5" Width="180">
+                                                    <Grid Grid.Column="1" Background="#dddddd">
+                                                        <Grid Margin="5" Width="180">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />

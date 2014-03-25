@@ -929,7 +929,7 @@ namespace windows_client.ViewModel
                         }
                         else
                         {
-                            convMessage.Message = AppResources.Location_Txt;
+                            convMessage.Message = AppResources.UnknownFile_txt;
                         }
 
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)

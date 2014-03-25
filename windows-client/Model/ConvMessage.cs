@@ -1935,7 +1935,7 @@ namespace windows_client.Model
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         else
-                            messageText = FileName;
+                            messageText = AppResources.UnknownFile_txt;
                         this._message = messageText;
                     }
                     else

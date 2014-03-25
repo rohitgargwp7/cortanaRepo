@@ -1010,17 +1010,17 @@ namespace windows_client.View
 
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
+            else
+                sendMsgTxtbox.Hint = hintText = isOnHike ? ON_HIKE_TEXT : ON_SMS_TEXT;
 
             if (!isOnHike)
             {
-                sendMsgTxtbox.Hint = hintText = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
             {
                 chatThemeTip.Visibility = Visibility.Visible;
-                sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
             }
 
             initBlockUnblockState();
@@ -2949,9 +2949,9 @@ namespace windows_client.View
                         obj.LastMessage = HikeConstants.CONTACT;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                         obj.LastMessage = HikeConstants.LOCATION;
-                    else 
+                    else
                         obj.LastMessage = HikeConstants.UNKNOWN_FILE;
-                    
+
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
