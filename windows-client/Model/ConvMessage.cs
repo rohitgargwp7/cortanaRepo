@@ -2106,7 +2106,7 @@ namespace windows_client.Model
                     return _fileAttachment.FileName.Substring(index + 1).ToUpper();
                 }
             }
-            return "File";//in case no extension type and no need to translate this
+            return "FILE";//in case no extension type and no need to translate this
         }
 
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)

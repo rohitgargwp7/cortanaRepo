@@ -4748,7 +4748,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to file.
+        ///   Looks up a localized string similar to File.
         /// </summary>
         public static string UnknownFile_txt {
             get {
