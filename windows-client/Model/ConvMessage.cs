@@ -521,6 +521,14 @@ namespace windows_client.Model
             }
         }
 
+        public BitmapImage TypingNotificationImage
+        {
+            get
+            {
+                return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
+            }
+        }
+
         public BitmapImage CloseImage
         {
             get
@@ -1492,6 +1500,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("SpecialNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
             NotifyPropertyChanged("FileFailedImage");
+            NotifyPropertyChanged("TypingNotificationImage");
         }
 
         public Visibility SendAsSMSVisibility

@@ -280,6 +280,7 @@ namespace windows_client.utils
                 IsTile = true,
                 Position = 0,
                 IsDefault = true,
+                IsLightTheme = true,
                 ThumbnailPath = String.Empty,
                 ImagePath = String.Empty
             });
@@ -293,6 +294,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbSpring.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbSpring.jpg"
@@ -307,6 +309,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMountain.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbMountain.jpg"
@@ -321,6 +324,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBeach2.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbBeach2.jpg"
@@ -335,6 +339,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCricket.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbCricket.jpg"
@@ -349,6 +354,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFriends.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbFriends.jpg"
@@ -363,6 +369,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbRains.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbRains.jpg"
@@ -391,6 +398,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMrRight.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbMrRight.jpg"
@@ -405,6 +413,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbHikinCouple.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbHikinCouple.jpg"
@@ -419,6 +428,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbExam.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbExam.jpg"
@@ -433,6 +443,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbAnxiety.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbAnxiety.jpg"
@@ -447,6 +458,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbILoveU.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbILoveU.png"
@@ -462,6 +474,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = false,
                 Position = 21,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbStarNight.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbStarNight.png"
@@ -476,6 +489,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = false,
                 Position = 22,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbNight.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbNight.png"
@@ -490,6 +504,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
+                IsLightTheme = true,
                 Position = 23,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbOwl.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbOwl.png"
@@ -504,6 +519,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 1,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbLove.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbLove.png"
@@ -518,6 +534,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 2,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbChatty.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbChatty.png"
@@ -532,6 +549,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 3,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbGirly.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbGirly.png"
@@ -546,6 +564,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 4,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbStarry.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbStarry.png"
@@ -560,6 +579,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 5,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCheers.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbCheers.png"
@@ -574,6 +594,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 6,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbSporty.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbSporty.png"
@@ -588,6 +609,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 7,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbSmiley.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbSmiley.png"
@@ -602,6 +624,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 8,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCreepy.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbCreepy.png"
@@ -616,6 +639,7 @@ namespace windows_client.utils
                  BubbleForeground = "#ff000000",
                  Foreground = "#ffffffff",
                  IsTile = true,
+                 IsLightTheme = true,
                  Position = 9,
                  ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCelebration.png",
                  ImagePath = "/View/images/chatBackgrounds/Background/cbCelebration.png"
@@ -630,6 +654,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 10,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFloral.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbFloral.png"
@@ -644,6 +669,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 11,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbForest.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbForest.png"
@@ -658,6 +684,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 12,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCupcake.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbCupcake.png"
@@ -672,6 +699,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 13,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbTechy.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbTechy.png"
@@ -686,6 +714,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 14,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbKisses.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbKisses.png"
@@ -700,6 +729,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 15,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBeach.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbBeach.png"
@@ -714,6 +744,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 16,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbPets.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbPets.png"
@@ -728,6 +759,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 17,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbStudy.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbStudy.png"
@@ -742,6 +774,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 18,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbValentines.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbValentines.png"
@@ -756,6 +789,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = true,
+                IsLightTheme = true,
                 Position = 19,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBikers.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbBikers.png"
