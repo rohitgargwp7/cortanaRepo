@@ -446,7 +446,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Your free SMS refill on the 1st of every month</value>
+    <value>Keep using hike to earn more free SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
@@ -1907,7 +1907,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Earn free SMS for every friend who joins hike because of you</value>
+    <value>Earn additional free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>on hike</value>

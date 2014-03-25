@@ -1007,7 +1007,6 @@ namespace windows_client.View
                     lastSeenTxt.Text = String.Empty;
 
                 _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
-
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
             else
@@ -1019,9 +1018,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(inviteMenuItem);
             }
             else
-            {
                 chatThemeTip.Visibility = Visibility.Visible;
-            }
 
             initBlockUnblockState();
 
@@ -5680,9 +5677,9 @@ namespace windows_client.View
                 }
 
                 chatBackground.Source = _background;
-                
+
                 _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
-                
+
                 headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
             };
         }
