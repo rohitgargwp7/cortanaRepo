@@ -26,7 +26,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <TextBlock Text="{Binding Path= LocalizedResources.Free_SMS_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="24,0,0,0"/>
+        <TextBlock Text="{Binding Path= LocalizedResources.Free_SMS_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontWeight="Light" FontSize="52" Margin="24,0,0,0"/>
 
         <Grid Grid.Row="1" Margin="0,20,0,0">
             <Grid.RowDefinitions>
@@ -35,7 +35,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="hikeToHikeGrid" HorizontalAlignment="Stretch" Margin="24,0,24,20">
+            <Grid HorizontalAlignment="Stretch" Margin="24,0,24,20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -45,12 +45,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2HHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" Grid.Row="0"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2HHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" Grid.Row="0" FontWeight="Light"/>
                         <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2HText_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="1" Foreground="{StaticResource PhoneSubtleBrush}" />
                     </Grid>
-                <TextBlock x:Name="unlimitedTxtBlck" FontSize="32" Foreground="#2B8DDD" Grid.Column="1" Text="{Binding Path= LocalizedResources.FreeSMS_unlimitedTxtBlck_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock x:Name="unlimitedTxtBlck" FontSize="32" Foreground="#2B8DDD" Grid.Column="1" Text="{Binding Path= LocalizedResources.FreeSMS_unlimitedTxtBlck_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" VerticalAlignment="Top" FontWeight="Light"/>
                 </Grid>
-            <Grid x:Name="hikeToSMSGrid" Grid.Row="1" VerticalAlignment="Center" Background="{StaticResource PhoneChromeBrush}">
+            <Grid x:Name="hikeToSMSGrid" Grid.Row="1" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -65,11 +65,11 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2SHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2SHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" FontWeight="Light"/>
                         <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1" 
                            Text="{Binding Path= LocalizedResources.FreeSMS_IndiaOnly_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
                     </Grid>
-                    <TextBlock x:Name="creditsRemainingTxtBlck" Margin="10,0,0,0" Text="147" FontSize="48" FontWeight="Light" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Right"/>
+                    <TextBlock x:Name="creditsRemainingTxtBlck" Margin="10,0,0,0" Text="147" FontSize="30" FontWeight="Light" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Right"/>
                 </Grid>
                 <Grid Grid.Row="1" Margin="24,0,24,20">
                     <Grid.RowDefinitions>
@@ -77,7 +77,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_H2SSubHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="earnFreeSmsTxt" Text="{Binding Path= LocalizedResources.FreeSMS_H2SSubHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" FontWeight="Light"/>
                     <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1" 
                            Text="{Binding Path= LocalizedResources.FreeSMS_H2SText_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
                     <Button Grid.Row="2" Content="{Binding Path= LocalizedResources.Start_Hiking_Button_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Width="160" Background="#2B8DDD" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" FontWeight="Normal" Height="55" Margin="0,12" Click="startChat_Click"/>
@@ -89,8 +89,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_InviteSMS_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="28" HorizontalAlignment="Left"/>
-                <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1" 
+                <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_InviteSMS_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" HorizontalAlignment="Left"/>
+                <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1"
                            Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap"/>
                 <Button Name="inviteNow" Grid.Row="2" Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Tap="InviteBtn_Tap" HorizontalAlignment="Left" Width="160" Background="#7CC300" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" FontWeight="Normal" Height="55" Margin="0,12"/>
             </Grid>

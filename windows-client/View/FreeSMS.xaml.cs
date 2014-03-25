@@ -169,22 +169,16 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             initializeCredits();
-            //if (Utils.isDarkTheme())
-            //{
-            //    upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
-            //    bottomLine.Fill = UI_Utils.Instance.Black;
-            //    fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedBlack;
-            //    upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
-            //    lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
-            //}
-            //else
-            //{
-            //    upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
-            //    bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
-            //    fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedWhite;
-            //    upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
-            //    lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
-            //}
+            if (Utils.isDarkTheme())
+            {
+                hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x12, 0x12, 0x12));
+                earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xa3, 0xa3, 0xa3));
+            }
+            else
+            {
+                hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
+                earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x55, 0x55, 0x55));
+            }
         }
 
         public void onEventReceived(string type, object obj)
