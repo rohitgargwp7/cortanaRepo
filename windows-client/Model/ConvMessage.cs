@@ -1794,7 +1794,10 @@ namespace windows_client.Model
                 message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
-            //todo:handle unknown FT
+            else
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + FileAttachment.FileKey;
+
             return message;
         }
 
