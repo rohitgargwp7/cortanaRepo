@@ -1652,7 +1652,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn free SMS for every friend who joins hike because of you.
+        ///   Looks up a localized string similar to Earn additional free SMS for every friend who joins hike because of you.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk {
             get {
@@ -1724,7 +1724,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your free SMS refill on the 1st of every month.
+        ///   Looks up a localized string similar to Keep using hike to earn more free SMS.
         /// </summary>
         public static string FreeSMS_H2SText_TxtBlk {
             get {

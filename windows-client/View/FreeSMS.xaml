@@ -109,7 +109,6 @@
                     <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="4" Fill="#565656"></Rectangle>
                     <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="5" Fill="#565656"></Rectangle>
                     <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="6" Fill="#565656"></Rectangle>
-                    <TextBlock x:Name="maxCreditsTxtBlck" Text="250+" Margin="0,0,0,0" FontSize="16" VerticalAlignment="Center" Grid.Column="7"></TextBlock>
                 </Grid>
             </Grid>
         </Grid>
