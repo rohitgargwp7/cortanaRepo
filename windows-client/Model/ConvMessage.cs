@@ -540,6 +540,38 @@ namespace windows_client.Model
             }
         }
 
+        public string FileName
+        {
+            get
+            {
+                return _fileAttachment != null ? _fileAttachment.FileName : string.Empty;
+            }
+        }
+
+        public string FileType
+        {
+            get
+            {
+                return GetFileExtension();
+            }
+        }
+
+        public BitmapImage UnknownFileTypeIconImage
+        {
+            get
+            {
+                if (_fileAttachment != null)
+                {
+                    if (!IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return UI_Utils.Instance.DownloadIconBigger;
+                    else
+                        return UI_Utils.Instance.AttachmentIcon;
+                }
+
+                return null;
+            }
+        }
+
         public Visibility DispMessageVisibility
         {
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
@@ -1004,6 +1036,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FileSizeVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
                 NotifyPropertyChanged("ProgressText");
+                NotifyPropertyChanged("UnknownFileTypeIconImage");
             }
             get
             {
@@ -1376,7 +1409,7 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj!=null)
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
                         return UI_Utils.Instance.LightGray;
                     else if (IsSent)
                     {
@@ -1420,7 +1453,7 @@ namespace windows_client.Model
         {
             get
             {
-                if(GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                if (GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return ChatForegroundColor;
@@ -1761,6 +1794,9 @@ namespace windows_client.Model
                 message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
+            else
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + FileAttachment.FileKey;
 
             return message;
         }
@@ -1901,6 +1937,8 @@ namespace windows_client.Model
                             messageText = AppResources.Location_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
+                        else
+                            messageText = AppResources.UnknownFile_txt;
                         this._message = messageText;
                     }
                     else
@@ -2058,6 +2096,19 @@ namespace windows_client.Model
             }
         }
 
+        string GetFileExtension()
+        {
+            if (_fileAttachment != null && !string.IsNullOrEmpty(_fileAttachment.FileName))
+            {
+                int index = _fileAttachment.FileName.LastIndexOf('.');
+                if (index > -1 && index < _fileAttachment.FileName.Length - 1)//so last char is not dot
+                {
+                    return _fileAttachment.FileName.Substring(index + 1).ToUpper();
+                }
+            }
+            return "FILE";//in case no extension type and no need to translate this
+        }
+
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
         {
             this.FileAttachment.FileState = attachmentState;
@@ -2073,6 +2124,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
             NotifyPropertyChanged("FileSizeVisibility");
+            NotifyPropertyChanged("UnknownFileTypeIconImage");
 
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
@@ -2082,7 +2134,7 @@ namespace windows_client.Model
 
             NotifyPropertyChanged("SdrImageVisibility");
             NotifyPropertyChanged("FileFailedImageVisibility");
-            
+
             ChangingState = false;
         }
 

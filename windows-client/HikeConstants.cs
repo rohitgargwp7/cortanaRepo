@@ -72,6 +72,7 @@ namespace windows_client
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
+        public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
@@ -333,6 +334,7 @@ namespace windows_client
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
+        public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
 

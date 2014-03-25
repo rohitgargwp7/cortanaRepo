@@ -1512,14 +1512,17 @@ namespace windows_client
                                     if (cm.FileAttachment != null)
                                     {
                                         if (cm.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                            co.LastMessage = HikeConstants.IMAGE;
+                                            co.LastMessage = AppResources.Image_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                                            co.LastMessage = HikeConstants.AUDIO;
+                                            co.LastMessage = AppResources.Audio_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                                            co.LastMessage = HikeConstants.VIDEO;
+                                            co.LastMessage = AppResources.Video_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                                            co.LastMessage = HikeConstants.CONTACT;
-
+                                            co.LastMessage = AppResources.ContactTransfer_Text;
+                                        else if (cm.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                            co.LastMessage = AppResources.Location_Txt;
+                                        else
+                                            co.LastMessage = AppResources.UnknownFile_txt;
                                         co.TimeStamp = cm.Timestamp;
                                     }
                                     else // check here nudge , notification , status update
@@ -1701,7 +1704,7 @@ namespace windows_client
 
                     var data = (JObject)jsonObj[HikeConstants.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-                    
+
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {

@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
+using System.IO.IsolatedStorage;
 
 namespace windows_client.View
 {
@@ -125,6 +126,15 @@ namespace windows_client.View
                                     }
                                     catch { }
                                 }
+                            }
+                        }
+
+                        //this folder should be created for launching file async(unknown file type)
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                            {
+                                store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
                             }
                         }
                     }

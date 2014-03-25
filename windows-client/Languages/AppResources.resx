@@ -2126,4 +2126,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="UserBlocked_PomptTxt" xml:space="preserve">
     <value>This user is blocked. Would you like to unblock the user?</value>
   </data>
+  <data name="UnknownFile_txt" xml:space="preserve">
+    <value>File</value>
+  </data>
 </root>

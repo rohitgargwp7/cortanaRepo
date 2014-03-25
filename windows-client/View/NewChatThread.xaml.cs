@@ -41,6 +41,8 @@ using System.Threading.Tasks;
 using windows_client.FileTransfers;
 using System.Windows.Input;
 using System.Windows.Documents;
+using Windows.System;
+using Windows.Storage;
 
 namespace windows_client.View
 {
@@ -1005,10 +1007,10 @@ namespace windows_client.View
                     lastSeenTxt.Text = String.Empty;
 
                 _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
-
-            sendMsgTxtbox.Hint = hintText = isGroupChat ? ON_GROUP_TEXT : (isOnHike ? ON_HIKE_TEXT : ON_SMS_TEXT);
-
+            else
+                sendMsgTxtbox.Hint = hintText = isOnHike ? ON_HIKE_TEXT : ON_SMS_TEXT;
 
             if (!isOnHike)
             {
@@ -2935,13 +2937,17 @@ namespace windows_client.View
                 {
 
                     if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                        obj.LastMessage = HikeConstants.IMAGE;
+                        obj.LastMessage = AppResources.Image_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                        obj.LastMessage = HikeConstants.AUDIO;
+                        obj.LastMessage = AppResources.Audio_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                        obj.LastMessage = HikeConstants.VIDEO;
+                        obj.LastMessage = AppResources.Video_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        obj.LastMessage = HikeConstants.CONTACT;
+                        obj.LastMessage = AppResources.ContactTransfer_Text;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        obj.LastMessage = AppResources.Location_Txt;
+                    else
+                        obj.LastMessage = AppResources.UnknownFile_txt;
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
@@ -5114,6 +5120,28 @@ namespace windows_client.View
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
             }
+            else
+            {
+                //default file type
+                LaunchFile(HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId, Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.FileName);
+            }
+        }
+
+        async void LaunchFile(string folderpath, string filePath, string originalFileName)
+        {
+            try
+            {
+                string root = ApplicationData.Current.LocalFolder.Path;
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + folderpath);
+                StorageFolder tempfolder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                StorageFile isolatedstorageFile = await folder.GetFileAsync(filePath);
+                StorageFile isolatedstorageFileCopy = await isolatedstorageFile.CopyAsync(tempfolder, originalFileName, NameCollisionOption.ReplaceExisting);
+                bool success = await Windows.System.Launcher.LaunchFileAsync(isolatedstorageFileCopy);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception,NewChatThread::LaunchUri,message:{0},stacktrace:{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         void mediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
@@ -5649,9 +5677,9 @@ namespace windows_client.View
                 }
 
                 chatBackground.Source = _background;
-                
+
                 _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
-                
+
                 headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
             };
         }
