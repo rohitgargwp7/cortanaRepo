@@ -1519,7 +1519,7 @@ namespace windows_client
                                             co.LastMessage = HikeConstants.VIDEO;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                                             co.LastMessage = HikeConstants.CONTACT;
-
+                                        //TODO:HANDLE LOCATION AND unknown ft
                                         co.TimeStamp = cm.Timestamp;
                                     }
                                     else // check here nudge , notification , status update

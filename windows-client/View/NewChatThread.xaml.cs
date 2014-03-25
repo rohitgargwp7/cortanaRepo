@@ -41,6 +41,8 @@ using System.Threading.Tasks;
 using windows_client.FileTransfers;
 using System.Windows.Input;
 using System.Windows.Documents;
+using Windows.System;
+using Windows.Storage;
 
 namespace windows_client.View
 {
@@ -2945,7 +2947,7 @@ namespace windows_client.View
                         obj.LastMessage = HikeConstants.VIDEO;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         obj.LastMessage = HikeConstants.CONTACT;
-
+                    //todo:handle location and unknown ft
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
@@ -5116,6 +5118,28 @@ namespace windows_client.View
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
+            }
+            else
+            {
+                //default file type
+                LaunchFile(HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId, Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.FileName);
+            }
+        }
+
+        async void LaunchFile(string folderpath, string filePath, string originalFileName)
+        {
+            try
+            {
+                string root = ApplicationData.Current.LocalFolder.Path;
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + folderpath);
+                StorageFolder tempfolder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                StorageFile isolatedstorageFile = await folder.GetFileAsync(filePath);
+                StorageFile isolatedstorageFileCopy = await isolatedstorageFile.CopyAsync(tempfolder, originalFileName, NameCollisionOption.ReplaceExisting);
+                bool success = await Windows.System.Launcher.LaunchFileAsync(isolatedstorageFileCopy);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception,NewChatThread::LaunchUri,message:{0},stacktrace:{1}", ex.Message, ex.StackTrace);
             }
         }
 

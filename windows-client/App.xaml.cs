@@ -1017,6 +1017,10 @@ namespace windows_client
                         {
                             store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                         }
+                        if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                        {
+                            store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                        }
                     }
                     // Create the database if it does not exist.
                     Stopwatch st = Stopwatch.StartNew();

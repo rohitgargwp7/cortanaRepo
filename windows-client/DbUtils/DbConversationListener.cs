@@ -455,7 +455,7 @@ namespace windows_client.DbUtils
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
-
+                                //todo:handle location and unknown ft
                                 convMessage.FileAttachment.ContentType = fInfo.ContentType;
                                 convMessage.FileAttachment.FileSize = fileSize;
                                 convMessage.FileAttachment.FileKey = fileKey;
