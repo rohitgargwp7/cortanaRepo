@@ -2947,7 +2947,11 @@ namespace windows_client.View
                         obj.LastMessage = HikeConstants.VIDEO;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                         obj.LastMessage = HikeConstants.CONTACT;
-                    //todo:handle location and unknown ft
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        obj.LastMessage = HikeConstants.LOCATION;
+                    else 
+                        obj.LastMessage = HikeConstants.UNKNOWN_FILE;
+                    
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)

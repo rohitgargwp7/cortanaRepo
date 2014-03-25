@@ -4748,6 +4748,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to file.
+        /// </summary>
+        public static string UnknownFile_txt {
+            get {
+                return ResourceManager.GetString("UnknownFile_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {

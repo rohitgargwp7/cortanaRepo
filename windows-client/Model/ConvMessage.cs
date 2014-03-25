@@ -539,6 +539,7 @@ namespace windows_client.Model
                     return _message;
             }
         }
+
         public string FileName
         {
             get
@@ -546,6 +547,7 @@ namespace windows_client.Model
                 return _fileAttachment != null ? _fileAttachment.FileName : string.Empty;
             }
         }
+
         public string FileType
         {
             get
@@ -553,6 +555,23 @@ namespace windows_client.Model
                 return GetFileExtension();
             }
         }
+
+        public BitmapImage UnknownFileTypeIconImage
+        {
+            get
+            {
+                if (_fileAttachment != null)
+                {
+                    if (!IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return UI_Utils.Instance.DownloadIconBigger;
+                    else
+                        return UI_Utils.Instance.AttachmentIcon;
+                }
+
+                return null;
+            }
+        }
+
         public Visibility DispMessageVisibility
         {
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
@@ -1017,6 +1036,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FileSizeVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
                 NotifyPropertyChanged("ProgressText");
+                NotifyPropertyChanged("UnknownFileTypeIconImage");
             }
             get
             {
@@ -2083,7 +2103,7 @@ namespace windows_client.Model
                     return _fileAttachment.FileName.Substring(index + 1).ToUpper();
                 }
             }
-            return string.Empty;
+            return "File";//in case no extension type and no need to translate this
         }
 
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
@@ -2101,6 +2121,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
             NotifyPropertyChanged("FileSizeVisibility");
+            NotifyPropertyChanged("UnknownFileTypeIconImage");
 
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED

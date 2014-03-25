@@ -552,25 +552,25 @@
                                                         <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                                    <Grid Grid.Row="1" Margin="10 10 10 0">
+                                                    <Grid Grid.Row="1" Margin="10 10 10 0" >
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Grid MinHeight="75" MinWidth="75" Background="#565d6e">
-                                                            <Image Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Source="/View/images/icon_attachment.png" />
-                                                        </Grid>
+                                                        <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
                                                         <Grid Grid.Column="1" Background="#edecec">
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto" />
-                                                                <RowDefinition Height="Auto" />
-                                                            </Grid.RowDefinitions>
-                                                            <TextBlock  Text="{Binding FileName}" FontFamily="Segoe WP SemiLight" TextTrimming="WordEllipsis" Margin="10,5,5,0" Width="200" Foreground="{Binding MessageTextForeGround}"/>
-                                                            <TextBlock Grid.Row="1"  Text="{Binding FileType}" FontFamily="Segoe WP SemiLight" TextTrimming="WordEllipsis" Margin="10,5,5,0" Width="200" Foreground="{Binding MessageTextForeGround}"/>
+                                                            <Grid Margin="10,5,0,5" Width="180">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+                                                                <TextBlock Text="{Binding FileName}" TextTrimming="WordEllipsis"  Foreground="{Binding MessageTextForeGround}"/>
+                                                                <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="16" Opacity="0.7" Foreground="{Binding MessageTextForeGround}"/>
+                                                            </Grid>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
-                                                <Grid Grid.Row="1" Margin="0,5,0,0">
+                                                <Grid Grid.Row="1">
                                                     <TextBlock Text="{Binding FileSize}" Visibility="{Binding FileSizeVisibility}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" FontWeight="Light"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" FontWeight="Light"/>
                                                 </Grid>
@@ -992,24 +992,24 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Grid Grid.Row="0" Margin="10 10 10 0">
+                                                <Grid Margin="10 10 10 0" >
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Grid MinHeight="75" MinWidth="75" Background="#565d6e">
-                                                        <Image Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Source="/View/images/icon_attachment.png" />
-                                                    </Grid>
+                                                    <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
                                                     <Grid Grid.Column="1" Background="#edecec">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto" />
-                                                            <RowDefinition Height="Auto" />
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock  Text="{Binding FileName}" FontFamily="Segoe WP SemiLight" TextTrimming="WordEllipsis" Margin="10,5,5,0" Width="200" Foreground="Black"/>
-                                                        <TextBlock Grid.Row="1"  Text="{Binding FileType}" FontFamily="Segoe WP SemiLight" TextTrimming="WordEllipsis" Margin="10,5,5,0" Width="200" Foreground="Black"/>
+                                                        <Grid Margin="10,5,0,5" Width="180">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Text="{Binding FileName}" TextTrimming="WordEllipsis"  Foreground="Black"/>
+                                                            <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="16" Opacity="0.7" Foreground="Black"/>
+                                                        </Grid>
                                                     </Grid>
                                                 </Grid>
-                                                <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,0,6">
+                                                <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,0,5">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>

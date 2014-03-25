@@ -334,6 +334,7 @@ namespace windows_client
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
+        public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
 

@@ -927,11 +927,11 @@ namespace windows_client.ViewModel
                             convMessage.Message = AppResources.ContactTransfer_Text;
                             convMessage.MetaDataString = metaDataString;
                         }
-                        //todo:handle unknown FT
                         else
                         {
-                            convMessage.Message = "file";
+                            convMessage.Message = AppResources.Location_Txt;
                         }
+
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
