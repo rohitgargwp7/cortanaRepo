@@ -295,7 +295,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbSpring.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbSpring.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbSpring.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -309,7 +309,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMountain.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbMountain.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMountain.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -323,7 +323,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBeach2.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbBeach2.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbBeach2.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -337,7 +337,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbCricket.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbCricket.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbCricket.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -351,7 +351,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFriends.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbFriends.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbFriends.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -365,7 +365,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbRains.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbRains.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbRains.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -379,7 +379,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMusic.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbMusic.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMusic.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -393,7 +393,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbMrRight.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbMrRight.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbMrRight.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -407,7 +407,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbHikinCouple.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbHikinCouple.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbHikinCouple.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -421,7 +421,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbExam.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbExam.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbExam.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -435,7 +435,7 @@ namespace windows_client.utils
                 IsTile = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbAnxiety.png",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbAnxiety.png"
+                ImagePath = "/View/images/chatBackgrounds/Background/cbAnxiety.jpg"
             });
             
             BackgroundList.Add(new ChatBackground()
