@@ -153,6 +153,7 @@ namespace windows_client.Model
         public string ImagePath;
         public bool IsDefault;
         public bool IsTile;
+        public bool IsLightTheme;
         public string Background;
         public string SentBubbleBackground;
         public string ReceivedBubbleBackground;

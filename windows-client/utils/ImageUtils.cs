@@ -37,6 +37,8 @@ namespace windows_client.utils
         private SolidColorBrush untappedCategoryColor;
         private SolidColorBrush deleteGreyBackground;
         private SolidColorBrush deleteBlackBackground;
+        private BitmapImage typingNotificationWhite;
+        private BitmapImage typingNotificationBlack;
         private BitmapImage chatBackgroundImageWhite;
         private BitmapImage chatBackgroundImageBlack;
         private BitmapImage onHikeImage;
@@ -519,6 +521,26 @@ namespace windows_client.utils
                     myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
                 return myLocationPin;
+            }
+        }
+
+        public BitmapImage TypingNotificationWhite
+        {
+            get
+            {
+                if (typingNotificationWhite == null)
+                    typingNotificationWhite = new BitmapImage(new Uri("/view/images/typing_white.png", UriKind.Relative));
+                return typingNotificationWhite;
+            }
+        }
+
+        public BitmapImage TypingNotificationBlack
+        {
+            get
+            {
+                if (typingNotificationBlack == null)
+                    typingNotificationBlack = new BitmapImage(new Uri("/view/images/typing.png", UriKind.Relative));
+                return typingNotificationBlack;
             }
         }
 
