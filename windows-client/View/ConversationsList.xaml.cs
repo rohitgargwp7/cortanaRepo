@@ -47,14 +47,13 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
-        private ApplicationBar deleteAppBar;
+        //private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
         ApplicationBarIconButton deleteChatIconButton;
-        //ApplicationBarIconButton addFriendIconButton;
         private bool isStatusUpdatesMute;
         private bool isStatusMessagesLoaded = false;
         private bool showFreeMessageOverlay;
@@ -74,7 +73,8 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
 
-            ChangeAppBarOnConvSelected();
+            ApplicationBar = appBar;
+            //ChangeAppBarOnConvSelected();
             
             _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
@@ -485,46 +485,46 @@ namespace windows_client.View
             //toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             //appBar.MenuItems.Add(toggleStatusUpdatesMenu);
 
-            deleteAppBar = new ApplicationBar();
-            deleteChatIconButton = new ApplicationBarIconButton();
-            deleteChatIconButton.IconUri = new Uri("/View/images/icon_delete.png", UriKind.Relative);
-            deleteChatIconButton.Text = AppResources.Delete_Txt;
-            deleteChatIconButton.Click += deleteChatIconButton_Click;
-            deleteChatIconButton.IsEnabled = true;
-            deleteAppBar.Buttons.Add(deleteChatIconButton);
+            //deleteAppBar = new ApplicationBar();
+            //deleteChatIconButton = new ApplicationBarIconButton();
+            //deleteChatIconButton.IconUri = new Uri("/View/images/icon_delete.png", UriKind.Relative);
+            //deleteChatIconButton.Text = AppResources.Delete_Txt;
+            //deleteChatIconButton.Click += deleteChatIconButton_Click;
+            //deleteChatIconButton.IsEnabled = true;
+            //deleteAppBar.Buttons.Add(deleteChatIconButton);
         }
 
-        void deleteChatIconButton_Click(object sender, EventArgs e)
-        {
-            var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).ToList();
-            string message = list.Count > 1 ? AppResources.Conversations_Delete_MoreThan1Chat_Confirmation : AppResources.Conversations_Delete_Chat_Confirmation;
+        //void deleteChatIconButton_Click(object sender, EventArgs e)
+        //{
+        //    var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).ToList();
+        //    string message = list.Count > 1 ? AppResources.Conversations_Delete_MoreThan1Chat_Confirmation : AppResources.Conversations_Delete_Chat_Confirmation;
 
-            MessageBoxResult result = MessageBox.Show(message, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
-            if (result != MessageBoxResult.OK)
-            {
-                foreach (var item in list)
-                    item.IsSelected = false;
+        //    MessageBoxResult result = MessageBox.Show(message, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
+        //    if (result != MessageBoxResult.OK)
+        //    {
+        //        foreach (var item in list)
+        //            item.IsSelected = false;
 
-                ChangeAppBarOnConvSelected();
+        //        //ChangeAppBarOnConvSelected();
 
-                return;
-            }
+        //        return;
+        //    }
 
-            for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
-            {
-                if (App.ViewModel.MessageListPageCollection[i].IsSelected)
-                {
-                    var conv = App.ViewModel.MessageListPageCollection[i];
-                    App.ViewModel.MessageListPageCollection.RemoveAt(i);
-                    deleteConversation(conv);
-                    continue;
-                }
+        //    for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
+        //    {
+        //        if (App.ViewModel.MessageListPageCollection[i].IsSelected)
+        //        {
+        //            var conv = App.ViewModel.MessageListPageCollection[i];
+        //            App.ViewModel.MessageListPageCollection.RemoveAt(i);
+        //            deleteConversation(conv);
+        //            continue;
+        //        }
 
-                i++;
-            }
+        //        i++;
+        //    }
 
-            ChangeAppBarOnConvSelected();
-        }
+        //    ChangeAppBarOnConvSelected();
+        //}
 
         public static void ReloadConversations() // running on some background thread
         {
@@ -1854,11 +1854,12 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
+            if (result != MessageBoxResult.OK)
+                return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
-                convObj.IsSelected = true;
-
-            ChangeAppBarOnConvSelected();
+                deleteConversation(convObj);
         }
 
         private void MenuItem_Click_AddRemoveFav(object sender, RoutedEventArgs e)
@@ -2851,14 +2852,14 @@ namespace windows_client.View
 
             llsConversations.SelectedItem = null;
 
-            if (_profileImageTapped)
-            {
-                _profileImageTapped = false;
-                return;
-            }
+            //if (_profileImageTapped)
+            //{
+            //    _profileImageTapped = false;
+            //    return;
+            //}
 
-            if (ApplicationBar == deleteAppBar)
-                return;
+            //if (ApplicationBar == deleteAppBar)
+            //    return;
 
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
@@ -3266,44 +3267,44 @@ namespace windows_client.View
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 
-        bool _profileImageTapped = false;
-        private void profileImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            var conv = (sender as Grid).DataContext as ConversationListObject;
+        //bool _profileImageTapped = false;
+        //private void profileImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    var conv = (sender as Grid).DataContext as ConversationListObject;
 
-            if (ApplicationBar == deleteAppBar)
-            {
-                _profileImageTapped = true;
+        //    if (ApplicationBar == deleteAppBar)
+        //    {
+        //        _profileImageTapped = true;
 
-                if (conv != null)
-                    conv.IsSelected = !conv.IsSelected;
+        //        if (conv != null)
+        //            conv.IsSelected = !conv.IsSelected;
 
-                ChangeAppBarOnConvSelected();
-            }
-        }
+        //        ChangeAppBarOnConvSelected();
+        //    }
+        //}
 
-        private void ChangeAppBarOnConvSelected()
-        {
-            if (App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).Count() > 0)
-            {
-                if (ApplicationBar != deleteAppBar)
-                {
-                    launchPagePivot.IsLocked = true;
-                    ApplicationBar = deleteAppBar;
-                    notificationCountGrid.Visibility = Visibility.Collapsed;
-                }
-            }
-            else if (ApplicationBar != appBar)
-            {
-                launchPagePivot.IsLocked = false;
-                ApplicationBar = appBar;
-                notificationCountGrid.Visibility = Visibility.Visible;
-            }
-        }
+        //private void ChangeAppBarOnConvSelected()
+        //{
+        //    if (App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).Count() > 0)
+        //    {
+        //        if (ApplicationBar != deleteAppBar)
+        //        {
+        //            launchPagePivot.IsLocked = true;
+        //            ApplicationBar = deleteAppBar;
+        //            notificationCountGrid.Visibility = Visibility.Collapsed;
+        //        }
+        //    }
+        //    else if (ApplicationBar != appBar)
+        //    {
+        //        launchPagePivot.IsLocked = false;
+        //        ApplicationBar = appBar;
+        //        notificationCountGrid.Visibility = Visibility.Visible;
+        //    }
+        //}
 
         private void Grid_Hold(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            e.Handled = ApplicationBar == deleteAppBar;
+            //e.Handled = ApplicationBar == deleteAppBar;
         } 
     }
 }

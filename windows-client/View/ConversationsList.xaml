@@ -872,7 +872,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid x:Name="profileImage" Height="69" Width="69" HorizontalAlignment="Center" VerticalAlignment="Center" Tap="profileImage_Tap">
+                                    <Grid x:Name="profileImage" Height="69" Width="69" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Image Source="{Binding ConvImage}" MaxHeight="69" MaxWidth="69" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
 
