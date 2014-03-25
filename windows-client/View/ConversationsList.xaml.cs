@@ -2522,6 +2522,8 @@ namespace windows_client.View
                 _buttonInsideStatusUpdateTapped = true;
                 App.ViewModel.StatusList.Remove(fObj);
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
+                App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+                MiscDBUtil.SavePendingRequests();
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
                     return;
 
@@ -2556,7 +2558,6 @@ namespace windows_client.View
                     cohCounter.Text = string.Format(" ({0})", hikeContactList.Count);
                 }
                 App.ViewModel.FavList.Insert(0, cObj);
-                App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
                 cofCounter.Text = string.Format(" ({0})", App.ViewModel.FavList.Count);
                 JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
@@ -2566,7 +2567,6 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
-                MiscDBUtil.SavePendingRequests();
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
