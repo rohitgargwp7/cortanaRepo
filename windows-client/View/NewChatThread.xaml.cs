@@ -5556,7 +5556,6 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
-                headerBackground.Visibility = Visibility.Collapsed;
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
@@ -5566,8 +5565,6 @@ namespace windows_client.View
             }
             else
             {
-                headerBackground.Visibility = Visibility.Visible;
-                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
                 chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
@@ -5587,6 +5584,7 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 chatBackground.Source = null;
+                headerBackground.Background = UI_Utils.Instance.Transparent;
                 return;
             }
 
@@ -5654,8 +5652,10 @@ namespace windows_client.View
                 }
 
                 chatBackground.Source = _background;
-
+                
                 _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
+                
+                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
             };
         }
 
