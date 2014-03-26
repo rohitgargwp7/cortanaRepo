@@ -244,7 +244,7 @@ namespace windows_client.Model
             JObject data = new JObject();
             data.Add(HikeConstants.METADATA, analyticsJson);
             data.Add(HikeConstants.SUB_TYPE, eventType);
-            data[HikeConstants.TAG] = "wp8";
+            data[HikeConstants.TAG] = HikeConstants.TAG_MOBILE;
 
             JObject jsonObj = new JObject();
             jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);

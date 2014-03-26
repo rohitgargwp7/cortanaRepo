@@ -386,7 +386,7 @@ namespace windows_client
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
-        public static readonly string TAG_MOBILE = "mob";
+        public static readonly string TAG_MOBILE = "wp8";
 
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
