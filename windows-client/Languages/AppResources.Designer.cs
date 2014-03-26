@@ -4784,7 +4784,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink your Facebook account from Hike.
+        ///   Looks up a localized string similar to unlink your Facebook account from hike.
         /// </summary>
         public static string Unlink_Fb_SubHeader_Txt {
             get {
@@ -4802,7 +4802,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink your Twitter account from Hike.
+        ///   Looks up a localized string similar to unlink your Twitter account from hike.
         /// </summary>
         public static string Unlink_Twitter_SubHeader_Txt {
             get {
