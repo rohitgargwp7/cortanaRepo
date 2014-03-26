@@ -2129,6 +2129,18 @@ Download it now http://hike.in and join the fun!</value>
   <data name="UnknownFile_txt" xml:space="preserve">
     <value>File</value>
   </data>
+  <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
+    <value>unlink Facebook</value>
+  </data>
+  <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
+    <value>unlink your Facebook account from hike</value>
+  </data>
+  <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
+    <value>unlink Twitter</value>
+  </data>
+  <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
+    <value>unlink your Twitter account from hike</value>
+  </data>
   <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
     <value>earn unlimited free sms</value>
   </data>

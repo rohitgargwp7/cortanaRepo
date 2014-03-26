@@ -22,10 +22,11 @@ using Facebook;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
 using windows_client.FileTransfers;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
-    public partial class Account : PhoneApplicationPage, HikePubSub.Listener
+    public partial class Account : PhoneApplicationPage
     {
         bool canGoBack = true;
         private ProgressIndicatorControl progress = null; // there should be just one instance of this.
@@ -37,19 +38,27 @@ namespace windows_client.View
             {
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_white.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_white.png", UriKind.Relative));
+                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_white.png", UriKind.Relative));
+                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_white.png", UriKind.Relative));
             }
             else
             {
                 this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
                 this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
+                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
+                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
             }
 
-            RegisterListeners();
+            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                gridFB.Visibility = Visibility.Visible;
+
+            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+                gridTwitter.Visibility = Visibility.Visible;
+
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            RemoveListeners();
             base.OnRemovedFromJournal(e);
         }
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -59,19 +68,6 @@ namespace windows_client.View
                 e.Cancel = true;
             }
             base.OnBackKeyPress(e);
-        }
-        private void RegisterListeners()
-        {
-
-        }
-
-        private void RemoveListeners()
-        {
-            try
-            {
-
-            }
-            catch { }
         }
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -97,7 +93,7 @@ namespace windows_client.View
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogOutFb();
+                LogoutFb();
 
             DeleteLocalStorage();
         }
@@ -164,7 +160,7 @@ namespace windows_client.View
                 return;
             }
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogOutFb();
+                LogoutFb();
             DeleteLocalStorage();
         }
 
@@ -210,23 +206,60 @@ namespace windows_client.View
             });
         }
 
-        private void LogOutFb()
+        private void UnlinkFb_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            var fb = new FacebookClient();
-            var parameters = new Dictionary<string, object>();
-            parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
-            parameters["next"] = "https://m.facebook.com/connect/login_success.html";
-            var logoutUrl = fb.GetLogoutUrl(parameters);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-              {
-                  WebBrowser browser = new WebBrowser();
-                  browser.Navigate(logoutUrl);
-              });
+            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
+            if (res != MessageBoxResult.OK)
+                return;
+            shellProgress.IsVisible = true;
+            LogoutFb();
         }
 
-        public void onEventReceived(string type, object obj)
+        private void UnlinkTwitter_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
+            if (res != MessageBoxResult.OK)
+                return;
+            else
+            {
+                shellProgress.IsVisible = true;
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
+                return;
+            }
+        }
 
+        public void SocialDeleteTW(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                gridTwitter.Visibility = Visibility.Collapsed;
+                shellProgress.IsVisible = false;
+                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
+            });
+        }
+
+        public void SocialDeleteFB(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                gridFB.Visibility = Visibility.Collapsed;
+                shellProgress.IsVisible = false;
+                MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
+            });
+        }
+
+        private async void LogoutFb()
+        {
+            await (new WebBrowser()).ClearCookiesAsync();
+
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+            App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+
+            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
         }
     }
 }
