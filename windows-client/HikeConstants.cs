@@ -388,6 +388,10 @@ namespace windows_client
         public static readonly string EVENT_TYPE_CLICK = "click";
         public static readonly string TAG_MOBILE = "mob";
 
+        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
+        public static readonly string ENTER_TO_SEND = "entr_2_snd";
+        public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
+
         #endregion
 
         public static class Extras

@@ -75,7 +75,7 @@ namespace windows_client.View
 
             ApplicationBar = appBar;
             //ChangeAppBarOnConvSelected();
-            
+
             _totalUnreadStatuses = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_UPDATES);
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
@@ -455,7 +455,7 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            
+
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
             groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
@@ -2797,22 +2797,7 @@ namespace windows_client.View
 
             ProTipCount = 0;
 
-            JObject proTipAnalyticsJson = new JObject();
-            proTipAnalyticsJson.Add(Analytics.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
-
-            JObject data = new JObject();
-            data.Add(HikeConstants.METADATA, proTipAnalyticsJson);
-            data.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
-            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
-
-            JObject jsonObj = new JObject();
-            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
-            jsonObj.Add(HikeConstants.DATA, data);
-
-            object[] publishData = new object[2];
-            publishData[0] = jsonObj;
-            publishData[1] = 1; //qos
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+            Analytics.SendAnalyticsEvent(HikeConstants.UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
@@ -3310,6 +3295,6 @@ namespace windows_client.View
         private void Grid_Hold(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //e.Handled = ApplicationBar == deleteAppBar;
-        } 
+        }
     }
 }
