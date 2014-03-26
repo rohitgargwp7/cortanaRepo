@@ -346,7 +346,7 @@ namespace windows_client.View
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
-                if (NavigationService.CanGoBack)
+                while (NavigationService.BackStack.Count() > 1)
                     NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.GROUP_CHAT))
