@@ -98,6 +98,8 @@ namespace windows_client.View
         private void startChat_Click(object sender, RoutedEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
+            PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
+
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 

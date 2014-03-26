@@ -322,6 +322,7 @@ namespace windows_client
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
+        public static string GO_TO_CONV_VIEW = "goToConvView";
 
         public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
 
