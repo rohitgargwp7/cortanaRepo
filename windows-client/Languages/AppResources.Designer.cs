@@ -1634,7 +1634,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to free sms.
+        ///   Looks up a localized string similar to free SMS.
         /// </summary>
         public static string Free_SMS_Txt {
             get {
