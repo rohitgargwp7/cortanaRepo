@@ -585,6 +585,9 @@
     <Content Include="View\images\fb_white.png" />
     <Content Include="View\images\heartsNudgeReceived.png" />
     <Content Include="View\images\heartsNudgeSent.png" />
+    <Content Include="View\images\hike_h2h_icon.png" />
+    <Content Include="View\images\hike_h2s_icon.png" />
+    <Content Include="View\images\hike_sms_icon.png" />
     <Content Include="View\images\hike_toast_image.png" />
     <Content Include="View\images\cancel_black.png" />
     <Content Include="View\images\cancel_white.png" />

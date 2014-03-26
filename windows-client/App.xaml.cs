@@ -1227,29 +1227,11 @@ namespace windows_client
 
         public static void SendEnterToSendStatusToServer()
         {
-            var jobj = new JObject();
-
             bool enterToSend;
             if (!appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            jobj.Add(Analytics.ENTER_TO_SEND, enterToSend);
-
-            JObject data = new JObject();
-            data.Add(HikeConstants.METADATA, jobj);
-            data.Add(HikeConstants.SUB_TYPE, HikeConstants.CONFIG_EVENT);
-            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
-
-            JObject jsonObj = new JObject();
-            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
-            jsonObj.Add(HikeConstants.DATA, data);
-
-            object[] publishData = new object[2];
-            publishData[0] = jsonObj;
-            publishData[1] = 1; //qos
-
-            if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, publishData);
+            Analytics.SendAnalyticsEvent(HikeConstants.CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
         }
 
         public static MediaElement GlobalMediaElement
