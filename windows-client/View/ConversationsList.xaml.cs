@@ -134,7 +134,10 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GO_TO_CONV_VIEW))
+            {
                 launchPagePivot.SelectedIndex = 0;
+                PhoneApplicationService.Current.State.Remove(HikeConstants.GO_TO_CONV_VIEW);
+            }
 
             if (launchPagePivot.SelectedIndex == 3)
             {

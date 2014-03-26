@@ -80,19 +80,6 @@ namespace windows_client.View
             int creditsRemaining = 0;
             App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
-            int max = 100;
-            if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
-            {
-                try
-                {
-                    max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Free Sms::  initializeCredits , Exception : " + ex.StackTrace);
-                }
-            }
-            long val = ((long)creditsRemaining * 435) / max;
         }
 
         private void startChat_Click(object sender, RoutedEventArgs e)
