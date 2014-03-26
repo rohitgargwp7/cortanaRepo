@@ -322,6 +322,7 @@ namespace windows_client
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
+        public static string GO_TO_CONV_VIEW = "goToConvView";
 
         public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
 
@@ -380,12 +381,16 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
+        public static readonly string FREE_SMS_COMPOSE = "freeSMSCom";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
-        public static readonly string TAG_MOBILE = "mob";
+        public static readonly string TAG_MOBILE = "wp8";
 
+        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
+        public static readonly string ENTER_TO_SEND = "entr_2_snd";
+        public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
 
         #endregion
 

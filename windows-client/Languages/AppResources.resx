@@ -438,7 +438,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Free Worldwide</value>
+    <value>free worldwide</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
@@ -446,11 +446,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Keep using hike to earn more free SMS</value>
+    <value>the more you hike, the more you earn!</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*Free SMS can only be sent to India at the moment</value>
+    <value>free, only to India</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
@@ -458,7 +458,7 @@
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Invite via SMS</value>
+    <value>invite via SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
@@ -494,7 +494,7 @@
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Unlimited</value>
+    <value>unlimited</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
@@ -1907,7 +1907,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Earn additional free SMS for every friend who joins hike because of you</value>
+    <value>earn additional free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>on hike</value>
@@ -1952,7 +1952,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>email</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>FREE SMS</value>
+    <value>free SMS</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>invite</value>
@@ -2128,5 +2128,11 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="UnknownFile_txt" xml:space="preserve">
     <value>File</value>
+  </data>
+  <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
+    <value>earn unlimited free sms</value>
+  </data>
+  <data name="Start_Hiking_Button_Txt" xml:space="preserve">
+    <value>start hiking</value>
   </data>
 </root>

@@ -851,6 +851,8 @@ namespace windows_client.ViewModel
 
             contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
 
+            Analytics.SendAnalyticsEvent(HikeConstants.UI_EVENT, HikeConstants.FWD_TO_MULTIPLE, contactsForForward.Count);
+
             if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
             {
                 foreach (var contact in contactsForForward)
