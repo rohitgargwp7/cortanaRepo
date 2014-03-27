@@ -2372,7 +2372,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check out the special &apos;I Love You&apos; Theme!.
+        ///   Looks up a localized string similar to Check out the stunning new Chat Themes!.
         /// </summary>
         public static string In_App_Tip_9 {
             get {

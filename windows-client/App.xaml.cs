@@ -967,6 +967,10 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
             }
+            else if (Utils.compareVersion(_currentVersion, "2.5.1.6") < 0)//if it is upgrade
+            {
+                App.ViewModel.ResetInAppTip(8);
+            }
             #endregion
             #region Enter to send
 
