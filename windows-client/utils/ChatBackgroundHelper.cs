@@ -369,7 +369,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
-                IsLightTheme = true,
+                IsLightTheme = false,
                 Position = 20,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbRains.png",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbRains.jpg"
