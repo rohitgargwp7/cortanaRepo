@@ -267,7 +267,7 @@ namespace windows_client.ViewModel
 
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) 
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
