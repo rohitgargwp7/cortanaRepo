@@ -1589,7 +1589,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Could not send file</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Max file size can be 15 MB.</value>
+    <value>Max file size can be 25 MB.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>

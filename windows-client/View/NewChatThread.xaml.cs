@@ -4359,6 +4359,7 @@ namespace windows_client.View
         {
             isGroupAlive = false;
             EnableDisableUI(false);
+            llsMessages.IsHitTestVisible = true;
             chatPaint.Opacity = 0.5;
         }
 

@@ -1051,7 +1051,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max file size can be 15 MB..
+        ///   Looks up a localized string similar to Max file size can be 25 MB..
         /// </summary>
         public static string CT_FileSizeExceed_Text {
             get {
