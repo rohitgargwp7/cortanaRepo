@@ -498,10 +498,18 @@ namespace windows_client
             {
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
-                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                    string param = Utils.GetParamFromUri(targetPage);
-                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                    string msisdn = Utils.GetParamFromUri(targetPage);
+                    if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                    {
+                        APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                        PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                        mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                    }
+                    else
+                    {
+                        mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    }
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
@@ -553,9 +561,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
-                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
+              
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -565,10 +571,19 @@ namespace windows_client
                     return;
                 }
 
-                string param = Utils.GetParamFromUri(targetPage);
-                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
-            }
+                string msisdn = Utils.GetParamFromUri(targetPage);
+                if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                {
+                    _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                }
+                else
+                {
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                }
+            }                                                                                                          
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);

@@ -16,6 +16,7 @@ using System.Net.NetworkInformation;
 using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
 using System.IO.IsolatedStorage;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -160,9 +161,21 @@ namespace windows_client.View
                             return;
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                        string param = Utils.GetParamFromUri(targetPage);
-                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                        NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+                        string msisdn = Utils.GetParamFromUri(targetPage);
+                        if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                        {
+                            App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                            PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
+                            PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+
+                        }
+                        else
+                        {
+                            App page = (App)Application.Current;
+                            ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                        }
                     }
                     else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                     {
@@ -187,6 +200,7 @@ namespace windows_client.View
                             return;
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+                        App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
                         NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
