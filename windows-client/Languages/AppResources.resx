@@ -1589,7 +1589,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Could not send file</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Max file size can be 15 MB.</value>
+    <value>Max file size can be 25 MB.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
@@ -2019,7 +2019,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} just changed the chat theme. To use the new chat themes, upgrade hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Check out the special 'I Love You' Theme!</value>
+    <value>Check out the stunning new Chat Themes!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>chat themes</value>
