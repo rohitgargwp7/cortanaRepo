@@ -1432,6 +1432,7 @@ namespace windows_client
                                 return;
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
+                            UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
                         }
                     }
                     #endregion
