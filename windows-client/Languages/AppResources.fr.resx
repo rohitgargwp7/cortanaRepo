@@ -1594,7 +1594,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Fichier pas envoyé</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>La taille du fichier est de 15 Mo maximum.</value>
+    <value>La taille du fichier est de 25 Mo maximum.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
