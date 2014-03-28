@@ -940,7 +940,7 @@ namespace windows_client.View
             else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
                 object obj = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
-                if (obj is ConversationListObject)
+                if (obj is ConversationListObject) //from timeline
                 {
                     ConversationListObject co = (ConversationListObject)obj;
                     mContactNumber = co.Msisdn;
@@ -960,7 +960,7 @@ namespace windows_client.View
                     avatarImage = co.AvatarImage;
                     userImage.Source = co.AvatarImage;
                 }
-                else
+                else // from user profile
                 {
                     ContactInfo cn = (ContactInfo)obj;
                     mContactNumber = cn.Msisdn;
@@ -1006,7 +1006,9 @@ namespace windows_client.View
                 else
                     lastSeenTxt.Text = String.Empty;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
             else
@@ -4279,7 +4281,8 @@ namespace windows_client.View
                 if (mContactNumber != cm.Msisdn)
                     return;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -4311,7 +4314,8 @@ namespace windows_client.View
                 if (eventGroupId != mContactNumber)
                     return;
 
-                _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
