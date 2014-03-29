@@ -885,7 +885,7 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, LinkClickedDelegate viewMoreClicked, LinkClickedDelegate hyperlinkClicked)
+        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, ViewMoreLinkClickedDelegate viewMoreClicked, HyperLinkClickedDelegate hyperlinkClicked)
         {
             int maxChar = GetMaxCharForBlock(originalMessage);
             bool isMessageExtended = false;
@@ -918,7 +918,7 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, LinkClickedDelegate hyperlinkClicked)
+        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, HyperLinkClickedDelegate hyperlinkClicked)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
@@ -958,25 +958,20 @@ namespace windows_client
 
                         string url = regexMatch;
                         if (regexType == RegexType.EMAIL)
-                            url = "mailto:" + regexMatch;
+                            url = regexMatch;
                         else if (regexType == RegexType.URL && !regexMatch.StartsWith("http://") && !regexMatch.StartsWith("ftp://") &&
                             !regexMatch.StartsWith("https://"))
                             url = "http://" + regexMatch;
-                        if (regexType == RegexType.PHONE_NO)
-                        {
-                            MyLink.Click += (ss, ee) =>
-                            {
-                                if (hyperlinkClicked != null)
-                                    hyperlinkClicked(ss);
-                            };
+                        else if (regexType == RegexType.PHONE_NO)
+                            url = regexMatch;
 
-                            MyLink.TargetName = regexMatch;
-                        }
-                        else
+                        MyLink.TargetName = url;
+                        MyLink.Click += (ss, ee) =>
                         {
-                            MyLink.TargetName = "_blank";
-                            MyLink.NavigateUri = new Uri(url);
-                        }
+                            if (hyperlinkClicked != null)
+                                hyperlinkClicked(new object[] { regexType, url });
+                        };
+
                         MyLink.Inlines.Add(regexMatch);
                         p.Inlines.Add(MyLink);
                     }
@@ -1070,6 +1065,7 @@ namespace windows_client
             return charCount;
         }
 
-        public delegate void LinkClickedDelegate(object obj);
+        public delegate void ViewMoreLinkClickedDelegate(object obj);
+        public delegate void HyperLinkClickedDelegate(object[] objArray);
     }
 }

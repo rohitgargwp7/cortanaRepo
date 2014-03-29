@@ -1446,7 +1446,7 @@ namespace windows_client.View
 
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)

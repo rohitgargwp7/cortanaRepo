@@ -3570,7 +3570,7 @@ namespace windows_client.View
         {
             _hyperlinkedClicked = true;
 
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
