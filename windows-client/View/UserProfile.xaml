@@ -106,12 +106,10 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
-                                            <local:MyRichTextBox Margin="-12,0,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="25" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
-                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="2" Foreground="#888888" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                            <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="3" VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="236" Stretch="Uniform" Tap="enlargePic_Tap"/>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" FontSize="25" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Column="1" Grid.Row="1" Foreground="#888888" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <Image Source="{Binding StatusImage}" Margin="0,12,0,10" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="236" Stretch="Uniform" Tap="enlargePic_Tap"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -133,11 +131,9 @@
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding UserName}" FontSize="19" FontFamily="Segoe WP Semibold"/>
-                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="1" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
-                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Row="2" Foreground="#888888"/>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" HorizontalAlignment="Left" Text="{Binding Text}" FontSize="28" Grid.Row="0" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="450" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <TextBlock Text="{Binding TimestampString}" FontSize="16" Grid.Row="1" Foreground="#888888"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>

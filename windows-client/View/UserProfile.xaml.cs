@@ -1467,7 +1467,7 @@ namespace windows_client.View
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
-                            statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForTimeline(lastStatusId, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                            statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, lastStatusId, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>
