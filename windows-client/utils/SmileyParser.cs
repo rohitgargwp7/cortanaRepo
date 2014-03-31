@@ -281,7 +281,7 @@ namespace windows_client
             get
             {
                 if (hyperLinkRegex == null)
-                    hyperLinkRegex = new Regex(hyperLinkRegexPattern);
+                    hyperLinkRegex = new Regex(hyperLinkRegexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 return hyperLinkRegex;
             }
         }
