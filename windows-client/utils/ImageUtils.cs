@@ -2269,6 +2269,8 @@ namespace windows_client.utils
 
         private BitmapImage GetBitmap(string msisdn, bool saveInCache)
         {
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
             if (_bitMapImageCache.ContainsKey(msisdn))
                 return _bitMapImageCache[msisdn];
             // if no image for this user exists

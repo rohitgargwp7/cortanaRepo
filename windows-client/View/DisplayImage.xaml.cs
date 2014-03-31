@@ -49,6 +49,8 @@ namespace windows_client.View
                     string fileName;
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     msisdn = (string)profilePicTapped[0];
+                    if (msisdn == App.MSISDN)
+                        msisdn = HikeConstants.MY_PROFILE_PIC;
                     string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                     //check if image is already stored
                     byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);

@@ -586,6 +586,31 @@ namespace windows_client.View
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+
+
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = thumbnailBytes;
+                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_UI, msisdn);
+                    }
+                    else // update fav and contact section
+                    {
+                        if (msisdn == null)
+                            return;
+                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                        if (c != null) // for favourites
+                        {
+                            c.Avatar = thumbnailBytes;
+                        }
+                        else
+                        {
+                            c = App.ViewModel.GetPending(msisdn);
+                            if (c != null) // for pending requests
+                            {
+                                c.Avatar = thumbnailBytes;
+                            }
+                        }
+                    }
                 }
                 else
                 {
