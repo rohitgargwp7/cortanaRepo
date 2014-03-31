@@ -84,7 +84,7 @@
             </StackPanel>
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="2" >
-            <phone:LongListSelector x:Name="statusLLS" Margin="12,0,12,20" ItemRealized="StatusLls_ItemRealised">
+            <phone:LongListSelector x:Name="statusLLS" Margin="12,0,12,20" ItemRealized="StatusLls_ItemRealised" toolkit:TiltEffect.SuppressTilt="True">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">

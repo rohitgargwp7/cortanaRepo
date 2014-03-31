@@ -948,22 +948,49 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void Hyperlink_Clicked(object sender)
+        public void Hyperlink_Clicked(object[] objArray)
         {
-            Hyperlink caller = sender as Hyperlink;
-
-            var phoneCallTask = new PhoneCallTask();
-            var targetPhoneNumber = caller.TargetName.Replace("-", "");
-            targetPhoneNumber = targetPhoneNumber.Trim();
-            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-            phoneCallTask.PhoneNumber = targetPhoneNumber;
-            try
+            var regexType = (SmileyParser.RegexType)objArray[0];
+            var target = (string)objArray[1];
+            if (regexType == SmileyParser.RegexType.EMAIL)
             {
-                phoneCallTask.Show();
+                var task = new EmailComposeTask() { To = target };
+                try
+                {
+                    task.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
             }
-            catch (Exception ex)
+            else if (regexType == SmileyParser.RegexType.URL)
             {
-                Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                var task = new WebBrowserTask() { URL = target };
+                try
+                {
+                    task.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+            else if (regexType == SmileyParser.RegexType.PHONE_NO)
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = target.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
             }
         }
 

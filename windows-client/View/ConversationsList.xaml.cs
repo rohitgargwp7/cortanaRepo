@@ -3242,18 +3242,18 @@ namespace windows_client.View
 
         //hyperlink was clicked in bubble. dont perform actions like page navigation.
         private bool _hyperlinkedInsideStatusUpdateClicked;
-
+        
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
 
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
-
+            
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 

@@ -219,7 +219,7 @@
   </data>
   <data name="Delete_Txt" xml:space="preserve">
     <value>supprimer</value>
-    <comment>Chats ContextMenu (xaml)</comment>
+    <comment>Chats ContextMenu (xaml)(max 10 chars)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>terminé</value>
@@ -438,7 +438,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Gratuit et mondial</value>
+    <value>gratuit dans le monde entier</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
@@ -446,11 +446,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Ta recharge de SMS gratuits le 1er de chaque mois</value>
+    <value>plus tu hikes, plus tu gagnes !</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*Envoi de SMS gratuits limité à l'Inde pour le moment</value>
+    <value>gratuit seulement vers l'Inde</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
@@ -458,7 +458,7 @@
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Inviter par SMS</value>
+    <value>inviter par SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
@@ -494,7 +494,7 @@
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Illimité</value>
+    <value>illimité</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
@@ -510,7 +510,7 @@
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Bloquer</value>
+    <value>bloquer</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
@@ -606,7 +606,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
-    <value>Saisir un N° valide</value>
+    <value>entrer un numéro valide</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
@@ -698,7 +698,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Débloquer</value>
+    <value>débloquer</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
@@ -1328,10 +1328,6 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>compte</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>supprimer</value>
-    <comment>Privacy page (xaml)</comment>
-  </data>
   <data name="Logout_Txt" xml:space="preserve">
     <value>déconnexion</value>
     <comment>Privacy page (xaml)</comment>
@@ -1764,14 +1760,14 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>envoyer comme sms hike</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
-    <value>Transférer</value>
+    <value>TRANSFÉRER À</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
     <value>{0} hors ligne, touche pour envoyer comme sms hike</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
-    <value>Tu n'as plus de SMS gratuits. Invite tes amis à rejoindre hike et gagne des SMS gratuits.</value>
+    <value>Il semble que tous tes crédits de SMS gratuits soient épuisés. Invite plus d'amis à rejoindre hike pour gagner des SMS gratuits</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Les messages en attente seront envoyés sous forme de SMS hike gratuits.</value>
@@ -1912,7 +1908,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Gagne des SMS gratuits pour chaque ami qui rejoint hike grâce à toi</value>
+    <value>gagne des SMS supplémentaires pour chaque ami que tu invites à rejoindre hike</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>sur hike</value>
@@ -1957,7 +1953,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value> e-mail</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>SMS GRATUITS</value>
+    <value>SMS gratuits</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>inviter</value>
@@ -2024,7 +2020,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>{0} vient de changer le thème du tchat. Pour utiliser les nouveaux thèmes de tchat, mets à jour hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Découvrez l'extraordinaire « Je t'aime » thème !</value>
+    <value>Découvrez les superbes nouveaux thèmes de chat!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>thèmes de tchat</value>
@@ -2047,15 +2043,15 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Fête le mois de l'amour ! On a un cadeau pour toi !</value>
+    <value>Nous avons un cadeau pour toi !</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>Ouvre le cadeau...</value>
+    <value>Ouvre le cadeau</value>
     <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>Personnalise tes tchats avec de superbes thèmes.</value>
+    <value>Personnalise ton tchat avec des thèmes magnifiques.</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
@@ -2075,5 +2071,81 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   </data>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Enregistrement impossible !</value>
+  </data>
+  <data name="Clear_Chat_Txt" xml:space="preserve">
+    <value>effacer le tchat</value>
+  </data>
+  <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
+    <value>lu par tout le monde</value>
+  </data>
+  <data name="MessageStatus_ReadByMoreThanThree" xml:space="preserve">
+    <value>lu par {0} et {1} autres</value>
+    <comment>eg. read by a &amp; b and 3 others</comment>
+  </data>
+  <data name="MessageStatus_ReadByOneOrTwo" xml:space="preserve">
+    <value>lu par {0}</value>
+    <comment>eg. read by a &amp; b / read by a</comment>
+  </data>
+  <data name="MessageStatus_ReadByThree" xml:space="preserve">
+    <value>lu par {0} et 1 autre</value>
+    <comment>eg. read by a &amp; b and 1 other</comment>
+  </data>
+  <data name="PreviewImages_Header_txt" xml:space="preserve">
+    <value>aperçu {0} sur {1}</value>
+    <comment>{0} and {1} to be replaced by numbers</comment>
+  </data>
+  <data name="ViewAlbums_Header_txt" xml:space="preserve">
+    <value>CHOISIR PHOTO</value>
+    <comment>Heading in caps (maximum 30 chars)</comment>
+  </data>
+  <data name="ViewAlbums_MaxImageSelection" xml:space="preserve">
+    <value>Pas plus de {0} photos !</value>
+    <comment>{0} to be replaced by number. max chars(25)</comment>
+  </data>
+  <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
+    <value>albums</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
+    <value>date</value>
+  </data>
+  <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
+    <value>choisir</value>
+    <comment>max 10 chars</comment>
+  </data>
+  <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
+    <value>Tu veux vraiment supprimer ces tchats ?</value>
+  </data>
+  <data name="clear_Chat_Body" xml:space="preserve">
+    <value>Tous tes messages de ce tchat seront supprimés. Tu veux vraiment continuer ?</value>
+  </data>
+  <data name="Confirmation_HeaderTxt" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="GroupBlocked_PomptTxt" xml:space="preserve">
+    <value>Ce groupe de tchat est bloqué. Veux-tu débloquer le propriétaire du groupe ?</value>
+  </data>
+  <data name="UserBlocked_PomptTxt" xml:space="preserve">
+    <value>Cet utilisateur est bloqué. Veux-tu débloquer l'utilisateur ?</value>
+  </data>
+  <data name="UnknownFile_txt" xml:space="preserve">
+    <value>Fichier</value>
+  </data>
+  <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
+    <value>désassocier Facebook</value>
+  </data>
+  <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
+    <value>désassocie ton compte Facebook de hike</value>
+  </data>
+  <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
+    <value>désassocier Twitter</value>
+  </data>
+  <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
+    <value>désassocie ton compte Twitter de hike</value>
+  </data>
+  <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
+    <value>gagne des sms illimités</value>
+  </data>
+  <data name="Start_Hiking_Button_Txt" xml:space="preserve">
+    <value>hike maintenant</value>
   </data>
 </root>
