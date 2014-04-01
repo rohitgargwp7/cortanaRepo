@@ -19,20 +19,10 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
-            if (Utils.isDarkTheme())
-            {
-                accountImage.Source = new BitmapImage(new Uri("images/account_white.png", UriKind.Relative));
-                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_white.png", UriKind.Relative));
-                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_white.png", UriKind.Relative));
-                notificationsImage.Source = new BitmapImage(new Uri("images/notifications_white.png", UriKind.Relative));
-            }
-            else
-            {
-                accountImage.Source = new BitmapImage(new Uri("images/account_black.png", UriKind.Relative));
-                blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_black.png", UriKind.Relative));
-                preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
-                notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
-            }
+            accountImage.Source = new BitmapImage(new Uri("images/account_black.png", UriKind.Relative));
+            blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_black.png", UriKind.Relative));
+            preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
+            notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
         }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)

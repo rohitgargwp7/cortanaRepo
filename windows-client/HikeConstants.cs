@@ -124,8 +124,6 @@ namespace windows_client
 
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
-        private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp8/black.html";
-        private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp8/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
@@ -182,10 +180,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return FAQS_LINK_BLACK;
-                }
                 return FAQS_LINK_WHITE;
             }
         }
@@ -194,10 +188,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return TERMS_AND_CONDITIONS_BLACK;
-                }
                 return TERMS_AND_CONDITIONS_WHITE;
             }
         }

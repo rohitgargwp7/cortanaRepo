@@ -610,16 +610,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added you as a friend.
-        /// </summary>
-        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
-            get {
-                return ResourceManager.GetString("Conversations_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View friends.
+        ///   Looks up a localized string similar to view friends.
         /// </summary>
         public static string Conversations_BtnCircleOfFriends_Txt {
             get {
@@ -628,7 +619,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update status.
+        ///   Looks up a localized string similar to update status.
         /// </summary>
         public static string Conversations_BtnUpdateStatus_Txt {
             get {
@@ -826,7 +817,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Now.
+        ///   Looks up a localized string similar to not now.
         /// </summary>
         public static string Conversations_Pending_NotNow_Btn {
             get {
@@ -835,47 +826,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm.
+        ///   Looks up a localized string similar to confirm.
         /// </summary>
         public static string Conversations_Pending_Yes_Btn {
             get {
                 return ResourceManager.GetString("Conversations_Pending_Yes_Btn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to chats.
-        /// </summary>
-        public static string Conversations_Pivot_Chats_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Chats_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to friends.
-        /// </summary>
-        public static string Conversations_Pivot_Favourites_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Favourites_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to profile.
-        /// </summary>
-        public static string Conversations_Pivot_Profile_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Profile_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to timeline.
-        /// </summary>
-        public static string Conversations_Pivot_Timeline_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Timeline_Header_Txt", resourceCulture);
             }
         }
         
@@ -3551,7 +3506,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to do the same?.
+        ///   Looks up a localized string similar to Added you as a friend. Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {

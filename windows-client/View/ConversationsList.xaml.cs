@@ -225,8 +225,8 @@ namespace windows_client.View
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 1;
-                emptyScreenTip.Opacity = 1;
+                emptyScreenImage.Opacity = 0.75;
+                emptyScreenTip.Opacity = 0.75;
             }
             else
             {
@@ -252,7 +252,7 @@ namespace windows_client.View
             }
             byte statusSettingsValue;
             isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
-            imgToggleStatus.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
+            muteStatusImage.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 3;
@@ -369,8 +369,8 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 1;
-                emptyScreenTip.Opacity = 1;
+                emptyScreenImage.Opacity = 0.75;
+                emptyScreenTip.Opacity = 0.75;
             }
             else
             {
@@ -454,11 +454,16 @@ namespace windows_client.View
 
         private void initAppBar()
         {
-            appBar = new ApplicationBar();
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.75
+            };
 
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
-            groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
+            groupChatIconButton.IconUri = new Uri("/View/images/icon_group_chat.png", UriKind.Relative);
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
@@ -610,27 +615,6 @@ namespace windows_client.View
 
         private void initProfilePage()
         {
-            if (Utils.isDarkTheme())
-            {
-                freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_white.png", UriKind.Relative));
-                helpImage.Source = new BitmapImage(new Uri("images/help_icon_white.png", UriKind.Relative));
-                emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
-                emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
-                invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/new_icon_white.png", UriKind.Relative));
-                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
-            }
-            else
-            {
-                emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
-                emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
-                invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
-                rewards.Source = new BitmapImage(new Uri("images/new_icon.png", UriKind.Relative));
-                helpImage.Source = new BitmapImage(new Uri("images/help_icon_dark.png", UriKind.Relative));
-                settingsImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
-                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
-            }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
@@ -697,8 +681,8 @@ namespace windows_client.View
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Opacity = 1;
-            emptyScreenTip.Opacity = 1;
+            emptyScreenImage.Opacity = 0.75;
+            emptyScreenTip.Opacity = 0.75;
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
@@ -749,13 +733,13 @@ namespace windows_client.View
             int settingsValue = 0;
             if (isStatusUpdatesMute)
             {
-                imgToggleStatus.Source = UI_Utils.Instance.UnmuteIcon;
+                muteStatusImage.Source = UI_Utils.Instance.UnmuteIcon;
                 App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
             else
             {
-                imgToggleStatus.Source = UI_Utils.Instance.MuteIcon;
+                muteStatusImage.Source = UI_Utils.Instance.MuteIcon;
                 App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
                 settingsValue = -1;
             }
@@ -792,8 +776,8 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 1;
-                emptyScreenTip.Opacity = 1;
+                emptyScreenImage.Opacity = 0.75;
+                emptyScreenTip.Opacity = 0.75;
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -824,7 +808,7 @@ namespace windows_client.View
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
 
-                gridToggleStatus.Visibility = Visibility.Collapsed;
+                muteStatusGrid.Visibility = Visibility.Collapsed;
             }
             else if (_newIndex == 1) // favourite
             {
@@ -921,7 +905,7 @@ namespace windows_client.View
             }
             else if (_newIndex == 2)
             {
-                gridToggleStatus.Visibility = Visibility.Collapsed;
+                muteStatusGrid.Visibility = Visibility.Collapsed;
             }
             else if (_newIndex == 3)
             {
@@ -929,7 +913,7 @@ namespace windows_client.View
 
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                gridToggleStatus.Visibility = Visibility.Visible;
+                muteStatusGrid.Visibility = Visibility.Visible;
                 if (!isStatusMessagesLoaded)
                 {
                     List<StatusMessage> statusMessagesFromDBUnblocked = new List<StatusMessage>();
@@ -1637,8 +1621,8 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Remove(co);
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
-                        emptyScreenImage.Opacity = 1;
-                        emptyScreenTip.Opacity = 1;
+                        emptyScreenImage.Opacity = 0.75;
+                        emptyScreenTip.Opacity = 0.75;
                     }
                 });
             }
@@ -2453,17 +2437,17 @@ namespace windows_client.View
         {
             int currentCounter = 0;
             Int32.TryParse(notificationCountTxtBlk.Text, out currentCounter);
-            if (currentCounter == 0 && newCounterValue > 0)
-            {
-                notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-            }
-            else if (currentCounter > 0 && newCounterValue == 0)
-            {
-                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
-                notificationCountTxtBlk.Text = "";
-            }
+
             if (newCounterValue > 0)
+            {
                 notificationCountTxtBlk.Text = newCounterValue.ToString();
+                notificationCountGrid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                notificationCountTxtBlk.Text = "";
+                notificationCountGrid.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void refreshStatuses_Tap(object sender, RoutedEventArgs e)
@@ -2684,7 +2668,7 @@ namespace windows_client.View
                 return;
             }
 
-            BaseStatusUpdate status = (sender as Grid).DataContext as BaseStatusUpdate;
+            BaseStatusUpdate status = (sender as Border).DataContext as BaseStatusUpdate;
             if (status == null || status is ProTipStatusUpdate)
                 return;
 
@@ -3242,7 +3226,7 @@ namespace windows_client.View
 
         //hyperlink was clicked in bubble. dont perform actions like page navigation.
         private bool _hyperlinkedInsideStatusUpdateClicked;
-        
+
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
@@ -3253,7 +3237,7 @@ namespace windows_client.View
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
-            
+
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 

@@ -419,10 +419,8 @@ namespace windows_client.utils
             get
             {
                 if (groupChatHeaderColor == null)
-                    if (Utils.isDarkTheme())
-                        groupChatHeaderColor = UI_Utils.Instance.White;
-                    else
-                        groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
+                    groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
+
                 return groupChatHeaderColor;
             }
         }
@@ -442,12 +440,8 @@ namespace windows_client.utils
             get
             {
                 if (editProfileForeground == null)
-                {
-                    if (Utils.isDarkTheme())
-                        editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0xa8, 0xa8, 0xa8));
-                    else
-                        editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0x8d, 0x8d, 0x8d));
-                }
+                    editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0x8d, 0x8d, 0x8d));
+         
                 return editProfileForeground;
             }
         }
@@ -457,12 +451,8 @@ namespace windows_client.utils
             get
             {
                 if (receivedChatBubbleProgress == null)
-                {
-                    if (Utils.isDarkTheme())
-                        receivedChatBubbleProgress = new SolidColorBrush(Color.FromArgb(255, 0xb8, 0xb8, 0xb8));
-                    else
-                        receivedChatBubbleProgress = new SolidColorBrush(Color.FromArgb(255, 0x33, 0x33, 0x33));
-                }
+                    receivedChatBubbleProgress = new SolidColorBrush(Color.FromArgb(255, 0x33, 0x33, 0x33));
+
                 return receivedChatBubbleProgress;
             }
         }
@@ -484,12 +474,8 @@ namespace windows_client.utils
             get
             {
                 if (statusTextForeground == null)
-                {
-                    if (Utils.isDarkTheme())
-                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
-                    else
-                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
-                }
+                    statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
+
                 return statusTextForeground;
             }
         }
@@ -1214,12 +1200,8 @@ namespace windows_client.utils
             get
             {
                 if (userProfileLockImage == null)
-                {
-                    if (Utils.isDarkTheme())
-                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock_white.png", UriKind.Relative));
-                    else
-                        userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-                }
+                    userProfileLockImage = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+
                 return userProfileLockImage;
             }
         }
@@ -1229,12 +1211,8 @@ namespace windows_client.utils
             get
             {
                 if (userProfileInviteImage == null)
-                {
-                    if (Utils.isDarkTheme())
-                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite_white.png", UriKind.Relative));
-                    else
-                        userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
-                }
+                    userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
+
                 return userProfileInviteImage;
             }
         }
@@ -1244,12 +1222,8 @@ namespace windows_client.utils
             get
             {
                 if (userProfileStockImage == null)
-                {
-                    if (Utils.isDarkTheme())
-                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock_dark.png", UriKind.Relative));
-                    else
-                        userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock.png", UriKind.Relative));
-                }
+                    userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock.png", UriKind.Relative));
+
                 return userProfileStockImage;
             }
         }
@@ -1260,6 +1234,7 @@ namespace windows_client.utils
             {
                 if (loadingImage == null)
                     loadingImage = new BitmapImage(new Uri("/View/images/loading.png", UriKind.Relative));
+
                 return loadingImage;
             }
         }
@@ -1921,9 +1896,8 @@ namespace windows_client.utils
             get
             {
                 if (recentIcon == null)
-                {
                     recentIcon = new BitmapImage(new Uri("/View/images/recent_icon.png", UriKind.Relative));
-                }
+
                 return recentIcon;
             }
         }
@@ -1933,12 +1907,8 @@ namespace windows_client.utils
             get
             {
                 if (muteIcon == null)
-                {
-                    if (Utils.isDarkTheme())
-                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_l.png", UriKind.Relative));
-                    else
-                        muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_g.png", UriKind.Relative));
-                }
+                    muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_g.png", UriKind.Relative));
+
                 return muteIcon;
             }
         }
@@ -1948,12 +1918,7 @@ namespace windows_client.utils
             get
             {
                 if (muteIconForConversationView == null)
-                {
-                    if (Utils.isDarkTheme())
-                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_white.png", UriKind.Relative));
-                    else
-                        muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_b.png", UriKind.Relative));
-                }
+                    muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_b.png", UriKind.Relative));
 
                 return muteIconForConversationView;
             }
@@ -1964,12 +1929,8 @@ namespace windows_client.utils
             get
             {
                 if (unmuteIcon == null)
-                {
-                    if (Utils.isDarkTheme())
-                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_l.png", UriKind.Relative));
-                    else
-                        unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_g.png", UriKind.Relative));
-                }
+                    unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_g.png", UriKind.Relative));
+
                 return unmuteIcon;
             }
         }

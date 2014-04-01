@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using windows_client.utils;
 
 namespace windows_client.Controls
 {
@@ -22,6 +23,9 @@ namespace windows_client.Controls
 
         public static readonly DependencyProperty ColorProperty =
             DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(MyRichTextBox), new PropertyMetadata(default(SolidColorBrush)));
+
+        public static readonly DependencyProperty MaxCharsProperty =
+            DependencyProperty.Register("MaxChars", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
         private string lastText = string.Empty;
         public string Text
@@ -47,6 +51,7 @@ namespace windows_client.Controls
                 SetValue(TypeProperty, value);
             }
         }
+        
         public SolidColorBrush TextForeground
         {
             get
@@ -56,6 +61,18 @@ namespace windows_client.Controls
             set
             {
                 SetValue(ColorProperty, value);
+            }
+        }
+
+        public Int32 MaxChars
+        {
+            get
+            {
+                return (Int32)GetValue(MaxCharsProperty);
+            }
+            set
+            {
+                SetValue(MaxCharsProperty, value);
             }
         }
 
@@ -79,6 +96,13 @@ namespace windows_client.Controls
             if (text == lastText)
                 return;
             lastText = text;
+
+            if (MaxChars > 0)
+            {
+                var maxChar = Utils.GetMaxCharForBlock(text, 1, MaxChars);
+                if (text.Length > maxChar)
+                    text = text.Substring(0, maxChar + 1).Trim() + "...";
+            }
 
             var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
             Blocks.Clear();

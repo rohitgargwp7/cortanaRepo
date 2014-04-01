@@ -479,11 +479,15 @@ namespace windows_client.Model
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     Color currentAccentColorHex =
-                       (Color)Application.Current.Resources["PhoneAccentColor"];
+                       ((SolidColorBrush)Application.Current.Resources["HikeBlue"]).Color;
                     return currentAccentColorHex.ToString();
                 }
                 else
-                    return "gray";
+                {
+                    Color currentAccentColorHex =
+                       ((SolidColorBrush)Application.Current.Resources["LastMessageColor"]).Color;
+                    return currentAccentColorHex.ToString();
+                }
             }
         }
 
@@ -632,7 +636,7 @@ namespace windows_client.Model
 
         double getUnreadCounterWidth()
         {
-            double defaultWidth = 17;
+            double defaultWidth = 10;
             var num = UnreadCounter;
 
             while (num != 0)

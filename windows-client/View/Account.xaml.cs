@@ -34,20 +34,11 @@ namespace windows_client.View
         public Account()
         {
             InitializeComponent();
-            if (Utils.isDarkTheme())
-            {
-                this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_white.png", UriKind.Relative));
-                this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_white.png", UriKind.Relative));
-                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_white.png", UriKind.Relative));
-                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_white.png", UriKind.Relative));
-            }
-            else
-            {
-                this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
-                this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
-                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
-                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
-            }
+
+            unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
+            deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
+            UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
+            UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;

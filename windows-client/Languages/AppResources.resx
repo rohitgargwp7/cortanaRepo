@@ -174,24 +174,12 @@
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
-    <value>Not Now</value>
+    <value>not now</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
-    <value>Confirm</value>
+    <value>confirm</value>
     <comment>Fav (xaml)</comment>
-  </data>
-  <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
-    <value>chats</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>friends</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
-    <value>profile</value>
-    <comment>xaml</comment>
   </data>
   <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
     <value>Default Name</value>
@@ -1202,10 +1190,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>Refresh Contact List</value>
   </data>
-  <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Added you as a friend</value>
-    <comment>for friend requests in wp8</comment>
-  </data>
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
     <value>Changed profile picture</value>
     <comment>Text used in profile picture update</comment>
@@ -1215,9 +1199,6 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="StatuUpdate_Location" xml:space="preserve">
     <value>at {0}</value>
-  </data>
-  <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
-    <value>timeline</value>
   </data>
   <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
     <value>Post Status</value>
@@ -1364,7 +1345,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>{0} will be replaced by username</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>Would you like to do the same?</value>
+    <value>Added you as a friend. Would you like to do the same?</value>
   </data>
   <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
     <value>Cancel Request</value>
@@ -1405,7 +1386,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
   <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>Update status</value>
+    <value>update status</value>
   </data>
   <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
     <value>Looks like you haven't posted any status update yet.</value>
@@ -1461,7 +1442,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Me</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>View friends</value>
+    <value>view friends</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
     <value>You can see updates from your friends here</value>

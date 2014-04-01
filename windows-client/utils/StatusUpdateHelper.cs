@@ -85,7 +85,7 @@ namespace windows_client.utils
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
 
-                    userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
+                    userName = (cn != null && !string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }

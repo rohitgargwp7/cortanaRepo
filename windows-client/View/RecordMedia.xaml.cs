@@ -56,14 +56,7 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (Utils.isDarkTheme())
-            {
-                micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon.png", UriKind.Relative));
-            }
-            else
-            {
-                micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon_black.png", UriKind.Relative));
-            }
+            micImage.Source = new BitmapImage(new Uri("/View/images/mic_icon_black.png", UriKind.Relative));
 
             // Timer to simulate the XNA Framework game loop (Microphone is 
             // from the XNA Framework). We also use this timer to monitor the 

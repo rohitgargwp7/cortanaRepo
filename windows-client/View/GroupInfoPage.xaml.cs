@@ -104,10 +104,6 @@ namespace windows_client.View
                 string grpId = groupId.Replace(":", "_");
                 groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
             }
-            if (Utils.isDarkTheme())
-            {
-                addUserImage.Source = new BitmapImage(new Uri("images/add_users_white.png", UriKind.Relative));
-            }
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
