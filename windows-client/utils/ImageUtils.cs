@@ -180,6 +180,15 @@ namespace windows_client.utils
 
         BitmapImage profileTickImage;
 
+        BitmapImage statusTabImageSelected;
+        BitmapImage statusTabImageNotSelected;
+        BitmapImage chatsTabImageSelected;
+        BitmapImage chatsTabImageNotSelected;
+        BitmapImage profileTabImageSelected;
+        BitmapImage profileTabImageNotSelected;
+        BitmapImage friendsTabImageSelected;
+        BitmapImage friendsTabImageNotSelected;
+
         #endregion
 
         #region STATUS UPDATE CUSTOM CONTROLS
@@ -1932,6 +1941,94 @@ namespace windows_client.utils
                     unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_g.png", UriKind.Relative));
 
                 return unmuteIcon;
+            }
+        }
+
+        public BitmapImage StatusTabImageSelected
+        {
+            get
+            {
+                if (statusTabImageSelected == null)
+                    statusTabImageSelected = new BitmapImage(new Uri("/View/images/status_Selected.png", UriKind.Relative));
+
+                return statusTabImageSelected;
+            }
+        }
+
+        public BitmapImage StatusTabImageNotSelected
+        {
+            get
+            {
+                if (statusTabImageNotSelected == null)
+                    statusTabImageNotSelected = new BitmapImage(new Uri("/View/images/status_NotSelected.png", UriKind.Relative));
+
+                return statusTabImageNotSelected;
+            }
+        }
+
+        public BitmapImage ChatsTabImageSelected
+        {
+            get
+            {
+                if (chatsTabImageSelected == null)
+                    chatsTabImageSelected = new BitmapImage(new Uri("/View/images/chat_Selected.png", UriKind.Relative));
+
+                return chatsTabImageSelected;
+            }
+        }
+
+        public BitmapImage ChatsTabImageNotSelected
+        {
+            get
+            {
+                if (chatsTabImageNotSelected == null)
+                    chatsTabImageNotSelected = new BitmapImage(new Uri("/View/images/chat_NotSelected.png", UriKind.Relative));
+
+                return chatsTabImageNotSelected;
+            }
+        }
+
+        public BitmapImage FriendsTabImageSelected
+        {
+            get
+            {
+                if (friendsTabImageSelected == null)
+                    friendsTabImageSelected = new BitmapImage(new Uri("/View/images/friend_Selected.png", UriKind.Relative));
+
+                return friendsTabImageSelected;
+            }
+        }
+
+        public BitmapImage FriendsTabImageNotSelected
+        {
+            get
+            {
+                if (friendsTabImageNotSelected == null)
+                    friendsTabImageNotSelected = new BitmapImage(new Uri("/View/images/friend_NotSelected.png", UriKind.Relative));
+
+                return friendsTabImageNotSelected;
+            }
+        }
+
+        public BitmapImage ProfileTabImageSelected
+        {
+            get
+            {
+                if (profileTabImageSelected == null)
+                    profileTabImageSelected = new BitmapImage(new Uri("/View/images/profile_Selected.png", UriKind.Relative));
+
+                return profileTabImageSelected;
+            }
+        }
+
+        public BitmapImage ProfileTabImageNotSelected
+        {
+            get
+            {
+                if (profileTabImageNotSelected == null)
+                    profileTabImageNotSelected = new BitmapImage(new Uri("/View/images/profile_NotSelected.png", UriKind.Relative));
+
+                return profileTabImageNotSelected;
             }
         }
 

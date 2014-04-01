@@ -800,6 +800,8 @@ namespace windows_client.View
             _oldIndex = _newIndex;
             _newIndex = (sender as Pivot).SelectedIndex;
 
+            UpdateTabImages(_newIndex);
+
             if (_newIndex != 3 && _oldIndex == 3 && RefreshBarCount > 0)
                 UpdatePendingStatusFromRefreshBar();
 
@@ -979,6 +981,37 @@ namespace windows_client.View
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
+            }
+        }
+
+        private void UpdateTabImages(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
+                    chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageSelected;
+                    friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
+                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
+                    break;
+                case 1:
+                    statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
+                    chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
+                    friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageSelected;
+                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
+                    break;
+                case 2:
+                    statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
+                    chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
+                    friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
+                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageSelected;
+                    break;
+                case 3:
+                    statusTabImage.Source = UI_Utils.Instance.StatusTabImageSelected;
+                    chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
+                    friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
+                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
+                    break;
             }
         }
 
@@ -3279,6 +3312,21 @@ namespace windows_client.View
         private void Grid_Hold(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //e.Handled = ApplicationBar == deleteAppBar;
+        }
+
+        private void chatsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 0;
+        }
+
+        private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void profileTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 2;
         }
     }
 }

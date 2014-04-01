@@ -17,7 +17,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     toolkit:TiltEffect.IsTiltEnabled="True"
-    shell:SystemTray.Opacity="0" shell:SystemTray.ForegroundColor="White"
+    shell:SystemTray.Opacity="0" shell:SystemTray.ForegroundColor="#fffffe"
     shell:SystemTray.IsVisible="True" Name="convListPagePivot">
 
     <shell:SystemTray.ProgressIndicator>
@@ -845,17 +845,24 @@
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Image Source="images\hike_header.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                 </Grid>
-                <Grid Name="muteStatusGrid" Grid.Column="1" Margin="0,25,30,0" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Left" VerticalAlignment="Stretch" >
-                    <Image Name="muteStatusImage" MaxHeight="30" Margin="20,12" HorizontalAlignment="Center"/>
+                <Grid Name="muteStatusGrid" Grid.Column="1" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Left" VerticalAlignment="Stretch" >
+                    <Image Name="muteStatusImage" MaxHeight="40" Margin="20,12" HorizontalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="2" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Stretch">
-                    <Border x:Name="notificationCountGrid" Style="{StaticResource UnreadNotificationCounterContainerStyle}">
-                        <TextBlock x:Name="notificationCountTxtBlk" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" FontFamily="Segoe WP Semibold" />
+                <Grid Grid.Column="2" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="-10,-30,0,0">
+                        <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}" Margin="-2,0,0,0"/>
                     </Border>
+                    <Image x:Name="statusTabImage" Stretch="Uniform" Width="30" Margin="20,-14,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="3"/>
-                <Grid Grid.Column="4"/>
-                <Grid Grid.Column="5"/>
+                <Grid Grid.Column="3" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Image x:Name="chatsTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="4" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Image x:Name="friendsTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="5" Tap="profileTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Image x:Name="profileTabImage" Stretch="Uniform" Width="30" Margin="20,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
             </Grid>
         </Grid>
 

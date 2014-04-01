@@ -580,8 +580,12 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbStarNight.png" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbILoveU.png" />
+    <Content Include="View\images\Chat_NotSelected.png" />
+    <Content Include="View\images\Chat_Selected.png" />
     <Content Include="View\images\download_icon_big.png" />
     <Content Include="View\images\fb_dark.png" />
+    <Content Include="View\images\friend_Notselected.png" />
+    <Content Include="View\images\friend_selected.png" />
     <Content Include="View\images\heartsNudgeReceived.png" />
     <Content Include="View\images\heartsNudgeSent.png" />
     <Content Include="View\images\hike_h2h_icon.png" />
@@ -667,6 +671,10 @@
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
     <Content Include="View\images\nudge_received_blue.png" />
     <Content Include="View\images\nudge_sent_blue.png" />
+    <Content Include="View\images\Profile_NotSelected.png" />
+    <Content Include="View\images\Profile_Selected.png" />
+    <Content Include="View\images\Status_Notselected.png" />
+    <Content Include="View\images\Status_selected.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />
     <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
     <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />
