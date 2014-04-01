@@ -381,7 +381,7 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
-        public static readonly string FREE_SMS_COMPOSE = "freeSMSCom";
+        public static readonly string START_HIKING = "startHiking";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
