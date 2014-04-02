@@ -19,7 +19,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
-            <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
+            <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="LastMessageColor" Color="#A1A1A1"/>
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#E1E1E1"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434B5C"/>
@@ -543,6 +543,85 @@
                 <toolkit:WrapPanel ItemHeight="93" ItemWidth="93"/>
             </ItemsPanelTemplate>
 
+            <Style x:Key="LongListSelectorWithTranslucentAppBar" TargetType="phone:LongListSelector">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="phone:LongListSelector">
+                            <Grid Background="{TemplateBinding Background}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="ScrollStates">
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition GeneratedDuration="00:00:00.5"/>
+                                        </VisualStateGroup.Transitions>
+                                        <VisualState x:Name="Scrolling">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="NotScrolling"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid Margin="{TemplateBinding Padding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Margin="4,0,4,0" Opacity="0" Orientation="Vertical" Style="{StaticResource ScrollBarStyle1}"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <Style TargetType="ScrollBar">
+                <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="MinWidth" Value="5"/>
+                <Setter Property="MinHeight" Value="5"/>
+                <Setter Property="IsHitTestVisible" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid>
+                                <Grid x:Name="VerticalRoot" Background="Transparent" Width="{TemplateBinding Width}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <RepeatButton x:Name="VerticalSmallDecrease" Visibility="Collapsed"/>
+                                    <RepeatButton x:Name="VerticalLargeDecrease" Grid.Row="1" Template="{x:Null}" Width="0"/>
+                                    <Thumb x:Name="VerticalThumb" Background="LightGray" Margin="{TemplateBinding Padding}" MinHeight="72" Grid.Row="2" Template="{StaticResource PhoneScrollbarThumb}" Width="{TemplateBinding Width}"/>
+                                    <RepeatButton x:Name="VerticalLargeIncrease" Grid.Row="3" Template="{x:Null}" Width="0"/>
+                                    <RepeatButton x:Name="VerticalSmallIncrease" Visibility="Collapsed"/>
+                                </Grid>
+                                <Grid x:Name="HorizontalRoot" Background="Transparent" Height="{TemplateBinding Height}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <RepeatButton x:Name="HorizontalSmallDecrease" Visibility="Collapsed"/>
+                                    <RepeatButton x:Name="HorizontalLargeDecrease" Grid.Column="1" Height="0" Template="{x:Null}"/>
+                                    <Thumb x:Name="HorizontalThumb" Background="LightGray" Grid.Column="2" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" MinWidth="72" Template="{StaticResource PhoneScrollbarThumb}"/>
+                                    <RepeatButton x:Name="HorizontalLargeIncrease" Grid.Column="3" Height="0" Template="{x:Null}"/>
+                                    <RepeatButton x:Name="HorizontalSmallIncrease" Visibility="Collapsed"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
                 <Setter Property="LayoutMode" Value="Grid"/>
@@ -674,8 +753,10 @@
             </Style>
 
             <Style x:Key="StatusUpdateContainerStyle" TargetType="Border">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderThickness" Value="0,0,0,0"/>
+                <Setter Property="Margin" Value="10,10,-5,0"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>

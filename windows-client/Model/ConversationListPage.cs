@@ -479,7 +479,7 @@ namespace windows_client.Model
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     Color currentAccentColorHex =
-                       ((SolidColorBrush)Application.Current.Resources["HikeBlue"]).Color;
+                       ((SolidColorBrush)Application.Current.Resources["HikeBlueHeader"]).Color;
                     return currentAccentColorHex.ToString();
                 }
                 else

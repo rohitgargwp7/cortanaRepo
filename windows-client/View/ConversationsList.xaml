@@ -832,49 +832,51 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="{StaticResource HikeBlue}">
-            <Grid Margin="20" Height="60">
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="{StaticResource HikeBlueHeader}">
+            <Grid Margin="20,25,0,0" Height="60">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <Image Source="images\hike_header.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
+                    <Image Source="images\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
                 </Grid>
-                <Grid Name="muteStatusGrid" Grid.Column="1" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Left" VerticalAlignment="Stretch" >
-                    <Image Name="muteStatusImage" MaxHeight="40" Margin="20,12" HorizontalAlignment="Center"/>
+                <Grid Name="muteStatusGrid" Grid.Column="1" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Image Name="muteStatusImage" MaxHeight="40" Margin="0,12,20,12" HorizontalAlignment="Left"/>
                 </Grid>
-                <Grid Grid.Column="2" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="-10,-30,0,0">
+                <Grid Grid.Column="2" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="-30,-5,0,0">
                         <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}" Margin="-2,0,0,0"/>
                     </Border>
-                    <Image x:Name="statusTabImage" Stretch="Uniform" Width="30" Margin="20,-14,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image x:Name="statusTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="3" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <Image x:Name="chatsTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Grid.Column="3" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="chatsTabImage" Stretch="Uniform" Width="30" Margin="20,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="4" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <Image x:Name="friendsTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Grid.Column="4" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="friendsTabImage" Stretch="Uniform" Width="30" Margin="20,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="5" Tap="profileTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <Image x:Name="profileTabImage" Stretch="Uniform" Width="30" Margin="20,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Grid.Column="5" Tap="profileTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="profileTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </Grid>
 
-        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged">
-            <controls:PivotItem Margin="0,-10,0,0">
+        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="#E7E2D6">
+            <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ConversationList">
                     <Image x:Name="emptyScreenImage" Source="images/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
                     <Image x:Name="emptyScreenTip" Source="images/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
-                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Margin="20,0,8,0" VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" 
+                                            Margin="20,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
+                                            HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
+                                <Grid Margin="0,20,8,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -936,7 +938,7 @@
                 </Grid>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0">
+            <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <ScrollViewer Margin="20,10">
                     <Grid x:Name="contactGrid">
                         <Grid.RowDefinitions>
@@ -1016,7 +1018,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0">
+            <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ProfileGrid" Margin="0,6,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1073,7 +1075,7 @@
                 </Grid>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,-12,0">
+            <controls:PivotItem Margin="0,-10,0,0" Background="#E7E2D6">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1087,7 +1089,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E7E2D6">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -1129,7 +1131,6 @@
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
                                                         <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -1137,16 +1138,24 @@
                                                                 <RowDefinition Height="Auto"/>
                                                                 <RowDefinition Height="Auto"/>
                                                             </Grid.RowDefinitions>
-                                                            <TextBlock Text="{Binding UserName}" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                                    <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                                </Grid>
+                                                                <TextBlock Text="{Binding TimestampString}" Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                            </Grid>
                                                             <local:MyRichTextBox TextForeground="Black" Margin="-12,0,0,0" Grid.Row="1" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
                                                                              FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" 
                                                                              ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                         </Grid>
-                                                        <TextBlock Text="{Binding TimestampString}" Margin="0,0,10,0" Grid.Column="2" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                     </Grid>
                                                     <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="1" Stretch="UniformToFill"
                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                                                           Width="460" MaxHeight="300" Tap="enlargePic_Tap"/>
+                                                           MaxHeight="300" Tap="enlargePic_Tap"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -1155,26 +1164,34 @@
                                         <DataTemplate>
                                             <Border Style="{StaticResource StatusUpdateContainerStyle}">
                                                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Stretch="Uniform" MaxHeight="69" Source="/windows-client;component/View/images/Application_TileImage_173x173.png" VerticalAlignment="Top"/>
-                                                    <Grid Grid.Column="1" Margin="10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="*"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
-                                                        <StackPanel Grid.Row="1">
-                                                            <local:MyRichTextBox Margin="-18,0,0,0" Text="{Binding Text}" FontSize="22" Visibility="{Binding ProTipTextVisibility}" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                            <local:MyRichTextBox Margin="-18,0,0,5" Text="{Binding Content}" FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Stretch="Uniform" MaxHeight="69" Source="/windows-client;component/View/images/Application_TileImage_173x173.png" VerticalAlignment="Top"/>
+                                                        <StackPanel Grid.Column="1" Margin="12,0">
+                                                            <TextBlock FontFamily="Segoe WP Semibold" FontSize="18" Foreground="Black" VerticalAlignment="Top"
+                                                                           Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Text}" Foreground="Black" FontWeight="Light" VerticalAlignment="Top"
+                                                                                     FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
+                                                                                     ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
                                                         </StackPanel>
-                                                        <Image Grid.Row="2" Margin="0,5" Source="{Binding ProTipImage}" HorizontalAlignment="Left" Visibility="{Binding ProTipImageVisibility}" Stretch="UniformToFill" MaxWidth="460" Tap="ProTipImage_Tapped"/>
-                                                        <Button Grid.Row="3" Margin="-12,0,12,0" FontFamily="Segoe WP" Background="#e9ecee" Height="65" MinWidth="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Foreground="#595959" Click="dismissProTip_Click"/>
                                                     </Grid>
+                                                    <local:MyRichTextBox Grid.Row="1" Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
+                                                                             FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
+                                                                             LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
+                                                    <Image Grid.Row="2" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
+                                                           Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                                                           MaxHeight="300" Tap="ProTipImage_Tapped"/>
+                                                    <Button Grid.Row="3" Margin="0,5,0,0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
+                                                            Style="{StaticResource NoButtonStyle}" Click="dismissProTip_Click"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -1186,7 +1203,6 @@
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
                                                     <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -1194,13 +1210,21 @@
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding UserName}" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                                <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                            </Grid>
+                                                            <TextBlock Text="{Binding TimestampString}" Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                        </Grid>
                                                         <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="Black"
                                                                              HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
                                                                              TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" 
                                                                              ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                     </Grid>
-                                                    <TextBlock Text="{Binding TimestampString}" Grid.Column="2" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>

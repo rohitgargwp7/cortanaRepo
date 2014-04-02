@@ -700,7 +700,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dismiss.
+        ///   Looks up a localized string similar to dismiss.
         /// </summary>
         public static string Conversations_Dismiss_Tip {
             get {
@@ -4775,7 +4775,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update now.
+        ///   Looks up a localized string similar to update now.
         /// </summary>
         public static string Update_Now_Txt {
             get {

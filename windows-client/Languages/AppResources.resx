@@ -1592,7 +1592,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>BLOCK LIST</value>
   </data>
   <data name="Conversations_Dismiss_Tip" xml:space="preserve">
-    <value>Dismiss</value>
+    <value>dismiss</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
@@ -1969,7 +1969,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>An important update is available for hike.</value>
   </data>
   <data name="Update_Now_Txt" xml:space="preserve">
-    <value>Update now</value>
+    <value>update now</value>
   </data>
   <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
     <value>hike jingle</value>
