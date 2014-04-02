@@ -60,7 +60,6 @@ namespace windows_client.View
         private readonly string MESSAGE_TOO_SHORT = AppResources.Message_Too_Short;
         private readonly string MESSAGE_CANCELLED = AppResources.Message_Cancelled;
 
-        private const int maxFileSize = 26214400;//in bytes
         private const int maxSmsCharLength = 140;
         private string groupOwner = null;
         public string mContactNumber;
@@ -4617,7 +4616,7 @@ namespace windows_client.View
 
                 isAudio = false;
             }
-            if (fileBytes.Length > maxFileSize)
+            if (fileBytes.Length > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 return;
