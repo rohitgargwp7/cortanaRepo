@@ -15,6 +15,7 @@ using System.IO;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.Model
 {
@@ -70,6 +71,23 @@ namespace windows_client.Model
             {
                 if (value != _grpId)
                     _grpId = value;
+            }
+        }
+
+        BitmapImage _memberImage;
+        public BitmapImage MemberImage
+        {
+            get
+            {
+                return _memberImage;
+            }
+            set
+            {
+                if (value != MemberImage)
+                {
+                    _memberImage = value;
+                    NotifyPropertyChanged("MemberImage");
+                }
             }
         }
 
@@ -214,31 +232,13 @@ namespace windows_client.Model
             get
             {
                 if (IsOwner)
-                {
                     return AppResources.Owner_Txt;
-                }
                 else if (!_isOnHike)
-                {
-
                     return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
-                }
-                return string.Empty;
+                else return string.Empty;
             }
         }
-        public Visibility ShowGroupInfoBLock
-        {
-            get
-            {
-                if (IsOwner || !_isOnHike)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
-            }
-        }
+        
         public string FavMsg
         {
             get

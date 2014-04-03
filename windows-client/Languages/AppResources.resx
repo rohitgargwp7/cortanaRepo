@@ -785,7 +785,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
-    <value>Invite SMS participants to hike</value>
+    <value>invite SMS participants to hike</value>
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
@@ -830,10 +830,6 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
     <value>owner</value>
-  </data>
-  <data name="Participants_Txt" xml:space="preserve">
-    <value>Participants</value>
-    <comment>General Text</comment>
   </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
     <value>Location Service is disabled on your device. Please turn ON the location in your phone settings.</value>
@@ -2127,5 +2123,17 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Start_Hiking_Button_Txt" xml:space="preserve">
     <value>start hiking</value>
+  </data>
+  <data name="Add_AppBar_Txt" xml:space="preserve">
+    <value>add</value>
+  </data>
+  <data name="ChangePic_AppBar_Txt" xml:space="preserve">
+    <value>change pic</value>
+  </data>
+  <data name="Edit_AppBar_Txt" xml:space="preserve">
+    <value>edit</value>
+  </data>
+  <data name="Group_Name_Hint_Txt" xml:space="preserve">
+    <value>group name</value>
   </data>
 </root>

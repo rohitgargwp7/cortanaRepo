@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to add.
+        /// </summary>
+        public static string Add_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("Add_AppBar_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add as a friend.
         /// </summary>
         public static string Add_To_Fav_Txt {
@@ -354,6 +363,15 @@ namespace windows_client.Languages {
         public static string CannotChangeGrpName_Txt {
             get {
                 return ResourceManager.GetString("CannotChangeGrpName_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to change pic.
+        /// </summary>
+        public static string ChangePic_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("ChangePic_AppBar_Txt", resourceCulture);
             }
         }
         
@@ -1105,6 +1123,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to edit.
+        /// </summary>
+        public static string Edit_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("Edit_AppBar_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter Correct Email.
         /// </summary>
         public static string EditProfile_emailErrorTxt_TxtBlk {
@@ -1850,6 +1877,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to group name.
+        /// </summary>
+        public static string Group_Name_Hint_Txt {
+            get {
+                return ResourceManager.GetString("Group_Name_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GROUP NAME.
         /// </summary>
         public static string GROUP_NAME_TXT {
@@ -1940,7 +1976,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite SMS participants to hike.
+        ///   Looks up a localized string similar to invite SMS participants to hike.
         /// </summary>
         public static string GroupInfo_InviteSMSUsers_Btn_Txt {
             get {
@@ -3241,15 +3277,6 @@ namespace windows_client.Languages {
         public static string Owner_Txt {
             get {
                 return ResourceManager.GetString("Owner_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Participants.
-        /// </summary>
-        public static string Participants_Txt {
-            get {
-                return ResourceManager.GetString("Participants_Txt", resourceCulture);
             }
         }
         

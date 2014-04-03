@@ -49,6 +49,15 @@ namespace windows_client.View
                     string fileName;
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     msisdn = (string)profilePicTapped[0];
+
+                    if (!App.IS_TOMBSTONED && Utils.isGroupConversation(msisdn))
+                        FileImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
+                    else
+                    {
+                        string grpId = msisdn.Replace(":", "_");
+                        FileImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
+                    }
+
                     if (msisdn == App.MSISDN)
                         msisdn = HikeConstants.MY_PROFILE_PIC;
                     string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;

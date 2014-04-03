@@ -491,7 +491,7 @@ namespace windows_client.View
                 else
                 {
                     App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
-                    object[] fileTapped = new object[1];
+                    object[] fileTapped = new object[2];
                     fileTapped[0] = msisdn;
                     PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
                     NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));

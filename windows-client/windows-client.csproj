@@ -169,6 +169,8 @@
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
+    <Compile Include="Converters\TileSizeToHeightConverter.cs" />
+    <Compile Include="Converters\TileSizeToWidthConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -533,6 +535,7 @@
     <Content Include="View\images\appbar.delete.png" />
     <Content Include="View\images\appbar.select.png" />
     <Content Include="View\images\appbar.send.png" />
+    <Content Include="View\images\icon_camera.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbAnxiety.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbBeach2.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbCricket.jpg" />
@@ -582,6 +585,7 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbILoveU.png" />
     <Content Include="View\images\Chat_NotSelected.png" />
     <Content Include="View\images\Chat_Selected.png" />
+    <Content Include="View\images\icon_edit.png" />
     <Content Include="View\images\download_icon_big.png" />
     <Content Include="View\images\fb_dark.png" />
     <Content Include="View\images\friend_Notselected.png" />
@@ -919,7 +923,6 @@
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\Walkie_Talkie_White_small.png" />
-    <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

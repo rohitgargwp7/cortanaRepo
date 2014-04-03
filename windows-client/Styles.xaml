@@ -13,6 +13,7 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:converter="clr-namespace:windows_client.Converters"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Non-brush values that vary across themes -->
@@ -21,8 +22,10 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="LastMessageColor" Color="#A1A1A1"/>
-            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#E1E1E1"/>
-            <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434B5C"/>
+            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#F0F3F6"/>
+            <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#444B5C"/>
+            <SolidColorBrush x:Key="GroupInfoAppBarBackground" Color="#F0F3F6"/>
+            <SolidColorBrush x:Key="GroupInfoAppBarForeground" Color="#444B5C"/>
 
             <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
             <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
@@ -412,6 +415,17 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="InviteSMSUsersGIButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
+                <Setter Property="Background" Value="Black"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Height" Value="55"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+
             <Style x:Key="YesButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
                 <Setter Property="Background" Value="#2E91D3"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
@@ -486,6 +500,300 @@
                 </Setter>
             </Style>-->
 
+            <Style x:Key="TextBoxWithTransparentBackground" TargetType="toolkit:PhoneTextBox">
+                <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyNormal}"/>
+                <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="CaretBrush" Value="White"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="SelectionBackground" Value="{StaticResource PhoneAccentBrush}"/>
+                <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="toolkit:PhoneTextBox">
+                            <Grid x:Name="RootGrid" Background="Transparent">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="Disabled">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="HintBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Collapsed</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="TextBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Collapsed</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="TextBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="TextBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="HorizontalAlignment" Storyboard.TargetName="Text">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <HorizontalAlignment>Stretch</HorizontalAlignment>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup x:Name="FocusStates">
+                                        <VisualState x:Name="Focused">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="HintBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Unfocused"/>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup x:Name="LengthIndicatorStates">
+                                        <VisualState x:Name="LengthIndicatorVisible">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="LengthIndicator">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Visible</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="RootGrid">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="0, 0, 0, 27"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="LengthIndicator">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="0.6"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Duration="0:0:0.350" To="32" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" Storyboard.TargetName="LengthIndicator">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase Exponent="6"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="LengthIndicatorHidden">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0.350" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" Storyboard.TargetName="LengthIndicator">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase Exponent="6"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="RootGrid">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="0, 0, 0, 0"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="LengthIndicator">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.350" Value="0"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="LengthIndicator">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.350">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Collapsed</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border x:Name="LengthIndicatorBorder">
+                                    <TextBlock x:Name="LengthIndicator" Foreground="{StaticResource PhoneContrastBackgroundBrush}" FontSize="{StaticResource PhoneFontSizeNormal}" HorizontalAlignment="Right" Margin="{StaticResource PhoneMargin}" Opacity="0" TextAlignment="Right" VerticalAlignment="Bottom">
+                                        <TextBlock.RenderTransform>
+                                            <TranslateTransform/>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
+                                </Border>
+                                <Border x:Name="HintBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{StaticResource PhoneTouchTargetOverhang}">
+                                    <Grid>
+                                        <ContentControl x:Name="HintContent" Foreground="LightGray" Opacity="0.8" Background="Transparent" Content="{TemplateBinding Hint}" HorizontalAlignment="Left" Margin="3,-12,3,0" Style="{TemplateBinding HintStyle}" Visibility="{TemplateBinding ActualHintVisibility}" VerticalAlignment="Center"/>
+                                        <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
+                                    </Grid>
+                                </Border>
+                                <Border x:Name="TextBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Margin="{StaticResource PhoneTouchTargetOverhang}" Visibility="Collapsed">
+                                    <TextBox x:Name="Text" Foreground="{StaticResource PhoneDisabledBrush}" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalAlignment="Left" SelectionForeground="{TemplateBinding SelectionForeground}" SelectionBackground="{TemplateBinding SelectionBackground}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" Text="{TemplateBinding Text}"/>
+                                </Border>
+                                <Border x:Name="ActionIconBorder" Background="Transparent" HorizontalAlignment="Right" Height="72" VerticalAlignment="Bottom" Width="84">
+                                    <Image x:Name="ActionIcon" Height="26" Source="{TemplateBinding ActionIcon}" Width="26"/>
+                                </Border>
+                                <TextBlock x:Name="MeasurementTextBlock" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" IsHitTestVisible="False" Margin="8" Opacity="0" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" Text="{TemplateBinding Text}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <converter:TileSizeToHeightConverter x:Key="HeightConverter"/>
+            <converter:TileSizeToWidthConverter x:Key="WidthConverter"/>
+            <Style TargetType="toolkit:HubTile">
+                <Setter Property="Height" Value="150"/>
+                <Setter Property="Width" Value="150"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="toolkit:HubTile">
+                            <Border x:Name="Container">
+                                <Border.Resources>
+                                    <CubicEase x:Key="HubTileEaseOut" EasingMode="EaseOut"/>
+                                </Border.Resources>
+                                <Border.Height>
+                                    <Binding Converter="{StaticResource HeightConverter}" Path="Size" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                </Border.Height>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="ImageStates">
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition x:Name="ExpandedToSemiexpanded" From="Expanded" GeneratedDuration="0:0:0.85" To="Semiexpanded">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="{Binding Size, ConverterParameter=-0.4566, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RotationX" Storyboard.TargetName="ViewportProjection">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="0.0"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition x:Name="SemiexpandedToExpanded" From="Semiexpanded" GeneratedDuration="0:0:0.85" To="Expanded">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="{Binding Size, ConverterParameter=-0.4566, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition x:Name="SemiexpandedToCollapsed" From="Semiexpanded" GeneratedDuration="0:0:0.85" To="Collapsed">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="{Binding Size, ConverterParameter=-0.4566, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="0.0"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition x:Name="CollapsedToExpanded" From="Collapsed" GeneratedDuration="0:0:0.85" To="Expanded">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="0.0"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition x:Name="ExpandedToFlipped" From="Expanded" GeneratedDuration="0:0:0.85" To="Flipped">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Image">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.185" Value="Collapsed"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="BackPanel">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.185" Value="Visible"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RotationX" Storyboard.TargetName="ViewportProjection">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="0.0"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="180.0"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition x:Name="FlippedToExpanded" From="Flipped" GeneratedDuration="0:0:0.85" To="Expanded">
+                                                <Storyboard>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Image">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.185" Value="Visible"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="BackPanel">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.185" Value="Collapsed"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RotationX" Storyboard.TargetName="ViewportProjection">
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.0" Value="180.0"/>
+                                                        <EasingDoubleKeyFrame EasingFunction="{StaticResource HubTileEaseOut}" KeyTime="0:0:0.85" Value="360.0"/>
+                                                    </DoubleAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                        <VisualState x:Name="Expanded">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0" To="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel"/>
+                                                <DoubleAnimation Duration="0" To="0.0" Storyboard.TargetProperty="RotationX" Storyboard.TargetName="ViewportProjection"/>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Image">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Semiexpanded">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0" To="{Binding Size, ConverterParameter=-0.4566, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Collapsed"/>
+                                        <VisualState x:Name="Flipped">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0" To="{Binding Size, ConverterParameter=-1, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="TitlePanel"/>
+                                                <DoubleAnimation Duration="0" To="180.0" Storyboard.TargetProperty="RotationX" Storyboard.TargetName="ViewportProjection"/>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Image">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Collapsed"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="BackPanel">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border.Width>
+                                    <Binding Converter="{StaticResource WidthConverter}" Path="Size" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                </Border.Width>
+                                <StackPanel x:Name="Viewport" Height="{Binding Size, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Width="{Binding Size, Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <StackPanel.Projection>
+                                        <PlaneProjection x:Name="ViewportProjection" CenterOfRotationY="0.25"/>
+                                    </StackPanel.Projection>
+                                    <Grid x:Name="TitlePanel" Height="{Binding Size, ConverterParameter=2, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="0.5,0.5" Width="{Binding Size, Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.RenderTransform>
+                                            <CompositeTransform/>
+                                        </Grid.RenderTransform>
+                                        <Border Background="{TemplateBinding Background}" Grid.Row="0">
+                                            <TextBlock Foreground="{TemplateBinding Foreground}" FontSize="24" FontWeight="Light" Margin="10,0,0,6" TextWrapping="Wrap" Text="{TemplateBinding Title}" VerticalAlignment="Bottom"/>
+                                        </Border>
+                                        <Grid x:Name="BackPanel" Background="{TemplateBinding Background}" Height="{Binding Size, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Grid.Row="1" Visibility="Collapsed" Width="{Binding Size, Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+                                            <Grid.Projection>
+                                                <PlaneProjection CenterOfRotationY="0.5" RotationX="180"/>
+                                            </Grid.Projection>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock x:Name="NotificationBlock" Foreground="{TemplateBinding Foreground}" FontSize="{StaticResource PhoneFontSizeLarge}" FontFamily="{StaticResource PhoneFontFamilyNormal}" LineStackingStrategy="BlockLineHeight" LineHeight="32" Margin="8,8,0,6" Grid.Row="0" TextWrapping="NoWrap" Text="{TemplateBinding Notification}"/>
+                                            <TextBlock x:Name="MessageBlock" Foreground="{TemplateBinding Foreground}" FontSize="{StaticResource PhoneFontSizeNormal}" FontFamily="{StaticResource PhoneFontFamilyNormal}" LineStackingStrategy="BlockLineHeight" LineHeight="23.333" Margin="10,10,10,6" Grid.Row="0" TextWrapping="Wrap" Text="{TemplateBinding Message}"/>
+                                            <TextBlock x:Name="BackTitleBlock" Foreground="{TemplateBinding Foreground}" FontSize="{StaticResource PhoneFontSizeNormal}" FontFamily="{StaticResource PhoneFontFamilySemiBold}" Margin="10,0,0,6" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
+                                        </Grid>
+                                        <Border x:Name="Image" Background="{TemplateBinding Background}" Grid.Row="1">
+                                            <Image Height="{Binding Size, Converter={StaticResource HeightConverter}, RelativeSource={RelativeSource TemplatedParent}}" Source="{TemplateBinding Source}" Stretch="UniformToFill" Width="{Binding Size, Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <Style TargetType="ScrollBar">
                 <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
                 <Setter Property="Padding" Value="1"/>
@@ -530,7 +838,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
 
             <ControlTemplate x:Key="PhoneScrollbarThumb" TargetType="Thumb">
                 <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" IsHitTestVisible="False" Width="{TemplateBinding Width}"/>
@@ -609,14 +916,44 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid Margin="{TemplateBinding Padding}">
                                     <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,10,0"/>
-                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Margin="0,0,4,0" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
+                                    <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="0,0,4,0" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
+            <Style x:Key="LongListSelectorWithOverlappingScrollBar" TargetType="phone:LongListSelector">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="phone:LongListSelector">
+                            <Grid Background="{TemplateBinding Background}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="ScrollStates">
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition GeneratedDuration="00:00:00.5"/>
+                                        </VisualStateGroup.Transitions>
+                                        <VisualState x:Name="Scrolling">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="NotScrolling"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid Margin="{TemplateBinding Padding}">
+                                    <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+                                    <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="0,0,4,0" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
                 <Setter Property="LayoutMode" Value="Grid"/>
@@ -712,6 +1049,10 @@
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
 
+            <Style x:Key="PageHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
+                <Setter Property="Margin" Value="24,0,0,0"/>
+            </Style>
+
             <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="37"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -750,7 +1091,6 @@
             </Style>
 
             <Style x:Key="StatusUpdateContainerStyle" TargetType="Border">
-                <Setter Property="CornerRadius" Value="4"/>
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0,0,0,0"/>
                 <Setter Property="Margin" Value="10,10,0,0"/>
