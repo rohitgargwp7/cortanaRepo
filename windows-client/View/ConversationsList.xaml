@@ -919,11 +919,12 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,9,0"/>
+                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,9,0"/>
                                             <Border Grid.Column="1" MinWidth="{Binding UnreadCounterWidth}" Margin="0,0,9,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounter}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
-                                            <local:MyRichTextBox Grid.Column="2" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="18" HorizontalAlignment="Left" MaxChars="35" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
+                                            <local:MyRichTextBox Grid.Column="2" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
+                                                                 MaxChars="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,-5,0,0" FontWeight="Light"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -1133,23 +1134,25 @@
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                        <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                        <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="Auto"/>
                                                                 <RowDefinition Height="Auto"/>
                                                             </Grid.RowDefinitions>
-                                                            <Grid>
+                                                            <Grid HorizontalAlignment="Stretch">
                                                                 <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*"/>
                                                                     <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="*"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                                     <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                                 </Grid>
-                                                                <TextBlock Text="{Binding TimestampString}" Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                                <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                                    <TextBlock Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                                </Grid>
                                                             </Grid>
                                                             <local:MyRichTextBox TextForeground="Black" Margin="-12,0,0,0" Grid.Row="1" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
-                                                                             FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" 
+                                                                             FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" HorizontalAlignment="Left"
                                                                              ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                         </Grid>
                                                     </Grid>
@@ -1205,20 +1208,22 @@
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                    <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <Grid>
+                                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
                                                             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                                 <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                             </Grid>
-                                                            <TextBlock Text="{Binding TimestampString}" Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                            <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                                <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                            </Grid>
                                                         </Grid>
                                                         <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="Black"
                                                                              HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
