@@ -91,11 +91,20 @@ namespace windows_client.utils
             }
         }
 
-        public void registerPushnotifications()
+        public void registerPushnotifications(bool forcePushToken)
         {
             string pushToken;
-            App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
-            _latestPushToken = pushToken;
+            if (forcePushToken)//have to push token to server forcefully
+            {
+                App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, string.Empty);
+                _latestPushToken = string.Empty;
+            }
+            else
+            {
+                App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
+                _latestPushToken = pushToken;
+            }
+
             HttpNotificationChannel pushChannel;
             pollingTime = minPollingTime;
             // Try to find the push channel.
@@ -117,7 +126,7 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                 }
-             
+
                 // Bind this new channel for toast events.
                 if (!pushChannel.IsShellTileBound)
                     pushChannel.BindToShellTile();
@@ -126,7 +135,9 @@ namespace windows_client.utils
                     pushChannel.BindToShellToast();
 
                 if (pushChannel.ChannelUri != null)
+                {
                     LatestPushToken = pushChannel.ChannelUri.ToString();
+                }
                 else
                     LatestPushToken = null;
             }

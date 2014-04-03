@@ -449,7 +449,7 @@ namespace windows_client
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             if (isPushEnabled)
             {
-                PushHelper.Instance.registerPushnotifications();
+                PushHelper.Instance.registerPushnotifications(false);
             }
             #endregion
         }
@@ -472,7 +472,7 @@ namespace windows_client
                     App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
                     if (isPushEnabled)
                     {
-                        PushHelper.Instance.registerPushnotifications();
+                        PushHelper.Instance.registerPushnotifications(false);
                     }
 
 

@@ -205,7 +205,7 @@ namespace windows_client
 
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
-                PushHelper.Instance.registerPushnotifications();
+                PushHelper.Instance.registerPushnotifications(false);
 
                 string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
                 msisdn = msisdn.Substring(msisdn.Length - 10);

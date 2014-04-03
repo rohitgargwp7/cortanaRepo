@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
 
+        public static readonly string PUSH = "push";
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
