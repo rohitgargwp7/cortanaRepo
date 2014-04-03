@@ -121,6 +121,9 @@ namespace windows_client.FileTransfers
 
         protected async Task<bool> CheckForCRC(string key)
         {
+            if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
+                return true;
+
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             byte[] bytes;
             MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
