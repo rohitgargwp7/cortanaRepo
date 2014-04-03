@@ -1090,7 +1090,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E7E2D6">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E7E2D6" Style="{StaticResource LongListSelectorWithTranslucentAppBar}">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -1237,13 +1237,13 @@
                                     <templateSelector:StatusTemplateSelector.DTDefaultStatus>
                                         <DataTemplate>
                                             <Border Style="{StaticResource StatusUpdateContainerStyle}">
-                                                <Grid Margin="20,20,20,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Source="/windows-client;component/View/images/Application_TileImage_173x173.png" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="69"/>
-                                                    <Grid Grid.Column="1" Margin="12,0,0,0" HorizontalAlignment="Left">
+                                                    <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>

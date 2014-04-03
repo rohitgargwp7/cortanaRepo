@@ -564,12 +564,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid Margin="{TemplateBinding Padding}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
-                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Margin="4,0,4,0" Opacity="0" Orientation="Vertical" Style="{StaticResource ScrollBarStyle1}"/>
+                                    <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,10,0"/>
+                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Margin="0,0,0,82" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
@@ -758,7 +754,7 @@
                 <Setter Property="CornerRadius" Value="4"/>
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0,0,0,0"/>
-                <Setter Property="Margin" Value="10,10,-5,0"/>
+                <Setter Property="Margin" Value="10,10,0,0"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
