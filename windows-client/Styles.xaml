@@ -485,8 +485,52 @@
                     </Setter.Value>
                 </Setter>
             </Style>-->
-            
-            
+
+            <Style TargetType="ScrollBar">
+                <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
+                <Setter Property="Padding" Value="1"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="MinWidth" Value="5"/>
+                <Setter Property="MinHeight" Value="5"/>
+                <Setter Property="IsHitTestVisible" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid>
+                                <Grid x:Name="VerticalRoot" Background="Transparent" Width="{TemplateBinding Width}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <RepeatButton x:Name="VerticalSmallDecrease" Visibility="Collapsed"/>
+                                    <RepeatButton x:Name="VerticalLargeDecrease" Grid.Row="1" Template="{x:Null}" Width="0"/>
+                                    <Thumb x:Name="VerticalThumb" Background="DarkGray" Margin="{TemplateBinding Padding}" MinHeight="72" Grid.Row="2" Template="{StaticResource PhoneScrollbarThumb}" Width="{TemplateBinding Width}"/>
+                                    <RepeatButton x:Name="VerticalLargeIncrease" Grid.Row="3" Template="{x:Null}" Width="0"/>
+                                    <RepeatButton x:Name="VerticalSmallIncrease" Visibility="Collapsed"/>
+                                </Grid>
+                                <Grid x:Name="HorizontalRoot" Background="Transparent" Height="{TemplateBinding Height}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <RepeatButton x:Name="HorizontalSmallDecrease" Visibility="Collapsed"/>
+                                    <RepeatButton x:Name="HorizontalLargeDecrease" Grid.Column="1" Height="0" Template="{x:Null}"/>
+                                    <Thumb x:Name="HorizontalThumb" Background="LightGray" Grid.Column="2" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" MinWidth="72" Template="{StaticResource PhoneScrollbarThumb}"/>
+                                    <RepeatButton x:Name="HorizontalLargeIncrease" Grid.Column="3" Height="0" Template="{x:Null}"/>
+                                    <RepeatButton x:Name="HorizontalSmallIncrease" Visibility="Collapsed"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
 
             <ControlTemplate x:Key="PhoneScrollbarThumb" TargetType="Thumb">
                 <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" IsHitTestVisible="False" Width="{TemplateBinding Width}"/>
@@ -565,52 +609,7 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid Margin="{TemplateBinding Padding}">
                                     <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,10,0"/>
-                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Margin="0,0,0,82" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            
-            <Style TargetType="ScrollBar">
-                <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
-                <Setter Property="Padding" Value="1"/>
-                <Setter Property="IsTabStop" Value="False"/>
-                <Setter Property="MinWidth" Value="5"/>
-                <Setter Property="MinHeight" Value="5"/>
-                <Setter Property="IsHitTestVisible" Value="False"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ScrollBar">
-                            <Grid>
-                                <Grid x:Name="VerticalRoot" Background="Transparent" Width="{TemplateBinding Width}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <RepeatButton x:Name="VerticalSmallDecrease" Visibility="Collapsed"/>
-                                    <RepeatButton x:Name="VerticalLargeDecrease" Grid.Row="1" Template="{x:Null}" Width="0"/>
-                                    <Thumb x:Name="VerticalThumb" Background="LightGray" Margin="{TemplateBinding Padding}" MinHeight="72" Grid.Row="2" Template="{StaticResource PhoneScrollbarThumb}" Width="{TemplateBinding Width}"/>
-                                    <RepeatButton x:Name="VerticalLargeIncrease" Grid.Row="3" Template="{x:Null}" Width="0"/>
-                                    <RepeatButton x:Name="VerticalSmallIncrease" Visibility="Collapsed"/>
-                                </Grid>
-                                <Grid x:Name="HorizontalRoot" Background="Transparent" Height="{TemplateBinding Height}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <RepeatButton x:Name="HorizontalSmallDecrease" Visibility="Collapsed"/>
-                                    <RepeatButton x:Name="HorizontalLargeDecrease" Grid.Column="1" Height="0" Template="{x:Null}"/>
-                                    <Thumb x:Name="HorizontalThumb" Background="LightGray" Grid.Column="2" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" MinWidth="72" Template="{StaticResource PhoneScrollbarThumb}"/>
-                                    <RepeatButton x:Name="HorizontalLargeIncrease" Grid.Column="3" Height="0" Template="{x:Null}"/>
-                                    <RepeatButton x:Name="HorizontalSmallIncrease" Visibility="Collapsed"/>
+                                    <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Margin="0,0,4,0" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>

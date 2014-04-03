@@ -871,7 +871,7 @@
                 <Grid x:Name="ConversationList">
                     <Image x:Name="emptyScreenImage" Source="images/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
                     <Image x:Name="emptyScreenTip" Source="images/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
-                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" 
+                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithTranslucentAppBar}"
                                             Margin="20,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
                                             HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
