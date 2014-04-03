@@ -102,7 +102,7 @@ namespace windows_client.utils
                 return String.Format(Languages.AppResources.Last_Seen_Today_At, receivedTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
             else if ((DateTime.Now.Date - receivedTime).Days <= 1) // yesterday
                 return String.Format(Languages.AppResources.Last_Seen_Yesterday_At, receivedTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
-            else if ((DateTime.Now.Date - receivedTime).Days < 15) // less than two weeks ago
+            else if ((DateTime.Now.Date - receivedTime).Days < 8) // less than one week ago
                 return String.Format(Languages.AppResources.Last_Seen, GetMonthDateTime(receivedTime));
             else
                 return String.Format(Languages.AppResources.Last_Seen, AppResources.TimeUtils_A_While_Ago);
