@@ -284,6 +284,7 @@ namespace windows_client.FileTransfers
                             FileState = FileTransferState.FAILED;
                             OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                         }
+
                         Save();
                     }
 
