@@ -2148,4 +2148,13 @@ hike पिछली बार दिखे के साथ आपको गो
   <data name="Start_Hiking_Button_Txt" xml:space="preserve">
     <value>hike करना आरंभ करें</value>
   </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>कम स्मृति के कारण क्रिया को निष्पादित करने में असमर्थ। कृपया कुछ स्मृति मुक्त करें और पुन: प्रयास करें।</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>कम स्मृति के कारण फ़ाइल को डाउनलोड करने में असमर्थ। कृपया कुछ स्मृति मुक्त करें और पुन: प्रयास करें।</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>अपर्याप्त स्मृति</value>
+  </data>
 </root>

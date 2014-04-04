@@ -2147,4 +2147,13 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="Start_Hiking_Button_Txt" xml:space="preserve">
     <value>começar a usar o hike</value>
   </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Não é possível executar a ação devido à pouca memória. Por favor libertar alguma memória e tente novamente.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Não é possível carregar o ficheiro devido a pouca memória. Por favor libertar alguma memória e tente novamente.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Memória insuficiente</value>
+  </data>
 </root>

@@ -4747,7 +4747,6 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
             }
-
         }
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)

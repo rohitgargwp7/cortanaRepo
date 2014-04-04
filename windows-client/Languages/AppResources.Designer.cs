@@ -2624,7 +2624,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free up some memory and try again..
+        ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free some memory and try again..
         /// </summary>
         public static string Memory_Limit_Reached_Body {
             get {
@@ -2633,7 +2633,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to download file due to low memory. Please free up some memory and try again..
+        ///   Looks up a localized string similar to Unable to download the file due to low memory. Please free some memory and try again..
         /// </summary>
         public static string Memory_Limit_Reached_Download_Body {
             get {
