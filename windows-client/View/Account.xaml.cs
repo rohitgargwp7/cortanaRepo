@@ -251,10 +251,12 @@ namespace windows_client.View
             });
         }
 
-        private async void LogoutFb()
+        private void LogoutFb()
         {
-            await (new WebBrowser()).ClearCookiesAsync();
-
+            Deployment.Current.Dispatcher.BeginInvoke(new Action(async delegate
+              {
+                  await (new WebBrowser()).ClearCookiesAsync();
+              }));
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
             App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
