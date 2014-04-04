@@ -224,15 +224,36 @@ namespace windows_client.Model
             JObject dataObj = new JObject();
             dataObj.Add(HikeConstants.METADATA, metadataObject);
             dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
-            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.ST_UI_EVENT);
 
             JObject analyticObj = new JObject();
             analyticObj.Add(HikeConstants.DATA, dataObj);
             analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
-        
+
+        public static void SendAnalyticsEvent(string eventType, string key)
+        {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(eventType))
+                return;
+
+            JObject metadataObject = new JObject();
+            metadataObject.Add(HikeConstants.EVENT_KEY, key);
+
+            JObject dataObj = new JObject();
+            dataObj.Add(HikeConstants.METADATA, metadataObject);
+            dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
+            dataObj.Add(HikeConstants.SUB_TYPE, eventType);
+
+            JObject analyticObj = new JObject();
+            analyticObj.Add(HikeConstants.DATA, dataObj);
+            analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+        }
         public static void SendAnalyticsEvent(string eventType, string key, JToken value)
         {
             if (string.IsNullOrEmpty(key))

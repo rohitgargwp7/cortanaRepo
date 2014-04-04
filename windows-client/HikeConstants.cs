@@ -161,8 +161,9 @@ namespace windows_client
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
         public static readonly string NO_SMS = "nosms";
-        public static readonly string UI_EVENT = "uiEvent";
-        public static readonly string CONFIG_EVENT = "config";
+        public static readonly string ST_UI_EVENT = "uiEvent";
+        public static readonly string ST_CONFIG_EVENT = "config";
+        public static readonly string ST_NETWORK_EVENT = "nw";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -393,6 +394,8 @@ namespace windows_client
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
+        public static readonly string NULL_PUSH_TOKEN = "npt";
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
         #endregion
 
