@@ -42,7 +42,7 @@ namespace windows_client.StorageManager
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                return store.AvailableFreeSpace > size * 2;
+                return store.AvailableFreeSpace > size + HikeConstants.APP_MIN_FREE_SIZE;
             }
         }
     }
