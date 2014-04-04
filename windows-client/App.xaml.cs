@@ -553,7 +553,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.1.7", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.1.8", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -982,7 +982,7 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.7") < 0)//if it is upgrade
+            else if (Utils.compareVersion(_currentVersion, "2.5.1.8") < 0)//if it is upgrade
             {
                 App.ViewModel.ResetInAppTip(8);
             }
