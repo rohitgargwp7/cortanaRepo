@@ -2651,7 +2651,7 @@ namespace windows_client.View
                     fileBytes = msLargeImage.ToArray();
                 }
 
-                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
                 {
                     MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                     return false;
@@ -2862,7 +2862,7 @@ namespace windows_client.View
             }
             else
             {
-                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(convMessage.FileAttachment.FileSize))
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(convMessage.FileAttachment.FileSize))
                 {
                     MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                     return;
@@ -4573,7 +4573,7 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(locationBytes.Length))
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(locationBytes.Length))
                 {
                     MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                     return;
@@ -4638,7 +4638,7 @@ namespace windows_client.View
                 isAudio = false;
             }
 
-            if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                 return;
@@ -4702,7 +4702,7 @@ namespace windows_client.View
 
                 var bytes = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
 
-                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
                 {
                     MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                     return;
@@ -4806,6 +4806,9 @@ namespace windows_client.View
 
                             if (taskPlaced)
                                 convMessage.UserTappedDownload = true;
+
+                            if (taskPlaced && !msgMap.ContainsKey(convMessage.MessageId))
+                                msgMap.Add(convMessage.MessageId, convMessage);
                         }
                         else
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);

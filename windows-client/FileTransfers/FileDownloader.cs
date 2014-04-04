@@ -349,9 +349,13 @@ namespace windows_client.FileTransfers
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
 
-            if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
+            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
             {
-                MessageBox.Show(AppResources.Memory_Limit_Reached_Download_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MessageBox.Show(AppResources.Memory_Limit_Reached_Download_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    });
+
                 return false;
             }
 
