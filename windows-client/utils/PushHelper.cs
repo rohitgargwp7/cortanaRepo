@@ -20,7 +20,6 @@ namespace windows_client.utils
         private volatile IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
         private volatile IDisposable httpPostScheduled;
 
-        private bool retryForEmptyUri = true;
         private bool retryForPushChannelException = true;
 
         private string _latestPushToken;
@@ -172,11 +171,6 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(pushToken))
             {
                 Analytics.SendAnalyticsEvent(HikeConstants.ST_NETWORK_EVENT, HikeConstants.NULL_PUSH_TOKEN);
-                if (retryForEmptyUri)
-                {
-                    registerPushnotifications(false);
-                    retryForEmptyUri = false;
-                }
             }
             else
                 LatestPushToken = pushToken;
@@ -193,8 +187,7 @@ namespace windows_client.utils
                 Debug.WriteLine("PushHelper::ErrorOccured,Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace);
             }
             if ((e.ErrorType == ChannelErrorType.ChannelOpenFailed ||
-                e.ErrorType == ChannelErrorType.MessageBadContent ||
-                e.ErrorType == ChannelErrorType.Unknown) &&
+                e.ErrorType == ChannelErrorType.PayloadFormatError) &&
                 retryForPushChannelException)
             {
                 registerPushnotifications(false);
