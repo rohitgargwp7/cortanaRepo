@@ -2612,12 +2612,8 @@ namespace windows_client.View
             }
         }
 
-        bool _memoryLimitReached = false;
-        private void SendImage(BitmapImage image, string fileName)
+        private bool SendImage(BitmapImage image, string fileName)
         {
-            if (_memoryLimitReached)
-                return;
-            
             if (!isGroupChat || isGroupAlive)
             {
                 byte[] thumbnailBytes;
@@ -2657,14 +2653,13 @@ namespace windows_client.View
 
                 if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
                 {
-                    _memoryLimitReached = true;
                     MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
-                    return;
+                    return false;
                 }
-                
+
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true; 
+                convMessage.HasAttachment = true;
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
@@ -2675,7 +2670,11 @@ namespace windows_client.View
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
                 mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
+
+                return true;
             }
+            else
+                return false;
         }
 
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
@@ -3232,7 +3231,6 @@ namespace windows_client.View
         {
             try
             {
-                _memoryLimitReached = false;
                 NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -3245,7 +3243,6 @@ namespace windows_client.View
         {
             try
             {
-                _memoryLimitReached = false;
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -4741,13 +4738,14 @@ namespace windows_client.View
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
-                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    
+                    if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString()))
+                        break;
+
                     pic.Pic.Dispose();
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
-
-                _memoryLimitReached = false;
             }
 
         }
