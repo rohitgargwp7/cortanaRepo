@@ -259,24 +259,32 @@ namespace windows_client.FileTransfers
                         if (newBytes.Length == 0)
                             break;
 
-                        WriteChunkToIsolatedStorage(newBytes, CurrentHeaderPosition);
-                        CurrentHeaderPosition += newBytes.Length;
-
-                        var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
-
-                        if (newSize <= MaxBlockSize)
+                        if (WriteChunkToIsolatedStorage(newBytes, CurrentHeaderPosition))
                         {
-                            ChunkFactor += ChunkFactor;
-                            BlockSize = ChunkFactor * DefaultBlockSize;
+                            CurrentHeaderPosition += newBytes.Length;
+
+                            var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
+
+                            if (newSize <= MaxBlockSize)
+                            {
+                                ChunkFactor += ChunkFactor;
+                                BlockSize = ChunkFactor * DefaultBlockSize;
+                            }
+                            else
+                            {
+                                ChunkFactor /= 2;
+                                BlockSize = MaxBlockSize;
+                            }
+
+                            // dont update ui as its still downloading, only update .
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
                         }
                         else
                         {
-                            ChunkFactor /= 2;
-                            BlockSize = MaxBlockSize;
+                            FileState = FileTransferState.FAILED;
+                            OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                         }
 
-                        // dont update ui as its still downloading, only update .
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
                         Save();
                     }
 
@@ -336,10 +344,20 @@ namespace windows_client.FileTransfers
             }
         }
 
-        void WriteChunkToIsolatedStorage(byte[] bytes, int position)
+        bool WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+
+            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MessageBox.Show(AppResources.Memory_Limit_Reached_Download_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    });
+
+                return false;
+            }
 
             if (bytes != null)
             {
@@ -358,6 +376,8 @@ namespace windows_client.FileTransfers
                     }
                 }
             }
+
+            return true;
         }
 
         protected override void OnStatusChanged(FileTransferSatatusChangedEventArgs e)

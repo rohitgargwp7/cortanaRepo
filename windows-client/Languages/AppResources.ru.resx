@@ -2147,4 +2147,13 @@
   <data name="Start_Hiking_Button_Txt" xml:space="preserve">
     <value>начать общаться</value>
   </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Не удается выполнить действие из-за нехватки памяти. Освободите немного памяти и повторите попытку.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Не удается загрузить файл из-за нехватки памяти. Освободите немного памяти и повторите попытку.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Недостаточно памяти</value>
+  </data>
 </root>

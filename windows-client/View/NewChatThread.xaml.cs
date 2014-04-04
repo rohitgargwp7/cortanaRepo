@@ -2612,16 +2612,12 @@ namespace windows_client.View
             }
         }
 
-        private void SendImage(BitmapImage image, string fileName)
+        private bool SendImage(BitmapImage image, string fileName)
         {
             if (!isGroupChat || isGroupAlive)
             {
                 byte[] thumbnailBytes;
                 byte[] fileBytes;
-
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
@@ -2655,6 +2651,15 @@ namespace windows_client.View
                     fileBytes = msLargeImage.ToArray();
                 }
 
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return false;
+                }
+
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
@@ -2665,7 +2670,11 @@ namespace windows_client.View
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
                 mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
+
+                return true;
             }
+            else
+                return false;
         }
 
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
@@ -2853,6 +2862,12 @@ namespace windows_client.View
             }
             else
             {
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(convMessage.FileAttachment.FileSize))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 //done this way as on locking it is unable to serialize convmessage or attachment object
                 object[] attachmentForwardMessage = new object[6];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
@@ -4558,6 +4573,12 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(locationBytes.Length))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 var place = (String)fileData[HikeConstants.LOCATION_TITLE];
                 var vicinity = (String)fileData[HikeConstants.LOCATION_ADDRESS];
                 var fileName = (String)fileData[HikeConstants.FILE_NAME];
@@ -4616,6 +4637,13 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+
+            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+            {
+                MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                return;
+            }
+
             if (fileBytes.Length > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
@@ -4674,6 +4702,12 @@ namespace windows_client.View
 
                 var bytes = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
 
+                if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -4704,13 +4738,15 @@ namespace windows_client.View
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
-                    SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    
+                    if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString()))
+                        break;
+
                     pic.Pic.Dispose();
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
             }
-
         }
 
         private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
@@ -4769,6 +4805,9 @@ namespace windows_client.View
 
                             if (taskPlaced)
                                 convMessage.UserTappedDownload = true;
+
+                            if (taskPlaced && !msgMap.ContainsKey(convMessage.MessageId))
+                                msgMap.Add(convMessage.MessageId, convMessage);
                         }
                         else
                             MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);

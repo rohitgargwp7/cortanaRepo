@@ -224,6 +224,7 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="StorageManager\StorageManager.cs" />
     <Compile Include="TemplateSelectors\ChatThreadTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\StatusTemplateSelector.cs" />
     <Compile Include="utils\AccountUtils.cs" />
