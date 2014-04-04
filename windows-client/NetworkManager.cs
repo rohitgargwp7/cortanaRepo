@@ -49,6 +49,8 @@ namespace windows_client
 
         public static readonly string STICKER = "stk";
 
+        public static readonly string ACTION = "action";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -1828,6 +1830,27 @@ namespace windows_client
                 }
             }
 
+            #endregion
+            #region ACTION
+            else if (type == ACTION)
+            {
+                JObject data = null;
+
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    bool isPush = (bool)data[HikeConstants.PUSH];
+
+                    if (isPush)
+                        PushHelper.Instance.registerPushnotifications(true);
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: ACTION, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+
+            }
             #endregion
             #region OTHER
             else

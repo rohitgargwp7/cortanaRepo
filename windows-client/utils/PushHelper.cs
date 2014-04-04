@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Phone.Shell;
 using System.Linq;
+using windows_client.Model;
 
 namespace windows_client.utils
 {
@@ -18,6 +19,8 @@ namespace windows_client.utils
         private readonly int minPollingTime = 3;
         private volatile IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
         private volatile IDisposable httpPostScheduled;
+
+        private bool retryForPushChannelException = true;
 
         private string _latestPushToken;
         private string LatestPushToken
@@ -75,6 +78,11 @@ namespace windows_client.utils
                         pushChannel.UnbindToShellTile();
                     if (pushChannel.IsShellToastBound)
                         pushChannel.UnbindToShellToast();
+
+                    //remove events as it may be called
+                    pushChannel.ChannelUriUpdated -= PushChannel_ChannelUriUpdated;
+                    pushChannel.ErrorOccurred -= PushChannel_ErrorOccurred;
+
                     pushChannel.Close();
                     pushChannel.Dispose();
                 }
@@ -91,11 +99,20 @@ namespace windows_client.utils
             }
         }
 
-        public void registerPushnotifications()
+        public void registerPushnotifications(bool forcePushToken)
         {
             string pushToken;
-            App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
-            _latestPushToken = pushToken;
+            if (forcePushToken)//have to push token to server forcefully
+            {
+                App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, string.Empty);
+                _latestPushToken = string.Empty;
+            }
+            else
+            {
+                App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
+                _latestPushToken = pushToken;
+            }
+
             HttpNotificationChannel pushChannel;
             pollingTime = minPollingTime;
             // Try to find the push channel.
@@ -114,10 +131,15 @@ namespace windows_client.utils
                 else
                 {
                     // The channel was already open, so just register for all the events.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+
+                    //if previously events are attached remove events as it may be called again
+                    pushChannel.ChannelUriUpdated -= PushChannel_ChannelUriUpdated;
+                    pushChannel.ChannelUriUpdated += PushChannel_ChannelUriUpdated;
+
+                    pushChannel.ErrorOccurred -= PushChannel_ErrorOccurred;
+                    pushChannel.ErrorOccurred += PushChannel_ErrorOccurred;
                 }
-             
+
                 // Bind this new channel for toast events.
                 if (!pushChannel.IsShellTileBound)
                     pushChannel.BindToShellTile();
@@ -126,7 +148,9 @@ namespace windows_client.utils
                     pushChannel.BindToShellToast();
 
                 if (pushChannel.ChannelUri != null)
+                {
                     LatestPushToken = pushChannel.ChannelUri.ToString();
+                }
                 else
                     LatestPushToken = null;
             }
@@ -142,16 +166,33 @@ namespace windows_client.utils
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
-            LatestPushToken = e.ChannelUri.ToString();
+            string pushToken = e.ChannelUri.ToString();
+
+            if (string.IsNullOrEmpty(pushToken))
+            {
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_NETWORK_EVENT, HikeConstants.NULL_PUSH_TOKEN);
+            }
+            else
+                LatestPushToken = pushToken;
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
         {
-            // Error handling logic
-            //Dispatcher.BeginInvoke(() =>
-            //    MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
-            //        e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
-            //        );
+            try
+            {
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_NETWORK_EVENT, HikeConstants.EXCEPTION_PUSH_TOKEN, (int)e.ErrorType);
+            }
+            catch (InvalidCastException ex)
+            {
+                Debug.WriteLine("PushHelper::ErrorOccured,Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace);
+            }
+            if ((e.ErrorType == ChannelErrorType.ChannelOpenFailed ||
+                e.ErrorType == ChannelErrorType.PayloadFormatError) &&
+                retryForPushChannelException)
+            {
+                registerPushnotifications(false);
+                retryForPushChannelException = false;
+            }
         }
 
         public void postPushNotification_Callback(JObject obj)

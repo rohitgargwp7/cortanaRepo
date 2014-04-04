@@ -2797,7 +2797,7 @@ namespace windows_client.View
 
             ProTipCount = 0;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>

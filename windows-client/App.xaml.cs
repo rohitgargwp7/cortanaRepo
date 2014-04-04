@@ -449,7 +449,7 @@ namespace windows_client
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             if (isPushEnabled)
             {
-                PushHelper.Instance.registerPushnotifications();
+                PushHelper.Instance.registerPushnotifications(false);
             }
             #endregion
         }
@@ -472,7 +472,7 @@ namespace windows_client
                     App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
                     if (isPushEnabled)
                     {
-                        PushHelper.Instance.registerPushnotifications();
+                        PushHelper.Instance.registerPushnotifications(false);
                     }
 
 
@@ -1250,7 +1250,7 @@ namespace windows_client
             if (!appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
         }
 
         public static MediaElement GlobalMediaElement
