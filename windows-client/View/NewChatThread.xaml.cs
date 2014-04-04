@@ -2612,16 +2612,16 @@ namespace windows_client.View
             }
         }
 
+        bool _memoryLimitReached = false;
         private void SendImage(BitmapImage image, string fileName)
         {
+            if (_memoryLimitReached)
+                return;
+            
             if (!isGroupChat || isGroupAlive)
             {
                 byte[] thumbnailBytes;
                 byte[] fileBytes;
-
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
@@ -2655,6 +2655,16 @@ namespace windows_client.View
                     fileBytes = msLargeImage.ToArray();
                 }
 
+                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+                {
+                    _memoryLimitReached = true;
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+                
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true; 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
@@ -2853,6 +2863,12 @@ namespace windows_client.View
             }
             else
             {
+                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(convMessage.FileAttachment.FileSize))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 //done this way as on locking it is unable to serialize convmessage or attachment object
                 object[] attachmentForwardMessage = new object[6];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
@@ -3216,6 +3232,7 @@ namespace windows_client.View
         {
             try
             {
+                _memoryLimitReached = false;
                 NavigationService.Navigate(new Uri("/View/ViewPhotoAlbums.xaml", UriKind.RelativeOrAbsolute));
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -3228,6 +3245,7 @@ namespace windows_client.View
         {
             try
             {
+                _memoryLimitReached = false;
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
@@ -4558,6 +4576,12 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
+                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(locationBytes.Length))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 var place = (String)fileData[HikeConstants.LOCATION_TITLE];
                 var vicinity = (String)fileData[HikeConstants.LOCATION_ADDRESS];
                 var fileName = (String)fileData[HikeConstants.FILE_NAME];
@@ -4616,6 +4640,13 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+
+            if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+            {
+                MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                return;
+            }
+
             if (fileBytes.Length > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
@@ -4674,6 +4705,12 @@ namespace windows_client.View
 
                 var bytes = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
 
+                if (StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
+                {
+                    MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                    return;
+                }
+
                 string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -4709,6 +4746,8 @@ namespace windows_client.View
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+
+                _memoryLimitReached = false;
             }
 
         }
