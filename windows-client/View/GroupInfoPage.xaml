@@ -37,9 +37,9 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                         <toolkit:PhoneTextBox Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
-                                                MaxLength="30" Margin="-12" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
-                            VerticalAlignment="Center" TextWrapping="Wrap" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
-                            FontSize="24" InputScope="Text" Style="{StaticResource TextBoxWithTransparentBackground}"/>
+                                              FontSize="32" MaxLength="30" Margin="-12" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
+                                              VerticalAlignment="Center" TextWrapping="Wrap" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
+                                              InputScope="Text" Style="{StaticResource TextBoxWithTransparentBackground}"/>
                             <TextBlock x:Name="groupData" Grid.Row="1" Foreground="White" FontSize="18"/>
                         </Grid>
                     </Grid>

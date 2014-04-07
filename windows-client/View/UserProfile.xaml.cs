@@ -22,6 +22,7 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Linq;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -38,7 +39,8 @@ namespace windows_client.View
         bool isOnHike = false;
         private ObservableCollection<BaseStatusUpdate> statusList = new ObservableCollection<BaseStatusUpdate>();
         private ApplicationBar appBar;
-        ApplicationBarIconButton editProfile_button;
+        ApplicationBarIconButton editProfileAppBarButton;
+        ApplicationBarIconButton changePhotoAppBarButton;
         ApplicationBarIconButton addToContactsAppBarButton;
         bool isInvited;
         bool isInAddressBook;
@@ -52,10 +54,8 @@ namespace windows_client.View
         {
             InitializeComponent();
             registerListeners();
-            txtSmsUserNameBlk1.Foreground = UI_Utils.Instance.StatusTextForeground;
-            txtSmsUserNameBlk2.Foreground = UI_Utils.Instance.StatusTextForeground;
-            txtSmsUserNameBlk3.Foreground = UI_Utils.Instance.StatusTextForeground;
-            imgBackgrund.Source = UI_Utils.Instance.UserProfileStockImage;
+
+            statusLLS.ItemsSource = statusList;
         }
 
         #region Listeners
@@ -102,7 +102,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && App.MSISDN != msisdn)
-                        avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
+                        avatarImage.ImageSource = UI_Utils.Instance.GetBitmapImage(msisdn);
 
                     if (isStatusLoaded)
                     {
@@ -116,7 +116,6 @@ namespace windows_client.View
 
                             statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
 
-                            gridHikeUser.Visibility = Visibility.Visible;
                             gridSmsUser.Visibility = Visibility.Collapsed;
                         }
                     }
@@ -346,7 +345,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                avatarImage.Source = profileImage;
+                avatarImage.ImageSource = profileImage;
                 txtUserName.Text = nameToShow;
                 txtMsisdn.Text = msisdn;
 
@@ -396,40 +395,38 @@ namespace windows_client.View
 
                 if (appBar == null)
                 {
-                    appBar = new ApplicationBar();
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsVisible = true;
-                    appBar.IsMenuEnabled = true;
+                    appBar = new ApplicationBar()
+                       {
+                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                           Opacity = 0.75
+                       };
                 }
 
                 appBar.Buttons.Add(callIconButton);
-                UserProfilePage.ApplicationBar = appBar;
+                ApplicationBar = appBar;
 
                 if (!isInAddressBook)
                     ShowAddToContacts();
             }
 
+            ContextMenu menu = new ContextMenu();
+            menu.Background = UI_Utils.Instance.Black;
+            menu.IsZoomEnabled = false;
+
+            MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+
+            menu.Items.Add(menuItemCopy);
+
             if (msisdn == txtUserName.Text)
             {
-                ContextMenu menu2 = new ContextMenu();
-                menu2.IsZoomEnabled = false;
-                MenuItem menuItemCopy2 = new MenuItem();
-                menuItemCopy2.Header = AppResources.Copy_txt;
-                menuItemCopy2.Click += menuItemCopy_Click;
-                menu2.Items.Add(menuItemCopy2);
-                ContextMenuService.SetContextMenu(txtUserName, menu2);
+                ContextMenuService.SetContextMenu(txtUserName, menu);
                 txtMsisdn.Visibility = Visibility.Collapsed;
             }
             else
-            {
-                ContextMenu menu = new ContextMenu();
-                menu.IsZoomEnabled = false;
-                MenuItem menuItemCopy = new MenuItem();
-                menuItemCopy.Header = AppResources.Copy_txt;
-                menuItemCopy.Click += menuItemCopy_Click;
-                menu.Items.Add(menuItemCopy);
                 ContextMenuService.SetContextMenu(txtMsisdn, menu);
-            }
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
@@ -459,7 +456,7 @@ namespace windows_client.View
             chatIconButton.Text = AppResources.Send_Txt;
             chatIconButton.Click += new EventHandler(GoToChat_Tap);
             chatIconButton.IsEnabled = true;
-            this.appBar.Buttons.Add(chatIconButton);
+            appBar.Buttons.Add(chatIconButton);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -478,29 +475,19 @@ namespace windows_client.View
 
         private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            try
+            if (_dontOpenPic)
             {
-                if (App.MSISDN == msisdn)
-                {
-                    if (!isProfilePicTapped)
-                    {
-                        photoChooserTask.Show();
-                        isProfilePicTapped = true;
-                    }
-                }
-                else
-                {
-                    App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
-                    object[] fileTapped = new object[2];
-                    fileTapped[0] = msisdn;
-                    PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
-                    NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
-                }
+                _dontOpenPic = false;
+                return;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
-            }
+
+            var id = App.MSISDN == msisdn ? HikeConstants.MY_PROFILE_PIC : msisdn;
+
+            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
+            object[] fileTapped = new object[2];
+            fileTapped[0] = id;
+            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
+            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -512,7 +499,7 @@ namespace windows_client.View
                 return;
             }
             //progressBarTop.IsEnabled = true;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             if (e.TaskResult == TaskResult.OK)
             {
                 profileImage = new BitmapImage();
@@ -542,7 +529,7 @@ namespace windows_client.View
             {
                 isProfilePicTapped = false;
                 //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
@@ -578,9 +565,7 @@ namespace windows_client.View
                 if (uploadSuccess)
                 {
                     UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
-                    avatarImage.Source = profileImage;
-                    avatarImage.MaxHeight = 83;
-                    avatarImage.MaxWidth = 83;
+                    avatarImage.ImageSource = profileImage;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
@@ -617,7 +602,7 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 isProfilePicTapped = false;
             });
         }
@@ -628,7 +613,7 @@ namespace windows_client.View
 
         private void LoadStatuses()
         {
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             List<StatusMessage> statusMessagesFromDB = null;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (ss, ee) =>
@@ -640,7 +625,7 @@ namespace windows_client.View
             {
                 CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                 isStatusLoaded = true;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
             };
         }
 
@@ -651,16 +636,13 @@ namespace windows_client.View
         private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
         {
             AddStatusToList(statusMessagesFromDB, messageFetchCount);
+            
             if (statusList.Count == 0)
-            {
                 ShowEmptyStatus();
-            }
             else
-            {
                 gridSmsUser.Visibility = Visibility.Collapsed;
-                gridHikeUser.Visibility = Visibility.Visible;
-            }
-            this.statusLLS.ItemsSource = statusList;
+            
+            statusLLS.ItemsSource = statusList;
         }
 
         private void AddStatusToList(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
@@ -894,11 +876,14 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
-            this.appBar = new ApplicationBar();
-            this.appBar.Mode = ApplicationBarMode.Default;
-            this.appBar.IsVisible = true;
-            this.appBar.IsMenuEnabled = true;
-            UserProfilePage.ApplicationBar = appBar;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.75
+            };
+
+            ApplicationBar = appBar;
         }
 
         private void InitSelfProfile()
@@ -913,30 +898,48 @@ namespace windows_client.View
 
             profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             msisdn = App.MSISDN;
+
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+
             if (name != null)
             {
                 nameToShow = name;
                 firstName = Utils.GetFirstName(nameToShow);
             }
+
             isOnHike = true;
-            changePic.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
-            this.txtProfileHeader.Text = AppResources.MyProfileheader_Txt;
+            
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
             postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
             postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusButton.Click += new EventHandler(AddStatus_Tap);
-            postStatusButton.IsEnabled = true;
-            this.appBar.Buttons.Add(postStatusButton);
+            appBar.Buttons.Add(postStatusButton);
 
-            editProfile_button = new ApplicationBarIconButton();
-            editProfile_button.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
-            editProfile_button.Text = AppResources.Conversations_EditProfile_Txt;
-            editProfile_button.Click += new EventHandler(EditProfile_Tap);
-            editProfile_button.IsEnabled = true;
-            this.appBar.Buttons.Add(editProfile_button);
+            editProfileAppBarButton = new ApplicationBarIconButton();
+            editProfileAppBarButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
+            editProfileAppBarButton.Text = AppResources.Conversations_EditProfile_Txt;
+            editProfileAppBarButton.Click += new EventHandler(EditProfile_Tap);
+            appBar.Buttons.Add(editProfileAppBarButton);
+
+            changePhotoAppBarButton = new ApplicationBarIconButton();
+            changePhotoAppBarButton.IconUri = new Uri("/View/images/icon_camera.png", UriKind.Relative);
+            changePhotoAppBarButton.Text = AppResources.ChangePic_AppBar_Txt;
+            changePhotoAppBarButton.Click += changePhotoAppBarButton_Click;
+            appBar.Buttons.Add(changePhotoAppBarButton);
+        }
+
+        void changePhotoAppBarButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
+            }
         }
 
         private void InitHikeUserProfile()
@@ -1037,7 +1040,7 @@ namespace windows_client.View
                 ApplicationBar = new ApplicationBar();
 
             if (!ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
-                this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
+                ApplicationBar.Buttons.Add(addToContactsAppBarButton);
         }
 
         private void ShowRequestSent()
@@ -1048,7 +1051,6 @@ namespace windows_client.View
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
-            gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
 
@@ -1072,7 +1074,6 @@ namespace windows_client.View
             toggleToInvitedScreen = true;
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
-            gridHikeUser.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
 
             if (!isInAddressBook)
@@ -1102,13 +1103,10 @@ namespace windows_client.View
             txtSmsUserNameBlk3.Text = string.Empty;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
-            gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
-
             gridSmsUser.Visibility = Visibility.Visible;
-            gridHikeUser.Visibility = Visibility.Collapsed;
         }
 
         private void ShowNonHikeUser()
@@ -1121,10 +1119,10 @@ namespace windows_client.View
             txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
-            gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Tap += Invite_Tap;
             btnInvite.Content = AppResources.InviteOnHikeBtn_Txt;
             btnInvite.Visibility = Visibility.Visible;
+
             if (!App.ViewModel.Isfavourite(msisdn))
             {
                 addToFavBtn.Visibility = Visibility.Visible;
@@ -1148,8 +1146,8 @@ namespace windows_client.View
             btnInvite.Visibility = Visibility.Collapsed;
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
-            gridHikeUser.Visibility = Visibility.Collapsed;
         }
+
         #endregion
 
         private void Yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1488,7 +1486,7 @@ namespace windows_client.View
                     if ((e.Container.Content as BaseStatusUpdate).Equals(statusLLS.ItemsSource[statusLLS.ItemsSource.Count - 1]))
                     {
                         List<StatusMessage> statusMessagesFromDB = null;
-                        shellProgress.IsVisible = true;
+                        shellProgress.IsIndeterminate = true;
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
@@ -1498,11 +1496,17 @@ namespace windows_client.View
                         bw.RunWorkerCompleted += (s1, ev1) =>
                         {
                             AddStatusToList(statusMessagesFromDB, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
-                            shellProgress.IsVisible = false;
+                            shellProgress.IsIndeterminate = false;
                         };
                     }
                 }
             }
+        }
+
+        bool _dontOpenPic = false;
+        private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            _dontOpenPic = true;
         }
     }
 }

@@ -438,8 +438,12 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="NoButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
+            <Style x:Key="ThirdButtonStyle" TargetType="Button" BasedOn="{StaticResource YesButtonStyle}">
                 <Setter Property="Background" Value="#434B5C"/>
+            </Style>
+
+            <Style x:Key="NoButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
+                <Setter Property="Background" Value="#A0A0A0"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -448,6 +452,12 @@
                 <Setter Property="Width" Value="150"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+            <Style x:Key="AddAsFriendButtonStyle" TargetType="Button" BasedOn="{StaticResource YesButtonStyle}">
+                <Setter Property="MinWidth" Value="180"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
             <!--<Style x:Key="DefaultButtonStyle" TargetType="Button">
@@ -894,36 +904,6 @@
                 <toolkit:WrapPanel ItemHeight="93" ItemWidth="93"/>
             </ItemsPanelTemplate>
 
-            <Style x:Key="LongListSelectorWithTranslucentAppBar" TargetType="phone:LongListSelector">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="phone:LongListSelector">
-                            <Grid Background="{TemplateBinding Background}">
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="ScrollStates">
-                                        <VisualStateGroup.Transitions>
-                                            <VisualTransition GeneratedDuration="00:00:00.5"/>
-                                        </VisualStateGroup.Transitions>
-                                        <VisualState x:Name="Scrolling">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="NotScrolling"/>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid Margin="{TemplateBinding Padding}">
-                                    <ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,10,0"/>
-                                    <ScrollBar x:Name="VerticalScrollBar" Opacity="0" Margin="0,0,4,0" Orientation="Vertical" Canvas.ZIndex="1" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style x:Key="LongListSelectorWithOverlappingScrollBar" TargetType="phone:LongListSelector">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -1093,7 +1073,7 @@
             <Style x:Key="StatusUpdateContainerStyle" TargetType="Border">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0,0,0,0"/>
-                <Setter Property="Margin" Value="10,10,0,0"/>
+                <Setter Property="Margin" Value="10,10,10,0"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>

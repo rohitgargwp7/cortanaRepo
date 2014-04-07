@@ -871,12 +871,12 @@
                 <Grid x:Name="ConversationList">
                     <Image x:Name="emptyScreenImage" Source="images/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
                     <Image x:Name="emptyScreenTip" Source="images/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
-                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithTranslucentAppBar}"
-                                            Margin="20,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
+                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
+                                            VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
                                             HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,20,8,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
+                                <Grid Margin="20,20,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
                                             <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -1090,7 +1090,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E7E2D6" Style="{StaticResource LongListSelectorWithTranslucentAppBar}">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#DDDDDD" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">

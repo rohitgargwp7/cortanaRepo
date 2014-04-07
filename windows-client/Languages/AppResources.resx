@@ -1217,9 +1217,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="OnSms_Txt" xml:space="preserve">
     <value>on SMS</value>
   </data>
-  <data name="MyProfileheader_Txt" xml:space="preserve">
-    <value>my profile</value>
-  </data>
   <data name="ProfileToBeFriendBlk1" xml:space="preserve">
     <value>You need to be friends with</value>
   </data>

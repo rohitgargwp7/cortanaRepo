@@ -724,7 +724,6 @@
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon_black.png" />
     <Content Include="View\images\call.png" />
-    <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\deleted_white_icon.png" />
@@ -828,8 +827,6 @@
     <Content Include="View\images\MyLocation.png" />
     <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\places_icon.png" />
-    <Content Include="View\images\profile_header_stock.png" />
-    <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\resume_black_ftr.png" />

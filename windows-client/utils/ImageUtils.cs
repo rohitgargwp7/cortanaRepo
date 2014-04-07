@@ -101,7 +101,6 @@ namespace windows_client.utils
         private BitmapImage twitterEnabledIcon;
         private BitmapImage userProfileLockImage;
         private BitmapImage userProfileInviteImage;
-        private BitmapImage userProfileStockImage;
         private BitmapImage loadingImage;
         private BitmapImage lastSeenClockImageWhite;
         private BitmapImage lastSeenClockImageBlack;
@@ -1223,17 +1222,6 @@ namespace windows_client.utils
                     userProfileInviteImage = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
 
                 return userProfileInviteImage;
-            }
-        }
-
-        public BitmapImage UserProfileStockImage
-        {
-            get
-            {
-                if (userProfileStockImage == null)
-                    userProfileStockImage = new BitmapImage(new Uri("/View/images/profile_header_stock.png", UriKind.Relative));
-
-                return userProfileStockImage;
             }
         }
 

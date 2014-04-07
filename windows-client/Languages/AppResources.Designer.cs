@@ -3065,15 +3065,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to my profile.
-        /// </summary>
-        public static string MyProfileheader_Txt {
-            get {
-                return ResourceManager.GetString("MyProfileheader_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
         public static string NamingConvention_Txt {
