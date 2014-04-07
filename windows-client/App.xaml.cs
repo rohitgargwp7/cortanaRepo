@@ -449,7 +449,7 @@ namespace windows_client
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             if (isPushEnabled)
             {
-                PushHelper.Instance.registerPushnotifications();
+                PushHelper.Instance.registerPushnotifications(false);
             }
             #endregion
         }
@@ -472,7 +472,7 @@ namespace windows_client
                     App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
                     if (isPushEnabled)
                     {
-                        PushHelper.Instance.registerPushnotifications();
+                        PushHelper.Instance.registerPushnotifications(false);
                     }
 
 
@@ -553,7 +553,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.1.6", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.1.8", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -982,7 +982,7 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.6") < 0)//if it is upgrade
+            else if (Utils.compareVersion(_currentVersion, "2.5.1.8") < 0)//if it is upgrade
             {
                 App.ViewModel.ResetInAppTip(8);
             }
@@ -1250,7 +1250,7 @@ namespace windows_client
             if (!appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
         }
 
         public static MediaElement GlobalMediaElement

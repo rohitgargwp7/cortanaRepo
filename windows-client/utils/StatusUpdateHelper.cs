@@ -123,8 +123,8 @@ namespace windows_client.utils
             {
                 BaseStatusUpdate sb = obj as BaseStatusUpdate;
                 StatusMsgsTable.DeleteStatusMsg(sb.ServerId);
-                
-                var status = StatusMsgsTable.GetUserLastStatusMsg();
+
+                var status = StatusMsgsTable.GetUserLastStatusMsg(sb.Msisdn);
                 
                 if (status == null)
                     StatusMsgsTable.DeleteLastStatusFile();

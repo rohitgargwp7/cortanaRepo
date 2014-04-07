@@ -2136,4 +2136,14 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Group_Name_Hint_Txt" xml:space="preserve">
     <value>group name</value>
   </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Unable to perform the action due to low memory. Please free some memory and try again.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Unable to download the file due to low memory. Please free some memory and try again.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Insufficient Memory</value>
+>>>>>>> 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8
+  </data>
 </root>

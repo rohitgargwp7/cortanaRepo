@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
 
+        public static readonly string PUSH = "push";
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
@@ -158,8 +159,9 @@ namespace windows_client
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
         public static readonly string NO_SMS = "nosms";
-        public static readonly string UI_EVENT = "uiEvent";
-        public static readonly string CONFIG_EVENT = "config";
+        public static readonly string ST_UI_EVENT = "uiEvent";
+        public static readonly string ST_CONFIG_EVENT = "config";
+        public static readonly string ST_NETWORK_EVENT = "nw";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -357,6 +359,8 @@ namespace windows_client
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
+        public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
+        public static readonly int APP_MIN_FREE_SIZE = 20971520;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
@@ -371,7 +375,7 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
-        public static readonly string FREE_SMS_COMPOSE = "freeSMSCom";
+        public static readonly string START_HIKING = "startHiking";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
@@ -381,6 +385,8 @@ namespace windows_client
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
+        public static readonly string NULL_PUSH_TOKEN = "npt";
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
         #endregion
 

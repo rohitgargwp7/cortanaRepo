@@ -126,12 +126,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static StatusMessage GetUserLastStatusMsg()
+        public static StatusMessage GetUserLastStatusMsg(string msisdn)
         {
             List<StatusMessage> res;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                res = DbCompiledQueries.GetFirstTextStatusUpdate(context).ToList<StatusMessage>();
+                res = DbCompiledQueries.GetFirstTextStatusUpdate(context, msisdn).ToList<StatusMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last() as StatusMessage;
             }
         }

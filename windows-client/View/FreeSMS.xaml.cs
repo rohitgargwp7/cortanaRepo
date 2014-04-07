@@ -85,7 +85,7 @@ namespace windows_client.View
         private void startChat_Click(object sender, RoutedEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
-            Analytics.SendClickEvent(HikeConstants.FREE_SMS_COMPOSE);
+            Analytics.SendClickEvent(HikeConstants.START_HIKING);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 

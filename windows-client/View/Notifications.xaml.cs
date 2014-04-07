@@ -101,7 +101,7 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED, true);
-            PushHelper.Instance.registerPushnotifications();
+            PushHelper.Instance.registerPushnotifications(false);
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)

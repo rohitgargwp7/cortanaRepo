@@ -2615,6 +2615,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free some memory and try again..
+        /// </summary>
+        public static string Memory_Limit_Reached_Body {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to download the file due to low memory. Please free some memory and try again..
+        /// </summary>
+        public static string Memory_Limit_Reached_Download_Body {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Download_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8.
+        /// </summary>
+        public static string Memory_Limit_Reached_Header {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message cancelled.
         /// </summary>
         public static string Message_Cancelled {
