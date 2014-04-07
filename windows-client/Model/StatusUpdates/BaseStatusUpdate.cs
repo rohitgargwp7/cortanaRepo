@@ -101,7 +101,7 @@ namespace windows_client.Model
             }
         }
 
-        Visibility DeleteOptionVisibility
+        public Visibility DeleteOptionVisibility
         {
             get
             {
