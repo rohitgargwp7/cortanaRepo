@@ -89,7 +89,7 @@ namespace windows_client
         private static string _currentVersion = "1.0.0.0";
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -553,7 +553,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.1.9", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.2.0", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -982,7 +982,7 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.9") < 0)//if it is upgrade
+            else if (Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
             {
                 App.ViewModel.ResetInAppTip(8);
             }
