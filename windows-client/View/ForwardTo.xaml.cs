@@ -79,8 +79,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
             {
                 _showExistingGroups = true;
-                txtTitle.Visibility = Visibility.Collapsed;
-                txtChat.Text = AppResources.SelectUser_Forward_To_Txt;
+                PageTitle.Text = AppResources.SelectUser_Forward_To_Txt;
                 if (obj is object[])
                 {
                     object[] attachmentForwardMessage = (object[])obj;
@@ -96,6 +95,11 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        shellProgress.IsIndeterminate = true;
+                    });
+
                 _allContactsList = UsersTableUtils.getAllContactsByGroup();
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
             };
@@ -112,7 +116,7 @@ namespace windows_client.View
                 else
                     contactsListBox.ItemsSource = _completeGroupedContactList;
 
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
             };
             initPage();
             //App.HikePubSubInstance.addListener(HikePubSub.GROUP_END, this);
@@ -931,6 +935,14 @@ namespace windows_client.View
         {
             get;
             set;
+        }
+
+        public bool IsNonEmpty
+        {
+            get
+            {
+                return this.Count > 0;
+            }
         }
     }
 }

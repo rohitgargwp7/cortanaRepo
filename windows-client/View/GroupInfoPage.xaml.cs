@@ -147,7 +147,6 @@ namespace windows_client.View
                         return;
                     }
                     shellProgress.Visibility = Visibility.Visible;
-                    //progressBar.IsEnabled = true;
                     groupNameTxtBox.IsReadOnly = true;
                     saveIconButton.IsEnabled = false;
                     AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));

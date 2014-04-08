@@ -19,6 +19,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -341,6 +342,9 @@ namespace windows_client
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
+            
+            //App.Current.Resources["PhoneAccentBrush"] = UI_Utils.Instance.HikeBlue;
+            //App.Current.Resources["PhoneAccentColor"] = ((SolidColorBrush)App.Current.Resources["PhoneAccentBrush"]).Color;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)

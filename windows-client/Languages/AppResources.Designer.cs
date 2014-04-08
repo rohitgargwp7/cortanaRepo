@@ -3866,7 +3866,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FORWARD TO.
+        ///   Looks up a localized string similar to forward to.
         /// </summary>
         public static string SelectUser_Forward_To_Txt {
             get {
@@ -3907,15 +3907,6 @@ namespace windows_client.Languages {
         public static string SelectUser_Header_AddParticipant_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_Header_AddParticipant_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CHAT.
-        /// </summary>
-        public static string SelectUser_Header_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Header_Txt", resourceCulture);
             }
         }
         
@@ -4042,15 +4033,6 @@ namespace windows_client.Languages {
         public static string SelectUser_Title_AddParticipant_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_Title_AddParticipant_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to with.
-        /// </summary>
-        public static string SelectUser_Title_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Title_Txt", resourceCulture);
             }
         }
         

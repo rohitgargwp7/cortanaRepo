@@ -169,6 +169,8 @@
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
+    <Compile Include="Converters\BackgroundConverter.cs" />
+    <Compile Include="Converters\ForegroundConverter.cs" />
     <Compile Include="Converters\TileSizeToHeightConverter.cs" />
     <Compile Include="Converters\TileSizeToWidthConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />

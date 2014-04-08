@@ -20,7 +20,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" VerticalAlignment="Top" Foreground="White"/>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
 
         <phone:LongListSelector x:Name="groupChatParticipants" LayoutMode="Grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     Tap="groupMember_Tap" GridCellSize="160,160" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
