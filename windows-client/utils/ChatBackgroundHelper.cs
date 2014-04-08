@@ -252,11 +252,11 @@ namespace windows_client.utils
             int id = random.Next(3);
 
             if (id == 0)
-                id = 4;
+                id = 24;
             else if (id == 1)
-                id = 15;
+                id = 25;
             else
-                id = 11;
+                id = 26;
 
             App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == id.ToString()).First();
             UpdateChatBgMap(msisdn, App.ViewModel.SelectedBackground.ID);
