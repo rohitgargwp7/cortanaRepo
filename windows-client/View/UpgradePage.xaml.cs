@@ -108,7 +108,7 @@ namespace windows_client.View
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                    if (Utils.compareVersion("2.5.2.0", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.1.10", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
                         {
