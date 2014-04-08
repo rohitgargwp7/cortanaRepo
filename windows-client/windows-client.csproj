@@ -640,6 +640,7 @@
     <Content Include="View\images\group_pic_changed_CT.png" />
     <Content Include="View\images\icon_delete.png" />
     <Content Include="View\images\icon_file_attachment.png" />
+    <Content Include="View\images\icon_group_chat_gray.png" />
     <Content Include="View\images\icon_sending_CT.png" />
     <Content Include="View\images\icon_sending_grey.png" />
     <Content Include="View\images\ic_delivered_CT.png" />

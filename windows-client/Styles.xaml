@@ -1225,7 +1225,7 @@
                                                FontSize="48" Padding="6"
                                                Foreground="{Binding IsNonEmpty, Converter={StaticResource ForegroundConverter}}"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
-                                    <Image Source="/View/images/icon_group_chat.png" Height="60" Margin="0,15,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"/>
+                                    <Image Source="{Binding GroupImage}" Height="60" Margin="0,15,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding GrpImageVisibility}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

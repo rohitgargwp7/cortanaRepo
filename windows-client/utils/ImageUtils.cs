@@ -91,8 +91,8 @@ namespace windows_client.utils
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
         private BitmapImage profilePicStatusImage;
-        private BitmapImage noNewNotificationImage;
-        private BitmapImage newNotificationImage;
+        private BitmapImage groupImageWhite;
+        private BitmapImage groupImageGray;
         private BitmapImage blackContactIcon;
         private BitmapImage whiteContactIcon;
         private BitmapImage facebookDisabledIcon;
@@ -1120,23 +1120,23 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage NoNewNotificationImage
+        public BitmapImage GroupImageWhite
         {
             get
             {
-                if (noNewNotificationImage == null)
-                    noNewNotificationImage = new BitmapImage(new Uri("/View/images/notification_read.png", UriKind.Relative));
-                return noNewNotificationImage;
+                if (groupImageWhite == null)
+                    groupImageWhite = new BitmapImage(new Uri("/View/images/icon_group_chat.png", UriKind.Relative));
+                return groupImageWhite;
             }
         }
 
-        public BitmapImage NewNotificationImage
+        public BitmapImage GroupImageGray
         {
             get
             {
-                if (newNotificationImage == null)
-                    newNotificationImage = new BitmapImage(new Uri("/View/images/notification_unread.png", UriKind.Relative));
-                return newNotificationImage;
+                if (groupImageGray == null)
+                    groupImageGray = new BitmapImage(new Uri("/View/images/icon_group_chat_gray.png", UriKind.Relative));
+                return groupImageGray;
             }
         }
 

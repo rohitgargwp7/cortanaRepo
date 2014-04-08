@@ -19,6 +19,7 @@ using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -944,5 +945,14 @@ namespace windows_client.View
                 return this.Count > 0;
             }
         }
+
+        public BitmapImage GroupImage
+        {
+            get
+            {
+                return IsNonEmpty ? UI_Utils.Instance.GroupImageWhite : UI_Utils.Instance.GroupImageGray;
+            }
+        }
+
     }
 }
