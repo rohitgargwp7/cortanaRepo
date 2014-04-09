@@ -1749,7 +1749,11 @@ namespace windows_client.View
         {
             if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
-            /*
+
+            MessageBoxResult mr = MessageBox.Show(AppResources.Leave_Group_Body, AppResources.Leave_Group_Caption, MessageBoxButton.OKCancel);
+            if (mr != MessageBoxResult.OK)
+                return;
+             /*
              * 1. Delete from DB (pubsub)
              * 2. Remove from ConvList page
              * 3. GoBack
@@ -4738,7 +4742,7 @@ namespace windows_client.View
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
-                    
+
                     if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString()))
                         break;
 

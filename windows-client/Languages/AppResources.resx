@@ -2156,4 +2156,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Memory_Limit_Reached_Header" xml:space="preserve">
     <value>Insufficient Memory</value>
   </data>
+  <data name="Leave_Group_Body" xml:space="preserve">
+    <value>Are you sure you want to leave the group?</value>
+  </data>
+  <data name="Leave_Group_Caption" xml:space="preserve">
+    <value>Leave group</value>
+  </data>
 </root>
