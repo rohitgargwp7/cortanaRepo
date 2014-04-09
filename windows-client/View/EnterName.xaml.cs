@@ -40,11 +40,11 @@ namespace windows_client
             App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
             App.appSettings.Remove(App.ACCOUNT_NAME);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);

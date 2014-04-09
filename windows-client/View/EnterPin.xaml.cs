@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Windows.Threading;
 using windows_client.Languages;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -26,11 +27,11 @@ namespace windows_client
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
 
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);

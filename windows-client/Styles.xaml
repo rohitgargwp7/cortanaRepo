@@ -20,6 +20,32 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
+            <Color x:Key="PhoneBackgroundColor">#FFFFFFFF</Color>
+            <Color x:Key="PhoneBorderColor">#BFFFFFFF</Color>
+            <Color x:Key="PhoneChromeColor">#FFDDDDDD</Color>
+            <Color x:Key="PhoneContrastBackgroundColor">#DE000000</Color>
+            <Color x:Key="PhoneContrastForegroundColor">#FFFFFFFF</Color>
+            <Color x:Key="PhoneDisabledColor">#4D000000</Color>
+            <Color x:Key="PhoneForegroundColor">#DE000000</Color>
+            <Color x:Key="PhoneInactiveColor">#33000000</Color>
+            <Color x:Key="PhoneInverseBackgroundColor">#FFDDDDDD</Color>
+            <Color x:Key="PhoneInverseInactiveColor">#FFE5E5E5</Color>
+            <Color x:Key="PhoneRadioCheckBoxCheckColor">#DE000000</Color>
+            <Color x:Key="PhoneRadioCheckBoxCheckDisabledColor">#4D000000</Color>
+            <Color x:Key="PhoneRadioCheckBoxColor">#26000000</Color>
+            <Color x:Key="PhoneRadioCheckBoxDisabledColor">#00000000</Color>
+            <Color x:Key="PhoneRadioCheckBoxPressedBorderColor">#DE000000</Color>
+            <Color x:Key="PhoneRadioCheckBoxPressedColor">#00000000</Color>
+            <Color x:Key="PhoneSemitransparentColor">#AAFFFFFF</Color>
+            <Color x:Key="PhoneSubtleColor">#66000000</Color>
+            <Color x:Key="PhoneTextBoxColor">#26000000</Color>
+            <Color x:Key="PhoneTextBoxEditBackgroundColor">#00000000</Color>
+            <Color x:Key="PhoneTextBoxEditBorderColor">#DE000000</Color>
+            <Color x:Key="PhoneTextBoxForegroundColor">#DE000000</Color>
+            <Color x:Key="PhoneTextBoxReadOnlyColor">#2E000000</Color>
+            <Color x:Key="PhoneTextBoxSelectionForegroundColor">#FFFFFFFF</Color>
+            <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
+            <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
             <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="LastMessageColor" Color="#A1A1A1"/>
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#F0F3F6"/>
@@ -31,6 +57,7 @@
             <converter:ForegroundConverter x:Key="ForegroundConverter"/>
             
             <MediaElement x:Key="GlobalMedia" AutoPlay="False" />
+
             <ControlTemplate x:Key="PhoneProgressBarSliderThumb" TargetType="Thumb">
                 <Rectangle Fill="{TemplateBinding Foreground}" Height="45" IsHitTestVisible="False" Width="24"/>
             </ControlTemplate>

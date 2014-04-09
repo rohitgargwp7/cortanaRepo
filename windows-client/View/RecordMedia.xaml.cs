@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 using windows_client.utils;
 using windows_client.Languages;
 using System.Diagnostics;
+using System.Windows.Media;
 
 
 namespace windows_client.View
@@ -75,10 +76,11 @@ namespace windows_client.View
             progressTimer.Tick += new EventHandler(showProgress);
 
             //app bar
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             //add icon for cancel
             cancelIconButton = new ApplicationBarIconButton();

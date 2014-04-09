@@ -18,7 +18,7 @@
     OrientationChanged="PhoneApplicationPage_OrientationChanged"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" shell:SystemTray.BackgroundColor="Black" shell:SystemTray.ForegroundColor="#FEFFFFFF">
+    shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
         <Style x:Name="llsMessagesStyle"  TargetType="phone:LongListSelector">
             <Setter Property="Background" Value="Transparent"/>

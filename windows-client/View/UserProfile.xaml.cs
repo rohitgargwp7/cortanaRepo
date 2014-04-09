@@ -1037,7 +1037,13 @@ namespace windows_client.View
             }
 
             if (ApplicationBar == null)
-                ApplicationBar = new ApplicationBar();
+            {
+                ApplicationBar = new ApplicationBar()
+                   {
+                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                   };
+            }
 
             if (!ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
                 ApplicationBar.Buttons.Add(addToContactsAppBarButton);

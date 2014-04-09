@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using windows_client.ViewModel;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -157,7 +158,11 @@ namespace windows_client.View
 
         private void initPage()
         {
-            ApplicationBar = new ApplicationBar();
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             _refreshIconButton = new ApplicationBarIconButton();
             _refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
@@ -1014,6 +1019,7 @@ namespace windows_client.View
                         if (_smsUserCount > _smsCredits)
                         {
                             MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
+                            _smsUserCount = 0;
                             return;
                         }
                     }

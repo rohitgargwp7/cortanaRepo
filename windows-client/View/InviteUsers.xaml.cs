@@ -77,11 +77,11 @@ namespace windows_client.View
 
         private void initPage()
         {
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             /* Add icons */
             if (doneIconButton != null)
