@@ -222,13 +222,12 @@ namespace windows_client.View
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
             groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
 
-            groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
-            
             gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
                 return;
 
             GroupManager.Instance.LoadGroupParticipants(groupId);
+            groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
             if (!App.IS_TOMBSTONED)
                 groupImage.ImageSource = App.ViewModel.ConvMap[groupId].AvatarImage;

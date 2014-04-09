@@ -1363,7 +1363,7 @@
             <Style x:Key="StatusUpdateContainerStyle" TargetType="Border">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0,0,0,0"/>
-                <Setter Property="Margin" Value="10,10,10,0"/>
+                <Setter Property="Margin" Value="12,12,12,0"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>

@@ -37,12 +37,13 @@ namespace windows_client.Converters
                     break;
             }
 
-            double multiplier;
+            if (parameter == null)
+                parameter = 0;
 
-            if (parameter == null || double.TryParse(parameter.ToString(), out multiplier) == false)
-            {
+            double multiplier =  double.Parse(parameter.ToString(), CultureInfo.InvariantCulture);
+
+            if (multiplier == 0)
                 multiplier = 1;
-            }
 
             return baseWidth * multiplier;
         }

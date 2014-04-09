@@ -800,8 +800,6 @@ namespace windows_client.View
             _oldIndex = _newIndex;
             _newIndex = (sender as Pivot).SelectedIndex;
 
-            UpdateTabImages(_newIndex);
-
             if (_newIndex != 3 && _oldIndex == 3 && RefreshBarCount > 0)
                 UpdatePendingStatusFromRefreshBar();
 
@@ -982,6 +980,11 @@ namespace windows_client.View
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
             }
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                UpdateTabImages(_newIndex);
+            });
         }
 
         private void UpdateTabImages(int index)
