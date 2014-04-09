@@ -907,7 +907,6 @@ namespace windows_client.View
                 ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 if (obj.HasCustomPhoto) // represents group chat
                 {
-                    obj.Msisdn = obj.Id;//group id
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
@@ -3270,7 +3269,7 @@ namespace windows_client.View
 
             PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
 
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 

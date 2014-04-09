@@ -298,7 +298,7 @@
     <comment>xaml</comment>
   </data>
   <data name="GrpChat_Txt" xml:space="preserve">
-    <value>Group Chat</value>
+    <value>group chat</value>
     <comment>Text Group Chat </comment>
   </data>
   <data name="Help" xml:space="preserve">
@@ -650,7 +650,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> search or enter phone number</value>
+    <value>search or enter phone number</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
@@ -1132,10 +1132,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>tap here to invite</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
-    <value>Tap here to add this person</value>
-    <comment>Add to Group Msg</comment>
-  </data>
   <data name="ChatThread_GCMute" xml:space="preserve">
     <value>This group chat is muted</value>
     <comment>xaml</comment>
@@ -1363,7 +1359,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Unblock to send a message.</value>
   </data>
   <data name="Share_With_Txt" xml:space="preserve">
-    <value>SHARE</value>
+    <value>share</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
@@ -1532,7 +1528,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>your notifications preferences</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
-    <value>user</value>
+    <value>block user</value>
   </data>
   <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
     <value>Invite Friends</value>
@@ -1814,13 +1810,9 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} new messages</value>
     <comment>{0} would be replaced by number</comment>
   </data>
-  <data name="SelectUser_Header_AddParticipant_Txt" xml:space="preserve">
-    <value>ADD PARTICIPANTS</value>
-    <comment>max length(16)</comment>
-  </data>
   <data name="SelectUser_Title_AddParticipant_Txt" xml:space="preserve">
-    <value>to group</value>
-    <comment>max length(8)</comment>
+    <value>add members</value>
+    <comment>max length(16)</comment>
   </data>
   <data name="Location_Disabled_Heading" xml:space="preserve">
     <value>Location Disabled</value>
@@ -2133,5 +2125,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Memory_Limit_Reached_Header" xml:space="preserve">
     <value>&gt;&gt;&gt;&gt;&gt;&gt;&gt; 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8</value>
+  </data>
+  <data name="Chat_With_Txt" xml:space="preserve">
+    <value>chat with</value>
   </data>
 </root>

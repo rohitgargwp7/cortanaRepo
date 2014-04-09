@@ -526,7 +526,7 @@ namespace windows_client
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
                 }
                 else
                 {
@@ -622,7 +622,7 @@ namespace windows_client
 
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
             }
             else
             {

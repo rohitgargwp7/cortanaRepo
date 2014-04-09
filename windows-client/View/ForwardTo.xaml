@@ -24,7 +24,7 @@
         <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
         <Grid Background="{StaticResource HikeBlueHeader}">
-            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}"/>
+            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Chat_With_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
         <!--ContentPanel - place additional content here-->
@@ -65,7 +65,9 @@
                                     <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
-                            <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" 
+                            <Button Content="{Binding BlockUnblockText}" Grid.Column="2" Style="{StaticResource NoButtonStyle}" Width="120"
+                                    HorizontalAlignment="Right" Tap="Block_Tap" Visibility="{Binding BlockButtonVisibility}"/>
+                            <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"
                                       Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>

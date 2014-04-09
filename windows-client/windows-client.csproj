@@ -320,9 +320,6 @@
     <Compile Include="View\InviteUsers.xaml.cs">
       <DependentUpon>InviteUsers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NewSelectUserPage.xaml.cs">
-      <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Account.xaml.cs">
       <DependentUpon>Account.xaml</DependentUpon>
     </Compile>
@@ -466,10 +463,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InviteUsers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\NewSelectUserPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

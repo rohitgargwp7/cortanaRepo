@@ -86,7 +86,7 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
             Analytics.SendClickEvent(HikeConstants.START_HIKING);
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
         public enum SocialState

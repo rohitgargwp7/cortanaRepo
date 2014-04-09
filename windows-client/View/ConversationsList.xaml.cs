@@ -723,7 +723,7 @@ namespace windows_client.View
             }
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
 
@@ -766,7 +766,7 @@ namespace windows_client.View
                 RemoveTutorial();
             }
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
         private void deleteConversation(ConversationListObject convObj)

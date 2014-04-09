@@ -185,7 +185,7 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = GroupManager.Instance.GetActiveGroupParticiants(groupId);
             PhoneApplicationService.Current.State["Group_GroupId"] = groupId;
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
         void editNameIconButton_Click(object sender, EventArgs e)

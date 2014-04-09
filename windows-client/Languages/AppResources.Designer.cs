@@ -259,7 +259,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to user.
+        ///   Looks up a localized string similar to block user.
         /// </summary>
         public static string Blocklist_user_txt {
             get {
@@ -417,6 +417,15 @@ namespace windows_client.Languages {
         public static string Chat_FTUE_personalise {
             get {
                 return ResourceManager.GetString("Chat_FTUE_personalise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to chat with.
+        /// </summary>
+        public static string Chat_With_Txt {
+            get {
+                return ResourceManager.GetString("Chat_With_Txt", resourceCulture);
             }
         }
         
@@ -2003,7 +2012,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Chat.
+        ///   Looks up a localized string similar to group chat.
         /// </summary>
         public static string GrpChat_Txt {
             get {
@@ -3902,15 +3911,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ADD PARTICIPANTS.
-        /// </summary>
-        public static string SelectUser_Header_AddParticipant_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Header_AddParticipant_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hide sms contacts.
         /// </summary>
         public static string SelectUser_HideSmsContacts_Txt {
@@ -4010,15 +4010,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to add this person.
-        /// </summary>
-        public static string SelectUser_TapMsg_Grp_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_TapMsg_Grp_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tap here to message this person.
         /// </summary>
         public static string SelectUser_TapMsg_Txt {
@@ -4028,7 +4019,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to group.
+        ///   Looks up a localized string similar to add members.
         /// </summary>
         public static string SelectUser_Title_AddParticipant_Txt {
             get {
@@ -4037,7 +4028,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  search or enter phone number.
+        ///   Looks up a localized string similar to search or enter phone number.
         /// </summary>
         public static string SelectUser_TxtBoxHint_Txt {
             get {
@@ -4280,7 +4271,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SHARE.
+        ///   Looks up a localized string similar to share.
         /// </summary>
         public static string Share_With_Txt {
             get {
