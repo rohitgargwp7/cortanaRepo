@@ -1171,12 +1171,10 @@ namespace windows_client.View
                     PageTitle.Text = AppResources.Share_With_Txt;
                 }
 
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
+                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
                 {
                     while (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
-
-                    App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
                 }
             }
 
