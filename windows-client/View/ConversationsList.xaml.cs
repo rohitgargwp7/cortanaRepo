@@ -2025,7 +2025,7 @@ namespace windows_client.View
 
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            try
+             try
             {
                 App.AnalyticsInstance.addEvent(Analytics.REWARDS);
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
@@ -2495,11 +2495,11 @@ namespace windows_client.View
             {
                 if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
                     App.ViewModel.StatusList.RemoveAt(index);
-
-                if (App.ViewModel.StatusList.Count > pendingCount)
-                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
             }
 
+            //scroll to zeroith item (the most recent status update on tapping this bar)
+            if (App.ViewModel.StatusList.Count > 0)
+                statusLLS.ScrollTo(App.ViewModel.StatusList[0]);
             RefreshBarCount = 0;
         }
 
@@ -3242,7 +3242,7 @@ namespace windows_client.View
 
         //hyperlink was clicked in bubble. dont perform actions like page navigation.
         private bool _hyperlinkedInsideStatusUpdateClicked;
-        
+
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
@@ -3253,7 +3253,7 @@ namespace windows_client.View
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
-            
+
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 
