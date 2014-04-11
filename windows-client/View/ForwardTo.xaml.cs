@@ -928,7 +928,7 @@ namespace windows_client.View
                                 return;
                             }
 
-                            if (!_isContactShared && _isFreeSmsOn)
+                            if (!_isContactShared && _isFreeSmsOn && _isForward)
                             {
                                 if (!Utils.isGroupConversation(cInfo.Msisdn))
                                 {
@@ -1005,24 +1005,6 @@ namespace windows_client.View
 
                     if (IsUserBlocked(cInfo))
                         return;
-
-                    if (!_isContactShared && _isFreeSmsOn)
-                    {
-                        if (!Utils.isGroupConversation(cInfo.Msisdn))
-                        {
-                            if (!cInfo.OnHike)
-                                _smsUserCount = 1;
-                        }
-                        else
-                            _smsUserCount = GroupManager.Instance.GetSMSParticiantCount(cInfo.Msisdn);
-
-                        if (_smsUserCount > _smsCredits)
-                        {
-                            MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
-                            _smsUserCount = 0;
-                            return;
-                        }
-                    }
 
                     PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cInfo;
                     string uri = "/View/NewChatThread.xaml";

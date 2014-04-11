@@ -191,6 +191,7 @@ namespace windows_client.View
         void editNameIconButton_Click(object sender, EventArgs e)
         {
             groupNameTxtBox.Focus();
+            groupNameTxtBox.Select(groupNameTxtBox.Text.Length, 0);
         }
 
         #endregion
