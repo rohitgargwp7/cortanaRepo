@@ -169,6 +169,10 @@
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
+    <Compile Include="Converters\BackgroundConverter.cs" />
+    <Compile Include="Converters\ForegroundConverter.cs" />
+    <Compile Include="Converters\TileSizeToHeightConverter.cs" />
+    <Compile Include="Converters\TileSizeToWidthConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -316,9 +320,6 @@
     <Compile Include="View\InviteUsers.xaml.cs">
       <DependentUpon>InviteUsers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NewSelectUserPage.xaml.cs">
-      <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Account.xaml.cs">
       <DependentUpon>Account.xaml</DependentUpon>
     </Compile>
@@ -465,10 +466,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\NewSelectUserPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Account.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -534,6 +531,7 @@
     <Content Include="View\images\appbar.delete.png" />
     <Content Include="View\images\appbar.select.png" />
     <Content Include="View\images\appbar.send.png" />
+    <Content Include="View\images\icon_camera.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbAnxiety.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbBeach2.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbCricket.jpg" />
@@ -581,9 +579,13 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbStarNight.png" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbILoveU.png" />
+    <Content Include="View\images\Chat_NotSelected.png" />
+    <Content Include="View\images\Chat_Selected.png" />
+    <Content Include="View\images\icon_edit.png" />
     <Content Include="View\images\download_icon_big.png" />
     <Content Include="View\images\fb_dark.png" />
-    <Content Include="View\images\fb_white.png" />
+    <Content Include="View\images\friend_Notselected.png" />
+    <Content Include="View\images\friend_selected.png" />
     <Content Include="View\images\heartsNudgeReceived.png" />
     <Content Include="View\images\heartsNudgeSent.png" />
     <Content Include="View\images\hike_h2h_icon.png" />
@@ -631,6 +633,7 @@
     <Content Include="View\images\group_pic_changed_CT.png" />
     <Content Include="View\images\icon_delete.png" />
     <Content Include="View\images\icon_file_attachment.png" />
+    <Content Include="View\images\icon_group_chat_gray.png" />
     <Content Include="View\images\icon_sending_CT.png" />
     <Content Include="View\images\icon_sending_grey.png" />
     <Content Include="View\images\ic_delivered_CT.png" />
@@ -664,11 +667,15 @@
     <Content Include="View\images\ChatBgFTUE\snow_flake.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbNight.png" />
     <Content Include="View\images\ic_sent_grey.png" />
-    <Content Include="View\images\Item_Selected.png" />
+    <Content Include="View\images\made_with_love.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
     <Content Include="View\images\nudge_received_blue.png" />
     <Content Include="View\images\nudge_sent_blue.png" />
+    <Content Include="View\images\Profile_NotSelected.png" />
+    <Content Include="View\images\Profile_Selected.png" />
+    <Content Include="View\images\Status_Notselected.png" />
+    <Content Include="View\images\Status_selected.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />
     <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
     <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />
@@ -694,7 +701,6 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\paint.png" />
     <Content Include="View\images\add_friend.png" />
-    <Content Include="View\images\add_users_white.png" />
     <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
     <Content Include="View\images\avatars\Beach.png" />
@@ -713,13 +719,10 @@
     <Content Include="View\images\avatars\TealPeople.png" />
     <Content Include="View\images\blocklist_holder.png" />
     <Content Include="View\images\block_list_icon_black.png" />
-    <Content Include="View\images\block_list_icon_white.png" />
     <Content Include="View\images\call.png" />
-    <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\deleted_white_icon.png" />
-    <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\downArrow.png" />
     <Content Include="View\images\emoticons\auto4.png" />
     <Content Include="View\images\emoticons\batti4.png" />
@@ -751,21 +754,16 @@
     <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
-    <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
-    <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
     <Content Include="View\images\fb_status_disabled.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
-    <Content Include="View\images\help_icon_white.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_editprofile.png" />
-    <Content Include="View\images\icon_group.png" />
-    <Content Include="View\images\notification_white.png" />
     <Content Include="View\images\notification_black.png" />
     <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
@@ -778,11 +776,9 @@
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
-    <Content Include="View\images\invite_dark.png" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\LocationPin.png" />
-    <Content Include="View\images\made_with_love.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\menu_location_icon.png" />
     <Content Include="View\images\Mic_icon_black_small.png" />
@@ -825,19 +821,14 @@
     <Content Include="View\images\mute_icon_main_l.png" />
     <Content Include="View\images\mute_icon_main_white.png" />
     <Content Include="View\images\MyLocation.png" />
-    <Content Include="View\images\notification_read.png" />
-    <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\pause_icon.png" />
     <Content Include="View\images\places_icon.png" />
-    <Content Include="View\images\profile_header_stock.png" />
-    <Content Include="View\images\profile_header_stock_dark.png" />
     <Content Include="View\images\refresh_bar_arrow.png" />
     <Content Include="View\images\remove_wt_icon.png" />
     <Content Include="View\images\resume_black_ftr.png" />
     <Content Include="View\images\resume_white_ftr.png" />
     <Content Include="View\images\search_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
-    <Content Include="View\images\settings_icon_white.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\close_black.png" />
     <Content Include="View\images\stickers\categorySets\active_bolly.png" />
@@ -889,9 +880,7 @@
     <Content Include="View\images\stickers\WVGA\humanoid\008_shocked.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\009_hurray.png" />
     <Content Include="View\images\stickers\WVGA\humanoid\010_yawning.png" />
-    <Content Include="View\images\account_white.png" />
     <Content Include="View\images\notifications_black.png" />
-    <Content Include="View\images\notifications_white.png" />
     <Content Include="View\images\account_black.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\timeline_status_icon.png" />
@@ -904,25 +893,19 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\twitter_status_disabled.png" />
     <Content Include="View\images\tw_dark.png" />
-    <Content Include="View\images\tw_white.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\unmute_icon_main_g.png" />
     <Content Include="View\images\unmute_icon_main_l.png" />
     <Content Include="View\images\user_invite.png" />
-    <Content Include="View\images\user_invite_white.png" />
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
-    <Content Include="View\images\user_lock_white.png" />
     <Content Include="View\images\new_icon.png" />
-    <Content Include="View\images\new_icon_white.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\Walkie_Talkie_Grey_small.png" />
-    <Content Include="View\images\made_with_love_dark.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
-    <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\mute_icon_main.png" />
     <Content Include="View\images\nudge_received.png" />
@@ -933,9 +916,7 @@
     <Content Include="View\images\timeline_status.png" />
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
-    <Content Include="View\images\unlink_account_white.png" />
     <Content Include="View\images\Walkie_Talkie_White_small.png" />
-    <Content Include="View\images\add_users.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1101,7 +1082,6 @@
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
     <Content Include="View\images\error_icon.png" />
     <Content Include="View\images\free_sms.png" />
-    <Content Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\icon_attachment.png" />
     <Content Include="View\images\icon_emoticon.png" />
     <Content Include="View\images\icon_group_chat.png" />
@@ -1115,9 +1095,7 @@
     <Content Include="View\images\ic_sent.png" />
     <Resource Include="View\images\privacy_black.png" />
     <Content Include="View\images\play_icon.png" />
-    <Resource Include="View\images\privacy_white.png" />
     <Content Include="View\images\signup_logo.png" />
-    <Resource Include="View\images\free_sms_dark.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />

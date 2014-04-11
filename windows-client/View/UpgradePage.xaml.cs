@@ -203,7 +203,7 @@ namespace windows_client.View
                         App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
-                        NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                        NavigationService.Navigate(new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative));
                     }
                     else
                     {

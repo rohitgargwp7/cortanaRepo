@@ -11,6 +11,7 @@ using windows_client.Model;
 using windows_client.Languages;
 using windows_client.DbUtils;
 using windows_client;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -23,11 +24,11 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            ApplicationBar appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            ApplicationBar appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
             this.ApplicationBar = appBar;
 
             nextIconButton = new ApplicationBarIconButton();

@@ -16,6 +16,7 @@ using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.View;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -38,11 +39,11 @@ namespace windows_client.View
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(PostStatusPage_Loaded);
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             postStatusIcon = new ApplicationBarIconButton();
             postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);

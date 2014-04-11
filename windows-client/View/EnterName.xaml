@@ -55,7 +55,7 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
-                <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
+                <Image Source="images\hike_header.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="420" Margin="24,20,0,0">
                     <TextBlock Name="txtBlckPhoneNumber" TextWrapping="Wrap" Width="420" FontSize="24"  TextAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5"/>
                 </StackPanel>

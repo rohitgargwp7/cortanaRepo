@@ -39,16 +39,8 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             initializeCredits();
-            if (Utils.isDarkTheme())
-            {
-                hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x12, 0x12, 0x12));
-                earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xa3, 0xa3, 0xa3));
-            }
-            else
-            {
-                hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
-                earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x55, 0x55, 0x55));
-            }
+            hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
+            earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x55, 0x55, 0x55));
         }
 
         public void onEventReceived(string type, object obj)
@@ -94,7 +86,7 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
             Analytics.SendClickEvent(HikeConstants.START_HIKING);
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
         public enum SocialState

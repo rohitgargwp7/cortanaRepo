@@ -263,6 +263,41 @@ namespace windows_client.Model
                 _isCloseFriendNux = value;
             }
         }
+
+        Visibility _checkBoxVisibility = Visibility.Collapsed;
+        public Visibility CheckBoxVisibility
+        {
+            get
+            {
+                return _checkBoxVisibility;
+            }
+            set
+            {
+                if (value != _checkBoxVisibility)
+                {
+                    _checkBoxVisibility = value;
+                    NotifyPropertyChanged("CheckBoxVisibility");
+                }
+            }
+        }
+
+        Visibility _blockButtonVisibility = Visibility.Collapsed;
+        public Visibility BlockButtonVisibility
+        {
+            get
+            {
+                return _blockButtonVisibility;
+            }
+            set
+            {
+                if (value != _blockButtonVisibility)
+                {
+                    _blockButtonVisibility = value;
+                    NotifyPropertyChanged("BlockButtonVisibility");
+                }
+            }
+        }
+
         public ContactInfo()
         {
             _name = null;
