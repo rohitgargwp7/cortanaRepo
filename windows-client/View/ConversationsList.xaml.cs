@@ -2497,9 +2497,9 @@ namespace windows_client.View
                     App.ViewModel.StatusList.RemoveAt(index);
             }
 
-            //scroll to zeroith item (the most recent status update on tapping this bar)
-            if (App.ViewModel.StatusList.Count > 0)
-                statusLLS.ScrollTo(App.ViewModel.StatusList[0]);
+            //scroll to the recent item(the most recent status update on tapping this bar)
+            if (App.ViewModel.StatusList.Count > index)
+                statusLLS.ScrollTo(App.ViewModel.StatusList[index]);
             RefreshBarCount = 0;
         }
 
