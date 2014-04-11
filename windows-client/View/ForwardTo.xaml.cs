@@ -1070,7 +1070,7 @@ namespace windows_client.View
                     {
                         App.ViewModel.BlockedHashset.Remove(groupInfoDictionary[cInfo.Msisdn]);
                         App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupInfoDictionary[cInfo.Msisdn]);
-                        return true;
+                        return false;
                     }
                 }
             }
@@ -1082,12 +1082,14 @@ namespace windows_client.View
                 {
                     App.ViewModel.BlockedHashset.Remove(cInfo.Msisdn);
                     App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, cInfo.Msisdn);
-                    return true;
+                    return false;
                 }
             }
+            else
+                return false;
 
             cInfo.IsSelected = false;
-            return false;
+            return true;
         }
 
         private void Block_Tap(object sender, System.Windows.Input.GestureEventArgs e)
