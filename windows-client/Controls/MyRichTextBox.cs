@@ -24,8 +24,8 @@ namespace windows_client.Controls
         public static readonly DependencyProperty ColorProperty =
             DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(MyRichTextBox), new PropertyMetadata(default(SolidColorBrush)));
 
-        public static readonly DependencyProperty MaxCharsProperty =
-            DependencyProperty.Register("MaxChars", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
+        public static readonly DependencyProperty MaxCharsPerLineProperty =
+            DependencyProperty.Register("MaxCharsPerLine", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
         private string lastText = string.Empty;
         public string Text
@@ -64,15 +64,15 @@ namespace windows_client.Controls
             }
         }
 
-        public Int32 MaxChars
+        public Int32 MaxCharsPerLine
         {
             get
             {
-                return (Int32)GetValue(MaxCharsProperty);
+                return (Int32)GetValue(MaxCharsPerLineProperty);
             }
             set
             {
-                SetValue(MaxCharsProperty, value);
+                SetValue(MaxCharsPerLineProperty, value);
             }
         }
 
@@ -97,9 +97,9 @@ namespace windows_client.Controls
                 return;
             lastText = text;
 
-            if (MaxChars > 0)
+            if (MaxCharsPerLine > 0)
             {
-                var maxChar = Utils.GetMaxCharForBlock(text, 1, MaxChars);
+                var maxChar = Utils.GetMaxCharForBlock(text, 1, MaxCharsPerLine);
                 if (text.Length > maxChar)
                     text = text.Substring(0, maxChar + 1).Trim() + "...";
             }

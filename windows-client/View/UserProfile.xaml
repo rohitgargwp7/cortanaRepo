@@ -81,7 +81,6 @@
                             <TextBlock.Inlines>
                                 <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
                                 <Run x:Name="txtSmsUserNameBlk2" />
-                                <LineBreak/>
                                 <Run x:Name="txtSmsUserNameBlk3" />
                             </TextBlock.Inlines>
                         </TextBlock>

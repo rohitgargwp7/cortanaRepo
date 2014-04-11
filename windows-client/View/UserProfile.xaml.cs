@@ -914,13 +914,13 @@ namespace windows_client.View
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
             postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
             postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
-            postStatusButton.Click += new EventHandler(AddStatus_Tap);
+            postStatusButton.Click += AddStatus_Tap;
             appBar.Buttons.Add(postStatusButton);
 
             editProfileAppBarButton = new ApplicationBarIconButton();
             editProfileAppBarButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
-            editProfileAppBarButton.Text = AppResources.Conversations_EditProfile_Txt;
-            editProfileAppBarButton.Click += new EventHandler(EditProfile_Tap);
+            editProfileAppBarButton.Text = AppResources.Edit_AppBar_Txt;
+            editProfileAppBarButton.Click += EditProfile_Tap;
             appBar.Buttons.Add(editProfileAppBarButton);
 
             changePhotoAppBarButton = new ApplicationBarIconButton();
@@ -1068,9 +1068,10 @@ namespace windows_client.View
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             imgInviteLock.Visibility = Visibility.Visible;
-            txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
             txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
             txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+
+            txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
             txtSmsUserNameBlk2.Text = firstName;
             txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
             btnInvite.Content = AppResources.Add_To_Fav_Txt;
@@ -1121,7 +1122,7 @@ namespace windows_client.View
             imgInviteLock.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
             txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = AppResources.InviteOnHike_Txt;
+            txtSmsUserNameBlk2.Text = (AppResources.InviteOnHike_Txt).Replace("{0}", "");
             txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
             txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
             txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;

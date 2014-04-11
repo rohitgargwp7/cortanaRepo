@@ -119,7 +119,7 @@
   </resheader>
   <data name="AppBar_Next_Btn" xml:space="preserve">
     <value>Next</value>
-    <comment>AppBar Next Button</comment>
+    <comment>(max 10 chars)</comment>
   </data>
   <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
     <value>Cannot change Profile Image. Try Later!!</value>
@@ -133,16 +133,12 @@
     <value>Connectivity issue.</value>
     <comment>Network issue msg (used in all pages)</comment>
   </data>
-  <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>added you as friend. Would you like to do the same?</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
-    <value>Delete All Chats</value>
+    <value>delete all chats</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_DelChat_Txt" xml:space="preserve">
-    <value>Delete Chat</value>
+    <value>delete chat</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
@@ -163,7 +159,7 @@
   </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
     <value>new chat</value>
-    <comment>AppBar Btn (cs)</comment>
+    <comment>(max 10 chars)</comment>
   </data>
   <data name="Conversations_SayHI_Txt" xml:space="preserve">
     <value>Say Hi to {0}!</value>
@@ -181,16 +177,12 @@
     <value>confirm</value>
     <comment>Fav (xaml)</comment>
   </data>
-  <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
-    <value>Default Name</value>
-    <comment>Default name shown if no name (xaml)</comment>
-  </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
     <value>Do you really want to remove {0} from your friend list?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from your friend list</value>
+    <value>Remove from friend list</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -201,17 +193,13 @@
     <value>invite friends</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Your friends</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Delete_Txt" xml:space="preserve">
     <value>delete</value>
     <comment>Chats ContextMenu (xaml)(max 10 chars)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>done</value>
-    <comment>CS</comment>
+    <comment>(max 10 chars)</comment>
   </data>
   <data name="EnterName_Msg_TxtBlk" xml:space="preserve">
     <value>Getting you in</value>
@@ -299,15 +287,11 @@
   </data>
   <data name="GrpChat_Txt" xml:space="preserve">
     <value>group chat</value>
-    <comment>Text Group Chat </comment>
+    <comment>max 10 char</comment>
   </data>
   <data name="Help" xml:space="preserve">
     <value>help</value>
     <comment>Profile (xaml)</comment>
-  </data>
-  <data name="Ignore_Txt" xml:space="preserve">
-    <value>Ignore</value>
-    <comment>General text used in different files</comment>
   </data>
   <data name="NetworkError_TryAgain" xml:space="preserve">
     <value>Network Error. Try Again!!</value>
@@ -1106,9 +1090,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Nudge" xml:space="preserve">
     <value>Nudge</value>
   </data>
-  <data name="Nudge_Exclamation" xml:space="preserve">
-    <value>Nudge!</value>
-  </data>
   <data name="Nudge_Tute" xml:space="preserve">
     <value>Double tap anywhere on the chat to nudge your friend.</value>
     <comment>xaml</comment>
@@ -1117,11 +1098,11 @@ Download it now http://hike.in and join the fun!</value>
     <value>OK</value>
   </data>
   <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
-    <value>Are you sure you want to remove this person from group ?</value>
+    <value>Are you sure you want to remove this person from group?</value>
     <comment>Remove member from group text</comment>
   </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value>remove from group</value>
+    <value>Remove from group</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
@@ -1134,10 +1115,6 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="ChatThread_GCMute" xml:space="preserve">
     <value>This group chat is muted</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="Favorites_AddMore" xml:space="preserve">
-    <value>Add More</value>
     <comment>xaml</comment>
   </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
@@ -1154,19 +1131,19 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Pause_Txt" xml:space="preserve">
     <value>pause</value>
-    <comment>record video page app bar</comment>
+    <comment>record video page app bar (max 10 char)</comment>
   </data>
   <data name="Play_Txt" xml:space="preserve">
     <value>play</value>
-    <comment>record video page app bar</comment>
+    <comment>record video page app bar (max 10 char)</comment>
   </data>
   <data name="Record_Txt" xml:space="preserve">
     <value>record</value>
-    <comment>record video page app bar</comment>
+    <comment>record video page app bar (max 10 char)</comment>
   </data>
   <data name="Stop_Txt" xml:space="preserve">
     <value>stop</value>
-    <comment>record video page app bar</comment>
+    <comment>record video page app bar (max 10 char)</comment>
   </data>
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
     <value>Confirm your number</value>
@@ -1181,11 +1158,9 @@ Download it now http://hike.in and join the fun!</value>
   <data name="StatusUpdate_Photo" xml:space="preserve">
     <value>Changed profile picture</value>
   </data>
-  <data name="StatuUpdate_Location" xml:space="preserve">
-    <value>at {0}</value>
-  </data>
   <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
-    <value>Post Status</value>
+    <value>post status</value>
+    <comment>app bar (max 10 char)</comment>
   </data>
   <data name="OthersProfile_Txt" xml:space="preserve">
     <value>profile</value>
@@ -1200,7 +1175,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Help him upgrade to hike!</value>
   </data>
   <data name="InviteOnHike_Txt" xml:space="preserve">
-    <value> is missing all the fun.</value>
+    <value>{0} is missing all the fun.</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
     <value>on SMS</value>
@@ -2128,5 +2103,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Chat_With_Txt" xml:space="preserve">
     <value>chat with</value>
+  </data>
+  <data name="Status_Not_Posted_Rename" xml:space="preserve">
+    <value>Status Not Posted</value>
   </data>
 </root>
