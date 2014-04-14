@@ -94,7 +94,6 @@ namespace windows_client.utils
         private BitmapImage groupImageWhite;
         private BitmapImage groupImageGray;
         private BitmapImage blackContactIcon;
-        private BitmapImage whiteContactIcon;
         private BitmapImage facebookDisabledIcon;
         private BitmapImage facebookEnabledIcon;
         private BitmapImage twitterDisabledIcon;
@@ -1148,18 +1147,6 @@ namespace windows_client.utils
                     blackContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
 
                 return blackContactIcon;
-            }
-        }
-
-        public BitmapImage WhiteContactIcon
-        {
-            get
-            {
-                if (whiteContactIcon == null)
-                {
-                    whiteContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
-                }
-                return whiteContactIcon;
             }
         }
 

@@ -1114,8 +1114,7 @@ namespace windows_client.View
 
                 worker.RunWorkerAsync();
 
-                spContactTransfer.IsHitTestVisible = false;
-                spContactTransfer.Opacity = 0.4;
+                spContactTransfer.IsEnabled = false;
             }
         }
 
@@ -1248,8 +1247,7 @@ namespace windows_client.View
                 if (!isGroupChat)
                     sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
 
-                spContactTransfer.IsHitTestVisible = true;
-                spContactTransfer.Opacity = 1;
+                spContactTransfer.IsEnabled = true;
                 chatPaint.Opacity = 1;
 
                 if (appBar.MenuItems.Contains(inviteMenuItem))
