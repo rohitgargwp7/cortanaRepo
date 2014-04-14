@@ -2107,4 +2107,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Status_Not_Posted_Rename" xml:space="preserve">
     <value>Status Not Posted</value>
   </data>
+  <data name="Leave_Group_Body" xml:space="preserve">
+    <value>Are you sure you want to leave the group?</value>
+  </data>
+  <data name="Leave_Group_Caption" xml:space="preserve">
+    <value>Leave group</value>
+  </data>
 </root>

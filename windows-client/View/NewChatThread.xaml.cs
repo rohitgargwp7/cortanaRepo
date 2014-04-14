@@ -1746,11 +1746,15 @@ namespace windows_client.View
         {
             if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
+
+            MessageBoxResult mr = MessageBox.Show(AppResources.Leave_Group_Body, AppResources.Leave_Group_Caption, MessageBoxButton.OKCancel);
+            if (mr != MessageBoxResult.OK)
+                return;
             /*
-             * 1. Delete from DB (pubsub)
-             * 2. Remove from ConvList page
-             * 3. GoBack
-             */
+            * 1. Delete from DB (pubsub)
+            * 2. Remove from ConvList page
+            * 3. GoBack
+            */
             JObject jObj = new JObject();
             jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
             jObj[HikeConstants.TO] = mContactNumber;
@@ -4361,9 +4365,11 @@ namespace windows_client.View
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        ChangeBackground();
-
-                        chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                        if (App.ViewModel.SelectedBackground != null)
+                        {
+                            ChangeBackground();
+                            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                        }
                     });
                 }
             }
@@ -4735,7 +4741,7 @@ namespace windows_client.View
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
-                    
+
                     if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString()))
                         break;
 
