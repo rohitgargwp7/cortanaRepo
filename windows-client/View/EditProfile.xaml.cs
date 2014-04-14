@@ -254,6 +254,12 @@ namespace windows_client.View
                         genderIndex = genderListPicker.SelectedIndex;
                         string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : "f");
                         App.WriteToIsoStorageSettings(App.GENDER, gender);
+
+                        if (genderListPicker.Items.Count == 3) // if select is there remove it
+                        {
+                            genderListPicker.ItemsSource = new List<string> { AppResources.EditProfile_GenderMale_LstPckr, AppResources.EditProfile_GenderFemale_lstPckr };
+                            genderIndex = gender == "m" ? 0 : 1;
+                        }
                     }
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
@@ -262,11 +268,7 @@ namespace windows_client.View
                     try
                     {
                         MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
-                        if (genderListPicker.Items.Count == 3) // if select is there remove it
-                        {
-                            genderListPicker.ItemsSource = new List<string> { AppResources.EditProfile_GenderMale_LstPckr, AppResources.EditProfile_GenderFemale_lstPckr };
-                            genderIndex--;
-                        }
+
                     }
                     catch (Exception ex)
                     {
