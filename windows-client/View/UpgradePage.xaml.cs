@@ -144,10 +144,9 @@ namespace windows_client.View
                     {
                         bool groupEmptyNameFound = false;
                         //conv map is initialised in app.xaml.cs
-                        List<ConversationListObject> listConv = App.ViewModel.ConvMap.Values.ToList();
-                        if (listConv != null && listConv.Count > 0)
+                        if (App.ViewModel.ConvMap.Count > 0)
                         {
-                            foreach (ConversationListObject convObj in listConv)
+                            foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
                             {
                                 if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
                                 {
