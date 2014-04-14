@@ -2570,6 +2570,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to leave the group?.
+        /// </summary>
+        public static string Leave_Group_Body {
+            get {
+                return ResourceManager.GetString("Leave_Group_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave group.
+        /// </summary>
+        public static string Leave_Group_Caption {
+            get {
+                return ResourceManager.GetString("Leave_Group_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location Disabled.
         /// </summary>
         public static string Location_Disabled_Heading {
