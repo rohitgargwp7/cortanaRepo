@@ -2025,7 +2025,7 @@ namespace windows_client.View
 
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-             try
+            try
             {
                 App.AnalyticsInstance.addEvent(Analytics.REWARDS);
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
@@ -2476,8 +2476,7 @@ namespace windows_client.View
             int index = 0;
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
-
-            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+            else if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
                 App.ViewModel.StatusList.RemoveAt(index);
 
             // this fix will solve the possible crash , suggested by nitesh
@@ -2491,15 +2490,10 @@ namespace windows_client.View
                 }
             }
 
-            if (pendingCount > index)
-            {
-                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
-                    App.ViewModel.StatusList.RemoveAt(index);
-            }
-
             //scroll to the recent item(the most recent status update on tapping this bar)
-            if (App.ViewModel.StatusList.Count > index)
-                statusLLS.ScrollTo(App.ViewModel.StatusList[index]);
+            if (App.ViewModel.StatusList.Count > pendingCount)
+                statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
+
             RefreshBarCount = 0;
         }
 
