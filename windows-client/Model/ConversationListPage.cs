@@ -367,14 +367,6 @@ namespace windows_client.Model
             {
                 if (!string.IsNullOrWhiteSpace(_contactName))
                     return _contactName;
-                else if (IsGroupChat)
-                {
-                    //occurence of this is negligible so doing this here
-                    GroupManager.Instance.LoadGroupParticipants(_msisdn);
-                    _contactName = GroupManager.Instance.defaultGroupName(_msisdn);
-                    ConversationTableUtils.updateGroupName(_msisdn, _contactName);
-                    return _contactName;
-                }
                 else
                     return _msisdn;
             }
