@@ -2476,7 +2476,7 @@ namespace windows_client.View
             int index = 0;
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
-            else if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
                 App.ViewModel.StatusList.RemoveAt(index);
 
             // this fix will solve the possible crash , suggested by nitesh
