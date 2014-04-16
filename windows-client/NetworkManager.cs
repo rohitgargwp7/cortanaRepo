@@ -917,6 +917,7 @@ namespace windows_client
             #region GROUP_CHAT_JOIN
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
+                string groupName = string.Empty;
                 jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 JArray arr = null;
                 try
@@ -949,6 +950,7 @@ namespace windows_client
                 JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
                 if (metaData != null)
                 {
+                    #region chat background 
                     try
                     {
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
@@ -967,6 +969,17 @@ namespace windows_client
                     {
                         Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
                     }
+
+                    #endregion
+
+                    #region GROUP NAME
+
+                    JToken gName;
+                    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
+                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                        groupName = gName.ToString();
+
+                    #endregion
                 }
                 #endregion
 
@@ -1049,33 +1062,7 @@ namespace windows_client
                 }
                 #endregion
 
-                //To:do handle meta dat for group name in next release
-                //#region META DATA GROUP NAME
-
-                //metaData = (JObject)jsonObj[HikeConstants.METADATA];
-                //if (metaData != null)
-                //{
-                //    #region GROUP NAME
-
-                //    JToken gName;
-                //    string groupName;
-                //    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
-                //    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                //    {
-                //        ConversationListObject cObj;
-                //        groupName = gName.ToString();
-                //        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
-                //        {
-                //            if (cObj.ContactName != groupName)
-                //                ConversationTableUtils.updateGroupName(grpId, groupName);
-                //        }
-                //    }
-
-                //    #endregion
-                //}
-                //#endregion
-
-                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
+                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
                 if (obj == null)
                     return;
                 GroupManager.Instance.SaveGroupCache(grpId);
