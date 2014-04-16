@@ -975,7 +975,7 @@ namespace windows_client
                     #region GROUP NAME
 
                     JToken gName;
-                    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
+                    //pubsub for gcn is not raised
                     if (metaData.TryGetValue(HikeConstants.NAME, out gName))
                         groupName = gName.ToString();
 
