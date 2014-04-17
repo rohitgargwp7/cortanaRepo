@@ -1447,17 +1447,19 @@ namespace windows_client.View
             return obj;
         }
 
+        ConvMessage _unreadMsg = null;
+
         private void loadMessages(int messageFetchCount, bool isInitialLaunch)
         {
             int i;
             bool isPublish = false;
             hasMoreMessages = false;
-            ConvMessage unreadMsg = null;
 
             if (isInitialLaunch && _unreadCount > 0)
             {
-                unreadMsg = new ConvMessage(_unreadCount + " unread messages", mContactNumber, 0, ConvMessage.State.UNKNOWN);
-                unreadMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                var msgStr = _unreadCount > 1 ? String.Format(AppResources.Unread_Messages_Txt, _unreadCount) : String.Format(AppResources.Unread_Message_Txt, _unreadCount);
+                _unreadMsg = new ConvMessage(msgStr, mContactNumber, 0, ConvMessage.State.UNKNOWN);
+                _unreadMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.UNREAD_NOTIFICATION;
                 messageFetchCount += _unreadCount;
             }
 
@@ -1529,18 +1531,19 @@ namespace windows_client.View
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
 
-                if (i == _unreadCount && unreadMsg != null)
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                AddMessageToOcMessages(unreadMsg, true, false);
-                            });
-                }
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     AddMessageToOcMessages(cm, true, false, true);
                 });
+
+                if (i == _unreadCount - 1 && _unreadMsg != null)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        AddMessageToOcMessages(_unreadMsg, true, false);
+                        llsMessages.ScrollTo(_unreadMsg);
+                    });
+                }
             }
 
             #region perception fix update db
@@ -2402,6 +2405,13 @@ namespace windows_client.View
 
                     if (!insertAtTop)
                         ScrollToBottom();
+                }
+                #endregion
+                #region Unread Messages
+                else if (convMessage == _unreadMsg)
+                {
+                    ocMessages.Insert(insertPosition, _unreadMsg);
+                    insertPosition++;
                 }
                 #endregion
 

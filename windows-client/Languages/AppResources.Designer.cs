@@ -4757,6 +4757,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} unread message.
+        /// </summary>
+        public static string Unread_Message_Txt {
+            get {
+                return ResourceManager.GetString("Unread_Message_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} unread messages.
+        /// </summary>
+        public static string Unread_Messages_Txt {
+            get {
+                return ResourceManager.GetString("Unread_Messages_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to update now.
         /// </summary>
         public static string Update_Now_Txt {
