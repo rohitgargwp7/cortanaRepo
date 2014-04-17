@@ -1054,11 +1054,17 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
+
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                _unreadCount = App.ViewModel.ConvMap[mContactNumber].UnreadCounter;
+
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
         }
+
+        int _unreadCount = 0;
 
         private void UpdateChatStatus()
         {
@@ -1446,6 +1452,14 @@ namespace windows_client.View
             int i;
             bool isPublish = false;
             hasMoreMessages = false;
+            ConvMessage unreadMsg = null;
+
+            if (isInitialLaunch && _unreadCount > 0)
+            {
+                unreadMsg = new ConvMessage(_unreadCount + " unread messages", mContactNumber, 0, ConvMessage.State.UNKNOWN);
+                unreadMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                messageFetchCount += _unreadCount;
+            }
 
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
 
@@ -1514,6 +1528,15 @@ namespace windows_client.View
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
+
+                if (i == _unreadCount && unreadMsg != null)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                AddMessageToOcMessages(unreadMsg, true, false);
+                            });
+                }
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     AddMessageToOcMessages(cm, true, false, true);
