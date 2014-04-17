@@ -5652,11 +5652,11 @@ namespace windows_client.View
             }
 
             chatBackground.Opacity = 1;
+            headerBackground.Background = UI_Utils.Instance.Transparent;
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 chatBackground.Source = null;
-                headerBackground.Background = UI_Utils.Instance.Transparent;
                 return;
             }
 
@@ -5727,7 +5727,7 @@ namespace windows_client.View
 
                 _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
 
-                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+                headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
             };
         }
 

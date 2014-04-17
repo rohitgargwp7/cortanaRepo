@@ -1361,6 +1361,7 @@
 
             <Style x:Key="PageHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
                 <Setter Property="Margin" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
             <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">

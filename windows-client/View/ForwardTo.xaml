@@ -23,7 +23,7 @@
         
         <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
-        <Grid Background="{StaticResource HikeBlueHeader}">
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Chat_With_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
