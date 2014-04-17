@@ -1460,7 +1460,7 @@ namespace windows_client.View
                 var msgStr = _unreadCount > 1 ? String.Format(AppResources.Unread_Messages_Txt, _unreadCount) : String.Format(AppResources.Unread_Message_Txt, _unreadCount);
                 _unreadMsg = new ConvMessage(msgStr, mContactNumber, 0, ConvMessage.State.UNKNOWN);
                 _unreadMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.UNREAD_NOTIFICATION;
-                messageFetchCount += _unreadCount;
+                messageFetchCount = messageFetchCount <= _unreadCount ? _unreadCount + 10 : messageFetchCount;
             }
 
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);

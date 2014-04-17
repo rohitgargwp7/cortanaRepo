@@ -1073,6 +1073,8 @@ namespace windows_client.View
                         return false;
                     }
                 }
+                else
+                    return false;
             }
             else if (App.ViewModel.BlockedHashset.Contains(cInfo.Msisdn))
             {

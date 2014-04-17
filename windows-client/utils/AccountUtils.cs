@@ -382,10 +382,7 @@ namespace windows_client.utils
                     data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
                     data[HikeConstants.APPVERSION] = Utils.getAppVersion();
-                    if (Utils.IsWP8)
-                        data[HikeConstants.OS_NAME] = "win8";
-                    else
-                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_NAME] = "win8";
                     data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
                     string inviteToken = "";
                     if (!string.IsNullOrEmpty(inviteToken))
@@ -499,10 +496,7 @@ namespace windows_client.utils
                 #endregion
                 case RequestType.POST_INFO_ON_APP_UPDATE:
                     finalCallbackFunction = vars[2] as postResponseFunction;
-                    if (Utils.IsWP8)
-                        data[HikeConstants.OS_NAME] = "win8";
-                    else
-                        data[HikeConstants.OS_NAME] = "win7";
+                    data[HikeConstants.OS_NAME] = "win8";
                     data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
                     data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
