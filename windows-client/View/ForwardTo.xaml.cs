@@ -345,16 +345,16 @@ namespace windows_client.View
 
                 if (gl[_maxCharGroups].Count > 0 && gl[_maxCharGroups][0].Msisdn != null)
                 {
-                    defaultContact.Name = _charsEntered;
-                    string num = Utils.NormalizeNumber(_charsEntered);
-                    defaultContact.Msisdn = num;
-                    defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
-                    defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
-                    defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                    defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
+                    if (gl[_maxCharGroups][0].IsSelected)
+                        gl[_maxCharGroups][0] = new ContactInfo();
 
-                    if (gl[_maxCharGroups][0].Msisdn == defaultContact.Msisdn)
-                        gl[_maxCharGroups][0] = defaultContact;
+                    gl[_maxCharGroups][0].Name = _charsEntered;
+                    string num = Utils.NormalizeNumber(_charsEntered);
+                    gl[_maxCharGroups][0].Msisdn = num;
+                    gl[_maxCharGroups][0].ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
+                    gl[_maxCharGroups][0].IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
+                    gl[_maxCharGroups][0].CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    gl[_maxCharGroups][0].BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 contactsListBox.ItemsSource = gl;
