@@ -2476,7 +2476,6 @@ namespace windows_client.View
             int index = 0;
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
-
             if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
                 App.ViewModel.StatusList.RemoveAt(index);
 
@@ -2491,14 +2490,9 @@ namespace windows_client.View
                 }
             }
 
-            if (pendingCount > index)
-            {
-                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
-                    App.ViewModel.StatusList.RemoveAt(index);
-
-                if (App.ViewModel.StatusList.Count > pendingCount)
-                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
-            }
+            //scroll to the recent item(the most recent status update on tapping this bar)
+            if (App.ViewModel.StatusList.Count > pendingCount)
+                statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
 
             RefreshBarCount = 0;
         }
@@ -3242,7 +3236,7 @@ namespace windows_client.View
 
         //hyperlink was clicked in bubble. dont perform actions like page navigation.
         private bool _hyperlinkedInsideStatusUpdateClicked;
-        
+
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
@@ -3253,7 +3247,7 @@ namespace windows_client.View
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
-            
+
             App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 

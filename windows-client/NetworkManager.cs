@@ -1089,7 +1089,7 @@ namespace windows_client
                     ConversationListObject cObj;
                     if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     {
-                        if (cObj.ContactName == groupName)//group name is same as previous
+                        if (cObj.ContactName == groupName || string.IsNullOrEmpty(groupName))//group name is same as previous or empty
                             return;
                     }
                     else
