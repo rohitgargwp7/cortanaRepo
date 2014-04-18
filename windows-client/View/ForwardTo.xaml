@@ -47,9 +47,9 @@
                     <DataTemplate>
                         <Button Style="{StaticResource SelectedItemButtonStyle}" Click="Button_Click" Margin="0,0,5,5">
                             <Button.Content>
-                                <StackPanel Margin="5" Orientation="Horizontal">
-                                    <TextBlock Foreground="Black" Text="{Binding Name}" FontWeight="Light"/>
-                                    <Image Source="/View/images/cancel_black.png" MaxHeight="20" Margin="5,0,0,0"/>
+                                <StackPanel Margin="5" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Foreground="Black" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    <Image Source="/View/images/cancel_black.png" MaxHeight="20" Margin="5,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
