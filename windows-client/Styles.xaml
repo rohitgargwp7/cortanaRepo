@@ -481,6 +481,17 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
+            <Style x:Key="SelectedItemButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
+                <Setter Property="Background" Value="#DDDDDD"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Height" Value="45"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
             <Style x:Key="AddAsFriendButtonStyle" TargetType="Button" BasedOn="{StaticResource YesButtonStyle}">
                 <Setter Property="MinWidth" Value="180"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>

@@ -31,13 +31,33 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="0" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
-                                  Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
-                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
+                                Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
+                                TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+            <ListBox Name="selectedList" MaxHeight="110" Margin="12,0" Grid.Row="1">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource SelectedItemButtonStyle}" Click="Button_Click" Margin="0,0,5,5">
+                            <Button.Content>
+                                <StackPanel Margin="5" Orientation="Horizontal">
+                                    <TextBlock Foreground="Black" Text="{Binding Name}" FontWeight="Light"/>
+                                    <Image Source="/View/images/cancel_black.png" MaxHeight="20" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="12,12" 
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="12" 
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" HideEmptyGroups="True"
