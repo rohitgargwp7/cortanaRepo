@@ -510,6 +510,8 @@ namespace windows_client.FileTransfers
 
             if (code == HttpStatusCode.OK)
             {
+                ResetRetryOnSuccess();
+
                 if (!String.IsNullOrEmpty(data))
                     jObject = JObject.Parse(data);
 
@@ -529,6 +531,8 @@ namespace windows_client.FileTransfers
             }
             else if (code == HttpStatusCode.Created)
             {
+                ResetRetryOnSuccess();
+
                 CurrentHeaderPosition += BlockSize;
 
                 if (FileState == FileTransferState.STARTED)
