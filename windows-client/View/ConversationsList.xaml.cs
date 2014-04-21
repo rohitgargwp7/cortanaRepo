@@ -71,7 +71,6 @@ namespace windows_client.View
         {
             InitializeComponent();
             initAppBar();
-            initProfilePage();
 
             ApplicationBar = appBar;
             //ChangeAppBarOnConvSelected();
@@ -100,9 +99,11 @@ namespace windows_client.View
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
             App.ViewModel.HidetypingNotification += HideTypingNotification;
+
+            appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
         }
 
-
+        string _userName;
 
         void Instance_ShowProTip(object sender, EventArgs e)
         {
@@ -115,7 +116,7 @@ namespace windows_client.View
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Loaded -= ConversationsList_Loaded;
-            launchPagePivot.SelectedIndex = 3;
+            launchPagePivot.SelectedIndex = 2;
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -139,7 +140,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GO_TO_CONV_VIEW);
             }
 
-            if (launchPagePivot.SelectedIndex == 3)
+            if (launchPagePivot.SelectedIndex == 2)
             {
                 TotalUnreadStatuses = 0;
 
@@ -240,22 +241,12 @@ namespace windows_client.View
                 }
             }
 
-            //Todo: dont do on every navigation event - loading is slow
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            if (showFreeSMS)
-            {
-                freeSMSPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                freeSMSPanel.Visibility = Visibility.Collapsed;
-            }
             byte statusSettingsValue;
             isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
             muteStatusImage.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-                launchPagePivot.SelectedIndex = 3;
+                launchPagePivot.SelectedIndex = 2;
 
             FrameworkDispatcher.Update();
         }
@@ -301,7 +292,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
-            if (launchPagePivot.SelectedIndex == 3) //if user quits app from timeline when a few statuses were shown as unread
+            if (launchPagePivot.SelectedIndex == 2) //if user quits app from timeline when a few statuses were shown as unread
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
         }
 
@@ -557,15 +548,11 @@ namespace windows_client.View
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV, this);
             mPubSub.addListener(HikePubSub.ADD_TO_PENDING, this);
-            mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
-            mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
             mPubSub.addListener(HikePubSub.STATUS_DELETED, this);
             mPubSub.addListener(HikePubSub.REMOVE_FRIENDS, this);
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
@@ -583,15 +570,11 @@ namespace windows_client.View
             try
             {
                 mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-                mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV, this);
                 mPubSub.removeListener(HikePubSub.ADD_TO_PENDING, this);
-                mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
-                mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
                 mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
-                mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
                 mPubSub.removeListener(HikePubSub.STATUS_DELETED, this);
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
@@ -613,57 +596,28 @@ namespace windows_client.View
 
         #region Profile Screen
 
-        private void initProfilePage()
-        {
-            bool showRewards;
-            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
-                rewardsPanel.Visibility = Visibility.Visible;
+        //private void initProfilePage()
+        //{
+        //    bool showRewards;
+        //    if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
+        //        rewardsPanel.Visibility = Visibility.Visible;
 
-            txtStatus.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
-            SetUserLastStatus();
+        //    int rew_val = 0;
 
-            int rew_val = 0;
+        //    string name;
+        //    appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+        //    if (name != null)
+        //        accountName.Text = name;
+        //    int smsCount = 0;
+        //    App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
+        //    creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
 
-            string name;
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name != null)
-                accountName.Text = name;
-            int smsCount = 0;
-            App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
-            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
-
-            Stopwatch st = Stopwatch.StartNew();
-            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to fetch profile image : {0}", msec);
-        }
-
-        private void SetUserLastStatus()
-        {
-            int moodId;
-            string lastStatus = StatusMsgsTable.GetLastStatusMessage(out moodId);
-            if (!string.IsNullOrEmpty(lastStatus))
-            {
-                txtStatus.Text = lastStatus;
-                if (moodId > 0)
-                {
-                    statusImage.Height = 30;
-                    statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(moodId);
-                }
-                else
-                {
-                    statusImage.Height = 25;
-                    statusImage.Source = UI_Utils.Instance.TextStatusImage;
-                }
-            }
-            else
-            {
-                statusImage.Source = UI_Utils.Instance.TextStatusImage;
-                txtStatus.Text = AppResources.Conversations_DefaultStatus_Txt;
-                //todo:change default status
-            }
-        }
+        //    Stopwatch st = Stopwatch.StartNew();
+        //    avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+        //    st.Stop();
+        //    long msec = st.ElapsedMilliseconds;
+        //    Debug.WriteLine("Time to fetch profile image : {0}", msec);
+        //}
 
         #endregion
 
@@ -800,7 +754,7 @@ namespace windows_client.View
             _oldIndex = _newIndex;
             _newIndex = (sender as Pivot).SelectedIndex;
 
-            if (_newIndex != 3 && _oldIndex == 3 && RefreshBarCount > 0)
+            if (_newIndex != 2 && _oldIndex == 2 && RefreshBarCount > 0)
                 UpdatePendingStatusFromRefreshBar();
 
             if (_newIndex == 0)
@@ -905,10 +859,6 @@ namespace windows_client.View
             }
             else if (_newIndex == 2)
             {
-                muteStatusGrid.Visibility = Visibility.Collapsed;
-            }
-            else if (_newIndex == 3)
-            {
                 ProTipCount = 0;
 
                 if (appBar.MenuItems.Contains(delConvsMenu))
@@ -943,7 +893,7 @@ namespace windows_client.View
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
-                            string firstName = Utils.GetFirstName(accountName.Text);
+                            string firstName = Utils.GetFirstName(_userName);
                             App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
 
@@ -975,7 +925,7 @@ namespace windows_client.View
                         statusLLS.ItemsSource = App.ViewModel.StatusList;
                 }
             }
-            if (_newIndex != 3)
+            if (_newIndex != 2)
             {
                 if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                     TotalUnreadStatuses = 0;
@@ -995,25 +945,16 @@ namespace windows_client.View
                     statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
                     chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageSelected;
                     friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
-                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
                     break;
                 case 1:
                     statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
                     chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
                     friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageSelected;
-                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
                     break;
                 case 2:
-                    statusTabImage.Source = UI_Utils.Instance.StatusTabImageNotSelected;
-                    chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
-                    friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
-                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageSelected;
-                    break;
-                case 3:
                     statusTabImage.Source = UI_Utils.Instance.StatusTabImageSelected;
                     chatsTabImage.Source = UI_Utils.Instance.ChatsTabImageNotSelected;
                     friendsTabImage.Source = UI_Utils.Instance.FriendsTabImageNotSelected;
-                    profileTabImage.Source = UI_Utils.Instance.ProfileTabImageNotSelected;
                     break;
             }
         }
@@ -1134,21 +1075,12 @@ namespace windows_client.View
                 }
             }
             #endregion
-            #region SMS_CREDIT_CHANGED
-            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, Convert.ToString((int)obj));
-                });
-            }
-            #endregion
             #region UPDATE_ACCOUNT_NAME
             else if (HikePubSub.UPDATE_ACCOUNT_NAME == type)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    accountName.Text = (string)obj;
+                    _userName = (string)obj;
                 });
             }
             #endregion
@@ -1202,58 +1134,12 @@ namespace windows_client.View
                             App.ViewModel.StatusList.Insert(index, frs);
 
                         }
-                        if (launchPagePivot.SelectedIndex != 3)
+                        if (launchPagePivot.SelectedIndex != 2)
                         {
                             UnreadFriendRequests++;
                         }
                     }
                 });
-            }
-            #endregion
-            #region REWARDS TOGGLE
-            else if (HikePubSub.REWARDS_TOGGLE == type)
-            {
-                bool showRewards;
-                appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
-                if (showRewards) // show rewards option
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
-                            rewardsPanel.Visibility = System.Windows.Visibility.Visible;
-                    });
-                }
-                else // hide rewards option 
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
-                            rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
-                    });
-                }
-            }
-            #endregion
-            #region REWARDS CHANGED
-            else if (HikePubSub.REWARDS_CHANGED == type)
-            {
-                //int rew_val = (int)obj;
-                //if (rew_val <= 0) // hide value
-                //{
-                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //    {
-                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
-                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
-                //    });
-                //}
-                //else
-                //{
-                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //    {
-                //        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
-                //            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                //        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                //    });
-                //}
             }
             #endregion
             #region BAD_USER_PASS
@@ -1292,16 +1178,7 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
-                        {
                             StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
-                            //update profile status
-                            if (sm.MoodId > 0)
-                                statusImage.Source = MoodsInitialiser.Instance.GetMoodImageForMoodId(sm.MoodId);
-                            else
-                                statusImage.Source = UI_Utils.Instance.TextStatusImage;
-
-                            txtStatus.Text = sm.Message;
-                        }
 
                         // if status list is not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
@@ -1327,7 +1204,7 @@ namespace windows_client.View
                             return;
 
                         // here we have to check 2 way firendship
-                        if (launchPagePivot.SelectedIndex == 3)
+                        if (launchPagePivot.SelectedIndex == 2)
                         {
                             FreshStatusUpdates.Add(sm);
                         }
@@ -1358,15 +1235,6 @@ namespace windows_client.View
                 });
             }
             #endregion
-            #region ADD_OR_UPDATE_PROFILE
-            else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
-               });
-            }
-            #endregion
             #region STATUS_DELETED
             else if (HikePubSub.STATUS_DELETED == type)
             {
@@ -1384,12 +1252,9 @@ namespace windows_client.View
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                         {
-                            string firstName = Utils.GetFirstName(accountName.Text);
+                            string firstName = Utils.GetFirstName(_userName);
                             App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                         }
-
-                        if (sb.Msisdn == App.MSISDN && sb is TextStatus)
-                            SetUserLastStatus();
                     }
                 });
             }
@@ -1558,7 +1423,7 @@ namespace windows_client.View
 
                                                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                                                 {
-                                                    string firstName = Utils.GetFirstName(accountName.Text);
+                                                    string firstName = Utils.GetFirstName(_userName);
                                                     App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                                                 }
                                             }
@@ -2380,7 +2245,7 @@ namespace windows_client.View
                                 refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
                         }
 
-                        if (launchPagePivot.SelectedIndex == 3)
+                        if (launchPagePivot.SelectedIndex == 2)
                         {
                             setNotificationCounter(0);
                         }
@@ -2408,7 +2273,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (launchPagePivot.SelectedIndex == 3)
+                        if (launchPagePivot.SelectedIndex == 2)
                         {
                             setNotificationCounter(0);
                         }
@@ -2618,7 +2483,7 @@ namespace windows_client.View
 
                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
                 {
-                    string firstName = Utils.GetFirstName(accountName.Text);
+                    string firstName = Utils.GetFirstName(_userName);
                     App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
                 }
 
@@ -2629,9 +2494,9 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (launchPagePivot.SelectedIndex != 3)
+            if (launchPagePivot.SelectedIndex != 2)
             {
-                launchPagePivot.SelectedIndex = 3;
+                launchPagePivot.SelectedIndex = 2;
 
                 if (isStatusMessagesLoaded)
                 {
@@ -3319,11 +3184,6 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void profileTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 2;
         }
     }
 }

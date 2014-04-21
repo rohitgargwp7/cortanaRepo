@@ -840,7 +840,6 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
                     <Image Source="images\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
@@ -859,9 +858,6 @@
                 </Grid>
                 <Grid Grid.Column="4" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Image x:Name="friendsTabImage" Stretch="Uniform" Width="30" Margin="20,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Grid.Column="5" Tap="profileTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Image x:Name="profileTabImage" Stretch="Uniform" Width="30" Margin="20,10,12,13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </Grid>
@@ -1017,63 +1013,6 @@
                         <Grid Grid.Row="4" Height="72"/>
                     </Grid>
                 </ScrollViewer>
-            </controls:PivotItem>
-
-            <controls:PivotItem Margin="0,-10,0,0" Background="White">
-                <Grid x:Name="ProfileGrid" Margin="12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Grid Grid.Row="0" Tap="EditProfile_Tap">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image x:Name="avatarImage" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" />
-                        <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical"  Margin="20, 0,0,0" VerticalAlignment="Top">
-                            <TextBlock x:Name="accountName" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="0 -10 0 5" Style="{StaticResource BaseTextBlock}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Image Name="statusImage" Grid.Column="0" Height="25" VerticalAlignment="Center" />
-                                <TextBlock Name="txtStatus"  Margin="10 0 10 0" FontFamily="Segoe WP SemiLight" Height="30" Grid.Column="1" Style="{StaticResource BaseTextBlock}"/>
-                            </Grid>
-                        </StackPanel>
-                    </Grid>
-
-                    <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0, 10, 0, 10">
-                        <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,20,0,0">
-                            <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
-                            </Image>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FreeSms_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" Margin="15,0,0,0" FontSize="39" Style="{StaticResource BaseTextBlock}"/>
-                                <TextBlock x:Name="creditsTxtBlck" FontSize="18" Margin="15,0,0,0" Style="{StaticResource BaseTextBlock}"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel x:Name="rewardsPanel" Visibility="Collapsed" MaxHeight="55"  Orientation="Horizontal" Tap="Rewards_Tap" Margin="15,20,0,0">
-                            <Image VerticalAlignment="Center" Height="35" Source="images/new_icon.png"/>
-                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Path= LocalizedResources.ConversationsList_New_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39" Style="{StaticResource BaseTextBlock}"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,20,0,5">
-                            <Image VerticalAlignment="Center" Height="35" Source="images/invite.png"/>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TellFriend_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39" Style="{StaticResource BaseTextBlock}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Tap="Settings_Tap" Margin="15,20,0,5">
-                            <Image VerticalAlignment="Center" Height="35" Source="images/settings_icon_dark.png"/>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontSize="39" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" Style="{StaticResource BaseTextBlock}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,20,0,5" Tap="Help_Tap">
-                            <Image VerticalAlignment="Center" Height="35" Source="images/help_icon_dark.png"/>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39" Style="{StaticResource BaseTextBlock}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
             </controls:PivotItem>
 
             <controls:PivotItem Margin="0,-10,0,0" Background="#E7E2D6">

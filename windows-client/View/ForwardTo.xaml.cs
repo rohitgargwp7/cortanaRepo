@@ -453,31 +453,33 @@ namespace windows_client.View
             List<Group<ContactInfo>> list = null;
             if (areCharsNumber)
             {
-                defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
-
-                charsEntered = (isPlus ? "+" : "") + charsEntered;
-                defaultContact.Name = charsEntered;
-                defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
-                defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
-                defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
-
                 if (_glistFiltered == null || createNewFilteredList)
                 {
-                    _defaultGroupedContactList = CreateGroups();
+                    if (_defaultGroupedContactList == null)
+                        _defaultGroupedContactList = CreateGroups();
 
                     list = _defaultGroupedContactList;
-
-                    if (_defaultGroupedContactList[_maxCharGroups].Contains(defaultContact))
-                        _defaultGroupedContactList[_maxCharGroups].Remove(defaultContact);
-
-                    if (_defaultGroupedContactList[_maxCharGroups].Count == 0 || !_defaultGroupedContactList[_maxCharGroups].Contains(defaultContact))
-                        _defaultGroupedContactList[_maxCharGroups].Insert(0, defaultContact);
                 }
                 else
                 {
                     list = _glistFiltered;
+                }
+
+                if (list[_maxCharGroups].Contains(defaultContact))
+                    list[_maxCharGroups].Remove(defaultContact);
+
+                if (list[_maxCharGroups].Count == 0 || !list[_maxCharGroups].Contains(defaultContact))
+                {
                     list[_maxCharGroups].Insert(0, defaultContact);
+
+                    defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
+
+                    charsEntered = (isPlus ? "+" : "") + charsEntered;
+                    defaultContact.Name = charsEntered;
+                    defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
+                    defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                    defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
 

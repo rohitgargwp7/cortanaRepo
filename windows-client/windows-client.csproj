@@ -672,8 +672,6 @@
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
     <Content Include="View\images\nudge_received_blue.png" />
     <Content Include="View\images\nudge_sent_blue.png" />
-    <Content Include="View\images\Profile_NotSelected.png" />
-    <Content Include="View\images\Profile_Selected.png" />
     <Content Include="View\images\Status_Notselected.png" />
     <Content Include="View\images\Status_selected.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />
