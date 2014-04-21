@@ -435,11 +435,11 @@ namespace windows_client.Mqtt
 
             sendAppFGStatusToServer();
 
-            if (packets == null)
-                return;
-            Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
-            sendAllUnsentMessages(packets);
-
+            if (packets != null)
+            {
+                Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
+                sendAllUnsentMessages(packets);
+            }
             PushHelper.Instance.ClearTile();
         }
 
@@ -523,7 +523,7 @@ namespace windows_client.Mqtt
                 data.Add(HikeConstants.JUSTOPENED, false);
 
             obj.Add(HikeConstants.DATA, data);
-           
+
             Object[] objArr = new object[2];
             objArr[0] = obj;
             objArr[1] = 0;
