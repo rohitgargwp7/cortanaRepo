@@ -1641,7 +1641,7 @@ namespace windows_client.View
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            sendIconButton.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
             sendIconButton.IsEnabled = false;
@@ -1649,7 +1649,7 @@ namespace windows_client.View
 
             //add icon for sticker
             stickersIconButton = new ApplicationBarIconButton();
-            stickersIconButton.IconUri = new Uri("/View/images/icon_sticker.png", UriKind.Relative);
+            stickersIconButton.IconUri = new Uri("/View/images/AppBar/icon_sticker.png", UriKind.Relative);
             stickersIconButton.Text = AppResources.Sticker_Txt;
             stickersIconButton.Click += new EventHandler(emoticonButton_Click);
             stickersIconButton.IsEnabled = true;
@@ -1657,7 +1657,7 @@ namespace windows_client.View
 
             //add icon for smiley
             emoticonsIconButton = new ApplicationBarIconButton();
-            emoticonsIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
+            emoticonsIconButton.IconUri = new Uri("/View/images/AppBar/icon_emoticon.png", UriKind.Relative);
             emoticonsIconButton.Text = AppResources.Smiley_Txt;
             emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
             emoticonsIconButton.IsEnabled = true;
@@ -1665,7 +1665,7 @@ namespace windows_client.View
 
             //add file transfer button
             fileTransferIconButton = new ApplicationBarIconButton();
-            fileTransferIconButton.IconUri = new Uri("/View/images/icon_attachment.png", UriKind.Relative);
+            fileTransferIconButton.IconUri = new Uri("/View/images/AppBar/icon_attachment.png", UriKind.Relative);
             fileTransferIconButton.Text = AppResources.Attach_Txt;
             fileTransferIconButton.Click += new EventHandler(fileTransferButton_Click);
             fileTransferIconButton.IsEnabled = true;
@@ -1712,7 +1712,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(callMenuItem);
 
                 infoMenuItem = new ApplicationBarMenuItem();
-                infoMenuItem.Text = AppResources.OthersProfile_Txt;
+                infoMenuItem.Text = AppResources.Profile_Txt;
                 infoMenuItem.Click += userHeader_Tap;
                 appBar.MenuItems.Add(infoMenuItem);
             }

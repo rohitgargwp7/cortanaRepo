@@ -60,14 +60,14 @@ namespace windows_client.View
             this.ApplicationBar = appbar;
 
             picturesUpload = new ApplicationBarIconButton();
-            picturesUpload.IconUri = new Uri("/View/images/appbar.send.png", UriKind.RelativeOrAbsolute);
+            picturesUpload.IconUri = new Uri("/View/images/AppBar/appbar.send.png", UriKind.RelativeOrAbsolute);
             picturesUpload.Text = AppResources.Send_Txt;
             picturesUpload.Click += OnPicturesUploadClick;
 
             ApplicationBar.Buttons.Add(picturesUpload);
 
             deleteIcon = new ApplicationBarIconButton();
-            deleteIcon.IconUri = new Uri("/View/images/appbar.delete.png", UriKind.RelativeOrAbsolute);
+            deleteIcon.IconUri = new Uri("/View/images/AppBar/appbar.delete.png", UriKind.RelativeOrAbsolute);
             deleteIcon.Text = AppResources.Delete_Txt;
             deleteIcon.Click += deleteIcon_Click;
 

@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True" Name="welcomePage"
+    shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:my="clr-namespace:Microsoft.Phone.Controls.Unsupported">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -35,34 +35,60 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="0" Height="710">
-
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="0,50,0,0" MaxWidth="350" x:Name="headerTxt" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+        <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Row="0" Name="signupPanel">
-                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red"></TextBlock>
-                <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
-                <TextBlock Width="430" TextWrapping="Wrap" TextAlignment="Center" Text="{Binding Path= LocalizedResources.Fun_Free_Messaging_Txt, Source={StaticResource LocalizedStrings}}" FontSize="25" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
-                <TextBlock Height="30" Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
-                           FontSize="18" HorizontalAlignment="Center" 
+            <phone:Pivot x:Name="welcomePivot" SelectionChanged="Pivot_SelectionChanged" Grid.ColumnSpan="2">
+                <phone:PivotItem>
+                    <Image Source="/view/images/FTUE/p1.png" Height="230" Stretch="Uniform"/>
+                </phone:PivotItem>
+
+                <phone:PivotItem>
+                    <Image Source="/view/images/FTUE/p2.png" Height="230" Stretch="Uniform"/>
+                </phone:PivotItem>
+
+                <phone:PivotItem>
+                    <Image Source="/view/images/FTUE/p3.png" Height="230" Stretch="Uniform"/>
+                </phone:PivotItem>
+            </phone:Pivot>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0" Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2">
+                <Ellipse Margin="0,0,10,0" x:Name="p1" Height="10" Width="10"/>
+                <Ellipse Margin="0,0,10,0" x:Name="p2" Height="10" Width="10"/>
+                <Ellipse x:Name="p3" Height="10" Width="10"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel MinHeight="34" Margin="0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18"/>
+                <TextBlock Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
+                           FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"
                            Foreground="Red" Opacity="0"/>
             </StackPanel>
-            <StackPanel VerticalAlignment="Bottom" Orientation="Vertical" Grid.Row="1">
-                <!--<Image Source="images\terms_link.png" Height="43"></Image>
-                <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
-                </Button>-->
-                <HyperlinkButton Name="termsLink" Height="70" Margin="0,0,0,55" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" Width="480" HorizontalAlignment="Center" FontSize="24" FontStyle="Normal" Tap="Privacy_Tap"/>
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="0,0,0,4" HorizontalAlignment="Center" Foreground="#909090"/>
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="440" Text="{Binding Path= LocalizedResources.WelcomePage_13YrsMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="24,0,24,5" HorizontalAlignment="Center" Foreground="#909090" />
-                
-                <ProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid>
+                    <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" Opacity="0"/>
+                    <Button x:Name="getStartedButton" Style="{StaticResource YesButtonStyle}" FontSize="18" Height="62" HorizontalAlignment="Center" Width="254" Content="{Binding Path= LocalizedResources.WelcomePage_GettingStartedButton, Source={StaticResource LocalizedStrings}}" Click="getStarted_Click"/>
+                </Grid>
+                <StackPanel x:Name="termsGrid" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <HyperlinkButton Name="termsLink" Height="70" Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" FontSize="18" FontStyle="Normal" Tap="Privacy_Tap" Foreground="#cccccc"/>
+                    <TextBlock FontSize="18" TextWrapping="Wrap" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="12,5" HorizontalAlignment="Center" Foreground="#cccccc"/>
+                    <TextBlock FontSize="18" TextWrapping="Wrap" TextAlignment="Center" Width="440" Text="{Binding Path= LocalizedResources.WelcomePage_13YrsMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="12,5,12,10" HorizontalAlignment="Center" Foreground="#cccccc" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
-
 </phone:PhoneApplicationPage>

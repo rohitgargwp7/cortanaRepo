@@ -388,7 +388,7 @@ namespace windows_client.View
             if (msisdn != App.MSISDN)
             {
                 ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
-                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.IconUri = new Uri("/View/images/AppBar/icon_call.png", UriKind.Relative);
                 callIconButton.Text = AppResources.Call_Txt;
                 callIconButton.Click += new EventHandler(Call_Click);
                 callIconButton.IsEnabled = true;
@@ -399,8 +399,11 @@ namespace windows_client.View
                        {
                            ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                            BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
-                           Opacity = 0.75
+                           Opacity = 0.95
                        };
+
+                    appBar.StateChanged -= appBar_StateChanged;
+                    appBar.StateChanged += appBar_StateChanged;
                 }
 
                 appBar.Buttons.Add(callIconButton);
@@ -412,6 +415,7 @@ namespace windows_client.View
 
             ContextMenu menu = new ContextMenu();
             menu.Background = UI_Utils.Instance.Black;
+            menu.Foreground = UI_Utils.Instance.White;
             menu.IsZoomEnabled = false;
 
             MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
@@ -427,6 +431,14 @@ namespace windows_client.View
             }
             else
                 ContextMenuService.SetContextMenu(txtMsisdn, menu);
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
@@ -452,7 +464,7 @@ namespace windows_client.View
         private void InitChatIconBtn()
         {
             ApplicationBarIconButton chatIconButton = new ApplicationBarIconButton();
-            chatIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);
+            chatIconButton.IconUri = new Uri("/View/images/AppBar/icon_message.png", UriKind.Relative);
             chatIconButton.Text = AppResources.Send_Txt;
             chatIconButton.Click += new EventHandler(GoToChat_Tap);
             chatIconButton.IsEnabled = true;
@@ -668,7 +680,7 @@ namespace windows_client.View
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            ImageStatus statusUpdate = (sender as Grid).DataContext as ImageStatus;
             if (statusUpdate == null)
                 return;
             string[] statusImageInfo = new string[2];
@@ -883,6 +895,9 @@ namespace windows_client.View
                 Opacity = 0.75
             };
 
+            appBar.StateChanged -= appBar_StateChanged;
+            appBar.StateChanged += appBar_StateChanged;
+
             ApplicationBar = appBar;
         }
 
@@ -912,19 +927,19 @@ namespace windows_client.View
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
             
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
-            postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
+            postStatusButton.IconUri = new Uri("/View/images/AppBar/icon_status.png", UriKind.Relative);
             postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusButton.Click += AddStatus_Tap;
             appBar.Buttons.Add(postStatusButton);
 
             editProfileAppBarButton = new ApplicationBarIconButton();
-            editProfileAppBarButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
+            editProfileAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_editprofile.png", UriKind.Relative);
             editProfileAppBarButton.Text = AppResources.Edit_AppBar_Txt;
             editProfileAppBarButton.Click += EditProfile_Tap;
             appBar.Buttons.Add(editProfileAppBarButton);
 
             changePhotoAppBarButton = new ApplicationBarIconButton();
-            changePhotoAppBarButton.IconUri = new Uri("/View/images/icon_camera.png", UriKind.Relative);
+            changePhotoAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
             changePhotoAppBarButton.Text = AppResources.ChangePic_AppBar_Txt;
             changePhotoAppBarButton.Click += changePhotoAppBarButton_Click;
             appBar.Buttons.Add(changePhotoAppBarButton);
@@ -1030,7 +1045,7 @@ namespace windows_client.View
                 addToContactsAppBarButton = new ApplicationBarIconButton()
                 {
                     Text = AppResources.UserProfile_AddToContacts_Btn,
-                    IconUri = new Uri("/view/images/appbar_addfriend.png", UriKind.Relative)
+                    IconUri = new Uri("/view/images/AppBar/appbar_addfriend.png", UriKind.Relative)
                 };
 
                 addToContactsAppBarButton.Click += AddUserToContacts_Click;
@@ -1090,7 +1105,7 @@ namespace windows_client.View
         private void ShowRequestRecievedPanel()
         {
             spAddFriendInvite.Visibility = Visibility.Visible;
-            txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+            txtAddedYouAsFriend.Text = firstName;
             gridAddFriendStrip.Visibility = Visibility.Visible;
             spAddFriend.Visibility = Visibility.Collapsed;
         }
@@ -1387,7 +1402,7 @@ namespace windows_client.View
             {
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
-                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+                txtAddedYouAsFriend.Text = firstName;
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))

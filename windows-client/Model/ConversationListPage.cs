@@ -229,14 +229,6 @@ namespace windows_client.Model
             }
         }
 
-        public BitmapImage MuteIcon
-        {
-            get
-            {
-                return UI_Utils.Instance.MuteIconForConversationView;
-            }
-        }
-
         public bool IsMute
         {
             get

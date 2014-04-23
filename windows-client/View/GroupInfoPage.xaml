@@ -52,9 +52,9 @@
                                     Source="{Binding MemberImage}" Foreground="White" toolkit:TiltEffect.IsTiltEnabled="True">
                         <toolkit:ContextMenuService.ContextMenu>
                             <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
-                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
-                                <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                                <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
+                                <toolkit:MenuItem Foreground="Black" Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Tap="MenuItem_Tap_AddRemoveFav"/>
                             </toolkit:ContextMenu>
                         </toolkit:ContextMenuService.ContextMenu>
                     </toolkit:HubTile>

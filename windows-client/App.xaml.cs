@@ -980,18 +980,11 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//if it is upgrade
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
-            {
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.1") < 0)//if it is upgrade
+                RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
+
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
                 App.ViewModel.ResetInAppTip(8);
-            }
             #endregion
             #region Enter to send
 

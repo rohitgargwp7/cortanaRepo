@@ -182,7 +182,7 @@
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>Remove from friend list</value>
+    <value>remove from friend list</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -210,12 +210,8 @@
     <comment>error text (CS)</comment>
   </data>
   <data name="EnterName_Name_Hint" xml:space="preserve">
-    <value>Name</value>
+    <value>your name</value>
     <comment>Name Text in hint (CS)</comment>
-  </data>
-  <data name="EnterName_Name_TxtBlk" xml:space="preserve">
-    <value>Enter your name below :</value>
-    <comment>xaml</comment>
   </data>
   <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
     <value>Scanning Contacts ...</value>
@@ -226,7 +222,7 @@
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Enter your phone number below to get started :</value>
+    <value>Hi! whats your number?</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
@@ -242,7 +238,7 @@
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
-    <value>SELECT COUNTRY</value>
+    <value>select country</value>
     <comment>In longlist selector select country</comment>
   </data>
   <data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
@@ -258,27 +254,27 @@
     <comment>Calling MsgBox (CS) </comment>
   </data>
   <data name="EnterPin_CallMe_Btn" xml:space="preserve">
-    <value>Call me for PIN</value>
+    <value>call me for the pin</value>
     <comment>Call me button (xaml)</comment>
   </data>
   <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
-    <value>PIN not valid. Please try again.</value>
+    <value>Incorect PIN. Please try again.</value>
     <comment>Pin Error Msg (xaml) </comment>
   </data>
   <data name="EnterPin_PinHint" xml:space="preserve">
-    <value>Pin</value>
+    <value>enter pin</value>
     <comment>Pin Text in hint (CS)</comment>
   </data>
   <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
-    <value>Thanks! Did you get an SMS pin? Enter it below :</value>
+    <value>We sent you a 4 digit SMS PIN. Enter It.</value>
     <comment>Page title msg (xaml file)</comment>
   </data>
   <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
-    <value>Didn't receive an SMS?</value>
+    <value>Didn't get an SMS?</value>
     <comment>Did not receive sms (xaml)</comment>
   </data>
   <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
-    <value>Tap Here</value>
+    <value>Tap here</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
@@ -346,7 +342,7 @@
     <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
-    <value>Tap next to confirm that you are 13+ years of age</value>
+    <value>Tap get started button to confirm that you are 13+ years of age</value>
     <comment>13 yrs confirm</comment>
   </data>
   <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
@@ -358,7 +354,7 @@
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
-    <value>Terms and Privacy</value>
+    <value>terms &amp; privacy</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
@@ -1102,7 +1098,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Remove member from group text</comment>
   </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value>Remove from group</value>
+    <value>remove from group</value>
     <comment>General text</comment>
   </data>
   <data name="ConversationsList_New_Txt" xml:space="preserve">
@@ -1162,14 +1158,14 @@ Download it now http://hike.in and join the fun!</value>
     <value>post status</value>
     <comment>app bar (max 10 char)</comment>
   </data>
-  <data name="OthersProfile_Txt" xml:space="preserve">
+  <data name="Profile_Txt" xml:space="preserve">
     <value>profile</value>
   </data>
   <data name="OnHIkeSince_Txt" xml:space="preserve">
     <value>on hike since {0}</value>
   </data>
   <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
-    <value>Invite to hike</value>
+    <value>invite to hike</value>
   </data>
   <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
     <value>Help him upgrade to hike!</value>
@@ -1257,7 +1253,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Connect with Facebook</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
-    <value>Feeling lazy? We'll do it for you.</value>
+    <value>Feeling lazy? Pull in your profile -</value>
     <comment>Used in Entername screen above FB Notification</comment>
   </data>
   <data name="Account_Txt" xml:space="preserve">
@@ -1296,10 +1292,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>Message {0} on hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
-  <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>{0} added you as a friend</value>
-    <comment>{0} will be replaced by username</comment>
-  </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
     <value>Added you as a friend. Would you like to do the same?</value>
   </data>
@@ -1322,10 +1314,10 @@ Download it now http://hike.in and join the fun!</value>
     <value>is not in your address book.</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>FRIENDS</value>
+    <value>friends</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
-    <value>PEOPLE ON HIKE</value>
+    <value>people on hike</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>You have blocked</value>
@@ -1404,7 +1396,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>You can see updates from your friends here</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
-    <value>Invite your friends to hike</value>
+    <value>invite your friends to hike</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
@@ -1504,9 +1496,6 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
     <value>block user</value>
-  </data>
-  <data name="Conversations_InviteFriend_Btn" xml:space="preserve">
-    <value>Invite Friends</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
     <value>Tap on + to add a contact as your friend</value>
@@ -2118,5 +2107,39 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Unread_Message_Txt" xml:space="preserve">
     <value>{0} unread message</value>
+  </data>
+  <data name="WelcomePage_GettingStartedButton" xml:space="preserve">
+    <value>get started</value>
+  </data>
+  <data name="WelcomePage_Header_Txt1" xml:space="preserve">
+    <value>Welcome to hike messenger</value>
+  </data>
+  <data name="WelcomePage_Header_Txt2" xml:space="preserve">
+    <value>Tonnes of fun, beautiful stickers!</value>
+  </data>
+  <data name="WelcomePage_Header_Txt3" xml:space="preserve">
+    <value>Make conversations colourful.</value>
+  </data>
+  <data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
+    <value>mute notifications</value>
+  </data>
+  <data name="Conversations_UnmuteStatusNotification_txt" xml:space="preserve">
+    <value>unmute notifications</value>
+  </data>
+  <data name="EnterName_Age_Hint" xml:space="preserve">
+    <value>how young are you?</value>
+  </data>
+  <data name="EnterPin_CallMe_Btn_Timer" xml:space="preserve">
+    <value>call me for the pin (in {0})</value>
+  </data>
+  <data name="EnterPin_SMSError_Wait1_TxtBlk" xml:space="preserve">
+    <value>Wait for few seconds or check your number.</value>
+  </data>
+  <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
+    <value>You can write to support@hike.in or -</value>
+    <comment>dont translate "support@hike.in", it is email id</comment>
+  </data>
+  <data name="StatusTut_Text" xml:space="preserve">
+    <value>Amazing weather for an evening drive! #delhi</value>
   </data>
 </root>

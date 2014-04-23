@@ -87,7 +87,7 @@ namespace windows_client.View
             if (doneIconButton != null)
                 return;
             doneIconButton = new ApplicationBarIconButton();
-            doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = AppResources.AppBar_Done_Btn;
             doneIconButton.Click += new EventHandler(Invite_Or_Fav_Click);
             doneIconButton.IsEnabled = false;

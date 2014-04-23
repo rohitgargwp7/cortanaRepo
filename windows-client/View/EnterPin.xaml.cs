@@ -34,12 +34,12 @@ namespace windows_client
             };
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_next.png", UriKind.Relative);
             nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
-            enterPin.ApplicationBar = appBar;
+            ApplicationBar = appBar;
             if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
@@ -57,14 +57,14 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 pinErrorTxt.Text = AppResources.Connectivity_Issue;
-                pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
+                pinErrorTxt.Opacity = 1;
                 isNextClicked = false;
                 return;
             }
             txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            pinErrorTxt.Visibility = System.Windows.Visibility.Collapsed;
+            pinErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback));
@@ -80,7 +80,7 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     pinErrorTxt.Text = AppResources.EnterPin_PinError_TxtBlk;
-                    pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
+                    pinErrorTxt.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     txtBxEnterPin.IsReadOnly = false;
@@ -117,7 +117,6 @@ namespace windows_client
             try
             {
                 txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
-                txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             catch (Exception ex)
             {
@@ -157,10 +156,7 @@ namespace windows_client
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 2)
-            {
                 nextIconButton.IsEnabled = true;
-                txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
-            }
             else
                 nextIconButton.IsEnabled = false;
         }
@@ -193,10 +189,10 @@ namespace windows_client
             {
                 timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
                 PhoneApplicationService.Current.State.Remove(CallMeTimer);
-                timer.Text = (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00");
             }
 
-            timer.Visibility = timerValue == 0 ? Visibility.Collapsed : Visibility.Visible;
+            callMeButton.Content = timerValue == 0 ? String.Format(AppResources.EnterPin_CallMe_Btn_Timer, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00")) : AppResources.EnterPin_CallMe_Btn;
+            callMeButton.IsEnabled = timerValue == 0;
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
@@ -208,9 +204,9 @@ namespace windows_client
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("pinErrorTxt.Visibility", out obj))
+                if (this.State.TryGetValue("pinErrorTxt.Opacity", out obj))
                 {
-                    pinErrorTxt.Visibility = (Visibility)obj;
+                    pinErrorTxt.Opacity = (double)obj;
                     pinErrorTxt.Text = (string)this.State["pinErrorTxt.Text"];
                     obj = null;
                 }
@@ -235,15 +231,15 @@ namespace windows_client
                 else
                     this.State.Remove("txtBxEnterPin");
 
-                if (pinErrorTxt.Visibility == System.Windows.Visibility.Visible)
+                if (pinErrorTxt.Opacity == 1)
                 {
                     this.State["pinErrorTxt.Text"] = pinErrorTxt.Text;
-                    this.State["pinErrorTxt.Visibility"] = pinErrorTxt.Visibility;
+                    this.State["pinErrorTxt.Opacity"] = pinErrorTxt.Opacity;
                 }
                 else
                 {
                     this.State.Remove("pinErrorTxt.Text");
-                    this.State.Remove("pinErrorTxt.Visibility");
+                    this.State.Remove("pinErrorTxt.Opacity");
                 }
                 if (callMe.Opacity == 1)
                 {
@@ -275,13 +271,12 @@ namespace windows_client
                 if (timerValue > 0)
                 {
                     timerValue--;
-                    timer.Text = (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00");
+                    callMeButton.Content = String.Format(AppResources.EnterPin_CallMe_Btn_Timer, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00"));
                 }
                 if (timerValue == 0 && callMeButton.IsEnabled == false)
                 {
-                    timer.Visibility = Visibility.Collapsed;
+                    callMeButton.Content = String.Format(AppResources.EnterPin_CallMe_Btn, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00"));
                     callMeButton.IsEnabled = true;
-                    callMeButton.Focus();
                     return;
                 }
             });

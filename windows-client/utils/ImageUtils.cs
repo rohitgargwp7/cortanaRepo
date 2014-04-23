@@ -28,7 +28,6 @@ namespace windows_client.utils
         private SolidColorBrush btnGrayBackground;
         private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
-        private SolidColorBrush signUpForeground;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
@@ -140,9 +139,6 @@ namespace windows_client.utils
         private BitmapImage indianActive;
         private BitmapImage loveActive;
         private BitmapImage angryActive;
-        private BitmapImage muteIcon;
-        private BitmapImage muteIconForConversationView;
-        private BitmapImage unmuteIcon;
         private BitmapImage circles;
         private BitmapImage hikeToastImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
@@ -432,16 +428,6 @@ namespace windows_client.utils
             }
         }
 
-        public SolidColorBrush SignUpForeground
-        {
-            get
-            {
-                if (signUpForeground == null)
-                    signUpForeground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
-                return signUpForeground;
-            }
-        }
-
         public SolidColorBrush EditProfileForeground
         {
             get
@@ -481,7 +467,7 @@ namespace windows_client.utils
             get
             {
                 if (statusTextForeground == null)
-                    statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
+                    statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x88, 0x88, 0x88));
 
                 return statusTextForeground;
             }
@@ -1886,45 +1872,12 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage MuteIcon
-        {
-            get
-            {
-                if (muteIcon == null)
-                    muteIcon = new BitmapImage(new Uri("/View/images/mute_icon_main_g.png", UriKind.Relative));
-
-                return muteIcon;
-            }
-        }
-
-        public BitmapImage MuteIconForConversationView
-        {
-            get
-            {
-                if (muteIconForConversationView == null)
-                    muteIconForConversationView = new BitmapImage(new Uri("/View/images/mute_icon_main_b.png", UriKind.Relative));
-
-                return muteIconForConversationView;
-            }
-        }
-
-        public BitmapImage UnmuteIcon
-        {
-            get
-            {
-                if (unmuteIcon == null)
-                    unmuteIcon = new BitmapImage(new Uri("/View/images/unmute_icon_main_g.png", UriKind.Relative));
-
-                return unmuteIcon;
-            }
-        }
-
         public BitmapImage StatusTabImageSelected
         {
             get
             {
                 if (statusTabImageSelected == null)
-                    statusTabImageSelected = new BitmapImage(new Uri("/View/images/status_Selected.png", UriKind.Relative));
+                    statusTabImageSelected = new BitmapImage(new Uri("/View/images/ConversationPage/status_Selected.png", UriKind.Relative));
 
                 return statusTabImageSelected;
             }
@@ -1935,7 +1888,7 @@ namespace windows_client.utils
             get
             {
                 if (statusTabImageNotSelected == null)
-                    statusTabImageNotSelected = new BitmapImage(new Uri("/View/images/status_NotSelected.png", UriKind.Relative));
+                    statusTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/status_NotSelected.png", UriKind.Relative));
 
                 return statusTabImageNotSelected;
             }
@@ -1946,7 +1899,7 @@ namespace windows_client.utils
             get
             {
                 if (chatsTabImageSelected == null)
-                    chatsTabImageSelected = new BitmapImage(new Uri("/View/images/chat_Selected.png", UriKind.Relative));
+                    chatsTabImageSelected = new BitmapImage(new Uri("/View/images/ConversationPage/chat_Selected.png", UriKind.Relative));
 
                 return chatsTabImageSelected;
             }
@@ -1957,7 +1910,7 @@ namespace windows_client.utils
             get
             {
                 if (chatsTabImageNotSelected == null)
-                    chatsTabImageNotSelected = new BitmapImage(new Uri("/View/images/chat_NotSelected.png", UriKind.Relative));
+                    chatsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/chat_NotSelected.png", UriKind.Relative));
 
                 return chatsTabImageNotSelected;
             }
@@ -1968,7 +1921,7 @@ namespace windows_client.utils
             get
             {
                 if (friendsTabImageSelected == null)
-                    friendsTabImageSelected = new BitmapImage(new Uri("/View/images/friend_Selected.png", UriKind.Relative));
+                    friendsTabImageSelected = new BitmapImage(new Uri("/View/images/ConversationPage/friend_Selected.png", UriKind.Relative));
 
                 return friendsTabImageSelected;
             }
@@ -1979,7 +1932,7 @@ namespace windows_client.utils
             get
             {
                 if (friendsTabImageNotSelected == null)
-                    friendsTabImageNotSelected = new BitmapImage(new Uri("/View/images/friend_NotSelected.png", UriKind.Relative));
+                    friendsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/friend_NotSelected.png", UriKind.Relative));
 
                 return friendsTabImageNotSelected;
             }

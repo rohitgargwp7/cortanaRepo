@@ -50,11 +50,14 @@ namespace windows_client.View
         //private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
+        ApplicationBarMenuItem muteStatusMenu;
+        ApplicationBarMenuItem settingsMenu;
+        ApplicationBarMenuItem profileMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
         ApplicationBarIconButton deleteChatIconButton;
-        private bool isStatusUpdatesMute;
+        private bool _isStatusUpdatesNotMute;
         private bool isStatusMessagesLoaded = false;
         private bool showFreeMessageOverlay;
         public bool ConversationListUpdated
@@ -101,6 +104,8 @@ namespace windows_client.View
             App.ViewModel.HidetypingNotification += HideTypingNotification;
 
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
+
+            tutTimeText.Text = string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, 28);
         }
 
         string _userName;
@@ -174,19 +179,6 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (appSettings.TryGetValue(HikeConstants.SHOW_CHAT_FTUE, out showNormalFtue))
-            {
-                if (!animationPartOneCompleted)
-                    StartSnowAnimation();
-            }
-            else if (overlaySnow.Visibility == Visibility.Visible)
-            {
-                overlaySnow.Visibility = Visibility.Collapsed;
-                launchPagePivot.IsHitTestVisible = true;
-                appBar.IsVisible = true;
-                SystemTray.IsVisible = true;
-            }
-
             if (firstLoad)
             {
                 shellProgress.IsVisible = true;
@@ -212,13 +204,6 @@ namespace windows_client.View
 
                     if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
                         ShowAppUpdateAvailableMessage();
-                    else if (appSettings.Contains(App.SHOW_BASIC_TUTORIAL))
-                    {
-                        overlay.Visibility = Visibility.Visible;
-                        overlay.Tap += DismissTutorial_Tap;
-                        gridBasicTutorial.Visibility = Visibility.Visible;
-                        launchPagePivot.IsHitTestVisible = false;
-                    }
                     else
                         ShowInvitePopups();
                 }
@@ -242,8 +227,7 @@ namespace windows_client.View
             }
 
             byte statusSettingsValue;
-            isStatusUpdatesMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
-            muteStatusImage.Source = isStatusUpdatesMute ? UI_Utils.Instance.MuteIcon : UI_Utils.Instance.UnmuteIcon;
+            _isStatusUpdatesNotMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 2;
@@ -297,6 +281,7 @@ namespace windows_client.View
         }
 
         #region STATUS UPDATE TUTORIAL
+        
         private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             RemoveStatusUpdateTutorial();
@@ -310,25 +295,8 @@ namespace windows_client.View
             launchPagePivot.IsHitTestVisible = true;
             App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
         }
+
         #endregion
-
-        #region BASIC TUTORIAL
-        private void DismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            RemoveTutorial();
-        }
-
-        private void RemoveTutorial()
-        {
-            overlay.Tap -= DismissTutorial_Tap;
-            overlay.Visibility = Visibility.Collapsed;
-            gridBasicTutorial.Visibility = Visibility.Collapsed;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
-            ShowInvitePopups();
-        }
-        #endregion
-
 
         #endregion
 
@@ -371,6 +339,12 @@ namespace windows_client.View
 
             if (delConvsMenu != null)
                 delConvsMenu.IsEnabled = true;
+
+            if (settingsMenu != null)
+                settingsMenu.IsEnabled = true;
+
+            if (profileMenu != null)
+                profileMenu.IsEnabled = true;
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
@@ -449,26 +423,28 @@ namespace windows_client.View
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
-                Opacity = 0.75
+                Opacity = 0.95
             };
+
+            appBar.StateChanged += appBar_StateChanged;
 
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
-            groupChatIconButton.IconUri = new Uri("/View/images/icon_group_chat.png", UriKind.Relative);
+            groupChatIconButton.IconUri = new Uri("/View/images/AppBar/icon_group_chat.png", UriKind.Relative);
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
 
             composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);
+            composeIconButton.IconUri = new Uri("/View/images/AppBar/icon_message.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += selectUserBtn_Click;
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
 
             postStatusIconButton = new ApplicationBarIconButton();
-            postStatusIconButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
+            postStatusIconButton.IconUri = new Uri("/View/images/AppBar/icon_status.png", UriKind.Relative);
             postStatusIconButton.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
             postStatusIconButton.IsEnabled = true;
@@ -480,19 +456,79 @@ namespace windows_client.View
             delConvsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(delConvsMenu);
 
-            //toggleStatusUpdatesMenu = new ApplicationBarMenuItem();
-            //byte statusSettingsValue;
-            //App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
-            //toggleStatusUpdatesMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
-            //appBar.MenuItems.Add(toggleStatusUpdatesMenu);
+            muteStatusMenu = new ApplicationBarMenuItem();
+            byte statusSettingsValue;
+            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            muteStatusMenu.Click += muteStatusMenu_Click;
+
+            settingsMenu = new ApplicationBarMenuItem();
+            settingsMenu.Text = AppResources.Settings;
+            settingsMenu.Click += settingsMenu_Click;
+            settingsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(settingsMenu);
+
+            profileMenu = new ApplicationBarMenuItem();
+            profileMenu.Text = AppResources.Profile_Txt;
+            profileMenu.Click += profileMenu_Click;
+            profileMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(profileMenu);
 
             //deleteAppBar = new ApplicationBar();
             //deleteChatIconButton = new ApplicationBarIconButton();
-            //deleteChatIconButton.IconUri = new Uri("/View/images/icon_delete.png", UriKind.Relative);
+            //deleteChatIconButton.IconUri = new Uri("/View/images/AppBar/icon_delete.png", UriKind.Relative);
             //deleteChatIconButton.Text = AppResources.Delete_Txt;
             //deleteChatIconButton.Click += deleteChatIconButton_Click;
             //deleteChatIconButton.IsEnabled = true;
             //deleteAppBar.Buttons.Add(deleteChatIconButton);
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
+        }
+
+        void muteStatusMenu_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(_isStatusUpdatesNotMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
+            int settingsValue = 0;
+
+            if (_isStatusUpdatesNotMute)
+            {
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
+                settingsValue = 0;
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+                settingsValue = -1;
+            }
+
+            muteStatusMenu.Text = _isStatusUpdatesNotMute ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+
+            _isStatusUpdatesNotMute = !_isStatusUpdatesNotMute;
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.PUSH_SU, settingsValue);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        void profileMenu_Click(object sender, EventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        void settingsMenu_Click(object sender, EventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
+            NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
         //void deleteChatIconButton_Click(object sender, EventArgs e)
@@ -671,40 +707,10 @@ namespace windows_client.View
                 RemoveStatusUpdateTutorial();
                 return;
             }
-            else if (gridBasicTutorial.Visibility == Visibility.Visible)
-            {
-                RemoveTutorial();
-            }
+
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
-        }
-
-
-        private void ToggleStatusUpdateNotification(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            MessageBox.Show(isStatusUpdatesMute ? AppResources.Unmute_Success_Txt : AppResources.Mute_Success_Txt, AppResources.StatusNotToggle_Caption_Txt, MessageBoxButton.OK);
-            int settingsValue = 0;
-            if (isStatusUpdatesMute)
-            {
-                muteStatusImage.Source = UI_Utils.Instance.UnmuteIcon;
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
-                settingsValue = 0;
-            }
-            else
-            {
-                muteStatusImage.Source = UI_Utils.Instance.MuteIcon;
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
-                settingsValue = -1;
-            }
-            isStatusUpdatesMute = !isStatusUpdatesMute;
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.PUSH_SU, settingsValue);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         /* Start or continue the conversation*/
@@ -715,10 +721,7 @@ namespace windows_client.View
                 RemoveStatusUpdateTutorial();
                 return;
             }
-            else if (gridBasicTutorial.Visibility == Visibility.Visible)
-            {
-                RemoveTutorial();
-            }
+
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
@@ -761,13 +764,17 @@ namespace windows_client.View
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
-
-                muteStatusGrid.Visibility = Visibility.Collapsed;
+                
+                if (appBar.MenuItems.Contains(muteStatusMenu))
+                    appBar.MenuItems.Remove(muteStatusMenu);
             }
             else if (_newIndex == 1) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
+
+                if (appBar.MenuItems.Contains(muteStatusMenu))
+                    appBar.MenuItems.Remove(muteStatusMenu);
                 // there will be two background workers that will independently load three sections
                 #region FAVOURITES
 
@@ -863,7 +870,10 @@ namespace windows_client.View
 
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                muteStatusGrid.Visibility = Visibility.Visible;
+
+                if (!appBar.MenuItems.Contains(muteStatusMenu))
+                    appBar.MenuItems.Add(muteStatusMenu);
+
                 if (!isStatusMessagesLoaded)
                 {
                     List<StatusMessage> statusMessagesFromDBUnblocked = new List<StatusMessage>();
@@ -1883,23 +1893,11 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
 
-        private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
-            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-        }
-
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
 
             App.AnalyticsInstance.addEvent(Analytics.FREE_SMS);
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
-        }
-
-        private void Settings_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
-            NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
         private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2388,10 +2386,7 @@ namespace windows_client.View
             {
                 RemoveStatusUpdateTutorial();
             }
-            else if (gridBasicTutorial.Visibility == Visibility.Visible)
-            {
-                RemoveTutorial();
-            }
+
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -2526,7 +2521,7 @@ namespace windows_client.View
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string[] statusImageInfo = new string[2];
-            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            ImageStatus statusUpdate = (sender as Grid).DataContext as ImageStatus;
             if (statusUpdate != null)
             {
                 _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(statusUpdate);
@@ -2843,188 +2838,6 @@ namespace windows_client.View
                 Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_REWARDS);
 
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
-        }
-        #endregion
-
-        #region Snowflake animation
-        //int count = 0;
-        //DispatcherTimer t;
-
-        bool showNormalFtue;
-        bool animationPartOneCompleted;
-
-        void StartSnowAnimation()
-        {
-            overlaySnow.Visibility = Visibility.Visible;
-            launchPagePivot.IsHitTestVisible = false;
-            appBar.IsVisible = false;
-            SystemTray.IsVisible = false;
-            gridSnowFlakes.Opacity = 0.8;
-            StoryBoard0.Begin();
-            StoryBoard0.Completed += (a, b) =>
-                {
-                    Storyboard1.Begin();
-                };
-
-            Storyboard1.Completed += (a, b) =>
-            {
-                animationPartOneCompleted = true;
-            };
-            //for (int i = 0; i < 120; i++)
-            //    Snow(true);
-
-            ////done so that on app minimise and relaunch this doesnot happen twice
-            //if (t == null)
-            //{
-            //    t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(6) };
-            //    t.Stop();
-            //}
-            //t.Tick -= t_Tick;
-            //t.Tick += t_Tick;
-
-            //t.Start();
-        }
-
-        //void t_Tick(object sender, EventArgs e)
-        //{
-        //    Snow(false);
-        //    if (count > 5)
-        //    {
-        //        if (count > 22)
-        //            gridSnowFlakes.Opacity = 0.88;
-        //        else
-        //            gridSnowFlakes.Opacity = (count) * 0.04;
-        //    }
-
-        //    if (count++ == 35)
-        //        Storyboard1.Begin();
-        //}
-
-        //Random _Random = new Random((int)DateTime.Now.Ticks);
-        //private void Snow(bool isInitial)
-        //{
-        //    if (!isInitial && (int)gridSnowFlakes.ActualHeight == 0)
-        //        return;
-        //    var x = _Random.Next(isInitial ? 0 : -100, isInitial ? 500 : (int)gridSnowFlakes.ActualWidth + 50);
-        //    var y = _Random.Next(isInitial ? 100 : -100, isInitial ? 700 : _Random.Next(200, _Random.Next(600, (int)gridSnowFlakes.ActualHeight - 100)));
-
-        //    double s;
-        //    var number = _Random.Next(0, 100);
-        //    if (number < 99)
-        //        s = _Random.Next(1, _Random.Next(4, 7)) * .1;
-        //    else
-        //        s = _Random.Next(10, 13) * .1;
-        //    //var r = _Random.Next(0, 270);
-        //    var flake = new Snowflake
-        //    {
-        //        RenderTransform = new CompositeTransform
-        //        {
-        //            TranslateX = x,
-        //            TranslateY = y,
-        //            ScaleX = s,
-        //            ScaleY = s,
-        //            // Rotation = r,
-        //        },
-        //        HorizontalAlignment = HorizontalAlignment.Left,
-        //        VerticalAlignment = VerticalAlignment.Top,
-        //    };
-        //    gridSnowFlakes.Children.Add(flake);
-        //    var d = TimeSpan.FromSeconds(_Random.Next(2, 6));
-
-        //    x += _Random.Next(_Random.Next(-200, 0), _Random.Next(200, 500));
-        //    var ax = new DoubleAnimation { To = x, Duration = d };
-        //    Storyboard.SetTarget(ax, flake.RenderTransform);
-        //    Storyboard.SetTargetProperty(ax, new PropertyPath("TranslateX"));
-
-        //    y = s > 0.9 && !isInitial ? (int)gridSnowFlakes.ActualHeight : (int)(_Random.Next(y, isInitial ? y + 400 : (int)gridSnowFlakes.ActualHeight + 200));
-        //    var ay = new DoubleAnimation { To = y, Duration = d };
-        //    Storyboard.SetTarget(ay, flake.RenderTransform);
-        //    Storyboard.SetTargetProperty(ay, new PropertyPath("TranslateY"));
-
-        //    //r += _Random.Next(90, 360);
-        //    //var ar = new DoubleAnimation { To = r, Duration = d };
-        //    //Storyboard.SetTarget(ar, flake.RenderTransform);
-        //    //Storyboard.SetTargetProperty(ar, new PropertyPath("Rotation"));
-
-        //    var story = new Storyboard();
-        //    story.Completed += (sender, e) => gridSnowFlakes.Children.Remove(flake);
-        //    story.Children.Add(ax);
-        //    story.Children.Add(ay);
-        //    //story.Children.Add(ar);
-        //    story.Begin();
-        //}
-
-        private void TextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (showNormalFtue)
-            {
-                Storyboard3.Begin();
-                GiveSpinTxtBlock.Text = App.ViewModel.MessageListPageCollection.Count > 0 ? AppResources.Chat_FTUE_giveSpin : AppResources.OK;
-                Storyboard3.Completed += (a, b) =>
-                    {
-                        //t.Stop();
-                        gridAnimation.Tap += GridAnimationTap;
-                    };
-            }
-            else
-            {
-                GridAnimationTap(null, null);
-            }
-        }
-
-
-        private void GridAnimationTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            //t.Stop();
-            gridSnowFlakes.Children.Clear();
-
-            App.RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
-            ConversationListObject obj;
-            if (App.ViewModel.MessageListPageCollection.Count > 0 && (obj = GetFtueThread()) != null)
-            {
-
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-                PhoneApplicationService.Current.State[HikeConstants.CHAT_FTUE] = showNormalFtue;
-                string uri = "/View/NewChatThread.xaml";
-                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-            }
-            else
-            {
-                overlaySnow.Visibility = Visibility.Collapsed;
-                launchPagePivot.IsHitTestVisible = true;
-                appBar.IsVisible = true;
-                SystemTray.IsVisible = true;
-            }
-        }
-
-
-        public ConversationListObject GetFtueThread()
-        {
-            ConversationListObject obj = null;
-            try
-            {
-                var list = App.ViewModel.MessageListPageCollection.Where(f => f.IsFav && f.IsOnhike && !f.IsGroupChat && !Utils.IsHikeBotMsg(f.Msisdn));
-
-                if (list.Count() == 0)
-                {
-                    list = App.ViewModel.MessageListPageCollection.Where(f => f.IsOnhike && !Utils.IsHikeBotMsg(f.Msisdn) && !f.IsGroupChat);
-                    if (list.Count() == 0)
-                    {
-                        if (App.ViewModel.MessageListPageCollection.Count > 0)
-                            obj = App.ViewModel.MessageListPageCollection[0];
-                    }
-                    else
-                        obj = list.First();
-                }
-                else
-                    obj = list.First();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Exception::ConversationList.xaml.cs:GetFtueThread,ex:" + ex.Message);
-            }
-
-            return obj;
         }
         #endregion
 

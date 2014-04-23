@@ -46,7 +46,7 @@ namespace windows_client.View
             };
 
             postStatusIcon = new ApplicationBarIconButton();
-            postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            postStatusIcon.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.Relative);
             postStatusIcon.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = false;

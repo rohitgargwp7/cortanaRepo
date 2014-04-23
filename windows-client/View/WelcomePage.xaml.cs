@@ -17,27 +17,10 @@ namespace windows_client
 {
     public partial class WelcomePage : PhoneApplicationPage
     {
-        private bool isClicked = false;
-        private ApplicationBar appBar;
-        ApplicationBarIconButton nextIconButton;
-
-
         public WelcomePage()
         {
             InitializeComponent();
             App.createDatabaseAsync();
-            appBar = new ApplicationBar()
-            {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
-            };
-
-            nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.WelcomePage_Accept_AppBar;
-            nextIconButton.Click += new EventHandler(getStarted_click);
-            appBar.Buttons.Add(nextIconButton);
-            welcomePage.ApplicationBar = appBar;
 
             // if addbook is not scanned and state is not scanning
             if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
@@ -53,78 +36,22 @@ namespace windows_client
             }
         }
 
-        private void signupPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            //if (AccountUtils.IsProd) // server is prod , change to staging
-            //{
-            //    AccountUtils.IsProd = false;
-            //    serverTxtBlk.Text = "staging";
-            //}
-            //else
-            //{
-            //    AccountUtils.IsProd = true;
-            //    serverTxtBlk.Text = "production";
-            //}
-        }
-
-        private void getStarted_click(object sender, EventArgs e)
-        {
-            if (isClicked)
-                return;
-            if (!App.IS_MARKETPLACE) // this is done to save the server info
-                App.appSettings.Save();
-
-            #region SERVER INFO
-            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-            Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + AccountUtils.HOST);
-            Debug.WriteLine("PORT : " + AccountUtils.PORT);
-            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-            #endregion
-            NetworkErrorTxtBlk.Opacity = 0;
-            if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
-            {
-                progressBar.Opacity = 0;
-                progressBar.IsEnabled = false;
-                NetworkErrorTxtBlk.Opacity = 1;
-                return;
-            }
-
-            nextIconButton.IsEnabled = false;
-            try
-            {
-                if (App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
-                    MiscDBUtil.clearDatabase();
-                //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
-            }
-            isClicked = true;
-            progressBar.Opacity = 1;
-            progressBar.IsEnabled = true;
-            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
-        }
-
         private void registerPostResponse_Callback(JObject obj)
         {
             Uri nextPage = null;
 
             if ((obj == null))
             {
-                //logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     NetworkErrorTxtBlk.Opacity = 1;
                     progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
-                    nextIconButton.IsEnabled = true;
+                    getStartedButton.Opacity = 1;
                 });
-                isClicked = false;
+
                 return;
             }
+
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
             if (HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
@@ -187,6 +114,74 @@ namespace windows_client
             {
                 Debug.WriteLine("WelcomePAge.xaml :: Privacy_Tap, Exception : " + ex.StackTrace);
             }
+        }
+
+        private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            switch (welcomePivot.SelectedIndex)
+            {
+                case 0:
+                    headerTxt.Text = AppResources.WelcomePage_Header_Txt1;
+                    p1.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    termsGrid.Opacity = 1;
+                    break;
+                case 1: 
+                    headerTxt.Text = AppResources.WelcomePage_Header_Txt2;
+                    p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    termsGrid.Opacity = 0;
+                    break;
+                case 2: 
+                    headerTxt.Text = AppResources.WelcomePage_Header_Txt3;
+                    p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+                    p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    termsGrid.Opacity = 0;
+                    break;
+            }
+        }
+
+        private void getStarted_Click(object sender, RoutedEventArgs e)
+        {
+            getStartedButton.Opacity = 0;
+
+            if (!App.IS_MARKETPLACE) // this is done to save the server info
+                App.appSettings.Save();
+
+            #region SERVER INFO
+            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+            Debug.WriteLine("SERVER SETTING : " + env);
+            Debug.WriteLine("HOST : " + AccountUtils.HOST);
+            Debug.WriteLine("PORT : " + AccountUtils.PORT);
+            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            #endregion
+            NetworkErrorTxtBlk.Opacity = 0;
+            if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
+            {
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+                NetworkErrorTxtBlk.Opacity = 1;
+                return;
+            }
+
+            try
+            {
+                if (App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
+                    MiscDBUtil.clearDatabase();
+                //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
+            }
+            
+            progressBar.Opacity = 1;
+
+            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
     }
 }

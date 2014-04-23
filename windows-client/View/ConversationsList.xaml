@@ -35,793 +35,6 @@
                 <scm:SortDescription PropertyName="Name" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-        <Storyboard x:Name="StoryBoard0">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="gridSnowFlakes">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.0" Value="0.8"/>
-            </DoubleAnimationUsingKeyFrames>
-
-        </Storyboard>
-        <Storyboard x:Name="Storyboard1">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-450"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="-16"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.467" Value="-32"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.567" Value="-12"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.667" Value="-1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.767" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.467" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.567" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.667" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.767" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.467" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.567" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.667" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.767" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="image1">
-                <DiscreteObjectKeyFrame KeyTime="0">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-                <DiscreteObjectKeyFrame KeyTime="0:0:1.767">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-                <DiscreteObjectKeyFrame KeyTime="0:0:2.067">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-                <DiscreteObjectKeyFrame KeyTime="0:0:2.167">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.067" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="1.2"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.067" Value="0.96"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="1.2"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.067" Value="0.96"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.333" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.533" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.667" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.767" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="-32"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.067" Value="11.715"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="6.004"/>
-            </DoubleAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="gridBox">
-                <DiscreteObjectKeyFrame KeyTime="0">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Collapsed</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="gridInitialBox">
-                <DiscreteObjectKeyFrame KeyTime="0">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimation Duration="0:0:2" To="-10.5" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="image2" d:IsOptimized="True"/>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationZ)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-20"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.333" Value="-9"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.533" Value="6"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.667" Value="-2"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.767" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationZ)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="-5"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="image1">
-                <EasingPointKeyFrame KeyTime="0" Value="0,0"/>
-                <EasingPointKeyFrame KeyTime="0:0:1.767" Value="0,0"/>
-                <EasingPointKeyFrame KeyTime="0:0:2.067" Value="0,0"/>
-                <EasingPointKeyFrame KeyTime="0:0:2.167" Value="0,0"/>
-            </PointAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="image1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.767" Value="-28"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.067" Value="4.271"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.167" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Name="Storyboard3">
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="gridBox">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:0.733">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="gridBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.333" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.367" Value="0.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.733" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="gridInitialBox">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:0.333">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:0.733">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="gridBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="-180"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationZ)" Storyboard.TargetName="gridBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="-90"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames
-        		Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="gridInitialBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame
-        			KeyTime="0:0:0.733" Value="180"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames
-        		Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationZ)" Storyboard.TargetName="gridInitialBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame
-        			KeyTime="0:0:0.733" Value="-90"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames
-        		Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="gridInitialBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.333" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.367" Value="0.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
-        		<EasingDoubleKeyFrame
-        			KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames
-        		Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="gridInitialBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame
-        			KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ribbonHorizontal">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Collapsed</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.433">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.533">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.833">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ribbonVerticalTop">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Collapsed</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.433">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.533">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.9">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Collapsed</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.433">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.533">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.833">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)" Storyboard.TargetName="gridBox">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)" Storyboard.TargetName="gridInitialBox">
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:0.733" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="rightBottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="40"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="41.5"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="rightBottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="40"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="41.5"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="centerKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="centerKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="leftTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="0.9"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="0.8"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0.6"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.3"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="leftTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="0.9"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="0.8"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0.6"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.3"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="leftTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="35"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="40"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="leftTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.067" Value="5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="35"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="40"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="leftbottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="-20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="-40"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-37"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="-37"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="leftbottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="40"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="47.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="47.5"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="rightTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="-10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="-20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-35"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="-40"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="rightTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="10"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="20"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="35"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="40"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="rightTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="0.8"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0.6"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.3"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="rightTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.233" Value="0.8"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0.6"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.3"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="centerKnot">
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.033">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ribbonHorizontal">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ribbonVerticalTop">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="centerKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="horizontalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="verticalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="rightBottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="rightBottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="leftbottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="leftbottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="leftTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.9"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0.9"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="rightTopKnot">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.9"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0.9"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="rightBottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.033" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-8.17"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="rightBottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="rightBottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="rightBottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="rightBottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="leftbottomKnot">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-18.543"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="-18.543"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="leftbottomKnot2">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-5.31"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="-5.31"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="ribbonHorizontal">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="-16.002"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="-5.292"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="90"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="ribbonVerticalTop">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.949"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0.004"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="ribbonVerticalTop">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="-9.167"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="-179.25"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.989"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="0.001"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="-6.641"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="174.75"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="leftWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-0.183"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="leftWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-108"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="topWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-0.208"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="topWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-108.75"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="rightWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-0.225"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="rightWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="108"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="bottomWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="-0.217"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="bottomWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="108"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="leftWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="topWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="rightWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="bottomWrapper">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.467" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="gridthemePopup">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.867" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="1.25"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.633" Value="1.15"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="gridthemePopup">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.867" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="1.25"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.633" Value="1.15"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="imageGlow">
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.9">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Collapsed</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:2.267">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:2.4">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:2.5">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:2.633">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="gridbackground">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.867" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0.7"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="imageGlow">
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.267" Value="1.02"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.3" Value="1.07"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.333" Value="1.12"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.367" Value="1.38"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="1.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.5" Value="1.4"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.633" Value="0.5"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="imageGlow">
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.267" Value="1.02"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.3" Value="1.07"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.333" Value="1.12"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.367" Value="1.38"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="1.5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.5" Value="1.4"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.633" Value="0.5"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="GiveSpinTxtBlock">
-        		<DiscreteObjectKeyFrame KeyTime="0">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:3">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:3.333">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="GiveSpinTxtBlock">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:3" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:3.333" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="themePopup">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.8" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:2.333" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="horizontalBar">
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.433">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.467">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.5">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.533">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="verticalBar">
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.433">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.5">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        		<DiscreteObjectKeyFrame KeyTime="0:0:1.533">
-        			<DiscreteObjectKeyFrame.Value>
-        				<Visibility>Visible</Visibility>
-        			</DiscreteObjectKeyFrame.Value>
-        		</DiscreteObjectKeyFrame>
-        	</ObjectAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="horizontalBarTopLine">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.267" Value="0.0001"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="horizontalBarBottomLine">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.267" Value="0.0001"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="verticalBarleftline">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="verticalBarRightLine">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.167" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="horizontalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.4" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.867"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0.467"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="horizontalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="5"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="12.4874"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="8"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="verticalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.9"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0.7"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="verticalBar">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="ribbonHorizontal">
-        		<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0.714"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.718"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.833" Value="0.4"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="ribbonVerticalTop">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.983"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="ribbonVerticalTop">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="1.64"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="1"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="0.904"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="1"/>
-        	</DoubleAnimationUsingKeyFrames>
-        	<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="ribbonVerticalBottom">
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.433" Value="0"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.467" Value="-1.753"/>
-        		<EasingDoubleKeyFrame KeyTime="0:0:1.533" Value="0"/>
-        	</DoubleAnimationUsingKeyFrames>
-        </Storyboard>
     </phone:PhoneApplicationPage.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
@@ -833,31 +46,27 @@
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
         <Grid Grid.Row="0" HorizontalAlignment="Stretch" Height="90" Background="{StaticResource HikeBlueHeader}">
-            <Grid Margin="12,25,0,0" Height="60">
+            <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
-                    <Image Source="images\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
+                    <Image Source="images\ConversationPage\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
                 </Grid>
-                <Grid Name="muteStatusGrid" Grid.Column="1" Tap="ToggleStatusUpdateNotification" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Image Name="muteStatusImage" MaxHeight="40" Margin="0,12,20,12" HorizontalAlignment="Left"/>
-                </Grid>
-                <Grid Grid.Column="2" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="-30,-5,0,0">
+                <Grid Grid.Column="1" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="40,0,0,0" Canvas.ZIndex="1">
                         <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}" Margin="-2,0,0,0"/>
                     </Border>
-                    <Image x:Name="statusTabImage" Stretch="Uniform" Width="30" Margin="20,10,20,18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image x:Name="statusTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="3" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Image x:Name="chatsTabImage" Stretch="Uniform" Width="30" Margin="20,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Grid.Column="2" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="chatsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <Grid Grid.Column="4" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Image x:Name="friendsTabImage" Stretch="Uniform" Width="30" Margin="20,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Grid Grid.Column="3" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="friendsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </Grid>
@@ -865,19 +74,19 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="White">
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ConversationList">
-                    <Image x:Name="emptyScreenImage" Source="images/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
-                    <Image x:Name="emptyScreenTip" Source="images/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
+                    <Image x:Name="emptyScreenImage" Source="images/ConversationPage/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
+                    <Image x:Name="emptyScreenTip" Source="images/ConversationPage/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
                                             HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="12,12,12,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
+                                <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                            <toolkit:MenuItem  Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem  Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
-                                            <toolkit:MenuItem  Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
+                                            <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Foreground="Black" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
+                                            <toolkit:MenuItem Foreground="Black" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -885,7 +94,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid Height="69" Width="69" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Image Source="{Binding ConvImage}" MaxHeight="69" MaxWidth="69" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Image Source="{Binding ConvImage}" MaxHeight="76" MaxWidth="76" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                     <Grid Grid.Column="1" Height="75" Margin="12,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                                         <Grid.RowDefinitions>
@@ -905,7 +114,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Source="/View/images/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
+                                                <Image Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,5,0"/>
                                                 <TextBlock Grid.Column="1" Text="{Binding FormattedTimeStamp}" Visibility="{Binding TimeStampVisibility}" Style="{StaticResource ConversationChatTimestampTextBlock}"/>
                                             </Grid>
                                         </Grid>
@@ -915,7 +124,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,9,0"/>
+                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,3,9,0"/>
                                             <Border Grid.Column="1" MinWidth="{Binding UnreadCounterWidth}" Margin="0,0,9,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounter}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
@@ -936,8 +145,8 @@
             </controls:PivotItem>
 
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
-                <ScrollViewer Margin="20,12">
-                    <Grid x:Name="contactGrid">
+                <ScrollViewer>
+                    <Grid x:Name="contactGrid" Margin="25,12">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
@@ -948,63 +157,79 @@
                         <Grid x:Name="cohProgressBar" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                             <ProgressBar VerticalContentAlignment="Center" Background="Transparent" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
                         </Grid>
-                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,15">
                             <TextBlock Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                             <TextBlock x:Name="cofCounter" Visibility="Collapsed" Text="(0)" Style="{StaticResource SubHeaderTextBlock}"/>
                         </StackPanel>
-                        <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
-                            <Image Source="images/favorites_heart.png" Height="90"/>
-                            <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"/>
+                        <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
+                            <Image Source="images/ConversationPage/sticker.png" Height="120" Stretch="Uniform"/>
+                            <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                         </StackPanel>
                         <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                                  Grid.Row="1" Tap="favourites_Tap">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                                        <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"/>
-                                        <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ContactNameTextBlock}" Margin="15,2,0,0"/>
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click"/>
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="Black"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                    </StackPanel>
+                                        <Image Source="{Binding AvatarImage}" Height="52"/>
+                                        <Grid Grid.Column="1" Margin="22,0,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ContactNameTextBlock}"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
+                                        </Grid>
+                                    </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,35,0,15">
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,15">
                             <TextBlock Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                             <TextBlock x:Name="cohCounter" Visibility="Collapsed" Text="(0)" Style="{StaticResource SubHeaderTextBlock}"/>
                         </StackPanel>
-                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed" >
-                            <Image Source="images/hike_users.png" Height="90"></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"/>
-                            <Button Content="{Binding Path= LocalizedResources.Conversations_InviteFriend_Btn, Source={StaticResource LocalizedStrings}}"  FontSize="18" Height="70" Width="160"  Background="#e9ecee" BorderThickness="0" Foreground="#595959" HorizontalAlignment="Center" Tap="InviteBtn_Tap"/>
+                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,30,0,15" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
+                            <Image Source="images/ConversationPage/sticker.png" Height="120"/>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
+                            <Button Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Height="44" Width="138" Style="{StaticResource ThirdButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
                         </StackPanel>
 
                         <ListBox x:Name="hikeContactListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" Tap="hikeContacts_Tap" >
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,10,10">
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,0,10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Grid HorizontalAlignment="Center" MinWidth="69" Tap="hikeContacts_Tap" >
-                                            <Image Source="{Binding AvatarImage}" MaxHeight="69" MaxWidth="69" HorizontalAlignment="Center"/>
+                                        <Grid HorizontalAlignment="Center" MinWidth="52" Tap="hikeContacts_Tap" >
+                                            <Image Source="{Binding AvatarImage}" MaxHeight="52" MaxWidth="52" HorizontalAlignment="Center"/>
                                         </Grid>
-                                        <Grid Grid.Column="1" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="{StaticResource PhoneBackgroundBrush}" >
-                                            <TextBlock Text="{Binding Name}" Margin="10,0" Style="{StaticResource ContactNameTextBlock}"/>
+                                        <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="White">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource ContactNameTextBlock}"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
                                         </Grid>
                                         <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="addToFriends_Tap" Background="{StaticResource PhoneBackgroundBrush}" >
-                                            <Image Name="addUserImage" Source="images\add_friend.png" Width="40" Height="40" HorizontalAlignment="Right"></Image>
+                                            <Image Name="addUserImage" Source="images\ConversationPage\add_friend.png" Width="40" Height="40" HorizontalAlignment="Right"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -1025,11 +250,11 @@
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="45">
                                 <TextBlock x:Name="refreshStatusText" FontSize="22" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0"/>
-                                <Image Source="/View/images/refresh_bar_arrow.png" MaxWidth="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                <Image Source="/View/images/ConversationPage/refresh_bar_arrow.png" MaxWidth="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#DDDDDD" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#EFF2F6" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -1042,7 +267,7 @@
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="12,0,0,0">
+                                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="18,0,0,0">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
@@ -1051,8 +276,8 @@
                                                         <TextBlock Text="{Binding UserName}" Grid.Row="0" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                         <TextBlock TextWrapping="Wrap" Style="{StaticResource StatusUpdateContentTextBlock}" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}" Grid.Row="1"/>
                                                         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,12,0,0">
-                                                            <Button Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Click="yes_Click" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
-                                                            <Button Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Click="no_Click" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                                            <Button Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Click="yes_Click" Style="{StaticResource YesButtonStyle}" Width="138" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                                            <Button Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Click="no_Click" Style="{StaticResource NoButtonStyle}" Width="138" toolkit:TiltEffect.IsTiltEnabled="True"/>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Grid>
@@ -1072,8 +297,8 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                        <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                                        <Image Source="{Binding UserImage}" MaxHeight="52" MaxWidth="52" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                                                        <Grid Grid.Column="1" Margin="18,0,5,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="Auto"/>
                                                                 <RowDefinition Height="Auto"/>
@@ -1090,14 +315,18 @@
                                                                     <TextBlock Text="{Binding TimestampString}" Margin="0,0,30,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                                 </Grid>
                                                             </Grid>
-                                                            <local:MyRichTextBox TextForeground="Black" Margin="-12,0,0,0" Grid.Row="1" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
-                                                                             FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" HorizontalAlignment="Left"
+                                                            <local:MyRichTextBox TextForeground="{StaticResource HikeBlueHeader}" Margin="-12,0,0,0" Grid.Row="1" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
+                                                                             FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" HorizontalAlignment="Left"
                                                                              ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                         </Grid>
                                                     </Grid>
-                                                    <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="1" Stretch="UniformToFill"
+                                                    <Grid Margin="0,12,0,0" Grid.Row="1" 
                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                                                           MaxHeight="300" Tap="enlargePic_Tap"/>
+                                                           Height="290" Width="420" Tap="enlargePic_Tap">
+                                                        <Grid.Background>
+                                                            <ImageBrush ImageSource="{Binding StatusImage}" Stretch="UniformToFill"/>
+                                                        </Grid.Background>
+                                                    </Grid>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -1117,8 +346,8 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Image Stretch="Uniform" MaxHeight="69" Source="/windows-client;component/View/images/Application_TileImage_173x173.png" VerticalAlignment="Top"/>
-                                                        <StackPanel Grid.Column="1" Margin="12,0">
+                                                        <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top"/>
+                                                        <StackPanel Grid.Column="1" Margin="18,0,12,0">
                                                             <TextBlock FontFamily="Segoe WP Semibold" FontSize="18" Foreground="Black" VerticalAlignment="Top"
                                                                            Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
                                                             <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Text}" Foreground="Black" FontWeight="Light" VerticalAlignment="Top"
@@ -1146,8 +375,8 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                                                    <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Image Source="{Binding UserImage}" MaxHeight="52" MaxWidth="52" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                                                    <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
@@ -1164,9 +393,9 @@
                                                                 <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                             </Grid>
                                                         </Grid>
-                                                        <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="Black"
+                                                        <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="{StaticResource HikeBlueHeader}"
                                                                              HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
-                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" 
+                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
                                                                              ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                     </Grid>
                                                 </Grid>
@@ -1181,8 +410,8 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="/windows-client;component/View/images/Application_TileImage_173x173.png" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="69"/>
-                                                    <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Left">
+                                                    <Image Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
+                                                    <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>
@@ -1192,7 +421,7 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                         <TextBlock Text="{Binding Text}" Grid.Row="1" Style="{StaticResource StatusUpdateNameTextBlock}"/>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Grid.Row="2" FontSize="20" Margin="0,2" Style="{StaticResource StatusUpdateContentTextBlock}"/>
+                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Grid.Row="2" FontSize="20" Margin="0,5,0,0" Style="{StaticResource StatusUpdateContentTextBlock}"/>
                                                         <Button Margin="0,12" Content="{Binding Path= LocalizedResources.Conversations_BtnCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="3" Click="CircleOfFriends_Click" Style="{StaticResource YesButtonStyle}"/>
                                                         <StackPanel Grid.Row="4">
                                                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_AskPostStatus_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="20" Margin="0,2" Style="{StaticResource StatusUpdateContentTextBlock}"/>
@@ -1217,254 +446,49 @@
 
         </controls:Pivot>
 
-        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.85" Grid.RowSpan="2" Fill="#000000" ></Rectangle>
-        <Grid  x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap">
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Opacity="0.8" Grid.RowSpan="2" Fill="#434b5c"/>
+        <Grid  x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap" Margin="0,0,0,82">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Conversations_Status_Tutorials_Header, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Regular" Margin="0 50 0 0" Foreground="White" TextAlignment="Center" ></TextBlock>
-            <TextBlock Grid.Row="1" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_Info_Txt, Source={StaticResource LocalizedStrings}}" Margin=" 0 5 0 20" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center"></TextBlock>
-            <Image Grid.Row="2"  Source="/View/images/tutorial_preview.png" VerticalAlignment="Top"  HorizontalAlignment="Center" Width="350" Height="80" ></Image>
-            <TextBlock Grid.Row="3" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_TapMsg, Source={StaticResource LocalizedStrings}}" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" ></TextBlock>
-            <Image Grid.Row="4"  Source="/View/images/tutorial_arrow.png"   HorizontalAlignment="Right"  VerticalAlignment="Bottom" Width="20" Height="50" Margin="0 10 140 5" ></Image>
-        </Grid>
-        <Grid x:Name="gridBasicTutorial" Visibility="Collapsed" Grid.RowSpan="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Image Source="/View/images/notification_unread.png" MaxHeight="36" HorizontalAlignment="Right" Margin="0 10 15 0"></Image>
-            <TextBlock Text="2" Foreground="White" HorizontalAlignment="Right" Margin="0 15 32 0" FontSize="18" FontFamily="Segoe WP Semibold" />
-            <Image Source="/View/images/tutorial_overlay_notifications.png" Height="20" HorizontalAlignment="Right" Margin="0 10 90 0"/>
-            <Image Grid.Row="4"  Source="/View/images/tutorial_overlay_appbar.png" MaxWidth="330" MaxHeight="111" VerticalAlignment="Bottom" Margin="0,0,0,10"></Image>
-        </Grid>
-
-        <Grid Name="overlaySnow"  Grid.RowSpan="2" Visibility="Collapsed">
-
-            <Grid Name="gridSnowFlakes" Background="#000000"/>
-            <!-- LOCALIZATION NOTE:
-            To localize the displayed strings copy their values to appropriately named
-            keys in the app's neutral language resource file (AppResources.resx) then
-            replace the hard-coded text value between the attributes' quotation marks
-            with the binding clause whose path points to that string name.
-
-            For example:
-
-                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
-
-            This binding points to the template's string resource named "ApplicationTitle".
-
-            Adding supported languages in the Project Properties tab will create a
-            new resx file per language that can carry the translated values of your
-            UI strings. The binding in these examples will cause the value of the
-            attributes to be drawn from the .resx file that matches the
-            CurrentUICultu                         re of the app at run time.
-         -->
-
-            <!--TitlePanel contains the name of the application and page title-->
-
-            <!--ContentPanel - place additional content here-->
-            <Grid x:Name="gridAnimation" Margin="12,0,12,0" >
-                <Grid Name="gridBox" MaxHeight="360" MaxWidth="360" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed">
-                    <Grid.RenderTransform>
-                        <CompositeTransform/>
-                    </Grid.RenderTransform>
-                    <Grid.Projection>
-                        <PlaneProjection/>
-                    </Grid.Projection>
-                    <Grid Name="gridbackground" Background="#FF5C6F"/>
-                    <Image Name="imageGlow" Source="/View/images/ChatBgFTUE/IntroGlow.png" RenderTransformOrigin="0.5,0.5">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Grid Name="gridthemePopup" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center">
-                        <Grid.RenderTransform>
-                            <CompositeTransform/>
-                        </Grid.RenderTransform>
-
+            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Conversations_Status_Tutorials_Header, Source={StaticResource LocalizedStrings}}" FontSize="28" FontFamily="Segoe WP Regular" Margin="0,0,0,0" Foreground="White" TextAlignment="Center"/>
+            <TextBlock Grid.Row="1" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_Info_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center"/>
+            <Border Grid.Row="2" Style="{StaticResource StatusUpdateContainerStyle}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="420" Margin="0,36,0,0">
+                <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/View/images/ConversationPage/tutorial_preview.png" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                    <Grid Grid.Column="1" Margin="18,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-
-                        <Grid Background="White" Grid.RowSpan="4" />
-                        <Image Name="themePopup" Source="/View/images/ChatBgFTUE/chat_bg_ftue_theme_popup.png" Grid.RowSpan="4" MaxHeight="360"/>
-                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="1" FontWeight="Bold" TextAlignment="Center" Text="{Binding Path= LocalizedResources.Chat_FTUE_chatThemes, Source={StaticResource LocalizedStrings}}" Margin="0 180 0 0"/>
-                        <TextBlock FontSize="22" Foreground="Black" Grid.Row="2" TextAlignment="Center" Margin="24 0 24 0" Text="{Binding Path= LocalizedResources.Chat_FTUE_personalise, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap"/>
-                        <TextBlock x:Name="GiveSpinTxtBlock" FontSize="22" Grid.Row="3" Foreground="Gray" FontWeight="Bold" Margin="24 12 24 0" TextAlignment="Center" />
-                    </Grid>
-                    <Image Name="leftWrapper" Height="360" Source="/View/images/ChatBgFTUE/chat_bg_ftue_gift_rapper_left.png" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image Name="topWrapper" Width="360" Source="/View/images/ChatBgFTUE/chat_bg_ftue_gift_rapper_top.png" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image Name="rightWrapper" Height="360" Source="/View/images/ChatBgFTUE/chat_bg_ftue_gift_rapper_right.png" HorizontalAlignment="Right" RenderTransformOrigin="0.5,0.5">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image Name="bottomWrapper" Width="360" Source="/View/images/ChatBgFTUE/chat_bg_ftue_gift_rapper_bottom.png" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="ribbonHorizontal" Source="/View/images/ChatBgFTUE/ribbon3.png" Width="480" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="ribbonVerticalTop" Source="/View/images/ChatBgFTUE/ribbon1.png" Width="600" RenderTransformOrigin="0.5,0.5" Visibility="Visible" HorizontalAlignment="Center">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-
-                    <Image x:Name="ribbonVerticalBottom" Source="/View/images/ChatBgFTUE/ribbon2.png" Width="450" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Visibility="Visible" VerticalAlignment="Bottom">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-
-                    <Grid x:Name="horizontalBar"  VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                    	<Grid.RenderTransform>
-                    		<CompositeTransform/>
-                    	</Grid.RenderTransform>
-                        <Image Source="/View/images/ChatBgFTUE/chat_bg_ftue_front_bottombar.png" Width="360" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Image x:Name="horizontalBarTopLine" Margin="0 10 0 0" Source="/View/images/ChatBgFTUE/chat_bg_ftue_bottombar_bottom_line.png" Width="360" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Image x:Name="horizontalBarBottomLine" Margin="0 0 0 10" Source="/View/images/ChatBgFTUE/chat_bg_ftue_bottombar_bottom_line.png" Width="360" HorizontalAlignment="Center" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                    </Grid>
-                    <Grid x:Name="verticalBar"  HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                    	<Grid.RenderTransform>
-                    		<CompositeTransform/>
-                    	</Grid.RenderTransform>
-                        <Image Height="360"  Source="/View/images/ChatBgFTUE/chat_bg_ftue_front_topbar.png" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" >
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Image x:Name="verticalBarleftline" Height="360"  Source="/View/images/ChatBgFTUE/chat_bg_ftue_topbar_left_line.png" HorizontalAlignment="Left" Margin="10 0 0 0" RenderTransformOrigin="0.5,0.5" >
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Image x:Name="verticalBarRightLine" Height="360"  Source="/View/images/ChatBgFTUE/chat_bg_ftue_topbar_left_line.png" HorizontalAlignment="Right" Margin="0 0 10 0"  RenderTransformOrigin="0.5,0.5" >
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                    </Grid>
-                    <Image x:Name="rightBottomKnot" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_rightknot2.png" MaxHeight="120" Margin="100 100 0 0" RenderTransformOrigin="0.5,0.5" >
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="rightBottomKnot2" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_rightknot22.png" MaxHeight="120" Margin="100 100 0 0" RenderTransformOrigin="0.5,0.5" >
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="leftbottomKnot" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_leftknot2.png" MaxHeight="120" Margin="-100 100 0 0" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="leftbottomKnot2" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_leftknot22.png" MaxHeight="120" Margin="-100 100 0 0" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="leftTopKnot" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_left_knot.png" MaxHeight="120" Margin="-100 -100 0 0"  RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image x:Name="rightTopKnot" Source="/View/images/ChatBgFTUE/chat_bg_ftue_FS_rightknot.png" MaxHeight="120" Margin="100 -100 0 0" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-
-
-                    <Image x:Name="centerKnot" Source="/View/images/ChatBgFTUE/chat_bg_ftue_Flip_side_dot.png" MaxHeight="60" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-
-                </Grid>
-                <Grid Name="gridInitialBox" RenderTransformOrigin="0.5,0.5" Visibility="Collapsed">
-                    <Grid.RenderTransform>
-                        <CompositeTransform/>
-                    </Grid.RenderTransform>
-                    <Grid.Projection>
-                        <PlaneProjection/>
-                    </Grid.Projection>
-                    <Image x:Name="image" Source="/View/images/ChatBgFTUE/chat_bg_ftue_Box.png" MaxWidth="360" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" d:LayoutRounding="Auto">
-                        <Image.Projection>
-                            <PlaneProjection/>
-                        </Image.Projection>
-                        <Image.RenderTransform>
-                            <CompositeTransform/>
-                        </Image.RenderTransform>
-                    </Image>
-                    <Grid x:Name="image1" Margin="0 5 0 0" MaxWidth="300" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Grid.Projection>
-                            <PlaneProjection/>
-                        </Grid.Projection>
-                        <Grid.RenderTransform>
-                            <CompositeTransform/>
-                        </Grid.RenderTransform>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-
-                        </Grid.RowDefinitions>
-                        <Image x:Name="image2" Source="/View/images/ChatBgFTUE/chat_bg_ftue_card_bg.png" MaxWidth="280" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.RowSpan="4" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <CompositeTransform/>
-                            </Image.RenderTransform>
-                        </Image>
-                        <TextBlock Grid.Row="1" Margin="60 80 60 0" Height="80" Foreground="#f14444" Text="{Binding Path= LocalizedResources.Chat_FTUE_HappyHiking, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" FontFamily="Segoe WP Regular" />
-                        <TextBlock Grid.Row="2" Margin="24 0 24 0" Foreground="#ffa800" Text="{Binding Path= LocalizedResources.Chat_FTUE_OpenGift, Source={StaticResource LocalizedStrings}}" FontSize="20" TextAlignment="Center" Tap="TextBlock_Tap" FontFamily="Segoe WP Bold" />
+                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <TextBlock Text="Saira Singh" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                            </Grid>
+                            <Grid Margin="10,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                <TextBlock x:Name="tutTimeText" Margin="0,0,-10,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                            </Grid>
+                        </Grid>
+                        <local:MyRichTextBox Margin="-12,0,0,0" Foreground="#888888" IsEnabled="False" 
+                                             HorizontalAlignment="Left" Text="{Binding Path= LocalizedResources.StatusTut_Text, Source={StaticResource LocalizedStrings}}"
+                                             FontSize="20" Grid.Row="1" TextWrapping="Wrap" MaxWidth="350"/>
                     </Grid>
                 </Grid>
-
-            </Grid>
-
-            <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  The image has a top margin of -32px to
-            account for the System Tray. Set this to 0 (or remove the margin altogether)
-            if the System Tray is hidden.
-
-            Before shipping remove this XAML and the image itself.-->
-            <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
+            </Border>
+            <TextBlock Grid.Row="3" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_TapMsg, Source={StaticResource LocalizedStrings}}" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center"/>
+            <Image Grid.Row="4"  Source="/View/images/ConversationPage/tutorial_arrow.png"   HorizontalAlignment="Right"  VerticalAlignment="Bottom" Width="20" Height="50" Margin="0 10 140 5"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

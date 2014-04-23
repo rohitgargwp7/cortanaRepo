@@ -6,12 +6,12 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" Name="enterPin"
+    shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True"
     xmlns:toolkit= "clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -38,62 +38,44 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
+    <Grid x:Name="LayoutRoot" Background="White" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <TextBlock x:Name="txtBlkSMSPin" MaxWidth="350" Style="{StaticResource WelcomePageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
-                <Image Source="images\hike_header.png" HorizontalAlignment="Left" Height="40" Margin="24,15,0,0"></Image>
-
-                <TextBlock x:Name="txtBlkSMSPin" TextWrapping="Wrap" MaxWidth="400" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
-                <toolkit:PhoneTextBox x:Name="txtBxEnterPin" TextOptions.TextHintingMode="Animated" HorizontalAlignment="Left" Width="454" Height="78" BorderThickness="2" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" Margin="12,0,0,0" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
-
-
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="24,0,0,0" >
-                    <TextBlock Text="{Binding Path= LocalizedResources.EnterPin_WrongNumMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="20" Margin="0,0,-10,0"></TextBlock>
-                    <Button x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="#399cdf" FontSize="20" Background="Transparent" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"></Button>
-                </StackPanel>
-
-                <TextBlock Height="25" HorizontalAlignment="Left" 
-                           VerticalAlignment="Center" Margin="24,0,0,0" 
+        <Grid Grid.Row="1" Margin="0,20,0,0">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                            Name="pinErrorTxt" Text="{Binding Path= LocalizedResources.EnterPin_PinError_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                           Visibility="Collapsed" FontSize="18" Foreground="Red"/>
+                           Opacity="0" FontSize="18" Foreground="Red"/>
 
-                <ProgressBar x:Name="progressBar" Background="Transparent" 
-                                                IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" 
-                                                FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" 
-                                                IsEnabled="False" IsTabStop="True" Opacity="0" Margin="0,10,0,0"/>
-                <!--<StackPanel x:Name="callMe" Margin="12,0,0,0">
-                    <TextBlock Text="Didn't receive an SMS?" FontSize="22" FontFamily="Segoe WP" Margin="12,0,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="callMeButton" IsEnabled="False" FontSize="19" Content="Call me for the PIN" Tap="callMe_Tap" BorderThickness="2" FontFamily="Segoe WP" Width="210" HorizontalAlignment="Left"/>
-                        <TextBlock x:Name="timer" Text="1:00" Margin="6,18,0,0"></TextBlock>
-                    </StackPanel>
-                </StackPanel>-->
+            <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
+        </Grid>
 
-                <Grid x:Name="callMe" Margin="12,0,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP" Margin="12,0,0,0"/>
-                    <Button Grid.Row="1" x:Name="callMeButton" Grid.Column="0" IsEnabled="False" FontSize="19" Content="{Binding Path= LocalizedResources.EnterPin_CallMe_Btn, Source={StaticResource LocalizedStrings}}" Tap="callMe_Tap" BorderThickness="2" FontFamily="Segoe WP" HorizontalAlignment="Left"/>
-                    <TextBlock x:Name="timer" Grid.Row="1" Grid.Column="0" Margin="0,0,30,0" Text="03:00"  HorizontalAlignment="Center" FontSize="19" VerticalAlignment="Center"></TextBlock>
-
-                </Grid>
+        <StackPanel Grid.Row="2" Margin="0,20">
+            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="txtBxEnterPin" TextOptions.TextHintingMode="Animated" HorizontalAlignment="Center" Width="440" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="24,0,0,0" >
+                <TextBlock Text="{Binding Path= LocalizedResources.EnterPin_WrongNumMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="20" Margin="0,0,-10,0"/>
+                <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlueHeader}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"/>
             </StackPanel>
+        </StackPanel>
+
+        
+        <Grid x:Name="callMe" Margin="0,0,0,80" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
+            <TextBlock Grid.Row="1" Foreground="#888888" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_Wait1_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
+            <controls:MyRichTextBox Grid.Row="2" Foreground="#888888" TextForeground="{StaticResource HikeBlueHeader}" HorizontalAlignment="Center" TextAlignment="Center" LinkifyAll="True" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_Wait2_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
+            <Button Grid.Row="3" Margin="0,18,0,0" Width="236" Height="44" FontSize="18" HorizontalAlignment="Center" x:Name="callMeButton" IsEnabled="False" Tap="callMe_Tap" Style="{StaticResource YesButtonStyle}"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

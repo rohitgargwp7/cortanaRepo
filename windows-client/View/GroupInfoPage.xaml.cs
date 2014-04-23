@@ -80,36 +80,36 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarBackground"]).Color
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
             };
             
             editNameIconButton = new ApplicationBarIconButton();
-            editNameIconButton.IconUri = new Uri("/View/images/icon_edit.png", UriKind.Relative);
+            editNameIconButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
             editNameIconButton.Text = AppResources.Edit_AppBar_Txt;
             editNameIconButton.Click += editNameIconButton_Click;
             appBar.Buttons.Add(editNameIconButton);
 
             changeImageIconButton = new ApplicationBarIconButton();
-            changeImageIconButton.IconUri = new Uri("/View/images/icon_camera.png", UriKind.Relative);
+            changeImageIconButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
             changeImageIconButton.Text = AppResources.ChangePic_AppBar_Txt;
             changeImageIconButton.Click += changeImageIconButton_Click;
             appBar.Buttons.Add(changeImageIconButton);
 
             addIconButton = new ApplicationBarIconButton();
-            addIconButton.IconUri = new Uri("/View/images/add.png", UriKind.Relative);
+            addIconButton.IconUri = new Uri("/View/images/AppBar/icon_add.png", UriKind.Relative);
             addIconButton.Text = AppResources.Add_AppBar_Txt;
             addIconButton.Click += addIconButton_Click;
             appBar.Buttons.Add(addIconButton);
 
             editGroupNameAppBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarBackground"]).Color
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
             };
 
             saveIconButton = new ApplicationBarIconButton();
-            saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
+            saveIconButton.IconUri = new Uri("/View/images/AppBar/icon_save.png", UriKind.Relative);
             saveIconButton.Text = AppResources.Save_AppBar_Btn;
             saveIconButton.Click += saveGroupName_Click;
             saveIconButton.IsEnabled = false;

@@ -166,7 +166,7 @@ namespace windows_client.View
             };
 
             _refreshIconButton = new ApplicationBarIconButton();
-            _refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
+            _refreshIconButton.IconUri = new Uri("/View/images/AppBar/icon_refresh.png", UriKind.Relative);
             _refreshIconButton.Text = AppResources.SelectUser_RefreshContacts_Txt;
             _refreshIconButton.Click += new EventHandler(refreshContacts_Click);
             _refreshIconButton.IsEnabled = true;
@@ -187,7 +187,7 @@ namespace windows_client.View
                 if (_doneIconButton != null)
                     return;
                 _doneIconButton = new ApplicationBarIconButton();
-                _doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+                _doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
                 _doneIconButton.Text = AppResources.AppBar_Done_Btn;
                 _doneIconButton.Click += forwardTo_Click;
                 _doneIconButton.IsEnabled = false;
@@ -200,7 +200,7 @@ namespace windows_client.View
                 if (_doneIconButton != null)
                     return;
                 _doneIconButton = new ApplicationBarIconButton();
-                _doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+                _doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
                 _doneIconButton.Text = AppResources.AppBar_Done_Btn;
                 _doneIconButton.Click += startGroup_Click;
                 _doneIconButton.IsEnabled = false;
@@ -227,7 +227,7 @@ namespace windows_client.View
 
             _isClicked = true;
 
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = SelectedContacts;
+            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = SelectedContacts.ToList();
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
@@ -345,16 +345,19 @@ namespace windows_client.View
 
                 if (gl[_maxCharGroups].Count > 0 && gl[_maxCharGroups][0].Msisdn != null)
                 {
-                    if (gl[_maxCharGroups][0].IsSelected)
-                        gl[_maxCharGroups][0] = new ContactInfo();
-
-                    gl[_maxCharGroups][0].Name = _charsEntered;
+                    if (defaultContact.IsSelected)
+                    {
+                        gl[_maxCharGroups].Remove(defaultContact);
+                        defaultContact = new ContactInfo();
+                        gl[_maxCharGroups].Insert(0, defaultContact);
+                    }
+                    defaultContact.Name = _charsEntered;
                     string num = Utils.NormalizeNumber(_charsEntered);
-                    gl[_maxCharGroups][0].Msisdn = num;
-                    gl[_maxCharGroups][0].ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
-                    gl[_maxCharGroups][0].IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
-                    gl[_maxCharGroups][0].CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                    gl[_maxCharGroups][0].BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
+                    defaultContact.Msisdn = num;
+                    defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
+                    defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
+                    defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 contactsListBox.ItemsSource = gl;
@@ -910,6 +913,8 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
+            enterNameTxt.Text = String.Empty;
+
             if (cInfo != null)
             {
                 if (_isForward || _isGroupChat)
@@ -995,6 +1000,8 @@ namespace windows_client.View
                         _doneIconButton.IsEnabled = SelectedContacts.Count > 1;
                     else
                         _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
+
+                    //enterNameTxt.Text = String.Empty;
                 }
                 else if (_isContactShared)
                 {
@@ -1115,8 +1122,10 @@ namespace windows_client.View
             BlockUser(ci);
         }
 
-        private static void BlockUser(ContactInfo ci)
+        private void BlockUser(ContactInfo ci)
         {
+            enterNameTxt.Text = String.Empty;
+
             if (ci == null)
                 return;
             if (!ci.IsFav) // block request

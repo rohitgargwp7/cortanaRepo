@@ -28,6 +28,7 @@ namespace windows_client
         private string ac_name;
         public ApplicationBar appBar;
         public ApplicationBarIconButton nextIconButton;
+        public ApplicationBarIconButton cameraIconButton;
         BitmapImage profileImage = null;
         byte[] _avatar = null;
         byte[] _avImg = null;
@@ -47,20 +48,39 @@ namespace windows_client
             };
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             nextIconButton.Text = AppResources.AppBar_Done_Btn;
-            nextIconButton.Click += new EventHandler(btnEnterName_Click);
+            nextIconButton.Click += btnEnterName_Click;
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
-            enterName.ApplicationBar = appBar;
 
-            avatarImage.Tap += OnProfilePicButtonTap;
+            cameraIconButton = new ApplicationBarIconButton();
+            cameraIconButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
+            cameraIconButton.Text = AppResources.ChangePic_AppBar_Txt;
+            cameraIconButton.Click += cameraIconButton_Click;
+            appBar.Buttons.Add(cameraIconButton);
+            ApplicationBar = appBar;
+
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+        }
 
+        void cameraIconButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+                nextIconButton.IsEnabled = false;
+                txtBxEnterName.IsEnabled = false;
+                txtBxEnterAge.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
+            }
         }
 
         private void btnEnterName_Click(object sender, EventArgs e)
@@ -68,8 +88,8 @@ namespace windows_client
             if (isClicked)
                 return;
             isClicked = true;
-            this.Focus();
-            nameErrorTxt.Visibility = Visibility.Collapsed;
+            Focus();
+            nameErrorTxt.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
                 isClicked = false;
@@ -77,12 +97,13 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 nameErrorTxt.Text = AppResources.Connectivity_Issue;
-                nameErrorTxt.Visibility = Visibility.Visible;
+                nameErrorTxt.Opacity = 1;
                 App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                 return;
             }
 
             txtBxEnterName.IsReadOnly = true;
+            txtBxEnterAge.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             ac_name = txtBxEnterName.Text.Trim();
             progressBar.Opacity = 1;
@@ -136,14 +157,15 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     Debug.WriteLine("Set Name post request returned unsuccessfully .... ");
-                    txtBxEnterName.IsReadOnly = false; ;
+                    txtBxEnterName.IsReadOnly = false;
+                    txtBxEnterAge.IsReadOnly = false;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     if (!string.IsNullOrWhiteSpace(ac_name))
                         nextIconButton.IsEnabled = true;
                     msgTxtBlk.Opacity = 0;
                     nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
-                    nameErrorTxt.Visibility = Visibility.Visible;
+                    nameErrorTxt.Opacity = 1;
                     App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                     isClicked = false;
                 });
@@ -166,6 +188,7 @@ namespace windows_client
                 return;
             isCalled = true;
             txtBxEnterName.IsReadOnly = false;
+            txtBxEnterAge.IsReadOnly = false;
 
             Uri nextPage;
             string country_code = null;
@@ -179,7 +202,7 @@ namespace windows_client
             nextPage = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STATUS);
 
-            nameErrorTxt.Visibility = Visibility.Collapsed;
+            nameErrorTxt.Opacity = 0;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
             Thread.Sleep(1 * 500);
             try
@@ -213,10 +236,6 @@ namespace windows_client
                 StringBuilder userMsisdn = new StringBuilder();
                 userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
 
-                string country_code = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                txtBlckPhoneNumber.Text = AppResources.EnterName_YourMsisdn_TxtBlk + " " + (country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + "-" + userMsisdn.ToString();
-
                 if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
                 {
                     if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
@@ -237,23 +256,28 @@ namespace windows_client
                 }
             }
 
-            txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
-
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
 
-                if (this.State.TryGetValue("txtBxEnterName", out obj))
+                if (State.TryGetValue("txtBxEnterName", out obj))
                 {
                     txtBxEnterName.Text = (string)obj;
                     txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("nameErrorTxt.Visibility", out obj))
+                if (State.TryGetValue("txtBxEnterAge", out obj))
                 {
-                    nameErrorTxt.Visibility = (Visibility)obj;
-                    nameErrorTxt.Text = (string)this.State["nameErrorTxt.Text"];
+                    txtBxEnterAge.Text = (string)obj;
+                    txtBxEnterAge.Select(txtBxEnterAge.Text.Length, 0);
+                    obj = null;
+                }
+
+                if (State.TryGetValue("nameErrorTxt.Opacity", out obj))
+                {
+                    nameErrorTxt.Opacity = (double)obj;
+                    nameErrorTxt.Text = (string)State["nameErrorTxt.Text"];
                 }
             }
 
@@ -261,10 +285,8 @@ namespace windows_client
             {
                 string name = PhoneApplicationService.Current.State["fbName"] as string;
                 txtBxEnterName.Text = name;
-                txtBxEnterName.Hint = string.Empty;
                 nextIconButton.IsEnabled = true;
-                fbConnectTxtBlk.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
-                spFbConnect.Tap -= facebook_Tap;
+                spFbConnect.IsEnabled = false;
             }
 
             if (reloadImage) // this will handle both deactivation and tombstone
@@ -295,18 +317,18 @@ namespace windows_client
                             memStream.Seek(0, SeekOrigin.Begin);
                             BitmapImage empImage = new BitmapImage();
                             empImage.SetSource(memStream);
-                            avatarImage.Source = empImage;
+                            avatarImage.ImageSource = empImage;
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                         }
                     }
                     else
                     {
                         string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
-                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
+                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
                         //AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + myMsisdn, GetProfilePic_Callback, true, "");
                     }
                 }
@@ -331,52 +353,44 @@ namespace windows_client
             string uri = e.Uri.ToString();
             if (!uri.Contains("View"))
             {
-
                 if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
-                    this.State["txtBxEnterName"] = txtBxEnterName.Text;
+                    State["txtBxEnterName"] = txtBxEnterName.Text;
                 else
-                    this.State.Remove("txtBxEnterName");
+                    State.Remove("txtBxEnterName");
+
+                if (!string.IsNullOrWhiteSpace(txtBxEnterAge.Text))
+                    State["txtBxEnterAge"] = txtBxEnterAge.Text;
+                else
+                    State.Remove("txtBxEnterAge");
 
                 if (msgTxtBlk.Opacity == 1)
                 {
-                    this.State["nameErrorTxt.Text"] = nameErrorTxt.Text;
-                    this.State["nameErrorTxt.Visibility"] = nameErrorTxt.Visibility;
+                    State["nameErrorTxt.Text"] = nameErrorTxt.Text;
+                    State["nameErrorTxt.Opacity"] = nameErrorTxt.Opacity;
                 }
                 else
                 {
-                    this.State.Remove("nameErrorTxt.Text");
-                    this.State.Remove("nameErrorTxt.Visibility");
+                    State.Remove("nameErrorTxt.Text");
+                    State.Remove("nameErrorTxt.Opacity");
                 }
             }
             else
                 App.IS_TOMBSTONED = false;
         }
 
-        private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
-        {
-            txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
-            txtBxEnterName.Foreground = UI_Utils.Instance.SignUpForeground;
-        }
-
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             // remove FB Name if user wants to save his/her custom name
             PhoneApplicationService.Current.State.Remove("fbName");
-            if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
-            {
-                nextIconButton.IsEnabled = true;
-                txtBxEnterName.Foreground = UI_Utils.Instance.SignUpForeground;
-            }
-            else
-                nextIconButton.IsEnabled = false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
         }
 
-        private void txtBxEnterName_LostFocus(object sender, RoutedEventArgs e)
+        private void txtBxEnterAge_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            this.txtBxEnterName.Background = UI_Utils.Instance.White;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
         }
 
-        private void facebook_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void facebook_Tap(object sender, RoutedEventArgs e)
         {
             // if done button is already clicked, simply ignore FB
             if (isClicked)
@@ -387,27 +401,14 @@ namespace windows_client
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
 
-        private void OnProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                photoChooserTask.Show();
-                nextIconButton.IsEnabled = false;
-                txtBxEnterName.IsEnabled = false;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
-            }
-        }
-
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 nextIconButton.IsEnabled = true;
-                txtBxEnterName.IsEnabled = true;
+                txtBxEnterName.IsEnabled = true; 
+                txtBxEnterAge.IsEnabled = true;
                 return;
             }
             //progressBarTop.IsEnabled = true;
@@ -445,6 +446,8 @@ namespace windows_client
                 shellProgress.IsVisible = false;
                 nextIconButton.IsEnabled = true;
                 txtBxEnterName.IsEnabled = true;
+                txtBxEnterAge.IsEnabled = true;
+
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
@@ -456,9 +459,7 @@ namespace windows_client
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    avatarImage.Source = profileImage;
-                    avatarImage.MaxHeight = 83;
-                    avatarImage.MaxWidth = 83;
+                    avatarImage.ImageSource = profileImage;
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, _avImg, false);
                 }
                 else
@@ -469,6 +470,7 @@ namespace windows_client
                 shellProgress.IsVisible = false;
                 nextIconButton.IsEnabled = true;
                 txtBxEnterName.IsEnabled = true;
+                txtBxEnterAge.IsEnabled = true;
             });
         }
         public void GetProfilePic_Callback(byte[] fullBytes, object fName)
@@ -479,7 +481,7 @@ namespace windows_client
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                      {
-                         avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
+                         avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(fullBytes);
                          MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fullBytes, false);
                      });
                 }
@@ -504,13 +506,14 @@ namespace windows_client
                     // if next button is clicked show the error msg
                     if (isClicked)
                     {
-                        this.msgTxtBlk.Opacity = 0;
-                        this.nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
-                        this.nameErrorTxt.Visibility = Visibility.Visible;
-                        this.progressBar.IsEnabled = false;
-                        this.progressBar.Opacity = 0;
-                        this.nextIconButton.IsEnabled = true;
-                        this.txtBxEnterName.IsReadOnly = false;
+                        msgTxtBlk.Opacity = 0;
+                        nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
+                        nameErrorTxt.Opacity = 1;
+                        progressBar.IsEnabled = false;
+                        progressBar.Opacity = 0;
+                        nextIconButton.IsEnabled = true;
+                        txtBxEnterName.IsReadOnly = false;
+                        txtBxEnterAge.IsReadOnly = false;
                         isClicked = false;
                     }
                 });
@@ -533,7 +536,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("Phone DB is not created in time .... ");
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
-                    this.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
+                    msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
                 });
                 return;
             }
