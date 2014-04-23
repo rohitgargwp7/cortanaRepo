@@ -130,10 +130,13 @@ namespace windows_client.Mqtt
                 if (mqttConnection != null)
                 {
                     disconnectCalled = !reconnect;
-                    mqttConnection.disconnect(new DisconnectCB(reconnect, this));
+                    Debug.WriteLine("Desconnect from Broker Called");
+                    mqttConnection.disconnect(null);//call back for disconnect is not handled in library
                     mqttConnection = null;
                 }
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                if (reconnect)
+                    connect();
             }
             catch (Exception ex)
             {
@@ -254,28 +257,6 @@ namespace windows_client.Mqtt
         public MQTTConnectionStatus getConnectionStatus()
         {
             return connectionStatus;
-        }
-
-        public void ping()
-        {
-            try
-            {
-                if (disconnectCalled == false)
-                {
-                    if (mqttConnection != null)
-                    {
-                        mqttConnection.ping(new PingCB(this));
-                    }
-                    else
-                    {
-                        connect();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
-            }
         }
 
         public void reconnect()
@@ -410,14 +391,6 @@ namespace windows_client.Mqtt
             return topics.ToArray();
         }
 
-        void recursivePingSchedule(Action<TimeSpan> action)
-        {
-            action(TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
-            ping();
-        }
-
-        private volatile bool isRecursivePingScheduled = false;
-
         public void onConnected()
         {
             if (isConnected())
@@ -425,8 +398,6 @@ namespace windows_client.Mqtt
                 return;
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
-            if (!isRecursivePingScheduled)
-                scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
@@ -445,8 +416,8 @@ namespace windows_client.Mqtt
 
         public void onDisconnected()
         {
+            Debug.WriteLine("OnDisconnected Called");
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            mqttConnection = null;
             if (!disconnectCalled)
                 disconnectFromBroker(true);
         }

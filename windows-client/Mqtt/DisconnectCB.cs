@@ -1,5 +1,6 @@
 ﻿using System;
 using mqtttest.Client;
+using System.Diagnostics;
 
 namespace windows_client.Mqtt
 {
@@ -22,7 +23,7 @@ namespace windows_client.Mqtt
             {
                 //				mqttConnection.listener(CallbackConnection.DEFAULT_LISTENER);
             }
-
+            Debug.WriteLine("Disconnect callback success called");
             hikeMqttManager.setConnectionStatus(HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             if (reconnect)
             {
@@ -37,6 +38,7 @@ namespace windows_client.Mqtt
             {
 
             }
+            Debug.WriteLine("Disconnect callback failure called");
 
             if (reconnect)
             {
