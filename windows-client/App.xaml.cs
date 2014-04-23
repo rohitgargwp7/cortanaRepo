@@ -77,6 +77,10 @@ namespace windows_client
 
         public static string EMAIL = "email";
         public static string GENDER = "gender";
+        public static string NAME = "name";
+        public static string DOB = "dob";
+        public static string YEAR = "year";
+        public static string SCREEN = "screen";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEJINGLE_PREF = "jinglePref";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";

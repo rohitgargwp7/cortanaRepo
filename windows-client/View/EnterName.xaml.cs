@@ -46,7 +46,7 @@ namespace windows_client
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             nextIconButton.Text = AppResources.AppBar_Done_Btn;
-            nextIconButton.Click += btnEnterName_Click;
+            nextIconButton.Click += Next_Click;
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
 
@@ -79,7 +79,7 @@ namespace windows_client
             }
         }
 
-        private void btnEnterName_Click(object sender, EventArgs e)
+        private void Next_Click(object sender, EventArgs e)
         {
             if (isClicked)
                 return;

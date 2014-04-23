@@ -25,14 +25,8 @@ namespace windows_client.View
     public partial class EnterGender : PhoneApplicationPage
     {
         ApplicationBarIconButton nextIconButton;
-        App.PageState currentPagestate;
-        private bool reloadImage = true;
         bool isClicked = false;
         bool isCalled = false;
-        private string ac_name;
-        private string ac_age;
-        byte[] _avatar = null;
-        byte[] _avImg = null;
 
         public EnterGender()
         {
@@ -171,13 +165,28 @@ namespace windows_client.View
         {
             girlButton.IsEnabled = false;
             boyButton.IsEnabled = false;
+            progressBar.Opacity = 1;
+            msgTxtBlk.Opacity = 0;
+            nameErrorTxt.Opacity = 0;
 
             bool isScanned;
+
+            int age = 0;
+            Int32.TryParse((string)App.appSettings[App.ACCOUNT_AGE], out age);
+            
+            JObject dob = new JObject();
+            dob.Add(App.YEAR, DateTime.Now.Year - age);
+            
+            JObject obj = new JObject();
+            obj.Add(App.GENDER, gender);
+            obj.Add(App.NAME, (string)App.appSettings[App.ACCOUNT_NAME]);
+            obj.Add(App.DOB, dob);
+            obj.Add(App.SCREEN, "signup");
+
             // if addbook already stored simply call setname api
             if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || (App.appSettings.TryGetValue(ContactUtils.IS_ADDRESS_BOOK_SCANNED, out isScanned) && isScanned))
             {
-                Debug.WriteLine("Btn clicked,Addbook already scanned, posting name to server");
-                AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+                AccountUtils.setProfile(obj, new AccountUtils.postResponseFunction(setProfile_Callback));
             }
             // if addbook failed earlier , re attempt for posting add book
             else if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED)
@@ -201,8 +210,7 @@ namespace windows_client.View
                     // if addbook is stored properly in hike db then call for setname function
                     if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB)
                     {
-                        Debug.WriteLine("Setname is called from thread 2 ....");
-                        AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+                        AccountUtils.setProfile(obj, new AccountUtils.postResponseFunction(setProfile_Callback));
                     }
                 };
                 bw.RunWorkerAsync();
@@ -225,7 +233,6 @@ namespace windows_client.View
                         msgTxtBlk.Opacity = 0;
                         nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
                         nameErrorTxt.Opacity = 1;
-                        progressBar.IsEnabled = false;
                         progressBar.Opacity = 0;
                         nextIconButton.IsEnabled = String.IsNullOrEmpty(gender) ? false : true;
                         girlButton.IsEnabled = true;
@@ -289,40 +296,64 @@ namespace windows_client.View
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
         }
 
-        private void setName_Callback(JObject obj)
+        private void setProfile_Callback(JObject obj)
         {
-            //if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
-            //{
-            //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //    {
-            //        Debug.WriteLine("Set Name post request returned unsuccessfully .... ");
-            //        boyButton.IsEnabled = true;
-            //        girlButton.IsEnabled = true;
-            //        progressBar.Opacity = 0;
-            //        progressBar.IsEnabled = false;
+            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    Debug.WriteLine("Set Name post request returned unsuccessfully .... ");
+                    boyButton.IsEnabled = true;
+                    girlButton.IsEnabled = true;
+                    progressBar.Opacity = 0;
 
-            //        if (!string.IsNullOrWhiteSpace(ac_name))
-            //            nextIconButton.IsEnabled = true;
-                    
-            //        msgTxtBlk.Opacity = 0;
-            //        nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
-            //        nameErrorTxt.Opacity = 1;
-            //        isClicked = false;
-            //    });
-            //    return;
-            //}
+                    nextIconButton.IsEnabled = String.IsNullOrEmpty(gender) ? false : true;
 
-            //Debug.WriteLine("Set Name post request returned successfully .... ");
-            //if (App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED)) // shows that addressbook is already scanned
-            //{
-            //    Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //    {
-            //        processEnterName();
-            //    });
-            //}
+                    msgTxtBlk.Opacity = 0;
+                    nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
+                    nameErrorTxt.Opacity = 1;
+                    isClicked = false;
+                });
+                return;
+            }
+
+            UpdateProfileImage();
+
+            Debug.WriteLine("Set Name post request returned successfully .... ");
         }
 
-        public void processEnterName()
+        private void UpdateProfileImage()
+        {
+            var fullViewImageBytes = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+
+            if (fullViewImageBytes != null)
+            {
+                AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    processProfile();
+                });
+            }
+        }
+
+        public void updateProfile_Callback(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+                    {
+                        MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
+                    }
+                    //progressBarTop.IsEnabled = false;
+                    progressBar.Opacity = 0;
+                    processProfile();
+                });
+        }
+
+        public void processProfile()
         {
             if (isCalled)
                 return;

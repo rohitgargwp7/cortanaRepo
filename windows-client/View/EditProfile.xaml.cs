@@ -39,17 +39,10 @@ namespace windows_client.View
             InitializeComponent();
             App.appSettings.TryGetValue(App.GENDER, out userGender);
 
-            if (userGender == "m")
+            if (userGender == "m" || userGender == "f")
             {
                 genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
                 genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
-                //genderListPicker.SelectedIndex = 0;
-            }
-            else if (userGender == "f")
-            {
-                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
-                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
-                //genderListPicker.SelectedIndex = 1;
             }
             else // nothing is selected
             {
@@ -91,6 +84,7 @@ namespace windows_client.View
                 genderListPicker.SelectedIndex = 0;
             else if (userGender == "f")
                 genderListPicker.SelectedIndex = 1;
+
             genderIndex = genderListPicker.SelectedIndex;
         }
 
