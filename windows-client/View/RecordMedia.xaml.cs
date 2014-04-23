@@ -31,10 +31,10 @@ namespace windows_client.View
         private BitmapImage microphoneImage;
         private BitmapImage speakerImage;
 
-        private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
-        private BitmapImage playIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
-        private BitmapImage stopIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
-        private BitmapImage playStopIcon = new BitmapImage(new Uri("/View/images/icon_play_stop.png", UriKind.Relative));
+        private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/AppBar/icon_record.png", UriKind.Relative));
+        private BitmapImage playIcon = new BitmapImage(new Uri("/View/images/AppBar/icon_play.png", UriKind.Relative));
+        private BitmapImage stopIcon = new BitmapImage(new Uri("/View/images/AppBar/icon_play.png", UriKind.Relative));
+        private BitmapImage playStopIcon = new BitmapImage(new Uri("/View/images/AppBar/icon_play_stop.png", UriKind.Relative));
 
         private ApplicationBar appBar;
         ApplicationBarIconButton cancelIconButton = null;

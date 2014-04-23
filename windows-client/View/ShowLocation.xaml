@@ -21,7 +21,7 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True">
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/icon_direction.png" Text="directions"/>
+            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/AppBar/icon_direction.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

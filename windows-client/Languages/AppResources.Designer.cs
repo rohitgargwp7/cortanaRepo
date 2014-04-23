@@ -1060,6 +1060,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to directions.
+        /// </summary>
+        public static string Directions_Txt {
+            get {
+                return ResourceManager.GetString("Directions_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is on DND. Waiting for {0} to reply..
         /// </summary>
         public static string DND_USER {
@@ -1292,11 +1301,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feild cannot be empty.
+        ///   Looks up a localized string similar to Field cannot be empty.
         /// </summary>
-        public static string Empty_Feild_Error {
+        public static string Empty_Field_Error {
             get {
-                return ResourceManager.GetString("Empty_Feild_Error", resourceCulture);
+                return ResourceManager.GetString("Empty_Field_Error", resourceCulture);
             }
         }
         

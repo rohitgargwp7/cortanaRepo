@@ -2117,8 +2117,11 @@ Download it now http://hike.in and join the fun!</value>
     <value>You can write to support@hike.in or -</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
   </data>
-  <data name="Empty_Feild_Error" xml:space="preserve">
-    <value>Feild cannot be empty</value>
+  <data name="Directions_Txt" xml:space="preserve">
+    <value>directions</value>
+  </data>
+  <data name="Empty_Field_Error" xml:space="preserve">
+    <value>Field cannot be empty</value>
   </data>
   <data name="EnterGenter_Boy_Txt" xml:space="preserve">
     <value>I am a boy</value>

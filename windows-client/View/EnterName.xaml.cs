@@ -111,7 +111,7 @@ namespace windows_client
                 msgTxtBlk.Opacity = 0;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                nameErrorTxt.Text = AppResources.Empty_Feild_Error;
+                nameErrorTxt.Text = AppResources.Empty_Field_Error;
                 nameErrorTxt.Opacity = 1;
                 return;
             }
