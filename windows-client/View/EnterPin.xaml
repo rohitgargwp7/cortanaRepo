@@ -48,11 +48,15 @@
         <TextBlock x:Name="txtBlkSMSPin" MaxWidth="350" Style="{StaticResource WelcomePageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
 
         <Grid Grid.Row="1" Margin="0,20,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                            Name="pinErrorTxt" Text="{Binding Path= LocalizedResources.EnterPin_PinError_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                            Opacity="0" FontSize="18" Foreground="Red"/>
 
-            <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+            <ProgressBar Grid.Row="1" x:Name="progressBar" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
         </Grid>
 

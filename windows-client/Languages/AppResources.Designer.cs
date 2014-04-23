@@ -1292,6 +1292,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feild cannot be empty.
+        /// </summary>
+        public static string Empty_Feild_Error {
+            get {
+                return ResourceManager.GetString("Empty_Feild_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I am a boy.
+        /// </summary>
+        public static string EnterGenter_Boy_Txt {
+            get {
+                return ResourceManager.GetString("EnterGenter_Boy_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I am a girl.
+        /// </summary>
+        public static string EnterGenter_Girl_Txt {
+            get {
+                return ResourceManager.GetString("EnterGenter_Girl_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick one....
+        /// </summary>
+        public static string EnterGenter_Header_Txt {
+            get {
+                return ResourceManager.GetString("EnterGenter_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm your number.
         /// </summary>
         public static string EnterMsisdn_ConfirmNumber_Txt {
@@ -1940,7 +1976,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group name cannot be empty&quot;.
+        ///   Looks up a localized string similar to Group name cannot be empty.
         /// </summary>
         public static string GroupInfo_GrpNameCannotBeEmpty_Txt {
             get {
@@ -3623,6 +3659,105 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I haven&apos;t been this excited about Friday, since last Friday.
+        /// </summary>
+        public static string RandomText_Boy1 {
+            get {
+                return ResourceManager.GetString("RandomText_Boy1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
+        /// </summary>
+        public static string RandomText_Boy2 {
+            get {
+                return ResourceManager.GetString("RandomText_Boy2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Listen, smile, agree and do whatever the hell you were gonna do!.
+        /// </summary>
+        public static string RandomText_Boy3 {
+            get {
+                return ResourceManager.GetString("RandomText_Boy3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boys speak about 2000 words a day!.
+        /// </summary>
+        public static string RandomText_Boy4 {
+            get {
+                return ResourceManager.GetString("RandomText_Boy4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is there an autocorrect that works on life decisions?.
+        /// </summary>
+        public static string RandomText_Boy5 {
+            get {
+                return ResourceManager.GetString("RandomText_Boy5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to we have got a tailored experience for both.
+        /// </summary>
+        public static string RandomText_DefaultTxt {
+            get {
+                return ResourceManager.GetString("RandomText_DefaultTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My way or the highway!.
+        /// </summary>
+        public static string RandomText_Girl1 {
+            get {
+                return ResourceManager.GetString("RandomText_Girl1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Well behaved girls rarely make history.
+        /// </summary>
+        public static string RandomText_Girl2 {
+            get {
+                return ResourceManager.GetString("RandomText_Girl2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I am size awesome.
+        /// </summary>
+        public static string RandomText_Girl3 {
+            get {
+                return ResourceManager.GetString("RandomText_Girl3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
+        /// </summary>
+        public static string RandomText_Girl4 {
+            get {
+                return ResourceManager.GetString("RandomText_Girl4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Girls speak about 7,000 words a day!.
+        /// </summary>
+        public static string RandomText_Girl5 {
+            get {
+                return ResourceManager.GetString("RandomText_Girl5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rate Now.
         /// </summary>
         public static string Rate_Now_Txt {
@@ -4532,33 +4667,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stickers are here!.
-        /// </summary>
-        public static string StickersTut_TxtBlk0 {
-            get {
-                return ResourceManager.GetString("StickersTut_TxtBlk0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Express yourself better with.
-        /// </summary>
-        public static string StickersTut_TxtBlk1 {
-            get {
-                return ResourceManager.GetString("StickersTut_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to new hike stickers.
-        /// </summary>
-        public static string StickersTut_TxtBlk2 {
-            get {
-                return ResourceManager.GetString("StickersTut_TxtBlk2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Stop!!!.
         /// </summary>
         public static string Stop_Caption_txt {
@@ -5185,33 +5293,6 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome to hike.
-        /// </summary>
-        public static string WelcomeTut_TxtBlk0 {
-            get {
-                return ResourceManager.GetString("WelcomeTut_TxtBlk0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Now share your status updates with.
-        /// </summary>
-        public static string WelcomeTut_TxtBlk1 {
-            get {
-                return ResourceManager.GetString("WelcomeTut_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to your friends..
-        /// </summary>
-        public static string WelcomeTut_TxtBlk2 {
-            get {
-                return ResourceManager.GetString("WelcomeTut_TxtBlk2", resourceCulture);
             }
         }
         

@@ -34,11 +34,6 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
-
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White" Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -55,9 +50,13 @@
         </Grid>
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" TextOptions.TextHintingMode="Animated" InputScope="PersonalFullName"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />
-        <toolkit:PhoneTextBox x:Name="txtBxEnterAge" Margin="12,0,12,5" Grid.Row="2" TextOptions.TextHintingMode="Animated" InputScope="Number"
+        <toolkit:PhoneTextBox x:Name="txtBxEnterAge" Margin="12,0,12,5" Grid.Row="2" TextOptions.TextHintingMode="Animated" InputScope="Number" KeyUp="txtBxEnterAge_KeyUp"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="3" TextChanged="txtBxEnterAge_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Age_Hint , Source={StaticResource LocalizedStrings}}" />
         <Grid Grid.Row="3" MinHeight="40" Margin="0,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <TextBlock TextAlignment="Center" 
                            Margin="0,0,0,0" Name="nameErrorTxt" 
                            Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
@@ -66,7 +65,7 @@
             <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
                            Opacity="0"/>
-            <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" 
+            <ProgressBar x:Name="progressBar" Grid.Row="1" Background="Transparent" IsIndeterminate="True" 
                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Opacity="0" Margin="0,10,0,0"/>
         </Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">

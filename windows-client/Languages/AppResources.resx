@@ -741,7 +741,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
-    <value>Group name cannot be empty"</value>
+    <value>Group name cannot be empty</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
@@ -1611,22 +1611,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} is back on hike. Say hi :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
-  <data name="StickersTut_TxtBlk1" xml:space="preserve">
-    <value>Express yourself better with</value>
-    <comment>continued string -&gt;StickersTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="StickersTut_TxtBlk2" xml:space="preserve">
-    <value>new hike stickers</value>
-    <comment>StickersTut_TxtBlk1-&gt;StickersTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="WelcomeTut_TxtBlk1" xml:space="preserve">
-    <value>Now share your status updates with</value>
-    <comment>continued string-&gt;WelcomeTut_TxtBlk2(50)</comment>
-  </data>
-  <data name="WelcomeTut_TxtBlk2" xml:space="preserve">
-    <value>your friends.</value>
-    <comment>WelcomeTut_TxtBlk1-&gt;WelcomeTut_TxtBlk2(50)</comment>
-  </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
     <value>You will now be able to see updates from {0} here.</value>
     <comment>{0} to be replaced by name</comment>
@@ -1801,12 +1785,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Video_Standard_Quality_Txt" xml:space="preserve">
     <value>Standard Quality (VGA) (default)</value>
     <comment>(VGA) is constant, Max limit 40</comment>
-  </data>
-  <data name="WelcomeTut_TxtBlk0" xml:space="preserve">
-    <value>Welcome to hike</value>
-  </data>
-  <data name="StickersTut_TxtBlk0" xml:space="preserve">
-    <value>Stickers are here!</value>
   </data>
   <data name="Delete_Account_Failed" xml:space="preserve">
     <value>hike couldn't delete your account. Please try again.</value>
@@ -2138,6 +2116,51 @@ Download it now http://hike.in and join the fun!</value>
   <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
     <value>You can write to support@hike.in or -</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
+  </data>
+  <data name="Empty_Feild_Error" xml:space="preserve">
+    <value>Feild cannot be empty</value>
+  </data>
+  <data name="EnterGenter_Boy_Txt" xml:space="preserve">
+    <value>I am a boy</value>
+  </data>
+  <data name="EnterGenter_Girl_Txt" xml:space="preserve">
+    <value>I am a girl</value>
+  </data>
+  <data name="EnterGenter_Header_Txt" xml:space="preserve">
+    <value>Pick one...</value>
+  </data>
+  <data name="RandomText_Boy1" xml:space="preserve">
+    <value>I haven't been this excited about Friday, since last Friday</value>
+  </data>
+  <data name="RandomText_Boy2" xml:space="preserve">
+    <value>Getting married before 20 is like leaving a party before 8!</value>
+  </data>
+  <data name="RandomText_Boy3" xml:space="preserve">
+    <value>Listen, smile, agree and do whatever the hell you were gonna do!</value>
+  </data>
+  <data name="RandomText_Boy4" xml:space="preserve">
+    <value>Boys speak about 2000 words a day!</value>
+  </data>
+  <data name="RandomText_Boy5" xml:space="preserve">
+    <value>Is there an autocorrect that works on life decisions?</value>
+  </data>
+  <data name="RandomText_DefaultTxt" xml:space="preserve">
+    <value>we have got a tailored experience for both</value>
+  </data>
+  <data name="RandomText_Girl1" xml:space="preserve">
+    <value>My way or the highway!</value>
+  </data>
+  <data name="RandomText_Girl2" xml:space="preserve">
+    <value>Well behaved girls rarely make history</value>
+  </data>
+  <data name="RandomText_Girl3" xml:space="preserve">
+    <value>I am size awesome</value>
+  </data>
+  <data name="RandomText_Girl4" xml:space="preserve">
+    <value>Getting married before 20 is like leaving a party before 8!</value>
+  </data>
+  <data name="RandomText_Girl5" xml:space="preserve">
+    <value>Girls speak about 7,000 words a day!</value>
   </data>
   <data name="StatusTut_Text" xml:space="preserve">
     <value>Amazing weather for an evening drive! #delhi</value>

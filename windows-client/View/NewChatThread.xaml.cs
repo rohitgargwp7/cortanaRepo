@@ -6643,7 +6643,7 @@ namespace windows_client.View
 
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            recordButton.Foreground = UI_Utils.Instance.Grey;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
         }
 
@@ -6669,7 +6669,7 @@ namespace windows_client.View
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
-            recordButton.Foreground = UI_Utils.Instance.WhiteTextForeGround;
+            recordButton.Foreground = UI_Utils.Instance.White;
             recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
@@ -6691,17 +6691,17 @@ namespace windows_client.View
             catch { }
 
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-            deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
+            deleteRecText.Foreground = UI_Utils.Instance.Grey;
 
             cancelRecord.Opacity = 1;
             deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
             recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+            recordButton.Foreground = UI_Utils.Instance.Grey;
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
 
-            deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+            deleteBorder.Background = UI_Utils.Instance.Black;
 
             stopWalkieTalkieRecording();
 
@@ -6750,15 +6750,15 @@ namespace windows_client.View
             _isWalkieTalkieMessgeDelete = false;
             deleteBorder.BorderBrush = UI_Utils.Instance.Black;
             deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-            deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
+            deleteRecText.Foreground = UI_Utils.Instance.Grey;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
-            deleteBorder.BorderBrush = UI_Utils.Instance.RedBorderBrush;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Red;
             deleteRecImage.Source = UI_Utils.Instance.DustbinWhiteImage;
-            deleteRecText.Foreground = UI_Utils.Instance.WhiteTextForeGround;
+            deleteRecText.Foreground = UI_Utils.Instance.White;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -6822,12 +6822,12 @@ namespace windows_client.View
                 deleteBorder.BorderBrush = UI_Utils.Instance.Black;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
-                recordButton.Foreground = UI_Utils.Instance.GreyTextForeGround;
+                recordButton.Foreground = UI_Utils.Instance.Grey;
                 recordButtonGrid.Background = gridBackgroundBeforeRecording;
                 walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
                 deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-                deleteRecText.Foreground = UI_Utils.Instance.DeleteGreyBackground;
-                deleteBorder.Background = UI_Utils.Instance.DeleteBlackBackground;
+                deleteRecText.Foreground = UI_Utils.Instance.Grey;
+                deleteBorder.Background = UI_Utils.Instance.Black;
 
                 stopWalkieTalkieRecording();
                 sendWalkieTalkieMessage();
