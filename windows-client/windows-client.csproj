@@ -217,9 +217,7 @@
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
-    <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
-    <Compile Include="Mqtt\PingCB.cs" />
     <Compile Include="Mqtt\PublishCB.cs" />
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
