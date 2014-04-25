@@ -73,10 +73,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel MinHeight="24" Margin="0,0,0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Visible" Foreground="Red" FontSize="18"/>
+                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18"/>
                 <TextBlock Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
                            FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Foreground="Red" Opacity="1"/>
+                           Foreground="Red" Opacity="0"/>
             </StackPanel>
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid>
