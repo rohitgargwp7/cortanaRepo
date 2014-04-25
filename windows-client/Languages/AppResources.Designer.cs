@@ -628,6 +628,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 friend.
+        /// </summary>
+        public static string Conversations_1Circle_Of_friends_txt {
+            get {
+                return ResourceManager.GetString("Conversations_1Circle_Of_friends_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact on hike.
+        /// </summary>
+        public static string Conversations_1Contact_on_hike {
+            get {
+                return ResourceManager.GetString("Conversations_1Contact_on_hike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to view friends.
         /// </summary>
         public static string Conversations_BtnCircleOfFriends_Txt {
@@ -804,6 +822,24 @@ namespace windows_client.Languages {
         public static string Conversations_MuteStatusNotification_txt {
             get {
                 return ResourceManager.GetString("Conversations_MuteStatusNotification_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} friends.
+        /// </summary>
+        public static string Conversations_NCircle_Of_friends_txt {
+            get {
+                return ResourceManager.GetString("Conversations_NCircle_Of_friends_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts on hike.
+        /// </summary>
+        public static string Conversations_NContacts_on_hike {
+            get {
+                return ResourceManager.GetString("Conversations_NContacts_on_hike", resourceCulture);
             }
         }
         
@@ -1544,7 +1580,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can write to support@hike.in or -.
+        ///   Looks up a localized string similar to You can write to support@hike.in or ....
         /// </summary>
         public static string EnterPin_SMSError_Wait2_TxtBlk {
             get {
@@ -3097,6 +3133,15 @@ namespace windows_client.Languages {
         public static string Mood_WorkingOut {
             get {
                 return ResourceManager.GetString("Mood_WorkingOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to moods.
+        /// </summary>
+        public static string Moods_Txt {
+            get {
+                return ResourceManager.GetString("Moods_Txt", resourceCulture);
             }
         }
         
@@ -4973,7 +5018,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  has been invited.
+        ///   Looks up a localized string similar to {0} has been invited.
         /// </summary>
         public static string USER_INVITED {
             get {
@@ -4982,7 +5027,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  joined the group chat!.
+        ///   Looks up a localized string similar to {0} joined the group chat!.
         /// </summary>
         public static string USER_JOINED_GROUP_CHAT {
             get {
@@ -5000,7 +5045,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  left the group chat.
+        ///   Looks up a localized string similar to {0} left the group chat.
         /// </summary>
         public static string USER_LEFT {
             get {
@@ -5009,7 +5054,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  just opted in to hike!.
+        ///   Looks up a localized string similar to {0} just opted in to hike!.
         /// </summary>
         public static string USER_OPTED_IN_MSG {
             get {
@@ -5234,15 +5279,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap get started button to confirm that you are 13+ years of age.
-        /// </summary>
-        public static string WelcomePage_13YrsMsg_TxtBlk {
-            get {
-                return ResourceManager.GetString("WelcomePage_13YrsMsg_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to accept.
         /// </summary>
         public static string WelcomePage_Accept_AppBar {
@@ -5288,7 +5324,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Push Notifications are turned on by default.
+        ///   Looks up a localized string similar to Sure as in Tapping on &apos;get started&apos; will confirm you are 13+. Push notifications are turned on by default..
         /// </summary>
         public static string WelcomePage_PushMsg_TxtBlk {
             get {

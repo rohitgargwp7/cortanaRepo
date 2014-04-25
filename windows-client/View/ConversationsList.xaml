@@ -56,17 +56,17 @@
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
                     <Image Source="images\ConversationPage\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
                 </Grid>
-                <Grid Grid.Column="1" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                <Grid Grid.Column="1" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="chatsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="2" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                    <Image x:Name="friendsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Column="3" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Border x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="40,0,0,0" Canvas.ZIndex="1">
                         <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}" Margin="-2,0,0,0"/>
                     </Border>
                     <Image x:Name="statusTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Grid.Column="2" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Image x:Name="chatsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Grid.Column="3" Tap="friendsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Image x:Name="friendsTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </Grid>
@@ -121,15 +121,15 @@
                                         <Grid Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,3,9,0"/>
-                                            <Border Grid.Column="1" MinWidth="{Binding UnreadCounterWidth}" Margin="0,0,9,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
+                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,-5,0,0" FontWeight="Light"/>
+                                            <Border Grid.Column="2" MinWidth="{Binding UnreadCounterWidth}" Margin="12,0,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounter}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
-                                            <local:MyRichTextBox Grid.Column="2" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
-                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,-5,0,0" FontWeight="Light"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -157,10 +157,7 @@
                         <Grid x:Name="cohProgressBar" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                             <ProgressBar VerticalContentAlignment="Center" Background="Transparent" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ProgressBar>
                         </Grid>
-                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,15">
-                            <TextBlock Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
-                            <TextBlock x:Name="cofCounter" Visibility="Collapsed" Text="(0)" Style="{StaticResource SubHeaderTextBlock}"/>
-                        </StackPanel>
+                        <TextBlock Grid.Row="0" Margin="0,0,0,15" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120" Stretch="Uniform"/>
                             <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
@@ -193,14 +190,11 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,15">
-                            <TextBlock Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
-                            <TextBlock x:Name="cohCounter" Visibility="Collapsed" Text="(0)" Style="{StaticResource SubHeaderTextBlock}"/>
-                        </StackPanel>
+                        <TextBlock Grid.Row="2" Margin="0,15" Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,30,0,15" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120"/>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
-                            <Button Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Height="44" Width="138" Style="{StaticResource ThirdButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
+                            <Button Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Height="44" Width="138" Style="{StaticResource ThirdButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
                         </StackPanel>
 
                         <ListBox x:Name="hikeContactListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" Tap="hikeContacts_Tap" >

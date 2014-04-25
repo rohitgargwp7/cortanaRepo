@@ -43,19 +43,19 @@ namespace windows_client
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
             };
 
-            nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.AppBar_Done_Btn;
-            nextIconButton.Click += Next_Click;
-            nextIconButton.IsEnabled = false;
-            appBar.Buttons.Add(nextIconButton);
-
             cameraIconButton = new ApplicationBarIconButton();
             cameraIconButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
             cameraIconButton.Text = AppResources.ChangePic_AppBar_Txt;
             cameraIconButton.Click += cameraIconButton_Click;
             appBar.Buttons.Add(cameraIconButton);
             ApplicationBar = appBar;
+
+            nextIconButton = new ApplicationBarIconButton();
+            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
+            nextIconButton.Text = AppResources.AppBar_Done_Btn;
+            nextIconButton.Click += Next_Click;
+            nextIconButton.IsEnabled = false;
+            appBar.Buttons.Add(nextIconButton);
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
@@ -65,6 +65,11 @@ namespace windows_client
         }
 
         void cameraIconButton_Click(object sender, EventArgs e)
+        {
+            ChangeProfile();
+        }
+
+        private void ChangeProfile()
         {
             try
             {
@@ -390,13 +395,7 @@ namespace windows_client
             if (e.TaskResult == TaskResult.OK)
             {
                 if (profileImage == null)
-                {
                     profileImage = new BitmapImage();
-                    //profileImage.ImageOpened += (ss, ee) =>
-                    //    {
-                    //        avatarImage.ImageSource = profileImage;
-                    //    };
-                }
 
                 profileImage.SetSource(e.ChosenPhoto);
 
@@ -460,5 +459,9 @@ namespace windows_client
             }
         }
 
+        private void ChangeProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ChangeProfile();
+        }
     }
 }

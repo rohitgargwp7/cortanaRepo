@@ -43,10 +43,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Height="362" Width="480">
+        <Grid Height="362" Width="480" Tap="ChangeProfile_Tap">
             <Grid.Background>
                 <ImageBrush x:Name="avatarImage" Stretch="UniformToFill"/>
             </Grid.Background>
+            <Image Source="/View/images/AppBar/icon_camera.png" MaxHeight="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10"/>
         </Grid>
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" TextOptions.TextHintingMode="Animated" InputScope="PersonalFullName"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />

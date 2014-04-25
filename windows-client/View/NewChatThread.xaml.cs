@@ -2138,7 +2138,7 @@ namespace windows_client.View
                             text = AppResources.USER_INVITED;
                             type = ConvMessage.MessageType.SMS_PARTICIPANT_INVITED;
                         }
-                        ConvMessage chatBubble = new ConvMessage(gp.FirstName + text, this.Orientation, convMessage);
+                        ConvMessage chatBubble = new ConvMessage(String.Format(text, gp.FirstName), this.Orientation, convMessage);
                         chatBubble.NotificationType = type;
                         ocMessages.Insert(insertPosition, chatBubble);
                         insertPosition++;
@@ -2162,7 +2162,7 @@ namespace windows_client.View
                         // every participant is either on DND or not on DND
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn);
 
-                        string text = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
+                        string text = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                         ConvMessage.MessageType type = ConvMessage.MessageType.SMS_PARTICIPANT_OPTED_IN;
                         if (showIcon == "0") // DND USER and not OPTED IN add to custom msg i.e waiting etc
                         {
@@ -2258,7 +2258,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
                 {
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
-                    ConvMessage chatBubble = new ConvMessage(name + AppResources.USER_LEFT, this.Orientation, convMessage);
+                    ConvMessage chatBubble = new ConvMessage(String.Format(AppResources.USER_LEFT, name), this.Orientation, convMessage);
                     chatBubble.NotificationType = ConvMessage.MessageType.PARTICIPANT_LEFT;
                     ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
@@ -2299,7 +2299,7 @@ namespace windows_client.View
                     ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
-                    ConvMessage chatBubbleLeft = new ConvMessage(name + AppResources.USER_LEFT, this.Orientation, convMessage);
+                    ConvMessage chatBubbleLeft = new ConvMessage(String.Format(AppResources.USER_LEFT, name), this.Orientation, convMessage);
                     chatBubbleLeft.NotificationType = ConvMessage.MessageType.PARTICIPANT_LEFT;
                     ocMessages.Insert(insertPosition, chatBubbleLeft);
                     insertPosition++;

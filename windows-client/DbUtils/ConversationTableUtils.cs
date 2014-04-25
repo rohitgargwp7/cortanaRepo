@@ -119,7 +119,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
+                obj.LastMessage = String.Format(AppResources.USER_OPTED_IN_MSG, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)

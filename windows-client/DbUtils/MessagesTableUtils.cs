@@ -230,8 +230,7 @@ namespace windows_client.DbUtils
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
-                        string text = AppResources.USER_JOINED_GROUP_CHAT;
-                        obj.LastMessage = gp.FirstName + text;
+                        obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                 }
                 #endregion
@@ -241,11 +240,11 @@ namespace windows_client.DbUtils
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
+                        obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                     else
                     {
-                        obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
+                        obj.LastMessage = String.Format(AppResources.USER_OPTED_IN_MSG, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }

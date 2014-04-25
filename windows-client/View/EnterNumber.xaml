@@ -73,15 +73,7 @@
             <TextBlock x:Name="txtBlkOldSchool" Margin="0,82" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
 
             <toolkit:PhoneTextBox Grid.Row="1" x:Name="txtEnterCountry" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Center" Width="440" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
-
-            <Grid Grid.Row="2" HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <toolkit:PhoneTextBox KeyUp="txtEnterPhoneCode_KeyUp" x:Name="txtEnterPhoneCode" TextOptions.TextHintingMode="Animated" MaxLength="5" InputScope="Number" HorizontalAlignment="Center" Width="120" TextChanged="txtEnterPhoneCode_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
-                <toolkit:PhoneTextBox Grid.Column="1" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="320" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
-            </Grid>
+            <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
 
             <TextBlock TextAlignment="Left" Grid.Row="3"
                            Margin="32,12,0,0" Name="msisdnErrorTxt" 

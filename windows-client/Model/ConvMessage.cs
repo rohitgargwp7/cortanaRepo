@@ -2077,7 +2077,7 @@ namespace windows_client.Model
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                this._message = gp.FirstName + AppResources.USER_LEFT;
+                this._message = String.Format(AppResources.USER_LEFT, gp.FirstName);
                 gp.HasLeft = true;
                 gp.IsUsed = false;
             }

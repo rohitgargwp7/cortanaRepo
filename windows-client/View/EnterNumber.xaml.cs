@@ -315,7 +315,7 @@ namespace windows_client
 
         private void enterPhoneBtn_Click(object sender, EventArgs e)
         {
-            phoneNumber = txtEnterPhoneCode.Text.Trim() + txtEnterPhone.Text.Trim();
+            phoneNumber = countryCode.Substring(countryCode.IndexOf('+')) + txtEnterPhone.Text.Trim();
 
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
@@ -383,12 +383,12 @@ namespace windows_client
 
             /*If all well*/
             App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
+            
+            string digits = countryCode.Substring(countryCode.IndexOf('+'));
+            App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    string digits = txtEnterPhoneCode.Text.Substring(txtEnterPhoneCode.Text.IndexOf('+'));
-                    App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, txtEnterPhoneCode.Text.Substring(txtEnterPhoneCode.Text.IndexOf('+')));
-
                     Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
                     txtEnterPhone.IsReadOnly = false;
                     PhoneApplicationService.Current.State["EnteredPhone"] = txtEnterPhone.Text;
@@ -427,8 +427,7 @@ namespace windows_client
                 countryCode = isoCodeCountryCode.ContainsKey(ISORegion) ? isoCodeCountryCode[ISORegion] : "India +91";
             }
 
-            txtEnterPhoneCode.Text = countryCode.Substring(countryCode.LastIndexOf("+"));
-            txtEnterCountry.Text = countryCode.Remove(countryCode.LastIndexOf(" "));
+            txtEnterCountry.Text = countryCode;
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
@@ -447,23 +446,12 @@ namespace windows_client
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("txtEnterPhoneCode", out obj))
-                {
-                    txtEnterPhoneCode.Text = (string)obj;
-                    txtEnterPhoneCode.Select(txtEnterPhoneCode.Text.Length, 0);
-                    obj = null;
-                }
-
                 if (this.State.TryGetValue("msisdnErrorTxt.Visibility", out obj))
                 {
                     msisdnErrorTxt.Visibility = (Visibility)obj;
                     msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
                 }
             }
-
-            // if user has entered a custom code, retrieve it settings.
-            if (App.appSettings.Contains(App.COUNTRY_CODE_SETTING))
-                txtEnterPhoneCode.Text = (string)App.appSettings[App.COUNTRY_CODE_SETTING];
 
             if (PhoneApplicationService.Current.State.ContainsKey("EnteredPhone"))
             {
@@ -494,11 +482,6 @@ namespace windows_client
                     this.State["txtEnterCountry"] = txtEnterCountry.Text;
                 else
                     this.State.Remove("txtEnterCountry");
-
-                if (!string.IsNullOrWhiteSpace(txtEnterPhoneCode.Text))
-                    this.State["txtEnterPhoneCode"] = txtEnterPhoneCode.Text;
-                else
-                    this.State.Remove("txtEnterPhoneCode");
 
                 if (msisdnErrorTxt.Visibility == Visibility.Visible)
                 {
@@ -537,23 +520,7 @@ namespace windows_client
 
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            nextIconButton.IsEnabled = (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15)
-                && (txtEnterPhoneCode.Text.Length >= 1 && txtEnterPhoneCode.Text.Length <= 5)
-                ? true : false;
-        }
-
-
-        private void txtEnterPhoneCode_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            nextIconButton.IsEnabled = (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15)
-                   && (txtEnterPhoneCode.Text.Length >= 1 && txtEnterPhoneCode.Text.Length <= 5)
-                   ? true : false;
-
-            if (String.IsNullOrEmpty(txtEnterPhoneCode.Text))
-            {
-                txtEnterPhoneCode.Text = "+";
-                txtEnterPhoneCode.Select(txtEnterPhoneCode.Text.Length, 0);
-            }
+            nextIconButton.IsEnabled = (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15) ? true : false;
         }
 
         private void txtEnterCountry_GotFocus(object sender, RoutedEventArgs e)
@@ -564,9 +531,8 @@ namespace windows_client
 
         private void countryList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            countryCode = (sender as TextBlock).DataContext as string;
-            txtEnterPhoneCode.Text = countryCode.Substring(countryCode.LastIndexOf("+"));
-            txtEnterCountry.Text = countryCode.Remove(countryCode.LastIndexOf(" "));
+            string selectedCountryCode = (sender as TextBlock).DataContext as string;
+            txtEnterCountry.Text = countryCode = selectedCountryCode;
             countryList.Visibility = Visibility.Collapsed;
             ContentPanel.Visibility = Visibility.Visible;
         }

@@ -67,26 +67,26 @@
                 <Ellipse x:Name="p3" Height="10" Width="10"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel MinHeight="34" Margin="0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18"/>
+            <StackPanel MinHeight="24" Margin="0,0,0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Visible" Foreground="Red" FontSize="18"/>
                 <TextBlock Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
                            FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Foreground="Red" Opacity="0"/>
+                           Foreground="Red" Opacity="1"/>
             </StackPanel>
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid>
                     <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" Opacity="0"/>
-                    <Button x:Name="getStartedButton" Style="{StaticResource YesButtonStyle}" FontSize="18" Height="62" HorizontalAlignment="Center" Width="254" Content="{Binding Path= LocalizedResources.WelcomePage_GettingStartedButton, Source={StaticResource LocalizedStrings}}" Click="getStarted_Click"/>
+                    <Button x:Name="getStartedButton" Style="{StaticResource YesButtonStyle}" FontSize="18" Height="62" HorizontalAlignment="Center" Width="254" 
+                            Content="{Binding Path= LocalizedResources.WelcomePage_GettingStartedButton, Source={StaticResource LocalizedStrings}}" Click="getStarted_Click"/>
                 </Grid>
                 <StackPanel x:Name="termsGrid" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <HyperlinkButton Name="termsLink" Height="70" Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" FontSize="18" FontStyle="Normal" Tap="Privacy_Tap" Foreground="#cccccc"/>
-                    <TextBlock FontSize="18" TextWrapping="Wrap" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="12,5" HorizontalAlignment="Center" Foreground="#cccccc"/>
-                    <TextBlock FontSize="18" TextWrapping="Wrap" TextAlignment="Center" Width="440" Text="{Binding Path= LocalizedResources.WelcomePage_13YrsMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="12,5,12,10" HorizontalAlignment="Center" Foreground="#cccccc" />
+                    <TextBlock FontSize="18" TextWrapping="Wrap" Margin="24,-10,24,0" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Foreground="#cccccc"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
