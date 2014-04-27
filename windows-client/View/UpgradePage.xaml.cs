@@ -17,6 +17,7 @@ using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.Misc;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -108,7 +109,7 @@ namespace windows_client.View
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                    if (Utils.compareVersion("2.5.2.0", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.2.1", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
                         {
@@ -116,16 +117,22 @@ namespace windows_client.View
                             {
                                 DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                                 int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version < 1)
+
+                                // db was updated on upgrade from 1.8 hence we need to bump db version number
+                                // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
+                                if (version < 2)  
                                 {
                                     dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
-                                    dbUpdater.DatabaseSchemaVersion = 1;
+                                    dbUpdater.DatabaseSchemaVersion = 2;
 
                                     try
                                     {
                                         dbUpdater.Execute();
                                     }
-                                    catch { }
+                                    catch 
+                                    {
+                                        Debug.WriteLine("db not upgrade in v 2.5.2.1");
+                                    }
                                 }
                             }
                         }
