@@ -17,8 +17,8 @@
         <SilverlightMobileCSProjectFlavor>
           <FullDeploy>True</FullDeploy>
           <DebuggerType>Managed</DebuggerType>
-          <DebuggerAgentType>Native</DebuggerAgentType>
-          <Tombstone>True</Tombstone>
+          <DebuggerAgentType>Managed</DebuggerAgentType>
+          <Tombstone>False</Tombstone>
         </SilverlightMobileCSProjectFlavor>
       </FlavorProperties>
     </VisualStudio>
