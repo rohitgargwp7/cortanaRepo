@@ -233,6 +233,8 @@ namespace windows_client.View
         /* This callback is on background thread started by getContacts function */
         public void updatePhoneKind_Callback(object sender, ContactsSearchEventArgs e)
         {
+            ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
+
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
