@@ -86,7 +86,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        private static string _currentVersion = "1.0.0.0";
+        private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
@@ -553,7 +553,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.2.1", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.2.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -561,7 +561,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
-              
+
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -583,7 +583,7 @@ namespace windows_client
                 {
                     mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 }
-            }                                                                                                          
+            }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
@@ -915,6 +915,7 @@ namespace windows_client
                 {
                     convList = null;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
+                    WriteToIsoStorageSettings(App.PAGE_STATE, PageState.WELCOME_SCREEN);
                 }
 
                 if (convList == null || convList.Count == 0)
