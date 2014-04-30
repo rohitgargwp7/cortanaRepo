@@ -813,6 +813,12 @@ namespace windows_client
                 ps = PageState.TUTORIAL_SCREEN_STICKERS;
                 App.appSettings[SHOW_BASIC_TUTORIAL] = true;
                 App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+
+                if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
+                {
+                    App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
+                    App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
+                } 
             }
             #endregion
             #region GROUP CACHE

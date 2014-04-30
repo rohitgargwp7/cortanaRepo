@@ -60,11 +60,14 @@ namespace windows_client.View
                     }
 
                     // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
-                    if (Utils.compareVersion(App.CURRENT_VERSION, "1.8.0.0") != 1)
+                    if (Utils.compareVersion("2.5.2.2", App.CURRENT_VERSION) == 1)
                         StatusMsgsTable.MessagesDbUpdateToLatestVersion();
-                    if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+
+                    if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
-                    if (Utils.compareVersion("2.2.2.0", App.CURRENT_VERSION) == 1)
+                    
+                    bool dbUdated = false;
+                    if (Utils.compareVersion("2.5.2.2", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                         {
@@ -72,39 +75,34 @@ namespace windows_client.View
                             {
                                 DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                                 int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version < 1)
+                                if (version < 2)
                                 {
                                     dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
-                                    dbUpdater.DatabaseSchemaVersion = 1;
+                                    dbUpdater.DatabaseSchemaVersion = 2;
 
                                     try
                                     {
                                         dbUpdater.Execute();
+                                        dbUdated = true;
                                     }
                                     catch { }
                                 }
                             }
                         }
 
-                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(updatePhoneKind_Callback));
-                        _isContactsSyncComplete = true;
-
-                        while (_isContactsSyncComplete)
+                        if (dbUdated)
                         {
-                            Thread.Sleep(100);
+                            ContactUtils.getContacts(new ContactUtils.contacts_Callback(updatePhoneKind_Callback));
+                            _isContactsSyncComplete = true;
+
+                            while (_isContactsSyncComplete)
+                            {
+                                Thread.Sleep(100);
+                            }
                         }
 
-                        if (Utils.compareVersion("2.2.0.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
-                        {
-                            FriendsTableUtils.UpdateOldFilesWithDefaultLastSeen();
-                            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.TUTORIAL_SCREEN_STICKERS);
-                        }
-
-                        if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
-                        {
-                            App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
-                            App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                        }
+                        if (Utils.compareVersion("2.5.2.2", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                            FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
                     }
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
@@ -120,10 +118,10 @@ namespace windows_client.View
 
                                 // db was updated on upgrade from 1.8 hence we need to bump db version number
                                 // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
-                                if (version < 2)  
+                                if (version < 3)  
                                 {
                                     dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
-                                    dbUpdater.DatabaseSchemaVersion = 2;
+                                    dbUpdater.DatabaseSchemaVersion = 3;
 
                                     try
                                     {
