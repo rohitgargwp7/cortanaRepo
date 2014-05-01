@@ -543,7 +543,7 @@ namespace windows_client.Model
             get
             {
                 if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                    return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
+                    return GetContactName();
                 else
                     return _message;
             }
@@ -2106,6 +2106,20 @@ namespace windows_client.Model
             }
         }
 
+
+        string GetContactName()
+        {
+            string name = null;
+            if (!string.IsNullOrEmpty(metadataJsonString))
+            {
+                JObject contactInfo = JObject.Parse(metadataJsonString);
+                JToken jt;
+                if (contactInfo.TryGetValue(HikeConstants.CS_NAME, out jt) && jt != null)
+                    name = jt.ToString();
+            }
+
+            return name ?? (string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName);
+        }
         string GetFileExtension()
         {
             if (_fileAttachment != null && !string.IsNullOrEmpty(_fileAttachment.FileName))
