@@ -2118,7 +2118,7 @@ namespace windows_client.Model
                     name = jt.ToString();
             }
 
-            return name ?? (string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName);
+            return name ?? (string.IsNullOrEmpty(_fileAttachment.FileName) ? AppResources.ContactTransfer_Text : _fileAttachment.FileName);
         }
         string GetFileExtension()
         {

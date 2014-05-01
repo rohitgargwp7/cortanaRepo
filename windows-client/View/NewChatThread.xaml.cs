@@ -4746,7 +4746,7 @@ namespace windows_client.View
                     return;
                 }
 
-                string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
+                string fileName = string.IsNullOrEmpty(con.Name) ? AppResources.ContactTransfer_Text : con.Name;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
