@@ -663,6 +663,7 @@ namespace finalmqtt.Client
             {
                 return;
             }
+
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
@@ -720,6 +721,8 @@ namespace finalmqtt.Client
             }
             if (mqttListener != null)
                 mqttListener.onConnected();
+
+            MQttLogging.LogWriter.Instance.WriteToLog("MQTT connack recieved, STATUS:" + msg.getStatus());
             connectCallback.onSuccess();
             if (pingScheduleAction == null)
                 pingScheduleAction = scheduler.Schedule(recursivePingSchedule, TimeSpan.FromSeconds(RECURSIVE_PING_INTERVAL));
@@ -786,6 +789,8 @@ namespace finalmqtt.Client
             short messageId = msg.getMessageId();
             if (msg.getQos() == QoS.AT_LEAST_ONCE || msg.getQos() == QoS.EXACTLY_ONCE)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Sending ACK for messageId:" + messageId);
+
                 Message puback = new PubAckMessage(messageId, this);
                 puback.write();
             }

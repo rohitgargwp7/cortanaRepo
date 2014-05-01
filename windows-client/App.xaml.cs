@@ -676,6 +676,8 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+            MQttLogging.LogWriter.Instance.WriteToLog(string.Format("Unhandled Exception:{0}, StackTrace:{1}", e.ExceptionObject.Message, e.ExceptionObject.StackTrace));
+
             if (!IS_MARKETPLACE)
             {
                 //Running on a device / emulator without debugging
