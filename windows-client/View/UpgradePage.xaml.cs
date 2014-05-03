@@ -60,14 +60,14 @@ namespace windows_client.View
                     }
 
                     // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
-                    if (Utils.compareVersion("2.5.2.4", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                         StatusMsgsTable.MessagesDbUpdateToLatestVersion();
 
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
                     
                     bool dbUdated = false;
-                    if (Utils.compareVersion("2.5.2.4", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                         {
@@ -101,13 +101,13 @@ namespace windows_client.View
                             }
                         }
 
-                        if (Utils.compareVersion("2.5.2.4", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
+                        if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                             FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
                     }
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                    if (Utils.compareVersion("2.5.2.4", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
                         {
@@ -129,7 +129,7 @@ namespace windows_client.View
                                     }
                                     catch 
                                     {
-                                        Debug.WriteLine("db not upgrade in v 2.5.2.4");
+                                        Debug.WriteLine("db not upgrade in v 2.5.3.0");
                                     }
                                 }
                             }
