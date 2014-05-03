@@ -274,7 +274,14 @@ namespace windows_client
             TUTORIAL_SCREEN_STICKERS,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            UPGRADE_SCREEN//Upgrade page
+            UPGRADE_SCREEN,//Upgrade page
+
+            //the below pages have been removed after 2.2, but still we need these to handle them in case of upgrade.
+            //app settings is storing pagestate in form of object and not value, hence while converting on upgrade
+            //app settings is getting corrupted which throws the ap to welcome page
+            WELCOME_HIKE_SCREEN,
+            NUX_SCREEN_FRIENDS,// Nux Screen for friends
+            NUX_SCREEN_FAMILY// Nux Screen for family
         }
 
         #endregion
@@ -810,15 +817,23 @@ namespace windows_client
             #region TUTORIAL
             if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
             {
-                ps = PageState.TUTORIAL_SCREEN_STICKERS;
-                App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-
-                if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
+                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
                 {
-                    App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
-                    App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                } 
+                    if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
+                    {
+                        App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+                        App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
+                        ps = PageState.TUTORIAL_SCREEN_STATUS;
+                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                    }
+                    else
+                    {
+                        ps = PageState.TUTORIAL_SCREEN_STICKERS;
+                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                    }
+                }
             }
             #endregion
             #region GROUP CACHE
@@ -921,7 +936,6 @@ namespace windows_client
                 {
                     convList = null;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
-                    WriteToIsoStorageSettings(App.PAGE_STATE, PageState.WELCOME_SCREEN);
                 }
 
                 if (convList == null || convList.Count == 0)
