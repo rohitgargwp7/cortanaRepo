@@ -789,7 +789,7 @@
     <value>Deine Freunde wurden eigeladen</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>SMS-Teilnehmer zu hike einladen</value>
     <comment>xaml</comment>
   </data>

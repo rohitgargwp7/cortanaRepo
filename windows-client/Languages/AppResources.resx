@@ -752,8 +752,8 @@ Download it now http://hike.in and join the fun!</value>
     <value>Your friends have been invited</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
-    <value>invite SMS participants to hike</value>
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
+    <value>invite SMS participants</value>
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">

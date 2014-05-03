@@ -2066,11 +2066,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to invite SMS participants to hike.
+        ///   Looks up a localized string similar to invite SMS participants.
         /// </summary>
-        public static string GroupInfo_InviteSMSUsers_Btn_Txt {
+        public static string GroupInfo_InviteSMSUsers_Menu_Txt {
             get {
-                return ResourceManager.GetString("GroupInfo_InviteSMSUsers_Btn_Txt", resourceCulture);
+                return ResourceManager.GetString("GroupInfo_InviteSMSUsers_Menu_Txt", resourceCulture);
             }
         }
         

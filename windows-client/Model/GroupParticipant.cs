@@ -277,6 +277,16 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility InviteToHikeVisibility
+        {
+            get
+            {
+                if (IsOnHike)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public Visibility ContextMenuVisibility
         {
             get

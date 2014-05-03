@@ -36,6 +36,7 @@ namespace windows_client.View
         private ApplicationBarIconButton changeImageIconButton;
         private ApplicationBarIconButton editNameIconButton;
         private ApplicationBarIconButton addIconButton;
+        private ApplicationBarMenuItem inviteSMSparticipantsMenuItem;
 
         bool isgroupNameSelfChanged = false;
         bool isProfilePicTapped = false;
@@ -102,6 +103,12 @@ namespace windows_client.View
             addIconButton.Click += addIconButton_Click;
             appBar.Buttons.Add(addIconButton);
 
+            inviteSMSparticipantsMenuItem = new ApplicationBarMenuItem();
+            inviteSMSparticipantsMenuItem.Text = AppResources.GroupInfo_InviteSMSUsers_Menu_Txt;
+            inviteSMSparticipantsMenuItem.Click += inviteSMSparticipantsMenuItem_Click;
+            appBar.MenuItems.Add(inviteSMSparticipantsMenuItem);
+            appBar.IsMenuEnabled = false;
+
             editGroupNameAppBar = new ApplicationBar()
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
@@ -116,6 +123,68 @@ namespace windows_client.View
             editGroupNameAppBar.Buttons.Add(saveIconButton);
 
             this.ApplicationBar = appBar;
+        }
+
+        void inviteSMSparticipantsMenuItem_Click(object sender, EventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
+            //TODO start this loop from end, after sorting is done on onHike status
+            string msisdns = string.Empty, toNum = String.Empty;
+            JObject obj = new JObject();
+            JArray numlist = new JArray();
+            JObject data = new JObject();
+            int i;
+            int smsUsersCount = 0;
+            for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+            {
+                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
+                if (!gp.IsOnHike)
+                {
+                    msisdns += gp.Msisdn + ";";
+                    numlist.Add(gp.Msisdn);
+                    toNum = gp.Msisdn;
+                    smsUsersCount++;
+                }
+            }
+
+            var ts = TimeUtils.getCurrentTimeStamp();
+            var smsString = AppResources.sms_invite_message;
+
+            if (smsUsersCount == 1)
+            {
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+            }
+            else
+            {
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.INVITE_LIST] = numlist;
+                obj[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+            }
+
+
+
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            {
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
+            }
+            else
+            {
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = msisdns;
+                smsComposeTask.Body = smsString;
+                smsComposeTask.Show();
+            }
         }
 
         private void saveGroupName_Click(object sender, EventArgs e)
@@ -276,7 +345,7 @@ namespace windows_client.View
                 smsUsers++;
             }
 
-            this.inviteBtn.Visibility = EnableInviteBtn ? Visibility.Visible : Visibility.Collapsed;
+            appBar.IsMenuEnabled = EnableInviteBtn;
             this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
         }
@@ -366,7 +435,7 @@ namespace windows_client.View
                         if (!gp.IsOnHike && !EnableInviteBtn)
                         {
                             smsUsers++;
-                            this.inviteBtn.IsEnabled = true;
+                            appBar.IsMenuEnabled = true;
                         }
                     }
                     groupName = App.ViewModel.ConvMap[groupId].NameToShow;
@@ -398,7 +467,7 @@ namespace windows_client.View
                             {
                                 smsUsers--;
                                 if (smsUsers <= 0)
-                                    inviteBtn.IsEnabled = false;
+                                    appBar.IsMenuEnabled = false;
                             }
                             return;
                         }
@@ -460,7 +529,7 @@ namespace windows_client.View
                             groupMembersOC[i].IsOnHike = true;
                             smsUsers--;
                             if (smsUsers == 0)
-                                this.inviteBtn.IsEnabled = false;
+                                appBar.IsMenuEnabled = false;
                             return;
                         }
                     }
@@ -479,7 +548,7 @@ namespace windows_client.View
                         {
                             smsUsers++;
                             groupMembersOC[i].IsOnHike = false;
-                            this.inviteBtn.IsEnabled = true;
+                            appBar.IsMenuEnabled = true;
                             return;
                         }
                     }
@@ -580,69 +649,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
-            //TODO start this loop from end, after sorting is done on onHike status
-            string msisdns = string.Empty, toNum = String.Empty;
-            JObject obj = new JObject();
-            JArray numlist = new JArray();
-            JObject data = new JObject();
-            int i;
-            int smsUsersCount = 0;
-            for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
-            {
-                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
-                if (!gp.IsOnHike)
-                {
-                    msisdns += gp.Msisdn + ";";
-                    numlist.Add(gp.Msisdn);
-                    toNum = gp.Msisdn;
-                    smsUsersCount++;
-                }
-            }
-
-            var ts = TimeUtils.getCurrentTimeStamp();
-            var smsString = AppResources.sms_invite_message;
-
-            if (smsUsersCount == 1)
-            {
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-            }
-            else
-            {
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.INVITE_LIST] = numlist;
-                obj[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
-            }
-
-          
-
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
-            {
-                App.MqttManagerInstance.mqttPublishToServer(obj);
-                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
-            }
-            else
-            {
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-                App.MqttManagerInstance.mqttPublishToServer(obj);
-              
-                SmsComposeTask smsComposeTask = new SmsComposeTask();
-                smsComposeTask.To = msisdns;
-                smsComposeTask.Body = smsString;
-                smsComposeTask.Show();
-            }
-
-        }
 
         #region CHANGE GROUP NAME
 
@@ -1049,6 +1055,48 @@ namespace windows_client.View
         private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _dontOpenPic = true;
+        }
+
+        private void MenuItem_InviteUser(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            GroupParticipant gp = (sender as MenuItem).DataContext as GroupParticipant;
+            if (gp != null)
+            {
+                string msisdns = string.Empty, toNum = String.Empty;
+                JObject obj = new JObject();
+                JArray numlist = new JArray();
+                JObject data = new JObject();
+
+                msisdns = gp.Msisdn + ";";
+                numlist.Add(gp.Msisdn);
+                toNum = gp.Msisdn;
+
+                var ts = TimeUtils.getCurrentTimeStamp();
+                var smsString = AppResources.sms_invite_message;
+
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+                {
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
+                }
+                else
+                {
+                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = smsString;
+                    smsComposeTask.Show();
+                }
+            }
         }
     }
 }

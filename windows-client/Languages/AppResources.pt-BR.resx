@@ -796,7 +796,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Seus amigos foram convidados</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>Convidar participantes do SMS para o hike</value>
     <comment>xaml</comment>
   </data>

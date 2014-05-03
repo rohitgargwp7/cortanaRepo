@@ -797,7 +797,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>आपके  मित्र आमंत्रित किये गये है</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>एसएमएस प्रतिभागियों को hike  के लिये  आमंत्रित करें</value>
     <comment>xaml</comment>
   </data>

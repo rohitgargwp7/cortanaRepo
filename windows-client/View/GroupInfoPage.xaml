@@ -16,10 +16,6 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
 
         <phone:LongListSelector x:Name="groupChatParticipants" LayoutMode="Grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -29,18 +25,18 @@
                     <Grid.Background>
                         <ImageBrush x:Name="groupImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
                     </Grid.Background>
-                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="82" Tap="Grid_Tap">                
+                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
                         <Border Background="Black" Opacity="0.45" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                        <toolkit:PhoneTextBox Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
+                            <toolkit:PhoneTextBox Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
                                               FontSize="32" MaxLength="30" Margin="-12" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
                                               VerticalAlignment="Center" TextWrapping="Wrap" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
                                               InputScope="Text" Style="{StaticResource TextBoxWithTransparentBackground}"/>
-                            <TextBlock x:Name="groupData" Grid.Row="1" Foreground="White" FontSize="18"/>
+                            <TextBlock x:Name="groupData" Grid.Row="1" Foreground="White" FontSize="22"/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -53,6 +49,7 @@
                         <toolkit:ContextMenuService.ContextMenu>
                             <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding InviteToHikeVisibility}" Tap="MenuItem_InviteUser"/>
                                 <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
                                 <toolkit:MenuItem Foreground="Black" Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Tap="MenuItem_Tap_AddRemoveFav"/>
                             </toolkit:ContextMenu>
@@ -61,7 +58,5 @@
                 </DataTemplate>
             </phone:LongListSelector.ItemTemplate>
         </phone:LongListSelector>
-        <Button Grid.Row="1" x:Name="inviteBtn" Tap="inviteSMSUsers_Tap" Style="{StaticResource InviteSMSUsersGIButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"
-                Content="{Binding Path= LocalizedResources.GroupInfo_InviteSMSUsers_Btn_Txt, Source={StaticResource LocalizedStrings}}"/>
     </Grid>
 </phone:PhoneApplicationPage>

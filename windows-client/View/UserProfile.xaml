@@ -18,7 +18,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <ProgressBar x:Name="shellProgress" Foreground="White" IsIndeterminate="False" VerticalAlignment="Top" Canvas.ZIndex="1"/>
-        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#EFF2F6"
+        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#E2E4E8"
                                 Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
             <phone:LongListSelector.ListHeader>
                 <Grid>
@@ -31,7 +31,7 @@
                         <Grid.Background>
                             <ImageBrush x:Name="avatarImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
                         </Grid.Background>
-                        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="82" Tap="Grid_Tap">
+                        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
                             <Border Background="Black" Opacity="0.45" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12">
                                 <Grid.ColumnDefinitions>
@@ -48,7 +48,7 @@
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>
                                 </TextBlock>
-                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="24" FontWeight="Light" Foreground="White">
+                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="22" FontWeight="Light" Foreground="White">
                                     <toolkit:GestureService.GestureListener>
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>

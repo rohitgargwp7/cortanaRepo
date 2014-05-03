@@ -485,17 +485,6 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="InviteSMSUsersGIButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
-                <Setter Property="Background" Value="Black"/>
-                <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Height" Value="55"/>
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            </Style>
-
             <Style x:Key="YesButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
                 <Setter Property="Background" Value="#2b8ddd"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>

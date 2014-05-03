@@ -796,7 +796,7 @@
     <value>Ваши друзья приглашены</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>Пригласите получателей SMS в hike</value>
     <comment>xaml</comment>
   </data>
