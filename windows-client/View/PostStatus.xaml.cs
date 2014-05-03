@@ -51,7 +51,7 @@ namespace windows_client.View
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
-            postStatusPage.ApplicationBar = appBar;
+            ApplicationBar = appBar;
 
             if (App.ViewModel.DictInAppTip != null)
             {
@@ -125,7 +125,7 @@ namespace windows_client.View
 
             if (statusText == string.Empty)
             {
-                postStatusIcon.IsEnabled = true;
+                postStatusIcon.IsEnabled = false;
                 return;
             }
 
@@ -135,6 +135,7 @@ namespace windows_client.View
                 postStatusIcon.IsEnabled = true;
                 return;
             }
+
             JObject statusJSON = new JObject();
             statusJSON["status-message"] = statusText;
             if (isFacebookPost)
@@ -146,10 +147,11 @@ namespace windows_client.View
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
+
             AccountUtils.postStatus(statusJSON, StatusUpdateHelper.Instance.postStatus_Callback);
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
-
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)
@@ -157,6 +159,7 @@ namespace windows_client.View
             txtStatus.Focus();
             this.Loaded -= PostStatusPage_Loaded;
         }
+
         private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!isFacebookPost)
@@ -328,7 +331,7 @@ namespace windows_client.View
             txtCounter.Text = (twitterPostLimit - count).ToString();
         }
 
-        private void txtStatus_LostFocus_1(object sender, RoutedEventArgs e)
+        private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
             gridContent.Height = 605;
             svStatusText.Height = 550;

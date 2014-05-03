@@ -565,7 +565,7 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 15, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(25, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
@@ -650,7 +650,7 @@ namespace windows_client.ViewModel
                 if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7 || index == 8)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
                 else if (index == 3)
-                    inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
+                    inAppTipUC.SetValue(Grid.ColumnSpanProperty, 4);
 
                 if (tip.Width != null)
                     inAppTipUC.Width = Convert.ToDouble(tip.Width);

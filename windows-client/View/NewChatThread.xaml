@@ -1109,7 +1109,8 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
-                        <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" KeyDown="MsgCharTapped" 
+                        <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" 
+                                               TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" KeyDown="MsgCharTapped" 
                                                 MinHeight="76" MaxHeight="2048" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
                     </ScrollViewer>
                     <Grid Grid.Column="1" MinWidth="60" Background="#eeeeec" Tap="Record_ActionIconTapped">

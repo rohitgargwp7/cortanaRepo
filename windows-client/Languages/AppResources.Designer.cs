@@ -3191,7 +3191,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NEW STATUS.
+        ///   Looks up a localized string similar to new status.
         /// </summary>
         public static string NewStatus_Txt {
             get {
@@ -3452,7 +3452,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What&apos;s up, {0}?.
+        ///   Looks up a localized string similar to what&apos;s up, {0}?.
         /// </summary>
         public static string PostStatus_WhatsUp_Hint_txt {
             get {
