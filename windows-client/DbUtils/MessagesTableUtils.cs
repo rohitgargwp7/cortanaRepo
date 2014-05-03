@@ -94,7 +94,7 @@ namespace windows_client.DbUtils
         }
 
         // this is called in case of gcj from Network manager
-        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj)
+        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj, string gName)
         {
             ConversationListObject obj = null;
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
@@ -102,7 +102,7 @@ namespace windows_client.DbUtils
                 bool success = addMessage(convMsg);
                 if (!success)
                     return null;
-                string groupName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
+                string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
