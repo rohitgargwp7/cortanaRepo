@@ -1199,58 +1199,6 @@ namespace windows_client.utils
 
         #endregion
 
-        #region SNS
-
-        private BitmapImage facebookDisabledIcon;
-        public BitmapImage FacebookDisabledIcon
-        {
-            get
-            {
-                if (facebookDisabledIcon == null)
-                    facebookDisabledIcon = new BitmapImage(new Uri("/View/images/fb_status_disabled.png", UriKind.Relative));
-               
-                return facebookDisabledIcon;
-            }
-        }
-
-        private BitmapImage facebookEnabledIcon;
-        public BitmapImage FacebookEnabledIcon
-        {
-            get
-            {
-                if (facebookEnabledIcon == null)
-                    facebookEnabledIcon = new BitmapImage(new Uri("/View/images/fb_status.png", UriKind.Relative));
-            
-                return facebookEnabledIcon;
-            }
-        }
-
-        private BitmapImage twitterDisabledIcon;
-        public BitmapImage TwitterDisabledIcon
-        {
-            get
-            {
-                if (twitterDisabledIcon == null)
-                    twitterDisabledIcon = new BitmapImage(new Uri("/View/images/twitter_status_disabled.png", UriKind.Relative));
-               
-                return twitterDisabledIcon;
-            }
-        }
-
-        private BitmapImage twitterEnabledIcon;
-        public BitmapImage TwitterEnabledIcon
-        {
-            get
-            {
-                if (twitterEnabledIcon == null)
-                    twitterEnabledIcon = new BitmapImage(new Uri("/View/images/twitter_status.png", UriKind.Relative));
-                
-                return twitterEnabledIcon;
-            }
-        }
-
-        #endregion
-
         #region Last Seen
 
         private BitmapImage lastSeenClockImageWhite;

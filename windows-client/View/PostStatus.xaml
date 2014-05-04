@@ -15,64 +15,76 @@
 
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
-            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
-        <Grid Grid.Row="1" VerticalAlignment="Top" Margin="0,12,0,0" x:Name="MoodPanel">
-            <Grid.RowDefinitions>
-                <RowDefinition  Height="Auto"/>
-                <RowDefinition  Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Name="gridContent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid Tap="Mood_Tap">
-                    <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Margin="25,25,0,25" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="Mood_Tap"/>
-                </Grid>
-                <ScrollViewer Name="svStatusText" Height="165" Grid.Column="2" Margin="0 -15 0 0">
-                    <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" 
-                                          GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus"
-                                          TextChanged="txtStatus_TextChanged" Width="345"/>
-                </ScrollViewer>
-                <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" TextAlignment="Right"
-                                      Text="140" Grid.Column="3"/>
+        <Grid x:Name="MoodPanel" Grid.Row="1" Margin="25,0,25,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid Tap="Mood_Tap">
+                <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Margin="0,25,0,25" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="Mood_Tap"/>
             </Grid>
-            <Grid Grid.Row="1" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Tap="FbIcon_Tap" >
-                    <Image Name="fbIconImage" Margin="12" Source="/View/images/fb_status_disabled.png" VerticalAlignment="Center" HorizontalAlignment="Left" Height="35"/>
-                </Grid>
-                <Grid Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
-                    <Image Name="twitterIconImage" Margin="12" Source="/View/images/twitter_status_disabled.png"  VerticalAlignment="Center" Height="35" Width="35"/>
-                </Grid>
+            <ScrollViewer Name="svStatusText" Grid.Column="2" Margin="0,12">
+                <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
+                                          GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
+                                          TextChanged="txtStatus_TextChanged"/>
+            </ScrollViewer>
+            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" TextAlignment="Right" Foreground="Black"
+                                      Text="140" Grid.Column="3" Margin="12,0,0,0"/>
+        </Grid>
+        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" HorizontalAlignment="Center">
+                <Button x:Name="fbButton" Width="210" Style="{StaticResource NoButtonStyle}" Click="Fb_Tap" Margin="-12">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Image Margin="0,0,12,0" Source="/View/images/fb_status.png" Height="20"/>
+                            <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Facebook_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="25,0,0,0">
+                <Button x:Name="twitterButton" Width="210" Style="{StaticResource NoButtonStyle}" Click="TwitterIcon_Tap" Margin="-12">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Image Margin="0,0,12,0" Source="/View/images/twitter_status.png" Height="16"/>
+                            <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Twitter_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
             </Grid>
         </Grid>
-        <Grid Name="gridMood" Grid.Row="0" Grid.RowSpan="2" Visibility="Collapsed" Background="White" >
+        
+        <Grid Name="gridMood" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="White" Canvas.ZIndex="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Moods_Txt, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Regular"  Margin="26 40 12 12" Foreground="Gray"></TextBlock>
-            <ListBox  Name="moodListBox"  Grid.Row="1" Margin="20 15 12 30" Tap="moodList_Tap">
+            <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+                <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Moods_Txt, Source={StaticResource LocalizedStrings}}"/>
+            </Grid>
+            <ListBox  Name="moodListBox"  Grid.Row="1" Margin="15,0" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0 0 0 25">
+                        <Grid Margin="0,30,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Height="55" Width="55" Source="{Binding MoodImage}"/>
-                            <TextBlock Grid.Column="1" Text="{Binding MoodName}" FontSize="26" VerticalAlignment="Center" FontFamily="Segoe WP Regular" Foreground="Gray" Margin="12 0 0 0" ></TextBlock>
+                            <TextBlock Grid.Column="1" Text="{Binding MoodName}" FontSize="26" VerticalAlignment="Center" Foreground="Gray" Margin="22 0 0 0"/>
                         </Grid>
 
                     </DataTemplate>

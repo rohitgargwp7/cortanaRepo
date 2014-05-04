@@ -160,57 +160,6 @@ namespace windows_client.View
             this.Loaded -= PostStatusPage_Loaded;
         }
 
-        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (!isFacebookPost)
-            {
-                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
-                {
-                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
-                    isFacebookPost = true;
-                }
-                else
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
-                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-                }
-            }
-            else
-            {
-                fbIconImage.Source = UI_Utils.Instance.FacebookDisabledIcon;
-                isFacebookPost = false;
-            }
-        }
-
-        private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (!isTwitterPost)
-            {
-                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
-                {
-                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
-                    isTwitterPost = true;
-                    if (txtStatus.Text.Length > twitterPostLimit)
-                        postStatusIcon.IsEnabled = false;
-
-                    txtCounter.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
-                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-                }
-            }
-            else
-            {
-                twitterIconImage.Source = UI_Utils.Instance.TwitterDisabledIcon;
-                isTwitterPost = false;
-                if (txtStatus.Text.Length > 0)
-                    postStatusIcon.IsEnabled = true;
-                txtCounter.Visibility = Visibility.Collapsed;
-            }
-        }
-
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.ViewModel.HideToolTip(LayoutRoot, 3);
@@ -256,8 +205,8 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 200;
-            svStatusText.Height = 165;
+            svStatusText.MaxHeight = 150;
+            buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
             {
@@ -284,7 +233,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
+                    fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isFacebookPost = true;
                 });
             }
@@ -299,7 +248,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
+                    twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isTwitterPost = true;
                     if (txtStatus.Text.Length > twitterPostLimit)
                     {
@@ -333,8 +282,59 @@ namespace windows_client.View
 
         private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 605;
-            svStatusText.Height = 550;
+            svStatusText.MaxHeight = 550;
+            buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+        }
+
+        private void Fb_Tap(object sender, RoutedEventArgs e)
+        {
+            if (!isFacebookPost)
+            {
+                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                {
+                    fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
+                    isFacebookPost = true;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                fbButton.Style = (Style)App.Current.Resources["NoButtonStyle"];
+                isFacebookPost = false;
+            }
+        }
+
+        private void TwitterIcon_Tap(object sender, RoutedEventArgs e)
+        {
+            if (!isTwitterPost)
+            {
+                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                {
+                    twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
+                    isTwitterPost = true;
+                    if (txtStatus.Text.Length > twitterPostLimit)
+                        postStatusIcon.IsEnabled = false;
+
+                    txtCounter.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                twitterButton.Style = (Style)App.Current.Resources["NoButtonStyle"];
+                isTwitterPost = false;
+                if (txtStatus.Text.Length > 0)
+                    postStatusIcon.IsEnabled = true;
+                txtCounter.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

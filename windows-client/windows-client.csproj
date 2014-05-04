@@ -743,7 +743,6 @@
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\fb_status.png" />
-    <Content Include="View\images\fb_status_disabled.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\help_icon_dark.png" />
     <Content Include="View\images\AppBar\icon_cross.png" />
@@ -865,7 +864,6 @@
     <Content Include="View\images\ConversationPage\tutorial_arrow.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.png" />
     <Content Include="View\images\twitter_status.png" />
-    <Content Include="View\images\twitter_status_disabled.png" />
     <Content Include="View\images\tw_dark.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\user_invite.png" />

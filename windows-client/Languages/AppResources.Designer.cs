@@ -1616,6 +1616,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to facebook.
+        /// </summary>
+        public static string Facebook_Txt {
+            get {
+                return ResourceManager.GetString("Facebook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect with Facebook.
         /// </summary>
         public static string FB_Connect_Txt {
@@ -1742,33 +1751,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected.
-        /// </summary>
-        public static string FreeSMS_fbOrTwitter_Connected {
-            get {
-                return ResourceManager.GetString("FreeSMS_fbOrTwitter_Connected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Facebook Post.
-        /// </summary>
-        public static string FreeSMS_FbPost_MsgBxCaption {
-            get {
-                return ResourceManager.GetString("FreeSMS_FbPost_MsgBxCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Successfully posted to facebook..
-        /// </summary>
-        public static string FreeSMS_FbPostSuccess_MsgBx {
-            get {
-                return ResourceManager.GetString("FreeSMS_FbPostSuccess_MsgBx", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hike to hike.
         /// </summary>
         public static string FreeSMS_H2HHeader_TxtBlk {
@@ -1846,24 +1828,6 @@ namespace windows_client.Languages {
         public static string FreeSMS_twConnStatus_TxtBlk {
             get {
                 return ResourceManager.GetString("FreeSMS_twConnStatus_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Twitter Post.
-        /// </summary>
-        public static string FreeSMS_TwPost_MsgBxCaption {
-            get {
-                return ResourceManager.GetString("FreeSMS_TwPost_MsgBxCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Successfully posted to twitter..
-        /// </summary>
-        public static string FreeSMS_TwPostSuccess_MsgBx {
-            get {
-                return ResourceManager.GetString("FreeSMS_TwPostSuccess_MsgBx", resourceCulture);
             }
         }
         
@@ -4888,6 +4852,15 @@ namespace windows_client.Languages {
         public static string Today_Txt {
             get {
                 return ResourceManager.GetString("Today_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to twitter.
+        /// </summary>
+        public static string Twitter_Txt {
+            get {
+                return ResourceManager.GetString("Twitter_Txt", resourceCulture);
             }
         }
         
