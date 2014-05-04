@@ -990,9 +990,9 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to rewards.
         /// </summary>
-        public static string ConversationsList_New_Txt {
+        public static string ConversationsList_Rewards_Txt {
             get {
-                return ResourceManager.GetString("ConversationsList_New_Txt", resourceCulture);
+                return ResourceManager.GetString("ConversationsList_Rewards_Txt", resourceCulture);
             }
         }
         
@@ -5189,74 +5189,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Free SMS can only be sent to India.
-        /// </summary>
-        public static string Walkthrough_FreeMsgToIndia_Txt {
-            get {
-                return ResourceManager.GetString("Walkthrough_FreeMsgToIndia_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For every friend who joins, you get 50 Free hike SMS every month.
-        /// </summary>
-        public static string Walkthrough_FreeSmsReward_Txt {
-            get {
-                return ResourceManager.GetString("Walkthrough_FreeSmsReward_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to swipe left to continue.
         /// </summary>
         public static string Walkthrough_H2H_SwipeLeft {
             get {
                 return ResourceManager.GetString("Walkthrough_H2H_SwipeLeft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invite Friends Earn Rewards..
-        /// </summary>
-        public static string Walkthrough_InviteFriends_Txt {
-            get {
-                return ResourceManager.GetString("Walkthrough_InviteFriends_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to let&apos;s hike.
-        /// </summary>
-        public static string Walkthrough_LetsHike_Txt {
-            get {
-                return ResourceManager.GetString("Walkthrough_LetsHike_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Free, always, worldwide.
-        /// </summary>
-        public static string Walkthrough_TitleMsg_1 {
-            get {
-                return ResourceManager.GetString("Walkthrough_TitleMsg_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Also message friends not on hike for free with Free hike SMS.
-        /// </summary>
-        public static string Walkthrough_TitleMsg_2 {
-            get {
-                return ResourceManager.GetString("Walkthrough_TitleMsg_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to accept.
-        /// </summary>
-        public static string WelcomePage_Accept_AppBar {
-            get {
-                return ResourceManager.GetString("WelcomePage_Accept_AppBar", resourceCulture);
             }
         }
         
@@ -5297,7 +5234,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sure as in Tapping on &apos;get started&apos; will confirm you are 13+. Push notifications are turned on by default..
+        ///   Looks up a localized string similar to Tapping on &apos;get started&apos; will confirm you are 13+. Push notifications are turned on by default..
         /// </summary>
         public static string WelcomePage_PushMsg_TxtBlk {
             get {

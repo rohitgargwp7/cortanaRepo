@@ -1148,7 +1148,7 @@
     <value>удалить из группы</value>
     <comment>General text</comment>
   </data>
-  <data name="ConversationsList_New_Txt" xml:space="preserve">
+  <data name="ConversationsList_Rewards_Txt" xml:space="preserve">
     <value>награды</value>
     <comment>Rewards Text</comment>
   </data>

@@ -1149,7 +1149,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>समूह से निकालें</value>
     <comment>General text</comment>
   </data>
-  <data name="ConversationsList_New_Txt" xml:space="preserve">
+  <data name="ConversationsList_Rewards_Txt" xml:space="preserve">
     <value>पुरस्कार</value>
     <comment>Rewards Text</comment>
   </data>

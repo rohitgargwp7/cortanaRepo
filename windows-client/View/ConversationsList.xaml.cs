@@ -53,6 +53,8 @@ namespace windows_client.View
         ApplicationBarMenuItem muteStatusMenu;
         ApplicationBarMenuItem settingsMenu;
         ApplicationBarMenuItem profileMenu;
+        ApplicationBarMenuItem rewardsMenu;
+        ApplicationBarMenuItem inviteMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
         ApplicationBarIconButton groupChatIconButton;
@@ -342,6 +344,12 @@ namespace windows_client.View
             if (profileMenu != null)
                 profileMenu.IsEnabled = true;
 
+            if (inviteMenu != null)
+                inviteMenu.IsEnabled = true;
+
+            if (rewardsMenu != null)
+                rewardsMenu.IsEnabled = true;
+
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
             {
                 NetworkManager.turnOffNetworkManager = false;
@@ -458,17 +466,29 @@ namespace windows_client.View
             muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             muteStatusMenu.Click += muteStatusMenu_Click;
 
-            settingsMenu = new ApplicationBarMenuItem();
-            settingsMenu.Text = AppResources.Settings;
-            settingsMenu.Click += settingsMenu_Click;
-            settingsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
-            appBar.MenuItems.Add(settingsMenu);
-
             profileMenu = new ApplicationBarMenuItem();
             profileMenu.Text = AppResources.Profile_Txt;
             profileMenu.Click += profileMenu_Click;
             profileMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(profileMenu);
+            
+            inviteMenu = new ApplicationBarMenuItem();
+            inviteMenu.Text = AppResources.Conversations_TellFriend_Txt;
+            inviteMenu.Click += inviteMenu_Click;
+            inviteMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(inviteMenu);
+
+            rewardsMenu = new ApplicationBarMenuItem();
+            rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
+            rewardsMenu.Click += rewardsMenu_Click;
+            rewardsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(rewardsMenu);
+
+            settingsMenu = new ApplicationBarMenuItem();
+            settingsMenu.Text = AppResources.Settings;
+            settingsMenu.Click += settingsMenu_Click;
+            settingsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(settingsMenu);
 
             //deleteAppBar = new ApplicationBar();
             //deleteChatIconButton = new ApplicationBarIconButton();
@@ -477,6 +497,33 @@ namespace windows_client.View
             //deleteChatIconButton.Click += deleteChatIconButton_Click;
             //deleteChatIconButton.IsEnabled = true;
             //deleteAppBar.Buttons.Add(deleteChatIconButton);
+        }
+
+        void rewardsMenu_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                App.AnalyticsInstance.addEvent(Analytics.REWARDS);
+                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
+            }
+        }
+
+        void inviteMenu_Click(object sender, EventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE);
+            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
+            try
+            {
+                NavigationService.Navigate(nextPage);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+            }
         }
 
         void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
@@ -1925,33 +1972,6 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
-        }
-
-        private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                App.AnalyticsInstance.addEvent(Analytics.REWARDS);
-                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
-            }
-        }
-
-        private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE);
-            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
-            try
-            {
-                NavigationService.Navigate(nextPage);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
-            }
         }
 
         #region ANALYTICS
