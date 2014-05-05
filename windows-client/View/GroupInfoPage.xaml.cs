@@ -685,7 +685,7 @@ namespace windows_client.View
         {
             _dontOpenPic = true;
 
-            groupInfoPage.ApplicationBar = editGroupNameAppBar;
+            ApplicationBar = editGroupNameAppBar;
         }
 
         #endregion

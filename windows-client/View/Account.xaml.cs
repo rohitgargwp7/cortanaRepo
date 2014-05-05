@@ -202,7 +202,7 @@ namespace windows_client.View
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
             if (res != MessageBoxResult.OK)
                 return;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             LogoutFb();
         }
 
@@ -213,7 +213,7 @@ namespace windows_client.View
                 return;
             else
             {
-                shellProgress.IsVisible = true;
+                shellProgress.IsIndeterminate = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                 App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
@@ -227,7 +227,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 gridTwitter.Visibility = Visibility.Collapsed;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
             });
         }
@@ -237,7 +237,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 gridFB.Visibility = Visibility.Collapsed;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
             });
         }
