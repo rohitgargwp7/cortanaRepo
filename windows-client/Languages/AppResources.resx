@@ -326,11 +326,11 @@
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
-    <value>Email</value>
+    <value>email</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
-    <value>Full Name</value>
+    <value>name</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
@@ -346,11 +346,11 @@
     <comment>gender dropdown (cs)</comment>
   </data>
   <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
-    <value>Gender</value>
+    <value>gender</value>
     <comment>xaml</comment>
   </data>
   <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
-    <value>Phone</value>
+    <value>phone</value>
     <comment>xaml</comment>
   </data>
   <data name="Save_AppBar_Btn" xml:space="preserve">
@@ -739,8 +739,8 @@ Download it now http://hike.in and join the fun!</value>
     <value>Invites sent</value>
     <comment>cs</comment>
   </data>
-  <data name="Invite_Txt" xml:space="preserve">
-    <value>INVITE</value>
+  <data name="Invite_Friends_Txt" xml:space="preserve">
+    <value>invite friends</value>
     <comment>General Text</comment>
   </data>
   <data name="Messaging_Txt" xml:space="preserve">

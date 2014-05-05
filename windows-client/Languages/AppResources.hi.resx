@@ -829,7 +829,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>आमंत्रण भेजा गया</value>
     <comment>cs</comment>
   </data>
-  <data name="Invite_Txt" xml:space="preserve">
+  <data name="Invite_Friends_Txt" xml:space="preserve">
     <value>आमंत्रित करें </value>
     <comment>General Text</comment>
   </data>

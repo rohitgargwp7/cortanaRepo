@@ -162,9 +162,6 @@
       <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
-    <Compile Include="Controls\Snowflake.xaml.cs">
-      <DependentUpon>Snowflake.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
@@ -367,10 +364,6 @@
     </Page>
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Snowflake.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
@@ -860,7 +853,6 @@
     <Content Include="View\images\notifications_black.png" />
     <Content Include="View\images\account_black.png" />
     <Content Include="View\images\timeline_photo.png" />
-    <Content Include="View\images\timeline_status_icon.png" />
     <Content Include="View\images\ConversationPage\tutorial_arrow.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.png" />
     <Content Include="View\images\twitter_status.png" />
@@ -1064,7 +1056,6 @@
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\signup_logo.png" />
     <Content Include="View\images\ic_block_active.png" />
-    <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />
   </ItemGroup>
   <ItemGroup>

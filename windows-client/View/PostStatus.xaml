@@ -6,12 +6,11 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-   xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True">
 
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
@@ -29,9 +28,11 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid Tap="Mood_Tap">
-                <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Margin="0,25,0,25" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="Mood_Tap"/>
-            </Grid>
+            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithNoPressedStateStyle}" Margin="0,25" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Button.Content>
+                    <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43"  Tap="Mood_Tap"/>
+                </Button.Content>
+            </Button>
             <ScrollViewer Name="svStatusText" Grid.Column="2" Margin="0,12">
                 <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"

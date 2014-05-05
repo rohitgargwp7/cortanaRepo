@@ -9,22 +9,20 @@
     xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" Name="shareLocation">
+    shell:SystemTray.IsVisible="False">
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="False" IsVisible="True" />
-    </shell:SystemTray.ProgressIndicator>
-
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.RowSpan="2" VerticalAlignment="Top" Foreground="White"/>
 
         <Grid x:Name="MapGrid">
             <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>
@@ -46,7 +44,7 @@
                 </Grid.RowDefinitions>
                 <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="SearchTextBox" Hint="{Binding Path= LocalizedResources.Search_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
                                       GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown"/>
-                <ListBox x:Name="PlacesList" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
+                <ListBox x:Name="PlacesList" Foreground="Black" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="12,10">

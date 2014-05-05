@@ -14,7 +14,6 @@
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.Opacity="0" shell:SystemTray.ForegroundColor="#fffffe"

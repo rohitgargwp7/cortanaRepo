@@ -9,15 +9,11 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
+    Foreground="Black"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     toolkit:TiltEffect.IsTiltEnabled="True"
-    shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="inviteUsersPage">
-
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
-    </shell:SystemTray.ProgressIndicator>
+    shell:SystemTray.IsVisible="False" DataContext="{Binding}" Name="inviteUsersPage">
 
     <phone:PhoneApplicationPage.Resources>
         <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
@@ -46,7 +42,7 @@
                 <Border Background="{StaticResource PhoneAccentBrush}" 
                         Width="55" Height="55" HorizontalAlignment="Left" Margin="0,0,0,10">
                     <TextBlock Text="{Binding Title}" 
-                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Foreground="Black" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
                                 VerticalAlignment="Bottom"/>
                 </Border>
@@ -70,16 +66,17 @@
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <TextBlock Name="topHeader"  Text="{Binding Path= LocalizedResources.Invite_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
-            <TextBlock Name="title" Text="{Binding Path= LocalizedResources.Friends_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="24,-10,0,0" />
-        </StackPanel>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" VerticalAlignment="Top" Foreground="White" />
+        
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Invite_Friends_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">

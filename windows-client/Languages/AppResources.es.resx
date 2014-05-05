@@ -827,7 +827,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Invit. enviadas</value>
     <comment>cs</comment>
   </data>
-  <data name="Invite_Txt" xml:space="preserve">
+  <data name="Invite_Friends_Txt" xml:space="preserve">
     <value>INVITAR</value>
     <comment>General Text</comment>
   </data>

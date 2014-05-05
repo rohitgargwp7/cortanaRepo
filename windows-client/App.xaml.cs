@@ -349,8 +349,6 @@ namespace windows_client
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
 
-            (App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color = Colors.White;
-            (App.Current.Resources["PhoneForegroundBrush"] as SolidColorBrush).Color = Colors.Black;
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
             (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }

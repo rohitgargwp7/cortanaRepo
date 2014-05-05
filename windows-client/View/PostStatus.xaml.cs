@@ -183,8 +183,6 @@ namespace windows_client.View
             moodId = MoodsInitialiser.GetSendingMoodId(moodId);
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
-            moodImage.Height = 60;
-            moodImage.Width = 60;
             gridMood.Visibility = Visibility.Collapsed;
             txtStatus.Focus();
             this.appBar.IsVisible = true;

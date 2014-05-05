@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
+    
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
@@ -71,9 +71,9 @@
         </Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
             <TextBlock x:Name="feelingLazyTxtBlk" FontSize="18" TextAlignment="Center"
-                       Foreground="{StaticResource PhoneForegroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Width="400"
-                           Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
-                           Opacity="1"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Width="400"
+                       Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Opacity="1"/>
             <Button Margin="0,18,0,0" Name="spFbConnect" Style="{StaticResource ButtonWithNoPressedStateStyle}" HorizontalAlignment="Center" Click="facebook_Tap">
                 <Button.Content>
                     <Image MaxHeight="44" Source="/View/images/FTUE/fbConnect.png" Stretch="Uniform"/>

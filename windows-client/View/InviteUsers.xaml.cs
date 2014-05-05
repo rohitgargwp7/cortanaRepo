@@ -52,7 +52,7 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -63,7 +63,7 @@ namespace windows_client.View
             {
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 if (allContactsList != null && allContactsList.Count > 0)
                     gridSelectAll.Visibility = Visibility.Visible;
             };

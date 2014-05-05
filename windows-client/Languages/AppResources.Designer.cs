@@ -1186,7 +1186,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Full Name.
+        ///   Looks up a localized string similar to name.
         /// </summary>
         public static string EditProfile_FullName_TxtBlk {
             get {
@@ -1195,7 +1195,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gender.
+        ///   Looks up a localized string similar to gender.
         /// </summary>
         public static string EditProfile_Gender_TxtBlk {
             get {
@@ -1258,7 +1258,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Phone.
+        ///   Looks up a localized string similar to phone.
         /// </summary>
         public static string EditProfile_Phone_TxtBlk {
             get {
@@ -1328,7 +1328,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to email.
         /// </summary>
         public static string Email_Txt {
             get {
@@ -2435,6 +2435,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to invite friends.
+        /// </summary>
+        public static string Invite_Friends_Txt {
+            get {
+                return ResourceManager.GetString("Invite_Friends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to invite.
         /// </summary>
         public static string Invite_Header_Txt {
@@ -2467,15 +2476,6 @@ namespace windows_client.Languages {
         public static string Invite_Small {
             get {
                 return ResourceManager.GetString("Invite_Small", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to INVITE.
-        /// </summary>
-        public static string Invite_Txt {
-            get {
-                return ResourceManager.GetString("Invite_Txt", resourceCulture);
             }
         }
         

@@ -8,27 +8,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="12,0,0,0">
-            <TextBlock Text="{Binding Path= LocalizedResources.ViewMessage_Title_txt, Source={StaticResource LocalizedStrings}}" Margin="12,0,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-        </StackPanel>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer Height="650" Margin="12 0 0 0">
-                <StackPanel Name="stMessage"/>
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.ViewMessage_Title_txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+        
+        <Grid x:Name="ContentPanel" Grid.Row="1">
+            <ScrollViewer Height="650">
+                <StackPanel Name="stMessage" Margin="25,0"/>
             </ScrollViewer>
         </Grid>
     </Grid>

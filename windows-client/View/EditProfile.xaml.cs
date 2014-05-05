@@ -66,7 +66,7 @@ namespace windows_client.View
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
-            editProfile.ApplicationBar = appBar;
+            ApplicationBar = appBar;
         }
 
         private void prepopulate()
@@ -96,22 +96,22 @@ namespace windows_client.View
             shouldSendProfile = false;
             nameErrorTxt.Opacity = 0;
             emailErrorTxt.Opacity = 0;
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isClicked = false;
                 return;
             }
+
             this.Focus(); // this will hide keyboard
-            //progressBar.IsEnabled = true;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
 
             // if name is empty simply dont do anything
             if (string.IsNullOrWhiteSpace(name.Text))
             {
                 nameErrorTxt.Opacity = 1;
-                //progressBar.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 isClicked = false;
                 return;
             }
@@ -127,8 +127,7 @@ namespace windows_client.View
                 else //if email is not valid
                 {
                     emailErrorTxt.Opacity = 1;
-                    //progressBar.IsEnabled = false;
-                    shellProgress.IsVisible = false;
+                    shellProgress.IsIndeterminate = false;
                     isClicked = false;
                     return;
                 }
@@ -157,7 +156,7 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.EditProfile_UpdatErrMsgBx_Text, AppResources.EditProfile_UpdatErrMsgBx_Captn, MessageBoxButton.OK);
                 }
                 //progressBar.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 isClicked = false;
             }
         }
@@ -201,7 +200,7 @@ namespace windows_client.View
                     {
                         MakeFieldsReadOnly(false);
                         //progressBar.IsEnabled = false;
-                        shellProgress.IsVisible = false;
+                        shellProgress.IsIndeterminate = false;
                         try
                         {
                             MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
@@ -215,8 +214,7 @@ namespace windows_client.View
                 else
                 {
                     MakeFieldsReadOnly(false);
-                    //progressBar.IsEnabled = false;
-                    shellProgress.IsVisible = false;
+                    shellProgress.IsIndeterminate = false;
                     try
                     {
                         MessageBox.Show(AppResources.EditProfile_NameUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
@@ -258,7 +256,7 @@ namespace windows_client.View
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
-                    shellProgress.IsVisible = false;
+                    shellProgress.IsIndeterminate = false;
                     try
                     {
                         MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
@@ -274,9 +272,9 @@ namespace windows_client.View
                     MakeFieldsReadOnly(false);
                     if (App.appSettings.Contains(App.EMAIL))
                         email.Text = (string)App.appSettings[App.EMAIL];
-                    //progressBar.IsEnabled = false;
-                    //progressBar.Opacity = 0;
-                    shellProgress.IsVisible = false;
+
+                    shellProgress.IsIndeterminate = false;
+                    
                     try
                     {
                         MessageBox.Show(AppResources.EditProfile_EmailUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
@@ -322,17 +320,6 @@ namespace windows_client.View
                 if (this.State.ContainsKey("genderListPicker.SelectedIndex"))
                     genderListPicker.SelectedIndex = (int)this.State["genderListPicker.SelectedIndex"];
             }
-        }
-
-        private void textbox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            ContentPanel.Margin = new Thickness(15, 0, 15, 220);
-        }
-
-        private void textbox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            ContentPanel.Margin = new Thickness(15, 0, 15, 0);
-
         }
 
         private void name_KeyDown(object sender, KeyEventArgs e)

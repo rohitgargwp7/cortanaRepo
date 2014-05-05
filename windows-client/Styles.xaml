@@ -20,24 +20,8 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
-            <Color x:Key="PhoneBackgroundColor">#FFFFFFFF</Color>
-            <Color x:Key="PhoneBorderColor">#BFFFFFFF</Color>
-            <Color x:Key="PhoneChromeColor">#FFDDDDDD</Color>
-            <Color x:Key="PhoneContrastBackgroundColor">#DE000000</Color>
-            <Color x:Key="PhoneContrastForegroundColor">#FFFFFFFF</Color>
-            <Color x:Key="PhoneDisabledColor">#4D000000</Color>
-            <Color x:Key="PhoneForegroundColor">#DE000000</Color>
-            <Color x:Key="PhoneInactiveColor">#33000000</Color>
-            <Color x:Key="PhoneInverseBackgroundColor">#FFDDDDDD</Color>
-            <Color x:Key="PhoneInverseInactiveColor">#FFE5E5E5</Color>
-            <Color x:Key="PhoneRadioCheckBoxCheckColor">#DE000000</Color>
-            <Color x:Key="PhoneRadioCheckBoxCheckDisabledColor">#4D000000</Color>
-            <Color x:Key="PhoneRadioCheckBoxColor">#26000000</Color>
-            <Color x:Key="PhoneRadioCheckBoxDisabledColor">#00000000</Color>
-            <Color x:Key="PhoneRadioCheckBoxPressedBorderColor">#DE000000</Color>
-            <Color x:Key="PhoneRadioCheckBoxPressedColor">#00000000</Color>
-            <Color x:Key="PhoneSemitransparentColor">#AAFFFFFF</Color>
             <Color x:Key="PhoneSubtleColor">#66000000</Color>
+            
             <Color x:Key="PhoneTextBoxColor">#26000000</Color>
             <Color x:Key="PhoneTextBoxEditBackgroundColor">#00000000</Color>
             <Color x:Key="PhoneTextBoxEditBorderColor">#DE000000</Color>
@@ -45,6 +29,7 @@
             <Color x:Key="PhoneTextBoxReadOnlyColor">#2E000000</Color>
             <Color x:Key="PhoneTextBoxSelectionForegroundColor">#FFFFFFFF</Color>
             <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
+
             <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
             <SolidColorBrush x:Key="HyperlinkButtonBackgroundThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="HyperlinkButtonBorderThemeBrush" Color="Transparent" />
@@ -270,8 +255,8 @@
 
             <Style x:Key="ButtonWithNoPaddingStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
-                <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilySemiBold}"/>
                 <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMedium}"/>
@@ -1315,6 +1300,98 @@
                 </Setter>
             </Style>
 
+            <ControlTemplate x:Key="EditProfileListPicker" TargetType="toolkit:ListPicker">
+                <StackPanel>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="PickerStates">
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="Highlighted">
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="UserControl"
+									Storyboard.TargetProperty="Foreground"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="Black"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="Border"
+									Storyboard.TargetProperty="Background"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="White"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="Border"
+									Storyboard.TargetProperty="BorderBrush"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="{StaticResource HikeBlueHeader}"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="Border"
+									Storyboard.TargetProperty="Background"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="{StaticResource TransparentBrush}"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="Border"
+									Storyboard.TargetProperty="BorderBrush"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="{StaticResource PhoneDisabledBrush}"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                    <ObjectAnimationUsingKeyFrames
+									Storyboard.TargetName="UserControl"
+									Storyboard.TargetProperty="Foreground"
+									Duration="0">
+                                        <DiscreteObjectKeyFrame
+										Value="{StaticResource PhoneDisabledBrush}"
+										KeyTime="0"/>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <ContentControl
+					Content="{TemplateBinding Header}"
+					ContentTemplate="{TemplateBinding HeaderTemplate}"
+					Foreground="{StaticResource PhoneSubtleBrush}"
+					FontSize="{StaticResource PhoneFontSizeNormal}"
+					HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+					Margin="0 0 0 8"/>
+                    <Grid>
+                        <Border x:Name="Border"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}">
+                            <UserControl x:Name="UserControl" Foreground="{TemplateBinding Foreground}">
+                                <StackPanel>
+                                    <TextBlock x:Name="MultipleSelectionModeSummary" Margin="8 8 0 8" />
+                                    <Canvas x:Name="ItemsPresenterHost" MinHeight="46">
+                                        <ItemsPresenter x:Name="ItemsPresenter">
+                                            <ItemsPresenter.RenderTransform>
+                                                <TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>
+                                            </ItemsPresenter.RenderTransform>
+                                        </ItemsPresenter>
+                                    </Canvas>
+                                </StackPanel>
+                            </UserControl>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </ControlTemplate>
+
             <converter:TileSizeToHeightConverter x:Key="HeightConverter"/>
             <converter:TileSizeToWidthConverter x:Key="WidthConverter"/>
             <Style TargetType="toolkit:HubTile">
@@ -1722,6 +1799,14 @@
             <Style x:Key="PageHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
                 <Setter Property="Margin" Value="25,12"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="EditProfileLabelTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
+                <Setter Property="Foreground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="FontSize" Value="28"/>
+                <Setter Property="Margin" Value="25,12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
             <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
