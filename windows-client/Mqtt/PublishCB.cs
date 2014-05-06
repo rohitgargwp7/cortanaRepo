@@ -41,9 +41,6 @@ namespace windows_client.Mqtt
 
         public void onFailure(Exception value)
         {
-            MQttLogging.LogWriter.Instance.WriteToLog("Message publish failed for Packet: " + System.Text.Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length)
-                + " MessageId " + packet.MessageId + " ,Reason: " + value.Message + ",QOS :" + qos);
-            hikeMqttManager.ping();
             if (packet != null)
             {
                 if (qos > 0)

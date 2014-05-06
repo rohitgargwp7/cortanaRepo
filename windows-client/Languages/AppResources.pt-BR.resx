@@ -219,7 +219,7 @@
   </data>
   <data name="Delete_Txt" xml:space="preserve">
     <value>excluir</value>
-    <comment>Chats ContextMenu (xaml)</comment>
+    <comment>Chats ContextMenu (xaml)(max 10 chars)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>pronto</value>
@@ -438,7 +438,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Grátis no mundo todo</value>
+    <value>grátis em todo o mundo</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
@@ -446,11 +446,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Seus SMS grátis são recarregados no primeiro dia do mês.</value>
+    <value>quanto mais usar o hike, mais você ganha!</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*No momento, os SMS grátis só podem ser enviados para a Índia</value>
+    <value>grátis, somente na Índia</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
@@ -458,7 +458,7 @@
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Convide por SMS</value>
+    <value>convidar via SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
@@ -494,7 +494,7 @@
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Ilimitado</value>
+    <value>ilimitado</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
@@ -510,7 +510,7 @@
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Bloquear</value>
+    <value>bloquear</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
@@ -606,7 +606,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
-    <value>Digite um número válido</value>
+    <value>inserir número válido</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
@@ -698,7 +698,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Desbloq.</value>
+    <value>desbloquear</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
@@ -1327,10 +1327,6 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>conta</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>excluir</value>
-    <comment>Privacy page (xaml)</comment>
-  </data>
   <data name="Logout_Txt" xml:space="preserve">
     <value>desconectar</value>
     <comment>Privacy page (xaml)</comment>
@@ -1593,7 +1589,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Impossível enviar arquivo</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>O tamanho máximo do arquivo é 15 MB.</value>
+    <value>O tamanho máximo do arquivo é 25 MB.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
@@ -1763,14 +1759,14 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>enviar como sms do hike</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
-    <value>Encaminhar para</value>
+    <value>ENCAMINHAR</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
     <value>{0} está off-line, toque para enviar como sms do hike</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
-    <value>Seu saldo de SMS grátis é zero. Convide amigos para o hike e ganhe mais SMS grátis</value>
+    <value>Parece que todos seus créditos de SMS grátis acabaram. Convide mais amigos para o hike e ganhe SMS grátis</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Mensagens pendentes serão enviadas como SMS do hike grátis</value>
@@ -1911,7 +1907,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Ganhe SMS grátis para cada amigo que entrar no hike por sua causa.</value>
+    <value>ganhe SMS adicionais grátis para cada amigo que entrar no hike por sua causa</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>no hike</value>
@@ -1956,7 +1952,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>e-mail</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>SMS GRÁTIS</value>
+    <value>SMS grátis</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>Convidar</value>
@@ -2023,7 +2019,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>{0} alterou o tema do bate-papo. Para usar os novos temas de bate-papo, atualize o hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Confira o especial 'Eu te amo' tema!</value>
+    <value>Confira os impressionantes novos Temas chat!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>temas do bate-papo</value>
@@ -2046,15 +2042,15 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Celebre o mês do amor! Temos um presente para você ...</value>
+    <value>Temos um presente para você!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>Abrir presente...</value>
+    <value>Abrir presente</value>
     <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>Personalize a conversa com temas incríveis.</value>
+    <value>Personalize sua conversa com temas lindos.</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
@@ -2074,5 +2070,90 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   </data>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Não foi possível gravar!</value>
+  </data>
+  <data name="Clear_Chat_Txt" xml:space="preserve">
+    <value>apagar conversa</value>
+  </data>
+  <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
+    <value>lido por todos</value>
+  </data>
+  <data name="MessageStatus_ReadByMoreThanThree" xml:space="preserve">
+    <value>lido por {0} e {1} outros</value>
+    <comment>eg. read by a &amp; b and 3 others</comment>
+  </data>
+  <data name="MessageStatus_ReadByOneOrTwo" xml:space="preserve">
+    <value>lido por {0}</value>
+    <comment>eg. read by a &amp; b / read by a</comment>
+  </data>
+  <data name="MessageStatus_ReadByThree" xml:space="preserve">
+    <value>lido por {0} e 1 outro</value>
+    <comment>eg. read by a &amp; b and 1 other</comment>
+  </data>
+  <data name="PreviewImages_Header_txt" xml:space="preserve">
+    <value>visualização {0} de {1}</value>
+    <comment>{0} and {1} to be replaced by numbers</comment>
+  </data>
+  <data name="ViewAlbums_Header_txt" xml:space="preserve">
+    <value>SELECIONAR FOTO</value>
+    <comment>Heading in caps (maximum 30 chars)</comment>
+  </data>
+  <data name="ViewAlbums_MaxImageSelection" xml:space="preserve">
+    <value>Máx. {0} fotos, por favor!</value>
+    <comment>{0} to be replaced by number. max chars(25)</comment>
+  </data>
+  <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
+    <value>álbuns</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
+    <value>data</value>
+  </data>
+  <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
+    <value>selecionar</value>
+    <comment>max 10 chars</comment>
+  </data>
+  <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
+    <value>Tem certeza que deseja excluir estas conversas?</value>
+  </data>
+  <data name="clear_Chat_Body" xml:space="preserve">
+    <value>Todas as mensagens desta conversa serão excluídas. Tem certeza de que deseja continuar?</value>
+  </data>
+  <data name="Confirmation_HeaderTxt" xml:space="preserve">
+    <value>Confirmação</value>
+  </data>
+  <data name="GroupBlocked_PomptTxt" xml:space="preserve">
+    <value>Esta conversa em grupo está bloqueada. Gostaria de desbloquear o proprietário do grupo?</value>
+  </data>
+  <data name="UserBlocked_PomptTxt" xml:space="preserve">
+    <value>Este usuário está bloqueado. Gostaria de desbloqueá-lo?</value>
+  </data>
+  <data name="UnknownFile_txt" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
+  <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
+    <value>desvincular Facebook</value>
+  </data>
+  <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
+    <value>desvincular a conta do Facebook do hike</value>
+  </data>
+  <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
+    <value>desvincular Twitter</value>
+  </data>
+  <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
+    <value>desvincular a conta do Twitter do hike</value>
+  </data>
+  <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
+    <value>ganhe sms grátis ilimitados</value>
+  </data>
+  <data name="Start_Hiking_Button_Txt" xml:space="preserve">
+    <value>começar a usar o hike</value>
+  </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Não é possível executar a ação devido à pouca memória. Por favor libertar alguma memória e tente novamente.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Não é possível carregar o ficheiro devido a pouca memória. Por favor libertar alguma memória e tente novamente.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Memória insuficiente</value>
   </data>
 </root>

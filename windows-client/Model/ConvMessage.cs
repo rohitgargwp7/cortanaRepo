@@ -253,6 +253,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SendAsSMSVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
+                    NotifyPropertyChanged("FileFailedImageVisibility");
                     if (_messageStatus == State.SENT_CONFIRMED)
                     {
                         SdrImageVisibility = Visibility.Visible;
@@ -520,6 +521,14 @@ namespace windows_client.Model
             }
         }
 
+        public BitmapImage TypingNotificationImage
+        {
+            get
+            {
+                return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
+            }
+        }
+
         public BitmapImage CloseImage
         {
             get
@@ -536,6 +545,38 @@ namespace windows_client.Model
                     return string.IsNullOrEmpty(_fileAttachment.FileName) ? "contact" : _fileAttachment.FileName;
                 else
                     return _message;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                return _fileAttachment != null ? _fileAttachment.FileName : string.Empty;
+            }
+        }
+
+        public string FileType
+        {
+            get
+            {
+                return GetFileExtension();
+            }
+        }
+
+        public BitmapImage UnknownFileTypeIconImage
+        {
+            get
+            {
+                if (_fileAttachment != null)
+                {
+                    if (!IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        return UI_Utils.Instance.DownloadIconBigger;
+                    else
+                        return UI_Utils.Instance.AttachmentIcon;
+                }
+
+                return null;
             }
         }
 
@@ -619,6 +660,27 @@ namespace windows_client.Model
             }
         }
 
+        public BitmapImage NudgeImage
+        {
+            get
+            {
+                if (IsSent)
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.BlueSentNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteSentNudgeImage;
+                }
+                else
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.BlueReceivedNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteReceivedNudgeImage;
+                }
+            }
+        }
+
         public BitmapImage SdrImage
         {
             get
@@ -628,45 +690,122 @@ namespace windows_client.Model
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.Sent;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Sent_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Sent;
+                        }
                         else
-                            return UI_Utils.Instance.Sent_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Sent;
+                            else
+                                return UI_Utils.Instance.Sent_ChatTheme;
+                        }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.Delivered;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Delivered_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Delivered;
+                        }
                         else
-                            return UI_Utils.Instance.Delivered_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Delivered;
+                            else
+                                return UI_Utils.Instance.Delivered_ChatTheme;
+                        }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.Read;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Read_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Read;
+                        }
                         else
-                            return UI_Utils.Instance.Read_ChatTheme;
-                    case ConvMessage.State.SENT_FAILED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.HttpFailed;
-                        else
-                            return UI_Utils.Instance.HttpFailed_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Read;
+                            else
+                                return UI_Utils.Instance.Read_ChatTheme;
+                        }
                     case ConvMessage.State.SENT_UNCONFIRMED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.Trying;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Trying;
+                        }
                         else
-                            return UI_Utils.Instance.Trying_ChatTheme;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying;
+                            else
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                        }
                     default:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                            return UI_Utils.Instance.Trying;
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                            else
+                                return UI_Utils.Instance.Trying;
+                        }
                         else
-                            return UI_Utils.Instance.Trying_ChatTheme;
-
+                        {
+                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                                return UI_Utils.Instance.Trying;
+                            else
+                                return UI_Utils.Instance.Trying_ChatTheme;
+                        }
                 }
             }
         }
 
+        Visibility _sdrImageVisibility = Visibility.Visible;
         public Visibility SdrImageVisibility
         {
-            get;
-            set;
+            get
+            {
+                return FileFailedImageVisibility == Visibility.Visible ? Visibility.Collapsed : _sdrImageVisibility;
+            }
+            set
+            {
+                if (value != _sdrImageVisibility)
+                {
+                    _sdrImageVisibility = value;
+                    NotifyPropertyChanged("SdrImageVisibility");
+                }
+            }
+        }
+
+        public BitmapImage FileFailedImage
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    return UI_Utils.Instance.HttpFailed;
+                else
+                    return UI_Utils.Instance.HttpFailed_ChatTheme;
+            }
+        }
+
+        public Visibility FileFailedImageVisibility
+        {
+            get
+            {
+                return FileAttachment != null && FileAttachment.FileState != Attachment.AttachmentState.STARTED
+                && FileAttachment.FileState != Attachment.AttachmentState.PAUSED
+                && FileAttachment.FileState != Attachment.AttachmentState.MANUAL_PAUSED
+                && MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         private PageOrientation _currentOrientation;
@@ -897,6 +1036,7 @@ namespace windows_client.Model
                 {
                     SdrImageVisibility = Visibility.Visible;
                     NotifyPropertyChanged("SdrImageVisibility");
+                    NotifyPropertyChanged("FileFailedImageVisibility");
                 }
                 NotifyPropertyChanging("PlayIconVisibility");
                 NotifyPropertyChanging("PlayIconImage");
@@ -904,6 +1044,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FileSizeVisibility");
                 NotifyPropertyChanged("ProgressBarValue");
                 NotifyPropertyChanged("ProgressText");
+                NotifyPropertyChanged("UnknownFileTypeIconImage");
             }
             get
             {
@@ -1276,8 +1417,8 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                        return App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush;
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
+                        return UI_Utils.Instance.LightGray;
                     else if (IsSent)
                     {
                         if (IsSms)
@@ -1290,7 +1431,7 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
+                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
                         return UI_Utils.Instance.Black40Opacity;
                     else if (IsSent)
                         return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
@@ -1320,8 +1461,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE))
-                    || GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                if (GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return ChatForegroundColor;
@@ -1329,13 +1469,20 @@ namespace windows_client.Model
                 {
                     if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
                     {
-                        if (IsSent)
+                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                            return UI_Utils.Instance.Black;
+                        else if (IsSent)
                             return UI_Utils.Instance.White;
                         else
                             return UI_Utils.Instance.ReceiveMessageForeground;
                     }
                     else
-                        return BubbleForegroundColor;
+                    {
+                        if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
+                            return UI_Utils.Instance.White;
+                        else
+                            return BubbleForegroundColor;
+                    }
                 }
             }
         }
@@ -1352,6 +1499,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("NudgeImage");
             NotifyPropertyChanged("SpecialNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
+            NotifyPropertyChanged("FileFailedImage");
+            NotifyPropertyChanged("TypingNotificationImage");
         }
 
         public Visibility SendAsSMSVisibility
@@ -1654,6 +1803,9 @@ namespace windows_client.Model
                 message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
+            else
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + FileAttachment.FileKey;
 
             return message;
         }
@@ -1794,6 +1946,8 @@ namespace windows_client.Model
                             messageText = AppResources.Location_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
+                        else
+                            messageText = AppResources.UnknownFile_txt;
                         this._message = messageText;
                     }
                     else
@@ -1951,6 +2105,19 @@ namespace windows_client.Model
             }
         }
 
+        string GetFileExtension()
+        {
+            if (_fileAttachment != null && !string.IsNullOrEmpty(_fileAttachment.FileName))
+            {
+                int index = _fileAttachment.FileName.LastIndexOf('.');
+                if (index > -1 && index < _fileAttachment.FileName.Length - 1)//so last char is not dot
+                {
+                    return _fileAttachment.FileName.Substring(index + 1).ToUpper();
+                }
+            }
+            return "FILE";//in case no extension type and no need to translate this
+        }
+
         public void SetAttachmentState(Attachment.AttachmentState attachmentState)
         {
             this.FileAttachment.FileState = attachmentState;
@@ -1962,17 +2129,20 @@ namespace windows_client.Model
             NotifyPropertyChanged("PauseResumeImage");
             NotifyPropertyChanged("PauseResumeImageVisibility");
             NotifyPropertyChanged("SdrImage");
+            NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("PlayIconVisibility");
             NotifyPropertyChanged("PlayIconImage");
             NotifyPropertyChanged("FileSizeVisibility");
+            NotifyPropertyChanged("UnknownFileTypeIconImage");
 
             SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
-                && attachmentState != Attachment.AttachmentState.NOT_STARTED
+                && MessageStatus != State.SENT_FAILED
                 ? Visibility.Visible : Visibility.Collapsed;
 
             NotifyPropertyChanged("SdrImageVisibility");
+            NotifyPropertyChanged("FileFailedImageVisibility");
 
             ChangingState = false;
         }

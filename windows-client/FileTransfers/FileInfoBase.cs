@@ -80,14 +80,27 @@ namespace windows_client.FileTransfers
         public abstract void CheckIfComplete();
 
         bool retry = true;
-        short retryAttempts = 0;
-        const short MAX_RETRY_ATTEMPTS = 5;
+        short _retryAttempts = 0;
+        const short MAX_RETRY_ATTEMPTS = 10;
         int reconnectTime = 0;
-        const int MAX_RECONNECT_TIME = 30; // in seconds
+        const int MAX_RECONNECT_TIME = 20; // in seconds
+
+        ManualResetEvent _sleep = new ManualResetEvent(false);
+
+        public void ResetRetryOnNetworkChanged()
+        {
+            _sleep.Set();
+        }
+
+        protected void ResetRetryOnSuccess()
+        {
+            _retryAttempts = 0;
+            reconnectTime = 0;
+        }
 
         protected bool ShouldRetry()
         {
-            if (retry && retryAttempts < MAX_RETRY_ATTEMPTS)
+            if (retry && _retryAttempts < MAX_RETRY_ATTEMPTS)
             {
                 // make first attempt within first 5 seconds
                 if (reconnectTime == 0)
@@ -104,14 +117,14 @@ namespace windows_client.FileTransfers
 
                 try
                 {
-                    Thread.Sleep(reconnectTime * 1000);
+                    _sleep.WaitOne(TimeSpan.FromMilliseconds(reconnectTime * 1000));
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine(e.ToString() + e.StackTrace);
                 }
 
-                retryAttempts++;
+                _retryAttempts++;
 
                 return true;
             }
@@ -121,6 +134,9 @@ namespace windows_client.FileTransfers
 
         protected async Task<bool> CheckForCRC(string key)
         {
+            if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
+                return true;
+
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
             byte[] bytes;
             MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);

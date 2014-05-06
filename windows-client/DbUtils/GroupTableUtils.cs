@@ -92,6 +92,14 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<GroupInfo> getAllGroupInfo()
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                return DbCompiledQueries.GetAllGroupInfo(context).ToList();
+            }
+        }
+
         public static void deleteGroupWithId(string groupId)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))

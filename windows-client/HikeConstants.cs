@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
 
+        public static readonly string PUSH = "push";
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
         public static readonly string APP_ID = "appID";
@@ -72,6 +73,7 @@ namespace windows_client
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
+        public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
@@ -92,7 +94,6 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 50;
         public static readonly int VIBRATE_DURATION = 700;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
-        public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
@@ -159,8 +160,9 @@ namespace windows_client
         public static readonly string DEVICE_TYPE_KEY = "dev_type";
 
         public static readonly string NO_SMS = "nosms";
-        public static readonly string UI_EVENT = "uiEvent";
-        public static readonly string CONFIG_EVENT = "config";
+        public static readonly string ST_UI_EVENT = "uiEvent";
+        public static readonly string ST_CONFIG_EVENT = "config";
+        public static readonly string ST_NETWORK_EVENT = "nw";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -321,6 +323,7 @@ namespace windows_client
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
+        public static string GO_TO_CONV_VIEW = "goToConvView";
 
         public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
 
@@ -333,6 +336,7 @@ namespace windows_client
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
+        public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
 
@@ -364,6 +368,8 @@ namespace windows_client
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
+        public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
+        public static readonly int APP_MIN_FREE_SIZE = 20971520;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
@@ -378,12 +384,18 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
+        public static readonly string START_HIKING = "startHiking";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
-        public static readonly string TAG_MOBILE = "mob";
+        public static readonly string TAG_MOBILE = "wp8";
 
+        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
+        public static readonly string ENTER_TO_SEND = "entr_2_snd";
+        public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
+        public static readonly string NULL_PUSH_TOKEN = "npt";
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
         #endregion
 

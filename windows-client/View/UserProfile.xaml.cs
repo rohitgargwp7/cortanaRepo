@@ -586,6 +586,31 @@ namespace windows_client.View
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+
+
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = thumbnailBytes;
+                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_UI, msisdn);
+                    }
+                    else // update fav and contact section
+                    {
+                        if (msisdn == null)
+                            return;
+                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                        if (c != null) // for favourites
+                        {
+                            c.Avatar = thumbnailBytes;
+                        }
+                        else
+                        {
+                            c = App.ViewModel.GetPending(msisdn);
+                            if (c != null) // for pending requests
+                            {
+                                c.Avatar = thumbnailBytes;
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -1345,11 +1370,6 @@ namespace windows_client.View
             }
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
-            List<StatusMessage> statusMessagesFromDB = null;
-            if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-            {
-                statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
-            }
 
             nameToShow = contactInfo.Name;
 
@@ -1379,7 +1399,6 @@ namespace windows_client.View
                 else
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;
-                    CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     isStatusLoaded = true;
                 }
 
@@ -1446,7 +1465,7 @@ namespace windows_client.View
 
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
-            App.ViewModel.Hyperlink_Clicked(sender);
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
@@ -1467,7 +1486,7 @@ namespace windows_client.View
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
-                            statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForTimeline(lastStatusId, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
+                            statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, lastStatusId, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>

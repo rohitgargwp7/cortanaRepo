@@ -15,6 +15,8 @@ using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
+using System.IO.IsolatedStorage;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -106,7 +108,7 @@ namespace windows_client.View
                     else
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
-                    if (Utils.compareVersion("2.5.1.3", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.5.2.0", App.CURRENT_VERSION) == 1)
                     {
                         using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
                         {
@@ -126,6 +128,37 @@ namespace windows_client.View
                                     catch { }
                                 }
                             }
+                        }
+
+                        //this folder should be created for launching file async(unknown file type)
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                            {
+                                store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                            }
+                        }
+                    }
+
+                    if (Utils.compareVersion("2.5.2.1", App.CURRENT_VERSION) == 1)
+                    {
+                        bool groupEmptyNameFound = false;
+                        //conv map is initialised in app.xaml.cs
+                        if (App.ViewModel.ConvMap.Count > 0)
+                        {
+                            foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
+                            {
+                                if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
+                                {
+                                    GroupManager.Instance.LoadGroupParticipants(convObj.Msisdn);
+                                    convObj.ContactName = GroupManager.Instance.defaultGroupName(convObj.Msisdn);
+                                    ConversationTableUtils.updateGroupName(convObj.Msisdn, convObj.ContactName);
+                                    groupEmptyNameFound = true;
+                                }
+                            }
+
+                            if (groupEmptyNameFound) //update whole file as well
+                                ConversationTableUtils.saveConvObjectList();
                         }
                     }
 
@@ -150,9 +183,21 @@ namespace windows_client.View
                             return;
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                        string param = Utils.GetParamFromUri(targetPage);
-                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                        NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+                        string msisdn = Utils.GetParamFromUri(targetPage);
+                        if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                        {
+                            App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                            PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
+                            PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+
+                        }
+                        else
+                        {
+                            App page = (App)Application.Current;
+                            ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                        }
                     }
                     else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                     {
@@ -177,6 +222,7 @@ namespace windows_client.View
                             return;
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+                        App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
                         NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));

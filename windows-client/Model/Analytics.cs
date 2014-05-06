@@ -63,10 +63,6 @@ namespace windows_client.Model
         public static readonly string ADD_FAVS_CONTEXT_MENU_GROUP_INFO = "giATFCM";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
-        //pro Tips
-        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
-        public static readonly string ENTER_TO_SEND = "entr_2_snd";
-
         private Dictionary<string, int> eventMap = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -228,13 +224,55 @@ namespace windows_client.Model
             JObject dataObj = new JObject();
             dataObj.Add(HikeConstants.METADATA, metadataObject);
             dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
-            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.UI_EVENT);
+            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.ST_UI_EVENT);
 
             JObject analyticObj = new JObject();
             analyticObj.Add(HikeConstants.DATA, dataObj);
             analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+        }
+
+        public static void SendAnalyticsEvent(string eventType, string key)
+        {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(eventType))
+                return;
+
+            JObject metadataObject = new JObject();
+            metadataObject.Add(HikeConstants.EVENT_KEY, key);
+
+            JObject dataObj = new JObject();
+            dataObj.Add(HikeConstants.METADATA, metadataObject);
+            dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
+            dataObj.Add(HikeConstants.SUB_TYPE, eventType);
+
+            JObject analyticObj = new JObject();
+            analyticObj.Add(HikeConstants.DATA, dataObj);
+            analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+        }
+        public static void SendAnalyticsEvent(string eventType, string key, JToken value)
+        {
+            if (string.IsNullOrEmpty(key))
+                return;
+
+            JObject analyticsJson = new JObject();
+            analyticsJson.Add(key, value);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.METADATA, analyticsJson);
+            data.Add(HikeConstants.SUB_TYPE, eventType);
+            data[HikeConstants.TAG] = HikeConstants.TAG_MOBILE;
+
+            JObject jsonObj = new JObject();
+            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            jsonObj.Add(HikeConstants.DATA, data);
+
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
         }
     }
 }

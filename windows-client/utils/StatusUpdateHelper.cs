@@ -48,7 +48,7 @@ namespace windows_client.utils
                 return null;
 
             string userName;
-            BitmapImage userProfileThumbnail;
+            BitmapImage userProfileThumbnail = null;
 
             if (App.MSISDN == status.Msisdn)
             {
@@ -62,7 +62,11 @@ namespace windows_client.utils
                 if (co != null)
                 {
                     userName = co.NameToShow;
-                    userProfileThumbnail = co.AvatarImage;
+
+                    if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn) && co.Avatar != null)
+                        userProfileThumbnail = co.AvatarImage;
+                    else
+                        userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
                 else
                 {
@@ -119,8 +123,8 @@ namespace windows_client.utils
             {
                 BaseStatusUpdate sb = obj as BaseStatusUpdate;
                 StatusMsgsTable.DeleteStatusMsg(sb.ServerId);
-                
-                var status = StatusMsgsTable.GetUserLastStatusMsg();
+
+                var status = StatusMsgsTable.GetUserLastStatusMsg(sb.Msisdn);
                 
                 if (status == null)
                     StatusMsgsTable.DeleteLastStatusFile();

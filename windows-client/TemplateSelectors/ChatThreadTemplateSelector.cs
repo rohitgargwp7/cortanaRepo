@@ -91,6 +91,11 @@ namespace windows_client.TemplateSelectors
             set;
         }
 
+        public DataTemplate DtRecievedBubbleUnknownFile
+        {
+            get;
+            set;
+        }
         public DataTemplate DtSentBubbleText
         {
             get;
@@ -119,7 +124,11 @@ namespace windows_client.TemplateSelectors
             get;
             set;
         }
-
+        public DataTemplate DtSentBubbleUnknownFile
+        {
+            get;
+            set;
+        }
         public DataTemplate DtSentBubbleContact
         {
             get;
@@ -160,8 +169,10 @@ namespace windows_client.TemplateSelectors
                             return DtSentBubbleAudioFile;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             return DtSentBubbleLocation;
-                        else if (convMesssage.FileAttachment != null)
+                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE)))
                             return DtSentBubbleFile;
+                        else if (convMesssage.FileAttachment != null)
+                            return DtSentBubbleUnknownFile;
                         else
                             return DtSentBubbleText;
                     }
@@ -177,8 +188,10 @@ namespace windows_client.TemplateSelectors
                             return DtRecievedBubbleAudioFile;
                         else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             return DtRecievedBubbleLocation;
-                        else if (convMesssage.FileAttachment != null)
+                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE)))
                             return DtRecievedBubbleFile;
+                        else if (convMesssage.FileAttachment != null)
+                            return DtRecievedBubbleUnknownFile;
                         else
                             return DtRecievedBubbleText;
                     }

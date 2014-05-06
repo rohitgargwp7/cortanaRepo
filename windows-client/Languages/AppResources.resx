@@ -438,7 +438,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Free Worldwide</value>
+    <value>free worldwide</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
@@ -446,11 +446,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Your free SMS refill on the 1st of every month</value>
+    <value>the more you hike, the more you earn!</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>*Free SMS can only be sent to India at the moment</value>
+    <value>free, only to India</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
@@ -458,7 +458,7 @@
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Invite via SMS</value>
+    <value>invite via SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
@@ -494,7 +494,7 @@
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Unlimited</value>
+    <value>unlimited</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
@@ -1589,7 +1589,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Could not send file</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Max file size can be 15 MB.</value>
+    <value>Max file size can be 25 MB.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
@@ -1907,7 +1907,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Earn free SMS for every friend who joins hike because of you</value>
+    <value>earn additional free SMS for every friend who joins hike because of you</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>on hike</value>
@@ -1952,7 +1952,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>email</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>FREE SMS</value>
+    <value>free SMS</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>invite</value>
@@ -2019,7 +2019,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} just changed the chat theme. To use the new chat themes, upgrade hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Check out the special 'I Love You' Theme!</value>
+    <value>Check out the stunning new Chat Themes!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>chat themes</value>
@@ -2042,7 +2042,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Celebrate the month of love! We have a gift for you...</value>
+    <value>We've got a gift for you!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
@@ -2117,7 +2117,49 @@ Download it now http://hike.in and join the fun!</value>
   <data name="clear_Chat_Body" xml:space="preserve">
     <value>All your messages in this chat would get deleted. Are you sure you want to continue?</value>
   </data>
-  <data name="clear_Chat_Header" xml:space="preserve">
+  <data name="Confirmation_HeaderTxt" xml:space="preserve">
     <value>Confirmation</value>
+  </data>
+  <data name="GroupBlocked_PomptTxt" xml:space="preserve">
+    <value>This group chat is blocked. Would you like to unblock the group owner?</value>
+  </data>
+  <data name="UserBlocked_PomptTxt" xml:space="preserve">
+    <value>This user is blocked. Would you like to unblock the user?</value>
+  </data>
+  <data name="UnknownFile_txt" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
+    <value>unlink Facebook</value>
+  </data>
+  <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
+    <value>unlink your Facebook account from hike</value>
+  </data>
+  <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
+    <value>unlink Twitter</value>
+  </data>
+  <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
+    <value>unlink your Twitter account from hike</value>
+  </data>
+  <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
+    <value>earn unlimited free sms</value>
+  </data>
+  <data name="Start_Hiking_Button_Txt" xml:space="preserve">
+    <value>start hiking</value>
+  </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Unable to perform the action due to low memory. Please free some memory and try again.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Unable to download the file due to low memory. Please free some memory and try again.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Insufficient Memory</value>
+  </data>
+  <data name="Leave_Group_Body" xml:space="preserve">
+    <value>Are you sure you want to leave the group?</value>
+  </data>
+  <data name="Leave_Group_Caption" xml:space="preserve">
+    <value>Leave group</value>
   </data>
 </root>

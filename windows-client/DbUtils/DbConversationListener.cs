@@ -76,7 +76,7 @@ namespace windows_client.DbUtils
         private void addSentMessageToMsgMap(ConvMessage conMessage)
         {
             NewChatThread currentPage = App.newChatThreadPage;
-            if (currentPage != null && conMessage != null)
+            if (currentPage != null && conMessage != null && currentPage.mContactNumber == conMessage.Msisdn)
             {
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
             }
@@ -453,6 +453,16 @@ namespace windows_client.DbUtils
                                 else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                        "/" + fileKey;
+                                }
+                                else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
+                                {
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                        "/" + fileKey;
+                                }
+                                else
+                                {
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
 

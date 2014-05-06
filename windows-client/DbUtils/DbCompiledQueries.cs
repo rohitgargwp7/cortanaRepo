@@ -39,6 +39,20 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeChatsDb, IQueryable<GroupInfo>> GetAllGroupInfo
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<GroupInfo>> q =
+                     CompiledQuery.Compile<HikeChatsDb, IQueryable<GroupInfo>>
+                     ((HikeChatsDb hdc) =>
+                         from o in hdc.groupInfo
+                         where o.GroupAlive == true
+                         select o);
+                return q;
+            }
+        }
+
         #endregion
 
         #region UsersTable Queries
@@ -330,15 +344,15 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetFirstTextStatusUpdate
+        public static Func<HikeChatsDb, string, IQueryable<StatusMessage>> GetFirstTextStatusUpdate
         {
             get
             {
-                Func<HikeChatsDb, IQueryable<StatusMessage>> q =
-                CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
-                ((HikeChatsDb hdc) =>
+                Func<HikeChatsDb, string, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string msisdn) =>
                     from o in hdc.statusMessage
-                    where o.Status_Type == StatusMessage.StatusType.TEXT_UPDATE
+                    where o.Status_Type == StatusMessage.StatusType.TEXT_UPDATE && o.Msisdn == msisdn
                     select o);
                 return q;
             }

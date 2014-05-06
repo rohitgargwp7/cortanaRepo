@@ -67,6 +67,9 @@ namespace windows_client.FileTransfers
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
             FileInfoBase.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+
+            foreach (var key in TaskMap)
+                key.Value.ResetRetryOnNetworkChanged();
         }
 
         public bool GetAttachmentStatus(string id, bool isSent, out FileInfoBase fileInfo)

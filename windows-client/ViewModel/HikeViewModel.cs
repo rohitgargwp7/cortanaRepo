@@ -27,6 +27,8 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
 using System.Web;
+using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
 
 namespace windows_client.ViewModel
 {
@@ -199,6 +201,7 @@ namespace windows_client.ViewModel
             LoadViewModelObjects();
             LoadToolTipsDict();
             LoadCurrentLocation();
+            ClearTempTransferData();
         }
 
         public HikeViewModel()
@@ -264,7 +267,7 @@ namespace windows_client.ViewModel
 
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) 
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
@@ -285,6 +288,30 @@ namespace windows_client.ViewModel
 
                 getCoordinateWorker.RunWorkerAsync();
             }
+        }
+
+        public async void ClearTempTransferData()
+        {
+            await Task.Delay(1);
+            try
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                    {
+                        string[] fileNames = store.GetFileNames(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/*");
+                        foreach (string fileName in fileNames)
+                        {
+                            store.DeleteFile(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/" + fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception,ViewModel:ClearTempTransferData,Message:{0}, Stacktrace:{1}", ex.Message, ex.StackTrace);
+            }
+
         }
 
         public bool Isfavourite(string mContactNumber)
@@ -824,6 +851,8 @@ namespace windows_client.ViewModel
 
             contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
 
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.FWD_TO_MULTIPLE, contactsForForward.Count);
+
             if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
             {
                 foreach (var contact in contactsForForward)
@@ -900,6 +929,10 @@ namespace windows_client.ViewModel
                             convMessage.Message = AppResources.ContactTransfer_Text;
                             convMessage.MetaDataString = metaDataString;
                         }
+                        else
+                        {
+                            convMessage.Message = AppResources.UnknownFile_txt;
+                        }
 
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
@@ -915,22 +948,49 @@ namespace windows_client.ViewModel
             }
         }
 
-        public void Hyperlink_Clicked(object sender)
+        public void Hyperlink_Clicked(object[] objArray)
         {
-            Hyperlink caller = sender as Hyperlink;
-
-            var phoneCallTask = new PhoneCallTask();
-            var targetPhoneNumber = caller.TargetName.Replace("-", "");
-            targetPhoneNumber = targetPhoneNumber.Trim();
-            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-            phoneCallTask.PhoneNumber = targetPhoneNumber;
-            try
+            var regexType = (SmileyParser.RegexType)objArray[0];
+            var target = (string)objArray[1];
+            if (regexType == SmileyParser.RegexType.EMAIL)
             {
-                phoneCallTask.Show();
+                var task = new EmailComposeTask() { To = target };
+                try
+                {
+                    task.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
             }
-            catch (Exception ex)
+            else if (regexType == SmileyParser.RegexType.URL)
             {
-                Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                var task = new WebBrowserTask() { URL = target };
+                try
+                {
+                    task.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
+            }
+            else if (regexType == SmileyParser.RegexType.PHONE_NO)
+            {
+                var phoneCallTask = new PhoneCallTask();
+                var targetPhoneNumber = target.Replace("-", "");
+                targetPhoneNumber = targetPhoneNumber.Trim();
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                phoneCallTask.PhoneNumber = targetPhoneNumber;
+                try
+                {
+                    phoneCallTask.Show();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
+                }
             }
         }
 

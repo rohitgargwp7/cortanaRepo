@@ -80,12 +80,12 @@ namespace windows_client.Controls
                 return;
             lastText = text;
 
-            var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.LinkClickedDelegate(viewMore_CallBack), new SmileyParser.LinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
+            var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
             Blocks.Clear();
             Blocks.Add(paragraph);
         }
 
-        void hyperlink_CallBack(object obj)
+        void hyperlink_CallBack(object[] obj)
         {
             if (HyperlinkClicked != null)
                 HyperlinkClicked(obj, null);

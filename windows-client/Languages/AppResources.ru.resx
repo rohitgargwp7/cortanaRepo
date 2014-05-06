@@ -219,7 +219,7 @@
   </data>
   <data name="Delete_Txt" xml:space="preserve">
     <value>удалить</value>
-    <comment>Chats ContextMenu (xaml)</comment>
+    <comment>Chats ContextMenu (xaml)(max 10 chars)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>готово</value>
@@ -438,7 +438,7 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
-    <value>Бесплатно по всему миру</value>
+    <value>бесплатно по всему миру</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
@@ -446,11 +446,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
-    <value>Счетчик бесплатных SMS обнуляется 1-го числа каждого месяца.</value>
+    <value>чем больше вы приглашаете в hike, тем больше зарабатываете!</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
-    <value>* Бесплатные SMS пока доступны только в Индии</value>
+    <value>бесплатно, только в Индии</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
@@ -458,7 +458,7 @@
     <comment>Maximum Chars(12)</comment>
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
-    <value>Пригласить по SMS</value>
+    <value>пригласить по SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
@@ -494,7 +494,7 @@
     <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
   </data>
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
-    <value>Без ограничений</value>
+    <value>неограничено</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
   <data name="And_txt" xml:space="preserve">
@@ -510,7 +510,7 @@
     <comment>NewSelectUserPage (xaml)</comment>
   </data>
   <data name="Block_Txt" xml:space="preserve">
-    <value>Блокир.</value>
+    <value>заблокировать</value>
     <comment>this will be used as text</comment>
   </data>
   <data name="Call_Txt" xml:space="preserve">
@@ -606,7 +606,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
-    <value>Введите действительный номер</value>
+    <value>введите допустимое число</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
@@ -698,7 +698,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
-    <value>Разблокир.</value>
+    <value>разблокировать</value>
     <comment>xaml</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
@@ -1327,10 +1327,6 @@
     <value>аккаунт</value>
     <comment>Profile (xaml)</comment>
   </data>
-  <data name="Delete_Txt_Caps" xml:space="preserve">
-    <value>удалить</value>
-    <comment>Privacy page (xaml)</comment>
-  </data>
   <data name="Logout_Txt" xml:space="preserve">
     <value>выйти</value>
     <comment>Privacy page (xaml)</comment>
@@ -1593,7 +1589,7 @@
     <value>Нельзя отправ. файл</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
-    <value>Размер файла не может превышать 15 МБ.</value>
+    <value>Размер файла не может превышать 25 МБ.</value>
   </data>
   <data name="CT_CharCount_Sms_User" xml:space="preserve">
     <value>{0}/{1}</value>
@@ -1763,14 +1759,14 @@
     <value>отправить как hike sms</value>
   </data>
   <data name="SelectUser_Forward_To_Txt" xml:space="preserve">
-    <value>Переадресация:</value>
+    <value>ПЕРЕАДРЕС.:</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
     <value>{0} не в сети, нажмите здесь для отправки как hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
-    <value>У вас осталось 0 бесплатных SMS. Вы можете пригласить друзей в hike, чтобы получить дополнительные SMS</value>
+    <value>Вы исчерпали свой запас бесплатных SMS. Пригласите еще друзей в hike, чтобы получить бесплатные SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
     <value>Необработанные сообщения будут отправлены как hike SMS</value>
@@ -1911,7 +1907,7 @@
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
-    <value>Получайте бесплатные SMS за каждого друга, установившего hike по вашему приглашению</value>
+    <value>зарабатывайте бесплатные SMS за каждого друга, присоединившегося к hike по вашему приглашению</value>
   </data>
   <data name="On_Hike" xml:space="preserve">
     <value>через hike</value>
@@ -1956,7 +1952,7 @@
     <value>эл. почта</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>БЕСПЛАТНЫЕ SMS</value>
+    <value>бесплатные SMS</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>пригласить</value>
@@ -2023,7 +2019,7 @@
     <value>{0} только что изменил(а) тему чата. Для использования новых тем чата обновите hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Проверить специальные «Я тебя люблю» тема!</value>
+    <value>Проверьте новые потрясающие Чат темы!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>темы чата</value>
@@ -2046,15 +2042,15 @@
     <comment>max chars(30) -as in " give a try" </comment>
   </data>
   <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>Отпразднуйте месяц любви! У нас для вас подарок!</value>
+    <value>Мы приготовили вам подарок!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>Открытие подарка...</value>
+    <value>Открыть подарок</value>
     <comment>max chars(30)</comment>
   </data>
   <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>Придайте индивидуальности чату с помощью великолепных тем.</value>
+    <value>Украсьте свой чат великолепной темой.</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
@@ -2074,5 +2070,90 @@
   </data>
   <data name="MicrophoneNotFound_HeaderTxt" xml:space="preserve">
     <value>Ошибка записи!</value>
+  </data>
+  <data name="Clear_Chat_Txt" xml:space="preserve">
+    <value>очистить чат</value>
+  </data>
+  <data name="MessageStatus_ReadByEveryone" xml:space="preserve">
+    <value>прочитано всеми</value>
+  </data>
+  <data name="MessageStatus_ReadByMoreThanThree" xml:space="preserve">
+    <value>прочитано пользователем {0} и другими ({1})</value>
+    <comment>eg. read by a &amp; b and 3 others</comment>
+  </data>
+  <data name="MessageStatus_ReadByOneOrTwo" xml:space="preserve">
+    <value>прочитано пользователем {0}</value>
+    <comment>eg. read by a &amp; b / read by a</comment>
+  </data>
+  <data name="MessageStatus_ReadByThree" xml:space="preserve">
+    <value>прочитано пользователем {0} и 1 другим</value>
+    <comment>eg. read by a &amp; b and 1 other</comment>
+  </data>
+  <data name="PreviewImages_Header_txt" xml:space="preserve">
+    <value>просмотр {0} из {1}</value>
+    <comment>{0} and {1} to be replaced by numbers</comment>
+  </data>
+  <data name="ViewAlbums_Header_txt" xml:space="preserve">
+    <value>ВЫБЕРИТЕ ФОТО</value>
+    <comment>Heading in caps (maximum 30 chars)</comment>
+  </data>
+  <data name="ViewAlbums_MaxImageSelection" xml:space="preserve">
+    <value>Не более {0} фото!</value>
+    <comment>{0} to be replaced by number. max chars(25)</comment>
+  </data>
+  <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
+    <value>альбомы</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
+    <value>дата</value>
+  </data>
+  <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
+    <value>выберите</value>
+    <comment>max 10 chars</comment>
+  </data>
+  <data name="Conversations_Delete_MoreThan1Chat_Confirmation" xml:space="preserve">
+    <value>Действительно удалить эти чаты?</value>
+  </data>
+  <data name="clear_Chat_Body" xml:space="preserve">
+    <value>Все ваши сообщения в этом чате будут удалены. Продолжить?</value>
+  </data>
+  <data name="Confirmation_HeaderTxt" xml:space="preserve">
+    <value>Подтверждение</value>
+  </data>
+  <data name="GroupBlocked_PomptTxt" xml:space="preserve">
+    <value>Этот групповой чат заблокирован. Разблокировать владельца группы?</value>
+  </data>
+  <data name="UserBlocked_PomptTxt" xml:space="preserve">
+    <value>Этот пользователь заблокирован. Разблокировать его?</value>
+  </data>
+  <data name="UnknownFile_txt" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
+    <value>отвязать Facebook</value>
+  </data>
+  <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
+    <value>отвязать аккаунт Facebook от hike</value>
+  </data>
+  <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
+    <value>отвязать Twitter</value>
+  </data>
+  <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
+    <value>отвязать аккаунт Twitter от hike</value>
+  </data>
+  <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
+    <value>зарабатывайте сколько угодно бесплатных SMS</value>
+  </data>
+  <data name="Start_Hiking_Button_Txt" xml:space="preserve">
+    <value>начать общаться</value>
+  </data>
+  <data name="Memory_Limit_Reached_Body" xml:space="preserve">
+    <value>Не удается выполнить действие из-за нехватки памяти. Освободите немного памяти и повторите попытку.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Download_Body" xml:space="preserve">
+    <value>Не удается загрузить файл из-за нехватки памяти. Освободите немного памяти и повторите попытку.</value>
+  </data>
+  <data name="Memory_Limit_Reached_Header" xml:space="preserve">
+    <value>Недостаточно памяти</value>
   </data>
 </root>

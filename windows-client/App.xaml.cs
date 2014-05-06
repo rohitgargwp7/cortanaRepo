@@ -424,9 +424,6 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
-
-            App.mMqttManager.IsLastSeenPacketSent = false;
-            App.mMqttManager.RemoveMqttListener();
             App.mMqttManager.disconnectFromBroker(false);
         }
 
@@ -450,7 +447,7 @@ namespace windows_client
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             if (isPushEnabled)
             {
-                PushHelper.Instance.registerPushnotifications();
+                PushHelper.Instance.registerPushnotifications(false);
             }
             #endregion
         }
@@ -473,7 +470,7 @@ namespace windows_client
                     App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
                     if (isPushEnabled)
                     {
-                        PushHelper.Instance.registerPushnotifications();
+                        PushHelper.Instance.registerPushnotifications(false);
                     }
 
 
@@ -499,10 +496,18 @@ namespace windows_client
             {
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
-                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                    string param = Utils.GetParamFromUri(targetPage);
-                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                    string msisdn = Utils.GetParamFromUri(targetPage);
+                    if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                    {
+                        APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                        PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                        mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                    }
+                    else
+                    {
+                        mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    }
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
@@ -546,7 +551,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.1.3", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.2.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -554,9 +559,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
-                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
+              
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -566,10 +569,19 @@ namespace windows_client
                     return;
                 }
 
-                string param = Utils.GetParamFromUri(targetPage);
-                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = param;
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
-            }
+                string msisdn = Utils.GetParamFromUri(targetPage);
+                if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                {
+                    _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                    PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
+                }
+                else
+                {
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                }
+            }                                                                                                          
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
@@ -968,6 +980,10 @@ namespace windows_client
             {
                 WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
             }
+            else if (Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
+            {
+                App.ViewModel.ResetInAppTip(8);
+            }
             #endregion
             #region Enter to send
 
@@ -1017,6 +1033,10 @@ namespace windows_client
                         if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
                         {
                             store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                        {
+                            store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
                         }
                     }
                     // Create the database if it does not exist.
@@ -1214,34 +1234,21 @@ namespace windows_client
             obj.Add(HikeConstants.STATUS, "bg");
 
             if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            {
+                Object[] objArr = new object[2];
+                objArr[0] = obj;
+                objArr[1] = 0;
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
+            }
         }
 
         public static void SendEnterToSendStatusToServer()
         {
-            var jobj = new JObject();
-
             bool enterToSend;
             if (!appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            jobj.Add(Analytics.ENTER_TO_SEND, enterToSend);
-
-            JObject data = new JObject();
-            data.Add(HikeConstants.METADATA, jobj);
-            data.Add(HikeConstants.SUB_TYPE, HikeConstants.CONFIG_EVENT);
-            data[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
-
-            JObject jsonObj = new JObject();
-            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
-            jsonObj.Add(HikeConstants.DATA, data);
-
-            object[] publishData = new object[2];
-            publishData[0] = jsonObj;
-            publishData[1] = 1; //qos
-
-            if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, publishData);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
         }
 
         public static MediaElement GlobalMediaElement

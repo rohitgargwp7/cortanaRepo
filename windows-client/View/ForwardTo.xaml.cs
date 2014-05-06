@@ -62,6 +62,8 @@ namespace windows_client.View
         /// </summary>
         Dictionary<string, bool> groupListStateDictionary = new Dictionary<string, bool>();
 
+        Dictionary<string, string> groupInfoDictionary = new Dictionary<string, string>();
+
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
         public ForwardTo()
@@ -643,25 +645,23 @@ namespace windows_client.View
                         forwardedFromGroupChat = true;
                     }
                 }
-                List<ConversationListObject> listGroupChats = new List<ConversationListObject>();
-                foreach (ConversationListObject convList in App.ViewModel.ConvMap.Values)
-                {
-                    if (convList.IsGroupChat && convList.IsGroupAlive && (!forwardedFromGroupChat || convList.Msisdn != groupId))//handled ended group
-                    {
-                        listGroupChats.Add(convList);
-                    }
-                }
-                listGroupChats.Sort((g1, g2) => g2.TimeStamp.CompareTo(g1.TimeStamp));
 
-                foreach (ConversationListObject convList in listGroupChats)
+                var gi = GroupTableUtils.getAllGroupInfo();
+
+                foreach (var grp in gi)
                 {
-                    ContactInfo cinfo = new ContactInfo();
-                    cinfo.Name = convList.NameToShow;
-                    cinfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
-                    cinfo.OnHike = true;
-                    cinfo.HasCustomPhoto = true;//show it is group chat
-                    cinfo.Msisdn = convList.Msisdn;//groupid
-                    glist[0].Add(cinfo);
+                    if (!forwardedFromGroupChat || grp.GroupId != groupId)//handled ended group
+                    {
+                        ContactInfo cinfo = new ContactInfo();
+                        cinfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
+                        cinfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
+                        cinfo.OnHike = true;
+                        cinfo.HasCustomPhoto = true;//show it is group chat
+                        cinfo.Msisdn = grp.GroupId;//groupid
+                        glist[0].Add(cinfo);
+
+                        groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
+                    }
                 }
             }
 
@@ -795,6 +795,40 @@ namespace windows_client.View
                 {
                     if (!_contactsForForward.Contains(cInfo))
                     {
+                        if (Utils.isGroupConversation(cInfo.Msisdn))
+                        {
+                            if (App.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn]))
+                            {
+                                var result = MessageBox.Show(AppResources.GroupBlocked_PomptTxt, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
+
+                                if (result == MessageBoxResult.OK)
+                                {
+                                    App.ViewModel.BlockedHashset.Remove(groupInfoDictionary[cInfo.Msisdn]);
+                                    App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupInfoDictionary[cInfo.Msisdn]);
+                                }
+                                else
+                                {
+                                    cInfo.IsSelected = false;
+                                    return;
+                                }
+                            }
+                        }
+                        else if(App.ViewModel.BlockedHashset.Contains(cInfo.Msisdn))
+                        {
+                            var result = MessageBox.Show(AppResources.UserBlocked_PomptTxt, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
+
+                            if (result == MessageBoxResult.OK)
+                            {
+                                App.ViewModel.BlockedHashset.Remove(cInfo.Msisdn);
+                                App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, cInfo.Msisdn);
+                            }
+                            else
+                            {
+                                cInfo.IsSelected = false;
+                                return;
+                            }
+                        }
+
                         if (!_isContactShared && _isFreeSmsOn)
                         {
                             if (!Utils.isGroupConversation(cInfo.Msisdn))

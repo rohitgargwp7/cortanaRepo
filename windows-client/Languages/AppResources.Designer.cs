@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Celebrate the month of love! We have a gift for you....
+        ///   Looks up a localized string similar to We&apos;ve got a gift for you!.
         /// </summary>
         public static string Chat_FTUE_HappyHiking {
             get {
@@ -493,15 +493,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirmation.
-        /// </summary>
-        public static string clear_Chat_Header {
-            get {
-                return ResourceManager.GetString("clear_Chat_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to clear chat.
         /// </summary>
         public static string Clear_Chat_Txt {
@@ -525,6 +516,15 @@ namespace windows_client.Languages {
         public static string ConfimFriendUserProfile_Txt {
             get {
                 return ResourceManager.GetString("ConfimFriendUserProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string Confirmation_HeaderTxt {
+            get {
+                return ResourceManager.GetString("Confirmation_HeaderTxt", resourceCulture);
             }
         }
         
@@ -1051,7 +1051,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max file size can be 15 MB..
+        ///   Looks up a localized string similar to Max file size can be 25 MB..
         /// </summary>
         public static string CT_FileSizeExceed_Text {
             get {
@@ -1634,7 +1634,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FREE SMS.
+        ///   Looks up a localized string similar to free SMS.
         /// </summary>
         public static string Free_SMS_Txt {
             get {
@@ -1652,7 +1652,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn free SMS for every friend who joins hike because of you.
+        ///   Looks up a localized string similar to earn additional free SMS for every friend who joins hike because of you.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk {
             get {
@@ -1706,7 +1706,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free Worldwide.
+        ///   Looks up a localized string similar to free worldwide.
         /// </summary>
         public static string FreeSMS_H2HText_TxtBlk {
             get {
@@ -1724,7 +1724,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your free SMS refill on the 1st of every month.
+        ///   Looks up a localized string similar to earn unlimited free sms.
+        /// </summary>
+        public static string FreeSMS_H2SSubHeader_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2SSubHeader_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the more you hike, the more you earn!.
         /// </summary>
         public static string FreeSMS_H2SText_TxtBlk {
             get {
@@ -1733,7 +1742,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Free SMS can only be sent to India at the moment.
+        ///   Looks up a localized string similar to free, only to India.
         /// </summary>
         public static string FreeSMS_IndiaOnly_TxtBlk {
             get {
@@ -1751,7 +1760,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite via SMS.
+        ///   Looks up a localized string similar to invite via SMS.
         /// </summary>
         public static string FreeSMS_InviteSMS_TxtBlk {
             get {
@@ -1787,7 +1796,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited.
+        ///   Looks up a localized string similar to unlimited.
         /// </summary>
         public static string FreeSMS_unlimitedTxtBlck_TxtBlk {
             get {
@@ -1891,6 +1900,15 @@ namespace windows_client.Languages {
         public static string GROUP_NAME_TXT {
             get {
                 return ResourceManager.GetString("GROUP_NAME_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group chat is blocked. Would you like to unblock the group owner?.
+        /// </summary>
+        public static string GroupBlocked_PomptTxt {
+            get {
+                return ResourceManager.GetString("GroupBlocked_PomptTxt", resourceCulture);
             }
         }
         
@@ -2354,7 +2372,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check out the special &apos;I Love You&apos; Theme!.
+        ///   Looks up a localized string similar to Check out the stunning new Chat Themes!.
         /// </summary>
         public static string In_App_Tip_9 {
             get {
@@ -2552,6 +2570,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to leave the group?.
+        /// </summary>
+        public static string Leave_Group_Body {
+            get {
+                return ResourceManager.GetString("Leave_Group_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave group.
+        /// </summary>
+        public static string Leave_Group_Caption {
+            get {
+                return ResourceManager.GetString("Leave_Group_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location Disabled.
         /// </summary>
         public static string Location_Disabled_Heading {
@@ -2602,6 +2638,33 @@ namespace windows_client.Languages {
         public static string Me_Txt {
             get {
                 return ResourceManager.GetString("Me_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free some memory and try again..
+        /// </summary>
+        public static string Memory_Limit_Reached_Body {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to download the file due to low memory. Please free some memory and try again..
+        /// </summary>
+        public static string Memory_Limit_Reached_Download_Body {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Download_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insufficient Memory.
+        /// </summary>
+        public static string Memory_Limit_Reached_Header {
+            get {
+                return ResourceManager.GetString("Memory_Limit_Reached_Header", resourceCulture);
             }
         }
         
@@ -4460,6 +4523,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to start hiking.
+        /// </summary>
+        public static string Start_Hiking_Button_Txt {
+            get {
+                return ResourceManager.GetString("Start_Hiking_Button_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not delete your status update. Please check your network connection and try again later..
         /// </summary>
         public static string StatusDelete_NoNtwrk_Txt {
@@ -4739,6 +4811,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string UnknownFile_txt {
+            get {
+                return ResourceManager.GetString("UnknownFile_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink Facebook.
+        /// </summary>
+        public static string Unlink_Fb_Header_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Fb_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink your Facebook account from hike.
+        /// </summary>
+        public static string Unlink_Fb_SubHeader_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Fb_SubHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink Twitter.
+        /// </summary>
+        public static string Unlink_Twitter_Header_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Twitter_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlink your Twitter account from hike.
+        /// </summary>
+        public static string Unlink_Twitter_SubHeader_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Twitter_SubHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status update notifications are turned ON.
         /// </summary>
         public static string Unmute_Success_Txt {
@@ -4843,6 +4960,15 @@ namespace windows_client.Languages {
         public static string USER_REJOINED_HIKE_TXT {
             get {
                 return ResourceManager.GetString("USER_REJOINED_HIKE_TXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This user is blocked. Would you like to unblock the user?.
+        /// </summary>
+        public static string UserBlocked_PomptTxt {
+            get {
+                return ResourceManager.GetString("UserBlocked_PomptTxt", resourceCulture);
             }
         }
         

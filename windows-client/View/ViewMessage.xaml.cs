@@ -37,16 +37,16 @@ namespace windows_client.View
                     string currentString = tempString.Substring(0, maxChar);
                     tempString = tempString.Substring(maxChar);
                     RichTextBox rtb = new RichTextBox() { TextWrapping = TextWrapping.Wrap };
-                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.LinkClickedDelegate(hyperlink_Click_CallBack)));
+                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.HyperLinkClickedDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
                 }
             }
 
         }
 
-        void hyperlink_Click_CallBack(object obj)
+        void hyperlink_Click_CallBack(object[] objArray)
         {
-            App.ViewModel.Hyperlink_Clicked(obj);
+            App.ViewModel.Hyperlink_Clicked(objArray);
         }
 
         const int MAX_CHARS_PER_LINE = 40;

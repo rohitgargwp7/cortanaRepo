@@ -49,6 +49,8 @@ namespace windows_client
 
         public static readonly string STICKER = "stk";
 
+        public static readonly string ACTION = "action";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -915,6 +917,7 @@ namespace windows_client
             #region GROUP_CHAT_JOIN
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
+                string groupName = string.Empty;
                 jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 JArray arr = null;
                 try
@@ -948,6 +951,7 @@ namespace windows_client
                 JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
                 if (metaData != null)
                 {
+                    #region chat background 
                     try
                     {
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
@@ -966,6 +970,17 @@ namespace windows_client
                     {
                         Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
                     }
+
+                    #endregion
+
+                    #region GROUP NAME
+
+                    JToken gName;
+                    //pubsub for gcn is not raised
+                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                        groupName = gName.ToString();
+
+                    #endregion
                 }
                 #endregion
 
@@ -1048,33 +1063,7 @@ namespace windows_client
                 }
                 #endregion
 
-                //To:do handle meta dat for group name in next release
-                //#region META DATA GROUP NAME
-
-                //metaData = (JObject)jsonObj[HikeConstants.METADATA];
-                //if (metaData != null)
-                //{
-                //    #region GROUP NAME
-
-                //    JToken gName;
-                //    string groupName;
-                //    //To:Do pubsub for gcn is not raised, also grpId will not exist, this implementation will not work
-                //    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                //    {
-                //        ConversationListObject cObj;
-                //        groupName = gName.ToString();
-                //        if (App.ViewModel.ConvMap.TryGetValue(grpId, out cObj))
-                //        {
-                //            if (cObj.ContactName != groupName)
-                //                ConversationTableUtils.updateGroupName(grpId, groupName);
-                //        }
-                //    }
-
-                //    #endregion
-                //}
-                //#endregion
-
-                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
+                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
                 if (obj == null)
                     return;
                 GroupManager.Instance.SaveGroupCache(grpId);
@@ -1103,7 +1092,7 @@ namespace windows_client
                     ConversationListObject cObj;
                     if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     {
-                        if (cObj.ContactName == groupName)//group name is same as previous
+                        if (cObj.ContactName == groupName || string.IsNullOrEmpty(groupName))//group name is same as previous or empty
                             return;
                     }
                     else
@@ -1449,6 +1438,7 @@ namespace windows_client
 
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
                             jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
+                            UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
                         }
                     }
                     #endregion
@@ -1534,14 +1524,17 @@ namespace windows_client
                                     if (cm.FileAttachment != null)
                                     {
                                         if (cm.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                            co.LastMessage = HikeConstants.IMAGE;
+                                            co.LastMessage = AppResources.Image_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                                            co.LastMessage = HikeConstants.AUDIO;
+                                            co.LastMessage = AppResources.Audio_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                                            co.LastMessage = HikeConstants.VIDEO;
+                                            co.LastMessage = AppResources.Video_Txt;
                                         else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                                            co.LastMessage = HikeConstants.CONTACT;
-
+                                            co.LastMessage = AppResources.ContactTransfer_Text;
+                                        else if (cm.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                            co.LastMessage = AppResources.Location_Txt;
+                                        else
+                                            co.LastMessage = AppResources.UnknownFile_txt;
                                         co.TimeStamp = cm.Timestamp;
                                     }
                                     else // check here nudge , notification , status update
@@ -1847,6 +1840,27 @@ namespace windows_client
                 }
             }
 
+            #endregion
+            #region ACTION
+            else if (type == ACTION)
+            {
+                JObject data = null;
+
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    bool isPush = (bool)data[HikeConstants.PUSH];
+
+                    if (isPush)
+                        PushHelper.Instance.registerPushnotifications(true);
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager:: ACTION, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                }
+
+            }
             #endregion
             #region OTHER
             else
