@@ -424,7 +424,7 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
-            App.mMqttManager.setConnectionStatus(HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            App.mMqttManager.disconnectFromBroker(false);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)

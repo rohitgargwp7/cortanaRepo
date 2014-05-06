@@ -51,8 +51,6 @@ namespace finalmqtt.Client
         private List<byte> combinedMessageBytes = new List<byte>();
         //        private volatile bool connected;
         private volatile bool connackReceived;
-        private volatile bool disconnectPacketSent;
-        private bool disconnectCallbackSent;
 
         private long _lastReadTime;
         private long _lastWriteTime;
@@ -278,12 +276,6 @@ namespace finalmqtt.Client
         private void onDataSent(object s, SocketAsyncEventArgs e)
         {
             _lastWriteTime = DateTime.Now.Ticks;
-            if (disconnectPacketSent)
-            {
-                if (_socket != null)
-                    _socket.Close();
-                disconnectPacketSent = false;
-            }
         }
 
         /// <summary>
@@ -576,24 +568,12 @@ namespace finalmqtt.Client
         {
             Debug.WriteLine("DISCONNECT CALLED");
 
-            if (_socket != null && _socket.Connected)
-            {
-                Debug.WriteLine("DISCONNECTING . . .");
-
-                DisconnectMessage msg = new DisconnectMessage(this);
-                MsgCallbacksMapClear();
-                disconnectPacketSent = true;
-                sendCallbackMessage(msg, null);
-            }
             ClearPageResources();
 
-            if (mqttListener != null && !disconnectCallbackSent)
+            if (mqttListener != null)
             {
-                disconnectCallbackSent = true;
                 mqttListener.onDisconnected();
             }
-            //if (_socket != null)
-            //    _socket.Close();
         }
 
         /// <summary>
@@ -666,7 +646,6 @@ namespace finalmqtt.Client
             if (pingScheduleAction == null)
                 pingScheduleAction = scheduler.Schedule(recursivePingSchedule, TimeSpan.FromSeconds(RECURSIVE_PING_INTERVAL));
 
-            disconnectCallbackSent = false;
         }
 
         protected void handleMessage(PublishMessage msg)
@@ -727,7 +706,12 @@ namespace finalmqtt.Client
                 pingScheduleAction.Dispose();
                 pingScheduleAction = null;
             }
-            //socket should be closed after disconnect packet is sent to server so not closing here
+            if (_socket != null)
+            {
+                _socket.Dispose();
+                _socket.Close();
+                _socket = null;
+            }
         }
 
     }

@@ -118,11 +118,12 @@ namespace windows_client.Mqtt
             try
             {
                 disconnectExplicitly = !reconnect;
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+             
                 Debug.WriteLine("Disconnect from Broker Called");
                 if (mqttConnection != null)
                     mqttConnection.disconnect();
 
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             }
             catch (Exception ex)
             {
