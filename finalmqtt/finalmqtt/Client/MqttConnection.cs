@@ -58,8 +58,6 @@ namespace finalmqtt.Client
         private long _lastWriteTime;
         private bool isPingResponsePending;
 
-        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
-        private static MqttConnection _instance;
         private Object msgMapLockObj = new object();
         private Object scheduleActionMapLockObj = new object();
         private IDisposable pingFailureAction;
@@ -147,32 +145,9 @@ namespace finalmqtt.Client
 
         public delegate Callback onAckFailedDelegate(short messageId);
 
-        private MqttConnection()
+        public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
         {
             this.bufferForSocketReads = new byte[socketReadBufferSize];
-        }
-
-        public static MqttConnection Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new MqttConnection();
-                    }
-                }
-                return _instance;
-            }
-        }
-
-        /// <summary>
-        /// Initiates connect request to server.
-        /// </summary>
-        public void connect(String id, String host, int port, String username, String password, Callback cb, Listener listener)
-        {
             this.id = id;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
@@ -181,7 +156,13 @@ namespace finalmqtt.Client
             this.username = username;
             this.password = password;
             this.connectCallback = cb;
+        }
 
+        /// <summary>
+        /// Initiates connect request to server.
+        /// </summary>
+        public void connect()
+        {
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();

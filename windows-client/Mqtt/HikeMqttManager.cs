@@ -19,6 +19,7 @@ namespace windows_client.Mqtt
     //    public class HikeMqttManager : Listener
     public class HikeMqttManager : Listener, HikePubSub.Listener
     {
+        public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
         public bool IsAppStarted = true; // false for resume
         private const int API_VERSION = 2;
@@ -91,7 +92,6 @@ namespace windows_client.Mqtt
 
         private volatile bool disconnectExplicitly = false;
 
-        private bool _isInitialised;
         private bool init()
         {
             App.appSettings.TryGetValue<string>(App.TOKEN_SETTING, out password);
@@ -119,7 +119,8 @@ namespace windows_client.Mqtt
             {
                 disconnectExplicitly = !reconnect;
                 Debug.WriteLine("Disconnect from Broker Called");
-                MqttConnection.Instance.disconnect();
+                if (mqttConnection != null)
+                    mqttConnection.disconnect();
 
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             }
@@ -131,12 +132,14 @@ namespace windows_client.Mqtt
 
         public void AddMqttListener()
         {
-            MqttConnection.Instance.MqttListener = this;
+            if (mqttConnection != null)
+                mqttConnection.MqttListener = this;
         }
 
         public void RemoveMqttListener()
         {
-            MqttConnection.Instance.MqttListener = null;
+            if (mqttConnection != null)
+                mqttConnection.MqttListener = null;
         }
 
         //synchronized
@@ -148,20 +151,26 @@ namespace windows_client.Mqtt
                 return;
             }
 
-            if (!_isInitialised)
+            if (mqttConnection == null)
             {
-                if (!init())
+                lock (lockObj)
                 {
-                    return;
+                    if (mqttConnection == null)
+                    {
+                        if (!init())
+                        {
+                            return;
+                        }
+                        mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this), this);
+                    }
                 }
-                _isInitialised = true;
             }
 
             try
             {
                 // try to connect
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                MqttConnection.Instance.connect(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this), this);
+                mqttConnection.connect();
             }
             catch (Exception ex)
             {
@@ -192,7 +201,8 @@ namespace windows_client.Mqtt
             {
                 for (int i = 0; i < topics.Length; i++)
                 {
-                    MqttConnection.Instance.unsubscribe(topics[i], null);
+                    if (mqttConnection != null)
+                        mqttConnection.unsubscribe(topics[i], null);
                 }
             }
             catch (Exception ex)
@@ -228,7 +238,8 @@ namespace windows_client.Mqtt
                 listTopics.Add(topics[i].Name);
                 listQos.Add(topics[i].qos);
             }
-            MqttConnection.Instance.subscribe(listTopics, listQos, new SubscribeCB(this));
+            if (mqttConnection != null)
+                mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
 
         }
 
@@ -311,7 +322,8 @@ namespace windows_client.Mqtt
             PublishCB pbCB = null;
             if (qos > 0)
                 pbCB = new PublishCB(packet, this, qos, false);
-            MqttConnection.Instance.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB);
         }
@@ -331,7 +343,8 @@ namespace windows_client.Mqtt
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
                 messagesToSend[i] = packets[i].Message;
             }
-            MqttConnection.Instance.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     messagesToSend, QoS.AT_LEAST_ONCE,
                     messageCallbacks);
         }
