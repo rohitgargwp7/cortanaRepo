@@ -95,6 +95,10 @@ namespace finalmqtt.Client
         {
             lock (msgMapLockObj)
             {
+                foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
+                {
+                    kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
+                }
                 msgCallbacksMap.Clear();
             }
         }
@@ -129,6 +133,8 @@ namespace finalmqtt.Client
         {
             lock (scheduleActionMapLockObj)
             {
+                foreach (IDisposable action in scheduledActionsMap.Values)
+                    action.Dispose();
                 scheduledActionsMap.Clear();
             }
         }
@@ -575,14 +581,7 @@ namespace finalmqtt.Client
                 Debug.WriteLine("DISCONNECTING . . .");
 
                 DisconnectMessage msg = new DisconnectMessage(this);
-                lock (msgMapLockObj)
-                {
-                    foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
-                    {
-                        kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
-                    }
-                    msgCallbacksMap.Clear();
-                }
+                MsgCallbacksMapClear();
                 disconnectPacketSent = true;
                 sendCallbackMessage(msg, null);
             }
