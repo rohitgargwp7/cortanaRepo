@@ -130,18 +130,6 @@ namespace windows_client.Mqtt
             }
         }
 
-        public void AddMqttListener()
-        {
-            if (mqttConnection != null)
-                mqttConnection.MqttListener = this;
-        }
-
-        public void RemoveMqttListener()
-        {
-            if (mqttConnection != null)
-                mqttConnection.MqttListener = null;
-        }
-
         //synchronized
         //[MethodImpl(MethodImplOptions.Synchronized)]
         public void connectToBroker()
@@ -392,9 +380,11 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             Debug.WriteLine("OnDisconnected Called");
-            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             if (!disconnectExplicitly)
+            {
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
                 connect();
+            }
         }
 
         public void onPublish(String topic, byte[] body)

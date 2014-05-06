@@ -730,7 +730,6 @@ namespace finalmqtt.Client
             //socket should be closed after disconnect packet is sent to server so not closing here
         }
 
-
     }
 }
 
