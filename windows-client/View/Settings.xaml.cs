@@ -34,7 +34,9 @@ namespace windows_client.View
                 preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
                 notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
             }
-        }
+            if (!AccountUtils.IsProd)
+                gridMqtt.Visibility = Visibility.Collapsed;
+            }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

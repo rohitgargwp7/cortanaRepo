@@ -78,7 +78,7 @@
                         <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="4" Margin="0,30,0,0" Tap="ViewLogs_tap">
+                <Grid Grid.Row="4" Margin="0,30,0,0" Name="gridMqtt" Tap="ViewLogs_tap">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
