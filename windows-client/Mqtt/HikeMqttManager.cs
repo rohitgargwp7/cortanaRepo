@@ -89,16 +89,7 @@ namespace windows_client.Mqtt
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-        private Dictionary<Int32, HikePacket> mqttIdToPacket;
-
         private volatile bool disconnectExplicitly = false;
-
-        public HikePacket getPacketIfUnsent(int mqttId)
-        {
-            HikePacket packet;
-            mqttIdToPacket.TryGetValue(mqttId, out packet);
-            return packet;
-        }
 
         private bool _isInitialised;
         private bool init()
