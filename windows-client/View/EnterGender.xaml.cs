@@ -324,7 +324,7 @@ namespace windows_client.View
 
         private void UpdateProfileImage()
         {
-            var fullViewImageBytes = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+            var fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(HikeConstants.MY_PROFILE_PIC);
 
             if (fullViewImageBytes != null)
             {

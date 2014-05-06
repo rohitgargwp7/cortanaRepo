@@ -82,10 +82,10 @@
                             <DataTemplate>
                                 <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                            <toolkit:MenuItem Foreground="Black" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem Foreground="Black" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
-                                            <toolkit:MenuItem Foreground="Black" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
+                                        <toolkit:ContextMenu Background="Black" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -171,8 +171,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="Black"/>
+                                            <toolkit:ContextMenu Background="Black" Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="White"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                         <Image Source="{Binding AvatarImage}" Height="52"/>

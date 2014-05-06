@@ -88,22 +88,24 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-
                 ConvMessage convMessage;
-
                 bool isNewGroup;
+                byte[] imageBytes = null;
+               
                 if (obj is object[])
                 {
                     object[] vals = (object[])obj;
                     convMessage = (ConvMessage)vals[0];
                     isNewGroup = (bool)vals[1];
+                    imageBytes = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 }
                 else
                 {
                     convMessage = (ConvMessage)obj;
                     isNewGroup = false;
                 }
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
+
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup, imageBytes);
                 if (convObj == null)
                     return;
 
@@ -257,7 +259,7 @@ namespace windows_client.DbUtils
                 {
                     byte[] fullViewBytes = (byte[])vals[1];
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId + HikeConstants.FULL_VIEW_IMAGE_PREFIX, fullViewBytes, false);
+                    MiscDBUtil.saveLargeImage(grpId, fullViewBytes);
                     MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);
                 }
                 else

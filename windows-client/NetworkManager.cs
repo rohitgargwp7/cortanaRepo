@@ -47,6 +47,8 @@ namespace windows_client
         public static readonly string SERVER_TIMESTAMP = "sts";
         public static readonly string LAST_SEEN = "ls";
 
+        public static readonly string REQUEST_DISPLAY_PIC = "rdp";
+
         public static readonly string STICKER = "stk";
 
         public static readonly string ACTION = "action";
@@ -172,6 +174,22 @@ namespace windows_client
                     Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE , Exception : " + ex.StackTrace);
                     return;
                 }
+            }
+            #endregion
+            #region REQUEST_DISPLAY_PIC
+            else if (REQUEST_DISPLAY_PIC == type)
+            {
+                string grpId = "";
+                try
+                {
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  REQUEST_DISPLAY_PIC, Exception : " + ex.StackTrace);
+                }
+
+                App.ViewModel.SendDisplayPic(grpId);
             }
             #endregion
             #region START_TYPING
@@ -950,7 +968,7 @@ namespace windows_client
                 JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
                 if (metaData != null)
                 {
-                    #region chat background 
+                    #region chat background
                     try
                     {
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
@@ -1738,7 +1756,7 @@ namespace windows_client
                         }
                     }
 
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
 
                     if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;

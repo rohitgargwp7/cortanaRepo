@@ -1967,6 +1967,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can add upto {0} people to a group.
+        /// </summary>
+        public static string GroupCreateTip {
+            get {
+                return ResourceManager.GetString("GroupCreateTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} changed the group image..
         /// </summary>
         public static string GroupImgChangedByGrpMember_Txt {

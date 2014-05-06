@@ -93,7 +93,7 @@
                                                 Opacity="0"/>
     </Grid>
 
-        <phone:LongListSelector Margin="24,20,0,0" Visibility="Collapsed"
+        <phone:LongListSelector Margin="24,20,0,0" Visibility="Collapsed" Foreground="Black"
                                 x:Name="countryList" Background="Transparent"
                                 IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
                                 ItemTemplate="{StaticResource ItemTemplate}"

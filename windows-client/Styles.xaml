@@ -1682,7 +1682,8 @@
 
             <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
-                <Setter Property="Background" Value="#ddffffff"/>
+                <Setter Property="Background" Value="#AAFFFFFF"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="LayoutMode" Value="Grid"/>
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
@@ -1721,6 +1722,8 @@
             <Style x:Key="CountryLongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
                 <Setter Property="LayoutMode" Value="Grid" />
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Background" Value="#AAFFFFFF" />
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>

@@ -60,7 +60,7 @@ namespace windows_client.View
                 if (tooltip != null)
                 {
                     tooltip.TipDismissed += PostStatus_TipDismissed;
-                    App.ViewModel.DisplayTip(MoodPanel, 3);
+                    App.ViewModel.DisplayTip(LayoutRoot, 3);
                 }
             }
         }

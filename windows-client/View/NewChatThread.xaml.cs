@@ -883,19 +883,72 @@ namespace windows_client.View
             else if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
                 // here always create a new group
-                string uid = (string)App.appSettings[App.UID_SETTING];
-                mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
+                string id = (string)App.appSettings[App.NEW_GROUP_ID];
+                mContactNumber = id;
+                mContactName = (string)App.appSettings[App.GROUP_NAME];
                 groupOwner = App.MSISDN;
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
-                userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
-                /* This is done so that after Tombstone when this page is launched, no group is created again and again */
+
                 ConversationListObject convObj = new ConversationListObject();
                 convObj.Msisdn = mContactNumber;
                 convObj.ContactName = mContactName;
                 convObj.IsOnhike = true;
+
+                var fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(mContactNumber);
+                byte[] thumbnailBytes = null;
+
+                if (fullViewImageBytes != null)
+                {
+                    try
+                    {
+                        MemoryStream memStream = new MemoryStream(fullViewImageBytes);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage grpImage = new BitmapImage();
+                        grpImage.SetSource(memStream);
+                        userImage.Source = grpImage;
+
+                        WriteableBitmap writeableBitmap = new WriteableBitmap(grpImage);
+                        using (var msLargeImage = new MemoryStream())
+                        {
+                            writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                            thumbnailBytes = msLargeImage.ToArray();
+                        }
+
+                        object[] vals = new object[3];
+                        vals[0] = mContactNumber;
+                        vals[1] = fullViewImageBytes;
+                        vals[2] = thumbnailBytes;
+                        mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+
+                        convObj.Avatar = thumbnailBytes;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
+                        userImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                    }
+                }
+                else
+                {
+                    userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
+                }
+
+                /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
+                App.RemoveKeyFromAppSettings(App.NEW_GROUP_ID);
+                App.RemoveKeyFromAppSettings(App.GROUP_NAME);
+
+                try
+                {
+                    while (NavigationService.BackStack.Count() > 1)
+                        NavigationService.RemoveBackEntry();
+                }
+                catch
+                {
+                    Debug.WriteLine("Group Compose screen not removed");
+                }
             }
 
             #endregion
@@ -1370,16 +1423,17 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
             }
+
             if (usersToAdd.Count == 0)
                 return;
+
             GroupManager.Instance.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             GroupManager.Instance.SaveGroupCache(mContactNumber);
-            //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-            groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd);
-            if (isNewgroup)
-                mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
-            else
+
+            groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
+
+            if (!isNewgroup)
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
                 if (gif != null && string.IsNullOrEmpty(gif.GroupName)) // set groupname if not alreay set
@@ -1406,12 +1460,12 @@ namespace windows_client.View
 
                 ConvMessage cm = new ConvMessage(groupCreateJson, true, true);
                 cm.CurrentOrientation = this.Orientation;
-                sendMsg(cm, true);
+                sendMsg(cm, false);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
             }
         }
 
-        private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd)
+        private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd, bool isNewGroup)
         {
             JObject obj = new JObject();
             try
@@ -1428,17 +1482,18 @@ namespace windows_client.View
                         nameMsisdn[HikeConstants.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
-                    //if (isNewGroup) // if new group add owners info also
-                    //{
-                    //    JObject nameMsisdn = new JObject();
-                    //    nameMsisdn[HikeConstants.NAME] = (string)App.appSettings[App.ACCOUNT_NAME];
-                    //    nameMsisdn[HikeConstants.MSISDN] = App.MSISDN;
-                    //    array.Add(nameMsisdn);
-                    //}
 
                     obj[HikeConstants.DATA] = array;
                 }
                 Debug.WriteLine("GROUP JSON : " + obj.ToString());
+
+                if (isNewGroup)
+                {
+                    JObject metaData = new JObject();
+                    metaData.Add(HikeConstants.NAME, mContactName);
+                    metaData.Add(HikeConstants.REQUEST_DISPLAY_PIC, true);
+                    obj.Add(HikeConstants.METADATA, metaData);
+                }
             }
             catch (Exception e)
             {
@@ -5529,7 +5584,7 @@ namespace windows_client.View
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, App.MSISDN);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, App.MSISDN);
             if (cobj != null)
             {
                 JObject data = new JObject();

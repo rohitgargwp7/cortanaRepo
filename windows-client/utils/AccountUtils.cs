@@ -132,6 +132,7 @@ namespace windows_client.utils
         }
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void postPicUploadResponseFunction(JObject obj, string iD);
         public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
@@ -259,20 +260,37 @@ namespace windows_client.utils
             req.Method = "POST";
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
-        public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction, string groudId)
+
+        public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction, string groupId)
         {
             Uri requestUri;
-            if (String.IsNullOrEmpty(groudId))
-                requestUri = new Uri(BASE + "/account/avatar");
+            if (Utils.isGroupConversation(groupId))
+                requestUri = new Uri(BASE + "/group/" + groupId + "/avatar");
             else
-                requestUri = new Uri(BASE + "/group/" + groudId + "/avatar");
+                requestUri = new Uri(BASE + "/account/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
             req.ContentType = "application/x-www-form-urlencoded";
             req.Method = "POST";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, buffer, finalCallbackFunction });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, finalCallbackFunction, groupId, buffer });
+        }
+
+        public static void updateProfileIcon(byte[] buffer, postPicUploadResponseFunction finalCallbackFunction, string groupId)
+        {
+            Uri requestUri;
+            if (Utils.isGroupConversation(groupId))
+                requestUri = new Uri(BASE + "/group/" + groupId + "/avatar");
+            else
+                requestUri = new Uri(BASE + "/account/avatar");
+
+            HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
+            AddToken(req);
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.Method = "POST";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, finalCallbackFunction, groupId, buffer });
         }
 
         public static void postPushNotification(string uri, postResponseFunction finalCallbackFunction)
@@ -479,11 +497,12 @@ namespace windows_client.utils
                 #endregion
                 #region POST PROFILE ICON
                 case RequestType.POST_PROFILE_ICON:
-                    byte[] imageBytes = (byte[])vars[2];
-                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    byte[] imageBytes = (byte[])vars[4];
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    var grpId = vars[3] as string;
                     postStream.Write(imageBytes, 0, imageBytes.Length);
                     postStream.Close();
-                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction, grpId });
                     return;
                 #endregion
                 #region POST PUSH NOTIFICATION DATA
@@ -852,9 +871,14 @@ namespace windows_client.utils
                 }
                 else if (vars[2] is postUploadPhotoFunction)
                 {
+                    postPicUploadResponseFunction finalCallbackFunctionForUpload = vars[2] as postPicUploadResponseFunction;
+                    var grpId = vars[3] as string;
+                    finalCallbackFunctionForUpload(obj, grpId);
+                }
+                else if (vars[2] is postUploadPhotoFunction)
+                {
                     postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
                     convMessage = vars[3] as ConvMessage;
-                    // SentChatBubble chatBubble = vars[4] as SentChatBubble;
                     finalCallbackFunctionForUpload(obj, convMessage);
                 }
                 else if (vars[2] is parametrisedPostResponseFunction)

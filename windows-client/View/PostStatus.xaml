@@ -16,24 +16,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
-        <Grid x:Name="MoodPanel" Grid.Row="1" Margin="25,0,25,12">
+        <Grid x:Name="MoodPanel" Grid.Row="1" Margin="0,12,25,12" HorizontalAlignment="Right" Width="430">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithNoPressedStateStyle}" Margin="0,25" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,12,0,0" VerticalAlignment="Top">
                 <Button.Content>
-                    <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43"  Tap="Mood_Tap"/>
+                    <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 </Button.Content>
             </Button>
-            <ScrollViewer Name="svStatusText" Grid.Column="2" Margin="0,12">
+            <ScrollViewer Name="svStatusText" Grid.Column="2">
                 <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
                                           TextChanged="txtStatus_TextChanged"/>
@@ -41,7 +41,7 @@
             <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" TextAlignment="Right" Foreground="Black"
                                       Text="140" Grid.Column="3" Margin="12,0,0,0"/>
         </Grid>
-        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom">
+        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom" Height="48">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -67,7 +67,7 @@
                 </Button>
             </Grid>
         </Grid>
-        
+
         <Grid Name="gridMood" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="White" Canvas.ZIndex="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -291,7 +291,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }

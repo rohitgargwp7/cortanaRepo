@@ -145,7 +145,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, string from = "")
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -158,7 +158,7 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
-                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, imageBytes, from);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else

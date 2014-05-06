@@ -45,7 +45,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Margin="0,40,0,0" MaxWidth="320" TextAlignment="Center" x:Name="headerTxt" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
-        <Grid Grid.Row="1" MinHeight="40" Opacity="0">
+        <Grid Grid.Row="1" MinHeight="40">
             <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
         </Grid>
         <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,-12">

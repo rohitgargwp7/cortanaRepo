@@ -2140,4 +2140,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Twitter_Txt" xml:space="preserve">
     <value>twitter</value>
   </data>
+  <data name="GroupCreateTip" xml:space="preserve">
+    <value>You can add upto {0} people to a group</value>
+  </data>
 </root>

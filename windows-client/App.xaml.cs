@@ -88,6 +88,9 @@ namespace windows_client
 
         public static readonly string CURRENT_LOCALE = "curLocale";
 
+        public static readonly string GROUP_NAME = "groupName";
+        public static readonly string NEW_GROUP_ID = "newGroupId";
+
         #endregion
 
         #region Hike specific instances and functions

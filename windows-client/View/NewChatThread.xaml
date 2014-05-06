@@ -134,7 +134,7 @@
                             </Button.Content>
                         </Button>
                     </Grid>
-                    <TextBlock x:Name="chatThemeHeaderTxt"  FontFamily="Segoe WP SemiLight" FontSize="38" 
+                    <TextBlock x:Name="chatThemeHeaderTxt" FontFamily="Segoe WP SemiLight" FontSize="38" 
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
                     <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,0,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>

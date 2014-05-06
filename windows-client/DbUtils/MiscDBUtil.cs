@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using windows_client.ViewModel;
 using windows_client.utils;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace windows_client.DbUtils
 {
@@ -20,6 +21,7 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
         private static object favReadWriteLock = new object();
         private static object pendingReadWriteLock = new object();
+        private static object pendingProfilePicReadWriteLock = new object();
         private static object profilePicLock = new object();
         private static object statusImageLock = new object();
         private static object saveAttachmentLock = new object();
@@ -32,6 +34,7 @@ namespace windows_client.DbUtils
         public static string STATUS_UPDATE_LARGE = "STATUS_FULL_IMAGE";
 
         public static string PENDING_REQ_FILE = "pendingReqFile";
+        public static string PENDING_PROFILE_PIC_REQ_FILE = "pendingProfilePicReqFile";
 
         public static void clearDatabase()
         {
@@ -328,6 +331,33 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void saveLargeImage(string msisdn, byte[] imageBytes)
+        {
+            if (imageBytes == null)
+                return;
+            msisdn = msisdn.Replace(":", "_");
+            string FileName = THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+            lock (lockObj)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite, store))
+                        {
+                            stream.Write(imageBytes, 0, imageBytes.Length);
+                            stream.Flush();
+                            stream.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: saveLargeImage : saveLargeImage, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
         public static bool hasCustomProfileImage(string msisdn)
         {
             msisdn = msisdn.Replace(":", "_");
@@ -376,6 +406,55 @@ namespace windows_client.DbUtils
                 }
             }
             return data;
+        }
+
+        public static byte[] getLargeImageForMsisdn(string msisdn)
+        {
+            if (msisdn == App.MSISDN)
+            {
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            }
+            msisdn = msisdn.Replace(":", "_");
+            byte[] data = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    if (store.FileExists(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX)) // Check if file exists
+                    {
+                        using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX, FileMode.Open, FileAccess.Read))
+                        {
+                            data = new byte[isfs.Length];
+                            isfs.Read(data, 0, data.Length);
+                            isfs.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: getThumbNailForMsisdn : getThumbNailForMsisdn, Exception : " + ex.StackTrace);
+                }
+            }
+            return data;
+        }
+
+        public async static void DeleteImageForMsisdn(string msisdn)
+        {
+            await Task.Delay(1);
+
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+
+            msisdn = msisdn.Replace(":", "_");
+
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (store.FileExists(THUMBNAILS + "\\" + msisdn))
+                    store.DeleteFile(THUMBNAILS + "\\" + msisdn);
+
+                if (store.FileExists(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
+                    store.DeleteFile(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
+            }
         }
 
         public static void DeleteAllThumbnails()
@@ -1026,6 +1105,106 @@ namespace windows_client.DbUtils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("MiscDbUtil :: DeletePendingRequests : DeletePendingRequests, Exception : " + ex.StackTrace);
+                }
+            }
+        }
+
+        public static void SavePendingUploadPicRequests()
+        {
+            lock (pendingProfilePicReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(MISC_DIR))
+                        store.CreateDirectory(MISC_DIR);
+                    
+                    string fName = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
+                   
+                    using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            writer.Write(App.ViewModel.HasPicUploadFailedList.Count);
+                            
+                            foreach (string ms in App.ViewModel.HasPicUploadFailedList)
+                            {
+                                writer.Write(ms);
+                            }
+
+                            writer.Flush();
+                            writer.Close();
+                        }
+
+                        file.Close();
+                        file.Dispose();
+                    }
+                }
+            }
+        }
+
+        public static async void LoadPendingUploadPicRequests()
+        {
+            await Task.Delay(1);
+
+            lock (pendingProfilePicReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(MISC_DIR))
+                    {
+                        store.CreateDirectory(MISC_DIR);
+                        return;
+                    }
+                    
+                    string fname = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
+                    
+                    if (!store.FileExists(fname))
+                        return;
+
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
+                            int count = 0;
+                            
+                            try
+                            {
+                                count = reader.ReadInt32();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("MiscDbUtil :: LoadPendingUploadPicRequests : read count, Exception : " + ex.StackTrace);
+                            }
+
+                            if (count > 0)
+                            {
+                                for (int i = 0; i < count; i++)
+                                {
+                                    try
+                                    {
+                                        App.ViewModel.HasPicUploadFailedList.Add(reader.ReadString());
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("MiscDbUtil :: LoadPendingUploadPicRequests : read file, Exception : " + ex.StackTrace);
+                                    }
+                                }
+                            }
+
+                            reader.Close();
+                        }
+
+                        try
+                        {
+                            file.Close();
+                            file.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("MiscDbUtil :: LoadPendingUploadPicRequests : dispose file, Exception : " + ex.StackTrace);
+                        }
+                    }
                 }
             }
         }

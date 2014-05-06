@@ -501,6 +501,10 @@ namespace windows_client.View
 
         void rewardsMenu_Click(object sender, EventArgs e)
         {
+            // do not open rewards if rewards token not recieved yet.
+            if (!App.appSettings.Contains(HikeConstants.REWARDS_TOKEN))
+                return;
+
             try
             {
                 App.AnalyticsInstance.addEvent(Analytics.REWARDS);
@@ -753,7 +757,7 @@ namespace windows_client.View
 
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
-            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
         /* Start or continue the conversation*/

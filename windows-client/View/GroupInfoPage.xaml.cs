@@ -611,7 +611,7 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    App.ViewModel.ConvMap[groupId].Avatar = fullViewImageBytes;
+                    App.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
                     groupImage.ImageSource = grpImage;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);

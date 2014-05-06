@@ -232,6 +232,8 @@ namespace windows_client.ViewModel
             LoadToolTipsDict();
             LoadCurrentLocation();
 
+            MiscDBUtil.LoadPendingUploadPicRequests();
+
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
@@ -489,6 +491,7 @@ namespace windows_client.ViewModel
                 AutohideTypingNotification(null, vals);
             }
         }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -565,7 +568,7 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(30, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(15, 0, 10, 0), FullTipMargin = new Thickness(25, 165, 25, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
@@ -647,10 +650,8 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7 || index == 8)
+                if (index == 0 || index == 1 || index == 2 || index == 3 || index == 5 || index == 7 || index == 8)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
-                else if (index == 3)
-                    inAppTipUC.SetValue(Grid.ColumnSpanProperty, 4);
 
                 if (tip.Width != null)
                     inAppTipUC.Width = Convert.ToDouble(tip.Width);
@@ -1034,6 +1035,54 @@ namespace windows_client.ViewModel
                 lruMultipleImageCache = null;
             }
         }
+        #endregion
+
+        #region NEW GROUP PIC
+
+        public List<string> HasPicUploadFailedList = new List<string>();
+
+        public void SendDisplayPic(string grpId)
+        {
+            var buffer = MiscDBUtil.getLargeImageForMsisdn(grpId);
+            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), grpId);
+        }
+
+        private void updateProfile_Callback(JObject obj, string groupId)
+        {
+            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+            {
+                if (HasPicUploadFailedList.Contains(groupId))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            try
+                            {
+                                App.ViewModel.ConvMap[groupId].Avatar = null;
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("HikeViewModel :: updateProfile_Callback : remove image from ConvObj, Exception : " + ex.StackTrace);
+                            }
+                        });
+
+                    MiscDBUtil.DeleteImageForMsisdn(groupId);
+                    HasPicUploadFailedList.Remove(groupId);
+                }
+                else
+                {
+                    HasPicUploadFailedList.Add(groupId);
+                    SendDisplayPic(groupId);
+                }
+            }
+            else
+            {
+                if (HasPicUploadFailedList.Contains(groupId))
+                    HasPicUploadFailedList.Remove(groupId);
+            }
+
+            MiscDBUtil.SavePendingUploadPicRequests();
+        }
+
         #endregion
     }
 }

@@ -210,7 +210,7 @@ namespace windows_client
                 }
                 else
                 {
-                    fullViewImageBytes = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+                    fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(HikeConstants.MY_PROFILE_PIC);
 
                     if (fullViewImageBytes != null)
                     {
@@ -406,7 +406,7 @@ namespace windows_client
                     {
                         writeableBitmap.SaveJpeg(msLargeImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
                         fullViewImageBytes = msLargeImage.ToArray();
-                        MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fullViewImageBytes, false);
+                        MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, fullViewImageBytes);
                     }
 
                     reloadImage = false;
