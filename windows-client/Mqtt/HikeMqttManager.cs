@@ -109,7 +109,6 @@ namespace windows_client.Mqtt
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
                 clientId += string.Format(":{0}:{1}", API_VERSION, AUTO_SUBSCRIBE);//: Api version : Auto subscribe(true/false)
-            _isInitialised = true;
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
@@ -164,6 +163,7 @@ namespace windows_client.Mqtt
                 {
                     return;
                 }
+                _isInitialised = true;
             }
 
             try
