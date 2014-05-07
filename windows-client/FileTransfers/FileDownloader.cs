@@ -276,6 +276,8 @@ namespace windows_client.FileTransfers
                                 BlockSize = MaxBlockSize;
                             }
 
+                            ResetRetryOnSuccess();
+
                             // dont update ui as its still downloading, only update .
                             OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, false));
                         }

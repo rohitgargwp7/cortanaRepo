@@ -145,6 +145,28 @@ namespace windows_client.View
                         }
                     }
 
+                    if (Utils.compareVersion("2.5.2.1", App.CURRENT_VERSION) == 1)
+                    {
+                        bool groupEmptyNameFound = false;
+                        //conv map is initialised in app.xaml.cs
+                        if (App.ViewModel.ConvMap.Count > 0)
+                        {
+                            foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
+                            {
+                                if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
+                                {
+                                    GroupManager.Instance.LoadGroupParticipants(convObj.Msisdn);
+                                    convObj.ContactName = GroupManager.Instance.defaultGroupName(convObj.Msisdn);
+                                    ConversationTableUtils.updateGroupName(convObj.Msisdn, convObj.ContactName);
+                                    groupEmptyNameFound = true;
+                                }
+                            }
+
+                            if (groupEmptyNameFound) //update whole file as well
+                                ConversationTableUtils.saveConvObjectList();
+                        }
+                    }
+
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
                 };
                 bw.RunWorkerAsync();
