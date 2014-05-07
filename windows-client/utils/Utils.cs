@@ -295,10 +295,7 @@ namespace windows_client.utils
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
             info[HikeConstants.OS_VERSION] = getOSVersion();
-            if (IsWP8)
-                info[HikeConstants.OS_NAME] = "win8";
-            else
-                info[HikeConstants.OS_NAME] = "win7";
+            info[HikeConstants.OS_NAME] = "win8";
             JObject infoPacket = new JObject();
             infoPacket[HikeConstants.DATA] = info;
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
@@ -401,16 +398,6 @@ namespace windows_client.utils
                     return string.Empty;
             }
         }
-
-        public static bool IsWP8
-        {
-            get
-            {
-                return Environment.OSVersion.Version >= TargetedVersion;
-            }
-        }
-
-        private static Version TargetedVersion = new Version(8, 0);
 
         public static Uri LoadPageUri(App.PageState pageState)
         {

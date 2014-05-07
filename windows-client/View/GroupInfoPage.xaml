@@ -47,16 +47,17 @@
             </phone:LongListSelector.ListHeader>
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
-                <toolkit:HubTile Margin="6" Background="{Binding SquareColor}"
+                    <toolkit:HubTile Margin="6" Background="{Binding SquareColor}"
                                     Title="{Binding Name}" Message="{Binding GroupInfoBlockText}" 
-                                    Source="{Binding MemberImage}" Foreground="White" toolkit:TiltEffect.IsTiltEnabled="True"/>
-                    <toolkit:ContextMenuService.ContextMenu>
-                        <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
-                            <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
-                            <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Tap="MenuItem_Tap_AddRemoveFav"/>
-                        </toolkit:ContextMenu>
-                    </toolkit:ContextMenuService.ContextMenu>
+                                    Source="{Binding MemberImage}" Foreground="White" toolkit:TiltEffect.IsTiltEnabled="True">
+                        <toolkit:ContextMenuService.ContextMenu>
+                            <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
+                                <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                            </toolkit:ContextMenu>
+                        </toolkit:ContextMenuService.ContextMenu>
+                    </toolkit:HubTile>
                 </DataTemplate>
             </phone:LongListSelector.ItemTemplate>
         </phone:LongListSelector>

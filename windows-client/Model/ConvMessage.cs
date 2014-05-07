@@ -85,7 +85,8 @@ namespace windows_client.Model
             H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
-            MESSAGE_STATUS
+            MESSAGE_STATUS,
+            UNREAD_NOTIFICATION
         }
 
         public enum MessageType

@@ -2113,4 +2113,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Leave_Group_Caption" xml:space="preserve">
     <value>Leave group</value>
   </data>
+  <data name="Unread_Messages_Txt" xml:space="preserve">
+    <value>{0} unread messages</value>
+  </data>
+  <data name="Unread_Message_Txt" xml:space="preserve">
+    <value>{0} unread message</value>
+  </data>
 </root>
