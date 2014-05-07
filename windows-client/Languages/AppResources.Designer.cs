@@ -3164,6 +3164,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} friends.
+        /// </summary>
+        public static string NewComposeGroup_Favorites {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_Favorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} group chats.
+        /// </summary>
+        public static string NewComposeGroup_GroupChats {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_GroupChats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts on hike.
+        /// </summary>
+        public static string NewComposeGroup_HikeContacts {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_HikeContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} other contacts.
+        /// </summary>
+        public static string NewComposeGroup_OtherContacts {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_OtherContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recent contacts.
+        /// </summary>
+        public static string NewComposeGroup_RecentContacts {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_RecentContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} SMS contacts.
+        /// </summary>
+        public static string NewComposeGroup_SMSContacts {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_SMSContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new status.
         /// </summary>
         public static string NewStatus_Txt {

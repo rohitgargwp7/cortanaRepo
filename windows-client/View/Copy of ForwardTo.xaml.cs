@@ -833,15 +833,7 @@ namespace windows_client.View
 
         private List<Group<ContactInfo>> CreateGroups()
         {
-            string[] Groups = new string[]
-            {
-                AppResources.NewComposeGroup_RecentContacts,
-                AppResources.NewComposeGroup_GroupChats,
-                AppResources.NewComposeGroup_HikeContacts,
-                AppResources.NewComposeGroup_SMSContacts,
-                AppResources.NewComposeGroup_OtherContacts
-            };
-
+            string Groups = "abcdefghijklmnopqrstuvwxyz#";
             List<Group<ContactInfo>> glist;
             if (_showExistingGroups)
             {
@@ -852,9 +844,9 @@ namespace windows_client.View
             else
                 glist = new List<Group<ContactInfo>>(27);
 
-            foreach (string c in Groups)
+            foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c, false, new List<ContactInfo>(1));
+                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), false, new List<ContactInfo>(1));
                 glist.Add(g);
             }
             return glist;
@@ -1299,28 +1291,53 @@ namespace windows_client.View
         }
     }
 
-    public class Group<T> : ObservableCollection<T>
+    public class Group<T> : List<T>
     {
         bool _isGroup;
 
-        public Group(string name, bool isGroup, ObservableCollection<T> items)
+        public Visibility TextVisibility
+        {
+            get
+            {
+                return !_isGroup ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Visibility GrpImageVisibility
+        {
+            get
+            {
+                return _isGroup ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Group(string name, bool isGroup, List<T> items)
         {
             this.Title = name;
             _isGroup = isGroup;
         }
 
-        string _title;
         public string Title
+        {
+            get;
+            set;
+        }
+
+        public bool IsNonEmpty
         {
             get
             {
-                return String.Format(_title, this.Count);
-            }
-            set
-            {
-                if (value != _title)
-                    _title = value;
+                return this.Count > 0;
             }
         }
+
+        public BitmapImage GroupImage
+        {
+            get
+            {
+                return IsNonEmpty ? UI_Utils.Instance.GroupImageWhite : UI_Utils.Instance.GroupImageGray;
+            }
+        }
+
     }
 }

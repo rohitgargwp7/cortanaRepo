@@ -315,30 +315,6 @@ namespace windows_client.utils
             }
         }
 
-        private BitmapImage groupImageWhite;
-        public BitmapImage GroupImageWhite
-        {
-            get
-            {
-                if (groupImageWhite == null)
-                    groupImageWhite = new BitmapImage(new Uri("/View/images/icon_group_chat.png", UriKind.Relative));
-
-                return groupImageWhite;
-            }
-        }
-
-        private BitmapImage groupImageGray;
-        public BitmapImage GroupImageGray
-        {
-            get
-            {
-                if (groupImageGray == null)
-                    groupImageGray = new BitmapImage(new Uri("/View/images/icon_group_chat_gray.png", UriKind.Relative));
-
-                return groupImageGray;
-            }
-        }
-        
         #region System Notifications
 
         private BitmapImage onHikeImage;
