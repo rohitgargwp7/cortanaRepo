@@ -91,6 +91,8 @@ namespace windows_client.View
                     reloadImage = false;
 
                     avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
+
+                    PhoneApplicationService.Current.State[App.HAS_CUSTOM_IMAGE] = true;
                 }
                 catch (Exception ex)
                 {
@@ -118,8 +120,9 @@ namespace windows_client.View
 
             Focus();
 
-            App.WriteToIsoStorageSettings(App.GROUP_NAME, group_name);
-            App.WriteToIsoStorageSettings(App.NEW_GROUP_ID, mContactNumber);
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            PhoneApplicationService.Current.State[App.GROUP_NAME] = group_name;
+            PhoneApplicationService.Current.State[App.NEW_GROUP_ID] = mContactNumber;
 
             var nextPage = new Uri("/View/ForwardTo.xaml", UriKind.Relative);
             isClicked = false;
@@ -167,14 +170,15 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 object obj = null;
-                if (App.appSettings.TryGetValue(App.GROUP_NAME, out obj))
-                {
-                    txtBxEnterName.Text = (string)obj;
-                    txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
-                }
 
                 if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
                 {
+                    if (State.TryGetValue(App.GROUP_NAME, out obj))
+                    {
+                        txtBxEnterName.Text = (string)obj;
+                        txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
+                    } 
+                    
                     if (State.TryGetValue("txtBxEnterName", out obj))
                     {
                         txtBxEnterName.Text = (string)obj;
@@ -201,6 +205,8 @@ namespace windows_client.View
                     profileImage.SetSource(memStream);
 
                     reloadImage = false;
+
+                    State.Remove("img");
                 }
                 else
                 {
@@ -236,8 +242,9 @@ namespace windows_client.View
         {
             base.OnBackKeyPress(e);
 
-            App.RemoveKeyFromAppSettings(App.NEW_GROUP_ID);
-            App.RemoveKeyFromAppSettings(App.GROUP_NAME); 
+            PhoneApplicationService.Current.State.Remove(App.NEW_GROUP_ID);
+            PhoneApplicationService.Current.State.Remove(App.GROUP_NAME);
+            PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
             MiscDBUtil.DeleteImageForMsisdn(mContactNumber);
         }
 

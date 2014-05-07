@@ -84,6 +84,8 @@ namespace windows_client.View
         private bool showNoSmsLeftOverlay = false;
         private JObject groupCreateJson = null;
 
+        bool isDisplayPicSet = false;
+
         /// <summary>
         /// this map is required for mapping attachment object with convmessage only for 
         /// messages stored in db, other messages would have their attachment object set
@@ -711,6 +713,9 @@ namespace windows_client.View
         {
             try
             {
+                //remove new group pic key
+                PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
+
                 base.OnRemovedFromJournal(e);
                 removeListeners();
                 RemoveEmmaBot();
@@ -883,11 +888,17 @@ namespace windows_client.View
             else if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
                 // here always create a new group
-                string id = (string)App.appSettings[App.NEW_GROUP_ID];
+                string id = (string)PhoneApplicationService.Current.State[App.NEW_GROUP_ID];
                 mContactNumber = id;
-                mContactName = (string)App.appSettings[App.GROUP_NAME];
+
+                mContactName = (string)PhoneApplicationService.Current.State[App.GROUP_NAME];
                 groupOwner = App.MSISDN;
+
+                if (PhoneApplicationService.Current.State.ContainsKey(App.HAS_CUSTOM_IMAGE))
+                    isDisplayPicSet = true;
+
                 processGroupJoin(true);
+                
                 isOnHike = true;
                 isGroupChat = true;
 
@@ -896,49 +907,9 @@ namespace windows_client.View
                 convObj.ContactName = mContactName;
                 convObj.IsOnhike = true;
 
-                var fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(mContactNumber);
-                byte[] thumbnailBytes = null;
+                userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
 
-                if (fullViewImageBytes != null)
-                {
-                    try
-                    {
-                        MemoryStream memStream = new MemoryStream(fullViewImageBytes);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage grpImage = new BitmapImage();
-                        grpImage.SetSource(memStream);
-                        userImage.Source = grpImage;
-
-                        WriteableBitmap writeableBitmap = new WriteableBitmap(grpImage);
-                        using (var msLargeImage = new MemoryStream())
-                        {
-                            writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
-                            thumbnailBytes = msLargeImage.ToArray();
-                        }
-
-                        object[] vals = new object[3];
-                        vals[0] = mContactNumber;
-                        vals[1] = fullViewImageBytes;
-                        vals[2] = thumbnailBytes;
-                        mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
-
-                        convObj.Avatar = thumbnailBytes;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
-                    }
-                }
-                else
-                {
-                    userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
-                }
-
-                /* This is done so that after Tombstone when this page is launched, no group is created again and again */
-                this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
-                App.RemoveKeyFromAppSettings(App.NEW_GROUP_ID);
-                App.RemoveKeyFromAppSettings(App.GROUP_NAME);
+                HandleNewGroup(convObj);
 
                 try
                 {
@@ -1115,6 +1086,56 @@ namespace windows_client.View
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
+        }
+
+        private async void HandleNewGroup(ConversationListObject convObj)
+        {
+            await Task.Delay(1);
+
+            if (isDisplayPicSet)
+            {
+                var fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(mContactNumber);
+
+                byte[] thumbnailBytes = null;
+
+                if (fullViewImageBytes != null)
+                {
+                    try
+                    {
+                        MemoryStream memStream = new MemoryStream(fullViewImageBytes);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage grpImage = new BitmapImage();
+                        grpImage.SetSource(memStream);
+                        userImage.Source = grpImage;
+
+                        WriteableBitmap writeableBitmap = new WriteableBitmap(grpImage);
+                        using (var msLargeImage = new MemoryStream())
+                        {
+                            writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                            thumbnailBytes = msLargeImage.ToArray();
+                        }
+
+                        object[] vals = new object[3];
+                        vals[0] = mContactNumber;
+                        vals[1] = fullViewImageBytes;
+                        vals[2] = thumbnailBytes;
+                        mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+
+                        convObj.Avatar = thumbnailBytes;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
+                        userImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                    }
+                }
+            }
+            
+            /* This is done so that after Tombstone when this page is launched, no group is created again and again */
+            this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
+            PhoneApplicationService.Current.State.Remove(App.NEW_GROUP_ID);
+            PhoneApplicationService.Current.State.Remove(App.GROUP_NAME);
+            PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
         }
 
         int _unreadCount = 0;
@@ -1491,7 +1512,10 @@ namespace windows_client.View
                 {
                     JObject metaData = new JObject();
                     metaData.Add(HikeConstants.NAME, mContactName);
-                    metaData.Add(HikeConstants.REQUEST_DISPLAY_PIC, true);
+
+                    if (isDisplayPicSet)
+                        metaData.Add(HikeConstants.REQUEST_DISPLAY_PIC, true);
+
                     obj.Add(HikeConstants.METADATA, metaData);
                 }
             }

@@ -89,6 +89,7 @@ namespace windows_client
         public static readonly string CURRENT_LOCALE = "curLocale";
 
         public static readonly string GROUP_NAME = "groupName";
+        public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
         public static readonly string NEW_GROUP_ID = "newGroupId";
 
         #endregion

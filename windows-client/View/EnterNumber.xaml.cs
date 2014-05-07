@@ -51,7 +51,6 @@ namespace windows_client
         public EnterNumber()
         {
             InitializeComponent();
-            //this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
 
             initializeCountryCodes();
 
@@ -463,6 +462,11 @@ namespace windows_client
             nextIconButton.IsEnabled = String.IsNullOrWhiteSpace(txtEnterPhone.Text) ? false : true;
 
             txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    txtEnterPhone.Focus();
+                });
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

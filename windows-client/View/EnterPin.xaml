@@ -59,13 +59,18 @@
                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
         </Grid>
 
-        <StackPanel Grid.Row="2" Margin="0,0,0,20">
-            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="txtBxEnterPin" TextOptions.TextHintingMode="Animated" HorizontalAlignment="Center" Width="440" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="24,20,0,0" >
+        <Grid Grid.Row="2" Margin="0,0,0,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="txtBxEnterPin"
+                                  TextOptions.TextHintingMode="Animated" HorizontalAlignment="Center" Width="440" Foreground="Black" InputScope="Number" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="24,20,0,0" >
                 <TextBlock Text="{Binding Path= LocalizedResources.EnterPin_WrongNumMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="20" Margin="0,0,-10,0"/>
                 <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlueHeader}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
         
         <Grid x:Name="callMe" Margin="0,0,0,80" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">

@@ -25,7 +25,6 @@ namespace windows_client
         public EnterPin()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
 
             appBar = new ApplicationBar()
             {
@@ -105,25 +104,6 @@ namespace windows_client
             });
         }
 
-        void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            txtBxEnterPin.Focus();
-            txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
-            this.Loaded -= EnterPinPage_Loaded;
-        }
-
-        private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_GotFocus , Exception : " + ex.StackTrace);
-            }
-        }
-
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
         {
             goBackLogic();
@@ -185,6 +165,7 @@ namespace windows_client
             progressTimer.Interval = TimeSpan.FromSeconds(1);
             progressTimer.Tick += new EventHandler(enableCallMeOption);
             progressTimer.Start();
+
             if (PhoneApplicationService.Current.State.ContainsKey(CallMeTimer))
             {
                 timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
@@ -217,7 +198,12 @@ namespace windows_client
                 }
             }
 
-            txtBxEnterPin.Focus();
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
+                txtBxEnterPin.Focus();
+                txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
+            });
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -250,18 +236,6 @@ namespace windows_client
             }
             else
                 App.IS_TOMBSTONED = false;
-        }
-
-        private void txtBxEnterPin_LostFocus(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                txtBxEnterPin.Background = UI_Utils.Instance.White;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_LostFocus , Exception : " + ex.StackTrace);
-            }
         }
 
         private void enableCallMeOption(object sender, EventArgs e)

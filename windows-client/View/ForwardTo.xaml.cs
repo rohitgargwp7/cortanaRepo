@@ -1191,6 +1191,8 @@ namespace windows_client.View
                     while (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
                 }
+
+                enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
             }
 
             //remove if push came directly from upgrade page

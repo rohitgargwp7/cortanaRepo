@@ -35,8 +35,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
-                                Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
-                                TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
+                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
             <ListBox Name="selectedList" MaxHeight="110" Margin="12,0" Grid.Row="1">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
