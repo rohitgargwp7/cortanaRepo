@@ -16,7 +16,7 @@ namespace windows_client.DbUtils
 {
     class StatusMsgsTable
     {
-        public const int MessagesDb_Latest_Version = 1;
+        public const int MessagesDb_Latest_Version = 2;
         public static string LAST_STATUS_FILENAME = "_Last_Status";
         public static string UNREAD_COUNT_FILE = "unreadCountFile";
         public static object readWriteLock = new object();
@@ -296,7 +296,7 @@ namespace windows_client.DbUtils
                 int version = schemaUpdater.DatabaseSchemaVersion;
 
                 // if current version of database schema is old
-                if (version == 0)
+                if (version < MessagesDb_Latest_Version)
                 {
                     // add a status messages table to chats db  
                     schemaUpdater.AddTable<StatusMessage>();

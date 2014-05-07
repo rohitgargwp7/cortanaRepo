@@ -1299,11 +1299,11 @@ namespace windows_client.View
         }
     }
 
-    public class Group<T> : ObservableCollection<T>
+    public class Group<T> : List<T>
     {
         bool _isGroup;
 
-        public Group(string name, bool isGroup, ObservableCollection<T> items)
+        public Group(string name, bool isGroup, List<T> items)
         {
             this.Title = name;
             _isGroup = isGroup;
