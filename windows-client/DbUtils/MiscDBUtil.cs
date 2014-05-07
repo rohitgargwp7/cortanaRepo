@@ -302,10 +302,15 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            
             if (imageBytes == null)
                 return;
+
             msisdn = msisdn.Replace(":", "_");
             string FileName = THUMBNAILS + "\\" + msisdn;
+
             lock (lockObj)
             {
                 try
@@ -313,9 +318,8 @@ namespace windows_client.DbUtils
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
-                        {
                             store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
-                        }
+                        
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
                             stream.Write(imageBytes, 0, imageBytes.Length);
@@ -333,6 +337,9 @@ namespace windows_client.DbUtils
 
         public static void saveLargeImage(string msisdn, byte[] imageBytes)
         {
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            
             if (imageBytes == null)
                 return;
             msisdn = msisdn.Replace(":", "_");
@@ -360,6 +367,9 @@ namespace windows_client.DbUtils
 
         public static bool hasCustomProfileImage(string msisdn)
         {
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            
             msisdn = msisdn.Replace(":", "_");
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -381,9 +391,8 @@ namespace windows_client.DbUtils
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
             if (msisdn == App.MSISDN)
-            {
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            }
+            
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -411,9 +420,8 @@ namespace windows_client.DbUtils
         public static byte[] getLargeImageForMsisdn(string msisdn)
         {
             if (msisdn == App.MSISDN)
-            {
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            }
+
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
