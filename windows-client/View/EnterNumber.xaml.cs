@@ -126,6 +126,8 @@ namespace windows_client
             isoCodeCountryCode.Add("DJ", "Djibouti +253");
             isoCodeCountryCode.Add("DM", "Dominica +1767");
             isoCodeCountryCode.Add("DO", "Dominican Republic +1809");
+            isoCodeCountryCode.Add("DO1", "Dominican Republic +1829");
+            isoCodeCountryCode.Add("DO2", "Dominican Republic +1849");
             isoCodeCountryCode.Add("TL", "Timor-Leste +670");
             isoCodeCountryCode.Add("EC", "Ecuador +593");
             isoCodeCountryCode.Add("EG", "Egypt +20");

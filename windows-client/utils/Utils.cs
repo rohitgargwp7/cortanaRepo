@@ -133,6 +133,13 @@ namespace windows_client.utils
         /// <returns></returns>
         public static int compareVersion(string version1, string version2)
         {
+            if (String.IsNullOrEmpty(version1) && String.IsNullOrEmpty(version2))
+                return 0;
+            else if (String.IsNullOrEmpty(version1))
+                return -1;
+            else if (String.IsNullOrEmpty(version2))
+                return 1;
+
             string[] version1_parts = version1.Split('.');
             string[] version2_parts = version2.Split('.');
             int i;
