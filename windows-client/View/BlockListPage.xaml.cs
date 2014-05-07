@@ -13,6 +13,7 @@ using windows_client.Model;
 using windows_client.Languages;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -28,10 +29,12 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
-            ApplicationBar appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            ApplicationBar appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
+
             this.ApplicationBar = appBar;
 
             ApplicationBarIconButton addIconButton = new ApplicationBarIconButton();
@@ -208,7 +211,7 @@ namespace windows_client.View
         private void AddUsers_Tap(object sender, EventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
     }
 }

@@ -1,0 +1,59 @@
+﻿using Microsoft.Phone.Controls;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Data;
+
+namespace windows_client.Converters
+{
+    public class TileSizeToHeightConverter : IValueConverter
+    {
+        /// <summary>
+        /// Converts from a tile size to the corresponding width.
+        /// </summary>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double baseWidth = 0;
+
+            switch ((TileSize)value)
+            {
+                case TileSize.Default:
+                    baseWidth = 150;
+                    break;
+
+                case TileSize.Small:
+                    baseWidth = 99;
+                    break;
+
+                case TileSize.Medium:
+                    baseWidth = 210;
+                    break;
+
+                case TileSize.Large:
+                    baseWidth = 432;
+                    break;
+            }
+
+            if (parameter == null)
+                parameter = 0;
+
+            double multiplier =  double.Parse(parameter.ToString(), CultureInfo.InvariantCulture);
+
+            if (multiplier == 0)
+                multiplier = 1;
+
+            return baseWidth * multiplier;
+        }
+
+        /// <summary>
+        /// Not used.
+        /// </summary>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+}

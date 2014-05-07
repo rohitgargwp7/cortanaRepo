@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to add.
+        /// </summary>
+        public static string Add_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("Add_AppBar_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add as a friend.
         /// </summary>
         public static string Add_To_Fav_Txt {
@@ -250,7 +259,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to user.
+        ///   Looks up a localized string similar to block user.
         /// </summary>
         public static string Blocklist_user_txt {
             get {
@@ -358,6 +367,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change pic.
+        /// </summary>
+        public static string ChangePic_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("ChangePic_AppBar_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chat Themes!.
         /// </summary>
         public static string Chat_FTUE_chatThemes {
@@ -399,6 +417,15 @@ namespace windows_client.Languages {
         public static string Chat_FTUE_personalise {
             get {
                 return ResourceManager.GetString("Chat_FTUE_personalise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to chat with.
+        /// </summary>
+        public static string Chat_With_Txt {
+            get {
+                return ResourceManager.GetString("Chat_With_Txt", resourceCulture);
             }
         }
         
@@ -601,25 +628,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to added you as friend. Would you like to do the same?.
-        /// </summary>
-        public static string Conversations_AddedYouToFav_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_AddedYouToFav_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Added you as a friend.
-        /// </summary>
-        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
-            get {
-                return ResourceManager.GetString("Conversations_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View friends.
+        ///   Looks up a localized string similar to view friends.
         /// </summary>
         public static string Conversations_BtnCircleOfFriends_Txt {
             get {
@@ -628,7 +637,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update status.
+        ///   Looks up a localized string similar to update status.
         /// </summary>
         public static string Conversations_BtnUpdateStatus_Txt {
             get {
@@ -664,7 +673,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete All Chats.
+        ///   Looks up a localized string similar to delete all chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
             get {
@@ -673,7 +682,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Chat.
+        ///   Looks up a localized string similar to delete chat.
         /// </summary>
         public static string Conversations_DelChat_Txt {
             get {
@@ -709,7 +718,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dismiss.
+        ///   Looks up a localized string similar to dismiss.
         /// </summary>
         public static string Conversations_Dismiss_Tip {
             get {
@@ -826,7 +835,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Now.
+        ///   Looks up a localized string similar to not now.
         /// </summary>
         public static string Conversations_Pending_NotNow_Btn {
             get {
@@ -835,7 +844,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm.
+        ///   Looks up a localized string similar to confirm.
         /// </summary>
         public static string Conversations_Pending_Yes_Btn {
             get {
@@ -844,56 +853,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to chats.
-        /// </summary>
-        public static string Conversations_Pivot_Chats_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Chats_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to friends.
-        /// </summary>
-        public static string Conversations_Pivot_Favourites_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Favourites_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to profile.
-        /// </summary>
-        public static string Conversations_Pivot_Profile_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Profile_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to timeline.
-        /// </summary>
-        public static string Conversations_Pivot_Timeline_Header_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_Pivot_Timeline_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Post Status.
+        ///   Looks up a localized string similar to post status.
         /// </summary>
         public static string Conversations_PostStatus_AppBar {
             get {
                 return ResourceManager.GetString("Conversations_PostStatus_AppBar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Default Name.
-        /// </summary>
-        public static string Conversations_ProfileName_Default_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_ProfileName_Default_Txt", resourceCulture);
             }
         }
         
@@ -975,15 +939,6 @@ namespace windows_client.Languages {
         public static string Conversations_Timeline_Refresh_Status {
             get {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your friends.
-        /// </summary>
-        public static string Conversations_YourFav_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_YourFav_Txt", resourceCulture);
             }
         }
         
@@ -1146,6 +1101,15 @@ namespace windows_client.Languages {
         public static string Drag_Here_To_Delete {
             get {
                 return ResourceManager.GetString("Drag_Here_To_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to edit.
+        /// </summary>
+        public static string Edit_AppBar_Txt {
+            get {
+                return ResourceManager.GetString("Edit_AppBar_Txt", resourceCulture);
             }
         }
         
@@ -1535,15 +1499,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add More.
-        /// </summary>
-        public static string Favorites_AddMore {
-            get {
-                return ResourceManager.GetString("Favorites_AddMore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connect with Facebook.
         /// </summary>
         public static string FB_Connect_Txt {
@@ -1895,6 +1850,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to group name.
+        /// </summary>
+        public static string Group_Name_Hint_Txt {
+            get {
+                return ResourceManager.GetString("Group_Name_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GROUP NAME.
         /// </summary>
         public static string GROUP_NAME_TXT {
@@ -1985,7 +1949,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite SMS participants to hike.
+        ///   Looks up a localized string similar to invite SMS participants to hike.
         /// </summary>
         public static string GroupInfo_InviteSMSUsers_Btn_Txt {
             get {
@@ -2012,7 +1976,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Chat.
+        ///   Looks up a localized string similar to group chat.
         /// </summary>
         public static string GrpChat_Txt {
             get {
@@ -2273,15 +2237,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore.
-        /// </summary>
-        public static string Ignore_Txt {
-            get {
-                return ResourceManager.GetString("Ignore_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
         public static string Image_Txt {
@@ -2453,7 +2408,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  is missing all the fun..
+        ///   Looks up a localized string similar to {0} is missing all the fun..
         /// </summary>
         public static string InviteOnHike_Txt {
             get {
@@ -2660,7 +2615,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insufficient Memory.
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8.
         /// </summary>
         public static string Memory_Limit_Reached_Header {
             get {
@@ -3092,15 +3047,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to my profile.
-        /// </summary>
-        public static string MyProfileheader_Txt {
-            get {
-                return ResourceManager.GetString("MyProfileheader_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
         public static string NamingConvention_Txt {
@@ -3218,15 +3164,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nudge!.
-        /// </summary>
-        public static string Nudge_Exclamation {
-            get {
-                return ResourceManager.GetString("Nudge_Exclamation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Double tap anywhere on the chat to nudge your friend..
         /// </summary>
         public static string Nudge_Tute {
@@ -3331,15 +3268,6 @@ namespace windows_client.Languages {
         public static string Owner_Txt {
             get {
                 return ResourceManager.GetString("Owner_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Participants.
-        /// </summary>
-        public static string Participants_Txt {
-            get {
-                return ResourceManager.GetString("Participants_Txt", resourceCulture);
             }
         }
         
@@ -3596,7 +3524,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to do the same?.
+        ///   Looks up a localized string similar to Added you as a friend. Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {
@@ -3776,7 +3704,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from your friend list.
+        ///   Looks up a localized string similar to Remove from friend list.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
@@ -3785,7 +3713,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from group.
+        ///   Looks up a localized string similar to Remove from group.
         /// </summary>
         public static string Remove_From_grp_txt {
             get {
@@ -3794,7 +3722,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove this person from group ?.
+        ///   Looks up a localized string similar to Are you sure you want to remove this person from group?.
         /// </summary>
         public static string RemoveFromGrpConfirmation_Txt {
             get {
@@ -3911,7 +3839,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FORWARD TO.
+        ///   Looks up a localized string similar to forward to.
         /// </summary>
         public static string SelectUser_Forward_To_Txt {
             get {
@@ -3943,24 +3871,6 @@ namespace windows_client.Languages {
         public static string SelectUser_GrpOwner_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_GrpOwner_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ADD PARTICIPANTS.
-        /// </summary>
-        public static string SelectUser_Header_AddParticipant_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Header_AddParticipant_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CHAT.
-        /// </summary>
-        public static string SelectUser_Header_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Header_Txt", resourceCulture);
             }
         }
         
@@ -4064,15 +3974,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here to add this person.
-        /// </summary>
-        public static string SelectUser_TapMsg_Grp_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_TapMsg_Grp_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tap here to message this person.
         /// </summary>
         public static string SelectUser_TapMsg_Txt {
@@ -4082,7 +3983,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to group.
+        ///   Looks up a localized string similar to add members.
         /// </summary>
         public static string SelectUser_Title_AddParticipant_Txt {
             get {
@@ -4091,16 +3992,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to with.
-        /// </summary>
-        public static string SelectUser_Title_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_Title_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  search or enter phone number.
+        ///   Looks up a localized string similar to search or enter phone number.
         /// </summary>
         public static string SelectUser_TxtBoxHint_Txt {
             get {
@@ -4343,7 +4235,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SHARE.
+        ///   Looks up a localized string similar to share.
         /// </summary>
         public static string Share_With_Txt {
             get {
@@ -4532,6 +4424,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Not Posted.
+        /// </summary>
+        public static string Status_Not_Posted_Rename {
+            get {
+                return ResourceManager.GetString("Status_Not_Posted_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not delete your status update. Please check your network connection and try again later..
         /// </summary>
         public static string StatusDelete_NoNtwrk_Txt {
@@ -4564,15 +4465,6 @@ namespace windows_client.Languages {
         public static string StatusUpdate_Photo {
             get {
                 return ResourceManager.GetString("StatusUpdate_Photo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to at {0}.
-        /// </summary>
-        public static string StatuUpdate_Location {
-            get {
-                return ResourceManager.GetString("StatuUpdate_Location", resourceCulture);
             }
         }
         
@@ -4865,7 +4757,25 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update now.
+        ///   Looks up a localized string similar to {0} unread message.
+        /// </summary>
+        public static string Unread_Message_Txt {
+            get {
+                return ResourceManager.GetString("Unread_Message_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} unread messages.
+        /// </summary>
+        public static string Unread_Messages_Txt {
+            get {
+                return ResourceManager.GetString("Unread_Messages_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to update now.
         /// </summary>
         public static string Update_Now_Txt {
             get {

@@ -907,7 +907,6 @@ namespace windows_client.View
                 ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 if (obj.HasCustomPhoto) // represents group chat
                 {
-                    obj.Msisdn = obj.Id;//group id
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
@@ -1055,11 +1054,17 @@ namespace windows_client.View
             else
                 this.ApplicationBar = appBar;
 
+
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                _unreadCount = App.ViewModel.ConvMap[mContactNumber].UnreadCounter;
+
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
         }
+
+        int _unreadCount = 0;
 
         private void UpdateChatStatus()
         {
@@ -1115,8 +1120,7 @@ namespace windows_client.View
 
                 worker.RunWorkerAsync();
 
-                spContactTransfer.IsHitTestVisible = false;
-                spContactTransfer.Opacity = 0.4;
+                spContactTransfer.IsEnabled = false;
             }
         }
 
@@ -1249,8 +1253,7 @@ namespace windows_client.View
                 if (!isGroupChat)
                     sendMsgTxtbox.Hint = hintText = ON_HIKE_TEXT;
 
-                spContactTransfer.IsHitTestVisible = true;
-                spContactTransfer.Opacity = 1;
+                spContactTransfer.IsEnabled = true;
                 chatPaint.Opacity = 1;
 
                 if (appBar.MenuItems.Contains(inviteMenuItem))
@@ -1444,11 +1447,21 @@ namespace windows_client.View
             return obj;
         }
 
+        ConvMessage _unreadMsg = null;
+
         private void loadMessages(int messageFetchCount, bool isInitialLaunch)
         {
             int i;
             bool isPublish = false;
             hasMoreMessages = false;
+
+            if (isInitialLaunch && _unreadCount > 0)
+            {
+                var msgStr = _unreadCount > 1 ? String.Format(AppResources.Unread_Messages_Txt, _unreadCount) : String.Format(AppResources.Unread_Message_Txt, _unreadCount);
+                _unreadMsg = new ConvMessage(msgStr, mContactNumber, 0, ConvMessage.State.UNKNOWN);
+                _unreadMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.UNREAD_NOTIFICATION;
+                messageFetchCount = messageFetchCount <= _unreadCount ? _unreadCount + 10 : messageFetchCount;
+            }
 
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
 
@@ -1517,10 +1530,20 @@ namespace windows_client.View
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     AddMessageToOcMessages(cm, true, false, true);
                 });
+
+                if (i == _unreadCount - 1 && _unreadMsg != null)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        AddMessageToOcMessages(_unreadMsg, true, false);
+                        llsMessages.ScrollTo(_unreadMsg);
+                    });
+                }
             }
 
             #region perception fix update db
@@ -2382,6 +2405,13 @@ namespace windows_client.View
 
                     if (!insertAtTop)
                         ScrollToBottom();
+                }
+                #endregion
+                #region Unread Messages
+                else if (convMessage == _unreadMsg)
+                {
+                    ocMessages.Insert(insertPosition, _unreadMsg);
+                    insertPosition++;
                 }
                 #endregion
 
@@ -3274,7 +3304,7 @@ namespace windows_client.View
 
             PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
 
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
@@ -5655,11 +5685,11 @@ namespace windows_client.View
             }
 
             chatBackground.Opacity = 1;
+            headerBackground.Background = UI_Utils.Instance.Transparent;
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 chatBackground.Source = null;
-                headerBackground.Background = UI_Utils.Instance.Transparent;
                 return;
             }
 
@@ -5730,7 +5760,7 @@ namespace windows_client.View
 
                 _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
 
-                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+                headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
             };
         }
 

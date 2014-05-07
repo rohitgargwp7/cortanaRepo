@@ -56,12 +56,11 @@ namespace windows_client.View
         private void BuildApplicationBar()
         {
             // Set the page's ApplicationBar to a new instance of ApplicationBar.    
-            ApplicationBar = new ApplicationBar();
-
-            ApplicationBar.Mode = ApplicationBarMode.Default;
-            ApplicationBar.IsVisible = true;
-            ApplicationBar.Opacity = 1.0;
-            ApplicationBar.IsMenuEnabled = true;
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             shareIconButton = new ApplicationBarIconButton();
             shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);

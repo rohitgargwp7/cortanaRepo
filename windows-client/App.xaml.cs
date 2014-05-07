@@ -19,6 +19,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -348,6 +349,11 @@ namespace windows_client
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
+
+            (App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color = Colors.White;
+            (App.Current.Resources["PhoneForegroundBrush"] as SolidColorBrush).Color = Colors.Black;
+            (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
+            (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -529,7 +535,7 @@ namespace windows_client
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
                 }
                 else
                 {
@@ -625,7 +631,7 @@ namespace windows_client
 
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
             }
             else
             {

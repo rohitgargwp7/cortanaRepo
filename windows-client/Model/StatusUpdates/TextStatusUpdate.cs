@@ -100,7 +100,7 @@ namespace windows_client.Model
                     if (IsUnread != true) //read status
                         return UI_Utils.Instance.StatusTextForeground;
                     else
-                        return UI_Utils.Instance.PhoneThemeColor;
+                        return (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
                 }
                 else
                     return UI_Utils.Instance.StatusTextForeground;

@@ -18,7 +18,7 @@ namespace windows_client.utils
         private volatile IDisposable httpPostScheduled;
 
         //TODO - MG - Merge this with PushHelper. Create a generic class for handling post requests with retry support
-        //using singleton, as there as some changes in .Net 4.0 related to instantiation of static variables.
+        //using singleton, as there as some changes in .Net 4.0 related to instantiation of static variables.B
         //minimal changes to make things work.
         public static UpdatePostHelper Instance
         {

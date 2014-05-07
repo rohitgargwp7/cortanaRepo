@@ -27,14 +27,7 @@ namespace windows_client.View
         public Help()
         {
             InitializeComponent();
-            if (utils.Utils.isDarkTheme())
-            {
-                this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love_dark.png", UriKind.Relative));
-            }
-            else
-            {
-                this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
-            }
+            made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
             applicationVersion.Text = utils.Utils.getAppVersion();
         }
 

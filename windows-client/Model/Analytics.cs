@@ -107,7 +107,7 @@ namespace windows_client.Model
             if (eventMap == null || eventMap.Count == 0)
                 return null;
             JObject eventsData = new JObject();
-            eventsData[HikeConstants.TAG] = utils.Utils.IsWP8 ? "wp8" : "wp7";
+            eventsData[HikeConstants.TAG] = "wp8";
             foreach (KeyValuePair<string, int> entry in eventMap)
             {
                 if (entry.Value > 0)
