@@ -100,7 +100,7 @@ namespace finalmqtt.Client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(string.Format("MqttConnection::MsgCallBackMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::MsgCallBackMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
                     }
                 }
                 msgCallbacksMap.Clear();
@@ -145,7 +145,7 @@ namespace finalmqtt.Client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(string.Format("MqttConnection::ScheduledActionsMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::ScheduledActionsMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
                     }
                 }
                 scheduledActionsMap.Clear();
@@ -612,7 +612,7 @@ namespace finalmqtt.Client
             //to make sure if there is any exception in clearing page resources, app should work fine 
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
 
                 if (_socket != null)
                 {
