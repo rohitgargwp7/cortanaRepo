@@ -52,8 +52,8 @@ namespace finalmqtt.Client
         //        private volatile bool connected;
         private volatile bool connackReceived;
 
-        private long _lastReadTime;
-        private long _lastWriteTime;
+        private uint _lastReadTime;//long is not atomic
+        private uint _lastWriteTime;
 
         private Object msgMapLockObj = new object();
         private Object scheduleActionMapLockObj = new object();
@@ -255,7 +255,7 @@ namespace finalmqtt.Client
                 if (e.SocketError == SocketError.Success)
                 {
                     input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
-                    _lastReadTime = DateTime.Now.Ticks;
+                    _lastReadTime = ConvertLongToUnsignedInt(DateTime.Now.Ticks);
                 }
                 else
                 {
@@ -297,7 +297,7 @@ namespace finalmqtt.Client
 
         private void onDataSent(object s, SocketAsyncEventArgs e)
         {
-            _lastWriteTime = DateTime.Now.Ticks;
+            _lastWriteTime = ConvertLongToUnsignedInt(DateTime.Now.Ticks);
         }
 
         /// <summary>
@@ -510,10 +510,8 @@ namespace finalmqtt.Client
             MQttLogging.LogWriter.Instance.WriteToLog("RECURSIVE PING CALLED, Time:" + DateTime.Now);
             if (this.mqttListener != null && _socket != null)
             {
-                long lastActivityTime = Math.Min(_lastReadTime, _lastWriteTime);
-                MQttLogging.LogWriter.Instance.WriteToLog("LAST ACTIVITY TIME:" + new DateTime(lastActivityTime));
-
-                double timeDiff = TimeSpan.FromTicks(DateTime.Now.Ticks - lastActivityTime).TotalSeconds;
+                uint lastActivityTime = Math.Min(_lastReadTime, _lastWriteTime);
+                double timeDiff = TimeSpan.FromTicks(ConvertLongToUnsignedInt(DateTime.Now.Ticks) - lastActivityTime).TotalSeconds;
                 if (timeDiff >= RECURSIVE_PING_INTERVAL)
                 {
                     MQttLogging.LogWriter.Instance.WriteToLog("PING CALLED AND SCHEDULED, Time:" + DateTime.Now);
@@ -528,7 +526,7 @@ namespace finalmqtt.Client
 
         private void onPingFailure()
         {
-            if (TimeSpan.FromTicks((DateTime.Now.Ticks - _lastReadTime)).TotalSeconds > PING_CALLBACK_WAIT_TIME)
+            if (TimeSpan.FromTicks((ConvertLongToUnsignedInt(DateTime.Now.Ticks) - _lastReadTime)).TotalSeconds > PING_CALLBACK_WAIT_TIME)
             {
                 MQttLogging.LogWriter.Instance.WriteToLog("On Ping Failure Called,Time:" + DateTime.Now);
                 disconnect();
@@ -769,6 +767,7 @@ namespace finalmqtt.Client
 
         private void ClearPageResources()
         {
+
             MQttLogging.LogWriter.Instance.WriteToLog("CLEARING PAGE RESOURCES");
             ScheduledActionsMapClear();
             MsgCallbacksMapClear();
@@ -785,6 +784,12 @@ namespace finalmqtt.Client
                 _socket.Close();
                 _socket = null;
             }
+        }
+
+        private uint ConvertLongToUnsignedInt(long value)
+        {
+            long maskedvalue = value & 4294967295;//4294967295 - masking value for long to int
+            return (uint)maskedvalue;
         }
 
     }
