@@ -54,7 +54,6 @@ namespace finalmqtt.Client
 
         private long _lastReadTime;
         private long _lastWriteTime;
-        private bool isPingResponsePending;
 
         private Object msgMapLockObj = new object();
         private Object scheduleActionMapLockObj = new object();
@@ -491,17 +490,11 @@ namespace finalmqtt.Client
 
         #region PING
 
-        public bool ping()// throws IOException
+        public void ping()// throws IOException
         {
-            if (!isPingResponsePending)
-            {
-                PingReqMessage msg = new PingReqMessage(this);
-                sendCallbackMessage(msg, null);
-                pingFailureAction = scheduler.Schedule(onPingFailure, TimeSpan.FromSeconds(PING_CALLBACK_WAIT_TIME));
-                isPingResponsePending = true;
-                return true;
-            }
-            return false;
+            PingReqMessage msg = new PingReqMessage(this);
+            sendCallbackMessage(msg, null);
+            pingFailureAction = scheduler.Schedule(onPingFailure, TimeSpan.FromSeconds(PING_CALLBACK_WAIT_TIME));
         }
 
         private void recursivePingSchedule()
@@ -527,7 +520,6 @@ namespace finalmqtt.Client
 
         private void onPingFailure()
         {
-            isPingResponsePending = false;
             if (TimeSpan.FromTicks((DateTime.Now.Ticks - _lastReadTime)).TotalSeconds > PING_CALLBACK_WAIT_TIME)
             {
                 Debug.WriteLine("On Ping Failure Called,Time:" + DateTime.Now);
@@ -597,7 +589,7 @@ namespace finalmqtt.Client
             catch (Exception ex)
             {
                 Debug.WriteLine(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
-              
+
                 if (_socket != null)
                 {
                     _socket.Dispose();
@@ -700,7 +692,6 @@ namespace finalmqtt.Client
 
         protected void handleMessage(PingRespMessage msg)
         {
-            isPingResponsePending = false;
             if (pingFailureAction != null)
             {
                 Debug.WriteLine("Ping Response recieved");
