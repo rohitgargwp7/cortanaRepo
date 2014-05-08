@@ -53,7 +53,7 @@ namespace windows_client.View
         List<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
 
         List<ContactInfo> _allContactsList = null; // contacts list
-        Group<ContactInfo> _smsContactsList = null; // sms contacts list
+        Group<ContactInfo> _smsContactsList; // sms contacts list
 
         private ProgressIndicatorControl progressIndicator;
 
@@ -221,8 +221,14 @@ namespace windows_client.View
 
         private void OnHikeFilter_Click(object sender, EventArgs e)
         {
-            enterNameTxt.Text = stringBuilderForContactNames.ToString();
-            
+            if (_isGroupChat || _isForward)
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            else
+                enterNameTxt.Text = string.Empty;
+
+            if (_completeGroupedContactList == null)
+                return;
+
             if (_showSmsContacts)
             {
                 _completeGroupedContactList[4] = null;
@@ -262,6 +268,22 @@ namespace windows_client.View
                 return;
             }
             _flag = !_flag;
+
+            if (_isTextSelected)
+                return;
+
+            _isTextSelected = false;
+
+            if (_backPressed)
+            {
+                enterNameTxt.Text =_textBeforeBackPress;
+                enterNameTxt.SelectionStart = Math.Max(0, enterNameTxt.Text.Substring(0, enterNameTxt.Text.Length - 1).LastIndexOf(", "));
+                if (enterNameTxt.Text.Substring(enterNameTxt.SelectionStart, 1) == ",") enterNameTxt.SelectionStart += 2;
+                enterNameTxt.SelectionLength = enterNameTxt.Text.Length - enterNameTxt.SelectionStart;
+                _backPressed = false;
+                _isTextSelected = true;
+                return;
+            }
 
             _contactToBeRemoved = null;
 
@@ -340,14 +362,20 @@ namespace windows_client.View
         }
 
         ContactInfo _contactToBeRemoved;
-        bool _isTextSelected;
+        bool _backPressed = false;
+        bool _isTextSelected = false;
+        string _textBeforeBackPress;
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (!_isGroupChat && !_isForward) // logic is valid only for Group Chat
                 return;
 
+            _isTextSelected = false;
+
             if (e.Key == Key.Back)
             {
+                if (enterNameTxt.Text.Length == 0) return;
+
                 if (_contactToBeRemoved != null)
                 {
                     CheckUnCheckContact(_contactToBeRemoved);
@@ -366,8 +394,9 @@ namespace windows_client.View
                             return;
 
                         _contactToBeRemoved = SelectedContacts[SelectedContacts.Count - 1];
-                        enterNameTxt.Select(enterNameTxt.Text.Length - SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1, SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1);
-                        e.Handled = true;
+                        _backPressed = true;
+                        _textBeforeBackPress = enterNameTxt.Text;
+                        return;
                     }
                 }
             }
@@ -381,6 +410,9 @@ namespace windows_client.View
             int nameLength = 0, startIndex = 0;
             int cursorPosition = enterNameTxt.SelectionStart;
 
+            _backPressed = _isTextSelected = false;
+            _contactToBeRemoved = null;
+
             if (stringBuilderForContactNames.Length <= cursorPosition) // if textbox is tapped @ last position simply return
                 return;
 
@@ -389,8 +421,9 @@ namespace windows_client.View
                 nameLength += SelectedContacts[k].Name.Length + 2; // length of name + "; " i.e 2
                 if (cursorPosition < nameLength)
                 {
-                    enterNameTxt.Select(nameLength, SelectedContacts[k].Name.Length + 1);
-                    _contactToBeRemoved = SelectedContacts[k];
+                    enterNameTxt.Select(enterNameTxt.Text.Length,0);
+                    var cInfo = SelectedContacts[k];
+                    contactsListBox.ScrollTo(cInfo);
                     return;
                 }
                 else
@@ -728,19 +761,17 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
+            _completeGroupedContactList = GetGroupedList(_allContactsList);
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                _completeGroupedContactList = GetGroupedList(_allContactsList);
-
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
                 if (!_showSmsContacts)
                     _completeGroupedContactList[4] = null;
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
-                progressIndicator.Hide(LayoutRoot);
-                EnableApplicationBar();
-                contactsListBox.IsHitTestVisible = true;
+                scanningComplete();
             });
             _canGoBack = true;
         }
@@ -749,6 +780,11 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                if (_isGroupChat || _isForward)
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                else
+                    enterNameTxt.Text = string.Empty;
+
                 contactsListBox.IsHitTestVisible = true;
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();
@@ -776,33 +812,35 @@ namespace windows_client.View
             }
 
             List<Group<ContactInfo>> glist = CreateGroups();
+            ExistingContacts = new Dictionary<string, ContactInfo>();
 
             PopulateGroupChats(glist);
             PopulateRecentChats(glist);
+            PopulateFriends(glist);
 
             #region Populate Hike and SMS contacts
 
             foreach (var cInfo in allContactsList)
             {
-                if (_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
-                    continue;
-
-                if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
-                    continue;
-
-                if (ExistingContacts.ContainsKey(cInfo.Msisdn))
+                if ((_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
+                || cInfo.Msisdn == App.MSISDN || ExistingContacts.ContainsKey(cInfo.Msisdn) || Utils.IsHikeBotMsg(cInfo.Msisdn))
                     continue;
 
                 //Added IsSelected because if user resyncs contacts, the new contacts should be pre selected if they ere already selected
-                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
 
                 if (cInfo.OnHike)
                     glist[3].Add(cInfo);
                 else
                 {
+                    if (_smsContactsList == null)
+                        _smsContactsList = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts);
+                    
                     _smsContactsList.Add(cInfo);
-                    glist[4].Add(cInfo);
+
+                    if (_showSmsContacts)
+                        glist[4].Add(cInfo);
                 }
             }
 
@@ -811,7 +849,7 @@ namespace windows_client.View
             return glist;
         }
 
-        Dictionary<string, ContactInfo> ExistingContacts = new Dictionary<string, ContactInfo>();
+        Dictionary<string, ContactInfo> ExistingContacts;
 
         private void PopulateGroupChats(List<Group<ContactInfo>> glist)
         {
@@ -840,7 +878,7 @@ namespace windows_client.View
                         cInfo.OnHike = true;
                         cInfo.HasCustomPhoto = true;//show it is group chat
                         cInfo.Msisdn = grp.GroupId;//groupid
-                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                         cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                         glist[1].Add(cInfo);
 
@@ -858,10 +896,13 @@ namespace windows_client.View
                 {
                     var conv = entry.Value;
 
-                    if (conv.IsGroupChat)
+                    if (conv.IsGroupChat || Utils.IsHikeBotMsg(conv.Msisdn))
                         continue;
 
                     if (_isExistingGroup && msisdnAlreadyExists(conv.Msisdn, activeExistingGroupMembers))
+                        continue;
+
+                    if (ExistingContacts.ContainsKey(conv.Msisdn))
                         continue;
 
                     if (!conv.IsGroupChat)
@@ -872,7 +913,7 @@ namespace windows_client.View
                         cInfo.OnHike = true;
                         cInfo.Msisdn = conv.Msisdn;
                         cInfo.Avatar = conv.Avatar;
-                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                         cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                         glist[0].Add(cInfo);
 
@@ -884,28 +925,31 @@ namespace windows_client.View
 
         private void PopulateFriends(List<Group<ContactInfo>> glist)
         {
-            foreach (var entry in App.ViewModel.FavList)
+            foreach (var friend in App.ViewModel.FavList)
             {
-                if (_isExistingGroup && msisdnAlreadyExists(entry.Msisdn, activeExistingGroupMembers))
+                if ((_isExistingGroup && msisdnAlreadyExists(friend.Msisdn, activeExistingGroupMembers)) || Utils.IsHikeBotMsg(friend.Msisdn))
                     continue;
 
-                if (entry.Avatar == null)
+                if (ExistingContacts.ContainsKey(friend.Msisdn))
+                    continue; 
+                
+                if (friend.Avatar == null)
                 {
-                    if (App.ViewModel.ConvMap.ContainsKey(entry.Msisdn))
-                        entry.Avatar = App.ViewModel.ConvMap[entry.Msisdn].Avatar;
+                    if (App.ViewModel.ConvMap.ContainsKey(friend.Msisdn))
+                        friend.Avatar = App.ViewModel.ConvMap[friend.Msisdn].Avatar;
                     else
                     {
-                        entry.Avatar = MiscDBUtil.getThumbNailForMsisdn(entry.Msisdn);
+                        friend.Avatar = MiscDBUtil.getThumbNailForMsisdn(friend.Msisdn);
                     }
                 }
 
                 ContactInfo cInfo = new ContactInfo();
-                cInfo.Name = entry.NameToShow;
-                cInfo.ContactListLabel = entry.Msisdn;//to show in tap msg
+                cInfo.Name = friend.NameToShow;
+                cInfo.ContactListLabel = friend.Msisdn;//to show in tap msg
                 cInfo.OnHike = true;
-                cInfo.Msisdn = entry.Msisdn;
-                cInfo.Avatar = entry.Avatar;
-                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                cInfo.Msisdn = friend.Msisdn;
+                cInfo.Avatar = friend.Avatar;
+                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                 glist[2].Add(cInfo);
 
