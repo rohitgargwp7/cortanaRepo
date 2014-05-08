@@ -95,7 +95,14 @@ namespace finalmqtt.Client
             {
                 foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
                 {
-                    kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
+                    try
+                    {
+                        kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(string.Format("MqttConnection::MsgCallBackMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                    }
                 }
                 msgCallbacksMap.Clear();
             }
@@ -132,7 +139,16 @@ namespace finalmqtt.Client
             lock (scheduleActionMapLockObj)
             {
                 foreach (IDisposable action in scheduledActionsMap.Values)
-                    action.Dispose();
+                {
+                    try
+                    {
+                        action.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(string.Format("MqttConnection::ScheduledActionsMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                    }
+                }
                 scheduledActionsMap.Clear();
             }
         }
@@ -566,13 +582,33 @@ namespace finalmqtt.Client
 
         public void disconnect() //throws IOException 
         {
-            Debug.WriteLine("DISCONNECT CALLED");
-
-            ClearPageResources();
-
-            if (mqttListener != null)
+            try
             {
-                mqttListener.onDisconnected();
+                Debug.WriteLine("DISCONNECT CALLED");
+
+                ClearPageResources();
+
+                if (mqttListener != null)
+                {
+                    mqttListener.onDisconnected();
+                }
+            }
+            //to make sure if there is any exception in clearing page resources, app should work fine 
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+              
+                if (_socket != null)
+                {
+                    _socket.Dispose();
+                    _socket.Close();
+                    _socket = null;
+                }
+
+                if (mqttListener != null)
+                {
+                    mqttListener.onDisconnected();
+                }
             }
         }
 
