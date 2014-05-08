@@ -23,6 +23,8 @@ using System.Windows.Media.Imaging;
 using windows_client.ViewModel;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using System.Text;
 
 namespace windows_client.View
 {
@@ -34,6 +36,7 @@ namespace windows_client.View
         private bool _showSmsContacts;
         private bool _isFreeSmsOn = true;
         private bool _showExistingGroups;
+        private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _stopContactScanning = false;
         private bool _isContactShared = false;
         private bool _flag;
@@ -42,17 +45,15 @@ namespace windows_client.View
         private bool _isGroupChat = false;
         int _smsUserCount = 0;
         private int _smsCredits;
-        private int _maxCharGroups = 26;
         private string _charsEntered;
 
         List<Group<ContactInfo>> _glistFiltered = null;
-        public ObservableCollection<ContactInfo> SelectedContacts = new ObservableCollection<ContactInfo>(); // this is used to store all those contacts which are selected for forwarding message
+        ObservableCollection<ContactInfo> SelectedContacts = new ObservableCollection<ContactInfo>(); // this is used to store all those contacts which are selected for forwarding message
 
-        public List<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
-        public List<Group<ContactInfo>> _filteredGroupedContactList = null;
-        private List<Group<ContactInfo>> _defaultGroupedContactList = null;
+        List<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
 
         List<ContactInfo> _allContactsList = null; // contacts list
+        Group<ContactInfo> _smsContactsList = null; // sms contacts list
 
         private ProgressIndicatorControl progressIndicator;
 
@@ -61,7 +62,7 @@ namespace windows_client.View
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
-        
+
         /// <summary>
         /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
         /// so that while searching the value of showsmscontacts is considered too
@@ -98,12 +99,6 @@ namespace windows_client.View
                     }
                 }
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
-            {
-                _isContactShared = true;
-                _showSmsContacts = false;
-                PageTitle.Text = AppResources.ShareContact_Txt;
-            }
             /* Case when this page is called from GroupInfo page*/
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
@@ -116,14 +111,7 @@ namespace windows_client.View
                 _isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
                 PageTitle.Text = AppResources.GrpChat_Txt;
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
-            {
-                _frmBlockedList = true;
-                _showSmsContacts = false;
-                blockedSet = new HashSet<string>();
-                PageTitle.Text = AppResources.Blocklist_user_txt;
-            }
-            
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -135,24 +123,19 @@ namespace windows_client.View
                 _allContactsList = UsersTableUtils.getAllContactsByGroup();
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
             };
+
             bw.RunWorkerAsync();
+
             bw.RunWorkerCompleted += (s, e) =>
             {
                 if (!_showSmsContacts)
-                {
-                    if (_filteredGroupedContactList == null)
-                        MakeFilteredJumpList();
+                    _completeGroupedContactList[4] = null;
 
-                    contactsListBox.ItemsSource = _filteredGroupedContactList;
-                }
-                else
-                    contactsListBox.ItemsSource = _completeGroupedContactList;
-
+                contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
             };
 
             initPage();
-            selectedList.ItemsSource = SelectedContacts;
         }
 
         #region AppBar
@@ -193,7 +176,7 @@ namespace windows_client.View
                 _doneIconButton.IsEnabled = false;
                 ApplicationBar.Buttons.Add(_doneIconButton);
             }
-            
+
             if (_isGroupChat)
             {
                 /* Add icons */
@@ -205,18 +188,6 @@ namespace windows_client.View
                 _doneIconButton.Click += startGroup_Click;
                 _doneIconButton.IsEnabled = false;
                 ApplicationBar.Buttons.Add(_doneIconButton);
-            }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
-            {
-                _isContactShared = true;
-            }
-            else if (_frmBlockedList)
-            {
-
-            }
-            else
-            {
-                //contactsListBox.Tap += contactSelected_Click;
             }
         }
 
@@ -232,7 +203,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
-                
+
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry(); // will remove groupinfo page
 
@@ -247,22 +218,22 @@ namespace windows_client.View
 
         private void OnHikeFilter_Click(object sender, EventArgs e)
         {
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            
             if (_showSmsContacts)
             {
-                if (_filteredGroupedContactList == null)
-                {
-                    MakeFilteredJumpList();
-                }
-                contactsListBox.ItemsSource = _filteredGroupedContactList;
+                _completeGroupedContactList[4] = null;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
             }
             else
             {
-                contactsListBox.ItemsSource = _completeGroupedContactList;
+                _completeGroupedContactList[4] = _smsContactsList;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_HideSmsContacts_Txt;
             }
+
+            contactsListBox.ItemsSource = _completeGroupedContactList;
         }
 
         void forwardTo_Click(object sender, EventArgs e)
@@ -270,8 +241,8 @@ namespace windows_client.View
             if (_isClicked)
                 return;
 
-            _isClicked = true; 
-            
+            _isClicked = true;
+
             App.ViewModel.ForwardMessage(SelectedContacts.ToList());
 
             if (NavigationService.CanGoBack)
@@ -279,25 +250,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        private ContactInfo GetContactIfExists(ContactInfo contact)
-        {
-            if (_glistFiltered == null)
-                return contact;
-            for (int i = 0; i < _maxCharGroups; i++)
-            {
-                if (_glistFiltered[i] == null || _glistFiltered[i] == null)
-                    return contact;
-                for (int k = 0; k < _glistFiltered[i].Count; k++)
-                {
-                    if (_glistFiltered[i][k].Msisdn == contact.Msisdn)
-                        return _glistFiltered[i][k];
-                }
-            }
-            // if not found
-            //contact.Name = contact.Msisdn;
-            return contact;
-        }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -308,7 +260,13 @@ namespace windows_client.View
             }
             _flag = !_flag;
 
-            _charsEntered = enterNameTxt.Text.ToLower();
+            _contactToBeRemoved = null;
+
+            if (_isGroupChat || _isForward)
+                _charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
+            else
+                _charsEntered = enterNameTxt.Text.ToLower();
+
             Debug.WriteLine("Chars Entered : {0}", _charsEntered);
 
             _charsEntered = _charsEntered.Trim();
@@ -316,25 +274,19 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(_charsEntered))
             {
                 if (!_showSmsContacts)
-                {
-                    if (_filteredGroupedContactList == null)
-                    {
-                        MakeFilteredJumpList();
-                    }
-                    contactsListBox.ItemsSource = _filteredGroupedContactList;
-                }
-                else
-                    contactsListBox.ItemsSource = _completeGroupedContactList;
+                    _completeGroupedContactList[4] = null;
+
+                contactsListBox.ItemsSource = _completeGroupedContactList;
 
                 return;
             }
 
-            if (groupListDictionary.ContainsKey(_charsEntered) 
-                && groupListStateDictionary.ContainsKey(_charsEntered) 
+            if (groupListDictionary.ContainsKey(_charsEntered)
+                && groupListStateDictionary.ContainsKey(_charsEntered)
                 && groupListStateDictionary[_charsEntered] == _showSmsContacts)
             {
                 List<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
-                
+
                 if (gl == null)
                 {
                     groupListDictionary.Remove(_charsEntered);
@@ -343,13 +295,13 @@ namespace windows_client.View
                     return;
                 }
 
-                if (gl[_maxCharGroups].Count > 0 && gl[_maxCharGroups][0].Msisdn != null)
+                if (gl[5].Count > 0 && gl[5][0].Msisdn != null)
                 {
                     if (defaultContact.IsSelected)
                     {
-                        gl[_maxCharGroups].Remove(defaultContact);
+                        gl[5].Remove(defaultContact);
                         defaultContact = new ContactInfo();
-                        gl[_maxCharGroups].Insert(0, defaultContact);
+                        gl[5].Insert(0, defaultContact);
                     }
                     defaultContact.Name = _charsEntered;
                     string num = Utils.NormalizeNumber(_charsEntered);
@@ -357,20 +309,20 @@ namespace windows_client.View
                     defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
                     defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                    defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 contactsListBox.ItemsSource = gl;
                 Thread.Sleep(5);
                 return;
             }
-            //glistFiltered = createGroups();
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ev) =>
             {
-                _glistFiltered = GetFilteredContactsFromNameOrPhoneAsync(_charsEntered, 0, _maxCharGroups);
+                _glistFiltered = GetFilteredContactsFromNameOrPhoneAsync(_charsEntered, 0, 5);
             };
             bw.RunWorkerAsync();
+
             bw.RunWorkerCompleted += (s, ev) =>
             {
                 if (_glistFiltered != null)
@@ -382,6 +334,62 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = _glistFiltered;
                 Thread.Sleep(2);
             };
+        }
+
+        ContactInfo _contactToBeRemoved;
+        bool _isTextSelected;
+        private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Back)
+            {
+                if (_contactToBeRemoved != null)
+                {
+                    CheckUnCheckContact(_contactToBeRemoved);
+                    _contactToBeRemoved = null;
+                }
+                else
+                {
+                    if (SelectedContacts.Count > 0)
+                    {
+                        int cursorPosition = enterNameTxt.SelectionStart;
+
+                        cursorPosition = cursorPosition == 0 ? cursorPosition : cursorPosition - 1;
+
+                        if (cursorPosition <= 0 || cursorPosition >= stringBuilderForContactNames.Length)
+                            return;
+
+                        _contactToBeRemoved = SelectedContacts[SelectedContacts.Count - 1];
+                        enterNameTxt.Select(enterNameTxt.Text.Length - SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1, SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1);
+                    }
+                }
+            }
+        }
+
+        private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!_isGroupChat || !_isForward) // logic is valid only for Group Chat
+                return;
+
+            int nameLength = 0, startIndex = 0;
+            int cursorPosition = enterNameTxt.SelectionStart;
+
+            if (stringBuilderForContactNames.Length <= cursorPosition) // if textbox is tapped @ last position simply return
+                return;
+
+            for (int k = 0; k < SelectedContacts.Count; k++)
+            {
+                nameLength += SelectedContacts[k].Name.Length + 2; // length of name + "; " i.e 2
+                if (cursorPosition < nameLength)
+                {
+                    enterNameTxt.Select(nameLength, SelectedContacts[k].Name.Length + 1);
+                    _contactToBeRemoved = SelectedContacts[k];
+                    return;
+                }
+                else
+                {
+                    startIndex = nameLength;
+                }
+            }
         }
 
         private List<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
@@ -405,7 +413,7 @@ namespace windows_client.View
 
             if (charsLength > 0)
             {
-                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)) 
+                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength))
                     && groupListStateDictionary.ContainsKey(charsEntered.Substring(0, charsLength))
                     && groupListStateDictionary[charsEntered.Substring(0, charsEntered.Length - 1)] == _showSmsContacts)
                 {
@@ -433,11 +441,10 @@ namespace windows_client.View
 
                     cn.IsSelected = SelectedContacts.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
                     cn.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                    cn.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
 
                     bool containsCharacter = false;
 
-                    containsCharacter = Utils.isGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered) 
+                    containsCharacter = Utils.isGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
                         : cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
 
                     if (containsCharacter)
@@ -457,23 +464,16 @@ namespace windows_client.View
             if (areCharsNumber)
             {
                 if (_glistFiltered == null || createNewFilteredList)
-                {
-                    if (_defaultGroupedContactList == null)
-                        _defaultGroupedContactList = CreateGroups();
-
-                    list = _defaultGroupedContactList;
-                }
+                    list = CreateGroups();
                 else
-                {
                     list = _glistFiltered;
-                }
 
-                if (list[_maxCharGroups].Contains(defaultContact))
-                    list[_maxCharGroups].Remove(defaultContact);
+                if (list[5].Contains(defaultContact))
+                    list[5].Remove(defaultContact);
 
-                if (list[_maxCharGroups].Count == 0 || !list[_maxCharGroups].Contains(defaultContact))
+                if (list[5].Count == 0 || !list[5].Contains(defaultContact))
                 {
-                    list[_maxCharGroups].Insert(0, defaultContact);
+                    list[5].Insert(0, defaultContact);
 
                     defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
 
@@ -482,16 +482,15 @@ namespace windows_client.View
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
                     defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                    defaultContact.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
 
             if (!areCharsNumber && createNewFilteredList)
                 return null;
-            
+
             if (areCharsNumber)
                 return list;
-            
+
             return _glistFiltered;
         }
 
@@ -723,17 +722,14 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                _filteredGroupedContactList = null;
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
 
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
                 if (!_showSmsContacts)
-                {
-                    MakeFilteredJumpList();
-                    contactsListBox.ItemsSource = _filteredGroupedContactList;
-                }
-                else
-                    contactsListBox.ItemsSource = _completeGroupedContactList;
+                    _completeGroupedContactList[4] = null;
+
+                contactsListBox.ItemsSource = _completeGroupedContactList;
+
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();
                 contactsListBox.IsHitTestVisible = true;
@@ -755,6 +751,13 @@ namespace windows_client.View
 
         #region  MAKE JUMP LIST
 
+        /// <summary>
+        /// Get the group contact list. Should be called only once
+        /// 1. When page loads
+        /// 2. If user presses contact sync
+        /// </summary>
+        /// <param name="allContactsList">list of all contacts</param>
+        /// <returns>group list</returns>
         private List<Group<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
@@ -762,9 +765,48 @@ namespace windows_client.View
                 _isExistingGroup = true;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
                 _existingGroupUsers = activeExistingGroupMembers.Count;
-            } 
-            
+            }
+
             List<Group<ContactInfo>> glist = CreateGroups();
+
+            PopulateGroupChats(glist);
+            PopulateRecentChats(glist);
+
+            #region Populate Hike and SMS contacts
+
+            foreach (var cInfo in allContactsList)
+            {
+                if (_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
+                    continue;
+
+                if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
+                    continue;
+
+                if (ExistingContacts.ContainsKey(cInfo.Msisdn))
+                    continue;
+
+                //Added IsSelected because if user resyncs contacts, the new contacts should be pre selected if they ere already selected
+                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+
+                if (cInfo.OnHike)
+                    glist[3].Add(cInfo);
+                else
+                {
+                    _smsContactsList.Add(cInfo);
+                    glist[4].Add(cInfo);
+                }
+            }
+
+            #endregion
+
+            return glist;
+        }
+
+        Dictionary<string, ContactInfo> ExistingContacts = new Dictionary<string, ContactInfo>();
+
+        private void PopulateGroupChats(List<Group<ContactInfo>> glist)
+        {
             if (_showExistingGroups)
             {
                 bool forwardedFromGroupChat = false;
@@ -790,40 +832,77 @@ namespace windows_client.View
                         cInfo.OnHike = true;
                         cInfo.HasCustomPhoto = true;//show it is group chat
                         cInfo.Msisdn = grp.GroupId;//groupid
+                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
                         cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                        glist[0].Add(cInfo);
+                        glist[1].Add(cInfo);
 
                         groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
                     }
                 }
             }
+        }
 
-            for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
+        private void PopulateRecentChats(List<Group<ContactInfo>> glist)
+        {
+            if (_isGroupChat || _isForward)
             {
-                ContactInfo cInfo = allContactsList[i];
-
-                if (_isExistingGroup)
+                foreach (var entry in App.ViewModel.ConvMap)
                 {
-                    if (msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
+                    var conv = entry.Value;
+
+                    if (conv.IsGroupChat)
                         continue;
-                } 
-                
-                if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
+
+                    if (_isExistingGroup && msisdnAlreadyExists(conv.Msisdn, activeExistingGroupMembers))
+                        continue;
+
+                    if (!conv.IsGroupChat)
+                    {
+                        ContactInfo cInfo = new ContactInfo();
+                        cInfo.Name = conv.NameToShow;
+                        cInfo.ContactListLabel = conv.Msisdn;
+                        cInfo.OnHike = true;
+                        cInfo.Msisdn = conv.Msisdn;
+                        cInfo.Avatar = conv.Avatar;
+                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
+                        cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                        glist[0].Add(cInfo);
+
+                        ExistingContacts.Add(cInfo.Msisdn, cInfo);
+                    }
+                }
+            }
+        }
+
+        private void PopulateFriends(List<Group<ContactInfo>> glist)
+        {
+            foreach (var entry in App.ViewModel.FavList)
+            {
+                if (_isExistingGroup && msisdnAlreadyExists(entry.Msisdn, activeExistingGroupMembers))
                     continue;
 
+                if (entry.Avatar == null)
+                {
+                    if (App.ViewModel.ConvMap.ContainsKey(entry.Msisdn))
+                        entry.Avatar = App.ViewModel.ConvMap[entry.Msisdn].Avatar;
+                    else
+                    {
+                        entry.Avatar = MiscDBUtil.getThumbNailForMsisdn(entry.Msisdn);
+                    }
+                }
+
+                ContactInfo cInfo = new ContactInfo();
+                cInfo.Name = entry.NameToShow;
+                cInfo.ContactListLabel = entry.Msisdn;//to show in tap msg
+                cInfo.OnHike = true;
+                cInfo.Msisdn = entry.Msisdn;
+                cInfo.Avatar = entry.Avatar;
+                cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                cInfo.BlockButtonVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
+                glist[2].Add(cInfo);
 
-                string ch = GetCaptionGroup(cInfo);
-                // calculate the index into the list
-                int index = ((ch == "#") ? 26 : ch[0] - 'a') + (_showExistingGroups ? 1 : 0);
-                // and add the entry
-                glist[index].Add(cInfo);
+                ExistingContacts.Add(cInfo.Msisdn, cInfo);
             }
-
-            _maxCharGroups = glist.Count - 1;
-
-            return glist;
         }
 
         private bool msisdnAlreadyExists(string msisdn, List<GroupParticipant> activeExistingGroupMembers)
@@ -837,54 +916,21 @@ namespace windows_client.View
             {
                 AppResources.NewComposeGroup_RecentContacts,
                 AppResources.NewComposeGroup_GroupChats,
+                AppResources.NewComposeGroup_Friends,
                 AppResources.NewComposeGroup_HikeContacts,
                 AppResources.NewComposeGroup_SMSContacts,
                 AppResources.NewComposeGroup_OtherContacts
             };
 
-            List<Group<ContactInfo>> glist;
-            if (_showExistingGroups)
-            {
-                glist = new List<Group<ContactInfo>>(28);
-                Group<ContactInfo> g = new Group<ContactInfo>(string.Empty, true, new List<ContactInfo>(1));
-                glist.Add(g);
-            }
-            else
-                glist = new List<Group<ContactInfo>>(27);
+            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
 
-            foreach (string c in Groups)
+            foreach (string str in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c, false, new List<ContactInfo>(1));
+                Group<ContactInfo> g = new Group<ContactInfo>(str);
                 glist.Add(g);
             }
+
             return glist;
-        }
-
-        private static string GetCaptionGroup(ContactInfo c)
-        {
-            char key = char.ToLower(c.Name[0]);
-            if (key < 'a' || key > 'z')
-            {
-                key = '#';
-            }
-            return key.ToString();
-        }
-
-        private void MakeFilteredJumpList()
-        {
-            _filteredGroupedContactList = CreateGroups();
-            for (int i = 0; i < _completeGroupedContactList.Count; i++)
-            {
-                Group<ContactInfo> g = _completeGroupedContactList[i];
-                if (g == null || g.Count <= 0)
-                    continue;
-                for (int j = 0; j < g.Count; j++)
-                {
-                    ContactInfo c = g[j];
-                    if (c.OnHike) // if on hike 
-                        _filteredGroupedContactList[i].Add(c);
-                }
-            }
         }
 
         #endregion
@@ -906,17 +952,14 @@ namespace windows_client.View
             if (_doneIconButton != null)
                 _doneIconButton.IsEnabled = true;
         }
-        
+
         #region Contact Select Based Functions
 
         private void ContactItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
 
-            if (_frmBlockedList)
-                BlockUser(cInfo);
-            else
-                CheckUnCheckContact(cInfo);
+            CheckUnCheckContact(cInfo);
         }
 
         private void CheckUnCheckContact(ContactInfo cInfo)
@@ -1009,23 +1052,13 @@ namespace windows_client.View
                     else
                         _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
 
-                    //enterNameTxt.Text = String.Empty;
-                }
-                else if (_isContactShared)
-                {
-                    MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, cInfo.Name), AppResources.ShareContact_Txt, MessageBoxButton.OKCancel);
-                    if (mr == MessageBoxResult.OK)
-                    {
-                        string searchNumber = cInfo.Msisdn;
-                        string country_code = null;
-                    
-                        if (App.appSettings.TryGetValue(App.COUNTRY_CODE_SETTING, out country_code))
-                            searchNumber = searchNumber.Replace(country_code, "");
+                    if (SelectedContacts.Count > 0)
+                        stringBuilderForContactNames = new StringBuilder(string.Join(", ", SelectedContacts)).Append(", ");
+                    else
+                        stringBuilderForContactNames = new StringBuilder();
 
-                        contactInfoObj = cInfo;
-
-                        ContactUtils.getContact(searchNumber, contactSearchCompleted_Callback);
-                    }
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else
                 {
@@ -1042,39 +1075,12 @@ namespace windows_client.View
             }
         }
 
-        ContactInfo contactInfoObj;
-        private void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            if (contactInfoObj == null)
-                return;
-            IEnumerable<Contact> contacts = e.Results;
-            Contact contact = null;
-            foreach (Contact c in contacts)
-            {
-                if (c.DisplayName.Trim() == contactInfoObj.Name)
-                {
-                    contact = c;
-                    break;
-                }
-            }
-
-            if (contact == null)
-            {
-                MessageBox.Show(AppResources.SharedContactNotFoundText, AppResources.SharedContactNotFoundCaptionText, MessageBoxButton.OK);
-            }
-            else
-            {
-                PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
-                NavigationService.GoBack();
-            }
-        }
-        
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-            
+
             if (cInfo.IsSelected) return;
-            
+
             CheckUnCheckContact(cInfo);
         }
 
@@ -1123,54 +1129,6 @@ namespace windows_client.View
             return true;
         }
 
-        private void Block_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            Button btn = sender as Button;
-            ContactInfo ci = btn.DataContext as ContactInfo;
-            BlockUser(ci);
-        }
-
-        private void BlockUser(ContactInfo ci)
-        {
-            enterNameTxt.Text = String.Empty;
-
-            if (ci == null)
-                return;
-            if (!ci.IsFav) // block request
-            {
-                ci.IsFav = true;
-                if (ci.Name == ci.Msisdn)
-                {
-                    ci.Msisdn = Utils.NormalizeNumber(ci.Msisdn);
-                    ci.Name = ci.Msisdn;
-                }
-                App.ViewModel.BlockedHashset.Add(ci.Msisdn);
-                if (App.ViewModel.FavList != null)
-                {
-                    ConversationListObject co = new ConversationListObject();
-                    co.Msisdn = ci.Msisdn;
-                    if (App.ViewModel.FavList.Remove(co))
-                    {
-                        MiscDBUtil.SaveFavourites();
-                        MiscDBUtil.DeleteFavourite(ci.Msisdn);
-                        int count = 0;
-                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                    }
-                }
-                FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
-                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
-            }
-            else // unblock request
-            {
-                ci.IsFav = false;
-                if (ci.Msisdn == string.Empty)
-                    ci.Msisdn = ci.Name;
-                App.ViewModel.BlockedHashset.Remove(ci.Msisdn);
-                App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
-            }
-        }
-        
         #endregion
 
         #region Page State Functions
@@ -1178,7 +1136,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 // Get a dictionary of query string keys and values.
@@ -1275,52 +1233,90 @@ namespace windows_client.View
             }
         }
 
-        HashSet<string> blockedSet = null;
-
-        bool _frmBlockedList;
         bool _isForward;
-
         bool _isClicked;
 
         int _existingGroupUsers; // 1 because owner of the group is already included
 
         List<GroupParticipant> activeExistingGroupMembers;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        class Group<T> : ObservableCollection<T>, INotifyPropertyChanged
         {
-            var button = sender as Button;
-            var cInfo = (button.DataContext) as ContactInfo;
-            if (cInfo != null)
+            public Group(string name)
             {
-                CheckUnCheckContact(cInfo);
+                Title = name;
+                this.CollectionChanged += Group_CollectionChanged;
             }
 
-            selectedList.SelectedIndex = -1;
-        }
-    }
-
-    public class Group<T> : List<T>
-    {
-        bool _isGroup;
-
-        public Group(string name, bool isGroup, List<T> items)
-        {
-            this.Title = name;
-            _isGroup = isGroup;
-        }
-
-        string _title;
-        public string Title
-        {
-            get
+            void Group_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
             {
-                return String.Format(_title, this.Count);
+                NotifyPropertyChanged("Title");
+                NotifyPropertyChanged("IsNonEmpty");
             }
-            set
+
+            public override bool Equals(object obj)
             {
-                if (value != _title)
-                    _title = value;
+                Group<T> that = obj as Group<T>;
+
+                return (that != null) && (this.Title.Equals(that.Title));
             }
+
+            public override int GetHashCode()
+            {
+                return this.Title.GetHashCode();
+            }
+
+            public void Add(T item)
+            {
+                Items.Add(item);
+            }
+
+            string _title;
+            public string Title
+            {
+                get
+                {
+                    return String.IsNullOrEmpty(_title) ? String.Empty : String.Format(_title, Items.Count);
+                }
+                set
+                {
+                    if (value != _title)
+                        _title = value;
+                }
+            }
+
+            public bool IsNonEmpty
+            {
+                get
+                {
+                    return Items.Count > 0;
+                }
+            }
+
+            #region INotifyPropertyChanged Members
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            // Used to notify that a property changed
+            public void NotifyPropertyChanged(string propertyName)
+            {
+                if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Group :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        }
+                    });
+                }
+            }
+
+            #endregion
         }
     }
 }

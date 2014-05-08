@@ -3166,9 +3166,9 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to {0} friends.
         /// </summary>
-        public static string NewComposeGroup_Favorites {
+        public static string NewComposeGroup_Friends {
             get {
-                return ResourceManager.GetString("NewComposeGroup_Favorites", resourceCulture);
+                return ResourceManager.GetString("NewComposeGroup_Friends", resourceCulture);
             }
         }
         
@@ -3182,7 +3182,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} contacts on hike.
+        ///   Looks up a localized string similar to {0} hike contacts.
         /// </summary>
         public static string NewComposeGroup_HikeContacts {
             get {
@@ -3209,7 +3209,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} SMS contacts.
+        ///   Looks up a localized string similar to {0} sms contacts.
         /// </summary>
         public static string NewComposeGroup_SMSContacts {
             get {

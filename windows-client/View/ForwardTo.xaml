@@ -31,33 +31,13 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
-                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
+                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}" KeyDown="enterNameTxt_KeyDown" Tap="enterNameTxt_Tap"
                                   TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
-            <ListBox Name="selectedList" MaxHeight="110" Margin="12,0" Grid.Row="1">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <toolkit:WrapPanel />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource SelectedItemButtonStyle}" Click="Button_Click" Margin="0,0,5,5">
-                            <Button.Content>
-                                <StackPanel Margin="5" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Foreground="Black" Text="{Binding Name}" VerticalAlignment="Center"/>
-                                    <Image Source="/View/images/cancel_black.png" MaxHeight="20" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="12" 
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="12" 
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" HideEmptyGroups="True"
@@ -85,8 +65,6 @@
                                     <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
-                            <Button Content="{Binding BlockUnblockText}" Grid.Column="2" Style="{StaticResource NoButtonStyle}" Width="120"
-                                    HorizontalAlignment="Right" Tap="Block_Tap" Visibility="{Binding BlockButtonVisibility}"/>
                             <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"
                                       Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>

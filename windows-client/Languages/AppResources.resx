@@ -2143,4 +2143,22 @@ Download it now http://hike.in and join the fun!</value>
   <data name="GroupCreateTip" xml:space="preserve">
     <value>You can add upto {0} people to a group</value>
   </data>
+  <data name="NewComposeGroup_Friends" xml:space="preserve">
+    <value>{0} friends</value>
+  </data>
+  <data name="NewComposeGroup_GroupChats" xml:space="preserve">
+    <value>{0} group chats</value>
+  </data>
+  <data name="NewComposeGroup_HikeContacts" xml:space="preserve">
+    <value>{0} hike contacts</value>
+  </data>
+  <data name="NewComposeGroup_OtherContacts" xml:space="preserve">
+    <value>{0} other contacts</value>
+  </data>
+  <data name="NewComposeGroup_RecentContacts" xml:space="preserve">
+    <value>{0} recent contacts</value>
+  </data>
+  <data name="NewComposeGroup_SMSContacts" xml:space="preserve">
+    <value>{0} sms contacts</value>
+  </data>
 </root>
