@@ -112,6 +112,9 @@ namespace windows_client.View
                 PageTitle.Text = AppResources.GrpChat_Txt;
             }
 
+            if(_isGroupChat || _isForward)
+                enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -340,12 +343,16 @@ namespace windows_client.View
         bool _isTextSelected;
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            if (!_isGroupChat && !_isForward) // logic is valid only for Group Chat
+                return;
+
             if (e.Key == Key.Back)
             {
                 if (_contactToBeRemoved != null)
                 {
                     CheckUnCheckContact(_contactToBeRemoved);
                     _contactToBeRemoved = null;
+                    e.Handled = true;
                 }
                 else
                 {
@@ -360,6 +367,7 @@ namespace windows_client.View
 
                         _contactToBeRemoved = SelectedContacts[SelectedContacts.Count - 1];
                         enterNameTxt.Select(enterNameTxt.Text.Length - SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1, SelectedContacts[SelectedContacts.Count - 1].Name.Length + 1);
+                        e.Handled = true;
                     }
                 }
             }
@@ -367,7 +375,7 @@ namespace windows_client.View
 
         private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!_isGroupChat || !_isForward) // logic is valid only for Group Chat
+            if (!_isGroupChat && !_isForward) // logic is valid only for Group Chat
                 return;
 
             int nameLength = 0, startIndex = 0;

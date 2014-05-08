@@ -34,7 +34,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
-                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}" KeyDown="enterNameTxt_KeyDown" Tap="enterNameTxt_Tap"
+                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}" Tap="enterNameTxt_Tap"
                                   TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="12" 
