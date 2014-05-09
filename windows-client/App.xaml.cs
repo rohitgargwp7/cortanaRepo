@@ -88,7 +88,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        private static string _currentVersion = "1.0.0.0";
+        private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
@@ -276,7 +276,14 @@ namespace windows_client
             TUTORIAL_SCREEN_STICKERS,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            UPGRADE_SCREEN//Upgrade page
+            UPGRADE_SCREEN,//Upgrade page
+
+            //the below pages have been removed after 2.2, but still we need these to handle them in case of upgrade.
+            //app settings is storing pagestate in form of object and not value, hence while converting on upgrade
+            //app settings is getting corrupted which throws the ap to welcome page
+            WELCOME_HIKE_SCREEN,
+            NUX_SCREEN_FRIENDS,// Nux Screen for friends
+            NUX_SCREEN_FAMILY// Nux Screen for family
         }
 
         #endregion
@@ -553,7 +560,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!isNewInstall && Utils.compareVersion("2.5.2.1", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.0", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -561,7 +568,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
-              
+
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -583,7 +590,7 @@ namespace windows_client
                 {
                     mapper.UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 }
-            }                                                                                                          
+            }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
@@ -810,9 +817,23 @@ namespace windows_client
             #region TUTORIAL
             if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
             {
-                ps = PageState.TUTORIAL_SCREEN_STICKERS;
-                App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
+                {
+                    if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
+                    {
+                        App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+                        App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
+                        ps = PageState.TUTORIAL_SCREEN_STATUS;
+                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                    }
+                    else
+                    {
+                        ps = PageState.TUTORIAL_SCREEN_STICKERS;
+                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                    }
+                }
             }
             #endregion
             #region GROUP CACHE

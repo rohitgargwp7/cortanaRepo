@@ -60,7 +60,7 @@ namespace windows_client.utils
         {
             st = Stopwatch.StartNew();
             Debug.WriteLine("Contact Scanning started .....");
-            cState = ContactScanState.ADDBOOK_SCANNING;
+            ContactState = ContactScanState.ADDBOOK_SCANNING;
             Contacts cons = new Contacts();
             cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
             cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
@@ -88,7 +88,7 @@ namespace windows_client.utils
                 {
                     if (e != null && e.Results != null)
                         contactsMap = getContactsListMap(e.Results);
-                    cState = ContactScanState.ADDBOOK_SCANNED;
+                    ContactState = ContactScanState.ADDBOOK_SCANNED;
                 };
                 bw.RunWorkerAsync();
             }
