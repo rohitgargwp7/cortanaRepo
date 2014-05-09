@@ -451,6 +451,11 @@ namespace windows_client.View
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrEmpty(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
+            {
+                sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
+            }
+
             IsSMSOptionValid = IsSMSOptionAvalable();
         }
 
@@ -566,12 +571,6 @@ namespace windows_client.View
                     Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
                     NetworkManager.turnOffNetworkManager = false;
                     App.MqttManagerInstance.connect();
-                    object obj = null;
-                    if (this.State.TryGetValue("sendMsgTxtbox.Text", out obj))
-                    {
-                        sendMsgTxtbox.Text = (string)obj;
-                        sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
-                    }
 
                     /* This is called only when you add more participants to group */
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
@@ -697,10 +696,12 @@ namespace windows_client.View
             if (_dt != null)
                 _dt.Stop();
 
-            if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
-                this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
-            else
-                this.State.Remove("sendMsgTxtbox.Text");
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].DraftMessage != sendMsgTxtbox.Text)
+            {
+                App.ViewModel.ConvMap[mContactNumber].DraftMessage = sendMsgTxtbox.Text;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
+                ConversationTableUtils.saveConvObjectList();
+            }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
@@ -2534,6 +2535,7 @@ namespace windows_client.View
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
+
 
             //done as scrollviewer applied to textbox doesn't update its position on char enter
             svMessage.UpdateLayout();
