@@ -1931,6 +1931,7 @@
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="LineStackingStrategy" Value="BaselineToBaseline"/>
             </Style>
             
             <Style x:Key="BaseTextBlock" TargetType="TextBlock">

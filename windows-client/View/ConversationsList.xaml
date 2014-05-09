@@ -73,8 +73,8 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="White">
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ConversationList">
-                    <Image x:Name="emptyScreenImage" Source="images/ConversationPage/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
-                    <Image x:Name="emptyScreenTip" Source="images/ConversationPage/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,82"/>
+                    <Image x:Name="emptyScreenImage" Source="images/ConversationPage/empty_screen_logo_black.png" Width="135" Height="152" Opacity="0" VerticalAlignment="Center"/>
+                    <Image x:Name="emptyScreenTip" Source="images/ConversationPage/empty_screen_tip_black.png" MaxWidth="265" MaxHeight="111" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,0,82"/>
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
                                             HorizontalAlignment="Stretch">
@@ -106,7 +106,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Grid HorizontalAlignment="Stretch" Background="Transparent">
-                                                <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
+                                                <TextBlock LineStackingStrategy="BaselineToBaseline" Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
                                             </Grid>
                                             <Grid Background="Transparent" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="{Binding MuteIconTimeStampVisibility}">
                                                 <Grid.ColumnDefinitions>

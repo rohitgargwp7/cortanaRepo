@@ -213,8 +213,8 @@ namespace windows_client.View
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 0.75;
-                emptyScreenTip.Opacity = 0.75;
+                emptyScreenImage.Opacity = 0.1;
+                emptyScreenTip.Opacity = 0.3;
             }
             else
             {
@@ -326,8 +326,8 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 0.75;
-                emptyScreenTip.Opacity = 0.75;
+                emptyScreenImage.Opacity = 0.1;
+                emptyScreenTip.Opacity = 0.3;
             }
             else
             {
@@ -718,8 +718,8 @@ namespace windows_client.View
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Opacity = 0.75;
-            emptyScreenTip.Opacity = 0.75;
+            emptyScreenImage.Opacity = 0.1;
+            emptyScreenTip.Opacity = 0.3;
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
@@ -780,8 +780,8 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 0.75;
-                emptyScreenTip.Opacity = 0.75;
+                emptyScreenImage.Opacity = 0.1;
+                emptyScreenTip.Opacity = 0.3;
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -1584,8 +1584,8 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Remove(co);
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
-                        emptyScreenImage.Opacity = 0.75;
-                        emptyScreenTip.Opacity = 0.75;
+                        emptyScreenImage.Opacity = 0.1;
+                        emptyScreenTip.Opacity = 0.3;
                     }
                 });
             }
