@@ -28,16 +28,16 @@
         </Grid>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="0,12,0,0" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="12,12,12,0" HorizontalAlignment="Stretch" 
                                   Style="{StaticResource PhoneTextBoxWithWhiteBackground}" Tap="enterNameTxt_Tap"
-                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="150"/>
 
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="12" 
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="25,0,0,0" 
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" HideEmptyGroups="True"
@@ -45,7 +45,7 @@
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid Margin="0,6,25,6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -58,7 +58,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Name}" FontSize="32" Foreground="Black"/>
+                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontSize="32" Foreground="Black"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
                                     <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                     <TextBlock Text="{Binding ContactListLabel}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
@@ -66,7 +66,7 @@
                                 </StackPanel>
                             </Grid>
                             <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"
-                                      Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                      Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-40,0"/>
                         </Grid>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>

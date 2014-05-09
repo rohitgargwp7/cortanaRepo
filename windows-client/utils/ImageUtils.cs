@@ -315,6 +315,30 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage block;
+        public BitmapImage Block
+        {
+            get
+            {
+                if (block == null)
+                    block = new BitmapImage(new Uri("/view/images/block.png", UriKind.Relative));
+
+                return block;
+            }
+        }
+
+        private BitmapImage unblock;
+        public BitmapImage UnBlock
+        {
+            get
+            {
+                if (unblock == null)
+                    unblock = new BitmapImage(new Uri("/view/images/unblock.png", UriKind.Relative));
+
+                return unblock;
+            }
+        }
+
         #region System Notifications
 
         private BitmapImage onHikeImage;

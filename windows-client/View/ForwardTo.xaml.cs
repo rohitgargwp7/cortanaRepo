@@ -47,13 +47,14 @@ namespace windows_client.View
         private int _smsCredits;
         private string _charsEntered;
 
-        List<Group<ContactInfo>> _glistFiltered = null;
+        ObservableCollection<Group<ContactInfo>> _glistFiltered = null;
+        ObservableCollection<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
+
         ObservableCollection<ContactInfo> SelectedContacts = new ObservableCollection<ContactInfo>(); // this is used to store all those contacts which are selected for forwarding message
 
-        List<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
-
         List<ContactInfo> _allContactsList = null; // contacts list
-        Group<ContactInfo> _smsContactsList; // sms contacts list
+        Group<ContactInfo> _smsContactsGroup; // sms contacts list
+        Group<ContactInfo> _emptySMSGroup = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts); // empty sms contacts list
 
         private ProgressIndicatorControl progressIndicator;
 
@@ -61,7 +62,7 @@ namespace windows_client.View
         private ApplicationBarIconButton _refreshIconButton = null;
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
-        Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+        Dictionary<string, ObservableCollection<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, ObservableCollection<Group<ContactInfo>>>();
 
         /// <summary>
         /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
@@ -72,6 +73,8 @@ namespace windows_client.View
         Dictionary<string, string> groupInfoDictionary = new Dictionary<string, string>();
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
+
+        string _pageTitle;
 
         public ForwardTo()
         {
@@ -86,7 +89,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
             {
                 _showExistingGroups = true;
-                PageTitle.Text = AppResources.SelectUser_Forward_To_Txt;
+                _pageTitle = AppResources.SelectUser_Forward_To_Txt;
 
                 if (obj is object[])
                 {
@@ -103,13 +106,13 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 _isGroupChat = true;
-                PageTitle.Text = AppResources.SelectUser_Title_AddParticipant_Txt;
+                _pageTitle = AppResources.SelectUser_Title_AddParticipant_Txt;
             }
             /* Case when this page is called from create group button.*/
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
             {
                 _isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
-                PageTitle.Text = AppResources.GrpChat_Txt;
+                _pageTitle = AppResources.GrpChat_Txt;
             }
 
             if(_isGroupChat || _isForward)
@@ -139,6 +142,8 @@ namespace windows_client.View
             };
 
             initPage();
+
+            PageTitle.Text = _pageTitle;
         }
 
         #region AppBar
@@ -231,18 +236,20 @@ namespace windows_client.View
 
             if (_showSmsContacts)
             {
-                _completeGroupedContactList[4] = null;
+                _completeGroupedContactList[4] = _emptySMSGroup;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
             }
             else
             {
-                _completeGroupedContactList[4] = _smsContactsList;
+                _completeGroupedContactList[4] = _smsContactsGroup;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_HideSmsContacts_Txt;
             }
 
             contactsListBox.ItemsSource = _completeGroupedContactList;
+
+            contactsListBox.InvalidateArrange();
         }
 
         void forwardTo_Click(object sender, EventArgs e)
@@ -310,7 +317,7 @@ namespace windows_client.View
                 && groupListStateDictionary.ContainsKey(_charsEntered)
                 && groupListStateDictionary[_charsEntered] == _showSmsContacts)
             {
-                List<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
+                ObservableCollection<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
 
                 if (gl == null)
                 {
@@ -433,7 +440,7 @@ namespace windows_client.View
             }
         }
 
-        private List<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        private ObservableCollection<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
         {
             _glistFiltered = null;
             bool areCharsNumber = false;
@@ -449,7 +456,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> listToIterate = null;
+            ObservableCollection<Group<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
 
             if (charsLength > 0)
@@ -501,7 +508,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> list = null;
+            ObservableCollection<Group<ContactInfo>> list = null;
             if (areCharsNumber)
             {
                 if (_glistFiltered == null || createNewFilteredList)
@@ -802,7 +809,7 @@ namespace windows_client.View
         /// </summary>
         /// <param name="allContactsList">list of all contacts</param>
         /// <returns>group list</returns>
-        private List<Group<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
+        private ObservableCollection<Group<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
@@ -811,8 +818,9 @@ namespace windows_client.View
                 _existingGroupUsers = activeExistingGroupMembers.Count;
             }
 
-            List<Group<ContactInfo>> glist = CreateGroups();
+            ObservableCollection<Group<ContactInfo>> glist = CreateGroups();
             ExistingContacts = new Dictionary<string, ContactInfo>();
+            _smsContactsGroup = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts);
 
             PopulateGroupChats(glist);
             PopulateRecentChats(glist);
@@ -834,10 +842,7 @@ namespace windows_client.View
                     glist[3].Add(cInfo);
                 else
                 {
-                    if (_smsContactsList == null)
-                        _smsContactsList = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts);
-                    
-                    _smsContactsList.Add(cInfo);
+                    _smsContactsGroup.Add(cInfo);
 
                     if (_showSmsContacts)
                         glist[4].Add(cInfo);
@@ -851,7 +856,7 @@ namespace windows_client.View
 
         Dictionary<string, ContactInfo> ExistingContacts;
 
-        private void PopulateGroupChats(List<Group<ContactInfo>> glist)
+        private void PopulateGroupChats(ObservableCollection<Group<ContactInfo>> glist)
         {
             if (_showExistingGroups)
             {
@@ -888,7 +893,7 @@ namespace windows_client.View
             }
         }
 
-        private void PopulateRecentChats(List<Group<ContactInfo>> glist)
+        private void PopulateRecentChats(ObservableCollection<Group<ContactInfo>> glist)
         {
             if (_isGroupChat || _isForward)
             {
@@ -923,7 +928,7 @@ namespace windows_client.View
             }
         }
 
-        private void PopulateFriends(List<Group<ContactInfo>> glist)
+        private void PopulateFriends(ObservableCollection<Group<ContactInfo>> glist)
         {
             foreach (var friend in App.ViewModel.FavList)
             {
@@ -962,7 +967,7 @@ namespace windows_client.View
             return activeExistingGroupMembers.Where(m => m.Msisdn == msisdn).Count() > 0;
         }
 
-        private List<Group<ContactInfo>> CreateGroups()
+        private ObservableCollection<Group<ContactInfo>> CreateGroups()
         {
             string[] Groups = new string[]
             {
@@ -974,7 +979,7 @@ namespace windows_client.View
                 AppResources.NewComposeGroup_OtherContacts
             };
 
-            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
+            ObservableCollection<Group<ContactInfo>> glist = new ObservableCollection<Group<ContactInfo>>();
 
             foreach (string str in Groups)
             {
@@ -1105,9 +1110,15 @@ namespace windows_client.View
                         _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
 
                     if (SelectedContacts.Count > 0)
+                    {
                         stringBuilderForContactNames = new StringBuilder(string.Join(", ", SelectedContacts)).Append(", ");
+                        PageTitle.Text = String.Format(AppResources.Selected_Txt, SelectedContacts.Count);
+                    }
                     else
+                    {
                         stringBuilderForContactNames = new StringBuilder();
+                        PageTitle.Text = _pageTitle;
+                    }
 
                     enterNameTxt.Text = stringBuilderForContactNames.ToString();
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
@@ -1201,7 +1212,7 @@ namespace windows_client.View
                     _showExistingGroups = true;
                     PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
                     queryStrings.Clear();
-                    PageTitle.Text = AppResources.Share_With_Txt;
+                    _pageTitle = AppResources.Share_With_Txt;
                 }
 
                 if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
@@ -1306,23 +1317,6 @@ namespace windows_client.View
                 NotifyPropertyChanged("IsNonEmpty");
             }
 
-            public override bool Equals(object obj)
-            {
-                Group<T> that = obj as Group<T>;
-
-                return (that != null) && (this.Title.Equals(that.Title));
-            }
-
-            public override int GetHashCode()
-            {
-                return this.Title.GetHashCode();
-            }
-
-            public void Add(T item)
-            {
-                Items.Add(item);
-            }
-
             string _title;
             public string Title
             {
@@ -1341,7 +1335,7 @@ namespace windows_client.View
             {
                 get
                 {
-                    return Items.Count > 0;
+                    return Items != null && Items.Count > 0;
                 }
             }
 

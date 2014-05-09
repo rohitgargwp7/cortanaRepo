@@ -69,24 +69,24 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="txtBlkOldSchool" Margin="0,82" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+            <TextBlock x:Name="txtBlkOldSchool" Margin="0,75" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
 
             <toolkit:PhoneTextBox Grid.Row="1" x:Name="txtEnterCountry" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Center" Width="440" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
             <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
 
             <TextBlock TextAlignment="Left" Grid.Row="3"
-                           Margin="32,12,0,0" Name="msisdnErrorTxt" 
+                           Margin="32,0,0,0" Name="msisdnErrorTxt" 
                            Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />
 
             <TextBlock x:Name="msgTxtBlk" FontSize="18" Opacity="0" Grid.Row="4"
-                           Margin="32,12,0,0" HorizontalAlignment="Left"
+                           Margin="32,0,0,0" HorizontalAlignment="Left"
                            Foreground="Black"
                            VerticalAlignment="Center"/>
 
-            <ProgressBar x:Name="progressBar" Margin="0,10,0,0" Grid.Row="5"
+            <ProgressBar x:Name="progressBar" Grid.Row="5"
                                                 Background="Transparent" IsIndeterminate="True" 
                                                 VerticalAlignment="Center" 
                                                 FontSize="24" HorizontalAlignment="Stretch" 

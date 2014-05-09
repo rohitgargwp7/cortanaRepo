@@ -188,30 +188,37 @@ namespace windows_client.View
             return blockedContacts;
         }
 
-        private void Unblock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void AddUsers_Tap(object sender, EventArgs e)
         {
-            Button btn = sender as Button;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
+            NavigationService.Navigate(new Uri("/View/SelectUser.xaml", UriKind.Relative));
+        }
+
+        private void ContactItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Grid btn = sender as Grid;
 
             ContactInfo c = btn.DataContext as ContactInfo;
+
             if (c == null)
                 return;
+            
             shellProgress.IsVisible = true;
+            
             App.ViewModel.BlockedHashset.Remove(c.Msisdn);
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
+            
             c.IsUsedAtMiscPlaces = true;
+            c.IsSelected = false;
             blockedList.Remove(c);
+            
             if (blockedList.Count == 0)
             {
                 txtEmptyScreen.Visibility = Visibility.Visible;
                 ContentPanel.Visibility = Visibility.Collapsed;
             }
+            
             shellProgress.IsVisible = false;
-        }
-
-        private void AddUsers_Tap(object sender, EventArgs e)
-        {
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
-            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
     }
 }

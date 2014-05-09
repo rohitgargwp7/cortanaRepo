@@ -296,6 +296,9 @@
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SelectUser.xaml.cs">
+      <DependentUpon>SelectUser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -434,6 +437,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\SelectUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -531,6 +538,7 @@
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
     <Content Include="View\images\AppBar\appbar.send.png" />
+    <Content Include="View\images\block.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />
     <Content Include="View\images\ConversationPage\Chat_Selected.png" />
@@ -865,6 +873,7 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\tw_dark.png" />
     <Content Include="View\images\typing_white.png" />
+    <Content Include="View\images\unblock.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />

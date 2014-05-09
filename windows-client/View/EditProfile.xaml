@@ -46,7 +46,7 @@
                                   MaxLength="20" Margin="12,0"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="2">
-            <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Phone_TxtBlk, Source={StaticResource LocalizedStrings}}"
+            <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_Ph_Hint_TxtBox, Source={StaticResource LocalizedStrings}}"
                        Style="{StaticResource EditProfileLabelTextBlock}"/>
             <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="phone" InputScope="TelephoneCountryCode"
                                   Margin="12,0" IsReadOnly="True"/>

@@ -3383,7 +3383,7 @@ namespace windows_client.View
 
             PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
 
-            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/SelectUser.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 

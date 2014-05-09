@@ -193,7 +193,7 @@ namespace windows_client.Model
                         NotifyPropertyChanged("IsFav");//it is binded with two way checkbox, so to update ui
                     }
                     else
-                        NotifyPropertyChanged("BlockUnblockText");
+                        NotifyPropertyChanged("BlockUnblockImage");
                 }
             }
         }   // this is used in inviteUsers page , when you show hike users
@@ -232,16 +232,6 @@ namespace windows_client.Model
             }
         }
 
-        public string BlockUnblockText
-        {
-            get
-            {
-                if (_isFav)
-                    return AppResources.UnBlock_Txt;
-                return AppResources.Block_Txt;
-
-            }
-        }
         public bool IsEnabled
         {
             get
@@ -280,24 +270,7 @@ namespace windows_client.Model
                 }
             }
         }
-
-        Visibility _blockButtonVisibility = Visibility.Collapsed;
-        public Visibility BlockButtonVisibility
-        {
-            get
-            {
-                return _blockButtonVisibility;
-            }
-            set
-            {
-                if (value != _blockButtonVisibility)
-                {
-                    _blockButtonVisibility = value;
-                    NotifyPropertyChanged("BlockButtonVisibility");
-                }
-            }
-        }
-
+        
         public ContactInfo()
         {
             _name = null;

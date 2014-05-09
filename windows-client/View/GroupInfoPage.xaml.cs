@@ -98,7 +98,7 @@ namespace windows_client.View
             appBar.Buttons.Add(changeImageIconButton);
 
             addIconButton = new ApplicationBarIconButton();
-            addIconButton.IconUri = new Uri("/View/images/AppBar/icon_add.png", UriKind.Relative);
+            addIconButton.IconUri = new Uri("/View/images/AppBar/appbar.add.rest.png", UriKind.Relative);
             addIconButton.Text = AppResources.Add_AppBar_Txt;
             addIconButton.Click += addIconButton_Click;
             appBar.Buttons.Add(addIconButton);

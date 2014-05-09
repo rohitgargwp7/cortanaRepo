@@ -234,7 +234,7 @@
     <comment>MsgBox msg</comment>
   </data>
   <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
-    <value>Phone Number</value>
+    <value>phone number</value>
     <comment>CS file</comment>
   </data>
   <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
@@ -347,10 +347,6 @@
   </data>
   <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
     <value>gender</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
-    <value>phone</value>
     <comment>xaml</comment>
   </data>
   <data name="Save_AppBar_Btn" xml:space="preserve">
@@ -2160,5 +2156,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="NewComposeGroup_SMSContacts" xml:space="preserve">
     <value>{0} sms contacts</value>
+  </data>
+  <data name="Selected_Txt" xml:space="preserve">
+    <value>{0} selected</value>
   </data>
 </root>

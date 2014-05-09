@@ -1258,15 +1258,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to phone.
-        /// </summary>
-        public static string EditProfile_Phone_TxtBlk {
-            get {
-                return ResourceManager.GetString("EditProfile_Phone_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Profile Not Updated!.
         /// </summary>
         public static string EditProfile_UpdatErrMsgBx_Captn {
@@ -1472,7 +1463,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Phone Number.
+        ///   Looks up a localized string similar to phone number.
         /// </summary>
         public static string EnterNumber_Ph_Hint_TxtBox {
             get {
@@ -4015,6 +4006,15 @@ namespace windows_client.Languages {
         public static string SelectAll_Txt {
             get {
                 return ResourceManager.GetString("SelectAll_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} selected.
+        /// </summary>
+        public static string Selected_Txt {
+            get {
+                return ResourceManager.GetString("Selected_Txt", resourceCulture);
             }
         }
         
