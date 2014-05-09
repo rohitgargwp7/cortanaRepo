@@ -1370,11 +1370,6 @@ namespace windows_client.View
             }
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
-            List<StatusMessage> statusMessagesFromDB = null;
-            if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-            {
-                statusMessagesFromDB = StatusMsgsTable.GetPaginatedStatusMsgsForMsisdn(msisdn, long.MaxValue, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
-            }
 
             nameToShow = contactInfo.Name;
 
@@ -1404,7 +1399,6 @@ namespace windows_client.View
                 else
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;
-                    CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     isStatusLoaded = true;
                 }
 

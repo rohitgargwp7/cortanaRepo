@@ -41,7 +41,6 @@ namespace windows_client.Mqtt
 
         public void onFailure(Exception value)
         {
-            hikeMqttManager.ping();
             if (packet != null)
             {
                 if (qos > 0)
