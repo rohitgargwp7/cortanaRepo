@@ -271,7 +271,7 @@ namespace windows_client.ViewModel
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
-                        System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
+                        Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
                     }
                     finally
                     {
@@ -451,7 +451,7 @@ namespace windows_client.ViewModel
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : ", e.StackTrace);
+                    Debug.WriteLine("HikeViewModel :: OnEventReceived : BLOCK USER , Exception : " + e.StackTrace);
                 }
             }
             #endregion

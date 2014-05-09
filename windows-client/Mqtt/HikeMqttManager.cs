@@ -119,7 +119,7 @@ namespace windows_client.Mqtt
             {
                 disconnectExplicitly = !reconnect;
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-             
+
                 Debug.WriteLine("Disconnect from Broker Called");
                 if (mqttConnection != null)
                     mqttConnection.disconnect();
@@ -150,6 +150,7 @@ namespace windows_client.Mqtt
                         {
                             return;
                         }
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("connection req. clientId:{0}, brokerhostName:{1},brokerPortNumber:{2}, uid:{3}, password:{4} ", clientId, brokerHostName, brokerPortNumber, uid, password));
                         mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this), this);
                     }
                 }
@@ -227,9 +228,9 @@ namespace windows_client.Mqtt
                 listTopics.Add(topics[i].Name);
                 listQos.Add(topics[i].qos);
             }
+
             if (mqttConnection != null)
                 mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
-
         }
 
         /*
@@ -329,6 +330,8 @@ namespace windows_client.Mqtt
             PublishCB[] messageCallbacks = new PublishCB[packets.Count];
             for (int i = 0; i < packets.Count; i++)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Message read from db for retry,Packet: " + System.Text.Encoding.UTF8.GetString(packets[i].Message, 0, packets[i].Message.Length));
+
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
                 messagesToSend[i] = packets[i].Message;
             }
@@ -391,6 +394,7 @@ namespace windows_client.Mqtt
         public void onPublish(String topic, byte[] body)
         {
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
+            MQttLogging.LogWriter.Instance.WriteToLog("recieved : " + receivedMessage);
             NetworkManager.Instance.onMessage(receivedMessage);
         }
 
@@ -440,6 +444,7 @@ namespace windows_client.Mqtt
                 msgId = -1;
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
+            MQttLogging.LogWriter.Instance.WriteToLog("sent : " + msgToPublish);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
             HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
             send(packet, qos);

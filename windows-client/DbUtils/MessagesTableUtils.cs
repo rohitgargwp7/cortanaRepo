@@ -346,7 +346,7 @@ namespace windows_client.DbUtils
                     return null;
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                Debug.WriteLine(string.Format("Time to add chat msg : {0}", msec1));
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -363,7 +363,7 @@ namespace windows_client.DbUtils
                 ConversationTableUtils.updateConversation(obj);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to update conversation  : {0}", msec);
+                Debug.WriteLine(string.Format("Time to update conversation  : {0}", msec));
             }
             return obj;
         }
@@ -586,7 +586,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:", ex.Message);
+                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:" + ex.Message);
                 }
             }
         }
@@ -618,7 +618,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:", ex.Message);
+                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:" + ex.Message);
                 }
             }
             return message;

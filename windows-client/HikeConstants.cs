@@ -3,7 +3,7 @@ using windows_client.utils;
 
 namespace windows_client
 {
-    public class HikeConstants
+    public class    HikeConstants
     {
         public static readonly string MESSAGE = "msg";
         public static readonly string UI_TOPIC = "/u";

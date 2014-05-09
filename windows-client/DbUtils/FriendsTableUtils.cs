@@ -488,7 +488,7 @@ namespace windows_client.DbUtils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} ", fileName);
+                                    Debug.WriteLine(string.Format("Exception while deleting all friendsDb, FileName :{0} ", fileName));
                                     Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
                                 }
                             }

@@ -565,13 +565,13 @@ namespace windows_client.utils
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                            Debug.WriteLine(string.Format("RecentStickerHelper :: DeleteRecents :Delete FIle: Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace);
+                    Debug.WriteLine(string.Format("RecentStickerHelper :: DeleteRecents , Exception :{0} , StackTrace:{1} ", ex.Message, ex.StackTrace));
                 }
             }
         }

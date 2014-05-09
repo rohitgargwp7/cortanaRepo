@@ -12,6 +12,7 @@ using windows_client.utils;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -177,7 +178,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ChatBackground Model :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

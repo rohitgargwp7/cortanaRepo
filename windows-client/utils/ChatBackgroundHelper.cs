@@ -11,6 +11,7 @@ using System.IO;
 using windows_client.Misc;
 using System.Windows.Media.Imaging;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -102,7 +103,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Chat Bg Helper :: Read Bg Id Map From File, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("Chat Bg Helper :: Read Bg Id Map From File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -148,7 +149,7 @@ namespace windows_client.utils
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Chat Bg Helper :: Write Bg Id Map To File, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("Chat Bg Helper :: Write Bg Id Map To File, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -851,7 +852,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
+                Debug.WriteLine("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
 
         }
@@ -867,7 +868,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("BackgroundImage :: Read : Read, Exception : " + ex.StackTrace);
+                Debug.WriteLine("BackgroundImage :: Read : Read, Exception : " + ex.StackTrace);
             }
         }
     }

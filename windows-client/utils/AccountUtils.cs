@@ -20,7 +20,8 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = false;
+        //true for dmqtt build
+        private static readonly bool IS_PRODUCTION = true;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -49,7 +50,23 @@ namespace windows_client.utils
             get
             {
                 if (IsProd)
-                    return MQTT_HOST_SERVER;
+                {
+                    bool mqttDmqttToggle = true;
+                    App.appSettings.TryGetValue<bool>(App.MQTT_DMQTT_SETTING, out mqttDmqttToggle);
+
+                    bool dnsNoDnsTogggle;
+                    App.appSettings.TryGetValue<bool>(App.DNS_NODNS_SETTING, out dnsNoDnsTogggle);
+                    if (mqttDmqttToggle)
+                    {
+                        return dnsNoDnsTogggle ? "54.251.142.252" : "mqtt.im.hike.in";
+                    }
+                    else
+                    {
+                        return dnsNoDnsTogggle ? "54.251.151.62" : "dmqtt.im.hike.in";
+
+                    }
+
+                }
                 return STAGING_HOST;
             }
         }
@@ -1070,8 +1087,9 @@ namespace windows_client.utils
                     MiscDBUtil.SavePendingRequests();
 
                 msisdns = null;
-                Debug.WriteLine("Total contacts with no msisdn : {0}", count);
-                Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
+                Debug.WriteLine("Total contacts with no msisdn : {0}" + count);
+                Debug.WriteLine("Total contacts inserted : {0}" + totalContacts);
+
 
                 if (!isRefresh)
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);

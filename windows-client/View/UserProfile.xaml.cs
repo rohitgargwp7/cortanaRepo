@@ -1250,10 +1250,10 @@ namespace windows_client.View
                         ApplicationBar.Buttons.Remove(addToContactsAppBarButton);
                     break;
                 case TaskResult.Cancel:
-                    System.Diagnostics.Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
+                    Debug.WriteLine(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    System.Diagnostics.Debug.WriteLine(AppResources.NoInfoForTask_Txt);
+                    Debug.WriteLine(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
@@ -1311,7 +1311,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                         }
                     }
                     else
@@ -1323,8 +1323,8 @@ namespace windows_client.View
                 }
             }
 
-            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
 
             return contactListMap;
         }

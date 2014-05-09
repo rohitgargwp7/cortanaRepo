@@ -289,7 +289,7 @@ namespace windows_client.View
             xyz = !xyz;
 
             charsEntered = enterNameTxt.Text.ToLower();
-            Debug.WriteLine("Chars Entered : {0}", charsEntered);
+            Debug.WriteLine(string.Format("Chars Entered : {0}", charsEntered));
 
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))

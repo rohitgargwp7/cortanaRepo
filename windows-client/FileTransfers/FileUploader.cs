@@ -155,7 +155,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileUploader :: Save Upload Status To IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -182,7 +182,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileUploader :: Delete Upload From IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -450,13 +450,13 @@ namespace windows_client.FileTransfers
             //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
             //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
 
-            //        System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
+            //        Debug.WriteLine(netInterface.InterfaceType.ToString());
             //    }
             //    catch (NetworkException networkException)
             //    {
             //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
             //        {
-            //            System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
+            //            Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
             //        }
             //    }
             //}); 

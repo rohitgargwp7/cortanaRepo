@@ -787,6 +787,8 @@ namespace windows_client.View
 
         private void deleteConversation(ConversationListObject convObj)
         {
+
+            Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Long Press delete convlist,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
@@ -803,6 +805,9 @@ namespace windows_client.View
                 jObj[HikeConstants.TO] = convObj.Msisdn;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
+            else
+                Debug.WriteLine(string.Format("Not group so no gcl ,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
+
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
         }
 

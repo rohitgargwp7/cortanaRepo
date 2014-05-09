@@ -81,7 +81,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Contact Scanning Completed ...... ");
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to scan contacts from phone : {0}", msec);
+                Debug.WriteLine(string.Format("Time to scan contacts from phone : {0}", msec));
 
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
@@ -239,7 +239,7 @@ namespace windows_client.utils
                                 else
                                 {
                                     duplicates++;
-                                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                                    Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                                 }
                             }
                             else
@@ -260,8 +260,8 @@ namespace windows_client.utils
                     Debug.WriteLine("ContactUtils : getContactsListMap(Outer loop) : Exception : " + e.StackTrace);
                 }
             }
-            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
             return contactListMap;
         }
 

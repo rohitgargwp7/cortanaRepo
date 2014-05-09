@@ -81,6 +81,7 @@ namespace windows_client.FileTransfers
             FileName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
             if (FileName == "*@N@*")
                 FileName = null;
+             
 
             count = reader.ReadInt32();
             ContentType = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
@@ -130,7 +131,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileDownloader :: Save Download Status To IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileDownloader :: Save Download Status To IS, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -157,7 +158,7 @@ namespace windows_client.FileTransfers
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("FileDownloader :: Delete Download From IS, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FileDownloader :: Delete Download From IS, Exception : " + ex.StackTrace);
                 }
             }
         }

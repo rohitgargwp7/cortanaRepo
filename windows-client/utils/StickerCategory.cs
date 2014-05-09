@@ -262,7 +262,7 @@ namespace windows_client.utils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
+                                    Debug.WriteLine(string.Format("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
                                 }
                             }
                         }
@@ -322,7 +322,7 @@ namespace windows_client.utils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
+                                    Debug.WriteLine(string.Format("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message));
                                 }
                             }
                             string metadataFile = folder + "\\" + METADATA;

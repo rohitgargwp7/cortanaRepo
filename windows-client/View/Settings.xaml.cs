@@ -11,6 +11,7 @@ using windows_client.Model;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -33,7 +34,9 @@ namespace windows_client.View
                 preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
                 notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
             }
-        }
+            if (!AccountUtils.IsProd)
+                gridMqtt.Visibility = Visibility.Collapsed;
+            }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -58,5 +61,12 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
             NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
         }
+
+        private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/MqttPreferences.xaml", UriKind.Relative));
+        }
+
+       
     }
 }

@@ -609,7 +609,7 @@ namespace windows_client.View
                 charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
             else
                 charsEntered = enterNameTxt.Text.ToLower();
-            Debug.WriteLine("Chars Entered : {0}", charsEntered);
+          //  Debug.WriteLine("Chars Entered : {0}", charsEntered);
 
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
@@ -786,7 +786,7 @@ namespace windows_client.View
             if (e.Key == Key.Back)
             {
 
-                Debug.WriteLine(Environment.OSVersion);
+                Debug.WriteLine(Environment.OSVersion.ToString());
                 int cursorPosition = enterNameTxt.SelectionStart;
 
                 // this has to be done for WP8 device. therse is a problem in win phone os
@@ -799,9 +799,9 @@ namespace windows_client.View
 
                 ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
                 contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
-                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                Debug.WriteLine(string.Format("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length));
                 stringBuilderForContactNames.Remove(stringBuilderForContactNames.Length - (cn.Name.Length + 2), (cn.Name.Length + 2));
-                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                Debug.WriteLine(string.Format("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length));
                 enterNameTxt.Text = stringBuilderForContactNames.ToString();
                 enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 // update user count

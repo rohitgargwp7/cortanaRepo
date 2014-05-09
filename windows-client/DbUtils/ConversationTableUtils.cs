@@ -177,7 +177,7 @@ namespace windows_client.DbUtils
             obj.LastMsgId = convMessage.MessageId;
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
-            Debug.WriteLine("Time to add chat msg : {0}", msec1);
+            Debug.WriteLine(string.Format("Time to add chat msg : {0}", msec1));
 
             Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
@@ -187,7 +187,7 @@ namespace windows_client.DbUtils
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
+            Debug.WriteLine(string.Format("Time to write conversation to iso storage {0}", msec));
 
             return obj;
         }
@@ -380,7 +380,7 @@ namespace windows_client.DbUtils
             }
             st.Stop();
             long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
+            Debug.WriteLine(string.Format("Time to save {0} conversations : {1}", convs, mSec));
         }
 
         public static void saveNewConv(ConversationListObject obj)
@@ -416,7 +416,7 @@ namespace windows_client.DbUtils
             }
             st.Stop();
             long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
+            Debug.WriteLine(string.Format("Time to save {0} conversations : {1}", convs, mSec));
         }
 
         /// <summary>
@@ -587,7 +587,7 @@ namespace windows_client.DbUtils
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                            Debug.WriteLine(string.Format("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName));
                             Debug.WriteLine("ConversationTableUtils :: deleteAllConversationsOld : delete file, Exception : " + ex.StackTrace);
                         }
 

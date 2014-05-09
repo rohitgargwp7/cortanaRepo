@@ -90,6 +90,8 @@ namespace windows_client.Misc
             {
                 string grp = grpId.Replace(":", "_");
                 string fileName = GROUP_DIR + "\\" + grp;
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Saving group cache to file:{0}", grpId));
+
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
@@ -124,6 +126,8 @@ namespace windows_client.Misc
                     catch (Exception ex)
                     {
                         Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                        Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: SaveGroupCache : write file ,groupId:{0} Exception :{1}, stack{2}", grpId, ex.Message, ex.StackTrace));
+
                     }
                 }
             }
@@ -133,6 +137,7 @@ namespace windows_client.Misc
         {
             lock (readWriteLock)
             {
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Saving all groups to file"));
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     foreach (string grpId in groupCache.Keys)
@@ -172,6 +177,8 @@ namespace windows_client.Misc
                         catch (Exception ex)
                         {
                             Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                            Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: SaveGroupCacheAll : write file ,groupId:{0} Exception :{1}, stack{2}", grpId, ex.Message, ex.StackTrace));
+
                         }
                     }
                 }
@@ -184,6 +191,8 @@ namespace windows_client.Misc
                 return groupCache[grpId];
             else // load from file
             {
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Get participants request recieved for group:{0}", grpId));
+
                 lock (readWriteLock)
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -203,10 +212,13 @@ namespace windows_client.Misc
                                     try
                                     {
                                         count = reader.ReadInt32();
+                                        Logging.LogWriter.Instance.WriteToLog(string.Format("Group Participants count for group:{0},count:{1}", grpId, count));
                                     }
                                     catch (Exception ex)
                                     {
                                         Debug.WriteLine("GroupManager :: GetParticipantList : read count, Exception : " + ex.StackTrace);
+                                        Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: GetParticipantList : read count, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                     }
                                     if (count > 0)
                                     {
@@ -236,6 +248,8 @@ namespace windows_client.Misc
                                 catch (Exception ex)
                                 {
                                     Debug.WriteLine("GroupManager :: GetParticipantList : dispose file , Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: GetParticipantList : reading group info, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                 }
                             }
                             if (gpList != null)
@@ -255,6 +269,7 @@ namespace windows_client.Misc
         {
             if (groupCache.ContainsKey(grpId))
                 return;
+            Logging.LogWriter.Instance.WriteToLog(string.Format("Group loading into memory request recieved for group:{0}", grpId));
 
             lock (readWriteLock)
             {
@@ -275,10 +290,14 @@ namespace windows_client.Misc
                                 try
                                 {
                                     count = reader.ReadInt32();
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Participants count for group:{0},count:{1}", grpId, count));
+
                                 }
                                 catch (Exception ex)
                                 {
                                     Debug.WriteLine("GroupManager :: LoadGroupParticipants : read count, Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: LoadGroupParticipants : read count, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                 }
                                 if (count > 0)
                                 {
@@ -294,6 +313,8 @@ namespace windows_client.Misc
                                         catch (Exception ex)
                                         {
                                             Debug.WriteLine("GroupManager :: LoadGroupParticipants : read item, Exception : " + ex.StackTrace);
+                                            Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: LoadGroupParticipants : reading group info, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                             item = null;
                                         }
                                     }
@@ -311,7 +332,9 @@ namespace windows_client.Misc
                             }
                         }
                         if (gpList != null)
+                        {
                             groupCache[grpId] = gpList;
+                        }
                     }
                 }
             }
@@ -322,6 +345,8 @@ namespace windows_client.Misc
         /// </summary>
         public void LoadGroupCache()
         {
+            Logging.LogWriter.Instance.WriteToLog(string.Format("All groups loading into memory request recieved "));
+
             lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -350,10 +375,13 @@ namespace windows_client.Misc
                                 try
                                 {
                                     count = reader.ReadInt32();
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Participants count for group:{0},count:{1}", grpId, count));
                                 }
                                 catch (Exception ex)
                                 {
                                     Debug.WriteLine("GroupManager :: LoadGroupCache : read count, Exception : " + ex.StackTrace);
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: LoadGroupCache : read count, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                 }
                                 if (count > 0)
                                 {
@@ -369,6 +397,8 @@ namespace windows_client.Misc
                                         catch (Exception ex)
                                         {
                                             Debug.WriteLine("GroupManager :: LoadGroupCache : read item, Exception : " + ex.StackTrace);
+                                            Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: LoadGroupCache : reading group info, GroupId:{0}, Exception :{1},StackTrace:{2}", grpId, ex.Message, ex.StackTrace));
+
                                             item = null;
                                         }
                                     }
@@ -476,6 +506,7 @@ namespace windows_client.Misc
                         groupCache.Remove(grpId);
                     string grp = grpId.Replace(":", "_");
                     store.DeleteFile(GROUP_DIR + "\\" + grp);
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("GroupManager :: DElete group : GroupId:{0}", grpId));
                 }
             }
         }

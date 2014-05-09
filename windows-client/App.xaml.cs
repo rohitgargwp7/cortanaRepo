@@ -56,6 +56,8 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
+        public static readonly string MQTT_DMQTT_SETTING = "mqttDmqtt";
+        public static readonly string DNS_NODNS_SETTING = "dnsNoDns";
 
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
@@ -672,7 +674,7 @@ namespace windows_client
                 //Running on a device / emulator without debugging
                 e.Handled = true;
                 Error.Exception = e.ExceptionObject;
-                Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+                Debug.WriteLine(string.Format("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace));
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
@@ -829,7 +831,7 @@ namespace windows_client
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
+            // Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
             #region DBCONVERSATION LISTENER
             st.Reset();
@@ -838,7 +840,7 @@ namespace windows_client
                 App.DbListener = new DbConversationListener();
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate DbListeners : " + msec);
             #endregion
             #region NETWORK MANAGER
             st.Reset();
@@ -846,7 +848,7 @@ namespace windows_client
             App.NetworkManagerInstance = NetworkManager.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Network Manager : {0}" + msec);
             #endregion
             #region MQTT MANAGER
             st.Reset();
@@ -860,7 +862,7 @@ namespace windows_client
             }
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate MqttManager : {0}", msec);
             #endregion
             #region UI UTILS
             st.Reset();
@@ -868,7 +870,7 @@ namespace windows_client
             App.UI_UtilsInstance = UI_Utils.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate UI_Utils : {0}", msec);
             #endregion
             #region ANALYTICS
             st.Reset();
@@ -876,14 +878,14 @@ namespace windows_client
             App.AnalyticsInstance = Analytics.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Analytics : {0}", msec);
             #endregion
             #region PUSH HELPER
             st.Reset();
             st.Start();
             st.Stop();
             msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
+            //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
             #region SMILEY
             if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
@@ -938,7 +940,7 @@ namespace windows_client
 
                 st.Stop();
                 msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
+                //Logging.LogWriter.Instance.WriteToLog("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
@@ -1061,7 +1063,7 @@ namespace windows_client
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
+                    Debug.WriteLine("APP: Time to create Dbs : {0}" + msec);
                 }
                 catch (Exception ex)
                 {

@@ -547,7 +547,7 @@ namespace windows_client
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add addressbook {0}", msec);
+                Debug.WriteLine(string.Format("Time to add addressbook {0}", msec));
                 UsersTableUtils.addBlockList(blockList);
             }
             catch (Exception e)

@@ -138,7 +138,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 

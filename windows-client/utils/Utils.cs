@@ -106,7 +106,7 @@ namespace windows_client.utils
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Utils", "Invalid JSON", e);
+                Debug.WriteLine("Utils" + "Invalid JSON" + e.Message);
             }
         }
 
