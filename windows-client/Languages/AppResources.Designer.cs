@@ -250,7 +250,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BLOCK LIST.
+        ///   Looks up a localized string similar to blocked list.
         /// </summary>
         public static string BlockList_Text {
             get {
@@ -4456,15 +4456,6 @@ namespace windows_client.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to blocklist.
-        /// </summary>
-        public static string SettingsSubtitle_Blocklist_Txt {
-            get {
-                return ResourceManager.GetString("SettingsSubtitle_Blocklist_Txt", resourceCulture);
             }
         }
         

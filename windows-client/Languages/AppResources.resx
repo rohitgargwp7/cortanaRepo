@@ -1426,9 +1426,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="UserProfile_AddToContacts_Btn" xml:space="preserve">
     <value>add contact</value>
   </data>
-  <data name="SettingsSubtitle_Blocklist_Txt" xml:space="preserve">
-    <value>blocklist</value>
-  </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
     <value>notifications</value>
   </data>
@@ -1481,7 +1478,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="BlockList_Text" xml:space="preserve">
-    <value>BLOCK LIST</value>
+    <value>blocked list</value>
   </data>
   <data name="Conversations_Dismiss_Tip" xml:space="preserve">
     <value>dismiss</value>

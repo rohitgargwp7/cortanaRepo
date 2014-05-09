@@ -71,7 +71,7 @@
                 </Grid.ColumnDefinitions>
                 <Image x:Name="blockListImage" Width="32" VerticalAlignment="Top" Margin="0,17,0,0"/>
                 <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Blocklist_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
             </Grid>

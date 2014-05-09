@@ -259,7 +259,7 @@ namespace windows_client.utils
             get
             {
                 if (phoneThemeColor == null)
-                    phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["HikeBlueHeader"]); ;
+                    phoneThemeColor = (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
                 
                 return phoneThemeColor;
             }

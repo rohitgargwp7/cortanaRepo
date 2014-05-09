@@ -135,7 +135,7 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = null;
+                    _completeGroupedContactList[4] = _emptySMSGroup;
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
@@ -306,7 +306,7 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(_charsEntered))
             {
                 if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = null;
+                    _completeGroupedContactList[4] = _emptySMSGroup;
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
@@ -774,7 +774,7 @@ namespace windows_client.View
             {
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
                 if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = null;
+                    _completeGroupedContactList[4] = _emptySMSGroup;
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
