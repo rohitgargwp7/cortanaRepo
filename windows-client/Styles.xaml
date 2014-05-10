@@ -39,7 +39,7 @@
             <SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="#994F1ACB" />
             <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
-            <SolidColorBrush x:Key="LastMessageColor" Color="#888888"/>
+            <SolidColorBrush x:Key="LastMessageColor" Color="#8c8c8c"/>
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
@@ -2012,7 +2012,7 @@
 
             <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="14"/>
-                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="TextAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -2027,7 +2027,8 @@
             </Style>
 
             <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
-                <Setter Property="FontSize" Value="28"/>
+                <Setter Property="FontSize" Value="26"/>
+                <Setter Property="Foreground" Value="#434b5c"/>
                 <Setter Property="FontWeight" Value="Normal"/>
             </Style>
 
@@ -2054,8 +2055,8 @@
 
             <Style x:Key="ContactMsisdnTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="Foreground" Value="#5e5e5e"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
@@ -2081,8 +2082,8 @@
 
             <Style x:Key="UnreadNotificationCounterContainerStyle" TargetType="Border">
                 <Setter Property="Background" Value="#E65939"/>
-                <Setter Property="Height" Value="20"/>
-                <Setter Property="MinWidth" Value="20"/>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="MinWidth" Value="22"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="CornerRadius" Value="2"/>
             </Style>

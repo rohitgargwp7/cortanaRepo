@@ -214,7 +214,18 @@ namespace windows_client.Model
                     _muteVal = value;
 
                 NotifyPropertyChanged("MuteIconVisibility");
-                NotifyPropertyChanged("MuteIconTimeStampVisibility");
+                NotifyPropertyChanged("UnreadCircleVisibility");
+            }
+        }
+
+        public Visibility GroupIconVisibility
+        {
+            get
+            {
+                if (IsGroupChat)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -304,18 +315,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
+                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
-            }
-        }
-
-        public double UnreadCounterWidth
-        {
-            get
-            {
-                return getUnreadCounterWidth();
             }
         }
 
@@ -332,8 +335,16 @@ namespace windows_client.Model
                     _unreadCounter = value;
 
                     NotifyPropertyChanged("UnreadCounter");
-                    NotifyPropertyChanged("UnreadCounterWidth");
+                    NotifyPropertyChanged("UnreadCounterString");
                 }
+            }
+        }
+
+        public string UnreadCounterString
+        {
+            get
+            {
+                return _unreadCounter <= 9 ? _unreadCounter.ToString() : "9+";
             }
         }
 
@@ -376,7 +387,7 @@ namespace windows_client.Model
         {
             get
             {
-                return TimeStampVisibility == Visibility.Visible || MuteIconVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+                return TimeStampVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -540,6 +551,7 @@ namespace windows_client.Model
                 return Utils.isGroupConversation(_msisdn);
             }
         }
+
         public bool? _isGroupAlive;
         public bool IsGroupAlive
         {
@@ -624,20 +636,6 @@ namespace windows_client.Model
             this._contactName = contactName;
             this._isOnhike = onHike;
             this._avatar = avatar;
-        }
-
-        double getUnreadCounterWidth()
-        {
-            double defaultWidth = 10;
-            var num = UnreadCounter;
-
-            while (num != 0)
-            {
-                num /= 10;
-                defaultWidth += 8;
-            }
-
-            return defaultWidth;
         }
 
         public int CompareTo(ConversationListObject rhs)

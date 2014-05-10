@@ -880,6 +880,7 @@
     <Content Include="View\images\tw_dark.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\unblock.png" />
+    <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />

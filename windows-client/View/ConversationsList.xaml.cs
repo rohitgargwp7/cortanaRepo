@@ -2380,12 +2380,9 @@ namespace windows_client.View
 
         private void setNotificationCounter(int newCounterValue)
         {
-            int currentCounter = 0;
-            Int32.TryParse(notificationCountTxtBlk.Text, out currentCounter);
-
             if (newCounterValue > 0)
             {
-                notificationCountTxtBlk.Text = newCounterValue.ToString();
+                notificationCountTxtBlk.Text = newCounterValue <= 9 ? newCounterValue.ToString() : "9+";
                 notificationCountGrid.Visibility = Visibility.Visible;
             }
             else
