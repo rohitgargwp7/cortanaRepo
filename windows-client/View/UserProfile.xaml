@@ -76,15 +76,9 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Image x:Name="imgInviteLock" Grid.Row="0" HorizontalAlignment="Center" MaxHeight="30"  Margin="0,30,0,0"/>
-                        <TextBlock Grid.Row="1" FontSize="20" TextWrapping="Wrap" Margin="25,20,25,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
-                            <TextBlock.Inlines>
-                                <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
-                                <Run x:Name="txtSmsUserNameBlk2" />
-                                <Run x:Name="txtSmsUserNameBlk3" />
-                            </TextBlock.Inlines>
-                        </TextBlock>
+                        <TextBlock x:Name="txtSmsUserNameBlk"  Grid.Row="1" FontSize="20" TextWrapping="Wrap" Margin="25,20,25,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0 10 0 0">
-                            <Button Name="btnInvite" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                            <Button Name="btnInvite" Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                             <Button Name="addToFavBtn" Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                         </StackPanel>
                     </Grid>

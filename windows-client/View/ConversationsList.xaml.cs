@@ -2500,7 +2500,7 @@ namespace windows_client.View
                     emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                     favourites.Visibility = System.Windows.Visibility.Visible;
                 }
-                StatusMessage sm = new StatusMessage(fObj.Msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
+                StatusMessage sm = new StatusMessage(fObj.Msisdn, String.Empty, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
                 mPubSub.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 mPubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
             }

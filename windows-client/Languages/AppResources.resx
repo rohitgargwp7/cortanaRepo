@@ -178,15 +178,15 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Do you really want to remove {0} from your friend list?</value>
+    <value>Do you really want to remove {0} from your favorite list?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from friend list</value>
+    <value>remove from favorite list</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Your friend list is empty</value>
+    <value>Your favorite list is empty</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -493,7 +493,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add as a friend</value>
+    <value>add as favorite</value>
     <comment>fix length(24)</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -557,7 +557,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
-    <value>Refresh Contacts</value>
+    <value>re-sync</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
@@ -676,7 +676,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>General text</comment>
   </data>
   <data name="Friends_Txt" xml:space="preserve">
-    <value>friends</value>
+    <value>favorites</value>
     <comment>General text</comment>
   </data>
   <data name="GroupChatWith_Txt" xml:space="preserve">
@@ -718,10 +718,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="GrpName_Txt" xml:space="preserve">
     <value>Group Name</value>
     <comment>General Text</comment>
-  </data>
-  <data name="Hike_Friends_Text" xml:space="preserve">
-    <value>hike friends</value>
-    <comment>General text</comment>
   </data>
   <data name="Hike_txt" xml:space="preserve">
     <value>hike. </value>
@@ -1034,7 +1030,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Nudge</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
-    <value>Double tap anywhere on the chat to nudge your friend.</value>
+    <value>double tap anywhere on the chat to nudge your friend.</value>
     <comment>xaml</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -1114,23 +1110,17 @@ Download it now http://hike.in and join the fun!</value>
   <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
     <value>invite to hike</value>
   </data>
-  <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
-    <value>Help him upgrade to hike!</value>
-  </data>
   <data name="InviteOnHike_Txt" xml:space="preserve">
-    <value>{0} is missing all the fun.</value>
+    <value>{0} is missing all the fun. Help {0} upgrade to hike!</value>
   </data>
   <data name="OnSms_Txt" xml:space="preserve">
     <value>on SMS</value>
   </data>
   <data name="ProfileToBeFriendBlk1" xml:space="preserve">
-    <value>You need to be friends with</value>
-  </data>
-  <data name="ProfileToBeFriendBlk3" xml:space="preserve">
-    <value>to be able to get status updates.</value>
+    <value>Share your Last Seen and Status Updates only with Favorite Contacts.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>Add as a friend</value>
+    <value>add</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>new status</value>
@@ -1178,29 +1168,11 @@ Download it now http://hike.in and join the fun!</value>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
     <value>group message</value>
   </data>
-  <data name="HappyMessaging_Txt" xml:space="preserve">
-    <value>Happy Messaging!</value>
-  </data>
-  <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
-    <value>You can also message friends not</value>
-  </data>
-  <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
-    <value>on hike with free hike SMS</value>
-  </data>
-  <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
-    <value>Messaging hike friends is free &amp; unlimited.</value>
-  </data>
-  <data name="ReadyToHike_Txt" xml:space="preserve">
-    <value>Ready to hike...</value>
-  </data>
-  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
-    <value>Share on Facebook &amp; Twitter</value>
-  </data>
   <data name="FB_Connect_Txt" xml:space="preserve">
-    <value>Connect with Facebook</value>
+    <value>connect with facebook</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
-    <value>Feeling lazy? Pull in your profile -</value>
+    <value>Feeling lazy? Pull in your profile...</value>
     <comment>Used in Entername screen above FB Notification</comment>
   </data>
   <data name="Account_Txt" xml:space="preserve">
@@ -1240,37 +1212,22 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>Added you as a friend. Would you like to do the same?</value>
-  </data>
-  <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
-    <value>Cancel Request</value>
+    <value>Is sharing Last Seen and Status Updates with you. Would you like to do the same?</value>
   </data>
   <data name="Profile_RequestSent_Blk1" xml:space="preserve">
-    <value>Waiting For</value>
-  </data>
-  <data name="Profile_RequestSent_Blk3" xml:space="preserve">
-    <value>to accept your friend request.</value>
-  </data>
-  <data name="Profile_AddNow_Btn_Txt" xml:space="preserve">
-    <value>Add now</value>
+    <value>Added as favorite</value>
   </data>
   <data name="Profile_NoStatus_Txt" xml:space="preserve">
-    <value>hasn't posted anything :(</value>
-  </data>
-  <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
-    <value>is not in your address book.</value>
+    <value>{0} hasn't posted anything :(</value>
   </data>
   <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
-    <value>friends</value>
+    <value>favorites</value>
   </data>
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>people on hike</value>
   </data>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
-    <value>You have blocked</value>
-  </data>
-  <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
-    <value>Unblock to send a message.</value>
+    <value>You have blocked {0}. Unblock to send a message.</value>
   </data>
   <data name="Share_With_Txt" xml:space="preserve">
     <value>share</value>
@@ -1314,7 +1271,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Immediate</value>
   </data>
   <data name="Conversations_StatusTutorials_Info_Txt" xml:space="preserve">
-    <value>Only your 'friends' can see your status update</value>
+    <value>Only contacts added as 'favorites' can see your status update</value>
   </data>
   <data name="Conversations_StatusTutorials_TapMsg" xml:space="preserve">
     <value>Tap on this icon to post a new status</value>
@@ -1325,22 +1282,14 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Notifications_Header_Txt" xml:space="preserve">
     <value>notifications</value>
   </data>
-  <data name="Now_Friends_Txt" xml:space="preserve">
-    <value>Is now your friend</value>
-    <comment>This is used in timeline and profile , when user becomed friend.</comment>
-  </data>
-  <data name="Friend_Confirm_Txt" xml:space="preserve">
-    <value>Confirmed you as a friend</value>
-    <comment>This is shown when a user confirms you as friend.</comment>
-  </data>
   <data name="Me_Txt" xml:space="preserve">
     <value>Me</value>
   </data>
   <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>view friends</value>
+    <value>view favorites</value>
   </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your friends here</value>
+    <value>You can see updates from your favorite contacts here</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>invite your friends to hike</value>
@@ -1442,7 +1391,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>block user</value>
   </data>
   <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tap on + to add a contact as your friend</value>
+    <value>Tap on + to add a contact as favorite</value>
   </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>what's up, {0}?</value>
@@ -1556,14 +1505,14 @@ Download it now http://hike.in and join the fun!</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from {0} here.</value>
+    <value>Great! {0} will now able to see your Last Seen and Status Updates.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
-    <value>You will now be able to see updates from each other</value>
+    <value>You can now see {0}'s Last Seen and Status Updates</value>
   </data>
   <data name="In_App_Tip_6" xml:space="preserve">
-    <value>Only your friends can see when you were last seen</value>
+    <value>Only your favorite contacts can see when you were last seen</value>
   </data>
   <data name="DownloadingSticker_txt" xml:space="preserve">
     <value>loading sticker</value>
@@ -2040,7 +1989,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Tonnes of fun, beautiful stickers!</value>
   </data>
   <data name="WelcomePage_Header_Txt3" xml:space="preserve">
-    <value>Make conversations colourful.</value>
+    <value>Make conversations colorful.</value>
   </data>
   <data name="Conversations_MuteStatusNotification_txt" xml:space="preserve">
     <value>mute notifications</value>
@@ -2113,13 +2062,13 @@ Download it now http://hike.in and join the fun!</value>
     <value>Amazing weather for an evening drive! #delhi</value>
   </data>
   <data name="Conversations_1Circle_Of_friends_txt" xml:space="preserve">
-    <value>1 friend</value>
+    <value>1 favorite</value>
   </data>
   <data name="Conversations_1Contact_on_hike" xml:space="preserve">
     <value>1 contact on hike</value>
   </data>
   <data name="Conversations_NCircle_Of_friends_txt" xml:space="preserve">
-    <value>{0} friends</value>
+    <value>{0} favorites</value>
   </data>
   <data name="Conversations_NContacts_on_hike" xml:space="preserve">
     <value>{0} contacts on hike</value>
@@ -2137,7 +2086,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>You can add upto {0} people to a group</value>
   </data>
   <data name="NewComposeGroup_Friends" xml:space="preserve">
-    <value>{0} friends</value>
+    <value>{0} favorites</value>
   </data>
   <data name="NewComposeGroup_GroupChats" xml:space="preserve">
     <value>{0} group chats</value>

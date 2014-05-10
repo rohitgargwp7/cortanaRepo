@@ -47,7 +47,7 @@
             <Grid.Background>
                 <ImageBrush x:Name="avatarImage" Stretch="UniformToFill"/>
             </Grid.Background>
-            <Image Source="/View/images/AppBar/icon_camera.png" MaxHeight="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10"/>
+            <Image Source="/View/images/camera_icon_profile.png" MaxHeight="35" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,20"/>
         </Grid>
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" TextOptions.TextHintingMode="Animated" InputScope="Text"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />
@@ -74,9 +74,15 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Width="400"
                        Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
                        Opacity="1"/>
-            <Button Margin="0,18,0,0" Name="spFbConnect" Style="{StaticResource ButtonWithNoPressedStateStyle}" HorizontalAlignment="Center" Click="facebook_Tap">
+            <Button Margin="0,18,0,0" Name="spFbConnect" Style="{StaticResource FbConnectButtonStyle}" HorizontalAlignment="Center"
+                    Click="facebook_Tap" toolkit:TiltEffect.SuppressTilt="True">
                 <Button.Content>
-                    <Image MaxHeight="44" Source="/View/images/FTUE/fbConnect.png" Stretch="Uniform"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Image MaxHeight="20" Source="/View/images/fb_status.png" Stretch="Uniform" Margin="16,0,0,0"/>
+                        <Line Margin="16,0" Y1="0" Y2="26" Width="1" Grid.Column="1" Height="26" Stroke="#21396e"/>
+                        <TextBlock Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
+                           FontSize="18" Margin="0,0,16,0" FontWeight="Normal" Foreground="White" />
+                    </StackPanel>
                 </Button.Content>
             </Button>
         </StackPanel>

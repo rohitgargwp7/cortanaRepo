@@ -39,14 +39,14 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White" Margin="0,0,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="txtBlkSMSPin" MaxWidth="350" Style="{StaticResource WelcomePageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
+        <TextBlock x:Name="txtBlkSMSPin" MaxWidth="350" Margin="0,65,0,40" Style="{StaticResource WelcomePageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
 
-        <Grid Grid.Row="1" Margin="0,20,0,0" MinHeight="30">
+        <Grid Grid.Row="1" MinHeight="30">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -73,7 +73,7 @@
         </Grid>
 
         
-        <Grid x:Name="callMe" Margin="0,0,0,80" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Grid x:Name="callMe" Margin="0,0,0,75" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

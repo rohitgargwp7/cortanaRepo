@@ -36,15 +36,15 @@
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="ListHeaderTemplate">
             <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                       Margin="0,0,0,24" FontWeight="Light" Foreground="#2d2d2d" FontSize="32"/>
+                       Margin="0,0,0,40" FontWeight="Light" Foreground="#2d2d2d" FontSize="38"/>
         </DataTemplate>
         
         <DataTemplate x:Key="GroupHeaderTemplate">
             <Border Background="Transparent">
                 <Border Background="{StaticResource HikeBlueHeader}" 
-                        Width="52" Height="52" HorizontalAlignment="Left" Margin="0,12">
+                        Width="52" Height="52" HorizontalAlignment="Left" Margin="0,12,0,18">
                     <TextBlock Text="{Binding Title}" 
-                                Foreground="White" 
+                                Foreground="White" FontSize="22" Margin="12,0,0,5"
                                 Style="{StaticResource PhoneTextLargeStyle}"
                                 VerticalAlignment="Bottom"/>
                 </Border>
@@ -52,8 +52,8 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ItemTemplate">
-            <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight"
-                       Margin="0,0,0,12" FontSize="36"/>
+            <TextBlock Text="{Binding}" Tap="countryList_Tap" FontWeight="Light"
+                       Margin="0,0,0,12" FontSize="34"/>
         </DataTemplate>
 
     </phone:PhoneApplicationPage.Resources>
@@ -69,7 +69,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="txtBlkOldSchool" Margin="0,75" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+            <TextBlock x:Name="txtBlkOldSchool" Margin="0,70" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
 
             <toolkit:PhoneTextBox Grid.Row="1" x:Name="txtEnterCountry" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Center" Width="440" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
             <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>

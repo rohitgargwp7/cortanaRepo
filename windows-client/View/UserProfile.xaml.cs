@@ -1067,11 +1067,7 @@ namespace windows_client.View
         private void ShowRequestSent()
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
-            txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = firstName;
-            txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
+            txtSmsUserNameBlk.Text = AppResources.Profile_RequestSent_Blk1;
             btnInvite.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
 
@@ -1083,12 +1079,8 @@ namespace windows_client.View
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             imgInviteLock.Visibility = Visibility.Visible;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
 
-            txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
-            txtSmsUserNameBlk2.Text = firstName;
-            txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
+            txtSmsUserNameBlk.Text = AppResources.ProfileToBeFriendBlk1;
             btnInvite.Content = AppResources.Add_To_Fav_Txt;
             btnInvite.Tap += AddAsFriend_Tap;
             btnInvite.Visibility = Visibility.Visible;
@@ -1113,18 +1105,10 @@ namespace windows_client.View
         private void ShowEmptyStatus()
         {
             if (msisdn == App.MSISDN)
-            {
-                txtSmsUserNameBlk1.Text = string.Empty;
-                txtSmsUserNameBlk2.Text = AppResources.Profile_You_NoStatus_Txt;
-            }
+                txtSmsUserNameBlk.Text = AppResources.Profile_You_NoStatus_Txt;
             else
-            {
-                txtSmsUserNameBlk1.Text = firstName;
-                txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
-            }
-            txtSmsUserNameBlk3.Text = string.Empty;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
+                txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_NoStatus_Txt, firstName);
+           
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
@@ -1136,11 +1120,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileInviteImage;
             imgInviteLock.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
-            txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = (AppResources.InviteOnHike_Txt).Replace("{0}", "");
-            txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk.Text = String.Format(AppResources.InviteOnHike_Txt, firstName);
             btnInvite.Tap += Invite_Tap;
             btnInvite.Content = AppResources.InviteOnHikeBtn_Txt;
             btnInvite.Visibility = Visibility.Visible;
@@ -1156,12 +1136,8 @@ namespace windows_client.View
         private void ShowBlockedUser()
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
-            txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = firstName;
+            txtSmsUserNameBlk.Text = AppResources.Profile_BlockedUser_Blk1;
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
-            txtSmsUserNameBlk3.Text = AppResources.Profile_BlockedUser_Blk3;
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
@@ -1420,7 +1396,7 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-                    txtSmsUserNameBlk1.Text = firstName;
+                    txtSmsUserNameBlk.Text = firstName;
                 else
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;

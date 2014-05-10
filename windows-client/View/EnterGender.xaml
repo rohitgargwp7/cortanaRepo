@@ -38,7 +38,7 @@
                         <Image x:Name="boyButtonImage" Source="/View/images/FTUE/boy_unselected.png" Height="135"/>
                     </Button.Content>
                 </Button>
-                <TextBlock x:Name="boyText" Grid.Row="1" Margin="0,32,0,0" Text="{Binding Path= LocalizedResources.EnterGenter_Boy_Txt , Source={StaticResource LocalizedStrings}}"
+                <TextBlock x:Name="boyText" Grid.Row="1" Margin="0,32,0,0" FontSize="24" Text="{Binding Path= LocalizedResources.EnterGenter_Boy_Txt , Source={StaticResource LocalizedStrings}}"
                         TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <Line Y1="0" Y2="400" Width="1" Grid.Column="1" Height="400" Stroke="#a0a0a0"/>
@@ -52,7 +52,7 @@
                         <Image x:Name="girlButtonImage" Source="/View/images/FTUE/girl_unselected.png" Height="135"/>
                     </Button.Content>
                 </Button>
-                <TextBlock x:Name="girlText"  Grid.Row="1" Margin="0,32,0,0" Text="{Binding Path= LocalizedResources.EnterGenter_Girl_Txt , Source={StaticResource LocalizedStrings}}"
+                <TextBlock x:Name="girlText" FontSize="24" Grid.Row="1" Margin="0,32,0,0" Text="{Binding Path= LocalizedResources.EnterGenter_Girl_Txt , Source={StaticResource LocalizedStrings}}"
                         TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -70,7 +70,7 @@
                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Opacity="0" Margin="0,10,0,0"/>
         </Grid>
 
-        <TextBlock x:Name="randomText" Grid.Row="3" Foreground="#535e6d" FontSize="18" Margin="24,0" TextWrapping="Wrap"
+        <TextBlock x:Name="randomText" Grid.Row="3" Foreground="#535e6d" FontSize="18" Margin="45,0" TextWrapping="Wrap"
                    Text="{Binding Path= LocalizedResources.RandomText_DefaultTxt , Source={StaticResource LocalizedStrings}}"
                         TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>

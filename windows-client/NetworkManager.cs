@@ -1291,7 +1291,7 @@ namespace windows_client
 
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                     {
-                        StatusMessage sm = new StatusMessage(msisdn, AppResources.Friend_Confirm_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+                        StatusMessage sm = new StatusMessage(msisdn, String.Empty, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
                         App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }

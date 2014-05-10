@@ -13,8 +13,8 @@ namespace windows_client.utils
     {
         #region PRIVATE UI VARIABLES
 
-        private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
-        private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
+        private BitmapImage[] defaultUserAvatars = new BitmapImage[5];
+        private BitmapImage[] defaultGroupAvatars = new BitmapImage[5];
         private string[] defaultAvatarFileNames;
         
         #endregion
@@ -1960,13 +1960,13 @@ namespace windows_client.utils
         {
             string last3Digits = msisdn.Substring(msisdn.Length - 3);
             int sumOfCodes = last3Digits[0] + last3Digits[1] + last3Digits[2];
-            return sumOfCodes % 7;
+            return sumOfCodes % 5;
         }
 
         public string getDefaultAvatarFileName(string msisdn, bool isGroup)
         {
             int index = computeHash(msisdn);
-            index += (isGroup ? 7 : 0);
+            index += (isGroup ? 5 : 0);
             return defaultAvatarFileNames[index];
         }
 
@@ -1978,25 +1978,24 @@ namespace windows_client.utils
                 switch (index)
                 {
                     case 0:
-                        defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/Digital.png", UriKind.Relative));
+                        if(defaultUserAvatars[0]==null)
+                            defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_blue.png", UriKind.Relative));
                         break;
                     case 1:
-                        defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/Sneakers.png", UriKind.Relative));
+                        if (defaultUserAvatars[1] == null)
+                            defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_green.png", UriKind.Relative));
                         break;
                     case 2:
-                        defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/Space.png", UriKind.Relative));
+                        if (defaultUserAvatars[2] == null)
+                            defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_orange.png", UriKind.Relative));
                         break;
                     case 3:
-                        defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/Beach.png", UriKind.Relative));
+                        if (defaultUserAvatars[3] == null)
+                            defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_pink.png", UriKind.Relative));
                         break;
                     case 4:
-                        defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/Candy.png", UriKind.Relative));
-                        break;
-                    case 5:
-                        defaultUserAvatars[5] = new BitmapImage(new Uri("/View/images/avatars/Cocktail.png", UriKind.Relative));
-                        break;
-                    default:
-                        defaultUserAvatars[6] = new BitmapImage(new Uri("/View/images/avatars/Coffee.png", UriKind.Relative));
+                        if (defaultUserAvatars[4] == null)
+                            defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_purple.png", UriKind.Relative));
                         break;
                 }
             }
@@ -2011,25 +2010,19 @@ namespace windows_client.utils
                 switch (index)
                 {
                     case 0:
-                        defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/RedPeople.png", UriKind.Relative));
+                        defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_blue.png", UriKind.Relative));
                         break;
                     case 1:
-                        defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/TealPeople.png", UriKind.Relative));
+                        defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_green.png", UriKind.Relative));
                         break;
                     case 2:
-                        defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/BluePeople.png", UriKind.Relative));
+                        defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_orange.png", UriKind.Relative));
                         break;
                     case 3:
-                        defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/CoffeePeople.png", UriKind.Relative));
+                        defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_pink.png", UriKind.Relative));
                         break;
                     case 4:
-                        defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/EarthyPeople.png", UriKind.Relative));
-                        break;
-                    case 5:
-                        defaultGroupAvatars[5] = new BitmapImage(new Uri("/View/images/avatars/GreenPeople.png", UriKind.Relative));
-                        break;
-                    default:
-                        defaultGroupAvatars[6] = new BitmapImage(new Uri("/View/images/avatars/PinkPeople.png", UriKind.Relative));
+                        defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_purple.png", UriKind.Relative));
                         break;
                 }
             }

@@ -74,7 +74,7 @@ namespace windows_client.View
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
-        string _pageTitle;
+        string _pageTitle = AppResources.Chat_With_Txt;
 
         public ForwardTo()
         {
@@ -1042,7 +1042,14 @@ namespace windows_client.View
                                 return;
                             }
 
-                            if (_isGroupChat && SelectedContacts.Count + _existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP)
+                            if (_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
+                            {
+                                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_UserAlreadyAdded_Txt, cInfo.Msisdn), AppResources.SelectUser_AlreadyAdded_Txt, MessageBoxButton.OK);
+                                cInfo.IsSelected = false; 
+                                return;
+                            }
+
+                            if (_isGroupChat && (SelectedContacts.Count + _existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP))
                             {
                                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
                                 cInfo.IsSelected = false;
