@@ -1401,8 +1401,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid Margin="{StaticResource PhoneTouchTargetLargeOverhang}">
-                                    <Image x:Name="blockImage" Visibility="Collapsed" Source="/View/images/block.png" Height="30" Stretch="Uniform"/>
-                                    <Image x:Name="unblockImage" Source="/View/images/unblock.png" Height="30" Stretch="Uniform"/>
+                                    <Image x:Name="blockImage" Visibility="Collapsed" Source="/View/images/block.png" Height="27" Stretch="Uniform"/>
+                                    <Image x:Name="unblockImage" Source="/View/images/unblock.png" Height="27" Stretch="Uniform"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>

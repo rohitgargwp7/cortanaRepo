@@ -35,7 +35,7 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid Margin="0,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="ContactItem_Tap">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -43,26 +43,27 @@
                             </Grid.ColumnDefinitions>
                             <Image Source="{Binding AvatarImage}" Height="55" Width="55" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0" Tap="ContactItem_Tap" Grid.Column="1">
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0" Grid.Column="1">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontSize="32" Foreground="Black"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                     <TextBlock Text="{Binding ContactListLabel}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
                                     <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
-                            <Image Grid.Column="2" Source="/View/images/block.png" Height="30" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            <Image Grid.Column="2" Source="/View/images/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <StackPanel x:Name="txtEmptyScreen"  HorizontalAlignment="Center"  Grid.Row="1"  Margin="0 100 0 0" Visibility="Collapsed">
-            <Image Height="200" Width="200" Source="images\blocklist_holder.png"></Image>
+        <StackPanel x:Name="txtEmptyScreen" HorizontalAlignment="Center" Grid.Row="1"  Visibility="Collapsed" VerticalAlignment="Center">
+            <Image Height="120" Source="images\blocklist_holder.png" Stretch="Uniform" Margin="0,0,0,25"/>
+            <TextBlock Text="{Binding Path= LocalizedResources.BlockList_Default_Txt, Source={StaticResource LocalizedStrings}}" 
+                       FontSize="18" Foreground="#d3d2d0" TextWrapping="Wrap" FontWeight="Normal" Margin="140,0" TextAlignment="Center"/>
         </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage>

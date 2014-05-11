@@ -1587,7 +1587,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Status update notifications are turned ON</value>
   </data>
   <data name="My_Location_Text" xml:space="preserve">
-    <value>My Location</value>
+    <value>my location</value>
   </data>
   <data name="Send_All_As_SMS_Group" xml:space="preserve">
     <value>Tap to send as hike sms</value>
@@ -2105,5 +2105,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Selected_Txt" xml:space="preserve">
     <value>{0} selected</value>
+  </data>
+  <data name="BlockList_Default_Txt" xml:space="preserve">
+    <value>Someone troubling you? Tap on + to block them.</value>
   </data>
 </root>

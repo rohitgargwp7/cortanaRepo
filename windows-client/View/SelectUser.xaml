@@ -21,7 +21,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top" Background="Transparent"/>
 
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Chat_With_Txt, Source={StaticResource LocalizedStrings}}"/>
@@ -33,7 +33,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="12,12,12,0" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="12" HorizontalAlignment="Stretch" 
                                   Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
                                   TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="150"/>
 

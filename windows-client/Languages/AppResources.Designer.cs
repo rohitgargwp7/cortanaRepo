@@ -250,6 +250,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Someone troubling you? Tap on + to block them..
+        /// </summary>
+        public static string BlockList_Default_Txt {
+            get {
+                return ResourceManager.GetString("BlockList_Default_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to blocked list.
         /// </summary>
         public static string BlockList_Text {
@@ -3065,7 +3074,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Location.
+        ///   Looks up a localized string similar to my location.
         /// </summary>
         public static string My_Location_Text {
             get {

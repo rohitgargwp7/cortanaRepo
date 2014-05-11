@@ -27,11 +27,11 @@
         <Grid x:Name="MapGrid">
             <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>
             <Grid Canvas.ZIndex="2" Margin="0,0,15,15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Tap="MyLocation_Tap">
-                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <Border Background="White" BorderBrush="#8c8c8c" BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 <Image Source="\view\images\LocationPin.png" Margin="15" MaxHeight="20" MaxWidth="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <Grid Canvas.ZIndex="2" Margin="15,0,0,15" HorizontalAlignment="Left" VerticalAlignment="Bottom" Tap="Places_Tap">
-                <Border Background="Black" Opacity="0.9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <Border Background="White" BorderBrush="#8c8c8c" BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 <Image Source="\view\images\places_icon.png" Margin="15" MaxHeight="20" MaxWidth="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -43,11 +43,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="SearchTextBox" Hint="{Binding Path= LocalizedResources.Search_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
-                                      GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown"/>
-                <ListBox x:Name="PlacesList" Foreground="Black" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
+                                      GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown" Margin="12"/>
+                <ListBox x:Name="PlacesList" Foreground="#434b5c" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="12,10">
+                            <Grid Margin="25,0,25,20">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
@@ -56,8 +56,8 @@
                                     <Image MaxHeight="50" Source="{Binding PlaceImage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                    <TextBlock Text="{Binding title}" FontSize="{StaticResource PhoneFontSizeLarge}" TextWrapping="Wrap" />
-                                    <TextBlock Text="{Binding vicinity}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="18" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                                    <TextBlock Text="{Binding title}" FontWeight="Light" FontSize="32" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding vicinity}" FontWeight="Light" FontSize="18" Foreground="#8c8c8c" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
