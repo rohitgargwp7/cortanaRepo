@@ -69,7 +69,9 @@ namespace windows_client.View
         }
 
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
+        
         #endregion
+
         #region Page Based Functions
 
         public ConversationsList()
@@ -94,6 +96,9 @@ namespace windows_client.View
             ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
             ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
 
+            App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
+            App.ViewModel.StatusNotificationsStatusChanged += ViewModel_statusNotificationsStatusChanged;
+
             if (ProTipHelper.CurrentProTip != null)
                 showProTip();
 
@@ -111,6 +116,17 @@ namespace windows_client.View
         }
 
         string _userName;
+
+        void ViewModel_statusNotificationsStatusChanged(object sender, EventArgs e)
+        {
+            byte statusSettingsValue;
+            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+                });
+        }
 
         void Instance_ShowProTip(object sender, EventArgs e)
         {
@@ -462,16 +478,11 @@ namespace windows_client.View
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
-            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            if (!App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
+                statusSettingsValue = (byte)1;
             muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             muteStatusMenu.Click += muteStatusMenu_Click;
 
-            profileMenu = new ApplicationBarMenuItem();
-            profileMenu.Text = AppResources.Profile_Txt;
-            profileMenu.Click += profileMenu_Click;
-            profileMenu.IsEnabled = false;//it will be enabled after loading of all conversations
-            appBar.MenuItems.Add(profileMenu);
-            
             inviteMenu = new ApplicationBarMenuItem();
             inviteMenu.Text = AppResources.Conversations_TellFriend_Txt;
             inviteMenu.Click += inviteMenu_Click;
@@ -484,6 +495,12 @@ namespace windows_client.View
             rewardsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(rewardsMenu);
 
+            profileMenu = new ApplicationBarMenuItem();
+            profileMenu.Text = AppResources.Profile_Txt;
+            profileMenu.Click += profileMenu_Click;
+            profileMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+            appBar.MenuItems.Add(profileMenu);
+            
             settingsMenu = new ApplicationBarMenuItem();
             settingsMenu.Text = AppResources.Settings;
             settingsMenu.Click += settingsMenu_Click;
@@ -924,7 +941,7 @@ namespace windows_client.View
                     appBar.MenuItems.Remove(delConvsMenu);
 
                 if (!appBar.MenuItems.Contains(muteStatusMenu))
-                    appBar.MenuItems.Add(muteStatusMenu);
+                    appBar.MenuItems.Insert(0, muteStatusMenu);
 
                 if (!isStatusMessagesLoaded)
                 {

@@ -14,8 +14,9 @@ namespace windows_client.utils
         #region PRIVATE UI VARIABLES
 
         private BitmapImage[] defaultUserAvatars = new BitmapImage[5];
+        private BitmapImage[] defaultUserAvatarsHighRes = new BitmapImage[5];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[5];
-        private string[] defaultAvatarFileNames;
+        private BitmapImage[] defaultGroupAvatarsHighRes = new BitmapImage[5];
         
         #endregion
 
@@ -45,22 +46,6 @@ namespace windows_client.utils
 
         private UI_Utils()
         {
-            defaultAvatarFileNames = new string[14];
-            defaultAvatarFileNames[0] = "Digital.jpg";
-            defaultAvatarFileNames[1] = "Sneakers.jpg";
-            defaultAvatarFileNames[2] = "Space.jpg";
-            defaultAvatarFileNames[3] = "Beach.jpg";
-            defaultAvatarFileNames[4] = "Candy.jpg";
-            defaultAvatarFileNames[5] = "Cocktail.jpg";
-            defaultAvatarFileNames[6] = "Coffee.jpg";
-            defaultAvatarFileNames[7] = "RedPeople.jpg";
-            defaultAvatarFileNames[8] = "TealPeople.jpg";
-            defaultAvatarFileNames[9] = "BluePeople.jpg";
-            defaultAvatarFileNames[10] = "CoffeePeople.jpg";
-            defaultAvatarFileNames[11] = "EarthyPeople.jpg";
-            defaultAvatarFileNames[12] = "GreenPeople.jpg";
-            defaultAvatarFileNames[13] = "PinkPeople.jpg";
-
             _bitMapImageCache = new Dictionary<string, BitmapImage>();
         }
 
@@ -1963,70 +1948,118 @@ namespace windows_client.utils
             return sumOfCodes % 5;
         }
 
-        public string getDefaultAvatarFileName(string msisdn, bool isGroup)
+        public BitmapImage getDefaultAvatar(string msisdn, bool isHighRes)
         {
             int index = computeHash(msisdn);
-            index += (isGroup ? 5 : 0);
-            return defaultAvatarFileNames[index];
-        }
-
-        public BitmapImage getDefaultAvatar(string msisdn)
-        {
-            int index = computeHash(msisdn);
-            if (defaultUserAvatars[index] == null)
+            if (isHighRes)
             {
-                switch (index)
+                if (defaultUserAvatarsHighRes[index] == null)
                 {
-                    case 0:
-                        if(defaultUserAvatars[0]==null)
-                            defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_blue.png", UriKind.Relative));
-                        break;
-                    case 1:
-                        if (defaultUserAvatars[1] == null)
-                            defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_green.png", UriKind.Relative));
-                        break;
-                    case 2:
-                        if (defaultUserAvatars[2] == null)
-                            defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_orange.png", UriKind.Relative));
-                        break;
-                    case 3:
-                        if (defaultUserAvatars[3] == null)
-                            defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_pink.png", UriKind.Relative));
-                        break;
-                    case 4:
-                        if (defaultUserAvatars[4] == null)
-                            defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_purple.png", UriKind.Relative));
-                        break;
+                    switch (index)
+                    {
+                        case 0:
+                            defaultUserAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_blue.png", UriKind.Relative));
+                            break;
+                        case 1:
+                            defaultUserAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_green.png", UriKind.Relative));
+                            break;
+                        case 2:
+                            defaultUserAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_orange.png", UriKind.Relative));
+                            break;
+                        case 3:
+                            defaultUserAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_pink.png", UriKind.Relative));
+                            break;
+                        case 4:
+                            defaultUserAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_purple.png", UriKind.Relative));
+                            break;
+                    }
                 }
+
+                return defaultUserAvatarsHighRes[index];
             }
-            return defaultUserAvatars[index];
+            else
+            {
+                if (defaultUserAvatars[index] == null)
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_blue.png", UriKind.Relative));
+                            break;
+                        case 1:
+                            defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_green.png", UriKind.Relative));
+                            break;
+                        case 2:
+                            defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_orange.png", UriKind.Relative));
+                            break;
+                        case 3:
+                            defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_pink.png", UriKind.Relative));
+                            break;
+                        case 4:
+                            defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_purple.png", UriKind.Relative));
+                            break;
+                    }
+                }
+
+                return defaultUserAvatars[index];
+            }
         }
 
-        public BitmapImage getDefaultGroupAvatar(string groupId)
+        public BitmapImage getDefaultGroupAvatar(string groupId, bool isHighRes)
         {
             int index = computeHash(groupId);
-            if (defaultGroupAvatars[index] == null)
+
+            if (isHighRes)
             {
-                switch (index)
+                if (defaultGroupAvatarsHighRes[index] == null)
                 {
-                    case 0:
-                        defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_blue.png", UriKind.Relative));
-                        break;
-                    case 1:
-                        defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_green.png", UriKind.Relative));
-                        break;
-                    case 2:
-                        defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_orange.png", UriKind.Relative));
-                        break;
-                    case 3:
-                        defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_pink.png", UriKind.Relative));
-                        break;
-                    case 4:
-                        defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_purple.png", UriKind.Relative));
-                        break;
+                    switch (index)
+                    {
+                        case 0:
+                            defaultGroupAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_blue.png", UriKind.Relative));
+                            break;
+                        case 1:
+                            defaultGroupAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_green.png", UriKind.Relative));
+                            break;
+                        case 2:
+                            defaultGroupAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_orange.png", UriKind.Relative));
+                            break;
+                        case 3:
+                            defaultGroupAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_pink.png", UriKind.Relative));
+                            break;
+                        case 4:
+                            defaultGroupAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_purple.png", UriKind.Relative));
+                            break;
+                    }
                 }
+
+                return defaultGroupAvatarsHighRes[index];
             }
-            return defaultGroupAvatars[index];
+            else
+            {
+                if (defaultGroupAvatars[index] == null)
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_blue.png", UriKind.Relative));
+                            break;
+                        case 1:
+                            defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_green.png", UriKind.Relative));
+                            break;
+                        case 2:
+                            defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_orange.png", UriKind.Relative));
+                            break;
+                        case 3:
+                            defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_pink.png", UriKind.Relative));
+                            break;
+                        case 4:
+                            defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_purple.png", UriKind.Relative));
+                            break;
+                    }
+                }
+                return defaultGroupAvatars[index];
+            }
         }
 
         #endregion
@@ -2245,8 +2278,8 @@ namespace windows_client.utils
             }
             // do not add default avatar images to cache as they are already chached.
             if (Utils.isGroupConversation(msisdn))
-                return getDefaultGroupAvatar(msisdn);
-            return getDefaultAvatar(msisdn);
+                return getDefaultGroupAvatar(msisdn, false);
+            return getDefaultAvatar(msisdn, false);
         }
 
         public SolidColorBrush ConvertStringToColor(string hexString)

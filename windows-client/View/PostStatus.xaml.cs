@@ -203,7 +203,6 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            svStatusText.MaxHeight = 150;
             buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
@@ -259,9 +258,6 @@ namespace windows_client.View
 
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
-            svStatusText.UpdateLayout();
-            svStatusText.ScrollToVerticalOffset(txtStatus.GetRectFromCharacterIndex(txtStatus.SelectionStart).Top - 40);
-
             int count = txtStatus.Text.Length;
             if (count == 0 && moodId == 0)
             {
@@ -280,7 +276,6 @@ namespace windows_client.View
 
         private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
-            svStatusText.MaxHeight = 550;
             buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
         }
 

@@ -45,7 +45,7 @@
                           JumpListStyle="{StaticResource AlphabeticLongListSelectorJumpListStyle}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,6,25,6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid Margin="0,12,25,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -58,11 +58,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontSize="32" Foreground="Black"/>
+                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="#434b5c"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
-                                    <TextBlock Text="{Binding ContactListLabel}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
                             <CheckBox Style="{StaticResource BlockUnBlockCheckBox}" Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"

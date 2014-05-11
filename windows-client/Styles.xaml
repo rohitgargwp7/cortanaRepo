@@ -43,6 +43,7 @@
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
+            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:BackgroundConverter x:Key="BackgroundConverter"/>
             <converter:ForegroundConverter x:Key="ForegroundConverter"/>
             
@@ -665,6 +666,44 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="RefreshButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
+                <Setter Property="Background" Value="#e5dee1e5"/>
+                <Setter Property="BorderBrush" Value="#ccd5d8db"/>
+                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Width" Value="218"/>
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="MouseOver"/>
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="#cccfd3"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border x:Name="ButtonBackground" CornerRadius="20" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                                    <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             
             <Style x:Key="AddAsFriendButtonStyle" TargetType="Button" BasedOn="{StaticResource YesButtonStyle}">
                 <Setter Property="MinWidth" Value="180"/>
@@ -773,7 +812,6 @@
                 <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
                 <Setter Property="Padding" Value="18,5"/>
                 <Setter Property="CaretBrush" Value="#565d6e"/>
-                <Setter Property="ActualHintVisibility" Value="Visible"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="toolkit:PhoneTextBox">
@@ -1320,9 +1358,9 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid Grid.Column="0" VerticalAlignment="Top">
-                                        <Border x:Name="CheckBackground" BorderBrush="Black" BorderThickness="{StaticResource PhoneBorderThickness}" Background="White" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
+                                        <Border x:Name="CheckBackground" BorderBrush="#565d6e" BorderThickness="{StaticResource PhoneBorderThickness}" Background="White" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
                                         <Rectangle x:Name="IndeterminateMark" Fill="{StaticResource PhoneRadioCheckBoxCheckBrush}" HorizontalAlignment="Center" Height="16" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="16"/>
-                                        <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="Black" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="3" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
+                                        <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="#565d6e" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="3" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
                                     </Grid>
                                     <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="12,0,0,0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                 </Grid>
@@ -1385,7 +1423,7 @@
 									Storyboard.TargetProperty="Foreground"
 									Duration="0">
                                         <DiscreteObjectKeyFrame
-										Value="Black"
+										Value="#434b5c"
 										KeyTime="0"/>
                                     </ObjectAnimationUsingKeyFrames>
                                     <ObjectAnimationUsingKeyFrames
@@ -1448,7 +1486,7 @@
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}">
-                            <UserControl x:Name="UserControl" Foreground="{TemplateBinding Foreground}">
+                            <UserControl x:Name="UserControl" Foreground="{TemplateBinding Foreground}" Margin="18,0">
                                 <StackPanel>
                                     <TextBlock x:Name="MultipleSelectionModeSummary" Margin="8 8 0 8" />
                                     <Canvas x:Name="ItemsPresenterHost" MinHeight="46">
@@ -1754,18 +1792,16 @@
             </Style>
 
             <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
-                <Setter Property="GridCellSize"  Value="113,113"/>
                 <Setter Property="Background" Value="#AAFFFFFF"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="LayoutMode" Value="Grid"/>
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <Border Background="{Binding IsNonEmpty, Converter={StaticResource BackgroundConverter}}"
+                            <Border Visibility="{Binding IsNonEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Background="{Binding IsNonEmpty, Converter={StaticResource BackgroundConverter}}"
                                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="6 6 6 6">
                                 <TextBlock Text="{Binding Title}"
                                             FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                                            FontSize="48" Padding="6"
+                                            FontSize="42" Padding="6"
                                             Foreground="{Binding IsNonEmpty, Converter={StaticResource ForegroundConverter}}"
                                             VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
                             </Border>
@@ -1781,35 +1817,14 @@
                 </Border>
             </DataTemplate>
 
-            <Style x:Key="AlphabeticLongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
-                <Setter Property="GridCellSize"  Value="113,113"/>
-                <Setter Property="Background" Value="#AAFFFFFF"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="LayoutMode" Value="Grid"/>
-                <Setter Property="ItemTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <Border Background="{Binding IsNonEmpty, Converter={StaticResource BackgroundConverter}}"
-                                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="6 6 6 6">
-                                <TextBlock Text="{Binding Title}"
-                                            FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                                            FontSize="48" Padding="6"
-                                            Foreground="{Binding IsNonEmpty, Converter={StaticResource ForegroundConverter}}"
-                                            VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
-                            </Border>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <DataTemplate x:Key="AlphabeticGroupHeaderTemplate">
                 <Border Background="Transparent">
                     <Border Background="{StaticResource HikeBlueHeader}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
-                            <TextBlock Text="{Binding Title}" 
-                                Foreground="White" 
+                        Width="52" Height="52" HorizontalAlignment="Left" Margin="0,12,0,18">
+                        <TextBlock Text="{Binding Title}" 
+                                Foreground="White" FontSize="24" Margin="12,0,0,5"
                                 Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding TextVisibility}"/>
+                                VerticalAlignment="Bottom"/>
                     </Border>
                 </Border>
             </DataTemplate>
@@ -1833,12 +1848,11 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="CountryLongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
+            <Style x:Key="AlphabeticLongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
                 <Setter Property="GridCellSize"  Value="113,113"/>
                 <Setter Property="LayoutMode" Value="Grid" />
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="Background" Value="#AAFFFFFF" />
-                <Setter Property="Margin" Value="7,7,7,0" />
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -2021,7 +2035,7 @@
             </Style>
 
             <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
-                <Setter Property="FontSize" Value="38"/>
+                <Setter Property="FontSize" Value="42"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="White"/>
             </Style>
@@ -2040,7 +2054,7 @@
             <Style x:Key="EditProfileLabelTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
                 <Setter Property="Foreground" Value="{StaticResource HikeBlueHeader}"/>
                 <Setter Property="FontSize" Value="28"/>
-                <Setter Property="Margin" Value="25,12"/>
+                <Setter Property="Margin" Value="25,12,25,6"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
@@ -2063,18 +2077,22 @@
 
             <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="Foreground" Value="#434b5c"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
             <Style x:Key="StatusUpdateContentTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
-                <Setter Property="Foreground" Value="#878787"/>
+                <Setter Property="Foreground" Value="#8c8c8c"/>
             </Style>
 
             <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
-                <Setter Property="FontSize" Value="18"/>
-                <Setter Property="Foreground" Value="#C2C2BF"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="Foreground" Value="#434b5c"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="Margin" Value="0,0,20,0"/>

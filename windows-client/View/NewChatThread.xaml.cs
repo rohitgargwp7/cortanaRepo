@@ -907,7 +907,7 @@ namespace windows_client.View
                 convObj.ContactName = mContactName;
                 convObj.IsOnhike = true;
 
-                userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
+                userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, false);
 
                 HandleNewGroup(convObj);
 
@@ -998,13 +998,10 @@ namespace windows_client.View
                     avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
 
                     if (avatar == null)
-                    {
-                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
-                    }
+                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
                     else
-                    {
                         avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
-                    }
+                    
                     userImage.Source = avatarImage;
                 }
             }
@@ -1126,7 +1123,7 @@ namespace windows_client.View
                     catch (Exception ex)
                     {
                         Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)App.appSettings[App.MSISDN_SETTING], false);
                     }
                 }
             }

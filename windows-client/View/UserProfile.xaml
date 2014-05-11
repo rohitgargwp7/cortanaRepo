@@ -17,7 +17,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <ProgressBar x:Name="shellProgress" Foreground="White" IsIndeterminate="False" VerticalAlignment="Top" Canvas.ZIndex="1"/>
-        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#E2E4E8"
+        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#e7ebf0"
                                 Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
             <phone:LongListSelector.ListHeader>
                 <Grid>
@@ -31,7 +31,7 @@
                             <ImageBrush x:Name="avatarImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
                         </Grid.Background>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
-                            <Border Background="Black" Opacity="0.45" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <Border Background="#434b5c" Opacity="0.6" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -114,7 +114,7 @@
                                                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                     <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                 </Grid>
-                                                <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
                                                     <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                 </Grid>
                                             </Grid>
@@ -159,7 +159,7 @@
                                                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                         <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                     </Grid>
-                                                    <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                    <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
                                                         <TextBlock Text="{Binding TimestampString}" Margin="0,0,30,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                     </Grid>
                                                 </Grid>

@@ -274,7 +274,7 @@
     <comment>Did not receive sms (xaml)</comment>
   </data>
   <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
-    <value>Tap here</value>
+    <value>tap here</value>
     <comment>xaml</comment>
   </data>
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
@@ -318,7 +318,7 @@
     <comment>General text used in different files</comment>
   </data>
   <data name="WelcomePage_PushMsg_TxtBlk" xml:space="preserve">
-    <value>Tapping on 'get started' will confirm you are 13+. Push notifications are turned on by default.</value>
+    <value>You need to be 13+ to use hike. Notifications are on by default.</value>
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">

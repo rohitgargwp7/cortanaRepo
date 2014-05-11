@@ -167,6 +167,7 @@
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
     <Compile Include="Converters\BackgroundConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ForegroundConverter.cs" />
     <Compile Include="Converters\TileSizeToHeightConverter.cs" />
     <Compile Include="Converters\TileSizeToWidthConverter.cs" />
@@ -559,7 +560,7 @@
     <Content Include="View\images\avatars\default_avatar_pink.png" />
     <Content Include="View\images\avatars\default_avatar_purple.png" />
     <Content Include="View\images\block.png" />
-    <Content Include="View\images\camera_icon_profile.png" />
+    <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />
     <Content Include="View\images\ConversationPage\Chat_Selected.png" />
@@ -690,6 +691,7 @@
     <Content Include="View\images\made_with_love.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
+    <Content Include="View\images\notification_Image_Grey.png" />
     <Content Include="View\images\nudge_received_blue.png" />
     <Content Include="View\images\nudge_sent_blue.png" />
     <Content Include="View\images\moods_status_icon.png" />

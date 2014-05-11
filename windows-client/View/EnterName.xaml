@@ -47,7 +47,7 @@
             <Grid.Background>
                 <ImageBrush x:Name="avatarImage" Stretch="UniformToFill"/>
             </Grid.Background>
-            <Image Source="/View/images/camera_icon_profile.png" MaxHeight="35" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,20"/>
+            <Image Source="/View/images/FTUE/camera_icon_profile.png" MaxHeight="35" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,20"/>
         </Grid>
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" TextOptions.TextHintingMode="Animated" InputScope="Text"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />

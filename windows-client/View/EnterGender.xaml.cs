@@ -171,16 +171,18 @@ namespace windows_client.View
 
             bool isScanned;
 
-            int age = 0;
-            Int32.TryParse((string)App.appSettings[App.ACCOUNT_AGE], out age);
-            
-            JObject dob = new JObject();
-            dob.Add(App.YEAR, DateTime.Now.Year - age);
-            
             JObject obj = new JObject();
+
+            int age = 0;
+            if (Int32.TryParse((string)App.appSettings[App.ACCOUNT_AGE], out age))
+            {
+                JObject dob = new JObject();
+                dob.Add(App.YEAR, DateTime.Now.Year - age);
+                obj.Add(App.DOB, dob);
+            }
+
             obj.Add(App.GENDER, gender);
             obj.Add(App.NAME, (string)App.appSettings[App.ACCOUNT_NAME]);
-            obj.Add(App.DOB, dob);
             obj.Add(App.SCREEN, "signup");
 
             // if addbook already stored simply call setname api

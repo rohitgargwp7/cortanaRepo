@@ -225,12 +225,12 @@ namespace windows_client.View
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
+                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
                         }
                     }
                     else
                     {
-                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
+                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
                     }
                 }
             }
@@ -242,6 +242,7 @@ namespace windows_client.View
         {
             base.OnBackKeyPress(e);
 
+            PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(App.NEW_GROUP_ID);
             PhoneApplicationService.Current.State.Remove(App.GROUP_NAME);
             PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);

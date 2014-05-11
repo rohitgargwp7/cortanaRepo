@@ -157,7 +157,7 @@
                         <TextBlock Grid.Row="0" Margin="0,20" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120" Stretch="Uniform"/>
-                            <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
+                            <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                         </StackPanel>
                         <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                                  Grid.Row="1" Tap="favourites_Tap">
@@ -220,7 +220,7 @@
                                             <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
                                         </Grid>
                                         <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="addToFriends_Tap" Background="White" >
-                                            <Image Name="addUserImage" Source="images\ConversationPage\add_friend.png" Width="50" Height="50" HorizontalAlignment="Right"/>
+                                            <Image Name="addUserImage" Source="images\ConversationPage\add_friend.png" Width="52" Height="52" HorizontalAlignment="Right"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
@@ -231,21 +231,17 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0" Background="#E7E2D6">
+            <controls:PivotItem Margin="0,-10,0,0" Background="#e7ebf0">
                 <Grid Background="Transparent">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button x:Name="refreshBarButton" Style="{StaticResource ButtonWithNoPressedStateStyle}" Click="refreshStatuses_Tap" Visibility="Collapsed" Height="45" Background="#e9ecee" BorderBrush="#e9ecee" Margin="0,0,0,5">
+                    <Button x:Name="refreshBarButton" Canvas.ZIndex="1" Style="{StaticResource RefreshButtonStyle}" Click="refreshStatuses_Tap" Visibility="Collapsed" Margin="0,10,0,0" VerticalAlignment="Top">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="45">
-                                <TextBlock x:Name="refreshStatusText" FontSize="22" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0"/>
-                                <Image Source="/View/images/ConversationPage/refresh_bar_arrow.png" MaxWidth="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                <Image Source="/View/images/ConversationPage/refresh_bar_arrow.png" MaxWidth="17" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="refreshStatusText" FontSize="22" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E2E4E8" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
+                    <phone:LongListSelector x:Name="statusLLS" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E2E4E8" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
@@ -266,7 +262,7 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding UserName}" Grid.Row="0" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                         <TextBlock TextWrapping="Wrap" Style="{StaticResource StatusUpdateContentTextBlock}" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}" Grid.Row="1"/>
-                                                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,12,0,0">
+                                                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,18,0,0">
                                                             <Button Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Click="yes_Click" Style="{StaticResource YesButtonStyle}" Width="138" toolkit:TiltEffect.IsTiltEnabled="True"/>
                                                             <Button Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Click="no_Click" Style="{StaticResource NoButtonStyle}" Width="138" toolkit:TiltEffect.IsTiltEnabled="True"/>
                                                         </StackPanel>
@@ -302,7 +298,7 @@
                                                                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                                     <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                                 </Grid>
-                                                                <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                                <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
                                                                     <TextBlock Text="{Binding TimestampString}" Margin="0,0,30,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                                 </Grid>
                                                             </Grid>
@@ -380,7 +376,7 @@
                                                             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                                 <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                                                             </Grid>
-                                                            <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                                                            <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
                                                                 <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                             </Grid>
                                                         </Grid>
@@ -437,7 +433,7 @@
 
         </controls:Pivot>
 
-        <Rectangle x:Name="overlay" Visibility="Collapsed" Opacity="0.8" Grid.RowSpan="2" Fill="#434b5c"/>
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Opacity="0.95" Grid.RowSpan="2" Fill="#434b5c"/>
         <Grid  x:Name="TutorialStatusUpdate" Grid.Row="1" Visibility="Collapsed" Tap="DismissStatusUpdateTutorial_Tap" Margin="0,0,0,82">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -447,7 +443,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Conversations_Status_Tutorials_Header, Source={StaticResource LocalizedStrings}}" FontSize="28" FontFamily="Segoe WP Regular" Margin="0,0,0,0" Foreground="White" TextAlignment="Center"/>
-            <TextBlock Grid.Row="1" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_Info_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center"/>
+            <TextBlock Grid.Row="1" Text="{Binding Path= LocalizedResources.Conversations_StatusTutorials_Info_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Margin="30,10,30,0" FontSize="18" FontFamily="Segoe WP Semilight" Foreground="White" TextAlignment="Center" TextWrapping="Wrap"/>
             <Border Grid.Row="2" Style="{StaticResource StatusUpdateContainerStyle}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="420" Margin="0,36,0,0">
                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
@@ -455,7 +451,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Image Source="/View/images/ConversationPage/tutorial_preview.png" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
-                    <Grid Grid.Column="1" Margin="18,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid Grid.Column="1" Margin="18,-5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -468,11 +464,11 @@
                             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                 <TextBlock Text="Saira Singh" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
                             </Grid>
-                            <Grid Margin="10,0,0,0"  VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
+                            <Grid Margin="10,0,0,0"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
                                 <TextBlock x:Name="tutTimeText" Margin="0,0,-10,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                             </Grid>
                         </Grid>
-                        <local:MyRichTextBox Margin="-12,0,0,0" Foreground="#888888" IsEnabled="False" 
+                        <local:MyRichTextBox Margin="-12,0,0,0" Foreground="#888888" IsEnabled="False" FontWeight="Light"
                                              HorizontalAlignment="Left" Text="{Binding Path= LocalizedResources.StatusTut_Text, Source={StaticResource LocalizedStrings}}"
                                              FontSize="20" Grid.Row="1" TextWrapping="Wrap" MaxWidth="350"/>
                     </Grid>

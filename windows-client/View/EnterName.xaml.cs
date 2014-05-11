@@ -190,7 +190,7 @@ namespace windows_client
                 spFbConnect.IsEnabled = false;
             }
 
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
 
             if (reloadImage) // this will handle both deactivation and tombstone
             {
@@ -225,13 +225,13 @@ namespace windows_client
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING], true);
                         }
                     }
                     else
                     {
                         string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
-                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(myMsisdn);
+                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(myMsisdn, true);
                     }
                 }
             }
@@ -304,7 +304,7 @@ namespace windows_client
                         nameErrorTxt.Opacity = 1;
                         progressBar.IsEnabled = false;
                         progressBar.Opacity = 0;
-                        nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+                        nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
                         txtBxEnterName.IsEnabled = true;
                         txtBxEnterAge.IsEnabled = true;
                         isClicked = false;
@@ -359,12 +359,12 @@ namespace windows_client
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove("fbName");
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
         }
 
         private void txtBxEnterAge_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
         }
 
         private void facebook_Tap(object sender, RoutedEventArgs e)
@@ -384,7 +384,7 @@ namespace windows_client
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
                 txtBxEnterName.IsEnabled = true; 
                 txtBxEnterAge.IsEnabled = true;
                 return;
@@ -413,7 +413,7 @@ namespace windows_client
 
                     avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
                     progressBar.Opacity = 0;
-                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
                     txtBxEnterName.IsEnabled = true;
                     txtBxEnterAge.IsEnabled = true;
                 }
@@ -425,7 +425,7 @@ namespace windows_client
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 progressBar.Opacity = 0;
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
                 txtBxEnterName.IsEnabled = true;
                 txtBxEnterAge.IsEnabled = true;
 

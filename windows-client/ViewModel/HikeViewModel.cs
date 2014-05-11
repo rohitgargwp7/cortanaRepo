@@ -23,7 +23,6 @@ using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
-using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
 using System.Web;
@@ -1084,5 +1083,13 @@ namespace windows_client.ViewModel
         }
 
         #endregion
+
+        public event EventHandler<EventArgs> StatusNotificationsStatusChanged;
+
+        public void StatusNotificationSettingsChanged()
+        {
+            if (App.ViewModel.StatusNotificationsStatusChanged != null)
+                App.ViewModel.StatusNotificationsStatusChanged(null, null);
+        }
     }
 }

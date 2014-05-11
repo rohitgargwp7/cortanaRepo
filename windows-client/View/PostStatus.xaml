@@ -28,26 +28,24 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,12,0,0" VerticalAlignment="Top">
+            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,18,0,0" VerticalAlignment="Top">
                 <Button.Content>
                     <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 </Button.Content>
             </Button>
-            <ScrollViewer Name="svStatusText" Grid.Column="2">
-                <toolkit:PhoneTextBox Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
+                <toolkit:PhoneTextBox Grid.Column="2" MaxHeight="120" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
                                           TextChanged="txtStatus_TextChanged"/>
-            </ScrollViewer>
-            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" TextAlignment="Right" Foreground="Black"
-                                      Text="140" Grid.Column="3" Margin="12,0,0,0"/>
+            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="#8c8c8c" TextAlignment="Right"
+                                      Text="140" Grid.Column="3" Margin="12,24,0,0" VerticalAlignment="Top"/>
         </Grid>
-        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom" Height="48">
+        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,25,25,25" VerticalAlignment="Bottom" Height="48">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" HorizontalAlignment="Center">
-                <Button x:Name="fbButton" Width="210" Style="{StaticResource NoButtonStyle}" Click="Fb_Tap" Margin="-12">
+            <Grid Grid.Column="0" HorizontalAlignment="Center" Margin="0,0,10,0">
+                <Button x:Name="fbButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="Fb_Tap" Margin="-12">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Image Margin="0,0,12,0" Source="/View/images/fb_status.png" Height="20"/>
@@ -56,8 +54,8 @@
                     </Button.Content>
                 </Button>
             </Grid>
-            <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="25,0,0,0">
-                <Button x:Name="twitterButton" Width="210" Style="{StaticResource NoButtonStyle}" Click="TwitterIcon_Tap" Margin="-12">
+            <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="10,0,0,0">
+                <Button x:Name="twitterButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="TwitterIcon_Tap" Margin="-12">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Image Margin="0,0,12,0" Source="/View/images/twitter_status.png" Height="16"/>

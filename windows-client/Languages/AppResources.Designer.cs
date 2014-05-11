@@ -1580,7 +1580,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap here.
+        ///   Looks up a localized string similar to tap here.
         /// </summary>
         public static string EnterPin_Taphere_TxtBlk {
             get {
@@ -5144,7 +5144,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tapping on &apos;get started&apos; will confirm you are 13+. Push notifications are turned on by default..
+        ///   Looks up a localized string similar to You need to be 13+ to use hike. Notifications are on by default..
         /// </summary>
         public static string WelcomePage_PushMsg_TxtBlk {
             get {
