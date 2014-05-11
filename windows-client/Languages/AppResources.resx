@@ -1390,9 +1390,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Blocklist_user_txt" xml:space="preserve">
     <value>block user</value>
   </data>
-  <data name="Conversations_NoFriend_Tap_Txt" xml:space="preserve">
-    <value>Tap on + to add a contact as favorite</value>
-  </data>
   <data name="PostStatus_WhatsUp_Hint_txt" xml:space="preserve">
     <value>what's up, {0}?</value>
     <comment>{0} replaced by user name </comment>

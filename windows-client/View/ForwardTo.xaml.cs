@@ -1271,10 +1271,8 @@ namespace windows_client.View
             }
 
             PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
             PhoneApplicationService.Current.State.Remove("Group_GroupId");
             base.OnRemovedFromJournal(e);
         }

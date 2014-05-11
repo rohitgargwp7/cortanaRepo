@@ -862,15 +862,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap on + to add a contact as favorite.
-        /// </summary>
-        public static string Conversations_NoFriend_Tap_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_NoFriend_Tap_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Send {0} free sms..
         /// </summary>
         public static string Conversations_OnSMS_Txt {

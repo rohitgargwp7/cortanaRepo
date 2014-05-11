@@ -75,12 +75,11 @@ namespace windows_client.View
 
             App.appSettings.TryGetValue(App.SMS_SETTING, out _smsCredits);
 
-            object obj;
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
                 _isContactShared = true;
                 _showSmsContacts = false;
-                PageTitle.Text = AppResources.ShareContact_Txt;
+                PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
             {

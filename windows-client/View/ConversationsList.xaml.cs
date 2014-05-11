@@ -909,10 +909,7 @@ namespace windows_client.View
                         else
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                            if (hikeContactList.Count > 0)
-                                addContactsTxtBlk.Text = AppResources.Conversations_NoFriend_Tap_Txt;
-                            else
-                                addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
+                            addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
                         }
 
                         if (hikeContactList.Count == 0)
