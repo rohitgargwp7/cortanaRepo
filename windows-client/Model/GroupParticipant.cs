@@ -313,7 +313,7 @@ namespace windows_client.Model
             {
                 if (_isOnHike)
                 {
-                    return UI_Utils.Instance.HikeMsgBackground;
+                    return UI_Utils.Instance.HikeBlue;
                 }
                 return UI_Utils.Instance.SmsBackground;
             }

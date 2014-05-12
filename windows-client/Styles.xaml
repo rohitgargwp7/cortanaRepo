@@ -31,15 +31,18 @@
             <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
 
             <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
+            
             <SolidColorBrush x:Key="HyperlinkButtonBackgroundThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="HyperlinkButtonBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="HyperlinkDisabledThemeBrush" Color="#66000000" />
             <SolidColorBrush x:Key="HyperlinkForegroundThemeBrush" Color="#FF4F1ACB" />
             <SolidColorBrush x:Key="HyperlinkPointerOverForegroundThemeBrush" Color="#CC4F1ACB" />
             <SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="#994F1ACB" />
+            
             <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
-            <SolidColorBrush x:Key="LastMessageColor" Color="#8c8c8c"/>
+            <SolidColorBrush x:Key="HikeLightGrey" Color="#8c8c8c"/>
+            <SolidColorBrush x:Key="HikeBlack" Color="#434b5c"/>
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#e6e9ee"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
@@ -670,7 +673,7 @@
             <Style x:Key="RefreshButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonWithNoPressedStateStyle}">
                 <Setter Property="Background" Value="#e5dee1e5"/>
                 <Setter Property="BorderBrush" Value="#ccd5d8db"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="FontSize" Value="14"/>
@@ -1423,7 +1426,7 @@
 									Storyboard.TargetProperty="Foreground"
 									Duration="0">
                                         <DiscreteObjectKeyFrame
-										Value="#434b5c"
+										Value="{StaticResource HikeBlack}"
 										KeyTime="0"/>
                                     </ObjectAnimationUsingKeyFrames>
                                     <ObjectAnimationUsingKeyFrames
@@ -2012,7 +2015,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="TextTrimming" Value="WordEllipsis"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
             <Style x:Key="ConversationChatTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
@@ -2021,7 +2024,7 @@
                 <Setter Property="TextAlignment" Value="Left"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Bottom"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
             <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
@@ -2042,7 +2045,7 @@
 
             <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="26"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontWeight" Value="Normal"/>
             </Style>
 
@@ -2060,7 +2063,7 @@
             </Style>
 
             <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontSize" Value="28"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -2078,7 +2081,7 @@
             <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
@@ -2086,13 +2089,13 @@
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
-                <Setter Property="Foreground" Value="#8c8c8c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
             </Style>
 
             <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="Foreground" Value="#434b5c"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="Margin" Value="0,0,20,0"/>

@@ -44,7 +44,7 @@
                 </Grid.RowDefinitions>
                 <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="SearchTextBox" Hint="{Binding Path= LocalizedResources.Search_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
                                       GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown" Margin="12"/>
-                <ListBox x:Name="PlacesList" Foreground="#434b5c" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
+                <ListBox x:Name="PlacesList" Foreground="{StaticResource HikeBlack}" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="25,0,25,20">
@@ -57,7 +57,7 @@
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="15,0,0,0">
                                     <TextBlock Text="{Binding title}" FontWeight="Light" FontSize="32" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding vicinity}" FontWeight="Light" FontSize="18" Foreground="#8c8c8c" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                                    <TextBlock Text="{Binding vicinity}" FontWeight="Light" FontSize="18" Foreground="{StaticResource HikeLightGrey}" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

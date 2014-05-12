@@ -90,11 +90,15 @@ namespace windows_client.utils
             }
         }
 
+        SolidColorBrush _hikeMsgBackground;
         public SolidColorBrush HikeMsgBackground
         {
             get
             {
-                return HikeBlue;
+                if (_hikeMsgBackground == null)
+                    _hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 178, 229, 255));
+
+                return _hikeMsgBackground;
             }
         }
 
@@ -138,15 +142,11 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush hikeBlue;
         public SolidColorBrush HikeBlue
         {
             get
             {
-                if (hikeBlue == null)
-                    hikeBlue = new SolidColorBrush(Color.FromArgb(255, 178, 229, 255));
-
-                return hikeBlue;
+                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
             }
         }
 
@@ -238,15 +238,11 @@ namespace windows_client.utils
 
         #region App Specific Colors
 
-        private SolidColorBrush phoneThemeColor;
         public SolidColorBrush PhoneThemeColor
         {
             get
             {
-                if (phoneThemeColor == null)
-                    phoneThemeColor = (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
-
-                return phoneThemeColor;
+                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
             }
         }
 

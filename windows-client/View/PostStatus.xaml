@@ -36,7 +36,7 @@
                 <toolkit:PhoneTextBox Grid.Column="2" MaxHeight="120" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
                                           TextChanged="txtStatus_TextChanged"/>
-            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="#8c8c8c" TextAlignment="Right"
+            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
                                       Text="140" Grid.Column="3" Margin="12,24,0,0" VerticalAlignment="Top"/>
         </Grid>
         <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,25,25,25" VerticalAlignment="Bottom" Height="48">

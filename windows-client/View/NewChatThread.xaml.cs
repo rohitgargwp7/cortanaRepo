@@ -6749,7 +6749,7 @@ namespace windows_client.View
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
             recordButton.Foreground = UI_Utils.Instance.White;
-            recordButtonGrid.Background = UI_Utils.Instance.HikeMsgBackground;
+            recordButtonGrid.Background = UI_Utils.Instance.HikeBlue;
             walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
             recordWalkieTalkieMessage();
         }

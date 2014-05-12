@@ -46,10 +46,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Name}" FontWeight="Light" TextTrimming="WordEllipsis" FontSize="32" Foreground="#434b5c"/>
+                                <TextBlock Text="{Binding Name}" FontWeight="Light" TextTrimming="WordEllipsis" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" Margin="0,0,0,0" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
                             <Image Grid.Column="2" Source="/View/images/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
