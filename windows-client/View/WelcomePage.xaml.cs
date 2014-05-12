@@ -121,19 +121,16 @@ namespace windows_client
             switch (welcomePivot.SelectedIndex)
             {
                 case 0:
-                    headerTxt.Text = AppResources.WelcomePage_Header_Txt1;
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     break;
                 case 1: 
-                    headerTxt.Text = AppResources.WelcomePage_Header_Txt2;
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     break;
                 case 2: 
-                    headerTxt.Text = AppResources.WelcomePage_Header_Txt3;
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];

@@ -11,16 +11,14 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
@@ -35,23 +33,23 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="ContactItem_Tap">
+                        <Grid Margin="0,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="ContactItem_Tap">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding AvatarImage}" Height="55" Width="55" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <Image Source="{Binding AvatarImage}" Height="60" Width="60" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0" Grid.Column="1">
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="22,0" Grid.Column="1">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontSize="32" Foreground="Black"/>
+                                <TextBlock Text="{Binding Name}" FontWeight="Light" TextTrimming="WordEllipsis" FontSize="32" Foreground="#434b5c"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <TextBlock Text="{Binding ContactListLabel}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="18" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="#8c8c8c" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
                             <Image Grid.Column="2" Source="/View/images/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>

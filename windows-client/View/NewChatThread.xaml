@@ -64,9 +64,8 @@
         </Style>
     </phone:PhoneApplicationPage.Resources>
 
-
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -76,74 +75,67 @@
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
         <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
-            <Image x:Name="chatBackground" Opacity="0.7" Stretch="None">
-                <Image.RenderTransform>
-                    <RotateTransform x:Name="chatBackgroundRotateTransform"/>
-                </Image.RenderTransform>
-            </Image>
+            <Image x:Name="chatBackground" Stretch="None"/>
         </Border>
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
-            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Opacity="0.75"/>
+            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="#1a000000" BorderThickness="0,0,0,2"/>
             <StackPanel Orientation="Vertical">
                 <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed">
                     <Grid HorizontalAlignment="Stretch" Margin="12,0">
+                        <TextBlock Grid.Column="0" Margin="12,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White" FontWeight="Light"/>
+                    </Grid>
+                </Border>
+                <Grid Height="90">
+                    <Grid Name="userHeader" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="12,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="LightGray"/>
-                        <Image Grid.Column="1" Source="images\mute_icon_main.png" VerticalAlignment="Center" HorizontalAlignment="Right" Height="20" Width="20" Margin="0,5,12,5"/>
-                    </Grid>
-                </Border>
-                <Grid Name="userHeader" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Tap="userImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Image Name="userImage" Height="69" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    </Grid>
-                    <StackPanel Margin="9,5,0,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Tap="userHeader_Tap">
-                        <TextBlock x:Name="userName" LineStackingStrategy="BaselineToBaseline" FontFamily="Segoe WP SemiLight" FontSize="36" VerticalAlignment="Top" Margin="0,-10,0,0" Foreground="White"/>
-                        <StackPanel Margin="2,0,0,0" Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
-                            <Image x:Name="onlineStatus" MaxHeight="15" MaxWidth="15" Margin="0,0,5,0" Visibility="Collapsed" Opacity="0.75"/>
-                            <TextBlock x:Name="lastSeenTxt" Text="" FontSize="18" Foreground="White" Opacity="0.75"/>
+                        <Grid Tap="userImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Image Name="userImage" Height="65" Width="65" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Grid>
+                        <StackPanel Margin="12,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Tap="userHeader_Tap">
+                            <TextBlock x:Name="userName" LineStackingStrategy="BaselineToBaseline" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" VerticalAlignment="Top" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
+                                <Image x:Name="onlineStatus" VerticalAlignment="Center" MaxHeight="13" MaxWidth="13" Margin="0,0,10,0" Visibility="Collapsed"/>
+                                <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Light"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap" Margin="0,0" Background="Transparent">
-                        <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Margin="22,0,5,2">
-                            <Button.Content>
-                                <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Button.Content>
-                        </Button>
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap" Margin="0,0" Background="Transparent">
+                            <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Margin="22,0,0,2">
+                                <Button.Content>
+                                    <Image x:Name="chatPaint" Source="/view/images/paint.png" Height="60" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid x:Name="chatThemeHeader" Height="69" Margin="12" Visibility="Collapsed" HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid HorizontalAlignment="Right" MinHeight="60" MinWidth="60" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click" Background="Transparent">
-                        <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,8,0,0" toolkit:TiltEffect.IsTiltEnabled="True">
-                            <Button.Content>
-                                <Image x:Name="cancelChatThemeImage" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Button.Content>
-                        </Button>
-                    </Grid>
-                    <TextBlock x:Name="chatThemeHeaderTxt" FontFamily="Segoe WP SemiLight" FontSize="38" 
+                    <Grid x:Name="chatThemeHeader" Margin="12" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid HorizontalAlignment="Right" MinHeight="60" MinWidth="60" VerticalAlignment="Stretch" Tap="chatPaintCancel_Click" Background="Transparent">
+                            <Button Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" toolkit:TiltEffect.IsTiltEnabled="True">
+                                <Button.Content>
+                                    <Image x:Name="cancelChatThemeImage" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                        <TextBlock x:Name="chatThemeHeaderTxt" FontFamily="Segoe WP SemiLight" FontSize="38" 
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
-                    <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,0,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>
+                        <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}" VerticalAlignment="Center" Margin="0,0,0,0"  toolkit:TiltEffect.IsTiltEnabled="True"/>
+                    </Grid>
                 </Grid>
             </StackPanel>
         </Grid>
 
 
-        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,-2,0,0">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.9"/>
             <Grid>
                 <Grid.RowDefinitions>
@@ -164,13 +156,26 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <phone:LongListSelector Name="llsMessages" Style="{StaticResource llsMessagesStyle}"  ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch" Margin="0,0,0,5" >
+            <Grid x:Name="nudgeTut" Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Visibility="Collapsed">
+                <Border x:Name="nudgeBorder" CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" HorizontalAlignment="Stretch" />
+                <Grid HorizontalAlignment="Stretch" Margin="12,3" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="nudgeImage" Height="16" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,10,0" HorizontalAlignment="Left" Source="images/nudge_sent.png"/>
+                    <TextBlock x:Name="nudgeText" Grid.Column="1" TextWrapping="Wrap" FontSize="16" 
+                               Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" FontWeight="Light" Margin="3,0,0,0" 
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{Binding ChatForegroundColor}"/>
+                </Grid>
+            </Grid>
+            <phone:LongListSelector Name="llsMessages" Style="{StaticResource llsMessagesStyle}"  ItemUnrealized="llsMessages_ItemUnRealized" ItemRealized="llsMessages_ItemRealized" SelectionChanged="ChatMessageSelected" DoubleTap="MessageList_DoubleTap" HorizontalContentAlignment="Stretch">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <templateSelector:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
                             <templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                                 <DataTemplate>
-                                    <Grid Background="Transparent" Margin="12,-5,12,5" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
+                                    <Grid Background="Transparent" Margin="12,-15,12,20" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
@@ -192,7 +197,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                                 <DataTemplate>
-                                    <Grid Background="Transparent" Margin="12,5,12,5" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                    <Grid Background="Transparent" Margin="12,-15,12,20" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
@@ -214,31 +219,31 @@
                             </templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Right" Margin="0,-8,12,5" >
+                                    <Grid HorizontalAlignment="Right" Margin="0,-23,12,20" >
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                             <templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Right" Margin="0,-8,24,5" >
+                                    <Border HorizontalAlignment="Right" Margin="0,-23,24,20" CornerRadius="2">
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
-                                    </Grid>
+                                    </Border>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
-                                    <Grid Margin="12">
-                                        <Border BorderThickness="1" Opacity="0.4" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="Black" HorizontalAlignment="Stretch" />
-                                        <Grid HorizontalAlignment="Stretch" Margin="12 3">
+                                    <Grid Margin="24,3,24,20">
+                                        <Border CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
+                                        <Grid HorizontalAlignment="Stretch" Margin="12 3" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Image Height="20" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,10,0" HorizontalAlignment="Left"
+                                            <Image Height="16" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,10,0" HorizontalAlignment="Left"
                                                    Source="{Binding NotificationImage}"/>
-                                            <TextBlock Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
-                                                       Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Margin="3,-5,0,0" 
+                                            <TextBlock Height="Auto" Grid.Column="1" TextWrapping="Wrap" FontSize="16" 
+                                                       Text="{Binding DispMessage}" FontWeight="Light" Margin="3,0,0,0" 
                                                        VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{Binding ChatForegroundColor}"/>
                                         </Grid>
                                     </Grid>
@@ -246,14 +251,14 @@
                             </templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                                 <DataTemplate x:Name="dtTypingNotificationBubble" >
-                                    <Grid HorizontalAlignment="Left" Margin="12 10 0 10">
+                                    <Grid HorizontalAlignment="Left" Margin="12,0,0,20">
                                         <Image Source="{Binding TypingNotificationImage}" Height="20" Width="40" HorizontalAlignment="Left"></Image>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
                                 <DataTemplate x:Name="dtRecievedBubbleText" >
-                                    <Grid Background="Transparent" Margin="12 0 0 14"  HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
@@ -261,22 +266,22 @@
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="14" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                        <Grid Grid.Row="1" Background="{Binding BubbleBackGroundColor}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                        <Grid Grid.Column="1">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.RowSpan="3" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Grid.Row="1" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Grid.Row="1" Text="{Binding DispMessage}" 
+                                                                 FontFamily="Segoe WP SemiLight" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,0,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,5,12,6" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                         </Grid>
                                     </Grid>
@@ -284,7 +289,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
                                 <DataTemplate x:Name="dtRecievedBubbleFile">
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -297,17 +302,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="14" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <!--to maintain width-->
-                                            <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                            <Grid Grid.Row="1" HorizontalAlignment="Left" Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                            <Grid Grid.Column="1" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
@@ -344,7 +350,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                                 <DataTemplate x:Name="dtRecievedBubbleLocation" >
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -352,17 +358,18 @@
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="14" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <!--to maintain width-->
-                                        <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0" Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                        <Grid Grid.Row="1" HorizontalAlignment="Left" Background="{Binding BubbleBackGroundColor}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                        <Grid Grid.Column="1" HorizontalAlignment="Left">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
+                                            <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                             <Grid Grid.Row="0" MaxWidth="400" Margin="12,12,12,0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -390,7 +397,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                                 <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -403,16 +410,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="14" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                            <Grid Grid.Row="1" HorizontalAlignment="Left" Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                            <Grid Grid.Column="1" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
@@ -460,7 +469,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                                 <DataTemplate x:Name="dtRecievedBubbleNudge">
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="24,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -483,7 +492,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
                                 <DataTemplate x:Name="dtRecievedBubbleContact" >
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -491,16 +500,18 @@
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="14" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                        <Grid Grid.Row="1" HorizontalAlignment="Left" Background="{Binding BubbleBackGroundColor}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                        <Grid Grid.Column="1" HorizontalAlignment="Left">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
+                                            <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                             <Grid Grid.Row="0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -522,7 +533,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleUnknownFile>
                                 <DataTemplate x:Name="dtRecievedBubbleUnknownFile" >
-                                    <Grid Background="Transparent" Margin="12 0 0 14" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -535,16 +546,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="14" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Path Data="M0,0 L1,1 L0,1" HorizontalAlignment="Left" Margin="12,0,0,0"  Fill="{Binding BubbleBackGroundColor}" Stretch="Fill" UseLayoutRounding="False" Width="16"/>
-                                            <Grid Grid.Row="1" HorizontalAlignment="Left" Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
+                                            <Grid Grid.Column="1" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid Grid.Row="0">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
@@ -595,7 +608,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleUnknownFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                                 <DataTemplate x:Name="dtRecievedSticker">
-                                    <Grid Background="Transparent" Margin="12 5 0 5"  HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="24,0,0,20"  HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
@@ -615,7 +628,7 @@
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Row="0" HorizontalAlignment="Left" Source="{Binding MessageImage}" Stretch="None"/>
                                                 <Grid Grid.Row="1" HorizontalAlignment="Left" Margin="5,12">
-                                                    <Border Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
+                                                    <Border CornerRadius="4" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" FontWeight="Thin" Margin="5,0" HorizontalAlignment="Right" FontSize="18" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
@@ -643,7 +656,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
                                 <DataTemplate x:Name="dtSentBubbleText" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
@@ -652,34 +665,35 @@
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="14" />
-                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
                                         <Grid Grid.Row="0" HorizontalAlignment="Right">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}"/>
-                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" Width="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
-                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,12,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
+                                            <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
+                                            <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
+                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,0,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
                                             <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,0,6">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
                                         </Grid>
-                                        <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"/>
+                                        <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" 
+                                              StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
                                 <DataTemplate x:Name="DtSentBubbleLocation" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right"   >
+                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right"   >
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -696,16 +710,16 @@
                                             <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                         </Grid>
                                         <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="14" />
-                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
                                             <Grid Grid.Row="0" HorizontalAlignment="Right">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}" />
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid Grid.Row="0" MaxWidth="400" Margin="12,12,12,0">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
@@ -729,18 +743,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
-                                            <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" Fill="{Binding BubbleBackGroundColor}"  />
+                                            <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                                 <DataTemplate x:Name="dtSentBubbleFile" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -771,15 +785,16 @@
                                             </Button>
                                         </Grid>
                                         <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="14" />
-                                            </Grid.RowDefinitions>
-                                            <Grid Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid HorizontalAlignment="Center">
                                                     <Image MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                     <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
@@ -789,18 +804,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
-                                            <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                            <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                                 <DataTemplate x:Name="dtSentBubbleAudioFile" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -831,15 +846,16 @@
                                             </Button>
                                         </Grid>
                                         <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="14" />
-                                            </Grid.RowDefinitions>
-                                            <Grid Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid Margin="10">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="45"/>
@@ -860,18 +876,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
-                                            <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                            <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
                                 <DataTemplate x:Name="dtSentBubbleNudge" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,0,24,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -900,7 +916,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
                                 <DataTemplate x:Name="dtSentBubbleContact" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent" Margin="0,0,12,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -917,16 +933,16 @@
                                             <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                         </Grid>
                                         <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="14" />
-                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
                                             <Grid Grid.Row="0" HorizontalAlignment="Right">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <Border Grid.RowSpan="2" Background="{Binding BubbleBackGroundColor}" />
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid Grid.Row="0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
@@ -940,18 +956,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
-                                            <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                            <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleUnknownFile>
                                 <DataTemplate x:Name="dtSentBubbleUnknownFile" >
-                                    <Grid Background="Transparent" Margin="0 12 12 10" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent" Margin="0,0,12,20" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -982,15 +998,16 @@
                                             </Button>
                                         </Grid>
                                         <Grid Grid.Column="1">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="14" />
-                                            </Grid.RowDefinitions>
-                                            <Grid Background="{Binding BubbleBackGroundColor}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
+                                                <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                 <Grid Margin="10 10 10 0" >
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
@@ -1013,18 +1030,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
+                                                    <Image Source="{Binding SdrImage}" Opacity="0.7" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Right" Margin="5,0"/>
                                                     <TextBlock Text="{Binding TimeStampStr}" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,12,0" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
                                             </Grid>
-                                            <Path Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16"  Fill="{Binding BubbleBackGroundColor}"  />
+                                            <Path Data="M0,0 L1,1 L0,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="-3.5,12,0,0" StrokeThickness="2" Canvas.ZIndex="1" Grid.Column="1" Stretch="Uniform" UseLayoutRounding="False" Width="12" Fill="{Binding BubbleBackGroundColor}"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleUnknownFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentSticker>
                                 <DataTemplate x:Name="dtSentSticker">
-                                    <Grid Background="Transparent" HorizontalAlignment="Right" Margin="0 5 12 5">
+                                    <Grid Background="Transparent" HorizontalAlignment="Right"  Margin="0,0,24,20">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
@@ -1043,7 +1060,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Grid.ColumnSpan="2" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
+                                                <Border Grid.ColumnSpan="2" CornerRadius="4" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
                                                 <Grid Width="32" Margin="5,0" HorizontalAlignment="Right">
                                                     <Image Source="{Binding SdrImage}" Visibility="{Binding SdrImageVisibility}" Height="13" HorizontalAlignment="Center"/>
                                                 </Grid>
@@ -1064,7 +1081,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentSticker>
                             <templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
-                                    <Grid Margin="0,5" HorizontalAlignment="Stretch">
+                                    <Grid Margin="0,0,0,20" HorizontalAlignment="Stretch">
                                         <Border Background="Black" Opacity="0.2"/>
                                         <Grid Margin="5,10">
                                             <Grid.ColumnDefinitions>
@@ -1089,7 +1106,7 @@
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
             <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" x:Name="JumpToBottomGrid" Tap="JumpToBottom_Tapped" Canvas.ZIndex="3" Height="45" Visibility="Collapsed">
-                <Border x:Name="jumpToBottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.85"/>
+                <Border x:Name="jumpToBottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#434b5c" Opacity="0.95"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <Image MaxHeight="15" Margin="0,5,0,0" Source="images/downArrow.png" VerticalAlignment="Center" />
                     <TextBlock Name="txtJumpToBttom" Margin="10,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -1133,17 +1150,17 @@
                 <TextBlock Name="txtMsgCharCount"></TextBlock>
             </StackPanel>
 
-            <Grid Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" Background="#323232">
-                <Grid Name="gridEmoticons" Margin="12,0,12,0" Visibility="Collapsed">
+            <Grid Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" MinHeight="319" Background="#323232">
+                <Grid Name="gridEmoticons" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" MaxHeight="240">
-                        <controls:PivotItem Margin="0,0,0,0">
+                    <controls:Pivot Name="emoticonPivot" Grid.Row="0" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="White" MaxHeight="240">
+                        <controls:PivotItem Margin="0,-10">
                             <Grid x:Name="emotGridRecent" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
                                 <Grid Name="gridShowRecents">
-                                    <ListBox Height="230" Name="emotListRecent" Grid.Row="0" Grid.Column="0" Visibility="Visible" SelectionChanged="emotListRecent_Tap">
+                                    <ListBox Name="emotListRecent" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Visibility="Visible" SelectionChanged="emotListRecent_Tap">
                                         <ListBox.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
@@ -1163,9 +1180,9 @@
                                 </Grid>
                             </Grid>
                         </controls:PivotItem>
-                        <controls:PivotItem Margin="0,8,0,0">
+                        <controls:PivotItem Margin="0,-10">
                             <Grid x:Name="emotGrid0">
-                                <ListBox Height="230" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
+                                <ListBox Name="emotList0" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList0_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
@@ -1181,16 +1198,14 @@
                                 </ListBox>
                             </Grid>
                         </controls:PivotItem>
-                        <controls:PivotItem Margin="0,8,0,0">
+                        <controls:PivotItem Margin="0,-10">
                             <Grid x:Name="emotGrid1">
-
-                                <ListBox Height="230" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
+                                <ListBox Name="emotList1" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
-
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="40" Width="40" Source="{Binding}">
@@ -1200,17 +1215,15 @@
                                 </ListBox>
                             </Grid>
                         </controls:PivotItem>
-                        <controls:PivotItem Margin="0,8,0,0">
+                        <controls:PivotItem Margin="0,-10">
                             <Grid x:Name="emotGrid2">
-                                <ListBox Height="230" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
+                                <ListBox Name="emotList2" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
-
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
                                             </Image>
@@ -1221,16 +1234,13 @@
                         </controls:PivotItem>
                         <controls:PivotItem Margin="0,8,0,0" Name="indianEmoticonPivot">
                             <Grid x:Name="emotGrid3">
-
-                                <ListBox Height="230" Name="emotList3" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList3_Tap">
+                                <ListBox Name="emotList3" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList3_Tap">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <toolkit:WrapPanel ItemHeight="65" ItemWidth="65"/>
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
-
                                     <ListBox.ItemTemplate>
-
                                         <DataTemplate>
                                             <Image Margin="5,5,5,5" Height="45" Width="45" Source="{Binding}">
                                             </Image>
@@ -1240,7 +1250,7 @@
                             </Grid>
                         </controls:PivotItem>
                     </controls:Pivot>
-                    <Grid Height="50" Grid.Row="1" VerticalAlignment="Bottom" Margin="-12,15,-12,1" Name="gridEmoticonLabels">
+                    <Grid Height="50" Grid.Row="1" VerticalAlignment="Bottom" Margin="-12,12,-12,1" Name="gridEmoticonLabels">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -1274,7 +1284,6 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-
 
                     <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1" SelectionChanged="StickerCategory_SelectionChanged">
                         <ListBox.ItemsPanel>
@@ -1397,21 +1406,7 @@
                 <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
             </Grid>
         </Grid>
-        <Grid Canvas.ZIndex="4" x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Width="300" VerticalAlignment="Center" Background="White">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,10" Grid.Row="0" Height="80"/>
-            <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="Black" HorizontalAlignment="Center" Grid.Row="1"/>
-            <TextBlock Margin="0,5" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="Black" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
-            <Grid Grid.Row="3">
-                <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Background="#2e91d3" Height="65" Width="140" FontSize="20" Foreground="White" Tap="dismissNudgeTutorial_Tap"/>
-            </Grid>
-        </Grid>
-
+       
         <Grid Canvas.ZIndex="4" x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

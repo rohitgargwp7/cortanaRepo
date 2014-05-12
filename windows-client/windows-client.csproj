@@ -327,9 +327,6 @@
     <Compile Include="View\Account.xaml.cs">
       <DependentUpon>Account.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\RecordMedia.xaml.cs">
-      <DependentUpon>RecordMedia.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Notifications.xaml.cs">
       <DependentUpon>Notifications.xaml</DependentUpon>
     </Compile>
@@ -478,10 +475,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\RecordMedia.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Notifications.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -560,6 +553,7 @@
     <Content Include="View\images\avatars\default_avatar_pink.png" />
     <Content Include="View\images\avatars\default_avatar_purple.png" />
     <Content Include="View\images\block.png" />
+    <Content Include="View\images\close_white.png" />
     <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />
@@ -677,8 +671,6 @@
     <Content Include="View\images\AppBar\icon_delete.png" />
     <Content Include="View\images\icon_file_attachment.png" />
     <Content Include="View\images\add.png" />
-    <Content Include="View\images\icon_group_chat.png" />
-    <Content Include="View\images\icon_group_chat_gray.png" />
     <Content Include="View\images\icon_sending_CT.png" />
     <Content Include="View\images\icon_sending_grey.png" />
     <Content Include="View\images\ic_delivered_CT.png" />
@@ -725,7 +717,6 @@
     <Content Include="View\images\block_list_icon_black.png" />
     <Content Include="View\images\AppBar\icon_call.png" />
     <Content Include="View\images\chat_sms_error.png" />
-    <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\deleted_white_icon.png" />
     <Content Include="View\images\downArrow.png" />
     <Content Include="View\images\emoticons\auto4.png" />
@@ -766,15 +757,10 @@
     <Content Include="View\images\notification_black.png" />
     <Content Include="View\images\AppBar\icon_pause.png" />
     <Content Include="View\images\AppBar\icon_message.png" />
-    <Content Include="View\images\icon_play.png" />
-    <Content Include="View\images\icon_play_stop.png" />
-    <Content Include="View\images\icon_record.png" />
     <Content Include="View\images\AppBar\icon_status.png" />
     <Content Include="View\images\AppBar\icon_record_appbar.png" />
     <Content Include="View\images\icon_sending.png" />
-    <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\AppBar\icon_stop_appbar.png" />
-    <Content Include="View\images\invite.png" />
     <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\LocationPin.png" />
@@ -822,8 +808,6 @@
     <Content Include="View\images\resume_white_ftr.png" />
     <Content Include="View\images\search_icon.png" />
     <Content Include="View\images\settings_icon_dark.png" />
-    <Content Include="View\images\close_white.png" />
-    <Content Include="View\images\close_black.png" />
     <Content Include="View\images\stickers\categorySets\active_bolly.png" />
     <Content Include="View\images\stickers\categorySets\avatars.png" />
     <Content Include="View\images\stickers\categorySets\avatars_i.png" />
@@ -896,7 +880,6 @@
     <Content Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
-    <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\timeline_friend.png" />
     <Content Include="View\images\timeline_status.png" />
     <Content Include="View\images\tw_icon.png" />

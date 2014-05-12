@@ -40,7 +40,7 @@
             <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
             <SolidColorBrush x:Key="LastMessageColor" Color="#8c8c8c"/>
-            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
+            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#e6e9ee"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -703,7 +703,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
             
             <Style x:Key="AddAsFriendButtonStyle" TargetType="Button" BasedOn="{StaticResource YesButtonStyle}">
                 <Setter Property="MinWidth" Value="180"/>
@@ -957,6 +956,7 @@
                 <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
                 <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
                 <Setter Property="Padding" Value="{StaticResource PhoneBorderThickness}"/>
+                <Setter Property="CaretBrush" Value="#565d6e"/>
                 <Setter Property="ActualHintVisibility" Value="Visible"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -1812,7 +1812,7 @@
 
             <DataTemplate x:Key="ForwardToGroupHeaderTemplate">
                 <Border Background="Transparent">
-                    <TextBlock Text="{Binding Title}" Style="{StaticResource SubHeaderTextBlock}" Margin="0,24,0,0"
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource SubHeaderTextBlock}" Margin="0,24,0,12"
                             VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </Border>
             </DataTemplate>
@@ -1820,7 +1820,7 @@
             <DataTemplate x:Key="AlphabeticGroupHeaderTemplate">
                 <Border Background="Transparent">
                     <Border Background="{StaticResource HikeBlueHeader}" 
-                        Width="52" Height="52" HorizontalAlignment="Left" Margin="0,12,0,18">
+                        Width="60" Height="60" HorizontalAlignment="Left" Margin="0,12,0,18">
                         <TextBlock Text="{Binding Title}" 
                                 Foreground="White" FontSize="24" Margin="12,0,0,5"
                                 Style="{StaticResource PhoneTextLargeStyle}"
@@ -2099,7 +2099,7 @@
             </Style>
 
             <Style x:Key="UnreadNotificationCounterContainerStyle" TargetType="Border">
-                <Setter Property="Background" Value="#E65939"/>
+                <Setter Property="Background" Value="{StaticResource HikeBlueHeader}"/>
                 <Setter Property="Height" Value="22"/>
                 <Setter Property="MinWidth" Value="22"/>
                 <Setter Property="BorderThickness" Value="0"/>

@@ -62,7 +62,7 @@
                     <Image x:Name="friendsTabImage" Stretch="Uniform" Height="26" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
                 <Grid Grid.Column="3" Tap="notification_Tap" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
-                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="44,0,0,0" Canvas.ZIndex="1">
+                    <Border x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource UnreadNotificationCounterContainerStyle}" Margin="44,0,0,0" Canvas.ZIndex="1" Background="#e65939">
                         <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}"/>
                     </Border>
                     <Image x:Name="statusTabImage" Stretch="Uniform" Height="24" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -173,7 +173,7 @@
                                                 <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="White"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
-                                        <Image Source="{Binding AvatarImage}" Height="52"/>
+                                        <Image Source="{Binding AvatarImage}" Height="60"/>
                                         <Grid Grid.Column="1" Margin="22,0,0,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -209,7 +209,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid HorizontalAlignment="Center" MinWidth="52" Tap="hikeContacts_Tap" >
-                                            <Image Source="{Binding AvatarImage}" MaxHeight="52" MaxWidth="52" HorizontalAlignment="Center"/>
+                                            <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
                                         </Grid>
                                         <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="White">
                                             <Grid.RowDefinitions>

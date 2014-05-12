@@ -110,7 +110,7 @@ namespace windows_client
                 nameErrorTxt.Opacity = 1;
                 return;
             }
-            else if (String.IsNullOrEmpty(ac_age) || String.IsNullOrEmpty(ac_name))
+            else if (String.IsNullOrEmpty(ac_name))
             {
                 isClicked = false;
                 msgTxtBlk.Opacity = 0;
@@ -149,8 +149,8 @@ namespace windows_client
                 object obj = null;
                 if (App.appSettings.TryGetValue(App.ACCOUNT_NAME, out obj))
                 {
-                        txtBxEnterName.Text = (string)obj;
-                        txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
+                    txtBxEnterName.Text = (string)obj;
+                    txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
                 }
 
                 if (App.appSettings.TryGetValue(App.ACCOUNT_AGE, out obj))
@@ -197,15 +197,15 @@ namespace windows_client
                 if (State.ContainsKey("img"))
                 {
                     fullViewImageBytes = (byte[])State["img"];
-                    
+
                     MemoryStream memStream = new MemoryStream(fullViewImageBytes);
                     memStream.Seek(0, SeekOrigin.Begin);
 
                     if (profileImage == null)
                         profileImage = new BitmapImage();
-                    
+
                     profileImage.SetSource(memStream);
-                    
+
                     reloadImage = false;
                 }
                 else
@@ -235,8 +235,6 @@ namespace windows_client
                     }
                 }
             }
-
-            txtBxEnterName.Focus();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

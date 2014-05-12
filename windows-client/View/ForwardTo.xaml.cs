@@ -547,14 +547,15 @@ namespace windows_client.View
         private void refreshContacts_Click(object sender, EventArgs e)
         {
             this.Focus();
-            contactsListBox.IsHitTestVisible = false;
 
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
+
+            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
+            contactsListBox.IsHitTestVisible = false;
             DisableApplicationBar();
 
             if (progressIndicator == null)

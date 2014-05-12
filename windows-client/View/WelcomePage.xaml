@@ -12,28 +12,7 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:my="clr-namespace:Microsoft.Phone.Controls.Unsupported">
-
-    <toolkit:TransitionService.NavigationInTransition>
-        <toolkit:NavigationInTransition>
-            <toolkit:NavigationInTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardIn"/>
-            </toolkit:NavigationInTransition.Backward>
-            <toolkit:NavigationInTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardIn"/>
-            </toolkit:NavigationInTransition.Forward>
-        </toolkit:NavigationInTransition>
-    </toolkit:TransitionService.NavigationInTransition>
-    <toolkit:TransitionService.NavigationOutTransition>
-        <toolkit:NavigationOutTransition>
-            <toolkit:NavigationOutTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardOut"/>
-            </toolkit:NavigationOutTransition.Backward>
-            <toolkit:NavigationOutTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardOut"/>
-            </toolkit:NavigationOutTransition.Forward>
-        </toolkit:NavigationOutTransition>
-    </toolkit:TransitionService.NavigationOutTransition>
-
+    
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,11 +23,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="0,60,0,0" MaxWidth="350" TextAlignment="Center" x:Name="headerTxt" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
-        <Grid Grid.Row="1" MinHeight="40">
+        <Grid Grid.Row="0" MinHeight="50">
             <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
         </Grid>
-        <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,-20">
+        <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,-20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -56,15 +34,36 @@
             </Grid.RowDefinitions>
             <phone:Pivot x:Name="welcomePivot" SelectionChanged="Pivot_SelectionChanged" Grid.ColumnSpan="2">
                 <phone:PivotItem>
-                    <Image Source="/view/images/FTUE/p1.png" Height="230" Stretch="Uniform"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="0,0,0,60" MaxWidth="350" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_Header_Txt1, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+                        <Image Grid.Row="1" Source="/view/images/FTUE/p1.png" Height="230" Stretch="Uniform"/>
+                    </Grid>
                 </phone:PivotItem>
 
                 <phone:PivotItem>
-                    <Image Source="/view/images/FTUE/p2.png" Height="230" Stretch="Uniform"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="0,0,0,60" MaxWidth="350" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_Header_Txt2, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+                        <Image Grid.Row="1" Source="/view/images/FTUE/p2.png" Height="230" Stretch="Uniform"/>
+                    </Grid>
                 </phone:PivotItem>
 
                 <phone:PivotItem>
-                    <Image Source="/view/images/FTUE/p3.png" Height="230" Stretch="Uniform"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="0,0,0,60" MaxWidth="350" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_Header_Txt3, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
+                        <Image Grid.Row="1" Source="/view/images/FTUE/p3.png" Height="230" Stretch="Uniform"/>
+                    </Grid>
                 </phone:PivotItem>
             </phone:Pivot>
         </Grid>
@@ -87,7 +86,7 @@
         <Grid Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20">
             <StackPanel Grid.Row="1" x:Name="termsGrid" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <HyperlinkButton Name="termsLink" Height="70" Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" FontSize="18" FontStyle="Normal" Tap="Privacy_Tap" Foreground="#cccccc"/>
-                <TextBlock FontSize="18" TextWrapping="Wrap" Margin="24,-10,24,0" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Foreground="#cccccc"/>
+                <TextBlock FontSize="18" TextWrapping="Wrap" MaxWidth="400" Margin="24,-10,24,0" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Foreground="#cccccc"/>
             </StackPanel>
         </Grid>
     </Grid>

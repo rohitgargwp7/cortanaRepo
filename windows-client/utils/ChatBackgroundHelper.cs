@@ -21,6 +21,7 @@ namespace windows_client.utils
 
         public List<ChatBackground> BackgroundList;
         public Dictionary<String, ChatThemeData> ChatBgMap;
+        public Dictionary<String, WriteableBitmap> ChatBgCache = new Dictionary<string, WriteableBitmap>();
 
         private static object readWriteLock = new object();
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -290,8 +291,8 @@ namespace windows_client.utils
             {
                 ID = "24",
                 Background = "#ff94be38",
-                HeaderColor = "#ff94be38",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff75a69a",
+                SentBubbleBackground = "#ffdcffa0",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -306,8 +307,8 @@ namespace windows_client.utils
             {
                 ID = "25",
                 Background = "#ff3c4d4b",
-                HeaderColor = "#ff3c4d4b",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff4a5957",
+                SentBubbleBackground = "#ffffd7ac",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -322,7 +323,7 @@ namespace windows_client.utils
             {
                 ID = "26",
                 Background = "#ff2766ab",
-                HeaderColor = "#ff2766ab",
+                HeaderColor = "#ff2e5ba0",
                 SentBubbleBackground = "#e5ffffff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",

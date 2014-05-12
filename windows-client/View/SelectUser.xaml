@@ -45,15 +45,15 @@
                           JumpListStyle="{StaticResource AlphabeticLongListSelectorJumpListStyle}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,12,25,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid Margin="0,7,25,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding AvatarImage}" Height="55" Width="55" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <Image Source="{Binding AvatarImage}" Height="60" Width="60" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0" Tap="ContactItem_Tap" Grid.Column="1">
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="22,0" Tap="ContactItem_Tap" Grid.Column="1">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -65,7 +65,7 @@
                                 </StackPanel>
                             </Grid>
                             <CheckBox Style="{StaticResource BlockUnBlockCheckBox}" Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"
-                                      Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                      Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,0"/>
                         </Grid>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>

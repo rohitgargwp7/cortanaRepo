@@ -1248,10 +1248,6 @@ namespace windows_client.View
 
                             this.ApplicationBar = appBar;
                         }
-                        else if (chatThreadCount == 2)
-                        {
-                            showNudgeTute();
-                        }
                         else
                         {
                             App.ViewModel.DictInAppTip.TryGetValue(7, out tip);
@@ -1269,7 +1265,7 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
                     }
                     else
-                        showNudgeTute();
+                        this.ApplicationBar = appBar;
                 }
                 else
                     this.ApplicationBar = appBar;
@@ -1545,11 +1541,13 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    nudgeTut.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
                     this.UpdateLayout();
                 });
+
                 NetworkManager.turnOffNetworkManager = false;
                 return;
             }
@@ -1558,6 +1556,7 @@ namespace windows_client.View
             JArray ids = new JArray();
             List<long> dbIds = new List<long>();
             int count = 0;
+
             for (i = 0; i < messagesList.Count; i++)
             {
                 ConvMessage cm = messagesList[i];
@@ -1831,6 +1830,8 @@ namespace windows_client.View
                 if (JumpToBottomGrid.Visibility == Visibility.Visible)
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
 
+                nudgeTut.Visibility = Visibility.Visible;
+
                 ClearChat();
 
                 ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
@@ -2074,6 +2075,9 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
+
+            if(nudgeTut.Visibility == Visibility.Visible)
+                nudgeTut.Visibility = Visibility.Collapsed;
 
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
@@ -3023,6 +3027,9 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
+            if (ocMessages.Count == 0)
+                nudgeTut.Visibility = Visibility.Visible;
+
             if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
             {
                 ocMessages.Remove(_h2hofflineToolTip);
@@ -3062,7 +3069,6 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-
                     if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         obj.LastMessage = AppResources.Image_Txt;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -3368,9 +3374,8 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
                 return;
             }
-
-            NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
+            ShowWalkieTalkie();
         }
 
         private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3502,7 +3507,6 @@ namespace windows_client.View
                 {
                     lastSeenTxt.Text = lastSeenStatus;
                     onlineStatus.Visibility = Visibility.Visible;
-                    userName.FontSize = 36;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
                     if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
@@ -5539,34 +5543,6 @@ namespace windows_client.View
 
         #region Nudge
 
-        private void showNudgeTute()
-        {
-            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-            {
-                EnableDisableUI(false);
-                overlayBorder.Visibility = Visibility.Visible;
-                nudgeTuteGrid.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                this.ApplicationBar = appBar;
-            }
-        }
-
-        private void dismissNudgeTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            overlayBorder.Visibility = Visibility.Collapsed;
-            nudgeTuteGrid.Visibility = Visibility.Collapsed;
-            this.ApplicationBar = appBar;
-            EnableDisableUI(true);
-
-            App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
-
-            int val;
-            App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out val);
-            App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, ++val);
-        }
-
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (isGroupChat && !isGroupAlive)
@@ -5743,6 +5719,10 @@ namespace windows_client.View
                 shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = UI_Utils.Instance.Black;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
                 doneButton.Background = UI_Utils.Instance.Black;
+                nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
+                nudgeBorder.Background = UI_Utils.Instance.White;
+                nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
+                nudgeText.Foreground = UI_Utils.Instance.Black;
             }
             else
             {
@@ -5752,6 +5732,10 @@ namespace windows_client.View
                 shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
                 doneButton.Background = UI_Utils.Instance.Black40Opacity;
+                nudgeBorder.BorderBrush = UI_Utils.Instance.White;
+                nudgeBorder.Background = App.ViewModel.SelectedBackground.HeaderBackground;
+                nudgeImage.Source = UI_Utils.Instance.NudgeSent;
+                nudgeText.Foreground = UI_Utils.Instance.White;
             }
 
             if (isBubbleColorChanged)
@@ -5781,6 +5765,13 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground == null)
                 return;
 
+            if (ChatBackgroundHelper.Instance.ChatBgCache.ContainsKey(App.ViewModel.SelectedBackground.ID))
+            {
+                _background = ChatBackgroundHelper.Instance.ChatBgCache[App.ViewModel.SelectedBackground.ID];
+                chatBackground.Source = _background;
+                PostChangeBackgroundOperations();
+            }
+            
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
@@ -5832,12 +5823,18 @@ namespace windows_client.View
                     _background = source;
                 }
 
+                ChatBackgroundHelper.Instance.ChatBgCache[App.ViewModel.SelectedBackground.ID] = _background;
                 chatBackground.Source = _background;
 
-                _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
-
-                headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
+                PostChangeBackgroundOperations();
             };
+        }
+
+        private void PostChangeBackgroundOperations()
+        {
+            _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
+
+            headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
         }
 
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -6067,7 +6064,7 @@ namespace windows_client.View
         }
 
         bool _userTappedJumpToBottom = false;
-        private void JumpToBottom_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        private void JumpToBottom_Tapped(object sender, RoutedEventArgs e)
         {
             _userTappedJumpToBottom = true;
             ScrollToBottom();
@@ -6594,6 +6591,7 @@ namespace windows_client.View
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.MaxHeight = 240;
+            pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);
         }
@@ -6666,6 +6664,11 @@ namespace windows_client.View
         #region Walkie Talkie
 
         private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowWalkieTalkie();
+        }
+
+        private void ShowWalkieTalkie()
         {
             if ((!isOnHike && mCredits <= 0) || (isGroupChat && !isGroupAlive))
                 return;

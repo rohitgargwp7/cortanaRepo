@@ -132,7 +132,7 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                shellProgress.IsVisible = true;
+                shellProgress.IsIndeterminate = true;
                 registerListeners();
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
@@ -149,7 +149,7 @@ namespace windows_client.View
                         txtEmptyScreen.Visibility = Visibility.Visible;
                         ContentPanel.Visibility = Visibility.Collapsed;
                     }
-                    shellProgress.IsVisible = false;
+                    shellProgress.IsIndeterminate = false;
                 };
             }
         }
@@ -202,8 +202,8 @@ namespace windows_client.View
 
             if (c == null)
                 return;
-            
-            shellProgress.IsVisible = true;
+
+            shellProgress.IsIndeterminate = true;
             
             App.ViewModel.BlockedHashset.Remove(c.Msisdn);
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
@@ -217,8 +217,8 @@ namespace windows_client.View
                 txtEmptyScreen.Visibility = Visibility.Visible;
                 ContentPanel.Visibility = Visibility.Collapsed;
             }
-            
-            shellProgress.IsVisible = false;
+
+            shellProgress.IsIndeterminate = false;
         }
     }
 }
