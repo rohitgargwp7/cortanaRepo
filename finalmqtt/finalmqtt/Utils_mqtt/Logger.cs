@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using System.Threading;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace MQttLogging
 {
@@ -57,6 +58,8 @@ namespace MQttLogging
                 // Create the entry and push to the Queue
                 Log logEntry = new Log(message);
                 logQueue.Enqueue(logEntry);
+
+                Debug.WriteLine(logEntry.LogDate + ":" + logEntry.Message);
 
                 // If we have reached the Queue Size then flush the Queue
                 if (logQueue.Count >= queueSize || DoPeriodicFlush())
