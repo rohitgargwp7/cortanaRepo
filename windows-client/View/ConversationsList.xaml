@@ -141,7 +141,7 @@
 
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <ScrollViewer>
-                    <Grid x:Name="contactGrid" Margin="25,12">
+                    <Grid x:Name="contactGrid" Margin="25,0,25,12">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
@@ -185,7 +185,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <TextBlock Grid.Row="2" Margin="0,15" Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
+                        <TextBlock Grid.Row="2" Margin="0,5,0,15" Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,30,0,15" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120"/>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>

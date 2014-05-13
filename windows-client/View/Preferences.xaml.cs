@@ -225,11 +225,5 @@ namespace windows_client.View
 
             App.SendEnterToSendStatusToServer();
         }
-
-        private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            // Launch URI for the lock screen settings screen.
-            var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
-        }
     }
 }

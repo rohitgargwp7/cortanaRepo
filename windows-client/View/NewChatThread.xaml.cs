@@ -228,9 +228,6 @@ namespace windows_client.View
             ocMessages = new ObservableCollection<ConvMessage>();
             lruStickerCache = new LruCache<string, BitmapImage>(10, 0);
 
-            walkieTalkie.Source = UI_Utils.Instance.WalkieTalkieBigImage;
-            deleteRecImageSuc.Source = UI_Utils.Instance.WalkieTalkieDeleteSucImage;
-
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
             App.ViewModel.HidetypingNotification += HideTypingNotification;
@@ -2615,10 +2612,6 @@ namespace windows_client.View
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
 
-            //done as scrollviewer applied to textbox doesn't update its position on char enter
-            svMessage.UpdateLayout();
-            svMessage.ScrollToVerticalOffset(sendMsgTxtbox.GetRectFromCharacterIndex(sendMsgTxtbox.SelectionStart > 0 ? sendMsgTxtbox.SelectionStart : sendMsgTxtbox.Text.Length).Top - 30.0);
-
             lastText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(lastText))
             {
@@ -3556,7 +3549,7 @@ namespace windows_client.View
         private void showSMSCounter()
         {
             smsCounterTxtBlk.Text = string.Format(AppResources.SMS_Left_Txt, Convert.ToString(mCredits));
-            smscounter.Visibility = Visibility.Visible;
+            smsCounterTxtBlk.Visibility = Visibility.Visible;
             scheduler.Schedule(hideSMSCounter, TimeSpan.FromSeconds(2));
         }
 
@@ -3564,7 +3557,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                smscounter.Visibility = Visibility.Collapsed;
+                smsCounterTxtBlk.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -5713,16 +5706,19 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
-                chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
+                chatThemeHeaderTxt.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
+                userName.Foreground = UI_Utils.Instance.HikeBlue;
                 onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
                 chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
-                shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = UI_Utils.Instance.Black;
+                shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
+                smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeLightGrey"];
                 cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
                 doneButton.Background = UI_Utils.Instance.Black;
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
                 nudgeBorder.Background = UI_Utils.Instance.White;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
                 nudgeText.Foreground = UI_Utils.Instance.Black;
+                grpMuteText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlack"];
             }
             else
             {
@@ -5735,7 +5731,7 @@ namespace windows_client.View
                 nudgeBorder.BorderBrush = UI_Utils.Instance.White;
                 nudgeBorder.Background = App.ViewModel.SelectedBackground.HeaderBackground;
                 nudgeImage.Source = UI_Utils.Instance.NudgeSent;
-                nudgeText.Foreground = UI_Utils.Instance.White;
+                grpMuteText.Foreground = nudgeText.Foreground = UI_Utils.Instance.White;
             }
 
             if (isBubbleColorChanged)
@@ -5771,6 +5767,7 @@ namespace windows_client.View
                 _background = ChatBackgroundHelper.Instance.ChatBgCache[App.ViewModel.SelectedBackground.ID];
                 chatBackground.Source = _background;
                 PostChangeBackgroundOperations();
+                return;
             }
             
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
@@ -6029,11 +6026,11 @@ namespace windows_client.View
             //handled textbox hight to accomodate other data on screen in diff orientations
             if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
             {
-                svMessage.MaxHeight = 150;
+                sendMsgTxtbox.MaxHeight = 130;
             }
             else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
             {
-                svMessage.MaxHeight = 70;
+                sendMsgTxtbox.MaxHeight = 72;
 
                 App.ViewModel.HideToolTip(LayoutRoot, 0);
                 App.ViewModel.HideToolTip(LayoutRoot, 1);
@@ -6723,8 +6720,8 @@ namespace windows_client.View
 
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.Grey;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
+            recordButton.Opacity = 0.5;
+            walkieTalkieImage.Opacity = 0.5;
         }
 
         void Hold_To_Record(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
@@ -6749,9 +6746,9 @@ namespace windows_client.View
             WalkieTalkieGrid.Visibility = Visibility.Visible;
             recordButton.Text = RELEASE_TO_SEND;
             cancelRecord.Opacity = 0;
-            recordButton.Foreground = UI_Utils.Instance.White;
+            recordButton.Opacity = 1;
             recordButtonGrid.Background = UI_Utils.Instance.HikeBlue;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieWhiteImage;
+            walkieTalkieImage.Opacity = 1;
             recordWalkieTalkieMessage();
         }
 
@@ -6770,18 +6767,16 @@ namespace windows_client.View
             }
             catch { }
 
-            deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-            deleteRecText.Foreground = UI_Utils.Instance.Grey;
-
+            deleteRecImage.Opacity = 0.5;
+            deleteRecText.Opacity = 0.5;
             cancelRecord.Opacity = 1;
-            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Transparent;
             WalkieTalkieGrid.Visibility = Visibility.Collapsed;
             recordButton.Text = HOLD_AND_TALK;
-            recordButton.Foreground = UI_Utils.Instance.Grey;
+            recordButton.Opacity = 0.5;
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
-            walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
 
-            deleteBorder.Background = UI_Utils.Instance.Black;
+            walkieTalkieImage.Opacity = 0.5;
 
             stopWalkieTalkieRecording();
 
@@ -6814,7 +6809,7 @@ namespace windows_client.View
                 _recorderState = RecorderState.NOTHING_RECORDED;
                 if (_deleteTimer == null)
                 {
-                    _deleteTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
+                    _deleteTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 1) };
                     _deleteTimer.Tick += _deleteTimer_Tick;
                 }
 
@@ -6828,17 +6823,17 @@ namespace windows_client.View
         private void deleteRecImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = false;
-            deleteBorder.BorderBrush = UI_Utils.Instance.Black;
-            deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-            deleteRecText.Foreground = UI_Utils.Instance.Grey;
+            deleteBorder.BorderBrush = UI_Utils.Instance.Transparent;
+            deleteRecImage.Opacity = 0.5;
+            deleteRecText.Opacity = 0.5;
         }
 
         void deleteRecImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             _isWalkieTalkieMessgeDelete = true;
             deleteBorder.BorderBrush = UI_Utils.Instance.Red;
-            deleteRecImage.Source = UI_Utils.Instance.DustbinWhiteImage;
-            deleteRecText.Foreground = UI_Utils.Instance.White;
+            deleteRecImage.Opacity = 1;
+            deleteRecText.Opacity = 1;
         }
 
         void cancelRecord_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -6899,15 +6894,14 @@ namespace windows_client.View
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
                 cancelRecord.Opacity = 1;
-                deleteBorder.BorderBrush = UI_Utils.Instance.Black;
+                deleteBorder.BorderBrush = UI_Utils.Instance.Transparent;
                 WalkieTalkieGrid.Visibility = Visibility.Collapsed;
                 recordButton.Text = HOLD_AND_TALK;
-                recordButton.Foreground = UI_Utils.Instance.Grey;
+                recordButton.Opacity = 0.5;
                 recordButtonGrid.Background = gridBackgroundBeforeRecording;
-                walkieTalkieImage.Source = UI_Utils.Instance.WalkieTalkieGreyImage;
-                deleteRecImage.Source = UI_Utils.Instance.DustbinGreyImage;
-                deleteRecText.Foreground = UI_Utils.Instance.Grey;
-                deleteBorder.Background = UI_Utils.Instance.Black;
+                walkieTalkieImage.Opacity = 0.5;
+                deleteRecImage.Opacity = 0.5;
+                deleteRecText.Opacity = 0.5;
 
                 stopWalkieTalkieRecording();
                 sendWalkieTalkieMessage();
@@ -7030,7 +7024,7 @@ namespace windows_client.View
             return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
-        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(Colors.Black);
+        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2,0x43,0x4b,0x5c));
         private Microphone _microphone = Microphone.Default;     // Object representing the physical microphone on the device
         private byte[] _buffer;                                  // Dynamic buffer to retrieve audio data from the microphone
         private MemoryStream _stream = new MemoryStream();       // Stores the audio data for later playback

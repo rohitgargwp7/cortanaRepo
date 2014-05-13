@@ -11,6 +11,7 @@ using windows_client.Model;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -19,10 +20,10 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
-            accountImage.Source = new BitmapImage(new Uri("images/account_black.png", UriKind.Relative));
-            blockListImage.Source = new BitmapImage(new Uri("images/block_list_icon_black.png", UriKind.Relative));
-            preferencesImage.Source = new BitmapImage(new Uri("images/settings_icon_dark.png", UriKind.Relative));
-            notificationsImage.Source = new BitmapImage(new Uri("images/notifications_black.png", UriKind.Relative));
+
+            int creditsRemaining = 0;
+            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -43,10 +44,30 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/Account.xaml", UriKind.Relative));
         }
 
-        private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
+        //    NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
+        //}
+
+        private void SMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
-            NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
+        }
+
+        private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
+        }
+
+        private void Sync_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
     }
 }

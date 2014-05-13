@@ -156,7 +156,7 @@ namespace windows_client.utils
             get
             {
                 if (red == null)
-                    red = new SolidColorBrush(Colors.Red);
+                    red = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0x54, 0x54));
 
                 return red;
             }
@@ -302,7 +302,7 @@ namespace windows_client.utils
             get
             {
                 if (block == null)
-                    block = new BitmapImage(new Uri("/view/images/block.png", UriKind.Relative));
+                    block = new BitmapImage(new Uri("/view/images/settings/block.png", UriKind.Relative));
 
                 return block;
             }
@@ -314,7 +314,7 @@ namespace windows_client.utils
             get
             {
                 if (unblock == null)
-                    unblock = new BitmapImage(new Uri("/view/images/unblock.png", UriKind.Relative));
+                    unblock = new BitmapImage(new Uri("/view/images/settings/unblock.png", UriKind.Relative));
 
                 return unblock;
             }
@@ -1082,18 +1082,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage dustbinGreyImage;
-        public BitmapImage DustbinGreyImage
-        {
-            get
-            {
-                if (dustbinGreyImage == null)
-                    dustbinGreyImage = new BitmapImage(new Uri("/View/images/deleted_grey_icon.png", UriKind.Relative));
-
-                return dustbinGreyImage;
-            }
-        }
-
         BitmapImage dustbinWhiteImage;
         public BitmapImage DustbinWhiteImage
         {
@@ -1106,18 +1094,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage walkieTalkieGreyImage;
-        public BitmapImage WalkieTalkieGreyImage
-        {
-            get
-            {
-                if (walkieTalkieGreyImage == null)
-                    walkieTalkieGreyImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_Grey_small.png", UriKind.Relative));
-
-                return walkieTalkieGreyImage;
-            }
-        }
-
         BitmapImage walkieTalkieWhiteImage;
         public BitmapImage WalkieTalkieWhiteImage
         {
@@ -1127,30 +1103,6 @@ namespace windows_client.utils
                     walkieTalkieWhiteImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_small.png", UriKind.Relative));
 
                 return walkieTalkieWhiteImage;
-            }
-        }
-
-        BitmapImage walkieTalkieBigImage;
-        public BitmapImage WalkieTalkieBigImage
-        {
-            get
-            {
-                if (walkieTalkieBigImage == null)
-                    walkieTalkieBigImage = new BitmapImage(new Uri("/View/images/Walkie_Talkie_White_big.png", UriKind.Relative));
-
-                return walkieTalkieBigImage;
-            }
-        }
-
-        BitmapImage walkieTalkieDeleteSucImage;
-        public BitmapImage WalkieTalkieDeleteSucImage
-        {
-            get
-            {
-                if (walkieTalkieDeleteSucImage == null)
-                    walkieTalkieDeleteSucImage = new BitmapImage(new Uri("/View/images/deleted_white_icon.png", UriKind.Relative));
-
-                return walkieTalkieDeleteSucImage;
             }
         }
 

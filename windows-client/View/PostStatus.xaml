@@ -13,61 +13,62 @@
     shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True">
 
     <Grid x:Name="LayoutRoot" Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
-            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
-        </Grid>
-        
-        <Grid x:Name="MoodPanel" Grid.Row="1" Margin="0,12,25,12" HorizontalAlignment="Right" Width="430">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,18,0,0" VerticalAlignment="Top">
-                <Button.Content>
-                    <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                </Button.Content>
-            </Button>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+                <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
+            </Grid>
+
+            <Grid x:Name="MoodPanel" Grid.Row="1" Margin="0,12,25,12" HorizontalAlignment="Right" Width="430">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,18,0,0" VerticalAlignment="Top">
+                    <Button.Content>
+                        <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </Button.Content>
+                </Button>
                 <toolkit:PhoneTextBox Grid.Column="2" MaxHeight="120" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
                                           TextChanged="txtStatus_TextChanged"/>
-            <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
+                <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
                                       Text="140" Grid.Column="3" Margin="12,24,0,0" VerticalAlignment="Top"/>
-        </Grid>
-        <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,25,25,25" VerticalAlignment="Bottom" Height="48">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" HorizontalAlignment="Center" Margin="0,0,10,0">
-                <Button x:Name="fbButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="Fb_Tap" Margin="-12">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Margin="0,0,12,0" Source="/View/images/fb_status.png" Height="20"/>
-                            <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Facebook_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
             </Grid>
-            <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="10,0,0,0">
-                <Button x:Name="twitterButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="TwitterIcon_Tap" Margin="-12">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Margin="0,0,12,0" Source="/View/images/twitter_status.png" Height="16"/>
-                            <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Twitter_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
+            <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,25,25,25" VerticalAlignment="Bottom" Height="48">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" HorizontalAlignment="Center" Margin="0,0,10,0">
+                    <Button x:Name="fbButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="Fb_Tap" Margin="-12">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Margin="0,0,12,0" Source="/View/images/fb_status.png" Height="20"/>
+                                <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Facebook_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+                <Grid Grid.Column="1" HorizontalAlignment="Center" Margin="10,0,0,0">
+                    <Button x:Name="twitterButton" Width="200" Style="{StaticResource NoButtonStyle}" Click="TwitterIcon_Tap" Margin="-12">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Margin="0,0,12,0" Source="/View/images/twitter_status.png" Height="16"/>
+                                <TextBlock Foreground="White" Text="{Binding Path= LocalizedResources.Twitter_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
-
         <Grid Name="gridMood" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="White" Canvas.ZIndex="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -76,7 +77,7 @@
             <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
                 <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Moods_Txt, Source={StaticResource LocalizedStrings}}"/>
             </Grid>
-            <ListBox  Name="moodListBox"  Grid.Row="1" Margin="15,0" Tap="moodList_Tap">
+            <ListBox  Name="moodListBox" Grid.Row="1" Margin="15,0" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,30,0,0">

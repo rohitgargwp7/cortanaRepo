@@ -82,11 +82,10 @@
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
             <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="#1a000000" BorderThickness="0,0,0,2"/>
             <StackPanel Orientation="Vertical">
-                <Border HorizontalAlignment="Stretch" Height="45" BorderThickness="1" BorderBrush="#414141" Background="#414141" x:Name="gcMuteGrid" Visibility="Collapsed">
-                    <Grid HorizontalAlignment="Stretch" Margin="12,0">
-                        <TextBlock Grid.Column="0" Margin="12,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White" FontWeight="Light"/>
-                    </Grid>
-                </Border>
+                <Grid HorizontalAlignment="Stretch" Height="45" x:Name="gcMuteGrid" Visibility="Collapsed">
+                    <Border HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Canvas.ZIndex="-1" />
+                    <TextBlock x:Name="grpMuteText" Grid.Column="0" Margin="12,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White" FontWeight="Light"/>
+                </Grid>
                 <Grid Height="90">
                     <Grid Name="userHeader" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12">
                         <Grid.ColumnDefinitions>
@@ -1115,42 +1114,47 @@
         </Grid>
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
-            <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
-                <TextBlock x:Name="smsCounterTxtBlk" Margin="20,0,0,0"></TextBlock>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="smsCounterTxtBlk" FontSize="18" Margin="24,0,0,12" Visibility="Collapsed" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 24 12" Visibility="Collapsed" Name="spSmsCharCounter">
+                    <TextBlock Name="txtMsgCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                    <TextBlock Name="txtMsgCharCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                </StackPanel>
+            </Grid>
+            
             <Grid Background="#eeeeec">
                 <Grid Background="#eeeeec">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ScrollViewer Name="svMessage" MaxHeight="150" Background="#eeeeec" >
+                    <Border MaxHeight="150" Background="#eeeeec" >
                         <toolkit:PhoneTextBox  TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" ActualHintVisibility="Visible" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" 
                                                TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" KeyDown="MsgCharTapped" 
-                                                MinHeight="76" MaxHeight="2048" MaxLength="10000" Margin="0,-4,-8,0" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
-                    </ScrollViewer>
+                                                MinHeight="72" MaxHeight="130" MaxLength="10000" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
+                    </Border>
                     <Grid Grid.Column="1" MinWidth="60" Background="#eeeeec" Tap="Record_ActionIconTapped">
-                        <Image x:Name="WalkieTalkieMicIcon" Source="/View/images/Mic_icon_black_small.png" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,0,17" MaxHeight="30"/>
+                        <Image x:Name="WalkieTalkieMicIcon" Source="/View/images/Mic_icon_black_small.png" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,0,20" MaxHeight="30"/>
                     </Grid>
                 </Grid>
-                <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec" Margin="0,0,0,0">
+                <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec">
                     <Grid Margin="5" x:Name="recordButtonGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ManipulationStarted="Hold_To_Record" ManipulationCompleted="recordButton_ManipulationCompleted">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                            <Image Stretch="Uniform" Margin="0,0,10,0" MaxHeight="30" x:Name="walkieTalkieImage" Source="/View/images/walkie_talkie_Grey_small.png" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="recordButton" Foreground="#686868" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
+                            <Image Stretch="Uniform" Margin="0,0,10,0" MaxHeight="30" x:Name="walkieTalkieImage" Source="/View/images/Walkie_Talkie_White_small.png" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="recordButton" Foreground="White" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24" Text=""/>
                         </StackPanel>
                     </Grid>
-                    <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="#3F3F3F" HorizontalAlignment="Right">
-                        <Image MaxHeight="14" Source="/View/images/remove_wt_icon.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Grid Width="62" Margin="5" Height="62" Canvas.ZIndex="2" x:Name="cancelRecord" Tap="cancelRecord_Tap" Background="Transparent" HorizontalAlignment="Right">
+                        <Image MaxHeight="18" Opacity="0.5" Source="/View/images/remove_wt_icon.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
             </Grid>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 5" Visibility="Collapsed" Name="spSmsCharCounter">
-                <TextBlock Name="txtMsgCount"></TextBlock>
-                <TextBlock Name="txtMsgCharCount"></TextBlock>
-            </StackPanel>
-
-            <Grid Margin="0,0,0,0" Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" MinHeight="319" Background="#323232">
+            
+            <Grid Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" MinHeight="319" Background="#323232">
                 <Grid Name="gridEmoticons" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -1381,8 +1385,8 @@
         <Border Canvas.ZIndex="4" x:Name="overlayBorder" Grid.Row="0" Grid.RowSpan="3" Background="Black" Visibility="Collapsed" Opacity="0.7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <StackPanel Canvas.ZIndex="4" x:Name="overlayMessagePanel" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="25,0,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"/>
-            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"/>
-            <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"/>
+            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,25,15,50" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="White" FontSize="30"/>
+            <Button HorizontalAlignment="Center" Name="btnBlockUnblock" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Click="blockUnblock_Click" Style="{StaticResource YesButtonStyle}"/>
         </StackPanel>
         <Grid Canvas.ZIndex="4" x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayBorder_Tapped">
             <Grid.RowDefinitions>
@@ -1413,25 +1417,24 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="Black" Margin="-25" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
-            <Image x:Name="walkieTalkie" MaxHeight="95" Stretch="Uniform" HorizontalAlignment="Center"/>
-            <StackPanel Grid.Row="1" Margin="0,10" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Ellipse Height="15" Width="15" Fill="Red" Margin="0,0,5,0"/>
+            <Border  x:Name="WalkieTalkieGridOverlayLayer" Background="{StaticResource HikeBlack}" Opacity="0.95" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" />
+            <Image Source="/View/images/walkie_talkie_White_Big.png" MaxHeight="133" Margin="0,50,0,0" Stretch="Uniform" HorizontalAlignment="Center"/>
+            <StackPanel Grid.Row="1" Margin="0,25" x:Name="timeBar" Orientation="Horizontal" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="24" Text="00:00" Foreground="White" ></TextBlock>
                 <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" Foreground="White" FontSize="24"/>
             </StackPanel>
-            <Border Grid.Row="2" Margin="-10,5,-10,-10" Background="Black" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" BorderThickness="2" BorderBrush="Black" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-                <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image x:Name="deleteRecImage" MaxHeight="36" Margin="0,0,10,0" Source="/View/images/deleted_grey_icon.png" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Center"/>
-                    <TextBlock x:Name="deleteRecText" TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="#686868" Text="{Binding Path= LocalizedResources.Drag_Here_To_Delete, Source={StaticResource LocalizedStrings}}"/>
+            <Border Grid.Row="2" Margin="15,25,15,15" Background="#51ffffff" MouseLeave="deleteRecImage_MouseLeave" x:Name="deleteBorder" BorderThickness="2" BorderBrush="Transparent" MouseEnter="deleteRecImage_MouseEnter" Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <StackPanel Canvas.ZIndex="3" Margin="38,23" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image x:Name="deleteRecImage" MaxHeight="30" Margin="0,0,12,0" Source="/View/images/deleted_white_icon.png" Grid.Column="0" Stretch="Uniform" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="deleteRecText" TextAlignment="Center" Grid.Column="1" FontSize="24" Foreground="White" Text="{Binding Path= LocalizedResources.Drag_Here_To_Delete, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Border>
         </Grid>
 
         <Grid Canvas.ZIndex="4" x:Name="WalkieTalkieDeleteGrid" IsHitTestVisible="False" Background="Transparent" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Border x:Name="WalkieTalkieDeletedBorder" Background="Black" Opacity="0.75" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <StackPanel Canvas.ZIndex="3" Margin="35" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="deleteRecImageSuc" Margin="0,0,10,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
+            <Border x:Name="WalkieTalkieDeletedBorder" Background="{StaticResource HikeBlack}" Opacity="0.95" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <StackPanel Canvas.ZIndex="3" Margin="25" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="deleteRecImageSuc" Source="/View/images/deleted_white_icon.png" Margin="0,0,12,0" Grid.Column="0" Height="30" Stretch="Uniform" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="deleteRecTextSuc" Foreground="White" TextAlignment="Center" Grid.Column="1" FontSize="24"  Text="{Binding Path= LocalizedResources.Message_Cancelled, Source={StaticResource LocalizedStrings}}"/>
             </StackPanel>
         </Grid>

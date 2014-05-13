@@ -35,11 +35,6 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
-            deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
-            UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
-            UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
-
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
 
@@ -108,7 +103,7 @@ namespace windows_client.View
             CustomMessageBox msgBox = new CustomMessageBox()
             {
                 Message = AppResources.Privacy_DeleteAccounWarningMsgBxText,
-                Caption = AppResources.Privacy_DeleteAccountWarningHeader,
+                Caption = AppResources.Privacy_DeleteAccountHeader,
                 LeftButtonContent = AppResources.Cancel_Txt,
                 RightButtonContent = AppResources.Continue_txt
             };

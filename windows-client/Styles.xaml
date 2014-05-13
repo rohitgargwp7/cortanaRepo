@@ -2101,6 +2101,24 @@
                 <Setter Property="Margin" Value="0,0,20,0"/>
             </Style>
 
+            <Style x:Key="SettingsHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="FontSize" Value="44"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+            <Style x:Key="SettingsSubHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontWeight" Value="Light"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="MaxWidth" Value="350"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+
             <Style x:Key="UnreadNotificationCounterContainerStyle" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource HikeBlueHeader}"/>
                 <Setter Property="Height" Value="22"/>

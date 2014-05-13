@@ -808,7 +808,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to invite your friends to hike.
+        ///   Looks up a localized string similar to invite friends to hike.
         /// </summary>
         public static string Conversations_InviteFriendsHike_Txt {
             get {
@@ -1150,7 +1150,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag here to delete.
+        ///   Looks up a localized string similar to drag here to delete.
         /// </summary>
         public static string Drag_Here_To_Delete {
             get {
@@ -2093,15 +2093,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to help.
-        /// </summary>
-        public static string Help {
-            get {
-                return ResourceManager.GetString("Help", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to version.
         /// </summary>
         public static string Help_AppVersionTitle {
@@ -2282,7 +2273,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hold and talk.
+        ///   Looks up a localized string similar to hold and talk.
         /// </summary>
         public static string Hold_And_Talk {
             get {
@@ -2615,7 +2606,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to logout.
+        ///   Looks up a localized string similar to reset.
         /// </summary>
         public static string Logout_Txt {
             get {
@@ -2669,7 +2660,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message cancelled.
+        ///   Looks up a localized string similar to message cancelled.
         /// </summary>
         public static string Message_Cancelled {
             get {
@@ -2678,7 +2669,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message too short.
+        ///   Looks up a localized string similar to message too short.
         /// </summary>
         public static string Message_Too_Short {
             get {
@@ -3434,7 +3425,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete your account? This action is irreversible..
+        ///   Looks up a localized string similar to Are you sure want to continue? This action is irreversible..
         /// </summary>
         public static string Privacy_DeleteAccounConfirmMsgBxText {
             get {
@@ -3443,7 +3434,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please Confirm.
+        ///   Looks up a localized string similar to Delete Account.
         /// </summary>
         public static string Privacy_DeleteAccountHeader {
             get {
@@ -3470,16 +3461,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure?.
-        /// </summary>
-        public static string Privacy_DeleteAccountWarningHeader {
-            get {
-                return ResourceManager.GetString("Privacy_DeleteAccountWarningHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deleting your account will delete all your data, free SMS and any hike rewards..
+        ///   Looks up a localized string similar to This will delete all your messages, SMS balance and any hike rewards..
         /// </summary>
         public static string Privacy_DeleteAccounWarningMsgBxText {
             get {
@@ -3488,7 +3470,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logout Account.
+        ///   Looks up a localized string similar to Reset Account.
         /// </summary>
         public static string Privacy_LogoutAccountHeader {
             get {
@@ -3497,7 +3479,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logging out account....
+        ///   Looks up a localized string similar to Resetting....
         /// </summary>
         public static string Privacy_LogoutAccountProgress {
             get {
@@ -3506,7 +3488,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to logout your account from this device.
+        ///   Looks up a localized string similar to Clear your messages and profile from this device..
         /// </summary>
         public static string Privacy_LogoutAccountText {
             get {
@@ -3515,7 +3497,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to logout of your hike account from this device?.
+        ///   Looks up a localized string similar to Are you sure you want to reset your account?.
         /// </summary>
         public static string Privacy_LogoutConfirmMsgBxText {
             get {
@@ -3524,7 +3506,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account not logged out.
+        ///   Looks up a localized string similar to Account not reset.
         /// </summary>
         public static string Privacy_LogoutErrMsgBxCaptn {
             get {
@@ -3533,7 +3515,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hike couldn&apos;t logout your account. Please try again..
+        ///   Looks up a localized string similar to hike couldn&apos;t reset your account. Please try again..
         /// </summary>
         public static string Privacy_LogoutErrMsgBxText {
             get {
@@ -3794,7 +3776,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Release to Send.
+        ///   Looks up a localized string similar to release to send.
         /// </summary>
         public static string Release_To_Send {
             get {
@@ -4226,6 +4208,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to help.
+        /// </summary>
+        public static string Settings_HelpSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_HelpSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike jingle.
         /// </summary>
         public static string Settings_HikeJingleToggleSwitchHeader {
@@ -4253,7 +4244,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to your notifications preferences.
+        ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
             get {
@@ -4262,11 +4253,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to your account preferences.
+        ///   Looks up a localized string similar to turn on/off auto download, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {
                 return ResourceManager.GetString("Settings_PreferencesSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to privacy.
+        /// </summary>
+        public static string Settings_PrivacySettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_PrivacySettings_Txt", resourceCulture);
             }
         }
         
@@ -4276,6 +4276,15 @@ namespace windows_client.Languages {
         public static string Settings_PushToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_PushToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sms.
+        /// </summary>
+        public static string Settings_SMSSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SMSSettings_Txt", resourceCulture);
             }
         }
         
@@ -4316,6 +4325,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAQs, contact us and more.
+        /// </summary>
+        public static string Settings_SubtitleHelpSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SubtitleHelpSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to control block list and last seen status.
+        /// </summary>
+        public static string Settings_SubtitlePrivacySettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SubtitlePrivacySettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} free SMS left.
+        /// </summary>
+        public static string Settings_SubtitleSMSSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SubtitleSMSSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tap to manually sync address book contacts.
+        /// </summary>
+        public static string Settings_SubtitleSyncSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SubtitleSyncSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sync contacts.
+        /// </summary>
+        public static string Settings_SyncSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_SyncSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vibrate.
         /// </summary>
         public static string Settings_VibrateToggleSwitchHeader {
@@ -4325,7 +4379,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to notifications.
+        ///   Looks up a localized string similar to turn on/off jingle, vibrate and status update.
         /// </summary>
         public static string SettingsSubtitle_Notification_Txt {
             get {
@@ -4460,7 +4514,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} SMS Left.
+        ///   Looks up a localized string similar to {0} SMS left.
         /// </summary>
         public static string SMS_Left_Txt {
             get {
@@ -4793,7 +4847,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink Facebook.
+        ///   Looks up a localized string similar to unlink facebook.
         /// </summary>
         public static string Unlink_Fb_Header_Txt {
             get {
@@ -4802,7 +4856,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink your Facebook account from hike.
+        ///   Looks up a localized string similar to unlink your facebook account from hike.
         /// </summary>
         public static string Unlink_Fb_SubHeader_Txt {
             get {
@@ -4811,7 +4865,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink Twitter.
+        ///   Looks up a localized string similar to unlink twitter.
         /// </summary>
         public static string Unlink_Twitter_Header_Txt {
             get {
@@ -4820,7 +4874,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlink your Twitter account from hike.
+        ///   Looks up a localized string similar to unlink your twitter account from hike.
         /// </summary>
         public static string Unlink_Twitter_SubHeader_Txt {
             get {

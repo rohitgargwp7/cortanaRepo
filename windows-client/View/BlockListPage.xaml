@@ -59,7 +59,7 @@
             </ListBox>
         </Grid>
         <StackPanel x:Name="txtEmptyScreen" HorizontalAlignment="Center" Grid.Row="1"  Visibility="Collapsed" VerticalAlignment="Center">
-            <Image Height="120" Source="images\blocklist_holder.png" Stretch="Uniform" Margin="0,0,0,25"/>
+            <Image Height="120" Source="images/settings/blocklist_holder.png" Stretch="Uniform" Margin="0,0,0,25"/>
             <TextBlock Text="{Binding Path= LocalizedResources.BlockList_Default_Txt, Source={StaticResource LocalizedStrings}}" 
                        FontSize="18" Foreground="#d3d2d0" TextWrapping="Wrap" FontWeight="Normal" Margin="140,0" TextAlignment="Center"/>
         </StackPanel>

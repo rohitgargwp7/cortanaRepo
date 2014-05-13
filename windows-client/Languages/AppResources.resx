@@ -285,10 +285,6 @@
     <value>group chat</value>
     <comment>max 10 char</comment>
   </data>
-  <data name="Help" xml:space="preserve">
-    <value>help</value>
-    <comment>Profile (xaml)</comment>
-  </data>
   <data name="NetworkError_TryAgain" xml:space="preserve">
     <value>Network Error. Try Again!!</value>
     <comment>Network error msg</comment>
@@ -310,7 +306,7 @@
     <comment>Profile (xaml)</comment>
   </data>
   <data name="SMS_Left_Txt" xml:space="preserve">
-    <value>{0} SMS Left</value>
+    <value>{0} SMS left</value>
     <comment>This text is used to show how many SMS left</comment>
   </data>
   <data name="Something_Wrong_Txt" xml:space="preserve">
@@ -926,12 +922,8 @@ Download it now http://hike.in and join the fun!</value>
     <comment>used on settings page</comment>
   </data>
   <data name="Privacy_DeleteAccounWarningMsgBxText" xml:space="preserve">
-    <value>Deleting your account will delete all your data, free SMS and any hike rewards.</value>
+    <value>This will delete all your messages, SMS balance and any hike rewards.</value>
     <comment>cs. Message box while deleting account</comment>
-  </data>
-  <data name="Privacy_DeleteAccountWarningHeader" xml:space="preserve">
-    <value>Are you sure?</value>
-    <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
     <value>Deleting Account...</value>
@@ -942,27 +934,27 @@ Download it now http://hike.in and join the fun!</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_LogoutAccountHeader" xml:space="preserve">
-    <value>Logout Account</value>
+    <value>Reset Account</value>
     <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_LogoutAccountProgress" xml:space="preserve">
-    <value>Logging out account...</value>
+    <value>Resetting...</value>
     <comment>cs. unlink account progress</comment>
   </data>
   <data name="Privacy_LogoutAccountText" xml:space="preserve">
-    <value>logout your account from this device</value>
+    <value>Clear your messages and profile from this device.</value>
     <comment>xaml</comment>
   </data>
   <data name="Privacy_LogoutConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to logout of your hike account from this device?</value>
+    <value>Are you sure you want to reset your account?</value>
     <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_LogoutErrMsgBxCaptn" xml:space="preserve">
-    <value>Account not logged out</value>
+    <value>Account not reset</value>
     <comment>cs. Message box Caption error while unlinking</comment>
   </data>
   <data name="Privacy_LogoutErrMsgBxText" xml:space="preserve">
-    <value>hike couldn't logout your account. Please try again.</value>
+    <value>hike couldn't reset your account. Please try again.</value>
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
@@ -1180,7 +1172,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Logout_Txt" xml:space="preserve">
-    <value>logout</value>
+    <value>reset</value>
     <comment>Privacy page (xaml)</comment>
   </data>
   <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
@@ -1292,7 +1284,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>You can see updates from your favorite contacts here</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
-    <value>invite your friends to hike</value>
+    <value>invite friends to hike</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
     <value>Angry </value>
@@ -1376,7 +1368,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>notifications</value>
+    <value>turn on/off jingle, vibrate and status update</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>manage your hike account</value>
@@ -1385,7 +1377,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>a list of people you've blocked</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
-    <value>your notifications preferences</value>
+    <value>notifications</value>
   </data>
   <data name="Blocklist_user_txt" xml:space="preserve">
     <value>block user</value>
@@ -1416,11 +1408,11 @@ Download it now http://hike.in and join the fun!</value>
     <comment>{0} replaced by number</comment>
   </data>
   <data name="Hold_And_Talk" xml:space="preserve">
-    <value>Hold and talk</value>
+    <value>hold and talk</value>
     <comment>Long press to start audio recording</comment>
   </data>
   <data name="Release_To_Send" xml:space="preserve">
-    <value>Release to Send</value>
+    <value>release to send</value>
     <comment>Release to send recorded data</comment>
   </data>
   <data name="BlockList_Text" xml:space="preserve">
@@ -1443,18 +1435,18 @@ Download it now http://hike.in and join the fun!</value>
     <value>preferences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>your account preferences</value>
+    <value>turn on/off auto download, location service and more</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
-    <value>Drag here to delete</value>
+    <value>drag here to delete</value>
     <comment>Drag to a specified area to delete ongoing recording</comment>
   </data>
   <data name="Message_Cancelled" xml:space="preserve">
-    <value>Message cancelled</value>
+    <value>message cancelled</value>
     <comment>Notify user that recording has been deleted</comment>
   </data>
   <data name="Message_Too_Short" xml:space="preserve">
-    <value>Message too short</value>
+    <value>message too short</value>
     <comment>Message is too short to be sent</comment>
   </data>
   <data name="In_App_Tip_1" xml:space="preserve">
@@ -1754,10 +1746,10 @@ Download it now http://hike.in and join the fun!</value>
     <value>File Limit Exceeded</value>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
-    <value>Are you sure you want to delete your account? This action is irreversible.</value>
+    <value>Are you sure want to continue? This action is irreversible.</value>
   </data>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
-    <value>Please Confirm</value>
+    <value>Delete Account</value>
   </data>
   <data name="Continue_txt" xml:space="preserve">
     <value>continue</value>
@@ -1920,16 +1912,16 @@ Download it now http://hike.in and join the fun!</value>
     <value>File</value>
   </data>
   <data name="Unlink_Fb_Header_Txt" xml:space="preserve">
-    <value>unlink Facebook</value>
+    <value>unlink facebook</value>
   </data>
   <data name="Unlink_Fb_SubHeader_Txt" xml:space="preserve">
-    <value>unlink your Facebook account from hike</value>
+    <value>unlink your facebook account from hike</value>
   </data>
   <data name="Unlink_Twitter_Header_Txt" xml:space="preserve">
-    <value>unlink Twitter</value>
+    <value>unlink twitter</value>
   </data>
   <data name="Unlink_Twitter_SubHeader_Txt" xml:space="preserve">
-    <value>unlink your Twitter account from hike</value>
+    <value>unlink your twitter account from hike</value>
   </data>
   <data name="FreeSMS_H2SSubHeader_TxtBlk" xml:space="preserve">
     <value>earn unlimited free sms</value>
@@ -2105,5 +2097,29 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="BlockList_Default_Txt" xml:space="preserve">
     <value>Someone troubling you? Tap on + to block them.</value>
+  </data>
+  <data name="Settings_HelpSettings_Txt" xml:space="preserve">
+    <value>help</value>
+  </data>
+  <data name="Settings_PrivacySettings_Txt" xml:space="preserve">
+    <value>privacy</value>
+  </data>
+  <data name="Settings_SMSSettings_Txt" xml:space="preserve">
+    <value>sms</value>
+  </data>
+  <data name="Settings_SubtitleHelpSettings_Txt" xml:space="preserve">
+    <value>FAQs, contact us and more</value>
+  </data>
+  <data name="Settings_SubtitlePrivacySettings_Txt" xml:space="preserve">
+    <value>control block list and last seen status</value>
+  </data>
+  <data name="Settings_SubtitleSMSSettings_Txt" xml:space="preserve">
+    <value>{0} free SMS left</value>
+  </data>
+  <data name="Settings_SubtitleSyncSettings_Txt" xml:space="preserve">
+    <value>tap to manually sync address book contacts</value>
+  </data>
+  <data name="Settings_SyncSettings_Txt" xml:space="preserve">
+    <value>sync contacts</value>
   </data>
 </root>

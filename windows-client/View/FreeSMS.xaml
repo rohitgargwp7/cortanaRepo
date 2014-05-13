@@ -39,7 +39,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/View/images/hike_h2h_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,18,0"/>
+                <Image Source="/View/images/settings/hike_h2h_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,18,0"/>
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -56,7 +56,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/View/images/hike_h2s_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,20,18,0"/>
+                    <Image Source="/View/images/settings/hike_h2s_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,20,18,0"/>
                     <Grid Grid.Column="1" HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -97,7 +97,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/View/images/hike_sms_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,20,18,0"/>
+                <Image Source="/View/images/settings/hike_sms_icon.png" Height="37" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,20,18,0"/>
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

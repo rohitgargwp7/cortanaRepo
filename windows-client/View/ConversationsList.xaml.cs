@@ -509,7 +509,7 @@ namespace windows_client.View
 
             //deleteAppBar = new ApplicationBar();
             //deleteChatIconButton = new ApplicationBarIconButton();
-            //deleteChatIconButton.IconUri = new Uri("/View/images/AppBar/icon_delete.png", UriKind.Relative);
+            //deleteChatIconButton.IconUri = new Uri("/View/images/AppBar/appbar.delete.png", UriKind.Relative);
             //deleteChatIconButton.Text = AppResources.Delete_Txt;
             //deleteChatIconButton.Click += deleteChatIconButton_Click;
             //deleteChatIconButton.IsEnabled = true;
@@ -1977,19 +1977,6 @@ namespace windows_client.View
         private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
-        }
-
-        private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-
-            App.AnalyticsInstance.addEvent(Analytics.FREE_SMS);
-            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
-        }
-
-        private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.HELP);
-            NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
 
         #region ANALYTICS

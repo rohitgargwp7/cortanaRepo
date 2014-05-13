@@ -21,12 +21,13 @@
         </Grid.RowDefinitions>
 
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
-            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}"/>
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
      
         <ScrollViewer Grid.Row="1" Margin="17,20,17,0">
             <Grid x:Name="ContentPanel" Background="Transparent">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -43,6 +44,8 @@
                 <toolkit:ToggleSwitch Margin="0 0 0 -15" Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
                 <toolkit:ListPicker Grid.Row="4" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+                
+                <Button Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
             </Grid>
         </ScrollViewer>
     </Grid>
