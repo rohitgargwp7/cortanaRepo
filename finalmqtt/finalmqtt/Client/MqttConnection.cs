@@ -236,6 +236,7 @@ namespace finalmqtt.Client
                 }
                 catch (Exception e)
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::READ Error, Exception:" + e.Message);
                     if (_socket != null)
                     {
                         _socket.Close();
@@ -266,19 +267,23 @@ namespace finalmqtt.Client
                         _socket.Close();
                         _socket = null;
                     }
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Error:" + e.SocketError);
+
                     disconnect();
                     return;
                 }
                 readMessagesFromBuffer();
                 read();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (_socket != null)
                 {
                     _socket.Close();
                     _socket = null;
                 }
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Exception:" + ex.Message);
+
                 disconnect();
             }
 
@@ -316,14 +321,21 @@ namespace finalmqtt.Client
                 socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
                 socketEventArg.SetBuffer(data, 0, data.Length);
                 _socket.SendAsync(socketEventArg);
+
+                var str = Encoding.UTF8.GetString(data, 0, data.Length);
+                MQttLogging.LogWriter.Instance.WriteToLog("MSG SENT:: " + str);
+
             }
-            catch
+            catch (Exception ex)
             {
                 if (_socket != null)
                 {
                     _socket.Close();
                     _socket = null;
                 }
+
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::sendMessage, Exception:" + ex.Message);
+
                 disconnect();
             }
         }
@@ -541,6 +553,8 @@ namespace finalmqtt.Client
             if ((currentTime - _lastReadTime) > PING_CALLBACK_WAIT_TIME)
             {
                 MQttLogging.LogWriter.Instance.WriteToLog("On Ping Failure Called,Time:" + DateTime.Now);
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::PingFailure");
+
                 disconnect();
                 pingFailureAction = null;
             }
