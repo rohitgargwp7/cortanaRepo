@@ -199,7 +199,7 @@ namespace windows_client.View
 
             if (firstLoad)
             {
-                shellProgress.IsVisible = true;
+                shellProgress.IsIndeterminate = true;
                 mPubSub = App.HikePubSubInstance;
                 registerListeners();
 
@@ -337,7 +337,7 @@ namespace windows_client.View
             {
                 ShowLaunchMessages();
             }
-            shellProgress.IsVisible = false;
+            shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -729,7 +729,7 @@ namespace windows_client.View
             if (result != MessageBoxResult.OK)
                 return;
             isDeleteAllChats = true;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             disableAppBar();
             NetworkManager.turnOffNetworkManager = true;
             ClearAllDB();
@@ -740,7 +740,7 @@ namespace windows_client.View
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
-            shellProgress.IsVisible = false;
+            shellProgress.IsIndeterminate = false;
             isDeleteAllChats = false;
         }
 
@@ -951,11 +951,11 @@ namespace windows_client.View
                         statusMessagesFromDBUnblocked = GetUnblockedStatusUpdates(HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     };
                     statusBw.RunWorkerAsync();
-                    shellProgress.IsVisible = true;
+                    shellProgress.IsIndeterminate = true;
 
                     statusBw.RunWorkerCompleted += (ss, ee) =>
                     {
-                        shellProgress.IsVisible = false;
+                        shellProgress.IsIndeterminate = false;
 
                         foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
                         {
@@ -2684,7 +2684,7 @@ namespace windows_client.View
                     if ((e.Container.Content as BaseStatusUpdate).Equals(statusLLS.ItemsSource[statusLLS.ItemsSource.Count - 1]))
                     {
                         List<StatusMessage> statusMessagesFromDB = null;
-                        shellProgress.IsVisible = true;
+                        shellProgress.IsIndeterminate = true;
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
@@ -2694,7 +2694,7 @@ namespace windows_client.View
                         bw.RunWorkerCompleted += (s1, ev1) =>
                         {
                             AddStatusToViewModel(statusMessagesFromDB, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
-                            shellProgress.IsVisible = false;
+                            shellProgress.IsIndeterminate = false;
                         };
                     }
                 }

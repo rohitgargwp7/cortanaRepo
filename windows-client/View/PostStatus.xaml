@@ -18,9 +18,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
+        
         <Grid x:Name="MoodPanel" Grid.Row="1" Margin="0,12,25,12" HorizontalAlignment="Right" Width="430">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

@@ -5749,6 +5749,7 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
+                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
                 chatBackground.Source = null;
                 return;
             }

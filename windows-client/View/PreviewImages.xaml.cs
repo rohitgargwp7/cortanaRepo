@@ -60,7 +60,7 @@ namespace windows_client.View
             this.ApplicationBar = appbar;
 
             picturesUpload = new ApplicationBarIconButton();
-            picturesUpload.IconUri = new Uri("/View/images/AppBar/appbar.send.png", UriKind.RelativeOrAbsolute);
+            picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
             picturesUpload.Text = AppResources.Send_Txt;
             picturesUpload.Click += OnPicturesUploadClick;
 

@@ -178,15 +178,15 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Do you really want to remove {0} from your favorite list?</value>
+    <value>Do you really want to remove {0} from your favorites?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from favorite list</value>
+    <value>remove from favorites</value>
     <comment>fix char length(29)</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Your favorite list is empty</value>
+    <value>You have no favorites</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -1030,7 +1030,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Nudge</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
-    <value>double tap anywhere on the chat to nudge your friend.</value>
+    <value>double tap anywhere to nudge your friend</value>
     <comment>xaml</comment>
   </data>
   <data name="OK" xml:space="preserve">

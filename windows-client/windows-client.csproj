@@ -531,7 +531,6 @@
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
-    <Content Include="View\images\AppBar\appbar.send.png" />
     <Content Include="View\images\avatars\default_avatar_blue.png" />
     <Content Include="View\images\avatars\default_avatar_green.png" />
     <Content Include="View\images\avatars\default_avatar_group_blue.png" />
@@ -553,6 +552,8 @@
     <Content Include="View\images\avatars\default_avatar_pink.png" />
     <Content Include="View\images\avatars\default_avatar_purple.png" />
     <Content Include="View\images\block.png" />
+    <Content Include="View\images\chat_invited_green_ct.png" />
+    <Content Include="View\images\chat_joined_blue_ct.png" />
     <Content Include="View\images\close_white.png" />
     <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
@@ -656,8 +657,6 @@
     <Content Include="View\images\chatBackgrounds\Background\cbValentines.png" />
     <Content Include="View\images\chatBackground_changed.png" />
     <Content Include="View\images\chatBackground_changed_CT.png" />
-    <Content Include="View\images\chat_invited_green_CT.png" />
-    <Content Include="View\images\chat_joined_blue_CT.png" />
     <Content Include="View\images\chat_left_CT.png" />
     <Content Include="View\images\chat_reward_CT.png" />
     <Content Include="View\images\chat_sms_error_CT.png" />
@@ -877,7 +876,6 @@
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
-    <Content Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
     <Content Include="View\images\timeline_friend.png" />

@@ -898,7 +898,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you really want to remove {0} from your favorite list?.
+        ///   Looks up a localized string similar to Do you really want to remove {0} from your favorites?.
         /// </summary>
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
@@ -943,7 +943,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your favorite list is empty.
+        ///   Looks up a localized string similar to You have no favorites.
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -3236,7 +3236,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to double tap anywhere on the chat to nudge your friend..
+        ///   Looks up a localized string similar to double tap anywhere to nudge your friend.
         /// </summary>
         public static string Nudge_Tute {
             get {
@@ -3803,7 +3803,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from favorite list.
+        ///   Looks up a localized string similar to remove from favorites.
         /// </summary>
         public static string RemFromFav_Txt {
             get {

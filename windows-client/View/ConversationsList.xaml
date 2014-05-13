@@ -19,10 +19,6 @@
     shell:SystemTray.Opacity="0" shell:SystemTray.ForegroundColor="#fffffe"
     shell:SystemTray.IsVisible="True" Name="convListPagePivot">
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-
     <phone:PhoneApplicationPage.Resources>
         <CollectionViewSource x:Key="favCollectionViewKey" x:Name="favCollectionView">
             <CollectionViewSource.SortDescriptions>
@@ -41,6 +37,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top" Background="Transparent"/>
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
@@ -83,9 +81,9 @@
                                 <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Background="Black" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="White" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
