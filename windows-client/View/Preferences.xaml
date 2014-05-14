@@ -37,17 +37,15 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <toolkit:ToggleSwitch Margin="0 20 0 -15" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="1" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10"  Grid.Row="1" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="2" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10"  Grid.Row="2" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Auto_Download_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="3" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10"  Grid.Row="3" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="4" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="4" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="locationToggle_Loaded"/>
-                <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="5" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="5" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="enterToSendToggle_Loaded"/>
             </Grid>
         </ScrollViewer>

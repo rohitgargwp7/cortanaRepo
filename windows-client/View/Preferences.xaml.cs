@@ -35,14 +35,6 @@ namespace windows_client.View
             this.locationToggle.IsChecked = isLocationEnabled;
             this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
 
-            bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            this.showFreeSMSToggle.IsChecked = showFreeSMS;
-            if (showFreeSMS)
-                this.showFreeSMSToggle.Content = AppResources.On;
-            else
-                this.showFreeSMSToggle.Content = AppResources.Off;
-
             List<string> listSettingsValue = new List<string>();
             //by default immediate is to be shown
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
@@ -86,18 +78,6 @@ namespace windows_client.View
                 enterToSend = true;
             enterToSendToggle.IsChecked = enterToSend;
             this.enterToSendToggle.Content = enterToSend ? AppResources.On : AppResources.Off;
-        }
-
-        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-        }
-
-        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
         }
 
         private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)

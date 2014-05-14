@@ -19,12 +19,11 @@
         </Grid.RowDefinitions>
 
         <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
-            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}"/>
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_HelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
         
         <ScrollViewer Grid.Row="1" Margin="4,0,0,0">
             <Grid x:Name="ContentPanel"  Background="Transparent">
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

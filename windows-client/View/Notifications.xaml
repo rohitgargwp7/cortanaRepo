@@ -24,8 +24,8 @@
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
      
-        <ScrollViewer Grid.Row="1" Margin="17,20,17,0">
-            <Grid x:Name="ContentPanel" Background="Transparent">
+        <ScrollViewer Grid.Row="1">
+            <Grid x:Name="ContentPanel" Background="Transparent" Margin="17,30,17,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -35,17 +35,17 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <toolkit:ToggleSwitch  Margin="0 0 0 -15" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Margin="0 0 0 -10" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
-                <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="1" x:Name="hikeJingle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="1" x:Name="hikeJingle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_HikeJingleToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="hikeJingle_Checked" Unchecked="hikeJingle_Unchecked"/>
-                <toolkit:ToggleSwitch  Margin="0 0 0 -15" Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -15" Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
                 <toolkit:ListPicker Grid.Row="4" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
                 
-                <Button Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
+                <Button Margin="12,20,0,0" Width="425" Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
             </Grid>
         </ScrollViewer>
     </Grid>
