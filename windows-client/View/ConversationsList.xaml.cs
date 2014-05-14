@@ -1806,10 +1806,7 @@ namespace windows_client.View
                          {
                              openMarketPlace();
                          }
-                         else
-                         {
-                             criticalUpdateMessageBoxReturned(returned);
-                         }
+                         criticalUpdateMessageBoxReturned();
 
                      }, null);
             }
@@ -1836,19 +1833,16 @@ namespace windows_client.View
             }
         }
 
-        private void criticalUpdateMessageBoxReturned(int? ret)
+        private void criticalUpdateMessageBoxReturned()
         {
-            if (ret == null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    LayoutRoot.IsHitTestVisible = false;
-                    appBar.IsMenuEnabled = false;
-                    composeIconButton.IsEnabled = false;
-                    postStatusIconButton.IsEnabled = false;
-                    groupChatIconButton.IsEnabled = false;
-                });
-            }
+                LayoutRoot.IsHitTestVisible = false;
+                appBar.IsMenuEnabled = false;
+                composeIconButton.IsEnabled = false;
+                postStatusIconButton.IsEnabled = false;
+                groupChatIconButton.IsEnabled = false;
+            });
         }
 
         private void openMarketPlace()
