@@ -112,7 +112,7 @@ namespace windows_client.View
 
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
-            tutTimeText.Text = string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, 28);
+            //tutTimeText.Text = string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, 28);
         }
 
         string _userName;
@@ -296,19 +296,19 @@ namespace windows_client.View
 
         #region STATUS UPDATE TUTORIAL
         
-        private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            RemoveStatusUpdateTutorial();
-        }
+        //private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    RemoveStatusUpdateTutorial();
+        //}
 
-        private void RemoveStatusUpdateTutorial()
-        {
-            overlay.Tap -= DismissStatusUpdateTutorial_Tap;
-            overlay.Visibility = Visibility.Collapsed;
-            TutorialStatusUpdate.Visibility = Visibility.Collapsed;
-            launchPagePivot.IsHitTestVisible = true;
-            App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
-        }
+        //private void RemoveStatusUpdateTutorial()
+        //{
+        //    overlay.Tap -= DismissStatusUpdateTutorial_Tap;
+        //    overlay.Visibility = Visibility.Collapsed;
+        //    TutorialStatusUpdate.Visibility = Visibility.Collapsed;
+        //    launchPagePivot.IsHitTestVisible = true;
+        //    App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+        //}
 
         #endregion
 
@@ -451,7 +451,7 @@ namespace windows_client.View
             /* Add icons */
             groupChatIconButton = new ApplicationBarIconButton();
             groupChatIconButton.IconUri = new Uri("/View/images/AppBar/icon_group_chat.png", UriKind.Relative);
-            groupChatIconButton.Text = AppResources.GrpChat_Txt;
+            groupChatIconButton.Text = AppResources.NewGrpChat_Txt;
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
@@ -766,11 +766,11 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
-            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
-            {
-                RemoveStatusUpdateTutorial();
-                return;
-            }
+            //if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            //{
+            //    RemoveStatusUpdateTutorial();
+            //    return;
+            //}
 
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
@@ -780,11 +780,11 @@ namespace windows_client.View
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
-            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
-            {
-                RemoveStatusUpdateTutorial();
-                return;
-            }
+            //if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            //{
+            //    RemoveStatusUpdateTutorial();
+            //    return;
+            //}
 
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
@@ -984,13 +984,13 @@ namespace windows_client.View
 
                         isStatusMessagesLoaded = true;
                     };
-                    if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
-                    {
-                        overlay.Visibility = Visibility.Visible;
-                        overlay.Tap += DismissStatusUpdateTutorial_Tap;
-                        TutorialStatusUpdate.Visibility = Visibility.Visible;
-                        launchPagePivot.IsHitTestVisible = false;
-                    }
+                    //if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
+                    //{
+                    //    overlay.Visibility = Visibility.Visible;
+                    //    overlay.Tap += DismissStatusUpdateTutorial_Tap;
+                    //    TutorialStatusUpdate.Visibility = Visibility.Visible;
+                    //    launchPagePivot.IsHitTestVisible = false;
+                    //}
                 }
                 else
                 {
@@ -2426,10 +2426,10 @@ namespace windows_client.View
 
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
-            if (TutorialStatusUpdate.Visibility == Visibility.Visible)
-            {
-                RemoveStatusUpdateTutorial();
-            }
+            //if (TutorialStatusUpdate.Visibility == Visibility.Visible)
+            //{
+            //    RemoveStatusUpdateTutorial();
+            //}
 
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);

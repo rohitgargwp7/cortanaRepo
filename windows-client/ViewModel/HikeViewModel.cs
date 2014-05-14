@@ -619,6 +619,8 @@ namespace windows_client.ViewModel
         /// <param name="index">index of the tooltip you want to insert</param>
         public void DisplayTip(Panel element, int index)
         {
+            return;
+
             if (DictInAppTip == null)
                 return;
 

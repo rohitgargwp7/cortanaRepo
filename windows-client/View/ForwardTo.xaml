@@ -41,8 +41,7 @@
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" HideEmptyGroups="True"
-                          GroupHeaderTemplate="{StaticResource ForwardToGroupHeaderTemplate}"
-                          JumpListStyle="{StaticResource LongListSelectorJumpListStyle}">
+                          GroupHeaderTemplate="{StaticResource ForwardToGroupHeaderTemplate}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,7,25,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

@@ -234,8 +234,6 @@ namespace windows_client.View
                     }
                 }
             }
-
-            txtBxEnterName.Focus();
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

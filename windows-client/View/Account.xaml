@@ -74,7 +74,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="UnlinkTwitter" Source="/View/images/settings/twitter_unlink.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <Image x:Name="UnlinkTwitter" Source="/View/images/settings/tw_unlink.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                 <StackPanel Grid.Column="1" Margin="25,0,0,0">
                     <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Twitter_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Twitter_SubHeader_Txt, Source={StaticResource LocalizedStrings}}"/>

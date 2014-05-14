@@ -1949,7 +1949,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can add upto {0} people to a group.
+        ///   Looks up a localized string similar to You can add up to {0} people to a group.
         /// </summary>
         public static string GroupCreateTip {
             get {
@@ -3137,6 +3137,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to new group.
+        /// </summary>
+        public static string NewGrpChat_Txt {
+            get {
+                return ResourceManager.GetString("NewGrpChat_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new status.
         /// </summary>
         public static string NewStatus_Txt {
@@ -3533,7 +3542,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is sharing Last Seen and Status Updates with you. Would you like to do the same?.
+        ///   Looks up a localized string similar to is sharing Last Seen and Status Updates with you. Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {
@@ -3551,7 +3560,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added as favorite.
+        ///   Looks up a localized string similar to added as favorite.
         /// </summary>
         public static string Profile_RequestSent_Blk1 {
             get {
@@ -4019,7 +4028,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to re-sync.
+        ///   Looks up a localized string similar to sync.
         /// </summary>
         public static string SelectUser_RefreshContacts_Txt {
             get {
@@ -4028,7 +4037,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This may take a minute or two....
+        ///   Looks up a localized string similar to Hike is syncing contacts with address book. It will be over before you know it....
         /// </summary>
         public static string SelectUser_RefreshWaitMsg_Txt {
             get {
@@ -4082,7 +4091,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to search or enter phone number.
+        ///   Looks up a localized string similar to search by name or phone number.
         /// </summary>
         public static string SelectUser_TxtBoxHint_Txt {
             get {
@@ -4766,7 +4775,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} hours ago.
+        ///   Looks up a localized string similar to {0} hrs ago.
         /// </summary>
         public static string TimeUtils_X_hours_Ago_Txt {
             get {
@@ -4775,7 +4784,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} minutes ago.
+        ///   Looks up a localized string similar to {0} mins ago.
         /// </summary>
         public static string TimeUtils_X_Mins_Ago_Txt {
             get {
@@ -4793,7 +4802,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} seconds ago.
+        ///   Looks up a localized string similar to {0} secs ago.
         /// </summary>
         public static string TimeUtils_X_Secs_Ago_Txt {
             get {

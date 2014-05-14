@@ -933,7 +933,7 @@ namespace windows_client.View
             appBar.Buttons.Add(postStatusButton);
 
             editProfileAppBarButton = new ApplicationBarIconButton();
-            editProfileAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_editprofile.png", UriKind.Relative);
+            editProfileAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
             editProfileAppBarButton.Text = AppResources.Edit_AppBar_Txt;
             editProfileAppBarButton.Click += EditProfile_Tap;
             appBar.Buttons.Add(editProfileAppBarButton);

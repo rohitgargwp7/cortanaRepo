@@ -1784,7 +1784,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(callMenuItem);
 
                 infoMenuItem = new ApplicationBarMenuItem();
-                infoMenuItem.Text = AppResources.Profile_Txt;
+                infoMenuItem.Text = AppResources.User_Info_Txt;
                 infoMenuItem.Click += userHeader_Tap;
                 appBar.MenuItems.Add(infoMenuItem);
             }

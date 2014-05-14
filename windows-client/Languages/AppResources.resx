@@ -281,6 +281,14 @@
     <value>Entered a wrong number?</value>
     <comment>xaml</comment>
   </data>
+  <data name="NewGrpChat_Txt" xml:space="preserve">
+    <value>new group</value>
+    <comment>max 10 char</comment>
+  </data>
+  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
+    <value>Message {0} on hike</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
+  </data>
   <data name="GrpChat_Txt" xml:space="preserve">
     <value>group chat</value>
     <comment>max 10 char</comment>
@@ -553,11 +561,11 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
-    <value>re-sync</value>
+    <value>sync</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>This may take a minute or two...</value>
+    <value>Hike is syncing contacts with address book. It will be over before you know it...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
@@ -573,7 +581,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value>search or enter phone number</value>
+    <value>search by name or phone number</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
@@ -795,11 +803,11 @@ Download it now http://hike.in and join the fun!</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_hours_Ago_Txt" xml:space="preserve">
-    <value>{0} hours ago</value>
+    <value>{0} hrs ago</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Mins_Ago_Txt" xml:space="preserve">
-    <value>{0} minutes ago</value>
+    <value>{0} mins ago</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Month_Ago_Txt" xml:space="preserve">
@@ -807,7 +815,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Secs_Ago_Txt" xml:space="preserve">
-    <value>{0} seconds ago</value>
+    <value>{0} secs ago</value>
     <comment>TimeUtils , {0} will be replaced by actual value</comment>
   </data>
   <data name="TimeUtils_X_Years_Ago_Txt" xml:space="preserve">
@@ -1199,15 +1207,11 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Do you want to stop contact scanning?</value>
   </data>
-  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
-    <value>Message {0} on hike</value>
-    <comment>Here {0} will get replaced by user name. (cs)</comment>
-  </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>Is sharing Last Seen and Status Updates with you. Would you like to do the same?</value>
+    <value>is sharing Last Seen and Status Updates with you. Would you like to do the same?</value>
   </data>
   <data name="Profile_RequestSent_Blk1" xml:space="preserve">
-    <value>Added as favorite</value>
+    <value>added as favorite</value>
   </data>
   <data name="Profile_NoStatus_Txt" xml:space="preserve">
     <value>{0} hasn't posted anything :(</value>
@@ -2072,7 +2076,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>twitter</value>
   </data>
   <data name="GroupCreateTip" xml:space="preserve">
-    <value>You can add upto {0} people to a group</value>
+    <value>You can add up to {0} people to a group</value>
   </data>
   <data name="NewComposeGroup_Friends" xml:space="preserve">
     <value>{0} favorites</value>

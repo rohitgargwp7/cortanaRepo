@@ -488,7 +488,7 @@ namespace windows_client.Model
                 else
                 {
                     Color currentAccentColorHex =
-                       ((SolidColorBrush)Application.Current.Resources["LastMessageColor"]).Color;
+                       ((SolidColorBrush)Application.Current.Resources["HikeLightGrey"]).Color;
                     return currentAccentColorHex.ToString();
                 }
             }
