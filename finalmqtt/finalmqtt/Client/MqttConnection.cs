@@ -239,11 +239,6 @@ namespace finalmqtt.Client
                 catch (Exception e)
                 {
                     MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::READ Error, Exception:" + e.Message);
-                    if (_socket != null)
-                    {
-                        _socket.Close();
-                        _socket = null;
-                    }
                     disconnect();
                 }
             }
@@ -267,13 +262,6 @@ namespace finalmqtt.Client
                     if (e.ConnectSocket != null)
                         MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
-                    if (_socket != null)
-                    {
-                        MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Current object hash Code:" + _socket.GetHashCode());
-
-                        _socket.Close();
-                        _socket = null;
-                    }
                     MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Error:" + e.SocketError);
 
                     disconnect();
@@ -287,13 +275,6 @@ namespace finalmqtt.Client
                 if (e.ConnectSocket != null)
                     MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
-                if (_socket != null)
-                {
-                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Current object hash Code:" + _socket.GetHashCode());
-
-                    _socket.Close();
-                    _socket = null;
-                }
                 MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Exception:" + ex.Message);
 
                 disconnect();
@@ -342,12 +323,6 @@ namespace finalmqtt.Client
             }
             catch (Exception ex)
             {
-                if (_socket != null)
-                {
-                    _socket.Close();
-                    _socket = null;
-                }
-
                 MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::sendMessage, Exception:" + ex.Message);
 
                 disconnect();
@@ -658,7 +633,7 @@ namespace finalmqtt.Client
 
                 if (_socket != null)
                 {
-                    _socket.Dispose();
+                    _socket.Shutdown(SocketShutdown.Both);
                     _socket.Close();
                     _socket = null;
                 }
@@ -829,7 +804,7 @@ namespace finalmqtt.Client
             }
             if (_socket != null)
             {
-                _socket.Dispose();
+                _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
                 _socket = null;
             }
