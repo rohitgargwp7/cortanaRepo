@@ -179,7 +179,6 @@ namespace finalmqtt.Client
             this.connectCallback = cb;
         }
 
-        List<int> listSockets = new List<int>();
         DateTime dt;
         /// <summary>
         /// Initiates connect request to server.
@@ -188,8 +187,9 @@ namespace finalmqtt.Client
         {
             dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
+
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listSockets.Add(_socket.GetHashCode());
+
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
@@ -264,7 +264,8 @@ namespace finalmqtt.Client
                 }
                 else
                 {
-                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
+                    if (e.ConnectSocket != null)
+                        MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
                     if (_socket != null)
                     {
@@ -326,7 +327,7 @@ namespace finalmqtt.Client
         {
             try
             {
-                if (_socket != null)
+                if (_socket != null && _socket.Connected)
                 {
                     SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
                     socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
