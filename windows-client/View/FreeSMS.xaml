@@ -32,8 +32,10 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+               
                 <toolkit:ToggleSwitch Margin="15,20,15,-10" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
+                
                 <Grid HorizontalAlignment="Stretch" Grid.Row="1" Margin="25,0,25,30">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>

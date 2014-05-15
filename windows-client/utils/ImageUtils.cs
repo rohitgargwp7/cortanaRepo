@@ -222,18 +222,6 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush black40Opacity;
-        public SolidColorBrush Black40Opacity
-        {
-            get
-            {
-                if (black40Opacity == null)
-                    black40Opacity = new SolidColorBrush(Color.FromArgb(102, 0x0, 0x0, 0x0));
-
-                return black40Opacity;
-            }
-        }
-
         #endregion
 
         #region App Specific Colors
@@ -293,30 +281,6 @@ namespace windows_client.utils
                     myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
                 return myLocationPin;
-            }
-        }
-
-        private BitmapImage block;
-        public BitmapImage Block
-        {
-            get
-            {
-                if (block == null)
-                    block = new BitmapImage(new Uri("/view/images/settings/block.png", UriKind.Relative));
-
-                return block;
-            }
-        }
-
-        private BitmapImage unblock;
-        public BitmapImage UnBlock
-        {
-            get
-            {
-                if (unblock == null)
-                    unblock = new BitmapImage(new Uri("/view/images/settings/unblock.png", UriKind.Relative));
-
-                return unblock;
             }
         }
 
@@ -1120,34 +1084,6 @@ namespace windows_client.utils
 
         #endregion
 
-        #region Last Seen
-
-        private BitmapImage lastSeenClockImageWhite;
-        public BitmapImage LastSeenClockImageWhite
-        {
-            get
-            {
-                if (lastSeenClockImageWhite == null)
-                    lastSeenClockImageWhite = new BitmapImage(new Uri("/View/images/last_seen_clock_white.png", UriKind.Relative));
-
-                return lastSeenClockImageWhite;
-            }
-        }
-
-        private BitmapImage lastSeenClockImageBlack;
-        public BitmapImage LastSeenClockImageBlack
-        {
-            get
-            {
-                if (lastSeenClockImageBlack == null)
-                    lastSeenClockImageBlack = new BitmapImage(new Uri("/View/images/last_seen_clock_black.png", UriKind.Relative));
-
-                return lastSeenClockImageBlack;
-            }
-        }
-
-        #endregion
-
         #region Chat Theme
 
         private BitmapImage circles;
@@ -1159,54 +1095,6 @@ namespace windows_client.utils
                     circles = new BitmapImage(new Uri("/View/images/circles.png", UriKind.Relative));
 
                 return circles;
-            }
-        }
-
-        private BitmapImage chatBackgroundImageWhite;
-        public BitmapImage ChatBackgroundImageWhite
-        {
-            get
-            {
-                if (chatBackgroundImageWhite == null)
-                    chatBackgroundImageWhite = new BitmapImage(new Uri("/view/images/paint.png", UriKind.Relative));
-
-                return chatBackgroundImageWhite;
-            }
-        }
-
-        private BitmapImage chatBackgroundImageBlack;
-        public BitmapImage ChatBackgroundImageBlack
-        {
-            get
-            {
-                if (chatBackgroundImageBlack == null)
-                    chatBackgroundImageBlack = new BitmapImage(new Uri("/view/images/paint_black.png", UriKind.Relative));
-
-                return chatBackgroundImageBlack;
-            }
-        }
-
-        BitmapImage cancelButtonBlackImage;
-        public BitmapImage CancelButtonBlackImage
-        {
-            get
-            {
-                if (cancelButtonBlackImage == null)
-                    cancelButtonBlackImage = new BitmapImage(new Uri("/View/images/cancel_black.png", UriKind.Relative));
-
-                return cancelButtonBlackImage;
-            }
-        }
-
-        BitmapImage cancelButtonWhiteImage;
-        public BitmapImage CancelButtonWhiteImage
-        {
-            get
-            {
-                if (cancelButtonWhiteImage == null)
-                    cancelButtonWhiteImage = new BitmapImage(new Uri("/View/images/cancel_white.png", UriKind.Relative));
-
-                return cancelButtonWhiteImage;
             }
         }
 

@@ -274,7 +274,7 @@ namespace windows_client.utils
             {
                 ID = "0",
                 Background = "#ffffffff",
-                HeaderColor = "#fff2f2f2",
+                HeaderColor = "#ff2B8DDD",
                 SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffefefef",
                 BubbleForeground = "#ff000000",

@@ -3263,6 +3263,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Double tap to send nudge.
+        /// </summary>
+        public static string NudgeSettings_Txt {
+            get {
+                return ResourceManager.GetString("NudgeSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {
@@ -4208,7 +4217,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to a list of people you&apos;ve blocked.
+        ///   Looks up a localized string similar to manage people you’ve blocked.
         /// </summary>
         public static string Settings_BlocklistSettings_Txt {
             get {
@@ -4244,7 +4253,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hike jingle.
+        ///   Looks up a localized string similar to Play hike’s jingle on notifications.
         /// </summary>
         public static string Settings_HikeJingleToggleSwitchHeader {
             get {
@@ -4397,7 +4406,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vibrate.
+        ///   Looks up a localized string similar to Vibrate on new message.
         /// </summary>
         public static string Settings_VibrateToggleSwitchHeader {
             get {

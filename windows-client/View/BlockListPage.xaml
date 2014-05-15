@@ -52,7 +52,7 @@
                                     <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
-                            <Image Grid.Column="2" Source="/View/images/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            <Image Grid.Column="2" Source="/View/images/settings/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

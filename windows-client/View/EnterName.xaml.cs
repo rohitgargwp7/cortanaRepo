@@ -35,8 +35,10 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
+
             App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
+            
             appBar = new ApplicationBar()
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
@@ -62,6 +64,8 @@ namespace windows_client
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            txtBxEnterAge.Hint = AppResources.EnterName_Age_Hint;
         }
 
         void cameraIconButton_Click(object sender, EventArgs e)
@@ -357,11 +361,6 @@ namespace windows_client
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove("fbName");
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
-        }
-
-        private void txtBxEnterAge_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
             nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
         }
 

@@ -231,7 +231,18 @@ namespace windows_client.View
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
             App.ViewModel.HidetypingNotification += HideTypingNotification;
+
+            if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out isNudgeOn))
+                isNudgeOn = true;
+
+            if (isNudgeOn)
+            {
+                llsMessages.DoubleTap -= MessageList_DoubleTap;
+                llsMessages.DoubleTap += MessageList_DoubleTap;
+            }
         }
+
+        bool isNudgeOn = true;
 
         void LastSeenResponseReceived(object sender, LastSeenEventArgs e)
         {
@@ -1538,7 +1549,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (!isGroupChat && ocMessages.Count == 0)
+                    if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                         nudgeTut.Visibility = Visibility.Visible;
 
                     progressBar.Opacity = 0;
@@ -1829,7 +1840,7 @@ namespace windows_client.View
                 if (JumpToBottomGrid.Visibility == Visibility.Visible)
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
 
-                if (!isGroupChat)
+                if (!isGroupChat && isNudgeOn)
                     nudgeTut.Visibility = Visibility.Visible;
 
                 ClearChat();
@@ -3023,7 +3034,7 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
-            if (!isGroupChat && ocMessages.Count == 0)
+            if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
 
             if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
@@ -5709,32 +5720,20 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
-                chatThemeHeaderTxt.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.Black;
-                userName.Foreground = UI_Utils.Instance.HikeBlue;
-                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageBlack;
-                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageBlack;
-                shellProgress.Foreground = progressBar.Foreground = UI_Utils.Instance.Black;
+                progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeLightGrey"];
-                cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonBlackImage;
-                doneButton.Background = UI_Utils.Instance.Black;
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
                 nudgeBorder.Background = UI_Utils.Instance.White;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
                 nudgeText.Foreground = UI_Utils.Instance.Black;
-                grpMuteText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlack"];
             }
             else
             {
-                chatThemeHeaderTxt.Foreground = userName.Foreground = lastSeenTxt.Foreground = UI_Utils.Instance.White;
-                onlineStatus.Source = UI_Utils.Instance.LastSeenClockImageWhite;
-                chatPaint.Source = UI_Utils.Instance.ChatBackgroundImageWhite;
-                shellProgress.Foreground = progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
-                cancelChatThemeImage.Source = UI_Utils.Instance.CancelButtonWhiteImage;
-                doneButton.Background = UI_Utils.Instance.Black40Opacity;
+                progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
                 nudgeBorder.BorderBrush = UI_Utils.Instance.White;
                 nudgeBorder.Background = App.ViewModel.SelectedBackground.HeaderBackground;
                 nudgeImage.Source = UI_Utils.Instance.NudgeSent;
-                grpMuteText.Foreground = nudgeText.Foreground = UI_Utils.Instance.White;
+                nudgeText.Foreground = UI_Utils.Instance.White;
             }
 
             if (isBubbleColorChanged)
@@ -5748,7 +5747,7 @@ namespace windows_client.View
 
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
-                headerBackground.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+                headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
                 chatBackground.Source = null;
                 return;
             }
@@ -5765,9 +5764,11 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground == null)
                 return;
 
-            if (ChatBackgroundHelper.Instance.ChatBgCache.ContainsKey(App.ViewModel.SelectedBackground.ID))
+            var bg = ChatBackgroundHelper.Instance.ChatBgCache.GetObject(App.ViewModel.SelectedBackground.ID);
+
+            if (bg != null)
             {
-                _background = ChatBackgroundHelper.Instance.ChatBgCache[App.ViewModel.SelectedBackground.ID];
+                _background = bg;
                 chatBackground.Source = _background;
                 PostChangeBackgroundOperations();
                 return;
@@ -5824,7 +5825,7 @@ namespace windows_client.View
                     _background = source;
                 }
 
-                ChatBackgroundHelper.Instance.ChatBgCache[App.ViewModel.SelectedBackground.ID] = _background;
+                ChatBackgroundHelper.Instance.ChatBgCache.AddObject(App.ViewModel.SelectedBackground.ID, _background);
                 chatBackground.Source = _background;
 
                 PostChangeBackgroundOperations();

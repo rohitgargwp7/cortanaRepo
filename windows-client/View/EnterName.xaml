@@ -28,10 +28,10 @@
             </Grid.Background>
             <Image Source="/View/images/FTUE/camera_icon_profile.png" MaxHeight="35" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,20"/>
         </Grid>
-        <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" TextOptions.TextHintingMode="Animated" InputScope="Text"
+        <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" InputScope="Text"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />
-        <toolkit:PhoneTextBox x:Name="txtBxEnterAge" Margin="12,0,12,5" Grid.Row="2" TextOptions.TextHintingMode="Animated" InputScope="Number" KeyUp="txtBxEnterAge_KeyUp"
-                              Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="2" TextChanged="txtBxEnterAge_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Age_Hint , Source={StaticResource LocalizedStrings}}" />
+        <toolkit:PhoneTextBox x:Name="txtBxEnterAge" Margin="12,0,12,5" Grid.Row="2" InputScope="Number" KeyUp="txtBxEnterAge_KeyUp"
+                              Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="2"/>
         <Grid Grid.Row="3" MinHeight="40" Margin="0,5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

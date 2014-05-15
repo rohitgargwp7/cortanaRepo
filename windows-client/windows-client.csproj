@@ -635,7 +635,6 @@
     <Content Include="View\images\heartsNudgeReceived.png" />
     <Content Include="View\images\heartsNudgeSent.png" />
     <Content Include="View\images\hike_toast_image.png" />
-    <Content Include="View\images\cancel_black.png" />
     <Content Include="View\images\cancel_white.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbBeach.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbBikers.png" />
@@ -714,7 +713,6 @@
     <Content Include="View\images\stickers\categorySets\hotheads_overlay.png" />
     <Content Include="View\images\stickers\categorySets\iloveyou_overlay.png" />
     <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
-    <Content Include="View\images\paint_black.png" />
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_white_ftr.png" />
@@ -779,7 +777,6 @@
     <Content Include="View\images\AppBar\icon_record_appbar.png" />
     <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\AppBar\icon_stop_appbar.png" />
-    <Content Include="View\images\last_seen_clock_black.png" />
     <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\LocationPin.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />

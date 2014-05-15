@@ -39,7 +39,7 @@
             <TextBlock x:Name="txtBlkOldSchool" Margin="0,70" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
 
             <toolkit:PhoneTextBox Grid.Row="1" x:Name="txtEnterCountry" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Center" Width="440" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
-            <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
+            <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
 
             <TextBlock TextAlignment="Left" Grid.Row="3"
                            Margin="32,0,0,0" Name="msisdnErrorTxt" 

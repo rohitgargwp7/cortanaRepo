@@ -974,7 +974,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>xaml. push toggle</comment>
   </data>
   <data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
-    <value>Vibrate</value>
+    <value>Vibrate on new message</value>
     <comment>xaml</comment>
   </data>
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
@@ -1378,7 +1378,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>manage your hike account</value>
   </data>
   <data name="Settings_BlocklistSettings_Txt" xml:space="preserve">
-    <value>a list of people you've blocked</value>
+    <value>manage people you’ve blocked</value>
   </data>
   <data name="Settings_NotificationSettings_Txt" xml:space="preserve">
     <value>notifications</value>
@@ -1777,7 +1777,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>update now</value>
   </data>
   <data name="Settings_HikeJingleToggleSwitchHeader" xml:space="preserve">
-    <value>hike jingle</value>
+    <value>Play hike’s jingle on notifications</value>
   </data>
   <data name="InvitePopUp_FreeSMS_Message" xml:space="preserve">
     <value>Now invite friends via sms for free. No charges apply.:)</value>
@@ -2131,5 +2131,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="NoContactsToDisplay_Txt" xml:space="preserve">
     <value>no contacts to display</value>
+  </data>
+  <data name="NudgeSettings_Txt" xml:space="preserve">
+    <value>Double tap to send nudge</value>
   </data>
 </root>

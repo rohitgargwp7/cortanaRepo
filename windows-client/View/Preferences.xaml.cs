@@ -38,6 +38,7 @@ namespace windows_client.View
             List<string> listSettingsValue = new List<string>();
             //by default immediate is to be shown
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
+
             byte firstSetting;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
             {
@@ -55,23 +56,26 @@ namespace windows_client.View
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
 
-            bool autoDownload;
-            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out autoDownload))
-                autoDownload = true;
-            autoDownloadToggle.IsChecked = autoDownload;
-            this.autoDownloadToggle.Content = autoDownload ? AppResources.On : AppResources.Off;
+            bool value;
+            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out value))
+                value = true;
+            autoDownloadToggle.IsChecked = value;
+            this.autoDownloadToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            bool autoUpload;
-            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out autoUpload))
-                autoUpload = true;
-            autoResumeToggle.IsChecked = autoUpload;
-            this.autoResumeToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
+            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out value))
+                value = true;
+            autoResumeToggle.IsChecked = value;
+            this.autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            bool enterToSend;
-            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out enterToSend))
-                enterToSend = true;
-            enterToSendToggle.IsChecked = enterToSend;
-            this.enterToSendToggle.Content = enterToSend ? AppResources.On : AppResources.Off;
+            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out value))
+                value = true;
+            enterToSendToggle.IsChecked = value;
+            this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
+            
+            if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
+                value = true;
+            nudgeSettingToggle.IsChecked = value;
+            this.nudgeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -94,9 +98,7 @@ namespace windows_client.View
         {
             this.locationToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
-
-            App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(HikeConstants.LOCATION_DEVICE_COORDINATE);
         }
         private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
         {
@@ -107,15 +109,13 @@ namespace windows_client.View
         private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING);
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
-            App.appSettings.Save();
         }
 
         private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
@@ -128,8 +128,7 @@ namespace windows_client.View
         private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoResumeToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.AUTO_RESUME_SETTING);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.AUTO_RESUME_SETTING);
 
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
@@ -138,7 +137,6 @@ namespace windows_client.View
         {
             this.autoResumeToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_RESUME_SETTING, false);
-            App.appSettings.Save();
         }
 
         private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)
@@ -151,8 +149,7 @@ namespace windows_client.View
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.ENTER_TO_SEND);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.ENTER_TO_SEND);
 
             App.SendEnterToSendStatusToServer();
         }
@@ -161,9 +158,27 @@ namespace windows_client.View
         {
             this.enterToSendToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
-            App.appSettings.Save();
 
             App.SendEnterToSendStatusToServer();
+        }
+
+        private void nudgeSettingsToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            nudgeSettingToggle.Loaded -= nudgeSettingsToggle_Loaded;
+            nudgeSettingToggle.Checked += nudgeSettingToggle_Checked;
+            nudgeSettingToggle.Unchecked += nudgeSettingToggle_UnChecked;
+        }
+
+        private void nudgeSettingToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.nudgeSettingToggle.Content = AppResources.On;
+            App.RemoveKeyFromAppSettings(App.SEND_NUDGE);
+        }
+
+        private void nudgeSettingToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            this.nudgeSettingToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.SEND_NUDGE, false);
         }
     }
 }

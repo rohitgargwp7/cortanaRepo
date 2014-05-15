@@ -33,7 +33,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Margin="12,12,12,0" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" Margin="12,12,12,0" HorizontalAlignment="Stretch" 
                                   Style="{StaticResource PhoneTextBoxWithWhiteBackground}" Tap="enterNameTxt_Tap"
                                   TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="150"/>
 
