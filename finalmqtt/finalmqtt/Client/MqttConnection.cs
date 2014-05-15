@@ -264,11 +264,11 @@ namespace finalmqtt.Client
                 }
                 else
                 {
-                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Object HAsh:" + e.ConnectSocket.GetHashCode());
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
                     if (_socket != null)
                     {
-                        MQttLogging.LogWriter.Instance.WriteToLog("Current object hash Code:" + _socket.GetHashCode());
+                        MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Current object hash Code:" + _socket.GetHashCode());
 
                         _socket.Close();
                         _socket = null;
@@ -283,8 +283,13 @@ namespace finalmqtt.Client
             }
             catch (Exception ex)
             {
+                if (e.ConnectSocket != null)
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Object HAsh:" + e.ConnectSocket.GetHashCode());
+
                 if (_socket != null)
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Current object hash Code:" + _socket.GetHashCode());
+
                     _socket.Close();
                     _socket = null;
                 }
@@ -321,16 +326,18 @@ namespace finalmqtt.Client
         {
             try
             {
-                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
-                socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-                socketEventArg.UserToken = null;
-                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
-                socketEventArg.SetBuffer(data, 0, data.Length);
-                _socket.SendAsync(socketEventArg);
+                if (_socket != null)
+                {
+                    SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                    socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
+                    socketEventArg.UserToken = null;
+                    socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
+                    socketEventArg.SetBuffer(data, 0, data.Length);
+                    _socket.SendAsync(socketEventArg);
 
-                var str = Encoding.UTF8.GetString(data, 0, data.Length);
-                MQttLogging.LogWriter.Instance.WriteToLog("MSG SENT:: " + str);
-
+                    var str = Encoding.UTF8.GetString(data, 0, data.Length);
+                    MQttLogging.LogWriter.Instance.WriteToLog("MSG SENT:: " + str);
+                }
             }
             catch (Exception ex)
             {
@@ -629,7 +636,7 @@ namespace finalmqtt.Client
         public void disconnect() //throws IOException 
         {
             MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT CALLED");
-           
+
             try
             {
                 if (_socket != null)

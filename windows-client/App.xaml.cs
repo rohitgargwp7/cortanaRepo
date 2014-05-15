@@ -481,6 +481,8 @@ namespace windows_client
             {
                 if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("Network regained," + e.NetworkInterface.InterfaceSubtype);
+
                     App.MqttManagerInstance.connect();
                     bool isPushEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
@@ -495,6 +497,8 @@ namespace windows_client
                 }
                 else
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("Network lost," + e.NetworkInterface.InterfaceSubtype);
+
                     if (App.MqttManagerInstance != null)
                         App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
                 }
