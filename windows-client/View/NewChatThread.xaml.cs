@@ -1538,7 +1538,9 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    nudgeTut.Visibility = Visibility.Visible;
+                    if (!isGroupChat && ocMessages.Count == 0)
+                        nudgeTut.Visibility = Visibility.Visible;
+
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1827,7 +1829,8 @@ namespace windows_client.View
                 if (JumpToBottomGrid.Visibility == Visibility.Visible)
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
 
-                nudgeTut.Visibility = Visibility.Visible;
+                if (!isGroupChat)
+                    nudgeTut.Visibility = Visibility.Visible;
 
                 ClearChat();
 
@@ -2073,7 +2076,7 @@ namespace windows_client.View
             if (ocMessages == null)
                 return;
 
-            if(nudgeTut.Visibility == Visibility.Visible)
+            if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
 
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
@@ -3020,7 +3023,7 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
-            if (ocMessages.Count == 0)
+            if (!isGroupChat && ocMessages.Count == 0)
                 nudgeTut.Visibility = Visibility.Visible;
 
             if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))

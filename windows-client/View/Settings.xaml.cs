@@ -44,12 +44,6 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/Account.xaml", UriKind.Relative));
         }
 
-        //private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    App.AnalyticsInstance.addEvent(Analytics.BLOCKLIST);
-        //    NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
-        //}
-
         private void SMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
@@ -57,7 +51,7 @@ namespace windows_client.View
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
         }
 
         private void Sync_Tap(object sender, System.Windows.Input.GestureEventArgs e)

@@ -294,6 +294,9 @@
     <Compile Include="View\PreviewImages.xaml.cs">
       <DependentUpon>PreviewImages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Privacy.xaml.cs">
+      <DependentUpon>Privacy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
@@ -428,6 +431,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PreviewImages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Privacy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -682,7 +689,7 @@
     <Content Include="View\images\settings\account.png" />
     <Content Include="View\images\settings\block.png" />
     <Content Include="View\images\settings\blocklist_holder.png" />
-    <Content Include="View\images\settings\block_list_icon_black.png" />
+    <Content Include="View\images\settings\block_list.png" />
     <Content Include="View\images\settings\delete_account.png" />
     <Content Include="View\images\settings\fb_unlink.png" />
     <Content Include="View\images\settings\free_sms.png" />

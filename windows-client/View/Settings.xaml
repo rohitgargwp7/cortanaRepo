@@ -119,19 +119,6 @@
                         <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SubtitleHelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
                     </StackPanel>
                 </Grid>
-
-
-                <!--<Grid Grid.Row="3" Margin="0,30,0,0" Tap="BlockList_Tap">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image x:Name="blockListImage" Width="32" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                        <TextBlock Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>-->
             </Grid>
         </ScrollViewer>
     </Grid>

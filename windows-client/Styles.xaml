@@ -1413,7 +1413,6 @@
                 </Setter>
             </Style>
 
-
             <ControlTemplate x:Key="EditProfileListPicker" TargetType="toolkit:ListPicker">
                 <StackPanel>
                     <VisualStateManager.VisualStateGroups>

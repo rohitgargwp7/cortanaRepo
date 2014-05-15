@@ -55,12 +55,6 @@ namespace windows_client.View
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
 
-            bool showlastSeen = true;
-            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
-                showlastSeen = true;
-            lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
-
             bool autoDownload;
             if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out autoDownload))
                 autoDownload = true;
@@ -78,40 +72,6 @@ namespace windows_client.View
                 enterToSend = true;
             enterToSendToggle.IsChecked = enterToSend;
             this.enterToSendToggle.Content = enterToSend ? AppResources.On : AppResources.Off;
-        }
-
-        private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            lastSeenTimeStampToggle.Loaded -= lastSeenTimeStampToggle_Loaded;
-            lastSeenTimeStampToggle.Checked += lastSeenTimeStampToggle_Checked;
-            lastSeenTimeStampToggle.Unchecked += lastSeenTimeStampToggle_Unchecked;
-        }
-
-        private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.LAST_SEEN_SEETING);
-            App.appSettings.Save();
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, true);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
-
-        private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, false);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)

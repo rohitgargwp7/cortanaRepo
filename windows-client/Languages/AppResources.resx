@@ -1796,7 +1796,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Invite Friends, Earn Rewards</value>
   </data>
   <data name="SelectAll_Txt" xml:space="preserve">
-    <value>select all</value>
+    <value>mark all</value>
   </data>
   <data name="Search_Hint_Txt" xml:space="preserve">
     <value>search</value>
@@ -2125,5 +2125,11 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Settings_SyncSettings_Txt" xml:space="preserve">
     <value>sync contacts</value>
+  </data>
+  <data name="DeSelectAll_Txt" xml:space="preserve">
+    <value>unmark all</value>
+  </data>
+  <data name="NoContactsToDisplay_Txt" xml:space="preserve">
+    <value>no contacts to display</value>
   </data>
 </root>

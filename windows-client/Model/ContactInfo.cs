@@ -183,20 +183,10 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
-                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
-                    {
-                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
-                        if (currentPage != null)
-                        {
-                            currentPage.CheckBox_Tap(this);
-                        }
-                        NotifyPropertyChanged("IsFav");//it is binded with two way checkbox, so to update ui
-                    }
-                    else
-                        NotifyPropertyChanged("BlockUnblockImage");
+                    NotifyPropertyChanged("BlockUnblockImage");
                 }
             }
-        }   // this is used in inviteUsers page , when you show hike users
+        }
 
         bool _isSelected;
         public bool IsSelected

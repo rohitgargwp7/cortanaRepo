@@ -1096,6 +1096,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to unmark all.
+        /// </summary>
+        public static string DeSelectAll_Txt {
+            get {
+                return ResourceManager.GetString("DeSelectAll_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to directions.
         /// </summary>
         public static string Directions_Txt {
@@ -3182,6 +3191,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to no contacts to display.
+        /// </summary>
+        public static string NoContactsToDisplay_Txt {
+            get {
+                return ResourceManager.GetString("NoContactsToDisplay_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invite {0} to continue hiking..
         /// </summary>
         public static string NoFreeSmsLeft_Txt {
@@ -3857,7 +3875,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select all.
+        ///   Looks up a localized string similar to mark all.
         /// </summary>
         public static string SelectAll_Txt {
             get {
