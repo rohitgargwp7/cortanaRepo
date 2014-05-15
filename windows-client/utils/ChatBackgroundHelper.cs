@@ -21,7 +21,7 @@ namespace windows_client.utils
 
         public List<ChatBackground> BackgroundList;
         public Dictionary<String, ChatThemeData> ChatBgMap;
-        public Dictionary<String, WriteableBitmap> ChatBgCache = new Dictionary<string, WriteableBitmap>();
+        public LruCache<String, WriteableBitmap> ChatBgCache = new LruCache<String, WriteableBitmap>(3, 0); 
 
         private static object readWriteLock = new object();
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
