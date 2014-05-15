@@ -633,7 +633,8 @@ namespace finalmqtt.Client
 
                 if (_socket != null)
                 {
-                    _socket.Shutdown(SocketShutdown.Both);
+                    if (_socket.Connected)
+                        _socket.Shutdown(SocketShutdown.Both);
                     _socket.Close();
                     _socket = null;
                 }
@@ -804,7 +805,8 @@ namespace finalmqtt.Client
             }
             if (_socket != null)
             {
-                _socket.Shutdown(SocketShutdown.Both);
+                if (_socket.Connected)
+                    _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
                 _socket = null;
             }
