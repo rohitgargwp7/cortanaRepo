@@ -207,10 +207,21 @@ namespace windows_client.Model
             }
         }
 
+        bool _isOwner;
         public bool IsOwner
         {
-            get;
-            set;
+            get
+            {
+                return _isOwner;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _isOwner = value;
+                    NotifyPropertyChanged("IsOwner");
+                }
+            }
         }
 
         public bool IsFav
@@ -294,16 +305,6 @@ namespace windows_client.Model
                 if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public bool ContextMenuIsEnabled
-        {
-            get
-            {
-                if (ContextMenuVisibility == Visibility.Visible)
-                    return true;
-                return false;
             }
         }
 

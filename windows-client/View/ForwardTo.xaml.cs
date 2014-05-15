@@ -47,14 +47,14 @@ namespace windows_client.View
         private int _smsCredits;
         private string _charsEntered;
 
-        ObservableCollection<Group<ContactInfo>> _glistFiltered = null;
-        ObservableCollection<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
+        ObservableCollection<ContactGroup<ContactInfo>> _glistFiltered = null;
+        ObservableCollection<ContactGroup<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
 
         ObservableCollection<ContactInfo> SelectedContacts = new ObservableCollection<ContactInfo>(); // this is used to store all those contacts which are selected for forwarding message
 
         List<ContactInfo> _allContactsList = null; // contacts list
-        Group<ContactInfo> _smsContactsGroup; // sms contacts list
-        Group<ContactInfo> _emptySMSGroup = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts); // empty sms contacts list
+        ContactGroup<ContactInfo> _smsContactsGroup; // sms contacts list
+        ContactGroup<ContactInfo> _emptySMSGroup = new ContactGroup<ContactInfo>(AppResources.NewComposeGroup_SMSContacts, AppResources.NewComposeGroup_1SMSContact); // empty sms contacts list
 
         private ProgressIndicatorControl progressIndicator;
 
@@ -62,7 +62,7 @@ namespace windows_client.View
         private ApplicationBarIconButton _refreshIconButton = null;
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
-        Dictionary<string, ObservableCollection<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, ObservableCollection<Group<ContactInfo>>>();
+        Dictionary<string, ObservableCollection<ContactGroup<ContactInfo>>> groupListDictionary = new Dictionary<string, ObservableCollection<ContactGroup<ContactInfo>>>();
 
         /// <summary>
         /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
@@ -317,7 +317,7 @@ namespace windows_client.View
                 && groupListStateDictionary.ContainsKey(_charsEntered)
                 && groupListStateDictionary[_charsEntered] == _showSmsContacts)
             {
-                ObservableCollection<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
+                ObservableCollection<ContactGroup<ContactInfo>> gl = groupListDictionary[_charsEntered];
 
                 if (gl == null)
                 {
@@ -440,7 +440,7 @@ namespace windows_client.View
             }
         }
 
-        private ObservableCollection<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        private ObservableCollection<ContactGroup<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
         {
             _glistFiltered = null;
             bool areCharsNumber = false;
@@ -456,7 +456,7 @@ namespace windows_client.View
                 }
             }
 
-            ObservableCollection<Group<ContactInfo>> listToIterate = null;
+            ObservableCollection<ContactGroup<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
 
             if (charsLength > 0)
@@ -508,7 +508,7 @@ namespace windows_client.View
                 }
             }
 
-            ObservableCollection<Group<ContactInfo>> list = null;
+            ObservableCollection<ContactGroup<ContactInfo>> list = null;
             if (areCharsNumber)
             {
                 if (_glistFiltered == null || createNewFilteredList)
@@ -810,7 +810,7 @@ namespace windows_client.View
         /// </summary>
         /// <param name="allContactsList">list of all contacts</param>
         /// <returns>group list</returns>
-        private ObservableCollection<Group<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
+        private ObservableCollection<ContactGroup<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
@@ -819,9 +819,9 @@ namespace windows_client.View
                 _existingGroupUsers = activeExistingGroupMembers.Count;
             }
 
-            ObservableCollection<Group<ContactInfo>> glist = CreateGroups();
+            ObservableCollection<ContactGroup<ContactInfo>> glist = CreateGroups();
             ExistingContacts = new Dictionary<string, ContactInfo>();
-            _smsContactsGroup = new Group<ContactInfo>(AppResources.NewComposeGroup_SMSContacts);
+            _smsContactsGroup = new ContactGroup<ContactInfo>(AppResources.NewComposeGroup_SMSContacts, AppResources.NewComposeGroup_1SMSContact);
 
             PopulateGroupChats(glist);
             PopulateRecentChats(glist);
@@ -857,7 +857,7 @@ namespace windows_client.View
 
         Dictionary<string, ContactInfo> ExistingContacts;
 
-        private void PopulateGroupChats(ObservableCollection<Group<ContactInfo>> glist)
+        private void PopulateGroupChats(ObservableCollection<ContactGroup<ContactInfo>> glist)
         {
             if (_showExistingGroups)
             {
@@ -894,7 +894,7 @@ namespace windows_client.View
             }
         }
 
-        private void PopulateRecentChats(ObservableCollection<Group<ContactInfo>> glist)
+        private void PopulateRecentChats(ObservableCollection<ContactGroup<ContactInfo>> glist)
         {
             if (_isGroupChat || _isForward)
             {
@@ -929,7 +929,7 @@ namespace windows_client.View
             }
         }
 
-        private void PopulateFriends(ObservableCollection<Group<ContactInfo>> glist)
+        private void PopulateFriends(ObservableCollection<ContactGroup<ContactInfo>> glist)
         {
             foreach (var friend in App.ViewModel.FavList)
             {
@@ -968,23 +968,29 @@ namespace windows_client.View
             return activeExistingGroupMembers.Where(m => m.Msisdn == msisdn).Count() > 0;
         }
 
-        private ObservableCollection<Group<ContactInfo>> CreateGroups()
+        private ObservableCollection<ContactGroup<ContactInfo>> CreateGroups()
         {
             string[] Groups = new string[]
             {
                 AppResources.NewComposeGroup_RecentContacts,
+                AppResources.NewComposeGroup_1RecentContact,
                 AppResources.NewComposeGroup_GroupChats,
+                 AppResources.NewComposeGroup_1GroupChat,
                 AppResources.NewComposeGroup_Friends,
+                AppResources.NewComposeGroup_1Friend,
                 AppResources.NewComposeGroup_HikeContacts,
+                AppResources.NewComposeGroup_1HikeContact,
                 AppResources.NewComposeGroup_SMSContacts,
-                AppResources.NewComposeGroup_OtherContacts
+                AppResources.NewComposeGroup_1SMSContact,
+                AppResources.NewComposeGroup_OtherContacts,
+                AppResources.NewComposeGroup_1OtherContact
             };
 
-            ObservableCollection<Group<ContactInfo>> glist = new ObservableCollection<Group<ContactInfo>>();
+            ObservableCollection<ContactGroup<ContactInfo>> glist = new ObservableCollection<ContactGroup<ContactInfo>>();
 
-            foreach (string str in Groups)
+            for (int i = 0; i < Groups.Length;i++,i++ )
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(str);
+                ContactGroup<ContactInfo> g = new ContactGroup<ContactInfo>(Groups[i], Groups[i + 1]);
                 glist.Add(g);
             }
 
@@ -1308,67 +1314,5 @@ namespace windows_client.View
         int _existingGroupUsers; // 1 because owner of the group is already included
 
         List<GroupParticipant> activeExistingGroupMembers;
-
-        class Group<T> : ObservableCollection<T>, INotifyPropertyChanged
-        {
-            public Group(string name)
-            {
-                Title = name;
-                this.CollectionChanged += Group_CollectionChanged;
-            }
-
-            void Group_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-            {
-                NotifyPropertyChanged("Title");
-                NotifyPropertyChanged("IsNonEmpty");
-            }
-
-            string _title;
-            public string Title
-            {
-                get
-                {
-                    return String.IsNullOrEmpty(_title) ? String.Empty : String.Format(_title, Items.Count);
-                }
-                set
-                {
-                    if (value != _title)
-                        _title = value;
-                }
-            }
-
-            public bool IsNonEmpty
-            {
-                get
-                {
-                    return Items != null && Items.Count > 0;
-                }
-            }
-
-            #region INotifyPropertyChanged Members
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            // Used to notify that a property changed
-            public void NotifyPropertyChanged(string propertyName)
-            {
-                if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        try
-                        {
-                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("Group :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
-                        }
-                    });
-                }
-            }
-
-            #endregion
-        }
     }
 }

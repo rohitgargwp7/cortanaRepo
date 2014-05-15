@@ -23,6 +23,7 @@ using windows_client.Misc;
 using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -378,9 +379,27 @@ namespace windows_client.View
                     InitHikeUserProfile();
             }
 
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+                LoadHighResImage();
+
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+        }
+
+        async void LoadHighResImage()
+        {
+            await Task.Delay(1);
+
+            if (MiscDBUtil.hasCustomProfileImage(msisdn))
+            {
+                var bytes = MiscDBUtil.getLargeImageForMsisdn(msisdn);
+
+                if (bytes != null)
+                    avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(bytes);
+            }
+            else
+                avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(msisdn, true);
         }
 
         void LoadCallCopyOptions()

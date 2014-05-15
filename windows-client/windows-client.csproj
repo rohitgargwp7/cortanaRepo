@@ -198,6 +198,7 @@
     <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Misc\Social.cs" />
+    <Compile Include="Model\ContactGroup.cs" />
     <Compile Include="Model\MultiplePhoto\Album.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
@@ -561,6 +562,7 @@
     <Content Include="View\images\chat_invited_green_ct.png" />
     <Content Include="View\images\chat_joined_blue_ct.png" />
     <Content Include="View\images\close_white.png" />
+    <Content Include="View\images\owner.png" />
     <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />

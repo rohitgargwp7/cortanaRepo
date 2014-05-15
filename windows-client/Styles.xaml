@@ -46,7 +46,6 @@
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#e6e9ee"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
-            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:BackgroundConverter x:Key="BackgroundConverter"/>
             <converter:ForegroundConverter x:Key="ForegroundConverter"/>
             
@@ -1798,6 +1797,11 @@
                     <TextBlock Text="{Binding Title}" Style="{StaticResource SubHeaderTextBlock}" Margin="0,24,0,12"
                             VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 </Border>
+            </DataTemplate>
+
+            <DataTemplate x:Key="GroupInfoGroupHeaderTemplate">
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource SubHeaderTextBlock}" Margin="25,24,0,12"
+                            VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </DataTemplate>
 
             <DataTemplate x:Key="AlphabeticGroupHeaderTemplate">

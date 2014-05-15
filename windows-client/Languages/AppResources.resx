@@ -2135,4 +2135,22 @@ Download it now http://hike.in and join the fun!</value>
   <data name="NudgeSettings_Txt" xml:space="preserve">
     <value>Double tap to send nudge</value>
   </data>
+  <data name="NewComposeGroup_1Friend" xml:space="preserve">
+    <value>1 friend</value>
+  </data>
+  <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
+    <value>1 group chat</value>
+  </data>
+  <data name="NewComposeGroup_1HikeContact" xml:space="preserve">
+    <value>1 hike contact</value>
+  </data>
+  <data name="NewComposeGroup_1OtherContact" xml:space="preserve">
+    <value>1 other contact</value>
+  </data>
+  <data name="NewComposeGroup_1RecentContact" xml:space="preserve">
+    <value>1 recent contact</value>
+  </data>
+  <data name="NewComposeGroup_1SMSContact" xml:space="preserve">
+    <value>1 SMS contact</value>
+  </data>
 </root>

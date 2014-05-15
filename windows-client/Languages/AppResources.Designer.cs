@@ -3092,6 +3092,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 friend.
+        /// </summary>
+        public static string NewComposeGroup_1Friend {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1Friend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 group chat.
+        /// </summary>
+        public static string NewComposeGroup_1GroupChat {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1GroupChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 hike contact.
+        /// </summary>
+        public static string NewComposeGroup_1HikeContact {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1HikeContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 other contact.
+        /// </summary>
+        public static string NewComposeGroup_1OtherContact {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1OtherContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 recent contact.
+        /// </summary>
+        public static string NewComposeGroup_1RecentContact {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1RecentContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 SMS contact.
+        /// </summary>
+        public static string NewComposeGroup_1SMSContact {
+            get {
+                return ResourceManager.GetString("NewComposeGroup_1SMSContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} favorites.
         /// </summary>
         public static string NewComposeGroup_Friends {
