@@ -229,11 +229,6 @@ namespace finalmqtt.Client
                 }
                 catch (Exception e)
                 {
-                    if (_socket != null)
-                    {
-                        _socket.Close();
-                        _socket = null;
-                    }
                     disconnect();
                 }
             }
@@ -254,11 +249,6 @@ namespace finalmqtt.Client
                 }
                 else
                 {
-                    if (_socket != null)
-                    {
-                        _socket.Close();
-                        _socket = null;
-                    }
                     disconnect();
                     return;
                 }
@@ -267,11 +257,6 @@ namespace finalmqtt.Client
             }
             catch (Exception)
             {
-                if (_socket != null)
-                {
-                    _socket.Close();
-                    _socket = null;
-                }
                 disconnect();
             }
 
@@ -303,20 +288,18 @@ namespace finalmqtt.Client
         {
             try
             {
-                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
-                socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-                socketEventArg.UserToken = null;
-                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
-                socketEventArg.SetBuffer(data, 0, data.Length);
-                _socket.SendAsync(socketEventArg);
+                if (_socket != null && _socket.Connected)
+                {
+                    SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                    socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
+                    socketEventArg.UserToken = null;
+                    socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
+                    socketEventArg.SetBuffer(data, 0, data.Length);
+                    _socket.SendAsync(socketEventArg);
+                }
             }
             catch
             {
-                if (_socket != null)
-                {
-                    _socket.Close();
-                    _socket = null;
-                }
                 disconnect();
             }
         }
@@ -602,7 +585,8 @@ namespace finalmqtt.Client
 
                 if (_socket != null)
                 {
-                    _socket.Dispose();
+                    if (_socket.Connected)//if not connected it throws exception that its not connected
+                        _socket.Shutdown(SocketShutdown.Both);
                     _socket.Close();
                     _socket = null;
                 }
@@ -745,7 +729,10 @@ namespace finalmqtt.Client
             }
             if (_socket != null)
             {
-                _socket.Dispose();
+                //For connection-oriented protocols, it is recommended that you call Shutdown before calling the Close method. 
+                //http://msdn.microsoft.com/en-us/library/wahsac9k(v=vs.110).aspx
+                if (_socket.Connected)//if not connected it throws exception that its not connected
+                    _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
                 _socket = null;
             }
