@@ -179,6 +179,7 @@ namespace finalmqtt.Client
             this.connectCallback = cb;
         }
 
+        List<int> listSockets = new List<int>();
         DateTime dt;
         /// <summary>
         /// Initiates connect request to server.
@@ -188,6 +189,7 @@ namespace finalmqtt.Client
             dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listSockets.Add(_socket.GetHashCode());
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
@@ -262,8 +264,12 @@ namespace finalmqtt.Client
                 }
                 else
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Object HAsh:" + e.ConnectSocket.GetHashCode());
+
                     if (_socket != null)
                     {
+                        MQttLogging.LogWriter.Instance.WriteToLog("Current object hash Code:" + _socket.GetHashCode());
+
                         _socket.Close();
                         _socket = null;
                     }
@@ -623,9 +629,13 @@ namespace finalmqtt.Client
         public void disconnect() //throws IOException 
         {
             MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT CALLED");
+           
             try
             {
-
+                if (_socket != null)
+                {
+                    MQttLogging.LogWriter.Instance.WriteToLog("Current object hash Code:" + _socket.GetHashCode());
+                }
                 ClearPageResources();
 
                 if (mqttListener != null)

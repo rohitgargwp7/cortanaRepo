@@ -364,6 +364,8 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            MQttLogging.LogWriter.Instance.WriteToLog("APP LAUNCHED");
+
             if (ps != PageState.WELCOME_SCREEN)
             {
                 #region SERVER INFO
@@ -383,6 +385,8 @@ namespace windows_client
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            MQttLogging.LogWriter.Instance.WriteToLog("APP ACTIVATED");
+
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
 
@@ -417,6 +421,7 @@ namespace windows_client
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            MQttLogging.LogWriter.Instance.WriteToLog("APP DEACTIVATED");
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
 
@@ -440,6 +445,8 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            MQttLogging.LogWriter.Instance.WriteToLog("APP CLOSING");
+
             if (App.AnalyticsInstance != null)
                 App.AnalyticsInstance.saveObject(); //check for null
 
