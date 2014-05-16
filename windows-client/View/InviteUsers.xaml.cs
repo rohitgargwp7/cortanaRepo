@@ -83,10 +83,17 @@ namespace windows_client.View
                 _jumpList = getGroupedList(_allContactsList);
                 contactsListBox.ItemsSource = _jumpList;
                 shellProgress.IsIndeterminate = false;
+
                 if (_allContactsList != null && _allContactsList.Count > 0)
+                {
                     _selectAllButton.IsEnabled = true;
+                    emptyGrid.Visibility = Visibility.Collapsed;
+                }
                 else
-                    noContacts.Visibility = Visibility.Visible;
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
             };
         }
 
@@ -305,6 +312,15 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(_charsEntered))
             {
                 contactsListBox.ItemsSource = _jumpList;
+
+                if (_jumpList == null || _jumpList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+                
                 return;
             }
 
@@ -316,6 +332,8 @@ namespace windows_client.View
                 {
                     _groupListDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
                     return;
                 }
 
@@ -336,6 +354,15 @@ namespace windows_client.View
                 }
 
                 contactsListBox.ItemsSource = gl;
+
+                if (gl == null || gl.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 Thread.Sleep(5);
                 return;
             }
@@ -355,6 +382,15 @@ namespace windows_client.View
                     _groupListDictionary[_charsEntered] = _glistFiltered;
 
                 contactsListBox.ItemsSource = _glistFiltered;
+
+                if (_glistFiltered == null || _glistFiltered.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 Thread.Sleep(2);
             };
         }

@@ -199,6 +199,7 @@
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\ContactGroup.cs" />
+    <Compile Include="Model\GroupPic.cs" />
     <Compile Include="Model\MultiplePhoto\Album.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
@@ -692,12 +693,14 @@
     <Content Include="View\images\settings\blocklist_holder.png" />
     <Content Include="View\images\settings\block_list.png" />
     <Content Include="View\images\settings\delete_account.png" />
+    <Content Include="View\images\settings\email.png" />
     <Content Include="View\images\settings\fb_unlink.png" />
     <Content Include="View\images\settings\free_sms.png" />
     <Content Include="View\images\settings\help.png" />
     <Content Include="View\images\settings\hike_h2h_icon.png" />
     <Content Include="View\images\settings\hike_h2s_icon.png" />
     <Content Include="View\images\settings\hike_sms_icon.png" />
+    <Content Include="View\images\settings\message.png" />
     <Content Include="View\images\settings\new_icon.png" />
     <Content Include="View\images\settings\notifications.png" />
     <Content Include="View\images\settings\notification_black.png" />
@@ -708,6 +711,7 @@
     <Content Include="View\images\settings\tw_unlink.png" />
     <Content Include="View\images\settings\unblock.png" />
     <Content Include="View\images\settings\unlink_account.png" />
+    <Content Include="View\images\noResult.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\stickers\categorySets\angry_active.png" />

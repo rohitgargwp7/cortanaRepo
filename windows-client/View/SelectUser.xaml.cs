@@ -109,9 +109,27 @@ namespace windows_client.View
                         MakeFilteredJumpList();
 
                     contactsListBox.ItemsSource = _filteredGroupedContactList;
+                    
+                    if (_filteredGroupedContactList == null || _filteredGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed;
                 }
                 else
+                {
                     contactsListBox.ItemsSource = _completeGroupedContactList;
+
+                    if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed;
+                }
 
                 shellProgress.IsIndeterminate = false;
             };
@@ -161,12 +179,28 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = _filteredGroupedContactList;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+
+                if (_filteredGroupedContactList == null || _filteredGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 _showSmsContacts = !_showSmsContacts;
                 _onHikeFilterMenuItem.Text = AppResources.SelectUser_HideSmsContacts_Txt;
+
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -214,10 +248,27 @@ namespace windows_client.View
                         MakeFilteredJumpList();
                     }
                     contactsListBox.ItemsSource = _filteredGroupedContactList;
+
+                    if (_filteredGroupedContactList == null || _filteredGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed;
                 }
                 else
+                {
                     contactsListBox.ItemsSource = _completeGroupedContactList;
 
+                    if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed;
+                }
                 return;
             }
 
@@ -232,6 +283,10 @@ namespace windows_client.View
                     groupListDictionary.Remove(_charsEntered);
                     groupListStateDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
+
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+
                     return;
                 }
 
@@ -252,6 +307,15 @@ namespace windows_client.View
                 }
 
                 contactsListBox.ItemsSource = gl;
+
+                if (gl == null || gl.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+             
                 Thread.Sleep(5);
                 return;
             }
@@ -271,6 +335,15 @@ namespace windows_client.View
                 }
 
                 contactsListBox.ItemsSource = _glistFiltered;
+
+                if (_glistFiltered == null || _glistFiltered.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed; 
+                
                 Thread.Sleep(2);
             };
         }
@@ -620,9 +693,27 @@ namespace windows_client.View
                 {
                     MakeFilteredJumpList();
                     contactsListBox.ItemsSource = _filteredGroupedContactList;
+
+                    if (_filteredGroupedContactList == null || _filteredGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed;
                 }
                 else
+                {
                     contactsListBox.ItemsSource = _completeGroupedContactList;
+
+                    if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                    {
+                        emptyGrid.Visibility = Visibility.Visible;
+                        noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                    }
+                    else
+                        emptyGrid.Visibility = Visibility.Collapsed; 
+                }
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();
                 contactsListBox.IsHitTestVisible = true;

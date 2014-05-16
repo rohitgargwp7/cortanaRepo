@@ -158,6 +158,7 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
+                getStartedButton.Opacity = 1;
                 NetworkErrorTxtBlk.Opacity = 1;
                 return;
             }

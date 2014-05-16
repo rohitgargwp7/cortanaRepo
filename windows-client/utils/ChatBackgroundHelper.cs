@@ -514,7 +514,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "23",
-                Background = "#ff707461",
+                Background = "#ff224549",
                 HeaderColor = "#ff214549",
                 SentBubbleBackground = "#ffa2e5e2",
                 ReceivedBubbleBackground = "#ffffffff",

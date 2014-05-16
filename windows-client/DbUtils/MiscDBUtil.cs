@@ -13,6 +13,7 @@ using windows_client.ViewModel;
 using windows_client.utils;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.DbUtils
 {
@@ -622,6 +623,7 @@ namespace windows_client.DbUtils
                 }
             }
         }
+
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
         {
             filePath = filePath.Replace(":", "_");
@@ -1125,19 +1127,25 @@ namespace windows_client.DbUtils
                 {
                     if (!store.DirectoryExists(MISC_DIR))
                         store.CreateDirectory(MISC_DIR);
-                    
+
                     string fName = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
+
+                    if (App.ViewModel.PicUploadList.Count == 0)
+                    {
+                        store.DeleteFile(fName);
+                        return;
+                    }
                    
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
-                            writer.Write(App.ViewModel.HasPicUploadFailedList.Count);
+                            writer.Write(App.ViewModel.PicUploadList.Count);
                             
-                            foreach (string ms in App.ViewModel.HasPicUploadFailedList)
+                            foreach (var ms in App.ViewModel.PicUploadList)
                             {
-                                writer.Write(ms);
+                                ms.Write(writer);
                             }
 
                             writer.Flush();
@@ -1160,10 +1168,7 @@ namespace windows_client.DbUtils
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(MISC_DIR))
-                    {
-                        store.CreateDirectory(MISC_DIR);
                         return;
-                    }
                     
                     string fname = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
                     
@@ -1187,11 +1192,14 @@ namespace windows_client.DbUtils
 
                             if (count > 0)
                             {
+                                GroupPic group = null;
                                 for (int i = 0; i < count; i++)
                                 {
                                     try
                                     {
-                                        App.ViewModel.HasPicUploadFailedList.Add(reader.ReadString());
+                                        group = new GroupPic();
+                                        group.Read(reader);
+                                        App.ViewModel.PicUploadList.Add(group);
                                     }
                                     catch (Exception ex)
                                     {
@@ -1215,6 +1223,9 @@ namespace windows_client.DbUtils
                     }
                 }
             }
+
+            if (App.ViewModel.PicUploadList.Count > 0 && NetworkInterface.GetIsNetworkAvailable())
+                App.ViewModel.SendDisplayPic();
         }
 
         #endregion

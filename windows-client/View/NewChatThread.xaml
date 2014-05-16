@@ -1383,10 +1383,10 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
-        <Border Canvas.ZIndex="4" x:Name="overlayBorder" Grid.Row="0" Grid.RowSpan="3" Background="Black" Visibility="Collapsed" Opacity="0.7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Border Canvas.ZIndex="4" x:Name="overlayBorder" Grid.Row="0" Grid.RowSpan="3" Background="Black" Visibility="Collapsed" Opacity="0.9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <StackPanel Canvas.ZIndex="4" x:Name="overlayMessagePanel" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="25,0,25,0" Orientation="Vertical">
-            <Image Source="images\ic_block_active.png" Height="79" Width="78"/>
-            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,25,15,50" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="White" FontSize="30"/>
+            <Image Source="images\ic_block_active.png" Height="125" Stretch="Uniform"/>
+            <TextBlock Name="BlockTxtBlk" FontWeight="Light" HorizontalAlignment="Center" Margin="15,50" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="White" FontSize="30"/>
             <Button HorizontalAlignment="Center" Name="btnBlockUnblock" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Click="blockUnblock_Click" Style="{StaticResource YesButtonStyle}"/>
         </StackPanel>
         <Grid Canvas.ZIndex="4" x:Name="gridDownloadStickers" Visibility="Collapsed" Width="340" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Center" Margin="0 0 0 0" Tap="overlayBorder_Tapped">

@@ -799,15 +799,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to free SMS.
-        /// </summary>
-        public static string Conversations_FreeSms_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_FreeSms_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to invite friends to hike.
         /// </summary>
         public static string Conversations_InviteFriendsHike_Txt {
@@ -1303,15 +1294,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to email.
-        /// </summary>
-        public static string Email_Header_Txt {
-            get {
-                return ResourceManager.GetString("Email_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hi, 
         ///
         ///I just got the awesome new hike messenger, it&apos;s faster, simpler and even more beautiful!
@@ -1324,6 +1306,15 @@ namespace windows_client.Languages {
         public static string Email_Invite_Txt {
             get {
                 return ResourceManager.GetString("Email_Invite_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invite via email.
+        /// </summary>
+        public static string Email_SubTxt {
+            get {
+                return ResourceManager.GetString("Email_SubTxt", resourceCulture);
             }
         }
         
@@ -1616,6 +1607,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facebook.
+        /// </summary>
+        public static string Facebook_Caps {
+            get {
+                return ResourceManager.GetString("Facebook_Caps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to share on my timeline.
+        /// </summary>
+        public static string Facebook_SubTxt {
+            get {
+                return ResourceManager.GetString("Facebook_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to facebook.
         /// </summary>
         public static string Facebook_Txt {
@@ -1742,15 +1751,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Facebook.
-        /// </summary>
-        public static string FreeSMS_fbConnStatus_TxtBlk {
-            get {
-                return ResourceManager.GetString("FreeSMS_fbConnStatus_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hike to hike.
         /// </summary>
         public static string FreeSMS_H2HHeader_TxtBlk {
@@ -1819,15 +1819,6 @@ namespace windows_client.Languages {
         public static string FreeSMS_InviteSMS_TxtBlk {
             get {
                 return ResourceManager.GetString("FreeSMS_InviteSMS_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Twitter.
-        /// </summary>
-        public static string FreeSMS_twConnStatus_TxtBlk {
-            get {
-                return ResourceManager.GetString("FreeSMS_twConnStatus_TxtBlk", resourceCulture);
             }
         }
         
@@ -2723,11 +2714,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to messaging.
+        ///   Looks up a localized string similar to invite friend via sms. Free sms only within India.
         /// </summary>
-        public static string Messaging_Txt {
+        public static string Messaging_SubTxt {
             get {
-                return ResourceManager.GetString("Messaging_Txt", resourceCulture);
+                return ResourceManager.GetString("Messaging_SubTxt", resourceCulture);
             }
         }
         
@@ -3286,6 +3277,15 @@ namespace windows_client.Languages {
         public static string NORMAL_UPDATE_TEXT {
             get {
                 return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to no search results.
+        /// </summary>
+        public static string NoSearchToDisplay_Txt {
+            get {
+                return ResourceManager.GetString("NoSearchToDisplay_Txt", resourceCulture);
             }
         }
         
@@ -4906,6 +4906,24 @@ namespace windows_client.Languages {
         public static string Today_Txt {
             get {
                 return ResourceManager.GetString("Today_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter.
+        /// </summary>
+        public static string Twitter_Caps {
+            get {
+                return ResourceManager.GetString("Twitter_Caps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to post to my timeline.
+        /// </summary>
+        public static string Twitter_SubTxt {
+            get {
+                return ResourceManager.GetString("Twitter_SubTxt", resourceCulture);
             }
         }
         

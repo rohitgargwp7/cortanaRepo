@@ -189,7 +189,7 @@ namespace windows_client
                     Debug.WriteLine("NetworkManager ::  onMessage :  REQUEST_DISPLAY_PIC, Exception : " + ex.StackTrace);
                 }
 
-                App.ViewModel.SendDisplayPic(grpId);
+                App.ViewModel.AddGroupPicForUpload(grpId);
             }
             #endregion
             #region START_TYPING

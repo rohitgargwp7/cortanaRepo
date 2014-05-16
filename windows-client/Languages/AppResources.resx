@@ -153,10 +153,6 @@
     <value>edit profile</value>
     <comment>Edit profile text (xaml)</comment>
   </data>
-  <data name="Conversations_FreeSms_Txt" xml:space="preserve">
-    <value>free SMS</value>
-    <comment>Profile (xaml)</comment>
-  </data>
   <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
     <value>new chat</value>
     <comment>(max 10 chars)</comment>
@@ -357,9 +353,6 @@
     <value>save</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
-    <value>Facebook</value>
-  </data>
   <data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
     <value>hike to hike</value>
     <comment>xaml</comment>
@@ -387,10 +380,6 @@
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
     <value>invite via SMS</value>
     <comment>xaml</comment>
-  </data>
-  <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
-    <value>Twitter</value>
-    <comment>Connect to twitter button (unconnected state) </comment>
   </data>
   <data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
     <value>Unlink Facebook</value>
@@ -737,10 +726,6 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Invite_Friends_Txt" xml:space="preserve">
     <value>invite friends</value>
-    <comment>General Text</comment>
-  </data>
-  <data name="Messaging_Txt" xml:space="preserve">
-    <value>messaging</value>
     <comment>General Text</comment>
   </data>
   <data name="NamingConvention_Txt" xml:space="preserve">
@@ -1734,9 +1719,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Settings_EnterToSendToggleSwitchHeader" xml:space="preserve">
     <value>Enter sends a message</value>
   </data>
-  <data name="Email_Header_Txt" xml:space="preserve">
-    <value>email</value>
-  </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
     <value>free SMS</value>
   </data>
@@ -2135,6 +2117,9 @@ Download it now http://hike.in and join the fun!</value>
   <data name="NudgeSettings_Txt" xml:space="preserve">
     <value>Double tap to send nudge</value>
   </data>
+  <data name="Messaging_SubTxt" xml:space="preserve">
+    <value>invite friend via sms. Free sms only within India</value>
+  </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
     <value>1 friend</value>
   </data>
@@ -2152,5 +2137,23 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="NewComposeGroup_1SMSContact" xml:space="preserve">
     <value>1 SMS contact</value>
+  </data>
+  <data name="Email_SubTxt" xml:space="preserve">
+    <value>invite via email</value>
+  </data>
+  <data name="Facebook_Caps" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="Facebook_SubTxt" xml:space="preserve">
+    <value>share on my timeline</value>
+  </data>
+  <data name="Twitter_Caps" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="Twitter_SubTxt" xml:space="preserve">
+    <value>post to my timeline</value>
+  </data>
+  <data name="NoSearchToDisplay_Txt" xml:space="preserve">
+    <value>no search results</value>
   </data>
 </root>

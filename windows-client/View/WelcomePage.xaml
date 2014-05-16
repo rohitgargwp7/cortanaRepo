@@ -40,7 +40,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Margin="0,0,0,60" MaxWidth="350" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_Header_Txt1, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
-                        <Image Grid.Row="1" Source="/view/images/FTUE/p1.png" Height="230" Stretch="Uniform"/>
+                        <Image Grid.Row="1" Source="/view/images/FTUE/p1.png" Height="250" Stretch="Uniform"/>
                     </Grid>
                 </phone:PivotItem>
 

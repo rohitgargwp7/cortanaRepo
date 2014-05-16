@@ -28,6 +28,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Web;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.ViewModel
 {
@@ -1040,48 +1041,80 @@ namespace windows_client.ViewModel
 
         #region NEW GROUP PIC
 
-        public List<string> HasPicUploadFailedList = new List<string>();
+        public List<GroupPic> PicUploadList = new List<GroupPic>();
+        bool _isUploading = false;
 
-        public void SendDisplayPic(string grpId)
+        public void AddGroupPicForUpload(string id)
         {
-            var buffer = MiscDBUtil.getLargeImageForMsisdn(grpId);
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), grpId);
+            PicUploadList.Add(new GroupPic(id));
+            MiscDBUtil.SavePendingUploadPicRequests();
+            SendDisplayPic();
         }
 
-        private void updateProfile_Callback(JObject obj, string groupId)
+        public void SendDisplayPic()
         {
+            if (PicUploadList.Count == 0)
+                return;
+
+            if (PicUploadList.Count > 10)
+            {
+                DeleteGroupImage(PicUploadList[PicUploadList.Count - 1]);
+                PicUploadList.RemoveAt(PicUploadList.Count - 1);
+                MiscDBUtil.SavePendingUploadPicRequests();
+                return;
+            }
+
+            if (_isUploading)
+                return;
+
+            _isUploading = true;
+
+            var group = PicUploadList[0];
+            var buffer = MiscDBUtil.getLargeImageForMsisdn(group.GroupId);
+            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), group);
+        }
+
+        private void updateProfile_Callback(JObject obj, GroupPic group)
+        {
+            _isUploading = false;
+
             if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
             {
-                if (HasPicUploadFailedList.Contains(groupId))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            try
-                            {
-                                App.ViewModel.ConvMap[groupId].Avatar = null;
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine("HikeViewModel :: updateProfile_Callback : remove image from ConvObj, Exception : " + ex.StackTrace);
-                            }
-                        });
-
-                    MiscDBUtil.DeleteImageForMsisdn(groupId);
-                    HasPicUploadFailedList.Remove(groupId);
-                }
+                if (group.IsRetried)
+                    DeleteGroupImage(group);
                 else
-                {
-                    HasPicUploadFailedList.Add(groupId);
-                    SendDisplayPic(groupId);
-                }
+                    group.IsRetried = true;
             }
             else
             {
-                if (HasPicUploadFailedList.Contains(groupId))
-                    HasPicUploadFailedList.Remove(groupId);
+                if (PicUploadList.Contains(group))
+                    PicUploadList.Remove(group);
             }
 
             MiscDBUtil.SavePendingUploadPicRequests();
+
+            if (PicUploadList.Count > 0)
+                SendDisplayPic();
+        }
+
+        private void DeleteGroupImage(GroupPic group)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                try
+                {
+                    App.ViewModel.ConvMap[group.GroupId].Avatar = null;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel :: updateProfile_Callback : remove image from ConvObj, Exception : " + ex.StackTrace);
+                }
+            });
+
+            MiscDBUtil.DeleteImageForMsisdn(group.GroupId);
+
+            if (PicUploadList.Contains(group))
+                PicUploadList.Remove(group);
         }
 
         #endregion

@@ -115,7 +115,7 @@ namespace windows_client.View
                 _pageTitle = AppResources.GrpChat_Txt;
             }
 
-            if(_isGroupChat || _isForward)
+            if (_isGroupChat || _isForward)
                 enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
 
             BackgroundWorker bw = new BackgroundWorker();
@@ -139,6 +139,14 @@ namespace windows_client.View
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
+
+                if (_completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
             };
 
             initPage();
@@ -249,6 +257,14 @@ namespace windows_client.View
 
             contactsListBox.ItemsSource = _completeGroupedContactList;
 
+            if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+            {
+                emptyGrid.Visibility = Visibility.Visible;
+                noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+            }
+            else
+                emptyGrid.Visibility = Visibility.Collapsed;
+
             contactsListBox.InvalidateArrange();
         }
 
@@ -283,7 +299,7 @@ namespace windows_client.View
 
             if (_backPressed)
             {
-                enterNameTxt.Text =_textBeforeBackPress;
+                enterNameTxt.Text = _textBeforeBackPress;
                 enterNameTxt.SelectionStart = Math.Max(0, enterNameTxt.Text.Substring(0, enterNameTxt.Text.Length - 1).LastIndexOf(", "));
                 if (enterNameTxt.Text.Substring(enterNameTxt.SelectionStart, 1) == ",") enterNameTxt.SelectionStart += 2;
                 enterNameTxt.SelectionLength = enterNameTxt.Text.Length - enterNameTxt.SelectionStart;
@@ -310,6 +326,14 @@ namespace windows_client.View
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 return;
             }
 
@@ -324,6 +348,10 @@ namespace windows_client.View
                     groupListDictionary.Remove(_charsEntered);
                     groupListStateDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
+
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+
                     return;
                 }
 
@@ -344,6 +372,15 @@ namespace windows_client.View
                 }
 
                 contactsListBox.ItemsSource = gl;
+
+                if (gl == null || gl.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 Thread.Sleep(5);
                 return;
             }
@@ -364,6 +401,15 @@ namespace windows_client.View
                 }
 
                 contactsListBox.ItemsSource = _glistFiltered;
+
+                if (_glistFiltered == null || _glistFiltered.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 Thread.Sleep(2);
             };
         }
@@ -423,14 +469,17 @@ namespace windows_client.View
             if (stringBuilderForContactNames.Length <= cursorPosition) // if textbox is tapped @ last position simply return
                 return;
 
+            enterNameTxt.Select(0, 0);
+
             for (int k = 0; k < SelectedContacts.Count; k++)
             {
                 nameLength += SelectedContacts[k].Name.Length + 2; // length of name + "; " i.e 2
                 if (cursorPosition < nameLength)
                 {
-                    enterNameTxt.Select(enterNameTxt.Text.Length,0);
+                    enterNameTxt.Select(startIndex, nameLength);
                     var cInfo = SelectedContacts[k];
                     contactsListBox.ScrollTo(cInfo);
+                    _contactToBeRemoved = cInfo;
                     return;
                 }
                 else
@@ -779,6 +828,14 @@ namespace windows_client.View
 
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                {
+                    emptyGrid.Visibility = Visibility.Visible;
+                    noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
+                }
+                else
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 scanningComplete();
             });
             _canGoBack = true;
@@ -905,6 +962,9 @@ namespace windows_client.View
                     if (conv.IsGroupChat || Utils.IsHikeBotMsg(conv.Msisdn))
                         continue;
 
+                    if (_isGroupChat && conv.Msisdn == App.MSISDN)
+                        continue;
+
                     if (_isExistingGroup && msisdnAlreadyExists(conv.Msisdn, activeExistingGroupMembers))
                         continue;
 
@@ -937,8 +997,11 @@ namespace windows_client.View
                     continue;
 
                 if (ExistingContacts.ContainsKey(friend.Msisdn))
-                    continue; 
-                
+                    continue;
+
+                if (_isGroupChat && friend.Msisdn == App.MSISDN)
+                    continue;
+
                 if (friend.Avatar == null)
                 {
                     if (App.ViewModel.ConvMap.ContainsKey(friend.Msisdn))
@@ -988,7 +1051,7 @@ namespace windows_client.View
 
             ObservableCollection<ContactGroup<ContactInfo>> glist = new ObservableCollection<ContactGroup<ContactInfo>>();
 
-            for (int i = 0; i < Groups.Length;i++,i++ )
+            for (int i = 0; i < Groups.Length; i++, i++)
             {
                 ContactGroup<ContactInfo> g = new ContactGroup<ContactInfo>(Groups[i], Groups[i + 1]);
                 glist.Add(g);
@@ -1052,7 +1115,7 @@ namespace windows_client.View
                             if (_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
                             {
                                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_UserAlreadyAdded_Txt, cInfo.Msisdn), AppResources.SelectUser_AlreadyAdded_Txt, MessageBoxButton.OK);
-                                cInfo.IsSelected = false; 
+                                cInfo.IsSelected = false;
                                 return;
                             }
 
@@ -1139,7 +1202,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (cInfo == null || cInfo.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || cInfo.Msisdn == App.MSISDN)
+                    if (cInfo == null || cInfo.ContactListLabel == AppResources.SelectUser_EnterValidNo_Txt)
                         return;
 
                     if (IsUserBlocked(cInfo))

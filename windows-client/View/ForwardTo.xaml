@@ -37,6 +37,15 @@
                                   Style="{StaticResource PhoneTextBoxWithWhiteBackground}" Tap="enterNameTxt_Tap"
                                   TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="150"/>
 
+            <Grid Grid.Row="1" x:Name="emptyGrid" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Image Source="/view/images/noResult.png" Height="110"/>
+                <TextBlock Grid.Row="1" x:Name="noResultTextBlock" Margin="0,10,0,0" Foreground="{StaticResource HikeGrey}"/>
+            </Grid>
+            
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="25,0,0,0" 
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
