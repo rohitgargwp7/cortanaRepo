@@ -110,6 +110,7 @@ namespace windows_client.View
         ApplicationBarMenuItem inviteMenuItem = null;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
+        ApplicationBarMenuItem blockMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
@@ -1791,6 +1792,7 @@ namespace windows_client.View
                     addUserMenuItem.Click += new EventHandler(addUser_Click);
                     appBar.MenuItems.Add(addUserMenuItem);
                 }
+
                 ApplicationBarMenuItem callMenuItem = new ApplicationBarMenuItem();
                 callMenuItem.Text = AppResources.Call_Txt;
                 callMenuItem.Click += new EventHandler(callUser_Click);
@@ -1801,6 +1803,43 @@ namespace windows_client.View
                 infoMenuItem.Click += userHeader_Tap;
                 appBar.MenuItems.Add(infoMenuItem);
             }
+
+            if (!isGroupChat)
+            {
+                blockMenuItem = new ApplicationBarMenuItem();
+                blockMenuItem.Text = AppResources.Block_Txt;
+                blockMenuItem.Click += blockMenuItem_Click;
+                appBar.MenuItems.Add(blockMenuItem);
+            }
+        }
+
+        void blockMenuItem_Click(object sender, EventArgs e)
+        {
+            ContactInfo cInfo = new ContactInfo(mContactNumber, mContactName, isOnHike);
+            App.ViewModel.BlockedHashset.Add(mContactNumber);
+
+            if (App.ViewModel.FavList != null)
+            {
+                var list = App.ViewModel.FavList.Where(f => f.Msisdn == mContactNumber).ToList();
+
+                if (list.Count > 0)
+                {
+                    foreach (var co in list)
+                        App.ViewModel.FavList.Remove(co);
+
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(mContactNumber);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - list.Count);
+                }
+            }
+
+            FriendsTableUtils.SetFriendStatus(mContactNumber, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+            App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
+
+            mUserIsBlocked = true;
+            initBlockUnblockState();
         }
 
         private void initInviteMenuItem()

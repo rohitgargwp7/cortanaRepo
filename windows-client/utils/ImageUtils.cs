@@ -1804,6 +1804,9 @@ namespace windows_client.utils
 
         public BitmapImage getDefaultAvatar(string msisdn, bool isHighRes)
         {
+            if (msisdn == App.MSISDN)
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+
             int index = computeHash(msisdn);
             if (isHighRes)
             {

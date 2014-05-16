@@ -399,7 +399,7 @@ namespace windows_client.View
                     avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(bytes);
             }
             else
-                avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(msisdn, true);
+                avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
         }
 
         void LoadCallCopyOptions()
@@ -1155,7 +1155,7 @@ namespace windows_client.View
         private void ShowBlockedUser()
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
-            txtSmsUserNameBlk.Text = AppResources.Profile_BlockedUser_Blk1;
+            txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
