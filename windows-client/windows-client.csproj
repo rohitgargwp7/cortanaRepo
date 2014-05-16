@@ -692,8 +692,10 @@
     <Content Include="View\images\settings\block.png" />
     <Content Include="View\images\settings\blocklist_holder.png" />
     <Content Include="View\images\settings\block_list.png" />
+    <Content Include="View\images\settings\contactUs.png" />
     <Content Include="View\images\settings\delete_account.png" />
     <Content Include="View\images\settings\email.png" />
+    <Content Include="View\images\settings\faq.png" />
     <Content Include="View\images\settings\fb_unlink.png" />
     <Content Include="View\images\settings\free_sms.png" />
     <Content Include="View\images\settings\help.png" />
@@ -706,8 +708,10 @@
     <Content Include="View\images\settings\notification_black.png" />
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
+    <Content Include="View\images\settings\rateUs.png" />
     <Content Include="View\images\settings\settings_icon_dark.png" />
     <Content Include="View\images\settings\sync.png" />
+    <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
     <Content Include="View\images\settings\unblock.png" />
     <Content Include="View\images\settings\unlink_account.png" />
