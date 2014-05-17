@@ -219,7 +219,7 @@ namespace windows_client.Model
                 if (value != null)
                 {
                     _isOwner = value;
-                    NotifyPropertyChanged("IsOwner");
+                    NotifyPropertyChanged("IsOwnerVisibility");
                 }
             }
         }
@@ -269,6 +269,14 @@ namespace windows_client.Model
                 if (_msisdn == App.MSISDN)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
+            }
+        }
+
+        public Visibility IsOwnerVisibility
+        {
+            get
+            {
+                return _isOwner ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

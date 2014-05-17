@@ -210,15 +210,27 @@ namespace windows_client.utils
             }
         }
 
-        SolidColorBrush grey;
-        public SolidColorBrush Grey
+        SolidColorBrush gray;
+        public SolidColorBrush Gray
         {
             get
             {
-                if (grey == null)
-                    grey = new SolidColorBrush(Color.FromArgb(255, 104, 104, 104));
+                if (gray == null)
+                    gray = new SolidColorBrush(Color.FromArgb(255, 0x99, 0x99, 0x99));
 
-                return grey;
+                return gray;
+            }
+        }
+
+        SolidColorBrush darkGray;
+        public SolidColorBrush DarkGray
+        {
+            get
+            {
+                if (darkGray == null)
+                    darkGray = new SolidColorBrush(Color.FromArgb(255, 0xdd, 0xdd, 0xdd));
+
+                return darkGray;
             }
         }
 

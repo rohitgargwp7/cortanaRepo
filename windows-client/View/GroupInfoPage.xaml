@@ -6,17 +6,12 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converter="clr-namespace:windows_client.Converters"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
     
-    <phone:PhoneApplicationPage.Resources>
-        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </phone:PhoneApplicationPage.Resources>
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
@@ -74,7 +69,7 @@
                             <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
                             <TextBlock Text="{Binding Msisdn}" Grid.Row="1" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" />
                         </Grid>
-                        <Image Grid.Column="2" Source="/view/images/owner.png" MaxHeight="40" Visibility="{Binding IsOwner, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                        <Image Grid.Column="2" Source="/view/images/owner.png" MaxHeight="40" Visibility="{Binding IsOwnerVisibility}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,0,0"/>
                     </Grid>
                 </DataTemplate>
             </phone:LongListSelector.ItemTemplate>

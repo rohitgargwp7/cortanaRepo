@@ -25,9 +25,9 @@ namespace windows_client.View
         private bool _flag;
         private string _charsEntered;
 
-        List<Group<ContactInfo>> _glistFiltered = null;
-        Dictionary<string, List<Group<ContactInfo>>> _groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
-        public List<Group<ContactInfo>> _jumpList = null; // list that will contain the complete jump list
+        List<ItemGroup<ContactInfo>> _glistFiltered = null;
+        Dictionary<string, List<ItemGroup<ContactInfo>>> _groupListDictionary = new Dictionary<string, List<ItemGroup<ContactInfo>>>();
+        public List<ItemGroup<ContactInfo>> _jumpList = null; // list that will contain the complete jump list
         private List<ContactInfo> _allContactsList = null; // contacts list
 
         List<ContactInfo> SelectedContacts = new List<ContactInfo>();
@@ -39,27 +39,6 @@ namespace windows_client.View
 
         string _defaultMsg = AppResources.Tap_To_Invite_Txt;
         string _pageTitle = AppResources.Invite_Friends_Txt;
-
-        public class Group<T> : List<T>
-        {
-            public Group(string name)
-            {
-                this.Title = name;
-            }
-            public string Title
-            {
-                get;
-                set;
-            }
-
-            public bool IsNonEmpty
-            {
-                get
-                {
-                    return this.Count > 0;
-                }
-            }
-        }
 
         public InviteUsers()
         {
@@ -165,9 +144,9 @@ namespace windows_client.View
 
         #region  MAKE JUMP LIST
 
-        private List<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
+        private List<ItemGroup<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
         {
-            List<Group<ContactInfo>> glist = CreateGroups();
+            List<ItemGroup<ContactInfo>> glist = CreateGroups();
             for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
             {
                 ContactInfo c = allContactsList[i];
@@ -185,13 +164,13 @@ namespace windows_client.View
             return glist;
         }
 
-        private List<Group<ContactInfo>> CreateGroups()
+        private List<ItemGroup<ContactInfo>> CreateGroups()
         {
             string Groups = "abcdefghijklmnopqrstuvwxyz#";
-            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>(27);
+            List<ItemGroup<ContactInfo>> glist = new List<ItemGroup<ContactInfo>>(27);
             foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString());
+                ItemGroup<ContactInfo> g = new ItemGroup<ContactInfo>(c.ToString());
                 glist.Add(g);
             }
             return glist;
@@ -326,7 +305,7 @@ namespace windows_client.View
 
             if (_groupListDictionary.ContainsKey(_charsEntered))
             {
-                List<Group<ContactInfo>> gl = _groupListDictionary[_charsEntered];
+                List<ItemGroup<ContactInfo>> gl = _groupListDictionary[_charsEntered];
 
                 if (gl == null)
                 {
@@ -395,7 +374,7 @@ namespace windows_client.View
             };
         }
 
-        private List<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        private List<ItemGroup<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
         {
             _glistFiltered = null;
             bool areCharsNumber = false;
@@ -411,7 +390,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> listToIterate = null;
+            List<ItemGroup<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
 
             if (charsLength > 0)
@@ -459,7 +438,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> list = null;
+            List<ItemGroup<ContactInfo>> list = null;
             if (areCharsNumber)
             {
                 if (_glistFiltered == null || createNewFilteredList)

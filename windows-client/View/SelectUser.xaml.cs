@@ -40,11 +40,11 @@ namespace windows_client.View
         private int _maxCharGroups = 27;
         private string _charsEntered;
 
-        List<Group<ContactInfo>> _glistFiltered = null;
+        List<ItemGroup<ContactInfo>> _glistFiltered = null;
 
-        List<Group<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
-        List<Group<ContactInfo>> _filteredGroupedContactList = null;
-        List<Group<ContactInfo>> _defaultGroupedContactList = null;
+        List<ItemGroup<ContactInfo>> _completeGroupedContactList = null; // list that will contain the complete jump list
+        List<ItemGroup<ContactInfo>> _filteredGroupedContactList = null;
+        List<ItemGroup<ContactInfo>> _defaultGroupedContactList = null;
 
         List<ContactInfo> _allContactsList = null; // contacts list
 
@@ -54,7 +54,7 @@ namespace windows_client.View
         private ApplicationBarIconButton _refreshIconButton = null;
         private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
-        Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+        Dictionary<string, List<ItemGroup<ContactInfo>>> groupListDictionary = new Dictionary<string, List<ItemGroup<ContactInfo>>>();
 
         /// <summary>
         /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
@@ -276,7 +276,7 @@ namespace windows_client.View
                 && groupListStateDictionary.ContainsKey(_charsEntered)
                 && groupListStateDictionary[_charsEntered] == _showSmsContacts)
             {
-                List<Group<ContactInfo>> gl = groupListDictionary[_charsEntered];
+                List<ItemGroup<ContactInfo>> gl = groupListDictionary[_charsEntered];
 
                 if (gl == null)
                 {
@@ -348,7 +348,7 @@ namespace windows_client.View
             };
         }
 
-        private List<Group<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        private List<ItemGroup<ContactInfo>> GetFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
         {
             _glistFiltered = null;
             bool areCharsNumber = false;
@@ -364,7 +364,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> listToIterate = null;
+            List<ItemGroup<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
 
             if (charsLength > 0)
@@ -416,7 +416,7 @@ namespace windows_client.View
                 }
             }
 
-            List<Group<ContactInfo>> list = null;
+            List<ItemGroup<ContactInfo>> list = null;
             if (areCharsNumber)
             {
                 if (_glistFiltered == null || createNewFilteredList)
@@ -735,9 +735,9 @@ namespace windows_client.View
 
         #region  MAKE JUMP LIST
 
-        private List<Group<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
+        private List<ItemGroup<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
         {
-            List<Group<ContactInfo>> glist = CreateGroups();
+            List<ItemGroup<ContactInfo>> glist = CreateGroups();
 
             for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
             {
@@ -771,15 +771,15 @@ namespace windows_client.View
             return key.ToString();
         }
 
-        private List<Group<ContactInfo>> CreateGroups()
+        private List<ItemGroup<ContactInfo>> CreateGroups()
         {
             string Groups = "abcdefghijklmnopqrstuvwxyz#";
-            List<Group<ContactInfo>> glist;
-            glist = new List<Group<ContactInfo>>(_maxCharGroups);
+            List<ItemGroup<ContactInfo>> glist;
+            glist = new List<ItemGroup<ContactInfo>>(_maxCharGroups);
 
             foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>(1));
+                ItemGroup<ContactInfo> g = new ItemGroup<ContactInfo>(c.ToString());
                 glist.Add(g);
             }
 
@@ -791,7 +791,7 @@ namespace windows_client.View
             _filteredGroupedContactList = CreateGroups();
             for (int i = 0; i < _completeGroupedContactList.Count; i++)
             {
-                Group<ContactInfo> g = _completeGroupedContactList[i];
+                ItemGroup<ContactInfo> g = _completeGroupedContactList[i];
                 if (g == null || g.Count <= 0)
                     continue;
                 for (int j = 0; j < g.Count; j++)
@@ -1049,28 +1049,6 @@ namespace windows_client.View
             if (cInfo != null)
             {
                 CheckUnCheckContact(cInfo);
-            }
-        }
-
-        class Group<T> : List<T>
-        {
-            public Group(string name, List<T> items)
-            {
-                this.Title = name;
-            }
-
-            public string Title
-            {
-                get;
-                set;
-            }
-
-            public bool IsNonEmpty
-            {
-                get
-                {
-                    return this.Count > 0;
-                }
             }
         }
     }

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using windows_client.Languages;
 using System.Windows.Controls;
 using System.Windows.Input;
+using windows_client.Model;
 
 namespace windows_client
 {
@@ -24,29 +25,6 @@ namespace windows_client
         private string countryCode;
         bool isGroupViewOpened = false;
         private Dictionary<string, string> isoCodeCountryCode = new Dictionary<string, string>();
-
-        public class Group<T> : List<T>
-        {
-            public Group(string name, List<T> items)
-            {
-                this.Title = name;
-            }
-
-            public string Title
-            {
-                get;
-                set;
-            }
-
-            public bool IsNonEmpty
-            {
-                get
-                {
-                    return this.Count > 0;
-                }
-            }
-
-        }
 
         public EnterNumber()
         {
@@ -598,9 +576,9 @@ namespace windows_client
             }
         }
 
-        private List<Group<string>> GetGroupedList()
+        private List<ItemGroup<string>> GetGroupedList()
         {
-            List<Group<string>> glist = createGroups();
+            List<ItemGroup<string>> glist = createGroups();
             foreach (string val in isoCodeCountryCode.Values)
             {
                 string ch = GetCaptionGroup(val);
@@ -622,13 +600,13 @@ namespace windows_client
             return key.ToString();
         }
 
-        private List<Group<string>> createGroups()
+        private List<ItemGroup<string>> createGroups()
         {
             string Groups = "abcdefghijklmnopqrstuvwxyz#";
-            List<Group<string>> glist = new List<Group<string>>(27);
+            List<ItemGroup<string>> glist = new List<ItemGroup<string>>(27);
             foreach (char c in Groups)
             {
-                Group<string> g = new Group<string>(c.ToString(), new List<string>(1));
+                ItemGroup<string> g = new ItemGroup<string>(c.ToString());
                 glist.Add(g);
             }
             return glist;
