@@ -401,7 +401,6 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.UPDATE_PROFILE_ICON, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
@@ -415,7 +414,6 @@ namespace windows_client.View
             try
             {
                 mPubSub.removeListener(HikePubSub.UPDATE_PROFILE_ICON, this);
-                mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
@@ -430,12 +428,6 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            #region UPDATE_UI
-            if (HikePubSub.UPDATE_PROFILE_ICON == type)
-            {
-                //to:Do
-            }
-            #endregion
             #region PARTICIPANT_JOINED_GROUP
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
