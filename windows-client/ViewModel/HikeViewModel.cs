@@ -1046,6 +1046,12 @@ namespace windows_client.ViewModel
 
         public void AddGroupPicForUpload(string id)
         {
+            if (PicUploadList.Count == 10)
+            {
+                DeleteGroupImage(id);
+                return;
+            }
+
             PicUploadList.Add(new GroupPic(id));
             MiscDBUtil.SavePendingUploadPicRequests();
             SendDisplayPic();
@@ -1055,14 +1061,6 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 0)
                 return;
-
-            if (PicUploadList.Count > 10)
-            {
-                DeleteGroupImage(PicUploadList[PicUploadList.Count - 1]);
-                PicUploadList.RemoveAt(PicUploadList.Count - 1);
-                MiscDBUtil.SavePendingUploadPicRequests();
-                return;
-            }
 
             if (_isUploading)
                 return;
@@ -1081,7 +1079,7 @@ namespace windows_client.ViewModel
             if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
             {
                 if (group.IsRetried)
-                    DeleteGroupImage(group);
+                    DeleteGroupImageFromList(group);
                 else
                     group.IsRetried = true;
             }
@@ -1097,24 +1095,29 @@ namespace windows_client.ViewModel
                 SendDisplayPic();
         }
 
-        private void DeleteGroupImage(GroupPic group)
+        private void DeleteGroupImageFromList(GroupPic group)
+        {
+            DeleteGroupImage(group.GroupId);
+
+            if (PicUploadList.Contains(group))
+                PicUploadList.Remove(group);
+        }
+
+        private static void DeleteGroupImage(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 try
                 {
-                    App.ViewModel.ConvMap[group.GroupId].Avatar = null;
+                    App.ViewModel.ConvMap[id].Avatar = null;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("HikeViewModel :: updateProfile_Callback : remove image from ConvObj, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("HikeViewModel :: DeleteGroupImage : remove image from ConvObj, Exception : " + ex.StackTrace);
                 }
             });
 
-            MiscDBUtil.DeleteImageForMsisdn(group.GroupId);
-
-            if (PicUploadList.Contains(group))
-                PicUploadList.Remove(group);
+            MiscDBUtil.DeleteImageForMsisdn(id);
         }
 
         #endregion
