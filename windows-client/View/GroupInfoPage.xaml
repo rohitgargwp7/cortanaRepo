@@ -21,9 +21,7 @@
                                 Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
             <phone:LongListSelector.ListHeader>
                 <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="enlargeImage_Tap">
-                    <Grid.Background>
-                        <ImageBrush x:Name="groupImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
-                    </Grid.Background>
+                    <Image x:Name="groupImage" Source="images\default_group.png" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
                         <Border Background="{StaticResource HikeBlack}" Opacity="0.95" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25">

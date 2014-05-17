@@ -476,22 +476,14 @@ namespace windows_client.Model
             }
         }
 
-        public string LastMessageColor
+        public SolidColorBrush LastMessageColor
         {
             get
             {
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                {
-                    Color currentAccentColorHex =
-                       ((SolidColorBrush)Application.Current.Resources["HikeBlueHeader"]).Color;
-                    return currentAccentColorHex.ToString();
-                }
+                    return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
                 else
-                {
-                    Color currentAccentColorHex =
-                       ((SolidColorBrush)Application.Current.Resources["HikeLightGrey"]).Color;
-                    return currentAccentColorHex.ToString();
-                }
+                    return (SolidColorBrush)Application.Current.Resources["HikeLightGrey"];
             }
         }
 

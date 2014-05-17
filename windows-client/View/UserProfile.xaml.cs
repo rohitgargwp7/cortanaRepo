@@ -103,7 +103,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && App.MSISDN != msisdn)
-                        avatarImage.ImageSource = UI_Utils.Instance.GetBitmapImage(msisdn);
+                        avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
 
                     if (isStatusLoaded)
                     {
@@ -251,7 +251,7 @@ namespace windows_client.View
 
         #endregion
 
-        GroupParticipant _groupParticipant;
+        object[] _groupParticipantObject;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -302,19 +302,19 @@ namespace windows_client.View
                 #region USER INFO FROM GROUP CHAT
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    _groupParticipant = o as GroupParticipant;
-                    msisdn = _groupParticipant.Msisdn;
-                    nameToShow = _groupParticipant.Name;
+                    _groupParticipantObject = o as object[];
+                    msisdn =(String) _groupParticipantObject[0];
+                    nameToShow = (String)_groupParticipantObject[1];
 
-                    if (App.MSISDN == _groupParticipant.Msisdn) // represents self page
+                    if (App.MSISDN == msisdn) // represents self page
                     {
                         InitSelfProfile();
                     }
                     else
                     {
                         InitAppBar();
-                        profileImage = UI_Utils.Instance.GetBitmapImage(_groupParticipant.Msisdn);
-                        isOnHike = _groupParticipant.IsOnHike;
+                        profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
+                        isOnHike = (bool)_groupParticipantObject[2];
                         InitChatIconBtn();
                     }
                 }
@@ -346,7 +346,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                avatarImage.ImageSource = profileImage;
+                avatarImage.Source = profileImage;
                 txtUserName.Text = nameToShow;
                 txtMsisdn.Text = msisdn;
 
@@ -396,10 +396,10 @@ namespace windows_client.View
                 var bytes = MiscDBUtil.getLargeImageForMsisdn(msisdn);
 
                 if (bytes != null)
-                    avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(bytes);
+                    avatarImage.Source = UI_Utils.Instance.createImageFromBytes(bytes);
             }
             else
-                avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
+                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
         }
 
         void LoadCallCopyOptions()
@@ -596,18 +596,17 @@ namespace windows_client.View
                 if (uploadSuccess)
                 {
                     UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
-                    avatarImage.ImageSource = profileImage;
+                    avatarImage.Source = profileImage;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
 
-
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = thumbnailBytes;
-                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_UI, msisdn);
+                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
                     else // update fav and contact section
                     {
@@ -1409,7 +1408,7 @@ namespace windows_client.View
                         co.ContactName = contactInfo.Name;
                 }
 
-                if (App.newChatThreadPage != null && _groupParticipant == null)
+                if (App.newChatThreadPage != null && _groupParticipantObject == null)
                     App.newChatThreadPage.userName.Text = nameToShow;
 
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);

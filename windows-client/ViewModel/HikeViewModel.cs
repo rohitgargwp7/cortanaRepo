@@ -1071,7 +1071,7 @@ namespace windows_client.ViewModel
 
             var group = PicUploadList[0];
             var buffer = MiscDBUtil.getLargeImageForMsisdn(group.GroupId);
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), group);
+            AccountUtils.updateGroupIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), group);
         }
 
         private void updateProfile_Callback(JObject obj, GroupPic group)

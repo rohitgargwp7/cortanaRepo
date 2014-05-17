@@ -135,7 +135,6 @@ namespace windows_client.utils
         public delegate void postPicUploadResponseFunction(JObject obj, GroupPic iD);
         public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
-        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
 
         public enum RequestType
         {
@@ -264,7 +263,7 @@ namespace windows_client.utils
         public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction, string groupId)
         {
             Uri requestUri;
-            if (Utils.isGroupConversation(groupId))
+            if (!String.IsNullOrEmpty(groupId))
                 requestUri = new Uri(BASE + "/group/" + groupId + "/avatar");
             else
                 requestUri = new Uri(BASE + "/account/avatar");
@@ -277,13 +276,10 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, finalCallbackFunction, groupId, buffer });
         }
 
-        public static void updateProfileIcon(byte[] buffer, postPicUploadResponseFunction finalCallbackFunction, GroupPic group)
+        public static void updateGroupIcon(byte[] buffer, postPicUploadResponseFunction finalCallbackFunction, GroupPic group)
         {
             Uri requestUri;
-            if (Utils.isGroupConversation(group.GroupId))
-                requestUri = new Uri(BASE + "/group/" + group.GroupId + "/avatar");
-            else
-                requestUri = new Uri(BASE + "/account/avatar");
+            requestUri = new Uri(BASE + "/group/" + group.GroupId + "/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
@@ -834,7 +830,6 @@ namespace windows_client.utils
             HttpWebResponse response = null;
             string data;
             JObject obj = null;
-            ConvMessage convMessage;
             try
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
@@ -884,12 +879,6 @@ namespace windows_client.utils
                     postPicUploadResponseFunction finalCallbackFunctionForUpload = vars[2] as postPicUploadResponseFunction;
                     var group = vars[3] as GroupPic;
                     finalCallbackFunctionForUpload(obj, group);
-                }
-                else if (vars[2] is postUploadPhotoFunction)
-                {
-                    postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
-                    convMessage = vars[3] as ConvMessage;
-                    finalCallbackFunctionForUpload(obj, convMessage);
                 }
                 else if (vars[2] is parametrisedPostResponseFunction)
                 {

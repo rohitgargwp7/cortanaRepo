@@ -27,9 +27,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="onProfilePicButtonTap">
-                        <Grid.Background>
-                            <ImageBrush x:Name="avatarImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
-                        </Grid.Background>
+                        <Image x:Name="avatarImage" Source="images\default_group.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
                             <Border Background="{StaticResource HikeBlack}" Opacity="0.6" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12">
@@ -171,9 +169,7 @@
                                         <Grid Margin="0,12,0,0" Grid.Row="1" 
                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                                            Height="290" Width="420" Tap="enlargePic_Tap">
-                                            <Grid.Background>
-                                                <ImageBrush ImageSource="{Binding StatusImage}" Stretch="UniformToFill"/>
-                                            </Grid.Background>
+                                            <Image Source="{Binding StatusImage}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Grid>
                                     </Grid>
                                 </Border>

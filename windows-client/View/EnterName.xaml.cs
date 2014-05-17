@@ -224,18 +224,18 @@ namespace windows_client
                             memStream.Seek(0, SeekOrigin.Begin);
                             BitmapImage empImage = new BitmapImage();
                             empImage.SetSource(memStream);
-                            avatarImage.ImageSource = empImage;
+                            avatarImage.Source = empImage;
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING], true);
+                            avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING], true);
                         }
                     }
                     else
                     {
                         string myMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
-                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultAvatar(myMsisdn, true);
+                        avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn, true);
                     }
                 }
             }
@@ -408,7 +408,7 @@ namespace windows_client
 
                     reloadImage = false;
 
-                    avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
+                    avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
                     progressBar.Opacity = 0;
                     nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
                     txtBxEnterName.IsEnabled = true;

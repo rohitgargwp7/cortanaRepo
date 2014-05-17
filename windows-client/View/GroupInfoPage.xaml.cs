@@ -300,11 +300,11 @@ namespace windows_client.View
             groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
             if (!App.IS_TOMBSTONED && App.ViewModel.ConvMap.ContainsKey(groupId))
-                groupImage.ImageSource = App.ViewModel.ConvMap[groupId].AvatarImage;
+                groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
             else
             {
                 string grpId = groupId.Replace(":", "_");
-                groupImage.ImageSource = UI_Utils.Instance.GetBitmapImage(grpId);
+                groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
             }
 
             this.groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
@@ -326,10 +326,10 @@ namespace windows_client.View
                 var bytes = MiscDBUtil.getLargeImageForMsisdn(groupId);
 
                 if (bytes != null)
-                    groupImage.ImageSource = UI_Utils.Instance.createImageFromBytes(bytes);
+                    groupImage.Source = UI_Utils.Instance.createImageFromBytes(bytes);
             }
             else
-                groupImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(groupId, true);
+                groupImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(groupId, true);
         }
 
         private void LoadParticipants()
@@ -401,7 +401,7 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.addListener(HikePubSub.UPDATE_PROFILE_ICON, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
@@ -414,7 +414,7 @@ namespace windows_client.View
         {
             try
             {
-                mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+                mPubSub.removeListener(HikePubSub.UPDATE_PROFILE_ICON, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
@@ -431,15 +431,9 @@ namespace windows_client.View
         public void onEventReceived(string type, object obj)
         {
             #region UPDATE_UI
-            if (HikePubSub.UPDATE_UI == type)
+            if (HikePubSub.UPDATE_PROFILE_ICON == type)
             {
-                string msisdn = (string)obj;
-                if (msisdn != groupId)
-                    return;
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    groupImage.ImageSource = App.ViewModel.ConvMap[msisdn].AvatarImage;
-                });
+                //to:Do
             }
             #endregion
             #region PARTICIPANT_JOINED_GROUP
@@ -508,7 +502,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupImage.ImageSource = App.ViewModel.ConvMap[groupId].AvatarImage;
+                        this.groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
                     });
                 }
             }
@@ -613,7 +607,7 @@ namespace windows_client.View
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     App.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
-                    groupImage.ImageSource = grpImage;
+                    groupImage.Source = grpImage;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
                     ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1, this.Orientation);
@@ -867,6 +861,7 @@ namespace windows_client.View
             if (gp == null)
                 return;
 
+            object[] grpMemberObject = new object[3] { gp.Msisdn, gp.Name, gp.IsOnHike };
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }

@@ -2582,7 +2582,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
-            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.addListener(HikePubSub.UPDATE_PROFILE_ICON, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
             mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
@@ -2602,7 +2602,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.USER_JOINED, this);
                 mPubSub.removeListener(HikePubSub.USER_LEFT, this);
-                mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+                mPubSub.removeListener(HikePubSub.UPDATE_PROFILE_ICON, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
                 mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
@@ -4402,7 +4402,7 @@ namespace windows_client.View
 
             #region UPDATE_UI
 
-            else if (HikePubSub.UPDATE_UI == type)
+            else if (HikePubSub.UPDATE_PROFILE_ICON == type)
             {
                 string msisdn = (string)obj;
                 if (msisdn != mContactNumber)
@@ -5743,7 +5743,6 @@ namespace windows_client.View
             this.Focus();
         }
 
-        WriteableBitmap _background;
         BitmapImage _tileBitmap;
 
         public void ChangeBackground(bool isBubbleColorChanged = true)
@@ -5796,6 +5795,7 @@ namespace windows_client.View
         }
 
         bool _patternNotLoaded = false;
+        int chatBgSize = 800, chatBgHeight = 0, chatBgWidth;
 
         private async void CreateBackgroundImage()
         {
@@ -5808,8 +5808,16 @@ namespace windows_client.View
 
             if (bg != null)
             {
-                _background = bg;
-                chatBackground.Source = _background;
+                if (App.ViewModel.SelectedBackground.IsTile)
+                {
+                    _tileBitmap = bg;
+                        GenerateTileBackground();
+                }
+                else
+                {
+                    chatBackground.Source = bg;
+                }
+
                 PostChangeBackgroundOperations();
                 return;
             }
@@ -5830,51 +5838,53 @@ namespace windows_client.View
                 if (App.ViewModel.SelectedBackground == null)
                     return;
 
-                WriteableBitmap source = new WriteableBitmap(_tileBitmap);
-
                 if (App.ViewModel.SelectedBackground.IsTile)
                 {
-                    var iSize = 800;
-
-                    var wb1 = new WriteableBitmap((int)iSize, (int)iSize);
-                    wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = (int)iSize, Height = (int)iSize }, null);
-                    wb1.Invalidate();
-
-                    int height = 0;
-
-                    for (int width = 0; width <= iSize; )
-                    {
-                        for (height = 0; height <= iSize; )
-                        {
-                            wb1.Blit(new Rect(width, height, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
-                            height += source.PixelHeight;
-                        }
-
-                        width += source.PixelWidth;
-                    }
-
-                    _background = wb1;
-                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+                    GenerateTileBackground();
                 }
                 else
                 {
                     chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
                     chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-                    _background = source;
+                    chatBackground.Source = _tileBitmap;
                 }
 
-                ChatBackgroundHelper.Instance.ChatBgCache.AddObject(App.ViewModel.SelectedBackground.ID, _background);
-                chatBackground.Source = _background;
+                ChatBackgroundHelper.Instance.ChatBgCache.AddObject(App.ViewModel.SelectedBackground.ID, _tileBitmap);
 
                 PostChangeBackgroundOperations();
             };
         }
 
+        private void GenerateTileBackground()
+        {
+            WriteableBitmap source = new WriteableBitmap(_tileBitmap);
+            var wb1 = new WriteableBitmap(chatBgSize, chatBgSize);
+
+            //uncomment for transparent pngs
+            //wb1.Render(new Canvas() { Background = UI_Utils.Instance.Transparent, Width = chatBgSize, Height = chatBgSize }, null);
+            //wb1.Invalidate();
+
+            chatBgHeight = 0;
+
+            for (chatBgWidth = 0; chatBgWidth <= chatBgSize; )
+            {
+                for (chatBgHeight = 0; chatBgHeight <= chatBgSize; )
+                {
+                    wb1.Blit(new Rect(chatBgWidth, chatBgHeight, source.PixelWidth, source.PixelHeight), source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
+                    chatBgHeight += source.PixelHeight;
+                }
+
+                chatBgWidth += source.PixelWidth;
+            }
+
+            chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            chatBackground.Source = wb1;
+        }
+
         private void PostChangeBackgroundOperations()
         {
-            _patternNotLoaded = _background.PixelWidth == 0 ? true : false;
+            _patternNotLoaded = !App.ViewModel.SelectedBackground.IsTile || _tileBitmap.PixelWidth == 0 ? true : false;
 
             headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
         }

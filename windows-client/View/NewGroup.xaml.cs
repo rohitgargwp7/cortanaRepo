@@ -90,7 +90,7 @@ namespace windows_client.View
 
                     reloadImage = false;
 
-                    avatarImage.ImageSource = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
+                    avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
 
                     PhoneApplicationService.Current.State[App.HAS_CUSTOM_IMAGE] = true;
                 }
@@ -220,17 +220,17 @@ namespace windows_client.View
                             memStream.Seek(0, SeekOrigin.Begin);
                             BitmapImage empImage = new BitmapImage();
                             empImage.SetSource(memStream);
-                            avatarImage.ImageSource = empImage;
+                            avatarImage.Source = empImage;
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
+                            avatarImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
                         }
                     }
                     else
                     {
-                        avatarImage.ImageSource = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
+                        avatarImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, true);
                     }
                 }
             }

@@ -467,7 +467,7 @@ namespace windows_client
                         try
                         {
                             App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                            this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                         }
                         catch (Exception ex)
                         {

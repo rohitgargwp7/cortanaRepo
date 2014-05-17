@@ -310,9 +310,7 @@
                                                     <Grid Margin="0,12,0,0" Grid.Row="1" 
                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                                            Height="290" Width="420" Tap="enlargePic_Tap">
-                                                        <Grid.Background>
-                                                            <ImageBrush ImageSource="{Binding StatusImage}" Stretch="UniformToFill"/>
-                                                        </Grid.Background>
+                                                        <Image Source="{Binding StatusImage}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Grid>
                                                 </Grid>
                                             </Border>
