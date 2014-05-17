@@ -429,7 +429,7 @@ namespace windows_client.View
         public void onEventReceived(string type, object obj)
         {
             #region PARTICIPANT_JOINED_GROUP
-            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
+            if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
                 string eventGroupId = (string)json[HikeConstants.TO];
