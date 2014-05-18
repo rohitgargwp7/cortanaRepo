@@ -80,7 +80,7 @@
             <ListBox  Name="moodListBox" Grid.Row="1" Margin="15,0" Tap="moodList_Tap">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,30,0,0">
+                        <Grid Margin="0,27,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
