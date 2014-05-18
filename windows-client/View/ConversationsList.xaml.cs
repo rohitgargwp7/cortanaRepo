@@ -69,6 +69,8 @@ namespace windows_client.View
         }
 
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
+
+        DefaultStatus _defaultStatus;
         
         #endregion
 
@@ -112,9 +114,11 @@ namespace windows_client.View
 
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
-            //tutTimeText.Text = string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, 28);
+            _firstName = Utils.GetFirstName(_userName);
+            _defaultStatus = new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName));
         }
 
+        string _firstName;
         string _userName;
 
         void ViewModel_statusNotificationsStatusChanged(object sender, EventArgs e)
@@ -891,12 +895,7 @@ namespace windows_client.View
                         favourites.SelectedIndex = -1;
                         hikeContactListBox.SelectedIndex = -1;
 
-                        if (App.ViewModel.FavList.Count == 0)
-                            txtCircleOfFriends.Text = AppResources.Conversations_Circle_Of_friends_txt;
-                        else if (App.ViewModel.FavList.Count == 1)
-                            txtCircleOfFriends.Text = AppResources.Conversations_1Circle_Of_friends_txt;
-                        else
-                            txtCircleOfFriends.Text = string.Format(AppResources.Conversations_NCircle_Of_friends_txt, App.ViewModel.FavList.Count);
+                        UpdateFriendsCounter();
 
                         txtCircleOfFriends.Visibility = Visibility.Visible;
                         UpdateContactsOnHikeCounter();
@@ -968,10 +967,7 @@ namespace windows_client.View
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                        {
-                            string firstName = Utils.GetFirstName(_userName);
-                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
-                        }
+                            App.ViewModel.StatusList.Add(_defaultStatus);
 
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
@@ -1157,6 +1153,8 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     _userName = (string)obj;
+                    _firstName = Utils.GetFirstName(_userName);
+                    _defaultStatus.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName);
                 });
             }
             #endregion
@@ -1328,10 +1326,7 @@ namespace windows_client.View
                         }
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                        {
-                            string firstName = Utils.GetFirstName(_userName);
-                            App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
-                        }
+                            App.ViewModel.StatusList.Add(_defaultStatus);
                     }
                 });
             }
@@ -1490,18 +1485,14 @@ namespace windows_client.View
                                         Dispatcher.BeginInvoke(() =>
                                         {
                                             if (i < UnreadFriendRequests)
-                                            {
                                                 UnreadFriendRequests--;
-                                            }
+
                                             try
                                             {
                                                 App.ViewModel.StatusList.Remove(f);
 
                                                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                                                {
-                                                    string firstName = Utils.GetFirstName(_userName);
-                                                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
-                                                }
+                                                    App.ViewModel.StatusList.Add(_defaultStatus);
                                             }
                                             catch (Exception e)
                                             {
@@ -2514,10 +2505,7 @@ namespace windows_client.View
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
 
                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                {
-                    string firstName = Utils.GetFirstName(_userName);
-                    App.ViewModel.StatusList.Add(new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, firstName)));
-                }
+                    App.ViewModel.StatusList.Add(_defaultStatus);
 
                 MiscDBUtil.SavePendingRequests();
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);

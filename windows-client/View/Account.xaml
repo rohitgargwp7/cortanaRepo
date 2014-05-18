@@ -36,7 +36,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Tap="Unlink_Tap" Margin="0,25,0,0">
+            <Grid Tap="Unlink_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -47,7 +47,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,25,0,0">
+            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -58,7 +58,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridFB" Grid.Row="2" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,25,0,0">
+            <Grid Name="gridFB" Grid.Row="2" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -69,7 +69,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Fb_SubHeader_Txt, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridTwitter" Grid.Row="3" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,25,0,25">
+            <Grid Name="gridTwitter" Grid.Row="3" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>

@@ -34,7 +34,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,20,0,0" Tap="FAQs_Tap">
+                <Grid Grid.Row="0" Margin="0,20,0,0" Tap="FAQs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -46,7 +46,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ContactUs_Tap">
+                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ContactUs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -58,7 +58,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Legal_Tap">
+                <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Legal_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -70,7 +70,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="3" Margin="0,20,0,0" Tap="rateAndReview_Tap">
+                <Grid Grid.Row="3" Margin="0,20,0,0" Tap="rateAndReview_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -82,7 +82,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="4" Margin="0,20,0,0" Tap="SystemHealth_Tap">
+                <Grid Grid.Row="4" Margin="0,20,0,0" Tap="SystemHealth_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -94,7 +94,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="5" Margin="0,20,0,0">
+                <Grid Grid.Row="5" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>

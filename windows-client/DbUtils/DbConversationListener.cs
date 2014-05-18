@@ -19,6 +19,7 @@ using windows_client.FileTransfers;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.DbUtils
 {
@@ -179,7 +180,13 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
+                    {
+                        if (!NetworkInterface.GetIsNetworkAvailable())
+                        {
+                        }
+
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                    }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
@@ -280,6 +287,7 @@ namespace windows_client.DbUtils
                 string groupId = (string)obj;
                 ConversationTableUtils.deleteConversation(groupId);
                 //ConversationTableUtils.saveConvObjectList();
+                MiscDBUtil.DeleteImageForMsisdn(groupId);
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 GroupManager.Instance.GroupCache.Remove(groupId);
