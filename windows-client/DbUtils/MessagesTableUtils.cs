@@ -105,7 +105,7 @@ namespace windows_client.DbUtils
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
-                GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
+                GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
             else // add a member to a group
