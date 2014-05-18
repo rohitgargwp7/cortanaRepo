@@ -160,9 +160,8 @@ namespace windows_client.View
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;
             //so that on signing up again user can see these tutorials 
-            App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
-            App.appSettings[App.SHOW_BASIC_TUTORIAL] = true;
-            App.appSettings[HikeConstants.SHOW_CHAT_FTUE] = true;
+            //App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+            //App.appSettings[App.SHOW_BASIC_TUTORIAL] = true;
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();

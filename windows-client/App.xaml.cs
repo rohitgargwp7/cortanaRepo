@@ -839,7 +839,7 @@ namespace windows_client
                 {
                     RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
                     ps = PageState.CONVLIST_SCREEN;
-                    App.appSettings[SHOW_BASIC_TUTORIAL] = true;
+                    RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
                     App.WriteToIsoStorageSettings(PAGE_STATE, ps);
                 }
             }
@@ -926,8 +926,6 @@ namespace windows_client
             if (isNewInstall)
             {
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
-                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
-                App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             }
             #endregion
             #region VIEW MODEL
