@@ -40,9 +40,6 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (a, b) =>
                 {
@@ -173,8 +170,6 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (a, b) =>
                 {
                     App.appInitialize();
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
                     string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];

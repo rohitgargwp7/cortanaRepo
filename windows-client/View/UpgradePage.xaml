@@ -12,42 +12,18 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
 
-    <toolkit:TransitionService.NavigationInTransition>
-        <toolkit:NavigationInTransition>
-            <toolkit:NavigationInTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardIn"/>
-            </toolkit:NavigationInTransition.Backward>
-            <toolkit:NavigationInTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardIn"/>
-            </toolkit:NavigationInTransition.Forward>
-        </toolkit:NavigationInTransition>
-    </toolkit:TransitionService.NavigationInTransition>
-    <toolkit:TransitionService.NavigationOutTransition>
-        <toolkit:NavigationOutTransition>
-            <toolkit:NavigationOutTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardOut"/>
-            </toolkit:NavigationOutTransition.Backward>
-            <toolkit:NavigationOutTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardOut"/>
-            </toolkit:NavigationOutTransition.Forward>
-        </toolkit:NavigationOutTransition>
-    </toolkit:TransitionService.NavigationOutTransition>
-    
     <Grid x:Name="LayoutRoot" Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Image Source="images\signup_logo.png" Grid.Row="0" Margin="0 200 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="104"></Image>
-        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" Grid.Row="1" Margin="24 20 24 0"   Text="{Binding Path= LocalizedResources.UpgradingApp_Text, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" ></TextBlock>
-        <ProgressBar x:Name="progressBar" Grid.Row="2" Margin="0,10,0,0" 
-                                        Background="Transparent" IsIndeterminate="True" 
-                                        VerticalAlignment="Top" 
-                                        VerticalContentAlignment="Top" FontSize="24" 
-                                        HorizontalAlignment="Stretch" Height="10"
-                                        HorizontalContentAlignment="Center" 
-                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,300">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Image Source="images\signup_logo.png" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="104"></Image>
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" Grid.Row="1" Margin="24 20 24 0" Foreground="{StaticResource HikeBlack}" Text="{Binding Path= LocalizedResources.UpgradingApp_Text, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom"/>
+            <ProgressBar Grid.Row="2" Margin="0,10,0,0" Background="Transparent" IsIndeterminate="True"
+                     VerticalAlignment="Top" Foreground="{StaticResource HikeBlueHeader}"/>
+        </Grid>
 
     </Grid>
 

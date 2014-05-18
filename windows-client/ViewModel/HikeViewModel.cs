@@ -705,6 +705,8 @@ namespace windows_client.ViewModel
         /// <param name="index">tool tip index to be removed</param>
         public void HideToolTip(Panel element, int index)
         {
+            return;
+
             if (DictInAppTip == null)
                 return;
 
