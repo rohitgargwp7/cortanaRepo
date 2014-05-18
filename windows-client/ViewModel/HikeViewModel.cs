@@ -479,7 +479,6 @@ namespace windows_client.ViewModel
             #endregion
         }
 
-
         public event EventHandler<Object[]> ShowTypingNotification;
         public event EventHandler<Object[]> AutohideTypingNotification;
         public event EventHandler<Object[]> HidetypingNotification;

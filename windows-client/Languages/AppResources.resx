@@ -2156,4 +2156,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="NoSearchToDisplay_Txt" xml:space="preserve">
     <value>no search results</value>
   </data>
+  <data name="FileTransfer_NetworkError" xml:space="preserve">
+    <value>Could not upload file. Check network settings.</value>
+  </data>
 </root>

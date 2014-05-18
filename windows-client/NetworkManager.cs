@@ -625,6 +625,10 @@ namespace windows_client
                                                                 }
                                                                 catch { }
                                                             }
+
+                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                                                             else
@@ -661,6 +665,10 @@ namespace windows_client
                                                         else
                                                         {
                                                             thrAreFavs = true;
+
+                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true; 
+                                                            
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 

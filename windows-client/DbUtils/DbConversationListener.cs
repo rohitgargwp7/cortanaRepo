@@ -182,8 +182,7 @@ namespace windows_client.DbUtils
                     if (FileTransferManager.Instance.IsTransferPossible())
                     {
                         if (!NetworkInterface.GetIsNetworkAvailable())
-                        {
-                        }
+                            MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                     }
