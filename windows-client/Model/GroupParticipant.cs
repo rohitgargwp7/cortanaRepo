@@ -16,6 +16,8 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace windows_client.Model
 {
@@ -75,6 +77,7 @@ namespace windows_client.Model
         }
 
         BitmapImage _memberImage;
+        [XmlIgnore]
         public BitmapImage MemberImage
         {
             get
@@ -207,10 +210,21 @@ namespace windows_client.Model
             }
         }
 
+        bool _isOwner;
         public bool IsOwner
         {
-            get;
-            set;
+            get
+            {
+                return _isOwner;
+            }
+            set
+            {
+                if (value != _isOwner)
+                {
+                    _isOwner = value;
+                    NotifyPropertyChanged("IsOwnerVisibility");
+                }
+            }
         }
 
         public bool IsFav
@@ -227,6 +241,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FavMsg");
             }
         }
+
         public string GroupInfoBlockText
         {
             get
@@ -261,6 +276,14 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility IsOwnerVisibility
+        {
+            get
+            {
+                return _isOwner ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public Visibility RemoveFromGroup
         {
             get;
@@ -277,23 +300,23 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility InviteToHikeVisibility
+        {
+            get
+            {
+                if (IsOnHike)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public Visibility ContextMenuVisibility
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public bool ContextMenuIsEnabled
-        {
-            get
-            {
-                if (ContextMenuVisibility == Visibility.Visible)
-                    return true;
-                return false;
             }
         }
 
@@ -303,7 +326,7 @@ namespace windows_client.Model
             {
                 if (_isOnHike)
                 {
-                    return UI_Utils.Instance.HikeMsgBackground;
+                    return UI_Utils.Instance.HikeBlue;
                 }
                 return UI_Utils.Instance.SmsBackground;
             }

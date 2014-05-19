@@ -691,12 +691,7 @@ namespace windows_client.Model
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                        {
-                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                                return UI_Utils.Instance.Sent_ChatTheme;
-                            else
-                                return UI_Utils.Instance.Sent;
-                        }
+                            return UI_Utils.Instance.Sent_ChatTheme;
                         else
                         {
                             if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
@@ -707,12 +702,7 @@ namespace windows_client.Model
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                        {
-                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                                return UI_Utils.Instance.Delivered_ChatTheme;
-                            else
-                                return UI_Utils.Instance.Delivered;
-                        }
+                            return UI_Utils.Instance.Delivered_ChatTheme;
                         else
                         {
                             if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
@@ -723,12 +713,7 @@ namespace windows_client.Model
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                        {
-                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                                return UI_Utils.Instance.Read_ChatTheme;
-                            else
-                                return UI_Utils.Instance.Read;
-                        }
+                            return UI_Utils.Instance.Read_ChatTheme;
                         else
                         {
                             if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
@@ -738,12 +723,7 @@ namespace windows_client.Model
                         }
                     case ConvMessage.State.SENT_UNCONFIRMED:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                        {
-                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                                return UI_Utils.Instance.Trying_ChatTheme;
-                            else
-                                return UI_Utils.Instance.Trying;
-                        }
+                            return UI_Utils.Instance.Trying_ChatTheme;
                         else
                         {
                             if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
@@ -753,12 +733,7 @@ namespace windows_client.Model
                         }
                     default:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                        {
-                            if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
-                                return UI_Utils.Instance.Trying_ChatTheme;
-                            else
-                                return UI_Utils.Instance.Trying;
-                        }
+                            return UI_Utils.Instance.Trying_ChatTheme;
                         else
                         {
                             if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
@@ -820,6 +795,7 @@ namespace windows_client.Model
             {
                 _currentOrientation = value;
                 NotifyPropertyChanged("MessageBubbleWidth");
+                NotifyPropertyChanged("MessageBubbleMinWidth");
             }
         }
 
@@ -1401,12 +1377,49 @@ namespace windows_client.Model
             }
         }
 
+        public int MessageBubbleMinWidth
+        {
+            get
+            {
+                if ((_currentOrientation & PageOrientation.Landscape) == PageOrientation.Landscape)
+                {
+                    return HikeConstants.CHATBUBBLE_LANDSCAPE_MINWIDTH;
+                }
+                else if ((_currentOrientation & PageOrientation.Portrait) == PageOrientation.Portrait)
+                {
+                    return HikeConstants.CHATBUBBLE_PORTRAIT_MINWIDTH;
+                }
+                return HikeConstants.CHATBUBBLE_PORTRAIT_MINWIDTH;
+            }
+        }
+
         public SolidColorBrush BorderBackgroundColor
         {
             get
             {
-                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
-                    return UI_Utils.Instance.Transparent;
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.Transparent;
+                    else
+                        return App.ViewModel.SelectedBackground.HeaderBackground;
+                }
+                else
+                    return UI_Utils.Instance.Black;
+            }
+        }
+
+        public SolidColorBrush NotificationBorderBrush
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.IsDefault)
+                        return UI_Utils.Instance.Black;
+                    else
+                        return UI_Utils.Instance.White;
+                }
                 else
                     return UI_Utils.Instance.Black;
             }
@@ -1433,7 +1446,7 @@ namespace windows_client.Model
                 else
                 {
                     if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
-                        return UI_Utils.Instance.Black40Opacity;
+                        return App.ViewModel.SelectedBackground.HeaderBackground;
                     else if (IsSent)
                         return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
                     else
@@ -1472,10 +1485,8 @@ namespace windows_client.Model
                     {
                         if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
                             return UI_Utils.Instance.Black;
-                        else if (IsSent)
-                            return UI_Utils.Instance.White;
                         else
-                            return UI_Utils.Instance.ReceiveMessageForeground;
+                            return BubbleForegroundColor;
                     }
                     else
                     {
@@ -1502,6 +1513,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("NormalNudgeVisibility");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");
+            NotifyPropertyChanged("NotificationBorderBrush");
         }
 
         public Visibility SendAsSMSVisibility
@@ -2077,7 +2089,7 @@ namespace windows_client.Model
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                this._message = gp.FirstName + AppResources.USER_LEFT;
+                this._message = String.Format(AppResources.USER_LEFT, gp.FirstName);
                 gp.HasLeft = true;
                 gp.IsUsed = false;
             }

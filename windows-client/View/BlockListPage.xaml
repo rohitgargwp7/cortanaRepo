@@ -8,54 +8,60 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-    
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="20,17,0,28">
-            <TextBlock Text="{Binding Path=LocalizedResources.BlockList_Text,Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" />
-        </StackPanel> 
+        
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,5,0">
-            <ListBox x:Name="blockedListBox" >
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ListBox x:Name="blockedListBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid Margin="0,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="ContactItem_Tap">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="340"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="10,2,0,2">
-                                <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="40" />
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
-                                    <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                            <Image Source="{Binding AvatarImage}" Height="60" Width="60" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="22,0" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding Name}" FontWeight="Light" TextTrimming="WordEllipsis" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
+                                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
-                            </StackPanel>
-                            <Button Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="120" FontSize="20" Grid.Column="1"  HorizontalAlignment="Right"  BorderThickness="0" Tap="Unblock_Tap"/>
+                            </Grid>
+                            <Image Grid.Column="2" Source="/View/images/settings/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <StackPanel x:Name="txtEmptyScreen"  HorizontalAlignment="Center"  Grid.Row="1"  Margin="0 100 0 0" Visibility="Collapsed">
-            <Image Height="200" Width="200" Source="images\blocklist_holder.png"></Image>
+        <StackPanel x:Name="txtEmptyScreen" HorizontalAlignment="Center" Grid.Row="1"  Visibility="Collapsed" VerticalAlignment="Center">
+            <Image Height="120" Source="images/settings/blocklist_holder.png" Stretch="Uniform" Margin="0,0,0,25"/>
+            <TextBlock Text="{Binding Path= LocalizedResources.BlockList_Default_Txt, Source={StaticResource LocalizedStrings}}" 
+                       FontSize="18" Foreground="#d3d2d0" TextWrapping="Wrap" FontWeight="Normal" Margin="140,0" TextAlignment="Center"/>
         </StackPanel>
-        
     </Grid>
-
 </phone:PhoneApplicationPage>

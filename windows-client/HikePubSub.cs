@@ -108,7 +108,7 @@ namespace windows_client
 
         public static readonly string SEND_NEW_MSG = "sendNewMsg";
 
-        public static readonly string UPDATE_UI = "udpateUI";
+        public static readonly string UPDATE_PROFILE_ICON = "updateIcon";
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 

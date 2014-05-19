@@ -32,6 +32,8 @@ namespace windows_client
         public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
+        public static readonly string ACCOUNT_GENDER = "accountGender";
+        public static readonly string ACCOUNT_AGE = "accountAge";
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
@@ -48,6 +50,7 @@ namespace windows_client
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
         public static readonly string ENTER_TO_SEND = "enterToSend";
+        public static readonly string SEND_NUDGE = "sendNudge";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -75,12 +78,20 @@ namespace windows_client
 
         public static string EMAIL = "email";
         public static string GENDER = "gender";
+        public static string NAME = "name";
+        public static string DOB = "dob";
+        public static string YEAR = "year";
+        public static string SCREEN = "screen";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEJINGLE_PREF = "jinglePref";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
 
         public static readonly string CURRENT_LOCALE = "curLocale";
+
+        public static readonly string GROUP_NAME = "groupName";
+        public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
+        public static readonly string NEW_GROUP_ID = "newGroupId";
 
         #endregion
 
@@ -350,8 +361,6 @@ namespace windows_client
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
 
-            (App.Current.Resources["PhoneBackgroundBrush"] as SolidColorBrush).Color = Colors.White;
-            (App.Current.Resources["PhoneForegroundBrush"] as SolidColorBrush).Color = Colors.Black;
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
             (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }
@@ -1003,18 +1012,11 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//if it is upgrade
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
-            {
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.1") < 0)//if it is upgrade
+                RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
+
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
                 App.ViewModel.ResetInAppTip(8);
-            }
             #endregion
             #region Enter to send
 

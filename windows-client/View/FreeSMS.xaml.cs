@@ -21,6 +21,26 @@ namespace windows_client.View
             InitializeComponent();
             initpageBasedOnState();
             App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
+
+            bool showFreeSMS = true;
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            this.showFreeSMSToggle.IsChecked = showFreeSMS;
+            if (showFreeSMS)
+                this.showFreeSMSToggle.Content = AppResources.On;
+            else
+                this.showFreeSMSToggle.Content = AppResources.Off;
+        }
+
+        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+        }
+
+        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

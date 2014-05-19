@@ -46,12 +46,12 @@ namespace windows_client.View
             };
 
             postStatusIcon = new ApplicationBarIconButton();
-            postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            postStatusIcon.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.Relative);
             postStatusIcon.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
-            postStatusPage.ApplicationBar = appBar;
+            ApplicationBar = appBar;
 
             if (App.ViewModel.DictInAppTip != null)
             {
@@ -60,7 +60,7 @@ namespace windows_client.View
                 if (tooltip != null)
                 {
                     tooltip.TipDismissed += PostStatus_TipDismissed;
-                    App.ViewModel.DisplayTip(MoodPanel, 3);
+                    App.ViewModel.DisplayTip(LayoutRoot, 3);
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace windows_client.View
 
             if (statusText == string.Empty)
             {
-                postStatusIcon.IsEnabled = true;
+                postStatusIcon.IsEnabled = false;
                 return;
             }
 
@@ -135,6 +135,7 @@ namespace windows_client.View
                 postStatusIcon.IsEnabled = true;
                 return;
             }
+
             JObject statusJSON = new JObject();
             statusJSON["status-message"] = statusText;
             if (isFacebookPost)
@@ -146,66 +147,17 @@ namespace windows_client.View
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
+
             AccountUtils.postStatus(statusJSON, StatusUpdateHelper.Instance.postStatus_Callback);
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
-
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtStatus.Focus();
             this.Loaded -= PostStatusPage_Loaded;
-        }
-        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (!isFacebookPost)
-            {
-                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
-                {
-                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
-                    isFacebookPost = true;
-                }
-                else
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
-                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-                }
-            }
-            else
-            {
-                fbIconImage.Source = UI_Utils.Instance.FacebookDisabledIcon;
-                isFacebookPost = false;
-            }
-        }
-
-        private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (!isTwitterPost)
-            {
-                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
-                {
-                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
-                    isTwitterPost = true;
-                    if (txtStatus.Text.Length > twitterPostLimit)
-                        postStatusIcon.IsEnabled = false;
-
-                    txtCounter.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
-                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-                }
-            }
-            else
-            {
-                twitterIconImage.Source = UI_Utils.Instance.TwitterDisabledIcon;
-                isTwitterPost = false;
-                if (txtStatus.Text.Length > 0)
-                    postStatusIcon.IsEnabled = true;
-                txtCounter.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -231,8 +183,6 @@ namespace windows_client.View
             moodId = MoodsInitialiser.GetSendingMoodId(moodId);
             txtStatus.Hint = hintText = mood.MoodText;
             moodImage.Source = mood.MoodImage;
-            moodImage.Height = 60;
-            moodImage.Width = 60;
             gridMood.Visibility = Visibility.Collapsed;
             txtStatus.Focus();
             this.appBar.IsVisible = true;
@@ -253,8 +203,7 @@ namespace windows_client.View
 
         private void txtStatus_GotFocus(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 200;
-            svStatusText.Height = 165;
+            buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             txtStatus.Hint = string.Empty;//done intentionally
             if (hintText == string.Empty)
             {
@@ -281,7 +230,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    fbIconImage.Source = UI_Utils.Instance.FacebookEnabledIcon;
+                    fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isFacebookPost = true;
                 });
             }
@@ -296,7 +245,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    twitterIconImage.Source = UI_Utils.Instance.TwitterEnabledIcon;
+                    twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isTwitterPost = true;
                     if (txtStatus.Text.Length > twitterPostLimit)
                     {
@@ -309,9 +258,6 @@ namespace windows_client.View
 
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
-            svStatusText.UpdateLayout();
-            svStatusText.ScrollToVerticalOffset(txtStatus.GetRectFromCharacterIndex(txtStatus.SelectionStart).Top - 40);
-
             int count = txtStatus.Text.Length;
             if (count == 0 && moodId == 0)
             {
@@ -328,10 +274,60 @@ namespace windows_client.View
             txtCounter.Text = (twitterPostLimit - count).ToString();
         }
 
-        private void txtStatus_LostFocus_1(object sender, RoutedEventArgs e)
+        private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
-            gridContent.Height = 605;
-            svStatusText.Height = 550;
+            buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+        }
+
+        private void Fb_Tap(object sender, RoutedEventArgs e)
+        {
+            if (!isFacebookPost)
+            {
+                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                {
+                    fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
+                    isFacebookPost = true;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                fbButton.Style = (Style)App.Current.Resources["NoButtonStyle"];
+                isFacebookPost = false;
+            }
+        }
+
+        private void TwitterIcon_Tap(object sender, RoutedEventArgs e)
+        {
+            if (!isTwitterPost)
+            {
+                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                {
+                    twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
+                    isTwitterPost = true;
+                    if (txtStatus.Text.Length > twitterPostLimit)
+                        postStatusIcon.IsEnabled = false;
+
+                    txtCounter.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                twitterButton.Style = (Style)App.Current.Resources["NoButtonStyle"];
+                isTwitterPost = false;
+                if (txtStatus.Text.Length > 0)
+                    postStatusIcon.IsEnabled = true;
+                txtCounter.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

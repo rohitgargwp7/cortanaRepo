@@ -63,7 +63,7 @@ namespace windows_client.View
             };
 
             shareIconButton = new ApplicationBarIconButton();
-            shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            shareIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             shareIconButton.Text = AppResources.Share_With_Txt;
             shareIconButton.Click += new EventHandler(shareBtn_Click);
             shareIconButton.IsEnabled = false;

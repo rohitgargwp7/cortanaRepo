@@ -78,18 +78,10 @@ namespace windows_client.View
                     }
                     else
                     {
-                        fileName = UI_Utils.Instance.getDefaultAvatarFileName(msisdn,
-                            Utils.isGroupConversation(msisdn));
-                        byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
-                        if (defaultImageBytes == null || defaultImageBytes.Length == 0)
-                        {
-                            loadingProgress.Opacity = 1;
-                            AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
-                        }
+                        if (!Utils.isGroupConversation(msisdn))
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
                         else
-                        {
-                            this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
-                        }
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(msisdn, true);
                     }
                 }
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))

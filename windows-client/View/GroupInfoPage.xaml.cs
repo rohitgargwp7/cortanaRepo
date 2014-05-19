@@ -20,12 +20,12 @@ using Microsoft.Phone.UserData;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
     public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
-        private ObservableCollection<GroupParticipant> groupMembersOC = new ObservableCollection<GroupParticipant>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
@@ -36,6 +36,7 @@ namespace windows_client.View
         private ApplicationBarIconButton changeImageIconButton;
         private ApplicationBarIconButton editNameIconButton;
         private ApplicationBarIconButton addIconButton;
+        private ApplicationBarMenuItem inviteSMSparticipantsMenuItem;
 
         bool isgroupNameSelfChanged = false;
         bool isProfilePicTapped = false;
@@ -58,6 +59,8 @@ namespace windows_client.View
             }
         }
 
+        List<ContactGroup<GroupParticipant>> _participantList;
+
         public GroupInfoPage()
         {
             InitializeComponent();
@@ -71,7 +74,6 @@ namespace windows_client.View
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-            TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
 
         #region App Bar
@@ -80,42 +82,108 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarBackground"]).Color
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
             };
-            
+
             editNameIconButton = new ApplicationBarIconButton();
-            editNameIconButton.IconUri = new Uri("/View/images/icon_edit.png", UriKind.Relative);
+            editNameIconButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
             editNameIconButton.Text = AppResources.Edit_AppBar_Txt;
             editNameIconButton.Click += editNameIconButton_Click;
             appBar.Buttons.Add(editNameIconButton);
 
             changeImageIconButton = new ApplicationBarIconButton();
-            changeImageIconButton.IconUri = new Uri("/View/images/icon_camera.png", UriKind.Relative);
+            changeImageIconButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
             changeImageIconButton.Text = AppResources.ChangePic_AppBar_Txt;
             changeImageIconButton.Click += changeImageIconButton_Click;
             appBar.Buttons.Add(changeImageIconButton);
 
             addIconButton = new ApplicationBarIconButton();
-            addIconButton.IconUri = new Uri("/View/images/add.png", UriKind.Relative);
+            addIconButton.IconUri = new Uri("/View/images/AppBar/appbar.add.rest.png", UriKind.Relative);
             addIconButton.Text = AppResources.Add_AppBar_Txt;
             addIconButton.Click += addIconButton_Click;
             appBar.Buttons.Add(addIconButton);
 
+            inviteSMSparticipantsMenuItem = new ApplicationBarMenuItem();
+            inviteSMSparticipantsMenuItem.Text = AppResources.GroupInfo_InviteSMSUsers_Menu_Txt;
+            inviteSMSparticipantsMenuItem.Click += inviteSMSparticipantsMenuItem_Click;
+            appBar.MenuItems.Add(inviteSMSparticipantsMenuItem);
+            appBar.IsMenuEnabled = false;
+
             editGroupNameAppBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["GroupInfoAppBarBackground"]).Color
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
             };
 
             saveIconButton = new ApplicationBarIconButton();
-            saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
+            saveIconButton.IconUri = new Uri("/View/images/AppBar/icon_save.png", UriKind.Relative);
             saveIconButton.Text = AppResources.Save_AppBar_Btn;
             saveIconButton.Click += saveGroupName_Click;
             saveIconButton.IsEnabled = false;
             editGroupNameAppBar.Buttons.Add(saveIconButton);
 
             this.ApplicationBar = appBar;
+        }
+
+        void inviteSMSparticipantsMenuItem_Click(object sender, EventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
+            //TODO start this loop from end, after sorting is done on onHike status
+            string msisdns = string.Empty, toNum = String.Empty;
+            JObject obj = new JObject();
+            JArray numlist = new JArray();
+            JObject data = new JObject();
+            int i;
+            int smsUsersCount = 0;
+            for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+            {
+                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
+                if (!gp.IsOnHike)
+                {
+                    msisdns += gp.Msisdn + ";";
+                    numlist.Add(gp.Msisdn);
+                    toNum = gp.Msisdn;
+                    smsUsersCount++;
+                }
+            }
+
+            var ts = TimeUtils.getCurrentTimeStamp();
+            var smsString = AppResources.sms_invite_message;
+
+            if (smsUsersCount == 1)
+            {
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+            }
+            else
+            {
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.INVITE_LIST] = numlist;
+                obj[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+            }
+
+            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            {
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
+            }
+            else
+            {
+                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                App.MqttManagerInstance.mqttPublishToServer(obj);
+
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = msisdns;
+                smsComposeTask.Body = smsString;
+                smsComposeTask.Show();
+            }
         }
 
         private void saveGroupName_Click(object sender, EventArgs e)
@@ -209,7 +277,8 @@ namespace windows_client.View
             if (ApplicationBar == editGroupNameAppBar)
             {
                 this.Focus();
-                groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                groupNameTextBlock.Text = groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                HideTextBox();
                 ApplicationBar = appBar;
                 e.Cancel = true;
                 return;
@@ -230,15 +299,43 @@ namespace windows_client.View
             GroupManager.Instance.LoadGroupParticipants(groupId);
             groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
-            if (!App.IS_TOMBSTONED)
-                groupImage.ImageSource = App.ViewModel.ConvMap[groupId].AvatarImage;
+            if (!App.IS_TOMBSTONED && App.ViewModel.ConvMap.ContainsKey(groupId))
+                groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
             else
             {
                 string grpId = groupId.Replace(":", "_");
-                groupImage.ImageSource = UI_Utils.Instance.GetBitmapImage(grpId);
+                groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
             }
 
-            this.groupNameTxtBox.Text = groupName;
+            this.groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
+
+            LoadParticipants();
+            LoadHighResImage();
+
+            this.groupChatParticipants.ItemsSource = _participantList;
+
+            registerListeners();
+        }
+
+        async void LoadHighResImage()
+        {
+            await Task.Delay(1);
+
+            if (MiscDBUtil.hasCustomProfileImage(groupId))
+            {
+                var bytes = MiscDBUtil.getLargeImageForMsisdn(groupId);
+
+                if (bytes != null)
+                    groupImage.Source = UI_Utils.Instance.createImageFromBytes(bytes);
+            }
+            else
+                groupImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(groupId, true);
+        }
+
+        private void LoadParticipants()
+        {
+            _participantList = CreateGroups();
+
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
             GroupParticipant self = new GroupParticipant(groupId, (string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
@@ -250,7 +347,7 @@ namespace windows_client.View
                 GroupParticipant gp = hikeUsersList[i];
                 if (gi.GroupOwner == gp.Msisdn)
                     gp.IsOwner = true;
-                
+
                 if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
@@ -258,7 +355,7 @@ namespace windows_client.View
 
                 gp.MemberImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
 
-                groupMembersOC.Add(gp);
+                _participantList[0].Add(gp);
             }
 
             for (int i = 0; i < (smsUsersList != null ? smsUsersList.Count : 0); i++)
@@ -272,13 +369,11 @@ namespace windows_client.View
 
                 gp.MemberImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
 
-                groupMembersOC.Add(gp);
+                _participantList[1].Add(gp);
                 smsUsers++;
             }
 
-            this.inviteBtn.Visibility = EnableInviteBtn ? Visibility.Visible : Visibility.Collapsed;
-            this.groupChatParticipants.ItemsSource = groupMembersOC;
-            registerListeners();
+            appBar.IsMenuEnabled = EnableInviteBtn;
         }
 
         private List<GroupParticipant> GetHikeAndSmsUsers(List<GroupParticipant> list, List<GroupParticipant> hikeUsers)
@@ -288,7 +383,6 @@ namespace windows_client.View
             List<GroupParticipant> smsUsers = null;
             for (int i = 0; i < list.Count; i++)
             {
-
                 if (!list[i].HasLeft && list[i].IsOnHike)
                 {
                     hikeUsers.Add(list[i]);
@@ -307,7 +401,6 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
@@ -315,13 +408,12 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
         }
-        
+
         private void removeListeners()
         {
             try
             {
-                mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
-                mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+                mPubSub.removeListener(HikePubSub.UPDATE_PROFILE_ICON, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
@@ -336,20 +428,8 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            #region UPDATE_UI
-            if (HikePubSub.UPDATE_UI == type)
-            {
-                string msisdn = (string)obj;
-                if (msisdn != groupId)
-                    return;
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    groupImage.ImageSource = App.ViewModel.ConvMap[msisdn].AvatarImage;
-                });
-            }
-            #endregion
             #region PARTICIPANT_JOINED_GROUP
-            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
+            if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
                 string eventGroupId = (string)json[HikeConstants.TO];
@@ -357,20 +437,9 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    groupMembersOC.Clear();
-                    for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
-                    {
-                        GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
-                        if (!gp.HasLeft)
-                            groupMembersOC.Add(gp);
-                        if (!gp.IsOnHike && !EnableInviteBtn)
-                        {
-                            smsUsers++;
-                            this.inviteBtn.IsEnabled = true;
-                        }
-                    }
+                    LoadParticipants();
                     groupName = App.ViewModel.ConvMap[groupId].NameToShow;
-                    groupNameTxtBox.Text = groupName;
+                    groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
@@ -383,26 +452,22 @@ namespace windows_client.View
                 if (eventGroupId != groupId)
                     return;
                 string leaveMsisdn = cm.GroupParticipant;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, leaveMsisdn, eventGroupId);
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, leaveMsisdn, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    for (int i = 0; i < groupMembersOC.Count; i++)
+                    if (gp.IsOnHike)
+                        _participantList[0].Remove(gp);
+                    else
                     {
-                        if (groupMembersOC[i].Msisdn == leaveMsisdn)
-                        {
-                            groupMembersOC.RemoveAt(i);
-                            groupName = App.ViewModel.ConvMap[groupId].NameToShow; // change name of group
-                            groupNameTxtBox.Text = groupName;
-                            PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
-                            if (!gp.IsOnHike)
-                            {
-                                smsUsers--;
-                                if (smsUsers <= 0)
-                                    inviteBtn.IsEnabled = false;
-                            }
-                            return;
-                        }
+                        _participantList[1].Remove(gp);
+                        smsUsers--;
+                        if (smsUsers <= 0)
+                            appBar.IsMenuEnabled = false;
                     }
+
+                    groupName = App.ViewModel.ConvMap[groupId].NameToShow; // change name of group
+                    groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
             #endregion
@@ -416,7 +481,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupNameTxtBox.Text = App.ViewModel.ConvMap[groupId].ContactName;
+                        this.groupNameTxtBox.Text =groupNameTextBlock.Text = App.ViewModel.ConvMap[groupId].ContactName;
                     });
                 }
             }
@@ -429,7 +494,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupImage.ImageSource = App.ViewModel.ConvMap[groupId].AvatarImage;
+                        this.groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
                     });
                 }
             }
@@ -451,19 +516,14 @@ namespace windows_client.View
             else if (HikePubSub.USER_JOINED == type)
             {
                 string ms = (string)obj;
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    for (int i = 0; i < groupMembersOC.Count; i++)
-                    {
-                        if (groupMembersOC[i].Msisdn == ms)
-                        {
-                            groupMembersOC[i].IsOnHike = true;
-                            smsUsers--;
-                            if (smsUsers == 0)
-                                this.inviteBtn.IsEnabled = false;
-                            return;
-                        }
-                    }
+                    _participantList[1].Remove(gp);
+                    _participantList[0].Add(gp);
+                    smsUsers--;
+                    if (smsUsers == 0)
+                        appBar.IsMenuEnabled = false;
                 });
             }
             #endregion
@@ -471,18 +531,14 @@ namespace windows_client.View
             else if (HikePubSub.USER_LEFT == type)
             {
                 string ms = (string)obj;
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    for (int i = 0; i < groupMembersOC.Count; i++)
-                    {
-                        if (groupMembersOC[i].Msisdn == ms)
-                        {
-                            smsUsers++;
-                            groupMembersOC[i].IsOnHike = false;
-                            this.inviteBtn.IsEnabled = true;
-                            return;
-                        }
-                    }
+                    _participantList[0].Remove(gp);
+                    _participantList[1].Add(gp);
+                    smsUsers++;
+                    gp.IsOnHike = false;
+                    appBar.IsMenuEnabled = true;
                 });
             }
 
@@ -542,8 +598,8 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    App.ViewModel.ConvMap[groupId].Avatar = fullViewImageBytes;
-                    groupImage.ImageSource = grpImage;
+                    App.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
+                    groupImage.Source = grpImage;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
                     ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1, this.Orientation);
@@ -581,69 +637,6 @@ namespace windows_client.View
 
         #endregion
 
-        private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
-            //TODO start this loop from end, after sorting is done on onHike status
-            string msisdns = string.Empty, toNum = String.Empty;
-            JObject obj = new JObject();
-            JArray numlist = new JArray();
-            JObject data = new JObject();
-            int i;
-            int smsUsersCount = 0;
-            for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
-            {
-                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
-                if (!gp.IsOnHike)
-                {
-                    msisdns += gp.Msisdn + ";";
-                    numlist.Add(gp.Msisdn);
-                    toNum = gp.Msisdn;
-                    smsUsersCount++;
-                }
-            }
-
-            var ts = TimeUtils.getCurrentTimeStamp();
-            var smsString = AppResources.sms_invite_message;
-
-            if (smsUsersCount == 1)
-            {
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-            }
-            else
-            {
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.INVITE_LIST] = numlist;
-                obj[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
-            }
-
-          
-
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
-            {
-                App.MqttManagerInstance.mqttPublishToServer(obj);
-                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
-            }
-            else
-            {
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-                App.MqttManagerInstance.mqttPublishToServer(obj);
-              
-                SmsComposeTask smsComposeTask = new SmsComposeTask();
-                smsComposeTask.To = msisdns;
-                smsComposeTask.Body = smsString;
-                smsComposeTask.Show();
-            }
-
-        }
-
         #region CHANGE GROUP NAME
 
         private void setName_Callback(JObject obj)
@@ -655,10 +648,11 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    groupNameTextBlock.Text = groupName;
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = false;
                     shellProgress.Visibility = Visibility.Collapsed;
-
+                    HideTextBox();
                     ApplicationBar = appBar;
                 });
             }
@@ -679,7 +673,7 @@ namespace windows_client.View
         {
             _dontOpenPic = true;
 
-            groupInfoPage.ApplicationBar = editGroupNameAppBar;
+            ApplicationBar = editGroupNameAppBar;
         }
 
         #endregion
@@ -723,12 +717,12 @@ namespace windows_client.View
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
-            
+
             if (contacts == null)
                 return null;
-            
+
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            
+
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
@@ -740,12 +734,12 @@ namespace windows_client.View
                         count++;
                         continue;
                     }
-                    
+
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber, (int)ph.Kind);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     contactInfo = cInfo;
-                    
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -767,7 +761,7 @@ namespace windows_client.View
 
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
-            
+
             return contactListMap;
         }
 
@@ -816,12 +810,12 @@ namespace windows_client.View
             Dispatcher.BeginInvoke(() =>
             {
                 gp_obj.Name = contactInfo.Name;
-              
+
                 // if default grp name is not set , then only update grp 
                 if (gi.GroupName == null)
                 {
                     string gpName = GroupManager.Instance.defaultGroupName(groupId);
-                    groupNameTxtBox.Text = gpName;
+                    groupNameTxtBox.Text = groupNameTextBlock.Text = gpName;
                     if (App.newChatThreadPage != null)
                         App.newChatThreadPage.userName.Text = gpName;
                     if (App.ViewModel.ConvMap.ContainsKey(groupId))
@@ -854,38 +848,39 @@ namespace windows_client.View
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
+            GroupParticipant gp = (sender as Grid).DataContext as GroupParticipant;
 
             if (gp == null)
                 return;
 
+            object[] grpMemberObject = new object[3] { gp.Msisdn, gp.Name, gp.IsOnHike };
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
-        private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Tap_AddUser(object sender, RoutedEventArgs e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
-            
+
             gp_obj = (sender as MenuItem).DataContext as GroupParticipant;
             if (gp_obj == null)
                 return;
-            
+
             if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
                 return;
-            
+
             ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
             if (ci != null)
                 return;
-            
+
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
-        private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Tap_RemoveMember(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
             if (result != MessageBoxResult.OK)
@@ -934,7 +929,7 @@ namespace windows_client.View
             //        App.newChatThreadPage.userName.Text = grpName;
         }
 
-        private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
+        private void MenuItem_Tap_AddRemoveFav(object sender, RoutedEventArgs e)
         {
             GroupParticipant gp = (sender as MenuItem).DataContext as GroupParticipant;
             if (gp != null)
@@ -1033,6 +1028,7 @@ namespace windows_client.View
         }
 
         bool _dontOpenPic = false;
+
         private void enlargeImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_dontOpenPic)
@@ -1049,6 +1045,99 @@ namespace windows_client.View
         private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             _dontOpenPic = true;
+        }
+
+        private void MenuItem_InviteUser(object sender, RoutedEventArgs e)
+        {
+            GroupParticipant gp = (sender as MenuItem).DataContext as GroupParticipant;
+            if (gp != null)
+            {
+                string msisdns = string.Empty, toNum = String.Empty;
+                JObject obj = new JObject();
+                JArray numlist = new JArray();
+                JObject data = new JObject();
+
+                msisdns = gp.Msisdn + ";";
+                numlist.Add(gp.Msisdn);
+                toNum = gp.Msisdn;
+
+                var ts = TimeUtils.getCurrentTimeStamp();
+                var smsString = AppResources.sms_invite_message;
+
+                obj[HikeConstants.TO] = toNum;
+                data[HikeConstants.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.TIMESTAMP] = ts;
+                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+
+                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+                {
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
+                }
+                else
+                {
+                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+
+                    SmsComposeTask smsComposeTask = new SmsComposeTask();
+                    smsComposeTask.To = msisdns;
+                    smsComposeTask.Body = smsString;
+                    smsComposeTask.Show();
+                }
+            }
+        }
+
+        #region Populate Group participants
+
+        private List<ContactGroup<GroupParticipant>> CreateGroups()
+        {
+            string[] Groups = new string[]
+            {
+                AppResources.NewComposeGroup_HikeContacts,
+                AppResources.NewComposeGroup_1HikeContact,
+                AppResources.NewComposeGroup_SMSContacts,
+                AppResources.NewComposeGroup_1SMSContact
+            };
+
+            List<ContactGroup<GroupParticipant>> glist = new List<ContactGroup<GroupParticipant>>();
+
+            for (int i = 0; i < Groups.Length; i++, i++)
+            {
+                ContactGroup<GroupParticipant> g = new ContactGroup<GroupParticipant>(Groups[i], Groups[i + 1]);
+                glist.Add(g);
+            }
+
+            return glist;
+        }
+
+        #endregion
+
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+
+            contextMenu.ClearValue(FrameworkElement.DataContextProperty);
+        }
+
+        private void groupNameTextBlock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ShowTextBox();
+        }
+
+        void ShowTextBox()
+        {
+            groupNameTextBlock.Visibility = Visibility.Collapsed;
+            groupNameTxtBox.Visibility = Visibility.Visible;
+            groupNameTxtBox.Select(groupNameTxtBox.Text.Length, 0);
+            groupNameTxtBox.Focus();
+        }
+
+        void HideTextBox()
+        {
+            groupNameTextBlock.Visibility = Visibility.Visible;
+            groupNameTxtBox.Visibility = Visibility.Collapsed;
         }
     }
 }

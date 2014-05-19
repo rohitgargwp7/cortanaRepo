@@ -21,6 +21,7 @@ namespace windows_client.utils
 
         public List<ChatBackground> BackgroundList;
         public Dictionary<String, ChatThemeData> ChatBgMap;
+        public LruCache<String, BitmapImage> ChatBgCache = new LruCache<String, BitmapImage>(3, 0); 
 
         private static object readWriteLock = new object();
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -273,8 +274,8 @@ namespace windows_client.utils
             {
                 ID = "0",
                 Background = "#ffffffff",
-                HeaderColor = "#ffffffff",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff2B8DDD",
+                SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffefefef",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ff000000",
@@ -289,9 +290,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "24",
-                Background = "#ff94be38",
-                HeaderColor = "#ff94be38",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff9cbb79",
+                HeaderColor = "#ff75a69a",
+                SentBubbleBackground = "#ffdcffa0",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -305,9 +306,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "25",
-                Background = "#ff3c4d4b",
-                HeaderColor = "#ff3c4d4b",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff566761",
+                HeaderColor = "#ff4a5957",
+                SentBubbleBackground = "#ffffd7ac",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -321,9 +322,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "26",
-                Background = "#ff2766ab",
-                HeaderColor = "#ff2766ab",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff8daac2",
+                HeaderColor = "#ff2e5ba0",
+                SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -337,9 +338,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "27",
-                Background = "#ffA4C636",
-                HeaderColor = "#ffA4C636",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ffabcc41",
+                HeaderColor = "#ff96b534",
+                SentBubbleBackground = "#ffc6e590",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -353,9 +354,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "28",
-                Background = "#ff295659",
-                HeaderColor = "#ff295659",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff4f7370",
+                HeaderColor = "#ff3a6063",
+                SentBubbleBackground = "#ffbafff9",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -369,9 +370,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "29",
-                Background = "#ff3b6f87",
-                HeaderColor = "#ff3b6f87",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff506f8a",
+                HeaderColor = "#ff49758a",
+                SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -385,9 +386,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "30",
-                Background = "#ffd0cbcf",
-                HeaderColor = "#ffd0cbcf",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ffa8abb5",
+                HeaderColor = "#ff939bb0",
+                SentBubbleBackground = "#ffd2f0ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -400,9 +401,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "31",
-                Background = "#ff736558",
-                HeaderColor = "#ff736558",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff918171",
+                HeaderColor = "#ff827465",
+                SentBubbleBackground = "#fffce3c5",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -416,9 +417,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "32",
-                Background = "#ffd79a64",
-                HeaderColor = "#ffd79a64",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#fffbb476",
+                HeaderColor = "#ffbd915e",
+                SentBubbleBackground = "#ffffd7ac",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -432,9 +433,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "33",
-                Background = "#ffB87D45",
-                HeaderColor = "#ffB87D45",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ffb87d45",
+                HeaderColor = "#ffa16b35",
+                SentBubbleBackground = "#fffce3c5",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -448,9 +449,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "34",
-                Background = "#ff245AA8",
-                HeaderColor = "#ff245AA8",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff235ba6",
+                HeaderColor = "#ff1f5295",
+                SentBubbleBackground = "#ffa8d3ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -465,8 +466,8 @@ namespace windows_client.utils
             {
                 ID = "20",
                 Background = "#ff8D0000",
-                HeaderColor = "#ff8D0000",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff7d0101",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -481,9 +482,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "21",
-                Background = "#ff0D2933",
-                HeaderColor = "#ff0D2933",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff132332",
+                HeaderColor = "#ff263440",
+                SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -497,9 +498,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "22",
-                Background = "#ff011D32",
-                HeaderColor = "#ff011D32",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff244b70",
+                HeaderColor = "#ff182936",
+                SentBubbleBackground = "#ffb2e5ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -513,9 +514,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "23",
-                Background = "#ff707461",
-                HeaderColor = "#ff707461",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff224549",
+                HeaderColor = "#ff214549",
+                SentBubbleBackground = "#ffa2e5e2",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -530,8 +531,8 @@ namespace windows_client.utils
             {
                 ID = "1",
                 Background = "#ffe94e4e",
-                HeaderColor = "#ffe94e4e",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffd14646",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -546,8 +547,8 @@ namespace windows_client.utils
             {
                 ID = "2",
                 Background = "#ff0e8ee0",
-                HeaderColor = "#ff0e8ee0",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff0d80c9",
+                SentBubbleBackground = "#ffbafff9",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -562,8 +563,8 @@ namespace windows_client.utils
             {
                 ID = "3",
                 Background = "#ffFB6391",
-                HeaderColor = "#ffFB6391",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffe15982",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -578,8 +579,8 @@ namespace windows_client.utils
             {
                 ID = "4",
                 Background = "#ff065eac",
-                HeaderColor = "#ff065eac",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff05549a",
+                SentBubbleBackground = "#ffa8d3ff",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -594,8 +595,8 @@ namespace windows_client.utils
             {
                 ID = "5",
                 Background = "#fff47e00",
-                HeaderColor = "#fff47e00",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffdb7100",
+                SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -609,9 +610,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "6",
-                Background = "#ff9BB300",
-                HeaderColor = "#ff9BB300",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff9BB200",
+                HeaderColor = "#ff8ba003",
+                SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -626,8 +627,8 @@ namespace windows_client.utils
             {
                 ID = "7",
                 Background = "#fff8b100",
-                HeaderColor = "#fff8b100",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffdf9f00",
+                SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -642,8 +643,8 @@ namespace windows_client.utils
             {
                 ID = "8",
                 Background = "#ff4a738a",
-                HeaderColor = "#ff4a738a",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff42677c",
+                SentBubbleBackground = "#ffc2dceb",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -658,8 +659,8 @@ namespace windows_client.utils
              {
                  ID = "9",
                  Background = "#ff8455be",
-                 HeaderColor = "#ff8455be",
-                 SentBubbleBackground = "#e5ffffff",
+                 HeaderColor = "#ff774cab",
+                 SentBubbleBackground = "#ffe3cdff",
                  ReceivedBubbleBackground = "#ffffffff",
                  BubbleForeground = "#ff000000",
                  Foreground = "#ffffffff",
@@ -674,8 +675,8 @@ namespace windows_client.utils
             {
                 ID = "10",
                 Background = "#ffde557c",
-                HeaderColor = "#ffde557c",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffc74c6f",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -690,8 +691,8 @@ namespace windows_client.utils
             {
                 ID = "11",
                 Background = "#ff27aa27",
-                HeaderColor = "#ff27aa27",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff239923",
+                SentBubbleBackground = "#ffdcffa0",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -706,8 +707,8 @@ namespace windows_client.utils
             {
                 ID = "12",
                 Background = "#ffFF5F78",
-                HeaderColor = "#ffFF5F78",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffe5556c",
+                SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -722,8 +723,8 @@ namespace windows_client.utils
             {
                 ID = "13",
                 Background = "#ff1a9ecd",
-                HeaderColor = "#ff1a9ecd",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ff178eb8",
+                SentBubbleBackground = "#ffbafff9",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -738,8 +739,8 @@ namespace windows_client.utils
             {
                 ID = "14",
                 Background = "#ffff5655",
-                HeaderColor = "#ffff5655",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffe54d4c",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -753,9 +754,9 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "15",
-                Background = "#ff03b1c5",
-                HeaderColor = "#ff03b1c5",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ff02b1c4",
+                HeaderColor = "#ff029fb0",
+                SentBubbleBackground = "#ffbafff9",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -770,8 +771,8 @@ namespace windows_client.utils
             {
                 ID = "16",
                 Background = "#fff8a600",
-                HeaderColor = "#fff8a600",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffdf9500",
+                SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -786,8 +787,8 @@ namespace windows_client.utils
             {
                 ID = "17",
                 Background = "#ff95B000",
-                HeaderColor = "#ff95B000",
-                SentBubbleBackground = "#e5ffffff",
+                HeaderColor = "#ffafca18",
+                SentBubbleBackground = "#ffdcffa0",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -802,8 +803,8 @@ namespace windows_client.utils
             {
                 ID = "18",
                 HeaderColor = "#ffDE3B5A",
-                Background = "#ffDE3B5A",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ffc73551",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
@@ -818,8 +819,8 @@ namespace windows_client.utils
             {
                 ID = "19",
                 HeaderColor = "#ffeb8205",
-                Background = "#ffeb8205",
-                SentBubbleBackground = "#e5ffffff",
+                Background = "#ffd37504",
+                SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",

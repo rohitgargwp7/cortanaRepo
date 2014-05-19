@@ -954,7 +954,15 @@ namespace windows_client
                         Hyperlink MyLink = new Hyperlink();
 
                         if (foreground != null)
+                        {
                             MyLink.Foreground = foreground;
+                            MyLink.MouseOverForeground = foreground;
+                        }
+                        else
+                        {
+                            MyLink.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                            MyLink.MouseOverForeground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                        }
 
                         string url = regexMatch;
                         if (regexType == RegexType.EMAIL)

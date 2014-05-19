@@ -11,14 +11,13 @@
     xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <ProgressBar x:Name="shellProgress" Foreground="White" IsIndeterminate="False" VerticalAlignment="Top" Canvas.ZIndex="1"/>
-        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#F1F3F5"
+        <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised" Background="#e7ebf0"
                                 Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
             <phone:LongListSelector.ListHeader>
                 <Grid>
@@ -28,11 +27,9 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="onProfilePicButtonTap">
-                        <Grid.Background>
-                            <ImageBrush x:Name="avatarImage" ImageSource="images\default_group.png" Stretch="UniformToFill"/>
-                        </Grid.Background>
-                        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="82" Tap="Grid_Tap">
-                            <Border Background="Black" Opacity="0.45" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <Image x:Name="avatarImage" Source="images\default_group.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"/>
+                        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
+                            <Border Background="{StaticResource HikeBlack}" Opacity="0.6" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -48,7 +45,7 @@
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>
                                 </TextBlock>
-                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="24" FontWeight="Light" Foreground="White">
+                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="22" FontWeight="Light" Foreground="White">
                                     <toolkit:GestureService.GestureListener>
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>
@@ -59,11 +56,11 @@
                     </Grid>
                     <Grid Name="gridAddFriendStrip" Grid.Row="1" Visibility="Collapsed">
                         <StackPanel  Name="spAddFriendInvite" Visibility="Collapsed" Background="#414243">
-                            <TextBlock x:Name="txtAddedYouAsFriend" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Semibold"  Margin="0,10,0,0" Foreground="#e5e5e5" HorizontalAlignment="Center" TextAlignment="Center"/>
+                            <TextBlock x:Name="txtAddedYouAsFriend" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Semibold"  Margin="25,10,25,0" Foreground="#e5e5e5" HorizontalAlignment="Center" TextAlignment="Center"/>
                             <TextBlock TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Regular" Foreground="#e5e5e5" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="0,10" HorizontalAlignment="Center">
-                                <Button x:Name="yesBtn" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="Yes_Click" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
-                                <Button x:Name="noBtn" Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="No_Click" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                <Button x:Name="yesBtn" Margin="0,0,0,5" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="Yes_Click" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                <Button x:Name="noBtn" Margin="12,0,0,5" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="No_Click" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                             </StackPanel>
                         </StackPanel>
                         <Grid  Name="spAddFriend" Visibility="Collapsed" Background="#414243" MinHeight="100">
@@ -77,15 +74,9 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Image x:Name="imgInviteLock" Grid.Row="0" HorizontalAlignment="Center" MaxHeight="30"  Margin="0,30,0,0"/>
-                        <TextBlock Grid.Row="1" FontSize="20" TextWrapping="Wrap" Margin="0,20,0,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
-                            <TextBlock.Inlines>
-                                <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
-                                <Run x:Name="txtSmsUserNameBlk2" />
-                                <Run x:Name="txtSmsUserNameBlk3" />
-                            </TextBlock.Inlines>
-                        </TextBlock>
+                        <TextBlock x:Name="txtSmsUserNameBlk"  Grid.Row="1" FontSize="20" TextWrapping="Wrap" Margin="25,20,25,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0 10 0 0">
-                            <Button Name="btnInvite" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
+                            <Button Name="btnInvite" Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource YesButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                             <Button Name="addToFavBtn" Margin="12,0,0,0" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                         </StackPanel>
                     </Grid>
@@ -97,26 +88,38 @@
                         <templateSelector:StatusTemplateSelector.DTTextStatus>
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusUpdateContainerStyle}">
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
                                     <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                        <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding UserImage}" MaxHeight="52" MaxWidth="52" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
                                             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                                <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="Black"
-                                                                            HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
-                                                                            TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" 
-                                                                            ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                    <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                </Grid>
+                                                <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
+                                                    <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                </Grid>
                                             </Grid>
-                                            <Grid Margin="10,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
-                                                <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
-                                            </Grid>
+                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="{StaticResource HikeBlueHeader}"
+                                                                             HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
+                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
+                                                                             ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                         </Grid>
                                     </Grid>
                                 </Border>
@@ -125,35 +128,49 @@
                         <templateSelector:StatusTemplateSelector.DTImageStatus>
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusUpdateContainerStyle}">
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
                                     <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="450">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding UserImage}" MaxHeight="40" MaxWidth="40" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                            <Grid Grid.Column="1" Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                                    <local:MyRichTextBox TextForeground="Black" Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
-                                                                            FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="350" HorizontalAlignment="Left"
-                                                                            ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <Image Source="{Binding UserImage}" MaxHeight="52" MaxWidth="52" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                            <Grid Grid.Column="1" Margin="18,0,5,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid HorizontalAlignment="Stretch">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                        <TextBlock Text="{Binding UserName}" TextTrimming="WordEllipsis" Style="{StaticResource StatusUpdateNameTextBlock}"/>
+                                                    </Grid>
+                                                    <Grid Margin="10,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1">
+                                                        <TextBlock Text="{Binding TimestampString}" Margin="0,0,30,0" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid Margin="10,0" VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.Column="1">
-                                                    <TextBlock Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}" Margin="0,0,-20,0"/>
-                                                </Grid>
+                                                <local:MyRichTextBox TextForeground="{StaticResource HikeBlueHeader}" Margin="-12,0,0,0" Grid.Row="1" Foreground="{Binding StatusTextForeground}" Text="{Binding Text}" 
+                                                                             FontSize="22" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" HorizontalAlignment="Left"
+                                                                             ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                             </Grid>
                                         </Grid>
-                                        <Image Source="{Binding StatusImage}" Margin="0,12,0,0" Grid.Row="1" Stretch="UniformToFill"
+                                        <Grid Margin="0,12,0,0" Grid.Row="1" 
                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                                                           MaxHeight="300" Tap="enlargePic_Tap"/>
+                                                           Height="290" Width="420" Tap="enlargePic_Tap">
+                                            <Image Source="{Binding StatusImage}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

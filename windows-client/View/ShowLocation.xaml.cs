@@ -30,6 +30,8 @@ namespace windows_client.View
             InitializeComponent();
 
             MyMap.Loaded += MyMap_Loaded;
+
+            (ApplicationBar.Buttons[0] as ApplicationBarIconButton).Text = AppResources.Directions_Txt;
         }
 
         void MyMap_Loaded(object sender, RoutedEventArgs e)
