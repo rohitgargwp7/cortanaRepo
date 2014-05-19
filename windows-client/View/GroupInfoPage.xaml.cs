@@ -413,7 +413,6 @@ namespace windows_client.View
         {
             try
             {
-                mPubSub.removeListener(HikePubSub.UPDATE_PROFILE_ICON, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this); 
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
