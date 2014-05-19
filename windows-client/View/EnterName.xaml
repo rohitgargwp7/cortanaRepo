@@ -51,15 +51,20 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Width="400"
                        Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
                        Opacity="1"/>
-            <Button Margin="0,18,0,0" Name="spFbConnect" Style="{StaticResource FbConnectButtonStyle}" HorizontalAlignment="Center"
+            <Button Margin="0,18,0,0" Name="spFbConnect" MinWidth="240" Style="{StaticResource FbConnectButtonStyle}" HorizontalAlignment="Center"
                     Click="facebook_Tap" toolkit:TiltEffect.SuppressTilt="True">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image MaxHeight="20" Source="/View/images/fb_status.png" Stretch="Uniform" Margin="16,0,0,0"/>
-                        <Line Margin="16,0" Y1="0" Y2="26" Width="1" Grid.Column="1" Height="26" Stroke="#21396e"/>
-                        <TextBlock Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
-                           FontSize="18" Margin="0,0,16,0" FontWeight="Normal" Foreground="White" />
-                    </StackPanel>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image MaxHeight="20" Source="/View/images/fb_status.png" Stretch="Uniform" Margin="16,0,0,0" HorizontalAlignment="Left"/>
+                        <Line Margin="16,0" Y1="0" Y2="26" Width="1" Grid.Column="1" Height="26" Stroke="#21396e" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="fbConnectText" Grid.Column="2" Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
+                           FontSize="18" Margin="0,0,16,0" FontWeight="Normal" Foreground="White" HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                    </Grid>
                 </Button.Content>
             </Button>
         </StackPanel>

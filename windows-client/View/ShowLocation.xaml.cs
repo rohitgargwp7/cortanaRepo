@@ -103,22 +103,18 @@ namespace windows_client.View
 
             // Draw marker for current position
             if (_locationCoordinate != null)
-                DrawMapMarker(_locationCoordinate, Colors.Red, mapLayer);
+                DrawMapMarker(_locationCoordinate, mapLayer);
 
             MyMap.Layers.Add(mapLayer);
         }
 
-        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer)
+        private void DrawMapMarker(GeoCoordinate coordinate, MapLayer mapLayer)
         {
             MapOverlay overlay = new MapOverlay();
 
-            // Create a map marker
-            Polygon polygon = new Polygon();
-            polygon.Points.Add(new System.Windows.Point(0, 0));
-            polygon.Points.Add(new System.Windows.Point(0, 55));
-            polygon.Points.Add(new System.Windows.Point(25, 25));
-            polygon.Points.Add(new System.Windows.Point(25, 0));
-            polygon.Fill = new SolidColorBrush(color);
+            Image polygon = new Image() { MaxHeight = 42, MaxWidth = 42 };
+
+            polygon.Source = UI_Utils.Instance.MyLocationPin;
 
             // Enable marker to be tapped for location information
             polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);

@@ -2159,4 +2159,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="FileTransfer_NetworkError" xml:space="preserve">
     <value>Could not upload file. Check network settings.</value>
   </data>
+  <data name="Connected_Txt" xml:space="preserve">
+    <value>connected</value>
+  </data>
 </root>
