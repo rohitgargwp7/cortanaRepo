@@ -53,22 +53,13 @@ namespace windows_client.View
         ObservableCollection<ContactInfo> SelectedContacts = new ObservableCollection<ContactInfo>(); // this is used to store all those contacts which are selected for forwarding message
 
         List<ContactInfo> _allContactsList = null; // contacts list
-        ContactGroup<ContactInfo> _smsContactsGroup; // sms contacts list
-        ContactGroup<ContactInfo> _emptySMSGroup = new ContactGroup<ContactInfo>(AppResources.NewComposeGroup_SMSContacts, AppResources.NewComposeGroup_1SMSContact); // empty sms contacts list
 
         private ProgressIndicatorControl progressIndicator;
 
         private ApplicationBarIconButton _doneIconButton = null;
         private ApplicationBarIconButton _refreshIconButton = null;
-        private ApplicationBarMenuItem _onHikeFilterMenuItem = null;
 
         Dictionary<string, ObservableCollection<ContactGroup<ContactInfo>>> groupListDictionary = new Dictionary<string, ObservableCollection<ContactGroup<ContactInfo>>>();
-
-        /// <summary>
-        /// maintain state dictionary for showSMScontacts in parallel to groupListDictionary
-        /// so that while searching the value of showsmscontacts is considered too
-        /// </summary>
-        Dictionary<string, bool> groupListStateDictionary = new Dictionary<string, bool>();
 
         Dictionary<string, string> groupInfoDictionary = new Dictionary<string, string>();
 
@@ -134,9 +125,6 @@ namespace windows_client.View
 
             bw.RunWorkerCompleted += (s, e) =>
             {
-                if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = _emptySMSGroup;
-
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
 
@@ -170,14 +158,6 @@ namespace windows_client.View
             _refreshIconButton.Click += new EventHandler(refreshContacts_Click);
             _refreshIconButton.IsEnabled = true;
             ApplicationBar.Buttons.Add(_refreshIconButton);
-
-            if (!_isContactShared && _isFreeSmsOn)
-            {
-                _onHikeFilterMenuItem = new ApplicationBarMenuItem();
-                _onHikeFilterMenuItem.Text = _showSmsContacts ? AppResources.SelectUser_HideSmsContacts_Txt : AppResources.SelectUser_ShowSmsContacts_Txt;
-                _onHikeFilterMenuItem.Click += OnHikeFilter_Click;
-                ApplicationBar.MenuItems.Add(_onHikeFilterMenuItem);
-            }
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
             {
@@ -230,42 +210,6 @@ namespace windows_client.View
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
-        }
-
-        private void OnHikeFilter_Click(object sender, EventArgs e)
-        {
-            if (_isGroupChat || _isForward)
-                enterNameTxt.Text = stringBuilderForContactNames.ToString();
-            else
-                enterNameTxt.Text = string.Empty;
-
-            if (_completeGroupedContactList == null)
-                return;
-
-            if (_showSmsContacts)
-            {
-                _completeGroupedContactList[4] = _emptySMSGroup;
-                _showSmsContacts = !_showSmsContacts;
-                _onHikeFilterMenuItem.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
-            }
-            else
-            {
-                _completeGroupedContactList[4] = _smsContactsGroup;
-                _showSmsContacts = !_showSmsContacts;
-                _onHikeFilterMenuItem.Text = AppResources.SelectUser_HideSmsContacts_Txt;
-            }
-
-            contactsListBox.ItemsSource = _completeGroupedContactList;
-
-            if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
-            {
-                emptyGrid.Visibility = Visibility.Visible;
-                noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
-            }
-            else
-                emptyGrid.Visibility = Visibility.Collapsed;
-
-            contactsListBox.InvalidateArrange();
         }
 
         void forwardTo_Click(object sender, EventArgs e)
@@ -321,9 +265,6 @@ namespace windows_client.View
 
             if (String.IsNullOrWhiteSpace(_charsEntered))
             {
-                if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = _emptySMSGroup;
-
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
                 if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
@@ -337,16 +278,13 @@ namespace windows_client.View
                 return;
             }
 
-            if (groupListDictionary.ContainsKey(_charsEntered)
-                && groupListStateDictionary.ContainsKey(_charsEntered)
-                && groupListStateDictionary[_charsEntered] == _showSmsContacts)
+            if (groupListDictionary.ContainsKey(_charsEntered))
             {
                 ObservableCollection<ContactGroup<ContactInfo>> gl = groupListDictionary[_charsEntered];
 
                 if (gl == null)
                 {
                     groupListDictionary.Remove(_charsEntered);
-                    groupListStateDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
 
                     emptyGrid.Visibility = Visibility.Visible;
@@ -395,10 +333,7 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, ev) =>
             {
                 if (_glistFiltered != null)
-                {
                     groupListDictionary[_charsEntered] = _glistFiltered;
-                    groupListStateDictionary[_charsEntered] = _showSmsContacts;
-                }
 
                 contactsListBox.ItemsSource = _glistFiltered;
 
@@ -418,6 +353,7 @@ namespace windows_client.View
         bool _backPressed = false;
         bool _isTextSelected = false;
         string _textBeforeBackPress;
+
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (!_isGroupChat && !_isForward) // logic is valid only for Group Chat
@@ -510,9 +446,7 @@ namespace windows_client.View
 
             if (charsLength > 0)
             {
-                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength))
-                    && groupListStateDictionary.ContainsKey(charsEntered.Substring(0, charsLength))
-                    && groupListStateDictionary[charsEntered.Substring(0, charsEntered.Length - 1)] == _showSmsContacts)
+                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
                 {
                     listToIterate = groupListDictionary[charsEntered.Substring(0, charsEntered.Length - 1)];
 
@@ -822,10 +756,6 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                // this logic handles the case where hide sms contacts is there and user refreshed the list 
-                if (!_showSmsContacts)
-                    _completeGroupedContactList[4] = _emptySMSGroup;
-
                 contactsListBox.ItemsSource = _completeGroupedContactList;
 
                 if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
@@ -878,7 +808,6 @@ namespace windows_client.View
 
             ObservableCollection<ContactGroup<ContactInfo>> glist = CreateGroups();
             ExistingContacts = new Dictionary<string, ContactInfo>();
-            _smsContactsGroup = new ContactGroup<ContactInfo>(AppResources.NewComposeGroup_SMSContacts, AppResources.NewComposeGroup_1SMSContact);
 
             PopulateGroupChats(glist);
             PopulateRecentChats(glist);
@@ -900,8 +829,6 @@ namespace windows_client.View
                     glist[3].Add(cInfo);
                 else
                 {
-                    _smsContactsGroup.Add(cInfo);
-
                     if (_showSmsContacts)
                         glist[4].Add(cInfo);
                 }
