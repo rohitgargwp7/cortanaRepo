@@ -479,7 +479,6 @@ namespace windows_client.ViewModel
             #endregion
         }
 
-
         public event EventHandler<Object[]> ShowTypingNotification;
         public event EventHandler<Object[]> AutohideTypingNotification;
         public event EventHandler<Object[]> HidetypingNotification;
@@ -706,6 +705,8 @@ namespace windows_client.ViewModel
         /// <param name="index">tool tip index to be removed</param>
         public void HideToolTip(Panel element, int index)
         {
+            return;
+
             if (DictInAppTip == null)
                 return;
 
@@ -1060,6 +1061,9 @@ namespace windows_client.ViewModel
         public void SendDisplayPic()
         {
             if (PicUploadList.Count == 0)
+                return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
                 return;
 
             if (_isUploading)

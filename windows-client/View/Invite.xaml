@@ -32,7 +32,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Margin="0,20,0,0" Tap="Messaging_Tap">
+            <Grid Grid.Row="0" Margin="0,20,0,0" Tap="Messaging_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -44,7 +44,7 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1" Margin="0,20,0,0" Tap="Facebook_tap">
+            <Grid Grid.Row="1" Margin="0,20,0,0" Tap="Facebook_tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -56,7 +56,7 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Twitter_Tap">
+            <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Twitter_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -68,7 +68,7 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="3" Margin="0,20,0,0" Tap="Email_Tap">
+            <Grid Grid.Row="3" Margin="0,20,0,0" Tap="Email_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>

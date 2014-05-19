@@ -1473,7 +1473,7 @@ namespace windows_client.View
 
                 bw.DoWork += (ss, ee) =>
                 {
-                    GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
+                    GroupInfo gi = new GroupInfo(mContactNumber, mContactName, groupOwner, true);
                     GroupTableUtils.addGroupInfo(gi);
                 };
                 bw.RunWorkerAsync();
@@ -1484,7 +1484,7 @@ namespace windows_client.View
 
                 ConvMessage cm = new ConvMessage(groupCreateJson, true, true);
                 cm.CurrentOrientation = this.Orientation;
-                sendMsg(cm, false);
+                sendMsg(cm, true);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
             }
         }
@@ -6642,7 +6642,7 @@ namespace windows_client.View
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.MaxHeight = 240;
+            pivotStickers.MaxHeight = 270;
             pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);

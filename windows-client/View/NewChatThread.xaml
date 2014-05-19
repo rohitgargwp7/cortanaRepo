@@ -175,7 +175,7 @@
                         <templateSelector:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
                             <templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                                 <DataTemplate>
-                                    <Grid Background="Transparent" Margin="12,-15,12,20" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
+                                    <Grid Background="Transparent" Margin="24,-10,24,20" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
@@ -219,7 +219,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Right" Margin="0,-23,12,20" >
+                                    <Grid HorizontalAlignment="Right" Margin="0,-23,24,20" >
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>

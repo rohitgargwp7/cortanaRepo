@@ -1773,7 +1773,7 @@ namespace windows_client.utils
             get
             {
                 if (_negateThickness == null)
-                    _negateThickness = new Thickness(0, -10, 0, -10);
+                    _negateThickness = new Thickness(0, -12, 0, -12);
                 return _negateThickness;
             }
         }

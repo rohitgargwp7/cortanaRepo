@@ -16,8 +16,6 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace windows_client.Model
 {
@@ -77,7 +75,6 @@ namespace windows_client.Model
         }
 
         BitmapImage _memberImage;
-        [XmlIgnore]
         public BitmapImage MemberImage
         {
             get

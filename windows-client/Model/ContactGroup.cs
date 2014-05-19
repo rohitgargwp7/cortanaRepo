@@ -14,8 +14,8 @@ namespace windows_client.Model
     {
         public ContactGroup(string name, string name2)
         {
-            Title = name;
-            _title2 = name2;
+            _titleForMultipleContacts = name;
+            _titleFor1Contact = name2;
             this.CollectionChanged += Group_CollectionChanged;
         }
 
@@ -25,18 +25,14 @@ namespace windows_client.Model
             NotifyPropertyChanged("IsNonEmpty");
         }
 
-        string _title2;
-        string _title;
+        string _titleFor1Contact;
+        string _titleForMultipleContacts;
         public string Title
         {
             get
             {
-                return String.IsNullOrEmpty(_title) ? String.Empty : Items.Count == 1 ? _title2 : String.Format(_title, Items.Count);
-            }
-            set
-            {
-                if (value != _title)
-                    _title = value;
+                return Items.Count == 1 ? (String.IsNullOrEmpty(_titleFor1Contact) ? string.Empty : _titleFor1Contact)
+                    : (String.IsNullOrEmpty(_titleForMultipleContacts) ? string.Empty : String.Format(_titleForMultipleContacts, Items.Count));
             }
         }
 

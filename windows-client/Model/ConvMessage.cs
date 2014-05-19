@@ -2162,7 +2162,8 @@ namespace windows_client.Model
             NotifyPropertyChanged("FileSizeVisibility");
             NotifyPropertyChanged("UnknownFileTypeIconImage");
 
-            SdrImageVisibility = attachmentState != Attachment.AttachmentState.STARTED
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.NOT_STARTED 
+                && attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
                 && MessageStatus != State.SENT_FAILED

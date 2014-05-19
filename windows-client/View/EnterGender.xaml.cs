@@ -160,7 +160,6 @@ namespace windows_client.View
                 App.IS_TOMBSTONED = false;
         }
 
-
         public void OnNextClick(object sender, EventArgs e)
         {
             girlButton.IsEnabled = false;

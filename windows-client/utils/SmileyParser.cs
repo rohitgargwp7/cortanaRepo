@@ -839,7 +839,7 @@ namespace windows_client
                 patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
-            return new Regex("(" + patternString.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return new Regex("(" + patternString.ToString(), RegexOptions.Compiled);
         }
 
         public Paragraph LinkifyEmoticons(string messageString)

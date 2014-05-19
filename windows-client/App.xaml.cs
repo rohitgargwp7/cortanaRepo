@@ -497,9 +497,12 @@ namespace windows_client
                         PushHelper.Instance.registerPushnotifications(false);
                     }
 
-
                     FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
                     FileTransfers.FileTransferManager.Instance.StartTask();
+
+                    //upload pending group images when network reconnects
+                    if (App.ViewModel.PendingRequests.Count > 0)
+                        App.ViewModel.SendDisplayPic();
                 }
                 else
                 {
@@ -576,7 +579,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -832,24 +835,15 @@ namespace windows_client
             }
             #endregion
             #region TUTORIAL
-            if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.3.1", _currentVersion) == 1)
             {
-                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
+                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
+                    || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
                 {
-                    if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
-                    {
-                        App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
-                        App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                        ps = PageState.TUTORIAL_SCREEN_STATUS;
-                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-                    }
-                    else
-                    {
-                        ps = PageState.TUTORIAL_SCREEN_STICKERS;
-                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-                    }
+                    RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                    ps = PageState.CONVLIST_SCREEN;
+                    RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+                    App.WriteToIsoStorageSettings(PAGE_STATE, ps);
                 }
             }
             #endregion
@@ -935,8 +929,6 @@ namespace windows_client
             if (isNewInstall)
             {
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
-                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
-                App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             }
             #endregion
             #region VIEW MODEL
@@ -1012,7 +1004,7 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.1") < 0)//if it is upgrade
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.3.1") < 0)//if it is upgrade
                 RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade

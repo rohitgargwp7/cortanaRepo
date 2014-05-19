@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using windows_client.Languages;
 using windows_client.utils;
@@ -22,15 +23,17 @@ namespace windows_client.Controls
         public ProgressIndicatorControl()
         {
             overlayrectangle = new Rectangle();
-            overlayrectangle.Fill = UI_Utils.Instance.Black;
+            overlayrectangle.Fill = (SolidColorBrush)App.Current.Resources["HikeBlack"];
             overlayrectangle.Visibility = Visibility.Collapsed;
-            overlayrectangle.Opacity = 0.85;
+            overlayrectangle.Opacity = 0.95;
 
             spProgress = new StackPanel();
             spProgress.Visibility = Visibility.Collapsed;
+            spProgress.HorizontalAlignment = HorizontalAlignment.Stretch;
+            spProgress.VerticalAlignment = VerticalAlignment.Center;
 
             txtProgressText = new TextBlock();
-            txtProgressText.Margin = new Thickness(24, 250, 24, 0);
+            txtProgressText.Margin = new Thickness(25, 0, 25, 0);
             txtProgressText.TextWrapping = TextWrapping.Wrap;
             txtProgressText.HorizontalAlignment = HorizontalAlignment.Center;
             txtProgressText.TextAlignment = TextAlignment.Center;
@@ -38,16 +41,12 @@ namespace windows_client.Controls
             spProgress.Children.Add(txtProgressText);
 
             pBar = new ProgressBar();
-            pBar.IsEnabled = false;
+            pBar.Foreground = UI_Utils.Instance.White;
             pBar.IsIndeterminate = true;
-            pBar.VerticalAlignment = VerticalAlignment.Bottom;
-            pBar.VerticalContentAlignment = VerticalAlignment.Center;
+            pBar.VerticalAlignment = VerticalAlignment.Center;
             pBar.HorizontalAlignment = HorizontalAlignment.Stretch;
             pBar.Height = 10;
             pBar.FontSize = 24;
-            pBar.HorizontalContentAlignment = HorizontalAlignment.Center;
-            pBar.IsTabStop = true;
-            pBar.Opacity = 1;
             spProgress.Children.Add(pBar);
         }
 
@@ -68,7 +67,7 @@ namespace windows_client.Controls
             grid.Children.Add(spProgress);
 
             txtProgressText.Text = text;
-            pBar.IsEnabled = true;
+            pBar.IsIndeterminate = true;
             isShown = true;
         }
 
@@ -83,7 +82,7 @@ namespace windows_client.Controls
             spProgress.Visibility = Visibility.Collapsed;
             grid.Children.Remove(spProgress);
 
-            pBar.IsEnabled = false;
+            pBar.IsIndeterminate = false;
             isShown = false;
         }
     }
