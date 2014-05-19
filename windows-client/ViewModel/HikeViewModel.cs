@@ -1063,6 +1063,9 @@ namespace windows_client.ViewModel
             if (PicUploadList.Count == 0)
                 return;
 
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                return;
+
             if (_isUploading)
                 return;
 

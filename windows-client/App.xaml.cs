@@ -497,9 +497,12 @@ namespace windows_client
                         PushHelper.Instance.registerPushnotifications(false);
                     }
 
-
                     FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
                     FileTransfers.FileTransferManager.Instance.StartTask();
+
+                    //upload pending group images when network reconnects
+                    if (App.ViewModel.PendingRequests.Count > 0)
+                        App.ViewModel.SendDisplayPic();
                 }
                 else
                 {
