@@ -34,20 +34,6 @@ namespace windows_client.View
         public Account()
         {
             InitializeComponent();
-            if (Utils.isDarkTheme())
-            {
-                this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_white.png", UriKind.Relative));
-                this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_white.png", UriKind.Relative));
-                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_white.png", UriKind.Relative));
-                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_white.png", UriKind.Relative));
-            }
-            else
-            {
-                this.unlinkAccount.Source = new BitmapImage(new Uri("images/unlink_account_black.png", UriKind.Relative));
-                this.deleteAccount.Source = new BitmapImage(new Uri("images/delete_account_black.png", UriKind.Relative));
-                this.UnlinkFb.Source = new BitmapImage(new Uri("images/fb_dark.png", UriKind.Relative));
-                this.UnlinkTwitter.Source = new BitmapImage(new Uri("images/tw_dark.png", UriKind.Relative));
-            }
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
@@ -117,7 +103,7 @@ namespace windows_client.View
             CustomMessageBox msgBox = new CustomMessageBox()
             {
                 Message = AppResources.Privacy_DeleteAccounWarningMsgBxText,
-                Caption = AppResources.Privacy_DeleteAccountWarningHeader,
+                Caption = AppResources.Privacy_DeleteAccountHeader,
                 LeftButtonContent = AppResources.Cancel_Txt,
                 RightButtonContent = AppResources.Continue_txt
             };
@@ -174,9 +160,8 @@ namespace windows_client.View
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;
             //so that on signing up again user can see these tutorials 
-            App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
-            App.appSettings[App.SHOW_BASIC_TUTORIAL] = true;
-            App.appSettings[HikeConstants.SHOW_CHAT_FTUE] = true;
+            //App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
+            //App.appSettings[App.SHOW_BASIC_TUTORIAL] = true;
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
@@ -211,7 +196,7 @@ namespace windows_client.View
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
             if (res != MessageBoxResult.OK)
                 return;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             LogoutFb();
         }
 
@@ -222,7 +207,7 @@ namespace windows_client.View
                 return;
             else
             {
-                shellProgress.IsVisible = true;
+                shellProgress.IsIndeterminate = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                 App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
@@ -236,7 +221,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 gridTwitter.Visibility = Visibility.Collapsed;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
             });
         }
@@ -246,7 +231,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 gridFB.Visibility = Visibility.Collapsed;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
             });
         }

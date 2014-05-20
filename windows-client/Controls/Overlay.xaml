@@ -6,7 +6,6 @@
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
 
     <UserControl.Resources>
@@ -21,7 +20,7 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <Border Background="Black" Opacity="0.6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Border Background="{StaticResource HikeBlack}" Opacity="0.95" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <Border x:Name="content" VerticalAlignment="Center" Background="White" Margin="40">
             <Grid Margin="25">
                 <Grid.RowDefinitions>

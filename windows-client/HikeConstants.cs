@@ -116,7 +116,9 @@ namespace windows_client
 
         //Chat bubbles
         public static readonly int CHATBUBBLE_LANDSCAPE_WIDTH = 510;
+        public static readonly int CHATBUBBLE_LANDSCAPE_MINWIDTH = 170;
         public static readonly int CHATBUBBLE_PORTRAIT_WIDTH = 330;
+        public static readonly int CHATBUBBLE_PORTRAIT_MINWIDTH = 110;
 
         //file for sharing info with background agent
         public static readonly string BACKGROUND_AGENT_FILE = "token";
@@ -124,8 +126,6 @@ namespace windows_client
 
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
-        private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp8/black.html";
-        private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp8/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
@@ -183,10 +183,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return FAQS_LINK_BLACK;
-                }
                 return FAQS_LINK_WHITE;
             }
         }
@@ -195,10 +191,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return TERMS_AND_CONDITIONS_BLACK;
-                }
                 return TERMS_AND_CONDITIONS_WHITE;
             }
         }
@@ -263,6 +255,7 @@ namespace windows_client
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
+        public static string REQUEST_DISPLAY_PIC = "rdp";
         public static string MSISDN = "msisdn";
         public static string MSISDNS = "msisdns";
         public static string NAME = "name";
@@ -330,6 +323,8 @@ namespace windows_client
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
+        public static string IS_PIC_DOWNLOADED = "isPicDownloaded";
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
@@ -370,6 +365,7 @@ namespace windows_client
 
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
+        public static readonly int MAX_GROUP_MEMBER_SIZE = 50;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";

@@ -8,126 +8,64 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" Name="enterNumber"
+    shell:SystemTray.IsVisible="False" toolkit:TiltEffect.IsTiltEnabled="True"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
-    <toolkit:TransitionService.NavigationInTransition>
-        <toolkit:NavigationInTransition>
-            <toolkit:NavigationInTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardIn"/>
-            </toolkit:NavigationInTransition.Backward>
-            <toolkit:NavigationInTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardIn"/>
-            </toolkit:NavigationInTransition.Forward>
-        </toolkit:NavigationInTransition>
-    </toolkit:TransitionService.NavigationInTransition>
-    <toolkit:TransitionService.NavigationOutTransition>
-        <toolkit:NavigationOutTransition>
-            <toolkit:NavigationOutTransition.Backward>
-                <toolkit:TurnstileTransition Mode="BackwardOut"/>
-            </toolkit:NavigationOutTransition.Backward>
-            <toolkit:NavigationOutTransition.Forward>
-                <toolkit:TurnstileTransition Mode="ForwardOut"/>
-            </toolkit:NavigationOutTransition.Forward>
-        </toolkit:NavigationOutTransition>
-    </toolkit:TransitionService.NavigationOutTransition>
-
     <phone:PhoneApplicationPage.Resources>
-        <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
-        <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
-        <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
-            <Setter Property="GridCellSize"  Value="113,113"/>
-            <Setter Property="LayoutMode" Value="Grid" />
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Border Background="{Binding Converter={StaticResource BackgroundConverter}}"
-                                        Width="113" Height="113" Margin="6" >
-                            <TextBlock Text="{Binding Title}"
-                                               FontFamily="{StaticResource PhoneFontFamilySemiBold}"
-                                               FontSize="48" Padding="6"
-                                               Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
-                                               VerticalAlignment="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <DataTemplate x:Key="ListHeaderTemplate">
-            <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>
-        </DataTemplate>
-        
-        <DataTemplate x:Key="GroupHeaderTemplate">
-            <Border Background="Transparent">
-                <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left" Margin="0,0,0,10">
-                    <TextBlock Text="{Binding Title}" 
-                                Foreground="{StaticResource PhoneForegroundBrush}" 
-                                Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Bottom"/>
-                </Border>
-            </Border>
+            <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                       Margin="0,0,0,40" FontWeight="Light" Foreground="#2d2d2d" FontSize="38"/>
         </DataTemplate>
 
         <DataTemplate x:Key="ItemTemplate">
-            <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
+            <TextBlock Text="{Binding}" Tap="countryList_Tap" FontWeight="Light"
+                       Margin="0,0,0,12" FontSize="34"/>
         </DataTemplate>
 
     </phone:PhoneApplicationPage.Resources>
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <!--ContentPanel - place additional content here-->
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
-                <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,10"></Image>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="txtBlkOldSchool" Margin="0,70" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" Style="{StaticResource WelcomePageHeaderTextBlock}"/>
 
-                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
+            <toolkit:PhoneTextBox Grid.Row="1" x:Name="txtEnterCountry" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Center" Width="440" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
+            <toolkit:PhoneTextBox Grid.Row="2" KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" MaxLength="15" InputScope="Number" HorizontalAlignment="Center" Width="440" TextChanged="txtEnterPhone_TextChanged" Style="{StaticResource PhoneTextBoxWithWhiteBackground}"/>
 
-                <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,-2,0,0" Width="454" Height="78"/>
-
-                <toolkit:PhoneTextBox KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="Number" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
-
-                <TextBlock Height="25" TextAlignment="Left" 
-                           Margin="24,0,0,0" Name="msisdnErrorTxt" 
+            <TextBlock TextAlignment="Left" Grid.Row="3"
+                           Margin="32,0,0,0" Name="msisdnErrorTxt" 
                            Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />
 
-                <TextBlock x:Name="msgTxtBlk" FontSize="18" Opacity="0" 
-                           Margin="24,0,0,0" HorizontalAlignment="Left"
-                           Foreground="{StaticResource PhoneForegroundBrush}"
-                           VerticalAlignment="Center">
-                </TextBlock>
-                <ProgressBar x:Name="progressBar" Margin="0,10,0,0" 
+            <TextBlock x:Name="msgTxtBlk" FontSize="18" Opacity="0" Grid.Row="4"
+                           Margin="32,0,0,0" HorizontalAlignment="Left"
+                           Foreground="Black"
+                           VerticalAlignment="Center"/>
+
+            <ProgressBar x:Name="progressBar" Grid.Row="5"
                                                 Background="Transparent" IsIndeterminate="True" 
                                                 VerticalAlignment="Center" 
-                                                VerticalContentAlignment="Center" 
                                                 FontSize="24" HorizontalAlignment="Stretch" 
-                                                HorizontalContentAlignment="Left" 
-                                                IsEnabled="False" IsTabStop="True" 
                                                 Opacity="0"/>
-            </StackPanel>
-        </Grid>
+    </Grid>
 
-        <phone:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" 
+        <phone:LongListSelector Margin="24,20,0,0" Visibility="Collapsed" Foreground="Black"
                                 x:Name="countryList" Background="Transparent"
                                 IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
                                 ItemTemplate="{StaticResource ItemTemplate}"
-                                GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
-                                JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"
+                                GroupHeaderTemplate="{StaticResource AlphabeticGroupHeaderTemplate}"
+                                JumpListStyle="{StaticResource AlphabeticLongListSelectorJumpListStyle}"
                                 ListHeaderTemplate="{StaticResource ListHeaderTemplate}"/>
 
     </Grid>

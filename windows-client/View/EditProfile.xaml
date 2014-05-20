@@ -9,76 +9,67 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     toolkit:TiltEffect.IsTiltEnabled="True"
-    Name="editProfile" shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="False" />
-    </shell:SystemTray.ProgressIndicator>
-
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="520"/>
-            <RowDefinition Height="0*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
-        </StackPanel>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.Row="5" VerticalAlignment="Top" Foreground="White"/>
 
-        <ScrollViewer Grid.Row="1">
-            <!--ContentPanel - place additional content here-->
-            <Grid x:Name="ContentPanel"  Margin="15,0,15,0" Background="Transparent">
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="100"/>
-                    <RowDefinition Height="100"/>
-                    <RowDefinition Height="100"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Orientation="Vertical" Grid.Row="0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_FullName_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                                   Margin="13,0,0,0"/>
-                        <TextBlock Name="nameErrorTxt" Opacity="0" 
-                               Text="{Binding Path= LocalizedResources.EditProfile_nameErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                               VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"
-                               Margin="178,0,0,0" Foreground="Red" 
-                               FontSize="15" />
-                    </StackPanel>
-                    <TextBox x:Name="name" KeyDown="name_KeyDown" MaxLength="20"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Grid.Row="1">
-                    <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Phone_TxtBlk, Source={StaticResource LocalizedStrings}}"
-                               Margin="13,0,0,0"/>
-                    <TextBox x:Name="phone" InputScope="TelephoneCountryCode" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus" IsReadOnly="True"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Grid.Row="2">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Path= LocalizedResources.Email_Txt, Source={StaticResource LocalizedStrings}}" 
-                                   Margin="13,0,0,0"/>
-                        <TextBlock Name="emailErrorTxt" Opacity="0" 
-                               VerticalAlignment="Center" 
-                               Text="{Binding Path= LocalizedResources.EditProfile_emailErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                               Margin="245,0,0,0" Foreground="Red" FontSize="15" />
-                    </StackPanel>
-                    <TextBox x:Name="email" KeyDown="email_KeyDown" InputScope="EmailUserName" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Grid.Row="3">
-                    <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Gender_TxtBlk, Source={StaticResource LocalizedStrings}}" 
-                               Margin="13,0,0,0"/>
-                    <toolkit:ListPicker x:Name="genderListPicker"/>
-                </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_FullName_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                           Style="{StaticResource EditProfileLabelTextBlock}"/>
+                <TextBlock Grid.Column="1" Name="nameErrorTxt" Opacity="0" Text="{Binding Path= LocalizedResources.EditProfile_nameErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,25,0" Foreground="Red" FontSize="15" />
             </Grid>
-        </ScrollViewer>
+            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="name" KeyDown="name_KeyDown" 
+                                  MaxLength="20" Margin="12,0"/>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="2">
+            <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_Ph_Hint_TxtBox, Source={StaticResource LocalizedStrings}}"
+                       Style="{StaticResource EditProfileLabelTextBlock}"/>
+            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="phone" InputScope="TelephoneCountryCode"
+                                  Margin="12,0" IsReadOnly="True"/>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Path= LocalizedResources.Email_Txt, Source={StaticResource LocalizedStrings}}" 
+                           Style="{StaticResource EditProfileLabelTextBlock}"/>
+                <TextBlock Grid.Column="1" Name="emailErrorTxt" Opacity="0" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.EditProfile_emailErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                          Foreground="Red" FontSize="15" HorizontalAlignment="Right" Margin="0,0,25,0"/>
+            </Grid>
+            <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="email" KeyDown="email_KeyDown"
+                                  InputScope="EmailUserName" Margin="12,0"/>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="4">
+            <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Gender_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource EditProfileLabelTextBlock}"/>
+            <toolkit:ListPicker x:Name="genderListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeBlueHeader}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeBlack}"/>
+        </StackPanel>
     </Grid>
 
 </phone:PhoneApplicationPage>

@@ -15,6 +15,7 @@ using System.IO;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.Model
 {
@@ -70,6 +71,23 @@ namespace windows_client.Model
             {
                 if (value != _grpId)
                     _grpId = value;
+            }
+        }
+
+        BitmapImage _memberImage;
+        public BitmapImage MemberImage
+        {
+            get
+            {
+                return _memberImage;
+            }
+            set
+            {
+                if (value != MemberImage)
+                {
+                    _memberImage = value;
+                    NotifyPropertyChanged("MemberImage");
+                }
             }
         }
 
@@ -189,10 +207,21 @@ namespace windows_client.Model
             }
         }
 
+        bool _isOwner;
         public bool IsOwner
         {
-            get;
-            set;
+            get
+            {
+                return _isOwner;
+            }
+            set
+            {
+                if (value != _isOwner)
+                {
+                    _isOwner = value;
+                    NotifyPropertyChanged("IsOwnerVisibility");
+                }
+            }
         }
 
         public bool IsFav
@@ -209,36 +238,19 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FavMsg");
             }
         }
+
         public string GroupInfoBlockText
         {
             get
             {
                 if (IsOwner)
-                {
                     return AppResources.Owner_Txt;
-                }
                 else if (!_isOnHike)
-                {
-
                     return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
-                }
-                return string.Empty;
+                else return string.Empty;
             }
         }
-        public Visibility ShowGroupInfoBLock
-        {
-            get
-            {
-                if (IsOwner || !_isOnHike)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
-            }
-        }
+        
         public string FavMsg
         {
             get
@@ -261,6 +273,14 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility IsOwnerVisibility
+        {
+            get
+            {
+                return _isOwner ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public Visibility RemoveFromGroup
         {
             get;
@@ -277,23 +297,23 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility InviteToHikeVisibility
+        {
+            get
+            {
+                if (IsOnHike)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public Visibility ContextMenuVisibility
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public bool ContextMenuIsEnabled
-        {
-            get
-            {
-                if (ContextMenuVisibility == Visibility.Visible)
-                    return true;
-                return false;
             }
         }
 
@@ -303,7 +323,7 @@ namespace windows_client.Model
             {
                 if (_isOnHike)
                 {
-                    return UI_Utils.Instance.HikeMsgBackground;
+                    return UI_Utils.Instance.HikeBlue;
                 }
                 return UI_Utils.Instance.SmsBackground;
             }

@@ -13,6 +13,7 @@ using windows_client.Model;
 using windows_client.Languages;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -28,14 +29,16 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
-            ApplicationBar appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            ApplicationBar appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
+
             this.ApplicationBar = appBar;
 
             ApplicationBarIconButton addIconButton = new ApplicationBarIconButton();
-            addIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);//change
+            addIconButton.IconUri = new Uri("/View/images/AppBar/appbar.add.rest.png", UriKind.Relative);//change
             addIconButton.Text = AppResources.SelectUser_AddUser_Txt;
             addIconButton.Click += AddUsers_Tap;
             addIconButton.IsEnabled = true;
@@ -129,7 +132,7 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                shellProgress.IsVisible = true;
+                shellProgress.IsIndeterminate = true;
                 registerListeners();
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
@@ -146,7 +149,7 @@ namespace windows_client.View
                         txtEmptyScreen.Visibility = Visibility.Visible;
                         ContentPanel.Visibility = Visibility.Collapsed;
                     }
-                    shellProgress.IsVisible = false;
+                    shellProgress.IsIndeterminate = false;
                 };
             }
         }
@@ -185,30 +188,37 @@ namespace windows_client.View
             return blockedContacts;
         }
 
-        private void Unblock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void AddUsers_Tap(object sender, EventArgs e)
         {
-            Button btn = sender as Button;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
+            NavigationService.Navigate(new Uri("/View/SelectUser.xaml", UriKind.Relative));
+        }
+
+        private void ContactItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Grid btn = sender as Grid;
 
             ContactInfo c = btn.DataContext as ContactInfo;
+
             if (c == null)
                 return;
-            shellProgress.IsVisible = true;
+
+            shellProgress.IsIndeterminate = true;
+            
             App.ViewModel.BlockedHashset.Remove(c.Msisdn);
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
+            
             c.IsUsedAtMiscPlaces = true;
+            c.IsSelected = false;
             blockedList.Remove(c);
+            
             if (blockedList.Count == 0)
             {
                 txtEmptyScreen.Visibility = Visibility.Visible;
                 ContentPanel.Visibility = Visibility.Collapsed;
             }
-            shellProgress.IsVisible = false;
-        }
 
-        private void AddUsers_Tap(object sender, EventArgs e)
-        {
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            shellProgress.IsIndeterminate = false;
         }
     }
 }

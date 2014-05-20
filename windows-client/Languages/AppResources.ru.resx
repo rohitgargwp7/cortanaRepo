@@ -796,7 +796,7 @@
     <value>Ваши друзья приглашены</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>Пригласите получателей SMS в hike</value>
     <comment>xaml</comment>
   </data>
@@ -828,7 +828,7 @@
     <value>Пригл. отправлены</value>
     <comment>cs</comment>
   </data>
-  <data name="Invite_Txt" xml:space="preserve">
+  <data name="Invite_Friends_Txt" xml:space="preserve">
     <value>ПРИГЛАСИТЬ</value>
     <comment>General Text</comment>
   </data>
@@ -1148,7 +1148,7 @@
     <value>удалить из группы</value>
     <comment>General text</comment>
   </data>
-  <data name="ConversationsList_New_Txt" xml:space="preserve">
+  <data name="ConversationsList_Rewards_Txt" xml:space="preserve">
     <value>награды</value>
     <comment>Rewards Text</comment>
   </data>

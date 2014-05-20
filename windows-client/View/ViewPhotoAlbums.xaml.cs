@@ -36,12 +36,12 @@ namespace windows_client.View
             this.ApplicationBar = appbar;
 
             picturesUpload = new ApplicationBarIconButton();
-            picturesUpload.IconUri = new Uri("/View/images/icon_tick.png", UriKind.RelativeOrAbsolute);
+            picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
             picturesUpload.Text = AppResources.Done_Txt;
             picturesUpload.Click += OnPicturesUploadClick;
 
             multipleSelect = new ApplicationBarIconButton();
-            multipleSelect.IconUri = new Uri("/View/images/appbar.select.png", UriKind.RelativeOrAbsolute);
+            multipleSelect.IconUri = new Uri("/View/images/AppBar/appbar.select.png", UriKind.RelativeOrAbsolute);
             multipleSelect.Text = AppResources.ViewAlbum_AppBar_Select_text;
             multipleSelect.Click += multipleSelect_Click;
 

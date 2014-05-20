@@ -19,6 +19,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -31,6 +32,8 @@ namespace windows_client
         public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
+        public static readonly string ACCOUNT_GENDER = "accountGender";
+        public static readonly string ACCOUNT_AGE = "accountAge";
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
@@ -47,6 +50,7 @@ namespace windows_client
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
         public static readonly string ENTER_TO_SEND = "enterToSend";
+        public static readonly string SEND_NUDGE = "sendNudge";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -74,12 +78,20 @@ namespace windows_client
 
         public static string EMAIL = "email";
         public static string GENDER = "gender";
+        public static string NAME = "name";
+        public static string DOB = "dob";
+        public static string YEAR = "year";
+        public static string SCREEN = "screen";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEJINGLE_PREF = "jinglePref";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
         public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
 
         public static readonly string CURRENT_LOCALE = "curLocale";
+
+        public static readonly string GROUP_NAME = "groupName";
+        public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
+        public static readonly string NEW_GROUP_ID = "newGroupId";
 
         #endregion
 
@@ -348,6 +360,9 @@ namespace windows_client
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
+
+            (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
+            (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -480,9 +495,12 @@ namespace windows_client
                         PushHelper.Instance.registerPushnotifications(false);
                     }
 
-
                     FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
                     FileTransfers.FileTransferManager.Instance.StartTask();
+
+                    //upload pending group images when network reconnects
+                    if (App.ViewModel.PendingRequests.Count > 0)
+                        App.ViewModel.SendDisplayPic();
                 }
                 else
                 {
@@ -504,7 +522,8 @@ namespace windows_client
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
                     string msisdn = Utils.GetParamFromUri(targetPage);
-                    if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                    if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                         PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
@@ -527,7 +546,7 @@ namespace windows_client
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
-                    mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                    mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
                 }
                 else
                 {
@@ -558,7 +577,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -577,7 +596,8 @@ namespace windows_client
                 }
 
                 string msisdn = Utils.GetParamFromUri(targetPage);
-                if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -623,7 +643,7 @@ namespace windows_client
 
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);
-                mapper.UriMappings[0].MappedUri = new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative);
+                mapper.UriMappings[0].MappedUri = new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative);
             }
             else
             {
@@ -813,24 +833,15 @@ namespace windows_client
             }
             #endregion
             #region TUTORIAL
-            if (!isNewInstall && Utils.compareVersion("2.2.0.0", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.3.1", _currentVersion) == 1)
             {
-                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
+                if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
+                    || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
                 {
-                    if (Utils.compareVersion("2.1.0.0", App.CURRENT_VERSION) == 1)
-                    {
-                        App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
-                        App.appSettings[HikeConstants.AppSettings.APP_LAUNCH_COUNT] = 1;
-                        ps = PageState.TUTORIAL_SCREEN_STATUS;
-                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-                    }
-                    else
-                    {
-                        ps = PageState.TUTORIAL_SCREEN_STICKERS;
-                        App.appSettings[SHOW_BASIC_TUTORIAL] = true;
-                        App.WriteToIsoStorageSettings(PAGE_STATE, ps);
-                    }
+                    RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+                    ps = PageState.CONVLIST_SCREEN;
+                    RemoveKeyFromAppSettings(App.SHOW_BASIC_TUTORIAL);
+                    App.WriteToIsoStorageSettings(PAGE_STATE, ps);
                 }
             }
             #endregion
@@ -916,8 +927,6 @@ namespace windows_client
             if (isNewInstall)
             {
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
-                App.WriteToIsoStorageSettings(App.SHOW_STATUS_UPDATES_TUTORIAL, true);
-                App.WriteToIsoStorageSettings(App.SHOW_BASIC_TUTORIAL, true);
             }
             #endregion
             #region VIEW MODEL
@@ -993,18 +1002,11 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, true);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//if it is upgrade
-            {
-                WriteToIsoStorageSettings(HikeConstants.SHOW_CHAT_FTUE, false);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
-            {
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.3.1") < 0)//if it is upgrade
+                RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
+
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
                 App.ViewModel.ResetInAppTip(8);
-            }
             #endregion
             #region Enter to send
 
