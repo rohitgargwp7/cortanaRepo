@@ -901,6 +901,9 @@ namespace windows_client.View
                     if (ExistingContacts.ContainsKey(conv.Msisdn))
                         continue;
 
+                    if (!_showSmsContacts && !conv.IsOnhike)
+                        continue;
+
                     if (!conv.IsGroupChat)
                     {
                         ContactInfo cInfo = new ContactInfo();
@@ -932,6 +935,9 @@ namespace windows_client.View
                     continue;
 
                 if (_isGroupChat && friend.Msisdn == App.MSISDN)
+                    continue;
+
+                if (!_showSmsContacts && !friend.IsOnhike)
                     continue;
 
                 if (friend.Avatar == null)
