@@ -396,7 +396,6 @@ namespace windows_client.Mqtt
         public void onPublish(String topic, byte[] body)
         {
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
-            MQttLogging.LogWriter.Instance.WriteToLog("recieved : " + receivedMessage);
             NetworkManager.Instance.onMessage(receivedMessage);
         }
 
@@ -446,7 +445,6 @@ namespace windows_client.Mqtt
                 msgId = -1;
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
-            MQttLogging.LogWriter.Instance.WriteToLog("sent : " + msgToPublish);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
             HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
             send(packet, qos);

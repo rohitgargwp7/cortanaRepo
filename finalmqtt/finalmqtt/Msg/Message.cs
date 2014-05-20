@@ -76,12 +76,17 @@ namespace finalmqtt.Msg
             byte[] data = messageData.ToArray();
             try
             {
+                var str = Encoding.UTF8.GetString(data, 0, data.Length);
+                if (this is RetryableMessage)
+                    MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, MQTT ID:{0}, Data:{1}", ((RetryableMessage)this).getMessageId(), str));
+                else
+                    MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, Data:{0}", str));
                 mqttConnection.sendMessage(data);
             }
-            catch 
+            catch
             {
                 throw;
-            } 
+            }
         }
 
 
