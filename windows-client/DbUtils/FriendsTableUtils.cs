@@ -303,7 +303,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void UpdateOldFilesWithDefaultLastSeen()
+        public static void UpdateOldFilesWithCorrectLastSeen()
         {
             lock (readWriteLock)
             {
@@ -321,9 +321,10 @@ namespace windows_client.DbUtils
 
                         foreach (var fileName in fileNames)
                         {
-                            if (store.FileExists(fileName))
+                            var fName = FRIENDS_DIRECTORY + "\\" + fileName;
+                            if (store.FileExists(fName))
                             {
-                                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite))
+                                using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.ReadWrite))
                                 {
                                     if (file.Length > 0)
                                     {
@@ -345,6 +346,17 @@ namespace windows_client.DbUtils
                                             catch
                                             {
                                                 joinTime = 0;
+                                                //join Time is not set for this friend, set it to 0.
+                                            }
+
+                                            try
+                                            {
+                                                lastSeenTS = reader.ReadInt64();
+                                            }
+                                            catch
+                                            {
+                                                lastSeenTS = 0;
+                                                //last seen is not set for this friend, set it to 0.
                                             }
                                         }
                                     }
