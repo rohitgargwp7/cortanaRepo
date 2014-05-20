@@ -287,8 +287,10 @@ namespace windows_client.FileTransfers
             return ThreadPool.QueueUserWorkItem(fileInfo.Start);
         }
 
-        public void PopulatePreviousTasks()
+        public async void PopulatePreviousTasks()
         {
+            await Task.Delay(1);
+
             if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
             {
                 PopulateUploads();

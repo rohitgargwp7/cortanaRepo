@@ -40,9 +40,6 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (a, b) =>
                 {
@@ -65,7 +62,7 @@ namespace windows_client.View
 
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
-                    
+
                     bool dbUdated = false;
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
@@ -118,7 +115,7 @@ namespace windows_client.View
 
                                 // db was updated on upgrade from 1.8 hence we need to bump db version number
                                 // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
-                                if (version < 3)  
+                                if (version < 3)
                                 {
                                     dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
                                     dbUpdater.DatabaseSchemaVersion = 3;
@@ -127,7 +124,7 @@ namespace windows_client.View
                                     {
                                         dbUpdater.Execute();
                                     }
-                                    catch 
+                                    catch
                                     {
                                         Debug.WriteLine("db not upgrade in v 2.5.3.0");
                                     }
@@ -173,8 +170,6 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (a, b) =>
                 {
                     App.appInitialize();
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
                     string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
@@ -189,7 +184,8 @@ namespace windows_client.View
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                         string msisdn = Utils.GetParamFromUri(targetPage);
-                        if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                        if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                         {
                             App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
                             PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
@@ -230,7 +226,7 @@ namespace windows_client.View
                         App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
-                        NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                        NavigationService.Navigate(new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative));
                     }
                     else
                     {

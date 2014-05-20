@@ -75,37 +75,37 @@ namespace windows_client.View
         {
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            sendIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(send_Click);
 
             pauseIconButton = new ApplicationBarIconButton();
-            pauseIconButton.IconUri = new Uri("/View/images/icon_pause.png", UriKind.Relative);
+            pauseIconButton.IconUri = new Uri("/View/images/AppBar/icon_pause.png", UriKind.Relative);
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
 
             playIconButton = new ApplicationBarIconButton();
-            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
+            playIconButton.IconUri = new Uri("/View/images/AppBar/appbar_icon_play.png", UriKind.Relative);
             playIconButton.Text = AppResources.Play_Txt;
             playIconButton.Click += playIconButton_Click;
 
             stopIconButton = new ApplicationBarIconButton();
-            stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
+            stopIconButton.IconUri = new Uri("/View/images/AppBar/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
 
             recordIconButton = new ApplicationBarIconButton();
-            recordIconButton.IconUri = new Uri("/View/images/icon_record_appbar.png", UriKind.Relative);
+            recordIconButton.IconUri = new Uri("/View/images/AppBar/icon_record_appbar.png", UriKind.Relative);
             recordIconButton.Text = AppResources.Record_Txt;
             recordIconButton.Click += new EventHandler(StartRecording_Click);
 
             settingIconButton = new ApplicationBarIconButton();
-            settingIconButton.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
+            settingIconButton.IconUri = new Uri("/View/images/AppBar/icon_editprofile.png", UriKind.Relative);
             settingIconButton.Text = AppResources.Settings;
             settingIconButton.Click += settingsButton_Click;
 
             doneIconButton = new ApplicationBarIconButton();
-            doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = AppResources.OK;
             doneIconButton.Click += doneIconButton_Click;
         }

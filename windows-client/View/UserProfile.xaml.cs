@@ -22,6 +22,8 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Linq;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -38,7 +40,8 @@ namespace windows_client.View
         bool isOnHike = false;
         private ObservableCollection<BaseStatusUpdate> statusList = new ObservableCollection<BaseStatusUpdate>();
         private ApplicationBar appBar;
-        ApplicationBarIconButton editProfile_button;
+        ApplicationBarIconButton editProfileAppBarButton;
+        ApplicationBarIconButton changePhotoAppBarButton;
         ApplicationBarIconButton addToContactsAppBarButton;
         bool isInvited;
         bool isInAddressBook;
@@ -52,10 +55,8 @@ namespace windows_client.View
         {
             InitializeComponent();
             registerListeners();
-            txtSmsUserNameBlk1.Foreground = UI_Utils.Instance.StatusTextForeground;
-            txtSmsUserNameBlk2.Foreground = UI_Utils.Instance.StatusTextForeground;
-            txtSmsUserNameBlk3.Foreground = UI_Utils.Instance.StatusTextForeground;
-            imgBackgrund.Source = UI_Utils.Instance.UserProfileStockImage;
+
+            statusLLS.ItemsSource = statusList;
         }
 
         #region Listeners
@@ -116,7 +117,6 @@ namespace windows_client.View
 
                             statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
 
-                            gridHikeUser.Visibility = Visibility.Visible;
                             gridSmsUser.Visibility = Visibility.Collapsed;
                         }
                     }
@@ -251,7 +251,7 @@ namespace windows_client.View
 
         #endregion
 
-        GroupParticipant _groupParticipant;
+        object[] _groupParticipantObject;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -302,19 +302,19 @@ namespace windows_client.View
                 #region USER INFO FROM GROUP CHAT
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    _groupParticipant = o as GroupParticipant;
-                    msisdn = _groupParticipant.Msisdn;
-                    nameToShow = _groupParticipant.Name;
+                    _groupParticipantObject = o as object[];
+                    msisdn =(String) _groupParticipantObject[0];
+                    nameToShow = (String)_groupParticipantObject[1];
 
-                    if (App.MSISDN == _groupParticipant.Msisdn) // represents self page
+                    if (App.MSISDN == msisdn) // represents self page
                     {
                         InitSelfProfile();
                     }
                     else
                     {
                         InitAppBar();
-                        profileImage = UI_Utils.Instance.GetBitmapImage(_groupParticipant.Msisdn);
-                        isOnHike = _groupParticipant.IsOnHike;
+                        profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
+                        isOnHike = (bool)_groupParticipantObject[2];
                         InitChatIconBtn();
                     }
                 }
@@ -379,9 +379,27 @@ namespace windows_client.View
                     InitHikeUserProfile();
             }
 
+            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+                LoadHighResImage();
+
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+        }
+
+        async void LoadHighResImage()
+        {
+            await Task.Delay(1);
+
+            if (MiscDBUtil.hasCustomProfileImage(msisdn))
+            {
+                var bytes = MiscDBUtil.getLargeImageForMsisdn(msisdn);
+
+                if (bytes != null)
+                    avatarImage.Source = UI_Utils.Instance.createImageFromBytes(bytes);
+            }
+            else
+                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
         }
 
         void LoadCallCopyOptions()
@@ -389,47 +407,57 @@ namespace windows_client.View
             if (msisdn != App.MSISDN)
             {
                 ApplicationBarIconButton callIconButton = new ApplicationBarIconButton();
-                callIconButton.IconUri = new Uri("/View/images/call.png", UriKind.Relative);
+                callIconButton.IconUri = new Uri("/View/images/AppBar/icon_call.png", UriKind.Relative);
                 callIconButton.Text = AppResources.Call_Txt;
                 callIconButton.Click += new EventHandler(Call_Click);
                 callIconButton.IsEnabled = true;
 
                 if (appBar == null)
                 {
-                    appBar = new ApplicationBar();
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsVisible = true;
-                    appBar.IsMenuEnabled = true;
+                    appBar = new ApplicationBar()
+                       {
+                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                           Opacity = 0.95
+                       };
+
+                    appBar.StateChanged -= appBar_StateChanged;
+                    appBar.StateChanged += appBar_StateChanged;
                 }
 
                 appBar.Buttons.Add(callIconButton);
-                UserProfilePage.ApplicationBar = appBar;
+                ApplicationBar = appBar;
 
                 if (!isInAddressBook)
                     ShowAddToContacts();
             }
 
+            ContextMenu menu = new ContextMenu();
+            menu.Background = UI_Utils.Instance.Black;
+            menu.Foreground = UI_Utils.Instance.White;
+            menu.IsZoomEnabled = false;
+
+            MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
+            menuItemCopy.Header = AppResources.Copy_txt;
+            menuItemCopy.Click += menuItemCopy_Click;
+
+            menu.Items.Add(menuItemCopy);
+
             if (msisdn == txtUserName.Text)
             {
-                ContextMenu menu2 = new ContextMenu();
-                menu2.IsZoomEnabled = false;
-                MenuItem menuItemCopy2 = new MenuItem();
-                menuItemCopy2.Header = AppResources.Copy_txt;
-                menuItemCopy2.Click += menuItemCopy_Click;
-                menu2.Items.Add(menuItemCopy2);
-                ContextMenuService.SetContextMenu(txtUserName, menu2);
+                ContextMenuService.SetContextMenu(txtUserName, menu);
                 txtMsisdn.Visibility = Visibility.Collapsed;
             }
             else
-            {
-                ContextMenu menu = new ContextMenu();
-                menu.IsZoomEnabled = false;
-                MenuItem menuItemCopy = new MenuItem();
-                menuItemCopy.Header = AppResources.Copy_txt;
-                menuItemCopy.Click += menuItemCopy_Click;
-                menu.Items.Add(menuItemCopy);
                 ContextMenuService.SetContextMenu(txtMsisdn, menu);
-            }
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
         }
 
         void menuItemCopy_Click(object sender, RoutedEventArgs e)
@@ -455,11 +483,11 @@ namespace windows_client.View
         private void InitChatIconBtn()
         {
             ApplicationBarIconButton chatIconButton = new ApplicationBarIconButton();
-            chatIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);
+            chatIconButton.IconUri = new Uri("/View/images/AppBar/icon_message.png", UriKind.Relative);
             chatIconButton.Text = AppResources.Send_Txt;
             chatIconButton.Click += new EventHandler(GoToChat_Tap);
             chatIconButton.IsEnabled = true;
-            this.appBar.Buttons.Add(chatIconButton);
+            appBar.Buttons.Add(chatIconButton);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -478,29 +506,19 @@ namespace windows_client.View
 
         private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            try
+            if (_dontOpenPic)
             {
-                if (App.MSISDN == msisdn)
-                {
-                    if (!isProfilePicTapped)
-                    {
-                        photoChooserTask.Show();
-                        isProfilePicTapped = true;
-                    }
-                }
-                else
-                {
-                    App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
-                    object[] fileTapped = new object[1];
-                    fileTapped[0] = msisdn;
-                    PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
-                    NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
-                }
+                _dontOpenPic = false;
+                return;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
-            }
+
+            var id = App.MSISDN == msisdn ? HikeConstants.MY_PROFILE_PIC : msisdn;
+
+            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
+            object[] fileTapped = new object[2];
+            fileTapped[0] = id;
+            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
+            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -512,7 +530,7 @@ namespace windows_client.View
                 return;
             }
             //progressBarTop.IsEnabled = true;
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             if (e.TaskResult == TaskResult.OK)
             {
                 profileImage = new BitmapImage();
@@ -542,7 +560,7 @@ namespace windows_client.View
             {
                 isProfilePicTapped = false;
                 //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
@@ -579,19 +597,16 @@ namespace windows_client.View
                 {
                     UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
                     avatarImage.Source = profileImage;
-                    avatarImage.MaxHeight = 83;
-                    avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
 
-
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = thumbnailBytes;
-                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_UI, msisdn);
+                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
                     else // update fav and contact section
                     {
@@ -617,7 +632,7 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
                 isProfilePicTapped = false;
             });
         }
@@ -628,7 +643,7 @@ namespace windows_client.View
 
         private void LoadStatuses()
         {
-            shellProgress.IsVisible = true;
+            shellProgress.IsIndeterminate = true;
             List<StatusMessage> statusMessagesFromDB = null;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (ss, ee) =>
@@ -640,7 +655,7 @@ namespace windows_client.View
             {
                 CreateStatusUi(statusMessagesFromDB, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                 isStatusLoaded = true;
-                shellProgress.IsVisible = false;
+                shellProgress.IsIndeterminate = false;
             };
         }
 
@@ -651,16 +666,13 @@ namespace windows_client.View
         private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
         {
             AddStatusToList(statusMessagesFromDB, messageFetchCount);
+            
             if (statusList.Count == 0)
-            {
                 ShowEmptyStatus();
-            }
             else
-            {
                 gridSmsUser.Visibility = Visibility.Collapsed;
-                gridHikeUser.Visibility = Visibility.Visible;
-            }
-            this.statusLLS.ItemsSource = statusList;
+            
+            statusLLS.ItemsSource = statusList;
         }
 
         private void AddStatusToList(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
@@ -686,7 +698,7 @@ namespace windows_client.View
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ImageStatus statusUpdate = (sender as Image).DataContext as ImageStatus;
+            ImageStatus statusUpdate = (sender as Grid).DataContext as ImageStatus;
             if (statusUpdate == null)
                 return;
             string[] statusImageInfo = new string[2];
@@ -894,11 +906,17 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
-            this.appBar = new ApplicationBar();
-            this.appBar.Mode = ApplicationBarMode.Default;
-            this.appBar.IsVisible = true;
-            this.appBar.IsMenuEnabled = true;
-            UserProfilePage.ApplicationBar = appBar;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.75
+            };
+
+            appBar.StateChanged -= appBar_StateChanged;
+            appBar.StateChanged += appBar_StateChanged;
+
+            ApplicationBar = appBar;
         }
 
         private void InitSelfProfile()
@@ -913,30 +931,48 @@ namespace windows_client.View
 
             profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             msisdn = App.MSISDN;
+
             string name;
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+
             if (name != null)
             {
                 nameToShow = name;
                 firstName = Utils.GetFirstName(nameToShow);
             }
-            isOnHike = true;
-            changePic.Visibility = Visibility.Visible;
-            txtOnHikeSmsTime.Visibility = Visibility.Visible;
-            this.txtProfileHeader.Text = AppResources.MyProfileheader_Txt;
-            ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
-            postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
-            postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
-            postStatusButton.Click += new EventHandler(AddStatus_Tap);
-            postStatusButton.IsEnabled = true;
-            this.appBar.Buttons.Add(postStatusButton);
 
-            editProfile_button = new ApplicationBarIconButton();
-            editProfile_button.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
-            editProfile_button.Text = AppResources.Conversations_EditProfile_Txt;
-            editProfile_button.Click += new EventHandler(EditProfile_Tap);
-            editProfile_button.IsEnabled = true;
-            this.appBar.Buttons.Add(editProfile_button);
+            isOnHike = true;
+            txtOnHikeSmsTime.Visibility = Visibility.Visible;
+            
+            ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
+            postStatusButton.IconUri = new Uri("/View/images/AppBar/icon_status.png", UriKind.Relative);
+            postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
+            postStatusButton.Click += AddStatus_Tap;
+            appBar.Buttons.Add(postStatusButton);
+
+            editProfileAppBarButton = new ApplicationBarIconButton();
+            editProfileAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
+            editProfileAppBarButton.Text = AppResources.Edit_AppBar_Txt;
+            editProfileAppBarButton.Click += EditProfile_Tap;
+            appBar.Buttons.Add(editProfileAppBarButton);
+
+            changePhotoAppBarButton = new ApplicationBarIconButton();
+            changePhotoAppBarButton.IconUri = new Uri("/View/images/AppBar/icon_camera.png", UriKind.Relative);
+            changePhotoAppBarButton.Text = AppResources.ChangePic_AppBar_Txt;
+            changePhotoAppBarButton.Click += changePhotoAppBarButton_Click;
+            appBar.Buttons.Add(changePhotoAppBarButton);
+        }
+
+        void changePhotoAppBarButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
+            }
         }
 
         private void InitHikeUserProfile()
@@ -1027,28 +1063,29 @@ namespace windows_client.View
                 addToContactsAppBarButton = new ApplicationBarIconButton()
                 {
                     Text = AppResources.UserProfile_AddToContacts_Btn,
-                    IconUri = new Uri("/view/images/appbar_addfriend.png", UriKind.Relative)
+                    IconUri = new Uri("/view/images/AppBar/appbar_addfriend.png", UriKind.Relative)
                 };
 
                 addToContactsAppBarButton.Click += AddUserToContacts_Click;
             }
 
             if (ApplicationBar == null)
-                ApplicationBar = new ApplicationBar();
+            {
+                ApplicationBar = new ApplicationBar()
+                   {
+                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                   };
+            }
 
             if (!ApplicationBar.Buttons.Contains(addToContactsAppBarButton))
-                this.ApplicationBar.Buttons.Add(addToContactsAppBarButton);
+                ApplicationBar.Buttons.Add(addToContactsAppBarButton);
         }
 
         private void ShowRequestSent()
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
-            txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = firstName;
-            txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
-            gridHikeUser.Visibility = Visibility.Collapsed;
+            txtSmsUserNameBlk.Text = AppResources.Profile_RequestSent_Blk1;
             btnInvite.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
 
@@ -1060,11 +1097,8 @@ namespace windows_client.View
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             imgInviteLock.Visibility = Visibility.Visible;
-            txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = firstName;
-            txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
+
+            txtSmsUserNameBlk.Text = AppResources.ProfileToBeFriendBlk1;
             btnInvite.Content = AppResources.Add_To_Fav_Txt;
             btnInvite.Tap += AddAsFriend_Tap;
             btnInvite.Visibility = Visibility.Visible;
@@ -1072,7 +1106,6 @@ namespace windows_client.View
             toggleToInvitedScreen = true;
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
-            gridHikeUser.Visibility = Visibility.Collapsed;
             addToFavBtn.Visibility = Visibility.Collapsed;
 
             if (!isInAddressBook)
@@ -1082,7 +1115,7 @@ namespace windows_client.View
         private void ShowRequestRecievedPanel()
         {
             spAddFriendInvite.Visibility = Visibility.Visible;
-            txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+            txtAddedYouAsFriend.Text = firstName;
             gridAddFriendStrip.Visibility = Visibility.Visible;
             spAddFriend.Visibility = Visibility.Collapsed;
         }
@@ -1090,25 +1123,14 @@ namespace windows_client.View
         private void ShowEmptyStatus()
         {
             if (msisdn == App.MSISDN)
-            {
-                txtSmsUserNameBlk1.Text = string.Empty;
-                txtSmsUserNameBlk2.Text = AppResources.Profile_You_NoStatus_Txt;
-            }
+                txtSmsUserNameBlk.Text = AppResources.Profile_You_NoStatus_Txt;
             else
-            {
-                txtSmsUserNameBlk1.Text = firstName;
-                txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
-            }
-            txtSmsUserNameBlk3.Text = string.Empty;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
-            gridHikeUser.Visibility = Visibility.Collapsed;
+                txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_NoStatus_Txt, firstName);
+           
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
-
             gridSmsUser.Visibility = Visibility.Visible;
-            gridHikeUser.Visibility = Visibility.Collapsed;
         }
 
         private void ShowNonHikeUser()
@@ -1116,15 +1138,11 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileInviteImage;
             imgInviteLock.Visibility = Visibility.Visible;
             txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
-            txtSmsUserNameBlk1.Text = firstName;
-            txtSmsUserNameBlk2.Text = AppResources.InviteOnHike_Txt;
-            txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
-            gridHikeUser.Visibility = Visibility.Collapsed;
+            txtSmsUserNameBlk.Text = String.Format(AppResources.InviteOnHike_Txt, firstName);
             btnInvite.Tap += Invite_Tap;
             btnInvite.Content = AppResources.InviteOnHikeBtn_Txt;
             btnInvite.Visibility = Visibility.Visible;
+
             if (!App.ViewModel.Isfavourite(msisdn))
             {
                 addToFavBtn.Visibility = Visibility.Visible;
@@ -1136,20 +1154,16 @@ namespace windows_client.View
         private void ShowBlockedUser()
         {
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
-            txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
-            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-            txtSmsUserNameBlk2.Text = firstName;
+            txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
-            txtSmsUserNameBlk3.Text = AppResources.Profile_BlockedUser_Blk3;
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
             btnInvite.Visibility = Visibility.Collapsed;
             gridSmsUser.Visibility = Visibility.Visible;
             gridAddFriendStrip.Visibility = Visibility.Collapsed;
-            gridHikeUser.Visibility = Visibility.Collapsed;
         }
+
         #endregion
 
         private void Yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1377,7 +1391,7 @@ namespace windows_client.View
             {
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
-                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, firstName);
+                txtAddedYouAsFriend.Text = firstName;
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
@@ -1389,13 +1403,13 @@ namespace windows_client.View
                         co.ContactName = contactInfo.Name;
                 }
 
-                if (App.newChatThreadPage != null && _groupParticipant == null)
+                if (App.newChatThreadPage != null && _groupParticipantObject == null)
                     App.newChatThreadPage.userName.Text = nameToShow;
 
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
                 if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-                    txtSmsUserNameBlk1.Text = firstName;
+                    txtSmsUserNameBlk.Text = firstName;
                 else
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;
@@ -1482,7 +1496,7 @@ namespace windows_client.View
                     if ((e.Container.Content as BaseStatusUpdate).Equals(statusLLS.ItemsSource[statusLLS.ItemsSource.Count - 1]))
                     {
                         List<StatusMessage> statusMessagesFromDB = null;
-                        shellProgress.IsVisible = true;
+                        shellProgress.IsIndeterminate = true;
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
@@ -1492,11 +1506,17 @@ namespace windows_client.View
                         bw.RunWorkerCompleted += (s1, ev1) =>
                         {
                             AddStatusToList(statusMessagesFromDB, HikeConstants.STATUS_SUBSEQUENT_FETCH_COUNT);
-                            shellProgress.IsVisible = false;
+                            shellProgress.IsIndeterminate = false;
                         };
                     }
                 }
             }
+        }
+
+        bool _dontOpenPic = false;
+        private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            _dontOpenPic = true;
         }
     }
 }

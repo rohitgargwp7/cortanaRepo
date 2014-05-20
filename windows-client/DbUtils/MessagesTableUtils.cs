@@ -105,7 +105,7 @@ namespace windows_client.DbUtils
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
-                GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
+                GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
             else // add a member to a group
@@ -145,7 +145,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, string from = "")
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -158,7 +158,7 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
-                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, imageBytes, from);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
@@ -230,8 +230,7 @@ namespace windows_client.DbUtils
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
-                        string text = AppResources.USER_JOINED_GROUP_CHAT;
-                        obj.LastMessage = gp.FirstName + text;
+                        obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                 }
                 #endregion
@@ -241,11 +240,11 @@ namespace windows_client.DbUtils
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
+                        obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                     else
                     {
-                        obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
+                        obj.LastMessage = String.Format(AppResources.USER_OPTED_IN_MSG, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }

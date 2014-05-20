@@ -17,13 +17,12 @@ namespace windows_client.Model
         {
             if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
             {
+                string firstName = Utils.GetFirstName(userName);
+
                 if (isShowOnTimeline)
-                {
-                    string firstName = Utils.GetFirstName(userName);
                     Text = string.Format(AppResources.ConfimFriendTimeline_Txt, firstName);
-                }
                 else
-                    Text = AppResources.ConfimFriendUserProfile_Txt;
+                    Text = string.Format(AppResources.ConfimFriendUserProfile_Txt, firstName);
             }
             else
                 Text = sm.Message;
@@ -100,7 +99,7 @@ namespace windows_client.Model
                     if (IsUnread != true) //read status
                         return UI_Utils.Instance.StatusTextForeground;
                     else
-                        return UI_Utils.Instance.PhoneThemeColor;
+                        return (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
                 }
                 else
                     return UI_Utils.Instance.StatusTextForeground;

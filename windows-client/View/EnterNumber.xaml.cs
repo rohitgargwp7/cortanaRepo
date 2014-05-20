@@ -12,6 +12,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using windows_client.Languages;
 using System.Windows.Controls;
+using System.Windows.Input;
+using windows_client.Model;
 
 namespace windows_client
 {
@@ -24,41 +26,25 @@ namespace windows_client
         bool isGroupViewOpened = false;
         private Dictionary<string, string> isoCodeCountryCode = new Dictionary<string, string>();
 
-        public class Group<T> : List<T>
-        {
-            public Group(string name, List<T> items)
-            {
-                this.Title = name;
-            }
-
-            public string Title
-            {
-                get;
-                set;
-            }
-
-        }
-
         public EnterNumber()
         {
             InitializeComponent();
-            //this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
 
             initializeCountryCodes();
 
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.Opacity = 1;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+            };
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_next.png", UriKind.Relative);
             nextIconButton.Text = AppResources.AppBar_Next_Btn;
-            nextIconButton.Click += new EventHandler(enterPhoneBtn_Click);
+            nextIconButton.Click += enterPhoneBtn_Click;
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
-            enterNumber.ApplicationBar = appBar;
+            ApplicationBar = appBar;
             this.countryList.ItemsSource = GetGroupedList();
             if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -307,8 +293,10 @@ namespace windows_client
         private void enterPhoneBtn_Click(object sender, EventArgs e)
         {
             phoneNumber = countryCode.Substring(countryCode.IndexOf('+')) + txtEnterPhone.Text.Trim();
+
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
+
             if (phoneNumber.Length < 1 || phoneNumber.Length > 15)
             {
                 MessageBox.Show(AppResources.EnterNumber_MsgBoxText_Msg, AppResources.EnterNumber_IncorrectPh_TxtBlk, MessageBoxButton.OK);
@@ -340,7 +328,6 @@ namespace windows_client
         {
             if (obj == null)
             {
-                //logger.Info("HTTP", "Unable to Validate Phone Number.");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msgTxtBlk.Opacity = 0;
@@ -354,10 +341,10 @@ namespace windows_client
                 });
                 return;
             }
+
             string unauthedMSISDN = (string)obj[App.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
-                //logger.Info("SignupTask", "Unable to send PIN to user");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msgTxtBlk.Opacity = 0;
@@ -370,64 +357,54 @@ namespace windows_client
                 });
                 return;
             }
+
             /*If all well*/
             App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
-
+            
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
             App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
-            Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
-            /*This is used to avoid cross thread invokation*/
-            try
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
                     txtEnterPhone.IsReadOnly = false;
                     PhoneApplicationService.Current.State["EnteredPhone"] = txtEnterPhone.Text;
                     NavigationService.Navigate(nextPage);
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Exception handled in page EnterNumber Screen : " + e.StackTrace);
-            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if(PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
             {
-                txtEnterCountry.Text = countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED];
+                countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED];
             }
             else
             {
                 string ISORegion = "";
                 string countryCodeName = CultureInfo.CurrentCulture.Name;
+
                 try
                 {
                     RegionInfo reg = new RegionInfo(countryCodeName);
                     ISORegion = reg.TwoLetterISORegionName;
                 }
-                
                 catch (ArgumentException argEx)
                 {
                     Debug.WriteLine("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
                 }
-                if (isoCodeCountryCode.ContainsKey(ISORegion))
-                {
-                    txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];
-                }
-                else
-                {
-                    txtEnterCountry.Text = countryCode = "India + 91";
-                }
+
+                countryCode = isoCodeCountryCode.ContainsKey(ISORegion) ? isoCodeCountryCode[ISORegion] : "India +91";
             }
+
+            txtEnterCountry.Text = countryCode;
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
@@ -439,6 +416,13 @@ namespace windows_client
                     obj = null;
                 }
 
+                if (this.State.TryGetValue("txtEnterCountry", out obj))
+                {
+                    txtEnterCountry.Text = (string)obj;
+                    txtEnterCountry.Select(txtEnterCountry.Text.Length, 0);
+                    obj = null;
+                }
+
                 if (this.State.TryGetValue("msisdnErrorTxt.Visibility", out obj))
                 {
                     msisdnErrorTxt.Visibility = (Visibility)obj;
@@ -446,10 +430,6 @@ namespace windows_client
                 }
             }
 
-            if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
-                nextIconButton.IsEnabled = false;
-            else
-                nextIconButton.IsEnabled = true;
             if (PhoneApplicationService.Current.State.ContainsKey("EnteredPhone"))
             {
                 txtEnterPhone.Text = (string)PhoneApplicationService.Current.State["EnteredPhone"];
@@ -457,15 +437,21 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove("EnteredPhone");
             }
 
+            nextIconButton.IsEnabled = String.IsNullOrWhiteSpace(txtEnterPhone.Text) ? false : true;
+
             txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
-            txtEnterCountry.Foreground = UI_Utils.Instance.Black;
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    txtEnterPhone.Focus();
+                });
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
-            PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED] = txtEnterCountry.Text;
+            PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED] = countryCode;
 
             if (!uri.Contains("View"))
             {
@@ -473,6 +459,11 @@ namespace windows_client
                     this.State["txtEnterPhone"] = txtEnterPhone.Text;
                 else
                     this.State.Remove("txtEnterPhone");
+
+                if (!string.IsNullOrWhiteSpace(txtEnterCountry.Text))
+                    this.State["txtEnterCountry"] = txtEnterCountry.Text;
+                else
+                    this.State.Remove("txtEnterCountry");
 
                 if (msisdnErrorTxt.Visibility == Visibility.Visible)
                 {
@@ -509,42 +500,9 @@ namespace windows_client
             NavigationService.Navigate(nextPage);
         }
 
-        void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
-            txtEnterCountry.Foreground = UI_Utils.Instance.Black;
-        }
-
-        private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
-        {
-            txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
-            txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
-        }
-
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
-            {
-                txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
-            }
-            else
-            {
-                nextIconButton.IsEnabled = false;
-            }
-            if (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15)
-                nextIconButton.IsEnabled = true;
-            else
-                nextIconButton.IsEnabled = false;
-        }
-
-        private void txtEnterPhone_LostFocus(object sender, RoutedEventArgs e)
-        {
-            this.txtEnterPhone.Background = UI_Utils.Instance.White;
-        }
-
-        private void txtEnterCountry_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-
+            nextIconButton.IsEnabled = (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15) ? true : false;
         }
 
         private void txtEnterCountry_GotFocus(object sender, RoutedEventArgs e)
@@ -557,33 +515,70 @@ namespace windows_client
         {
             string selectedCountryCode = (sender as TextBlock).DataContext as string;
             txtEnterCountry.Text = countryCode = selectedCountryCode;
-            txtEnterCountry.Foreground = UI_Utils.Instance.Black;
             countryList.Visibility = Visibility.Collapsed;
             ContentPanel.Visibility = Visibility.Visible;
         }
 
         private void txtEnterPhone_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (txtEnterPhone.Text.Length > 0)
+            var txtBox = sender as PhoneTextBox;
+
+            if (txtBox.Text.Length > 0)
             {
-                string lastCharacter = txtEnterPhone.Text.Substring(txtEnterPhone.Text.Length - 1);
+                string lastCharacter = txtBox.Text.Substring(txtBox.Text.Length - 1);
                 bool isDigit = true;
                 double num;
+                
                 isDigit = Double.TryParse(lastCharacter, out num);
                 if (!isDigit)
                 {
-                    if (string.IsNullOrEmpty(txtEnterPhone.Text) || txtEnterPhone.Text.Length == 1)
-                        txtEnterPhone.Text = "";
+                    if (string.IsNullOrEmpty(txtBox.Text) || txtBox.Text.Length == 1)
+                        txtBox.Text = String.Empty;
                     else
-                        txtEnterPhone.Text = txtEnterPhone.Text.Substring(0, txtEnterPhone.Text.Length - 1);
+                        txtBox.Text = txtBox.Text.Substring(0, txtBox.Text.Length - 1);
                 }
-                txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
+
+                txtBox.Select(txtBox.Text.Length, 0);
             }
         }
 
-        private List<Group<string>> GetGroupedList()
+        private void txtEnterPhoneCode_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            List<Group<string>> glist = createGroups();
+            var txtBox = sender as PhoneTextBox;
+
+            if (txtBox.Text.Length > 0)
+            {
+                if (!txtBox.Text.StartsWith("+"))
+                {
+                    txtBox.Text = String.Empty;
+                    return;
+                }
+
+                var text = txtBox.Text.Remove(0, 1);
+
+                if (text.Length > 0)
+                {
+                    string lastCharacter = text.Substring(text.Length - 1);
+                    bool isDigit = true;
+                    double num;
+
+                    isDigit = Double.TryParse(lastCharacter, out num);
+                    if (!isDigit)
+                    {
+                        if (string.IsNullOrEmpty(txtBox.Text))
+                            txtBox.Text = String.Empty;
+                        else
+                            txtBox.Text = txtBox.Text.Substring(0, txtBox.Text.Length - 1);
+                    }
+
+                    txtBox.Select(txtBox.Text.Length, 0);
+                }
+            }
+        }
+
+        private List<ItemGroup<string>> GetGroupedList()
+        {
+            List<ItemGroup<string>> glist = createGroups();
             foreach (string val in isoCodeCountryCode.Values)
             {
                 string ch = GetCaptionGroup(val);
@@ -605,17 +600,16 @@ namespace windows_client
             return key.ToString();
         }
 
-        private List<Group<string>> createGroups()
+        private List<ItemGroup<string>> createGroups()
         {
             string Groups = "abcdefghijklmnopqrstuvwxyz#";
-            List<Group<string>> glist = new List<Group<string>>(27);
+            List<ItemGroup<string>> glist = new List<ItemGroup<string>>(27);
             foreach (char c in Groups)
             {
-                Group<string> g = new Group<string>(c.ToString(), new List<string>(1));
+                ItemGroup<string> g = new ItemGroup<string>(c.ToString());
                 glist.Add(g);
             }
             return glist;
         }
-
     }
 }

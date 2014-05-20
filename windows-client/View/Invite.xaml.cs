@@ -201,7 +201,7 @@ namespace windows_client.View
         public void SocialInviteResponse(JObject obj)
         {
             string status = "";
-            string title = isFacebookPost?AppResources.FreeSMS_fbConnStatus_TxtBlk : AppResources.FreeSMS_twConnStatus_TxtBlk;
+            string title = isFacebookPost ? AppResources.Facebook_Caps : AppResources.Twitter_Caps;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

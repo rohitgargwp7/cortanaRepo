@@ -839,7 +839,7 @@ namespace windows_client
                 patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
-            return new Regex("(" + patternString.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return new Regex("(" + patternString.ToString(), RegexOptions.Compiled);
         }
 
         public Paragraph LinkifyEmoticons(string messageString)
@@ -887,7 +887,7 @@ namespace windows_client
 
         public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, ViewMoreLinkClickedDelegate viewMoreClicked, HyperLinkClickedDelegate hyperlinkClicked)
         {
-            int maxChar = GetMaxCharForBlock(originalMessage);
+            int maxChar = Utils.GetMaxCharForBlock(originalMessage);
             bool isMessageExtended = false;
             string message = originalMessage;
             if (originalMessage.Length > maxChar)
@@ -954,7 +954,15 @@ namespace windows_client
                         Hyperlink MyLink = new Hyperlink();
 
                         if (foreground != null)
+                        {
                             MyLink.Foreground = foreground;
+                            MyLink.MouseOverForeground = foreground;
+                        }
+                        else
+                        {
+                            MyLink.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                            MyLink.MouseOverForeground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                        }
 
                         string url = regexMatch;
                         if (regexType == RegexType.EMAIL)
@@ -1019,51 +1027,6 @@ namespace windows_client
 
         const int MAX_CHARS_PER_LINE = 30;
         const int MAX_LINES_PER_BLOCK = 35;
-        public int GetMaxCharForBlock(string message)
-        {
-            string trimmedMessage = message;
-            int lineCount = 1;
-            int charCount = 0;
-            while (trimmedMessage.Length > 0)
-            {
-                char[] newLineChar = new char[] { '\r', '\n' };
-                int index = trimmedMessage.IndexOfAny(newLineChar);
-                if (index == -1)
-                {
-                    string currentString = trimmedMessage;
-                    charCount += currentString.Length;
-                    lineCount += Convert.ToInt32(Math.Floor(currentString.Length / (double)MAX_CHARS_PER_LINE));
-                    if (lineCount > MAX_LINES_PER_BLOCK)
-                    {
-                        charCount -= MAX_CHARS_PER_LINE * (lineCount - MAX_LINES_PER_BLOCK - 1);
-                        charCount -= currentString.Length % MAX_CHARS_PER_LINE;
-                    }
-                    break;
-                }
-                else if (index == 0)
-                {
-                    trimmedMessage = trimmedMessage.Substring(index + 1);
-                    lineCount += 1;
-                    charCount += 1;
-                    if (lineCount > MAX_LINES_PER_BLOCK)
-                        break;
-                }
-                else
-                {
-                    string currentString = trimmedMessage.Substring(0, index - 1);
-                    charCount += currentString.Length + 2;
-                    trimmedMessage = trimmedMessage.Substring(index + 1);
-                    lineCount += 1 + Convert.ToInt32(Math.Floor(currentString.Length / (double)MAX_CHARS_PER_LINE));
-                    if (lineCount > MAX_LINES_PER_BLOCK)
-                    {
-                        charCount -= (lineCount - MAX_LINES_PER_BLOCK - 2) > 0 ? MAX_CHARS_PER_LINE * (lineCount - MAX_LINES_PER_BLOCK - 2) : 0;
-                        charCount -= currentString.Length % MAX_CHARS_PER_LINE;
-                        break;
-                    }
-                }
-            }
-            return charCount;
-        }
 
         public delegate void ViewMoreLinkClickedDelegate(object obj);
         public delegate void HyperLinkClickedDelegate(object[] objArray);

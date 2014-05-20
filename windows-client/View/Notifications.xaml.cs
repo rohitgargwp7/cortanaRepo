@@ -146,6 +146,8 @@ namespace windows_client.View
             data.Add(HikeConstants.PUSH_SU, 0);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            App.ViewModel.StatusNotificationSettingsChanged();
         }
 
         private void statusUpdateNotification_Unchecked(object sender, RoutedEventArgs e)
@@ -161,6 +163,8 @@ namespace windows_client.View
             data.Add(HikeConstants.PUSH_SU, -1);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            App.ViewModel.StatusNotificationSettingsChanged();
         }
 
         private void lpkStatusSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -186,6 +190,12 @@ namespace windows_client.View
             statusUpdateNotificationToggle.Loaded -= statusUpdateNotificationToggle_Loaded;
             statusUpdateNotificationToggle.Checked += statusUpdateNotification_Checked;
             statusUpdateNotificationToggle.Unchecked += statusUpdateNotification_Unchecked;
+        }
+
+        private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            // Launch URI for the lock screen settings screen.
+            var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
     }
 }

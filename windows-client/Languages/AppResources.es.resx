@@ -795,7 +795,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Tus amigos ya están invitados.</value>
     <comment>cs</comment>
   </data>
-  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+  <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
     <value>Invitar a usuarios de SMS a hike</value>
     <comment>xaml</comment>
   </data>
@@ -827,7 +827,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>Invit. enviadas</value>
     <comment>cs</comment>
   </data>
-  <data name="Invite_Txt" xml:space="preserve">
+  <data name="Invite_Friends_Txt" xml:space="preserve">
     <value>INVITAR</value>
     <comment>General Text</comment>
   </data>
@@ -1147,7 +1147,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>quitar del grupo</value>
     <comment>General text</comment>
   </data>
-  <data name="ConversationsList_New_Txt" xml:space="preserve">
+  <data name="ConversationsList_Rewards_Txt" xml:space="preserve">
     <value>premios</value>
     <comment>Rewards Text</comment>
   </data>

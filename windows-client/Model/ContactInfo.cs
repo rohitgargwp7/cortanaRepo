@@ -181,22 +181,9 @@ namespace windows_client.Model
             set
             {
                 if (value != _isFav)
-                {
                     _isFav = value;
-                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
-                    {
-                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
-                        if (currentPage != null)
-                        {
-                            currentPage.CheckBox_Tap(this);
-                        }
-                        NotifyPropertyChanged("IsFav");//it is binded with two way checkbox, so to update ui
-                    }
-                    else
-                        NotifyPropertyChanged("BlockUnblockText");
-                }
             }
-        }   // this is used in inviteUsers page , when you show hike users
+        }
 
         bool _isSelected;
         public bool IsSelected
@@ -232,16 +219,6 @@ namespace windows_client.Model
             }
         }
 
-        public string BlockUnblockText
-        {
-            get
-            {
-                if (_isFav)
-                    return AppResources.UnBlock_Txt;
-                return AppResources.Block_Txt;
-
-            }
-        }
         public bool IsEnabled
         {
             get
@@ -263,6 +240,24 @@ namespace windows_client.Model
                 _isCloseFriendNux = value;
             }
         }
+
+        Visibility _checkBoxVisibility = Visibility.Collapsed;
+        public Visibility CheckBoxVisibility
+        {
+            get
+            {
+                return _checkBoxVisibility;
+            }
+            set
+            {
+                if (value != _checkBoxVisibility)
+                {
+                    _checkBoxVisibility = value;
+                    NotifyPropertyChanged("CheckBoxVisibility");
+                }
+            }
+        }
+        
         public ContactInfo()
         {
             _name = null;
