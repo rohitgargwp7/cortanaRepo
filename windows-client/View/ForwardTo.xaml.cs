@@ -918,7 +918,9 @@ namespace windows_client.View
 
         private void PopulateFriends(ObservableCollection<ContactGroup<ContactInfo>> glist)
         {
-            foreach (var friend in App.ViewModel.FavList)
+            var list = App.ViewModel.FavList.OrderBy(c => c.NameToShow);
+
+            foreach (var friend in list)
             {
                 if ((_isExistingGroup && msisdnAlreadyExists(friend.Msisdn, activeExistingGroupMembers)) || Utils.IsHikeBotMsg(friend.Msisdn))
                     continue;

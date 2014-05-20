@@ -286,6 +286,17 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
+            {
+                LoadHighResImage();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_PIC_DOWNLOADED);
+            }
+
+            base.OnNavigatedTo(e);
+        }
+
         private void initPageBasedOnState()
         {
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
