@@ -839,7 +839,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Your profile has been updated.</value>
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
-    <value>version</value>
+    <value>version {0}</value>
     <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">

@@ -2111,7 +2111,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to version.
+        ///   Looks up a localized string similar to version {0}.
         /// </summary>
         public static string Help_AppVersionTitle {
             get {
