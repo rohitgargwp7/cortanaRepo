@@ -258,8 +258,7 @@ namespace windows_client.View
 
         void editNameIconButton_Click(object sender, EventArgs e)
         {
-            groupNameTxtBox.Focus();
-            groupNameTxtBox.Select(groupNameTxtBox.Text.Length, 0);
+            ShowTextBox();
         }
 
         #endregion
@@ -854,7 +853,7 @@ namespace windows_client.View
                 return;
 
             object[] grpMemberObject = new object[3] { gp.Msisdn, gp.Name, gp.IsOnHike };
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = grpMemberObject;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
