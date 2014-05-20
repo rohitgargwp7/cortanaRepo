@@ -1744,35 +1744,29 @@ namespace windows_client.utils
             }
         }
 
-        Thickness _zeroThickness;
+        Thickness _zeroThickness = new Thickness(0);
         public Thickness ZeroThickness
         {
             get
             {
-                if (_zeroThickness == null)
-                    _zeroThickness = new Thickness(0);
                 return _zeroThickness;
             }
         }
 
-        Thickness _negateThickness;
+        Thickness _negateThickness= new Thickness(0, -12, 0, -12);
         public Thickness NegateThickness
         {
             get
             {
-                if (_negateThickness == null)
-                    _negateThickness = new Thickness(0, -12, 0, -12);
                 return _negateThickness;
             }
         }
 
-        Thickness _newCategoryThickness;
+        Thickness _newCategoryThickness= new Thickness(0, 5, 0, 0);
         public Thickness NewCategoryThickness
         {
             get
             {
-                if (_newCategoryThickness == null)
-                    _newCategoryThickness = new Thickness(0, 5, 0, -0);
                 return _newCategoryThickness;
             }
         }

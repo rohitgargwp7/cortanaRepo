@@ -69,6 +69,6 @@
                 <Button MinWidth="120" x:Name="btnClose" Background="#e9ecee" BorderThickness="0" Margin="0" Foreground="Gray" FontSize="20" Content="{Binding Path=LocalizedResources.Conversations_Dismiss_Tip,Source={StaticResource LocalizedStrings}}" Height="70" Tap="btnClose_Tap"></Button>
             </StackPanel>
         </StackPanel>
-        <ProgressBar Name="moreProgressBar" Visibility="Collapsed" Grid.Row="1" Height="5" Margin="0 0 0 5"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <ProgressBar Name="moreProgressBar" Visibility="Collapsed"  VerticalContentAlignment="Bottom" IsIndeterminate="True" IsEnabled="True" Foreground="White" Background="Transparent" Canvas.ZIndex="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

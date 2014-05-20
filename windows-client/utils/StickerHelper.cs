@@ -296,7 +296,6 @@ namespace windows_client.utils
             this._isHighRes = isHighRes;
         }
 
-
         public string Id
         {
             get
