@@ -550,11 +550,11 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
-    <value>sync</value>
+    <value>refresh</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>Hike is syncing contacts with address book. It will be over before you know it...</value>
+    <value>Hike is refreshing contacts with address book. It will be over before you know it...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
@@ -1357,7 +1357,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>turn on/off jingle, vibrate and status update</value>
+    <value>turn on/off jingle, vibrate and more</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>manage your hike account</value>
@@ -2103,10 +2103,10 @@ Download it now http://hike.in and join the fun!</value>
     <value>{0} free SMS left</value>
   </data>
   <data name="Settings_SubtitleSyncSettings_Txt" xml:space="preserve">
-    <value>tap to manually sync address book contacts</value>
+    <value>tap to manually refresh address book contacts</value>
   </data>
   <data name="Settings_SyncSettings_Txt" xml:space="preserve">
-    <value>sync contacts</value>
+    <value>refresh contacts</value>
   </data>
   <data name="DeSelectAll_Txt" xml:space="preserve">
     <value>unmark all</value>
@@ -2161,5 +2161,11 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Connected_Txt" xml:space="preserve">
     <value>connected</value>
+  </data>
+  <data name="AgeInavlid_Caption" xml:space="preserve">
+    <value>Too young</value>
+  </data>
+  <data name="AgeInavlid_Txt" xml:space="preserve">
+    <value>You need to be 13+ to use hike</value>
   </data>
 </root>

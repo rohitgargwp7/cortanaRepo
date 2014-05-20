@@ -474,8 +474,7 @@
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Width" Value="138"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -526,8 +525,7 @@
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Width" Value="138"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -578,8 +576,7 @@
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="Foreground" Value="#555555"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Width" Value="138"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -631,7 +628,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="MinWidth" Value="241"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -1149,6 +1146,9 @@
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentElement">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>

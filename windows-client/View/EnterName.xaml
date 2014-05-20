@@ -29,7 +29,7 @@
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" InputScope="Text"
                               Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.EnterName_Name_Hint , Source={StaticResource LocalizedStrings}}" />
         <toolkit:PhoneTextBox x:Name="txtBxEnterAge" Margin="12,0,12,5" Grid.Row="2" InputScope="Number" KeyUp="txtBxEnterAge_KeyUp"
-                              Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="2"/>
+                              Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="2" TextChanged="txtBxEnterAge_TextChanged" />
         <Grid Grid.Row="3" MinHeight="40" Margin="0,5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

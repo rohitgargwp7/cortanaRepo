@@ -28,6 +28,9 @@ using System.Text;
 
 namespace windows_client.View
 {
+    /// <summary>
+    /// Called for new chat/ group chat/ add member/ forward message/ share picker use case
+    /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
@@ -898,6 +901,9 @@ namespace windows_client.View
                     if (ExistingContacts.ContainsKey(conv.Msisdn))
                         continue;
 
+                    if (!_showSmsContacts && !conv.IsOnhike)
+                        continue;
+
                     if (!conv.IsGroupChat)
                     {
                         ContactInfo cInfo = new ContactInfo();
@@ -929,6 +935,9 @@ namespace windows_client.View
                     continue;
 
                 if (_isGroupChat && friend.Msisdn == App.MSISDN)
+                    continue;
+
+                if (!_showSmsContacts && !friend.IsOnhike)
                     continue;
 
                 if (friend.Avatar == null)
