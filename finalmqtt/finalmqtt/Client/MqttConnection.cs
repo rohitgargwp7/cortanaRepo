@@ -740,7 +740,7 @@ namespace finalmqtt.Client
 
         private int GetCurrentSeconds()
         {
-            return DateTime.Now.Hour * 60 + DateTime.Now.Second;
+            return DateTime.Now.Minute * 60 + DateTime.Now.Second;
         }
 
     }
