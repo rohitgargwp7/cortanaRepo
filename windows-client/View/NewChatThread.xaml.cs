@@ -5478,7 +5478,7 @@ namespace windows_client.View
 
         private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5489,7 +5489,7 @@ namespace windows_client.View
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5500,7 +5500,7 @@ namespace windows_client.View
         {
             emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 2;
@@ -5512,7 +5512,7 @@ namespace windows_client.View
             emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
             emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
             emoticonPivot.SelectedIndex = 3;
         }
@@ -5523,7 +5523,7 @@ namespace windows_client.View
             emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
             emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
+            emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
             emoticonPivot.SelectedIndex = 4;
         }
 
@@ -5549,7 +5549,7 @@ namespace windows_client.View
                         gridShowRecents.Visibility = Visibility.Collapsed;
                     }
 
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5557,7 +5557,7 @@ namespace windows_client.View
                     break;
                 case 1:
                     emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
@@ -5565,7 +5565,7 @@ namespace windows_client.View
                 case 2:
                     emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
@@ -5573,7 +5573,7 @@ namespace windows_client.View
                     emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
                     emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
                     break;
                 case 4:
@@ -5581,7 +5581,7 @@ namespace windows_client.View
                     emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
                     emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.TappedCategoryColor;
+                    emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
                     break;
             }
         }

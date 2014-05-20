@@ -38,7 +38,7 @@ namespace windows_client
 
             App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
-            
+
             appBar = new ApplicationBar()
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
@@ -100,6 +100,18 @@ namespace windows_client
 
             ac_name = txtBxEnterName.Text.Trim();
             ac_age = txtBxEnterAge.Text.Trim();
+
+            int age;
+
+            if (Int32.TryParse(ac_age, out age))
+            {
+                if (age < 13)
+                {
+                    MessageBox.Show(AppResources.AgeInavlid_Txt, AppResources.AgeInavlid_Caption, MessageBoxButton.OK);
+                    isClicked = false;
+                    return;
+                }
+            }
 
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
             App.WriteToIsoStorageSettings(App.ACCOUNT_AGE, ac_age);
@@ -196,7 +208,7 @@ namespace windows_client
                 spFbConnect.IsEnabled = false;
             }
 
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
 
             if (reloadImage) // this will handle both deactivation and tombstone
             {
@@ -292,7 +304,7 @@ namespace windows_client
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove("fbName");
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
         }
 
         private void facebook_Tap(object sender, RoutedEventArgs e)
@@ -312,14 +324,14 @@ namespace windows_client
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
-                txtBxEnterName.IsEnabled = true; 
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
+                txtBxEnterName.IsEnabled = true;
                 txtBxEnterAge.IsEnabled = true;
                 return;
             }
 
             progressBar.Opacity = 1;
-            
+
             if (e.TaskResult == TaskResult.OK)
             {
                 if (profileImage == null)
@@ -341,7 +353,7 @@ namespace windows_client
 
                     avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
                     progressBar.Opacity = 0;
-                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
                     txtBxEnterName.IsEnabled = true;
                     txtBxEnterAge.IsEnabled = true;
                 }
@@ -353,7 +365,7 @@ namespace windows_client
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 progressBar.Opacity = 0;
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
                 txtBxEnterName.IsEnabled = true;
                 txtBxEnterAge.IsEnabled = true;
 
@@ -373,7 +385,7 @@ namespace windows_client
                 string lastCharacter = txtBox.Text.Substring(txtBox.Text.Length - 1);
                 bool isDigit = true;
                 double num;
-                
+
                 isDigit = Double.TryParse(lastCharacter, out num);
                 if (!isDigit)
                 {
@@ -390,6 +402,11 @@ namespace windows_client
         private void ChangeProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ChangeProfile();
+        }
+
+        private void txtBxEnterAge_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) && !string.IsNullOrWhiteSpace(txtBxEnterAge.Text) ? true : false;
         }
     }
 }

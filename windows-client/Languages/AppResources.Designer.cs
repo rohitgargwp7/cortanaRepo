@@ -97,6 +97,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too young.
+        /// </summary>
+        public static string AgeInavlid_Caption {
+            get {
+                return ResourceManager.GetString("AgeInavlid_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be 13+ to use hike.
+        /// </summary>
+        public static string AgeInavlid_Txt {
+            get {
+                return ResourceManager.GetString("AgeInavlid_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
@@ -4127,7 +4145,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sync.
+        ///   Looks up a localized string similar to refresh.
         /// </summary>
         public static string SelectUser_RefreshContacts_Txt {
             get {
@@ -4136,7 +4154,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hike is syncing contacts with address book. It will be over before you know it....
+        ///   Looks up a localized string similar to Hike is refreshing contacts with address book. It will be over before you know it....
         /// </summary>
         public static string SelectUser_RefreshWaitMsg_Txt {
             get {
@@ -4460,7 +4478,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap to manually sync address book contacts.
+        ///   Looks up a localized string similar to tap to manually refresh address book contacts.
         /// </summary>
         public static string Settings_SubtitleSyncSettings_Txt {
             get {
@@ -4469,7 +4487,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sync contacts.
+        ///   Looks up a localized string similar to refresh contacts.
         /// </summary>
         public static string Settings_SyncSettings_Txt {
             get {
@@ -4487,7 +4505,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to turn on/off jingle, vibrate and status update.
+        ///   Looks up a localized string similar to turn on/off jingle, vibrate and more.
         /// </summary>
         public static string SettingsSubtitle_Notification_Txt {
             get {

@@ -194,7 +194,7 @@
                         <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,30,0,15" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120"/>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
-                            <Button Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" Height="44" Width="138" Style="{StaticResource YesButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
+                            <Button Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Height="44" Width="138" Style="{StaticResource YesButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
                         </StackPanel>
 
                         <ListBox x:Name="hikeContactListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding Source={StaticResource contactsCollectionViewKey}}" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" Tap="hikeContacts_Tap" >
