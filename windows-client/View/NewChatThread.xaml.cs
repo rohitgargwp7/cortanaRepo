@@ -3071,6 +3071,9 @@ namespace windows_client.View
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
 
+            if (_unreadMsg != null && ocMessages.IndexOf(_unreadMsg) == ocMessages.IndexOf(msg) - 1)
+                ocMessages.Remove(_unreadMsg);
+
             bool delConv = false;
             ocMessages.Remove(msg);
 
@@ -5811,10 +5814,12 @@ namespace windows_client.View
                 if (App.ViewModel.SelectedBackground.IsTile)
                 {
                     _tileBitmap = bg;
-                        GenerateTileBackground();
+                    GenerateTileBackground();
                 }
                 else
                 {
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
                     chatBackground.Source = bg;
                 }
 
