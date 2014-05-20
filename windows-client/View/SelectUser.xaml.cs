@@ -78,13 +78,13 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
                 _isContactShared = true;
-                _showSmsContacts = false;
+                _showSmsContacts = true;
                 PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
             {
                 _frmBlockedList = true;
-                _showSmsContacts = false;
+                _showSmsContacts = true;
                 blockedSet = new HashSet<string>();
                 PageTitle.Text = AppResources.Blocklist_user_txt;
             }
@@ -154,17 +154,12 @@ namespace windows_client.View
             _refreshIconButton.IsEnabled = true;
             ApplicationBar.Buttons.Add(_refreshIconButton);
 
-            if (!_isContactShared && _isFreeSmsOn)
+            if (_isFreeSmsOn)
             {
                 _onHikeFilterMenuItem = new ApplicationBarMenuItem();
                 _onHikeFilterMenuItem.Text = _showSmsContacts ? AppResources.SelectUser_HideSmsContacts_Txt : AppResources.SelectUser_ShowSmsContacts_Txt;
                 _onHikeFilterMenuItem.Click += OnHikeFilter_Click;
                 ApplicationBar.MenuItems.Add(_onHikeFilterMenuItem);
-            }
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
-            {
-                _isContactShared = true;
             }
         }
 

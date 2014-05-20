@@ -2162,4 +2162,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Connected_Txt" xml:space="preserve">
     <value>connected</value>
   </data>
+  <data name="AgeInavlid_Caption" xml:space="preserve">
+    <value>Too young</value>
+  </data>
+  <data name="AgeInavlid_Txt" xml:space="preserve">
+    <value>You need to be 13+ to use hike</value>
+  </data>
 </root>

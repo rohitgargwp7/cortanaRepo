@@ -97,6 +97,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too young.
+        /// </summary>
+        public static string AgeInavlid_Caption {
+            get {
+                return ResourceManager.GetString("AgeInavlid_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be 13+ to use hike.
+        /// </summary>
+        public static string AgeInavlid_Txt {
+            get {
+                return ResourceManager.GetString("AgeInavlid_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
