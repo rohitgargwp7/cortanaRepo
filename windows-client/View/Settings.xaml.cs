@@ -31,6 +31,9 @@ namespace windows_client.View
             int creditsRemaining = 0;
             App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
+
+            if (!AccountUtils.IsProd)
+                gridLogs.Visibility = Visibility.Collapsed;
         }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
