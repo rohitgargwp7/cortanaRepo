@@ -22,92 +22,81 @@
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_HelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
-            <Grid x:Name="ContentPanel" Margin="25,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid x:Name="ContentPanel" Margin="25,0,0,0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,20,0,0" Tap="FAQs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/faq.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_FAQsTitle, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_FAQsTxt, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ContactUs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/contactUs.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_ContactUsTitle, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_ContactUsText, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Legal_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/legal.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_LegalTitle, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_LegalText, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="3" Margin="0,20,0,0" Tap="rateAndReview_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/rateUs.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="4" Margin="0,20,0,0" Tap="SystemHealth_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/systemHealth.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_System_Health_Title, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_System_Health_Text, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="5" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/appVersion.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_AppVersionTitle, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}"  x:Name="applicationVersion" Text="1.1.0.0"/>
-                    </StackPanel>
-                </Grid>
+            <Grid Grid.Row="0" Margin="0,20,0,0" Tap="FAQs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/view/images/settings/faq.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_FAQsTitle, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_FAQsTxt, Source={StaticResource LocalizedStrings}}"/>
+                </StackPanel>
             </Grid>
-        </ScrollViewer>
-        <Image x:Name="made_with_love" Grid.Row="2" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+
+            <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ContactUs_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/view/images/settings/contactUs.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_ContactUsTitle, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_ContactUsText, Source={StaticResource LocalizedStrings}}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Legal_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/view/images/settings/legal.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_LegalTitle, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_LegalText, Source={StaticResource LocalizedStrings}}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="3" Margin="0,20,0,0" Tap="rateAndReview_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/view/images/settings/rateUs.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="4" Margin="0,20,0,0" Tap="SystemHealth_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/view/images/settings/systemHealth.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_System_Health_Title, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Help_System_Health_Text, Source={StaticResource LocalizedStrings}}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        
+        <StackPanel VerticalAlignment="Bottom" Grid.Row="2" HorizontalAlignment="Center">
+                <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                           x:Name="applicationVersion" Text="1.1.0.0" Foreground="{StaticResource HikeLightGrey}"/>
+            <Image Source="/View/images/settings/made_with_love.png" Margin="0,10,0,0"/>
+        </StackPanel>
     </Grid>
 
 </phone:PhoneApplicationPage>

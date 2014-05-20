@@ -557,6 +557,8 @@
     <Content Include="View\images\avatars\default_avatar_orange.png" />
     <Content Include="View\images\avatars\default_avatar_pink.png" />
     <Content Include="View\images\avatars\default_avatar_purple.png" />
+    <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
+    <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
     <Content Include="View\images\chat_joined_blue_ct.png" />
     <Content Include="View\images\close_white.png" />
@@ -678,7 +680,7 @@
     <Content Include="View\images\ic_sent_CT.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbNight.png" />
     <Content Include="View\images\ic_sent_grey.png" />
-    <Content Include="View\images\made_with_love.png" />
+    <Content Include="View\images\settings\made_with_love.png" />
     <Content Include="View\images\notification_Image.png" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.png" />
     <Content Include="View\images\notification_Image_Grey.png" />

@@ -382,6 +382,12 @@ namespace windows_client.View
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
                 LoadHighResImage();
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
+            {
+                LoadHighResImage();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_PIC_DOWNLOADED);
+            }
+
             // this is done to update profile name , as soon as it gets updated
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
                 txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];

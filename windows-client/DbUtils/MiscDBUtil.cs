@@ -351,7 +351,10 @@ namespace windows_client.DbUtils
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite, store))
+                        if (store.FileExists(FileName))
+                            store.DeleteFile(FileName);
+
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
                             stream.Write(imageBytes, 0, imageBytes.Length);
                             stream.Flush();

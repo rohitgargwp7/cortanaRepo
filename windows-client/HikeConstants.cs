@@ -323,6 +323,8 @@ namespace windows_client
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
+        public static string IS_PIC_DOWNLOADED = "isPicDownloaded";
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";

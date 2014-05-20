@@ -565,6 +565,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to connected.
+        /// </summary>
+        public static string Connected_Txt {
+            get {
+                return ResourceManager.GetString("Connected_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
         public static string Connectivity_Issue {
@@ -2102,7 +2111,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to version.
+        ///   Looks up a localized string similar to version {0}.
         /// </summary>
         public static string Help_AppVersionTitle {
             get {
