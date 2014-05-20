@@ -258,18 +258,6 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush tappedCategoryColor;
-        public SolidColorBrush TappedCategoryColor
-        {
-            get
-            {
-                if (tappedCategoryColor == null)
-                    tappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x1b, 0xa1, 0xe2));
-
-                return tappedCategoryColor;
-            }
-        }
-
         private SolidColorBrush untappedCategoryColor;
         public SolidColorBrush UntappedCategoryColor
         {

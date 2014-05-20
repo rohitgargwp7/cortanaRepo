@@ -160,7 +160,7 @@ namespace windows_client.utils
         {
             get
             {
-                return _isSelected ? UI_Utils.Instance.TappedCategoryColor : UI_Utils.Instance.UntappedCategoryColor;
+                return _isSelected ? UI_Utils.Instance.HikeBlue : UI_Utils.Instance.UntappedCategoryColor;
             }
         }
 
