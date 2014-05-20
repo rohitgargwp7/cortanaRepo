@@ -363,27 +363,14 @@ namespace windows_client.View
             HideProgressIndicator();
         }
 
-        private ProgressIndicator _progressIndicator = null;
-
         private void ShowProgressIndicator()
         {
-            if (_progressIndicator == null)
-            {
-                _progressIndicator = new ProgressIndicator();
-                _progressIndicator.IsIndeterminate = true;
-            }
-
-            _progressIndicator.IsVisible = true;
-            SystemTray.SetProgressIndicator(this, _progressIndicator);
+            loadingBar.IsIndeterminate = true;
         }
 
         private void HideProgressIndicator()
         {
-            if (_progressIndicator != null)
-            {
-                _progressIndicator.IsVisible = false;
-                SystemTray.SetProgressIndicator(this, _progressIndicator);
-            }
+            loadingBar.IsIndeterminate = false;
         }
     }
 }

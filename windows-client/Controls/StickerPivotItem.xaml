@@ -48,8 +48,8 @@
         <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" LayoutMode="Grid" MinHeight="200" GridCellSize="145,145" Margin="0,0,0,5">
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="160" Width="160">
-                        <Image Margin="10" Source="{Binding StickerImage}" MaxHeight="140" MaxWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid>
+                        <Image Margin="10" Source="{Binding StickerImage}" MaxHeight="125" MaxWidth="125" HorizontalAlignment="Center" VerticalAlignment="Center">
                         </Image>
                     </Grid>
                 </DataTemplate>

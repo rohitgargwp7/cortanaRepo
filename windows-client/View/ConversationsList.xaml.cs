@@ -71,7 +71,7 @@ namespace windows_client.View
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
-        
+
         #endregion
 
         #region Page Based Functions
@@ -232,14 +232,10 @@ namespace windows_client.View
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenImage.Opacity = 0.1;
-                emptyScreenTip.Opacity = 0.3;
-            }
+                emptyScreenGrid.Opacity = 1;
             else
             {
-                emptyScreenImage.Opacity = 0;
-                emptyScreenTip.Opacity = 0;
+                emptyScreenGrid.Opacity = 0;
 
                 if (ConversationListUpdated)
                 {
@@ -299,7 +295,7 @@ namespace windows_client.View
         }
 
         #region STATUS UPDATE TUTORIAL
-        
+
         //private void DismissStatusUpdateTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         //{
         //    RemoveStatusUpdateTutorial();
@@ -345,15 +341,9 @@ namespace windows_client.View
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenImage.Opacity = 0.1;
-                emptyScreenTip.Opacity = 0.3;
-            }
+                emptyScreenGrid.Opacity = 1;
             else
-            {
-                emptyScreenImage.Opacity = 0;
-                emptyScreenTip.Opacity = 0;
-            }
+                emptyScreenGrid.Opacity = 0;
 
             if (delConvsMenu != null)
                 delConvsMenu.IsEnabled = true;
@@ -433,8 +423,7 @@ namespace windows_client.View
                              App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                          }//if already at zero, do nothing
 
-                         emptyScreenImage.Opacity = 0;
-                         emptyScreenTip.Opacity = 0;
+                         emptyScreenGrid.Opacity = 0;
                      });
                 }
             }
@@ -504,7 +493,7 @@ namespace windows_client.View
             profileMenu.Click += profileMenu_Click;
             profileMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(profileMenu);
-            
+
             settingsMenu = new ApplicationBarMenuItem();
             settingsMenu.Text = AppResources.Settings;
             settingsMenu.Click += settingsMenu_Click;
@@ -739,8 +728,7 @@ namespace windows_client.View
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Opacity = 0.1;
-            emptyScreenTip.Opacity = 0.3;
+            emptyScreenGrid.Opacity = 1;
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
@@ -801,8 +789,7 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Opacity = 0.1;
-                emptyScreenTip.Opacity = 0.3;
+                emptyScreenGrid.Opacity = 1;
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -832,7 +819,7 @@ namespace windows_client.View
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
-                
+
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
             }
@@ -1112,11 +1099,9 @@ namespace windows_client.View
                     {
                         try
                         {
-                            if (emptyScreenImage.Visibility == Visibility.Visible)
-                            {
-                                emptyScreenTip.Opacity = 0;
-                                emptyScreenImage.Opacity = 0;
-                            }
+                            if (emptyScreenGrid.Opacity == 1)
+                                emptyScreenGrid.Opacity = 0;
+                            
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
                         }
@@ -1587,11 +1572,9 @@ namespace windows_client.View
                 {
                     ConversationListObject co = obj as ConversationListObject;
                     App.ViewModel.MessageListPageCollection.Remove(co);
+
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
-                    {
-                        emptyScreenImage.Opacity = 0.1;
-                        emptyScreenTip.Opacity = 0.3;
-                    }
+                        emptyScreenGrid.Opacity = 1;
                 });
             }
             #endregion
@@ -2163,7 +2146,7 @@ namespace windows_client.View
                 {
                     contactInfo.IsUsedAtMiscPlaces = true;
                     hikeContactList.Remove(contactInfo);
-                    UpdateContactsOnHikeCounter(); 
+                    UpdateContactsOnHikeCounter();
                     return;
                 }
 
@@ -2186,7 +2169,7 @@ namespace windows_client.View
                 }
                 contactInfo.IsUsedAtMiscPlaces = true;
                 hikeContactList.Remove(contactInfo);
-                UpdateContactsOnHikeCounter(); 
+                UpdateContactsOnHikeCounter();
                 App.ViewModel.FavList.Add(cObj);
                 UpdateFriendsCounter();
                 MiscDBUtil.SaveFavourites();

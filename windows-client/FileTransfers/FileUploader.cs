@@ -141,7 +141,7 @@ namespace windows_client.FileTransfers
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
 
-                        using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                        using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
