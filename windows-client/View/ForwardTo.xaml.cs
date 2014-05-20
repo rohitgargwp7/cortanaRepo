@@ -28,6 +28,9 @@ using System.Text;
 
 namespace windows_client.View
 {
+    /// <summary>
+    /// Called for new chat/ group chat/ add member/ forward message/ share picker use case
+    /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;

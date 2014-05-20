@@ -26,11 +26,13 @@ using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
+    /// <summary>
+    /// Called for Blocked user and share contact use case
+    /// </summary>
     public partial class SelectUser : PhoneApplicationPage
     {
         private bool _canGoBack = true;
-        private bool _showSmsContacts;
-        private bool _isFreeSmsOn = true;
+        private bool _showSmsContacts = true;
         private bool _stopContactScanning = false;
         private bool _isContactShared = false;
         private bool _flag;
@@ -70,21 +72,16 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
-            _showSmsContacts = _isFreeSmsOn ? true : false;
-
             App.appSettings.TryGetValue(App.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
                 _isContactShared = true;
-                _showSmsContacts = true;
                 PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
             {
                 _frmBlockedList = true;
-                _showSmsContacts = true;
                 blockedSet = new HashSet<string>();
                 PageTitle.Text = AppResources.Blocklist_user_txt;
             }
@@ -154,13 +151,10 @@ namespace windows_client.View
             _refreshIconButton.IsEnabled = true;
             ApplicationBar.Buttons.Add(_refreshIconButton);
 
-            if (_isFreeSmsOn)
-            {
-                _onHikeFilterMenuItem = new ApplicationBarMenuItem();
-                _onHikeFilterMenuItem.Text = _showSmsContacts ? AppResources.SelectUser_HideSmsContacts_Txt : AppResources.SelectUser_ShowSmsContacts_Txt;
-                _onHikeFilterMenuItem.Click += OnHikeFilter_Click;
-                ApplicationBar.MenuItems.Add(_onHikeFilterMenuItem);
-            }
+            _onHikeFilterMenuItem = new ApplicationBarMenuItem();
+            _onHikeFilterMenuItem.Text = _showSmsContacts ? AppResources.SelectUser_HideSmsContacts_Txt : AppResources.SelectUser_ShowSmsContacts_Txt;
+            _onHikeFilterMenuItem.Click += OnHikeFilter_Click;
+            ApplicationBar.MenuItems.Add(_onHikeFilterMenuItem);
         }
 
         private void OnHikeFilter_Click(object sender, EventArgs e)
