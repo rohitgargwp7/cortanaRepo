@@ -205,7 +205,6 @@ namespace finalmqtt.Client
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
         {
             Double timeTaken = (DateTime.Now - dt).TotalSeconds;
-            firstmessage = true;
             //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
             {
@@ -391,7 +390,6 @@ namespace finalmqtt.Client
             }
             return msg;
         }
-        bool firstmessage = false;
         /// <summary>
         /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
         /// If ack is not received in 5 seconds, then callback's onFailure is called
@@ -555,11 +553,6 @@ namespace finalmqtt.Client
         {
 
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
-            if (msg is PublishMessage && firstmessage)
-            {
-                listSubscribe[((PublishMessage)msg).getMessageId()] = DateTime.Now;
-                firstmessage = false;
-            }
             msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
         }
@@ -571,16 +564,10 @@ namespace finalmqtt.Client
             for (int i = 0; i < message.Length; i++)
             {
                 messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
-                if (messagesToPublish[i] is PublishMessage && firstmessage)
-                {
-                    listSubscribe[((PublishMessage)messagesToPublish[i]).getMessageId()] = DateTime.Now;
-                    firstmessage = false;
-                }
                 messagesToPublish[i].setMessageId(getNextMessageId());
             }
             sendCallbackMessage(messagesToPublish, cb);
         }
-        Dictionary<short, DateTime> listSubscribe = new Dictionary<short, DateTime>();
         public void subscribe(String topic, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, QoS.AT_MOST_ONCE, this);
@@ -727,15 +714,6 @@ namespace finalmqtt.Client
         {
             try
             {
-                DateTime dt1;
-
-                if (listSubscribe.TryGetValue(msg.getMessageId(), out dt1))
-                {
-                    Double timeTaken = (DateTime.Now - dt1).TotalSeconds;
-                    MQttLogging.LogWriter.Instance.WriteToLog("Ack for first message published, time taken :" + timeTaken + " secs");
-                    listSubscribe.Remove(msg.getMessageId());
-                }
-
                 sendAcknowledement(msg);
                 if (mqttListener != null)
                     mqttListener.onPublish(msg.getTopic(), msg.getData());
@@ -760,17 +738,6 @@ namespace finalmqtt.Client
         }
         protected void handleMessage(SubAckMessage msg)
         {
-            DateTime dt1;
-
-            if (listSubscribe.TryGetValue(msg.getMessageId(), out dt1))
-            {
-                Double timeTaken = (dt1 - DateTime.Now).TotalSeconds;
-                MQttLogging.LogWriter.Instance.WriteToLog("AUTO SUBSCRIPTION, time taken :" + timeTaken + " secs");
-            }
-            else
-            {
-                MQttLogging.LogWriter.Instance.WriteToLog("AUTO SUBSCRIPTION, key not found for messageid:" + msg.getMessageId());
-            }
         }
 
         /// <summary>
