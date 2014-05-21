@@ -43,7 +43,7 @@ namespace windows_client.View
             if (mqttDmqttToggle)
                 this.dnsNoDnsToggle.Content = "DNS";
             else
-                this.dnsNoDnsToggle.Content = "NO-DNS";
+                this.dnsNoDnsToggle.Content = "IP";
 
         }
 
@@ -59,16 +59,16 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(App.MQTT_DMQTT_SETTING, false);
         }
 
-        private void dnsNoDnsToggle_Checked(object sender, RoutedEventArgs e)
+        private void dnsIpToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.dnsNoDnsToggle.Content = "DNS";
             App.WriteToIsoStorageSettings(App.DNS_NODNS_SETTING, true);
 
         }
 
-        private void dnsNoDnsToggle_Unchecked(object sender, RoutedEventArgs e)
+        private void dnsIPToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.dnsNoDnsToggle.Content = "NO-DNS";
+            this.dnsNoDnsToggle.Content = "IP";
             App.WriteToIsoStorageSettings(App.DNS_NODNS_SETTING, false);
         }
 

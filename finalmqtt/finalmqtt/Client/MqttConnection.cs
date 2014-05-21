@@ -196,6 +196,7 @@ namespace finalmqtt.Client
             _socket.ConnectAsync(socketEventArg);
         }
 
+        DateTime dt2;
         /// <summary>
         /// AsyncCallback of socket connection. Is called when response of socket connection is received. 
         /// It sends a connect message and then starts reading from socket.  
@@ -205,6 +206,7 @@ namespace finalmqtt.Client
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
         {
             Double timeTaken = (DateTime.Now - dt).TotalSeconds;
+            dt2 = DateTime.Now;
             //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
             {
@@ -699,7 +701,9 @@ namespace finalmqtt.Client
 
         protected void handleMessage(ConnAckMessage msg)
         {
-            MQttLogging.LogWriter.Instance.WriteToLog("MQTT connack recieved, STATUS:" + msg.getStatus());
+            Double totalTimeTaken = (DateTime.Now - dt).TotalSeconds;
+            Double timeForACkBac = (DateTime.Now - dt2).TotalSeconds;
+            MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MQTT connack recieved, STATUS:{0},Total connect time:{1}, time for ack:{2}",msg.getStatus(),totalTimeTaken,timeForACkBac));
 
             connackReceived = true;
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)

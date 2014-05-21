@@ -44,8 +44,8 @@
 
                 <toolkit:ToggleSwitch Margin="0 0 0 -15" x:Name="mqttDmqttToggle" Content="MQTT" IsChecked="True"  
                                           Header="Mqtt/Dmqtt toggle" Checked="mqttDmqttToggle_Checked" Unchecked="mqttDmqttToggle_UnChecked"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="1" x:Name="dnsNoDnsToggle" Content="DNS" IsChecked="True" Checked="dnsNoDnsToggle_Checked" Unchecked="dnsNoDnsToggle_Unchecked"
-                                          Header="Dns/No Dns" />
+                <toolkit:ToggleSwitch Margin="0 0 0 -15"  Grid.Row="1" x:Name="dnsNoDnsToggle" Content="DNS" IsChecked="True" Checked="dnsIpToggle_Checked" Unchecked="dnsIPToggle_Unchecked"
+                                          Header="Dns/Ip" />
            
                  <Grid Grid.Row="4" Margin="0,30,0,0" Visibility="Collapsed" Tap="ViewLogs_tap">
                     <Grid.ColumnDefinitions>

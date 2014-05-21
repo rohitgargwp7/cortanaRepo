@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = false;
+        private static readonly bool IS_PRODUCTION = true;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -57,11 +57,11 @@ namespace windows_client.utils
                     App.appSettings.TryGetValue<bool>(App.DNS_NODNS_SETTING, out dnsNoDnsTogggle);
                     if (mqttDmqttToggle)
                     {
-                        return dnsNoDnsTogggle ? "54.251.142.252" : "mqtt.im.hike.in";
+                        return dnsNoDnsTogggle ? "mqtt.im.hike.in" : "54.251.142.252";
                     }
                     else
                     {
-                        return dnsNoDnsTogggle ? "54.251.151.62" : "dmqtt.im.hike.in";
+                        return dnsNoDnsTogggle ? "dmqtt.im.hike.in" : "54.251.151.62";
 
                     }
 
