@@ -1618,7 +1618,7 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true, false, true);
+                    AddMessageToOcMessages(cm, true, false);
                 });
 
                 if (i == _unreadCount - 1 && _unreadMsg != null)
@@ -2120,7 +2120,7 @@ namespace windows_client.View
 
         List<ConvMessage> listDownload = new List<ConvMessage>();
 
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
         {
             if (ocMessages == null)
                 return;
