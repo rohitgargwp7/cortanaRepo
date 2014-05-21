@@ -2223,9 +2223,7 @@ namespace windows_client.View
                                 GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
-
-                    if (!readFromDb)
-                        ScheduleMsg(chatBubble);
+                    
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     ocMessages.Insert(insertPosition, chatBubble);
@@ -2553,15 +2551,6 @@ namespace windows_client.View
             catch (Exception e)
             {
                 Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
-            }
-        }
-
-        private void ScheduleMsg(ConvMessage convMessage)
-        {
-            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
-            {
-                convMessage.SdrImageVisibility = Visibility.Collapsed;
-                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
             }
         }
 
