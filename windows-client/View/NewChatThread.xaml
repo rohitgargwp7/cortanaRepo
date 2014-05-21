@@ -1284,7 +1284,7 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="0 0 0 0">
+                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#323232" Margin="0 0 0 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
