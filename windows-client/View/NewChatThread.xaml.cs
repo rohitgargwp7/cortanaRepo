@@ -96,7 +96,6 @@ namespace windows_client.View
         private long lastTextChangedTime;
         private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
-        private bool endTypingSent = true;
 
         private HikePubSub mPubSub;
         DispatcherTimer _h2hOfflineTimer;
@@ -230,7 +229,6 @@ namespace windows_client.View
 
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
-            App.ViewModel.HidetypingNotification += HideTypingNotification;
 
             if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
@@ -909,7 +907,7 @@ namespace windows_client.View
                     isDisplayPicSet = true;
 
                 processGroupJoin(true);
-                
+
                 isOnHike = true;
                 isGroupChat = true;
 
@@ -1012,7 +1010,7 @@ namespace windows_client.View
                         avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
                     else
                         avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
-                    
+
                     userImage.Source = avatarImage;
                 }
             }
@@ -1126,7 +1124,7 @@ namespace windows_client.View
                     }
                 }
             }
-            
+
             /* This is done so that after Tombstone when this page is launched, no group is created again and again */
             this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
             PhoneApplicationService.Current.State.Remove(App.NEW_GROUP_ID);
@@ -1609,7 +1607,7 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true, false, true);
+                    AddMessageToOcMessages(cm, true, false);
                 });
 
                 if (i == _unreadCount - 1 && _unreadMsg != null)
@@ -2105,7 +2103,7 @@ namespace windows_client.View
 
         List<ConvMessage> listDownload = new List<ConvMessage>();
 
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
         {
             if (ocMessages == null)
                 return;
@@ -2207,8 +2205,6 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!readFromDb)
-                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     ocMessages.Insert(insertPosition, chatBubble);
@@ -2539,15 +2535,6 @@ namespace windows_client.View
             }
         }
 
-        private void ScheduleMsg(ConvMessage convMessage)
-        {
-            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
-            {
-                convMessage.SdrImageVisibility = Visibility.Collapsed;
-                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
-            }
-        }
-
         #endregion
 
         #endregion
@@ -2659,8 +2646,6 @@ namespace windows_client.View
             actionIcon.Source = UI_Utils.Instance.SendMessageImage;
 
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
-
             sendStartTypingNotification();
 
             if (!isOnHike && lastText.Length > 130)
@@ -2714,9 +2699,6 @@ namespace windows_client.View
 
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
-
-            endTypingSent = true;
-            sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             convMessage.IsSms = !isOnHike;
@@ -3787,59 +3769,26 @@ namespace windows_client.View
             }
         }
 
-        void HideTypingNotification(object sender, object[] vals)
-        {
-            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
-            if (mContactNumber == typingNotSenderOrSendee)
-                HideTypingNotification();
-        }
-
-
-        private void sendTypingNotification(bool notificationType)
-        {
-            JObject obj = new JObject();
-            try
-            {
-                if (notificationType)
-                {
-
-                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
-
-                }
-                else
-                {
-                    obj.Add(HikeConstants.TYPE, NetworkManager.END_TYPING);
-                }
-                obj.Add(HikeConstants.TO, mContactNumber);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
-            }
-            object[] publishData = new object[2];
-            publishData[0] = obj;
-            publishData[1] = 0; //qos
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
-            //endTypingSent = !notificationType;
-        }
-
-        private void sendEndTypingNotification()
-        {
-            long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER && !endTypingSent)
-            {
-                endTypingSent = true;
-                sendTypingNotification(false);
-            }
-        }
-
         private void sendStartTypingNotification()
         {
-            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
+            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime >= HikeConstants.SEND_START_TYPING_TIMER)
             {
-                endTypingSent = false;
                 lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
-                sendTypingNotification(true);
+
+                JObject obj = new JObject();
+                try
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
+                }
+                object[] publishData = new object[2];
+                publishData[0] = obj;
+                publishData[1] = 0; //qos
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
             }
         }
 
@@ -5805,7 +5754,7 @@ namespace windows_client.View
                 PostChangeBackgroundOperations();
                 return;
             }
-            
+
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
@@ -7061,7 +7010,7 @@ namespace windows_client.View
             return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
-        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2,0x43,0x4b,0x5c));
+        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2, 0x43, 0x4b, 0x5c));
         private Microphone _microphone = Microphone.Default;     // Object representing the physical microphone on the device
         private byte[] _buffer;                                  // Dynamic buffer to retrieve audio data from the microphone
         private MemoryStream _stream = new MemoryStream();       // Stores the audio data for later playback

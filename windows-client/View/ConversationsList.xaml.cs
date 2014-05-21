@@ -110,7 +110,6 @@ namespace windows_client.View
 
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
-            App.ViewModel.HidetypingNotification += HideTypingNotification;
 
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
