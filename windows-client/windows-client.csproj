@@ -557,6 +557,7 @@
     <Content Include="View\images\avatars\default_avatar_pink.png" />
     <Content Include="View\images\avatars\default_avatar_purple.png" />
     <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
+    <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
     <Content Include="View\images\chat_joined_blue_ct.png" />
