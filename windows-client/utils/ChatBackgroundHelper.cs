@@ -289,6 +289,70 @@ namespace windows_client.utils
 
             BackgroundList.Add(new ChatBackground()
             {
+                ID = "35",
+                Background = "#ffe0cb00",
+                HeaderColor = "#ff087d40",
+                SentBubbleBackground = "#ffdcffa0",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                IsLightTheme = true,
+                Position = 1,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFifa.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbFifa.jpg"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "36",
+                Background = "#ffe2602f",
+                HeaderColor = "#ffc44523",
+                SentBubbleBackground = "#ffffebdd",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                IsLightTheme = true,
+                Position = 2,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbIPL.png",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbIPL.jpg"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "37",
+                Background = "#ffffc87d",
+                HeaderColor = "#ffe59930",
+                SentBubbleBackground = "#ffffffcc",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                IsLightTheme = true,
+                Position = 3,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbGeometric1.jpg",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbGeometric1.jpg"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
+                ID = "38",
+                Background = "#ffd94e49",
+                HeaderColor = "#ffd73f4d",
+                SentBubbleBackground = "#fff5e0d0",
+                ReceivedBubbleBackground = "#ffffffff",
+                BubbleForeground = "#ff000000",
+                Foreground = "#ffffffff",
+                IsTile = false,
+                IsLightTheme = true,
+                Position = 4,
+                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbBlurredLight.jpg",
+                ImagePath = "/View/images/chatBackgrounds/Background/cbBlurredLight.jpg"
+            });
+
+            BackgroundList.Add(new ChatBackground()
+            {
                 ID = "20",
                 Background = "#ff8D0000",
                 HeaderColor = "#ff7d0101",

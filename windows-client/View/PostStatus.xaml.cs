@@ -222,6 +222,8 @@ namespace windows_client.View
             }
             else
                 txtStatus.Hint = hintText;
+
+            txtStatus.Height = 120;
         }
 
         public void SocialPostFB(JObject obj)
@@ -277,6 +279,7 @@ namespace windows_client.View
         private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
             buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            txtStatus.Height = 480;
         }
 
         private void Fb_Tap(object sender, RoutedEventArgs e)
