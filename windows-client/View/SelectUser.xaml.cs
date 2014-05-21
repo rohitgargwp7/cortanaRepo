@@ -847,7 +847,6 @@ namespace windows_client.View
                 }
                 else
                 {
-                    cInfo.IsSelected = !cInfo.IsSelected;
                     BlockUnblockUser(cInfo);
                 }
             }
@@ -919,9 +918,9 @@ namespace windows_client.View
 
             if (ci == null)
                 return;
-            if (!ci.IsFav) // block request
+            if (!ci.IsSelected) // block request
             {
-                ci.IsFav = true;
+                ci.IsSelected = true;
                 if (ci.Name == ci.Msisdn)
                 {
                     ci.Msisdn = Utils.NormalizeNumber(ci.Msisdn);
@@ -949,7 +948,7 @@ namespace windows_client.View
             }
             else // unblock request
             {
-                ci.IsFav = false;
+                ci.IsSelected = false;
 
                 if (ci.Msisdn == string.Empty)
                     ci.Msisdn = ci.Name;

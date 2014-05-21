@@ -475,7 +475,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">
@@ -526,7 +526,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">
@@ -577,7 +577,7 @@
                 <Setter Property="Foreground" Value="#555555"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">

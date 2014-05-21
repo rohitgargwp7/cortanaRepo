@@ -109,9 +109,6 @@ namespace windows_client.View
                 _pageTitle = AppResources.GrpChat_Txt;
             }
 
-            if (_isGroupChat || _isForward)
-                enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
-
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
