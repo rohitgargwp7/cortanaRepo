@@ -3053,6 +3053,9 @@ namespace windows_client.View
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
 
+            if (_unreadMsg != null && ocMessages.IndexOf(_unreadMsg) == ocMessages.IndexOf(msg) - 1)
+                ocMessages.Remove(_unreadMsg);
+
             bool delConv = false;
             ocMessages.Remove(msg);
 
@@ -5764,6 +5767,8 @@ namespace windows_client.View
                 }
                 else
                 {
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
                     chatBackground.Source = bg;
                 }
 
@@ -6591,7 +6596,7 @@ namespace windows_client.View
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.MaxHeight = 270;
+            pivotStickers.MaxHeight = 265;
             pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
             pivotStickers.SetValue(Grid.RowProperty, 0);
             gridStickers.Children.Add(pivotStickers);
