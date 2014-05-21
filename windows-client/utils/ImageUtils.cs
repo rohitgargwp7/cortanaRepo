@@ -1777,15 +1777,6 @@ namespace windows_client.utils
             }
         }
 
-        Thickness _negateThickness= new Thickness(0, -12, 0, -12);
-        public Thickness NegateThickness
-        {
-            get
-            {
-                return _negateThickness;
-            }
-        }
-
         Thickness _newCategoryThickness= new Thickness(0, 5, 0, 0);
         public Thickness NewCategoryThickness
         {

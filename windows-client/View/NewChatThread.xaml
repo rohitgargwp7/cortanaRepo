@@ -1284,11 +1284,12 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#323232" Margin="0 0 0 0">
+                <Grid Name="gridStickers" Visibility="Collapsed" Background="#323232">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid x:Name="stickerPallet"/>
 
                     <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1" SelectionChanged="StickerCategory_SelectionChanged">
                         <ListBox.ItemsPanel>

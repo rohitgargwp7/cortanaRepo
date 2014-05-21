@@ -6576,9 +6576,7 @@ namespace windows_client.View
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.MaxHeight = 265;
-            pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
-            pivotStickers.SetValue(Grid.RowProperty, 0);
-            gridStickers.Children.Add(pivotStickers);
+            stickerPallet.Children.Add(pivotStickers);
         }
 
         private void CreateStickerCategories()
