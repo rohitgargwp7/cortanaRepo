@@ -39,6 +39,7 @@ namespace windows_client.View
         private bool _showSmsContacts;
         private bool _isFreeSmsOn = true;
         private bool _showExistingGroups;
+        private bool _showRecents;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
         private bool _stopContactScanning = false;
         private bool _isContactShared = false;
@@ -880,7 +881,7 @@ namespace windows_client.View
 
         private void PopulateRecentChats(ObservableCollection<ContactGroup<ContactInfo>> glist)
         {
-            if (_isGroupChat || _isForward)
+            if (_isGroupChat || _isForward || _showRecents)
             {
                 foreach (var entry in App.ViewModel.ConvMap)
                 {
@@ -1222,9 +1223,11 @@ namespace windows_client.View
                 if (queryStrings.ContainsKey("FileId"))
                 {
                     _showExistingGroups = true;
+                    _showRecents = true;
                     PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
                     queryStrings.Clear();
                     _pageTitle = AppResources.Share_With_Txt;
+                    PageTitle.Text = _pageTitle;
                 }
 
                 if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
