@@ -565,6 +565,7 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbGeometric1.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbIPL.png" />
     <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
+    <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />

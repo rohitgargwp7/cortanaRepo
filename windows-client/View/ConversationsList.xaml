@@ -157,7 +157,7 @@
                         </Grid>
                         <TextBlock Grid.Row="0" Margin="0,20" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
-                            <Image Source="images/ConversationPage/sticker.png" Height="120" Stretch="Uniform"/>
+                            <Image Source="images/ConversationPage/favorites.png" Height="120" Stretch="Uniform"/>
                             <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                         </StackPanel>
                         <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 

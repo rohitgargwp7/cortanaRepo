@@ -261,7 +261,7 @@ namespace windows_client.View
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
             int count = txtStatus.Text.Length;
-            if (count == 0 && moodId == 0)
+            if (String.IsNullOrWhiteSpace(txtStatus.Text) && moodId == 0)
             {
                 postStatusIcon.IsEnabled = false;
             }
@@ -279,6 +279,8 @@ namespace windows_client.View
         private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
             buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            txtStatus.Select(0, 0);
+            this.Focus();
             txtStatus.Height = 480;
         }
 
