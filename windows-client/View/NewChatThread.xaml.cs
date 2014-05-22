@@ -2632,7 +2632,7 @@ namespace windows_client.View
         bool _isSendActivated = false;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
+            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text) && _isSendActivated)
             {
                 _isSendActivated = false;
                 actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
