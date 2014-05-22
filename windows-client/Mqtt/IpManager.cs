@@ -54,6 +54,11 @@ namespace windows_client.Mqtt
        };
 
         Random _random = new Random();
+        
+        /// <summary>
+        /// returns ip and if ip fails 5 times then it returns domain name
+        /// </summary>
+        /// <returns></returns>
         public string GetIp()
         {
             string ip = string.Empty;

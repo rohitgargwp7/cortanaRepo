@@ -159,8 +159,6 @@ namespace windows_client.Mqtt
             {
                 // try to connect
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                string ip = IpManager.Instance.GetIp();
-                Debug.WriteLine("IP:" + ip);
                 mqttConnection.connect(IpManager.Instance.GetIp(), brokerPortNumber);
             }
             catch (Exception ex)
