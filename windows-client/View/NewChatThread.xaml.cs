@@ -303,7 +303,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -320,7 +319,6 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        onlineStatus.Visibility = Visibility.Collapsed;
                         lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                     });
                 }
@@ -497,7 +495,7 @@ namespace windows_client.View
             {
                 if (App.newChatThreadPage != null)
                 {
-                    App.newChatThreadPage.gridStickers.Children.Remove(App.newChatThreadPage.pivotStickers);
+                    App.newChatThreadPage.stickerPallet.Children.Remove(App.newChatThreadPage.pivotStickers);
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, ee) =>
@@ -760,7 +758,7 @@ namespace windows_client.View
 
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
 
-                gridStickers.Children.Remove(pivotStickers);
+                stickerPallet.Children.Remove(pivotStickers);
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;
@@ -1284,7 +1282,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -1294,7 +1291,6 @@ namespace windows_client.View
             }
             else
             {
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
             }
         }
@@ -1335,7 +1331,6 @@ namespace windows_client.View
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
 
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
                 if (isOnHike)
@@ -3518,7 +3513,6 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null)
                 {
                     lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = Visibility.Visible;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
                     if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
@@ -4291,7 +4285,6 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                onlineStatus.Visibility = Visibility.Collapsed;
                                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                         }

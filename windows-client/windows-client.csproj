@@ -778,7 +778,6 @@
     <Content Include="View\images\AppBar\icon_record_appbar.png" />
     <Content Include="View\images\icon_sending.png" />
     <Content Include="View\images\AppBar\icon_stop_appbar.png" />
-    <Content Include="View\images\last_seen_clock_white.png" />
     <Content Include="View\images\LocationPin.png" />
     <Content Include="View\images\menu_contact_icon_black.png" />
     <Content Include="View\images\menu_location_icon.png" />

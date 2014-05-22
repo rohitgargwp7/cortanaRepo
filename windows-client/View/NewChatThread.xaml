@@ -99,7 +99,6 @@
                         <StackPanel Margin="12,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Tap="userHeader_Tap">
                             <TextBlock x:Name="userName" LineStackingStrategy="BaselineToBaseline" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" VerticalAlignment="Top" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
-                                <Image x:Name="onlineStatus" Source="/View/images/last_seen_clock_white.png" VerticalAlignment="Center" MaxHeight="13" MaxWidth="13" Margin="0,0,10,0" Visibility="Collapsed"/>
                                 <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Light"/>
                             </StackPanel>
                         </StackPanel>

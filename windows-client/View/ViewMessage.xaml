@@ -23,8 +23,8 @@
         </Grid>
         
         <Grid x:Name="ContentPanel" Grid.Row="1">
-            <ScrollViewer Height="650">
-                <StackPanel Name="stMessage" Margin="25,0"/>
+            <ScrollViewer MaxHeight="650">
+                <StackPanel Name="stMessage" Margin="20,0"/>
             </ScrollViewer>
         </Grid>
     </Grid>

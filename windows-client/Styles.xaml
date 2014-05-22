@@ -42,7 +42,7 @@
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
             <SolidColorBrush x:Key="HikeLightGrey" Color="#8c8c8c"/>
             <SolidColorBrush x:Key="HikeBlack" Color="#434b5c"/>
-            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#e6e9ee"/>
+            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
             <MediaElement x:Key="GlobalMedia" AutoPlay="False" />
