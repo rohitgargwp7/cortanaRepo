@@ -511,7 +511,7 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                            <Grid Grid.Row="0">
+                                            <Grid Grid.Row="0" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
@@ -521,7 +521,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <TextBlock TextAlignment="Left" Grid.ColumnSpan="2" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                                 <Image Grid.Row="1" Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
                                                 <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
