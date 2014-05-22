@@ -61,8 +61,6 @@ namespace windows_client.Mqtt
         // host name of the server we're receiving push notifications from
 
 
-        private String brokerHostName = AccountUtils.MQTT_HOST;
-
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
@@ -108,6 +106,8 @@ namespace windows_client.Mqtt
             this.connectionStatus = connectionStatus;
         }
 
+
+
         /*
  * Terminates a connection to the message broker.
  */
@@ -152,8 +152,8 @@ namespace windows_client.Mqtt
                         {
                             return;
                         }
-                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("connection req. clientId:{0}, brokerhostName:{1},brokerPortNumber:{2}, uid:{3}, password:{4} ", clientId, brokerHostName, brokerPortNumber, uid, password));
-                        mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this), this);
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("connection req. clientId:{0}, password:{1},brokerPortNumber:{2}, uid:{3},  ", clientId, password, brokerPortNumber, uid));
+                        mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
                     }
                 }
             }
@@ -162,7 +162,9 @@ namespace windows_client.Mqtt
             {
                 // try to connect
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                mqttConnection.connect();
+                string ip = IpManager.Instance.GetIp();
+                Debug.WriteLine("IP:" + ip);
+                mqttConnection.connect(IpManager.Instance.GetIp(), brokerPortNumber);
             }
             catch (Exception ex)
             {
@@ -386,6 +388,7 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             Debug.WriteLine("OnDisconnected Called");
+            IpManager.Instance.ResetIp();
             if (!disconnectExplicitly)
             {
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);

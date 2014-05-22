@@ -215,6 +215,7 @@
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
+    <Compile Include="Mqtt\IpManager.cs" />
     <Compile Include="Mqtt\PublishCB.cs" />
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />

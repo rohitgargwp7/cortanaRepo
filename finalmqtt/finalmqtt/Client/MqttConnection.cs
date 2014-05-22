@@ -156,8 +156,6 @@ namespace finalmqtt.Client
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-        private String host;
-        private int port;
         private String username;
         private String password;
         private Callback connectCallback;
@@ -166,14 +164,12 @@ namespace finalmqtt.Client
 
         public delegate Callback onAckFailedDelegate(short messageId);
 
-        public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
+        public MqttConnection(String id, String username, String password, Callback cb, Listener listener)
         {
             this.bufferForSocketReads = new byte[socketReadBufferSize];
             this.id = id;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
-            this.host = host;
-            this.port = port;
             this.username = username;
             this.password = password;
             this.connectCallback = cb;
@@ -183,13 +179,13 @@ namespace finalmqtt.Client
         /// <summary>
         /// Initiates connect request to server.
         /// </summary>
-        public void connect()
+        public void connect(String host, int port)
         {
             dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
 
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
+            _socket.NoDelay = true;
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
@@ -264,7 +260,6 @@ namespace finalmqtt.Client
                         MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
                     MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Error:" + e.SocketError);
-
                     disconnect();
                     return;
                 }
@@ -277,7 +272,6 @@ namespace finalmqtt.Client
                     MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Object HAsh:" + e.ConnectSocket.GetHashCode());
 
                 MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Exception:" + ex.Message);
-
                 disconnect();
             }
 
@@ -325,7 +319,6 @@ namespace finalmqtt.Client
             catch (Exception ex)
             {
                 MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::sendMessage, Exception:" + ex.Message);
-
                 disconnect();
             }
         }
@@ -629,7 +622,7 @@ namespace finalmqtt.Client
 
                 if (_socket != null)
                 {
-                    if (_socket.Connected)
+                    if (_socket.Connected)//if not connected it throws exception that its not connected
                         _socket.Shutdown(SocketShutdown.Both);
                     _socket.Close();
                     _socket = null;
@@ -787,7 +780,9 @@ namespace finalmqtt.Client
             }
             if (_socket != null)
             {
-                if (_socket.Connected)
+                //For connection-oriented protocols, it is recommended that you call Shutdown before calling the Close method. 
+                //http://msdn.microsoft.com/en-us/library/wahsac9k(v=vs.110).aspx
+                if (_socket.Connected)//if not connected it throws exception that its not connected
                     _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
                 _socket = null;
