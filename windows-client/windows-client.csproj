@@ -714,6 +714,9 @@
     <Content Include="View\images\settings\unblock.png" />
     <Content Include="View\images\settings\unlink_account.png" />
     <Content Include="View\images\noResult.png" />
+    <Content Include="View\images\stickers\categorySets\sports_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\sports_active.png" />
+    <Content Include="View\images\stickers\categorySets\sports_inactive.png" />
     <Content Include="View\images\stickers\WVGA\expressions\001_gn.png" />
     <Content Include="View\images\stickers\WVGA\expressions\002_lol.png" />
     <Content Include="View\images\stickers\WVGA\expressions\003_rofl.png" />

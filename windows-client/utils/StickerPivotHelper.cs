@@ -88,6 +88,11 @@ namespace windows_client.utils
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
