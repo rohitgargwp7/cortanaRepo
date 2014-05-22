@@ -156,8 +156,6 @@ namespace finalmqtt.Client
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-        private String host;
-        private int port;
         private String username;
         private String password;
         private Callback connectCallback;
@@ -166,14 +164,12 @@ namespace finalmqtt.Client
 
         public delegate Callback onAckFailedDelegate(short messageId);
 
-        public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
+        public MqttConnection(String id, String username, String password, Callback cb, Listener listener)
         {
             this.bufferForSocketReads = new byte[socketReadBufferSize];
             this.id = id;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
-            this.host = host;
-            this.port = port;
             this.username = username;
             this.password = password;
             this.connectCallback = cb;
@@ -182,7 +178,7 @@ namespace finalmqtt.Client
         /// <summary>
         /// Initiates connect request to server.
         /// </summary>
-        public void connect()
+        public void connect(String host, int port)
         {
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
