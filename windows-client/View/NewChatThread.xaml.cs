@@ -1605,7 +1605,7 @@ namespace windows_client.View
                     AddMessageToOcMessages(cm, true, false);
                 });
 
-                if (i == _unreadCount - 1 && _unreadMsg != null)
+                if (isInitialLaunch && i == _unreadCount - 1 && _unreadMsg != null)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
