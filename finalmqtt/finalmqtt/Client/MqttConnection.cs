@@ -186,6 +186,7 @@ namespace finalmqtt.Client
         {
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _socket.NoDelay = true;
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
