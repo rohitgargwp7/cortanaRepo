@@ -41,7 +41,7 @@
                     </Button>
                     <toolkit:PhoneTextBox Grid.Column="1" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
-                                          TextChanged="txtStatus_TextChanged" MaxLength="10000"/>
+                                          TextChanged="txtStatus_TextChanged" MaxLength="2000"/>
                 </Grid>
                 <TextBlock Name="txtCounter" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
                            Text="140" Grid.Row="1" Margin="0,-10,20,10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
