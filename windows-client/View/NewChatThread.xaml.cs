@@ -462,6 +462,7 @@ namespace windows_client.View
                 sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
                 //change image as text changed event is not raised
                 actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+                _isSendActivated = true;
             }
 
             IsSMSOptionValid = IsSMSOptionAvalable();
@@ -2628,10 +2629,14 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
+        bool _isSendActivated = false;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
+            {
+                _isSendActivated = false;
                 actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
+            }
 
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
@@ -2640,7 +2645,11 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(lastText))
                 return;
 
-            actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+            if (!_isSendActivated)
+            {
+                _isSendActivated = true;
+                actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+            }
 
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             sendStartTypingNotification();
@@ -2681,6 +2690,7 @@ namespace windows_client.View
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
+            _isSendActivated = false;
             actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
