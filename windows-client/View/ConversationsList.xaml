@@ -121,11 +121,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,3,9,0"/>
+                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,9,0"/>
                                             <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
-                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,-5,0,0" FontWeight="Light"/>
-                                            <Image Grid.Column="2" Margin="12,0,0,5" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="24" Width="24"/>
-                                            <Border Grid.Column="2" Margin="12,0,0,5" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
+                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
+                                            <Border Grid.Column="2" Margin="12,0,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
                                         </Grid>

@@ -1121,5 +1121,7 @@ namespace windows_client.ViewModel
             if (App.ViewModel.StatusNotificationsStatusChanged != null)
                 App.ViewModel.StatusNotificationsStatusChanged(null, null);
         }
+
+        public bool IsConversationUpdated { get; set; }
     }
 }

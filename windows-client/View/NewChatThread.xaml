@@ -232,7 +232,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
-                                    <Grid Margin="24,10,24,10">
+                                    <Grid Margin="24,13,24,13">
                                         <Border CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
@@ -468,7 +468,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                                 <DataTemplate x:Name="dtRecievedBubbleNudge">
-                                    <Grid Background="Transparent" Margin="24,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="24,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>

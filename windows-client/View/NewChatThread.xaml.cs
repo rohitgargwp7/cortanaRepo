@@ -1612,7 +1612,9 @@ namespace windows_client.View
                         if (_unreadMsg != null && llsMessages!=null)
                         {
                             AddMessageToOcMessages(_unreadMsg, true, false);
-                            llsMessages.ScrollTo(_unreadMsg);
+
+                            if (ocMessages.Contains(_unreadMsg))
+                                llsMessages.ScrollTo(_unreadMsg);
                         }
                     });
                 }
