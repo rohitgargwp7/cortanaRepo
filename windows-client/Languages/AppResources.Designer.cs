@@ -493,7 +493,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The chat theme will change for the whole group.
+        ///   Looks up a localized string similar to The chat theme will change for the group.
         /// </summary>
         public static string ChatThemeMessage_GrpMessage {
             get {
@@ -745,7 +745,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure about deleting all chats?.
+        ///   Looks up a localized string similar to This will delete all your groups and chats..
         /// </summary>
         public static string Conversations_Delete_Chats_Confirmation {
             get {
@@ -2102,7 +2102,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pending messages will be sent as free hike SMS.
+        ///   Looks up a localized string similar to Send one free hike sms with last message and missed chat notification?.
         /// </summary>
         public static string H2HOfline_Confirmation_Message {
             get {
@@ -2417,7 +2417,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to *Mobile internet charges may apply.
+        ///   Looks up a localized string similar to *Download incurs data. Sending is free..
         /// </summary>
         public static string InternetChargesMayApply_txt {
             get {
@@ -4235,7 +4235,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is offline, tap to send as hike sms.
+        ///   Looks up a localized string similar to {0} is offline. Tap on chat to send as hike sms.
         /// </summary>
         public static string Send_All_As_SMS {
             get {
