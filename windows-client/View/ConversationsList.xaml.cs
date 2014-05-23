@@ -1087,6 +1087,9 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
+
+                mObj.TypingNotificationText = null;
+
                 if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>

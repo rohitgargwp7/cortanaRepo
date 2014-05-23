@@ -142,7 +142,7 @@
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
-    <value>Are you sure about deleting all chats?</value>
+    <value>This will delete all your groups and chats.</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
@@ -1037,10 +1037,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>tap here to invite</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>This group chat is muted</value>
-    <comment>xaml</comment>
-  </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Contact</value>
   </data>
@@ -1504,7 +1500,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>length-4 fixed</comment>
   </data>
   <data name="InternetChargesMayApply_txt" xml:space="preserve">
-    <value>*Mobile internet charges may apply</value>
+    <value>*Download incurs data. Sending is free.</value>
   </data>
   <data name="StickerDownloadFailed" xml:space="preserve">
     <value>Sticker download failed.</value>
@@ -1544,13 +1540,13 @@ Download it now http://hike.in and join the fun!</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} is offline, tap to send as hike sms</value>
+    <value>{0} is offline. Tap on chat to send as hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Looks like you have exhausted all your Free SMS credits. Invite more friends to hike to earn Free SMS</value>
   </data>
   <data name="H2HOfline_Confirmation_Message" xml:space="preserve">
-    <value>Pending messages will be sent as free hike SMS</value>
+    <value>Send one free hike sms with last message and missed chat notification?</value>
   </data>
   <data name="H2HOfline_Confirmation_Message_Heading" xml:space="preserve">
     <value>Send as hike SMS</value>
@@ -1822,7 +1818,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
-    <value>The chat theme will change for the whole group</value>
+    <value>The chat theme will change for the group</value>
   </data>
   <data name="User_Info_Txt" xml:space="preserve">
     <value>view profile</value>
