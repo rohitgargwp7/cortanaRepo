@@ -62,12 +62,7 @@ namespace windows_client.View
         private bool _isStatusUpdatesNotMute;
         private bool isStatusMessagesLoaded = false;
         private bool showFreeMessageOverlay;
-        public bool ConversationListUpdated
-        {
-            get;
-            set;
-        }
-
+        
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
@@ -236,10 +231,10 @@ namespace windows_client.View
             {
                 emptyScreenGrid.Opacity = 0;
 
-                if (ConversationListUpdated)
+                if (App.ViewModel.IsConversationUpdated)
                 {
                     llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
-                    ConversationListUpdated = false;
+                    App.ViewModel.IsConversationUpdated = false;
                 }
             }
 

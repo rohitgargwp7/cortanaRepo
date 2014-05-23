@@ -17,32 +17,36 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
                 <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
             </Grid>
 
-            <Grid x:Name="MoodPanel" Grid.Row="1" Margin="0,12,25,12" HorizontalAlignment="Right" Width="430">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="0,18,0,0" VerticalAlignment="Top">
-                    <Button.Content>
-                        <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    </Button.Content>
-                </Button>
-                <toolkit:PhoneTextBox Grid.Column="2" MaxHeight="120" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
+            <Grid x:Name="MoodPanel" Grid.Row="1" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Tap="Mood_Tap" Style="{StaticResource ButtonWithImageNoPaddingStyle}" Margin="12,18,0,0" VerticalAlignment="Top">
+                        <Button.Content>
+                            <Image Name="moodImage" Source="images/moods_status_icon.png" Height="43" Width="43" Tap="Mood_Tap" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        </Button.Content>
+                    </Button>
+                    <toolkit:PhoneTextBox Grid.Column="1" Name="txtStatus" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource PhoneTextBoxStatusUpdateStyle}"
                                           GotFocus="txtStatus_GotFocus" LostFocus="txtStatus_LostFocus" HorizontalAlignment="Stretch"
-                                          TextChanged="txtStatus_TextChanged"/>
-                <TextBlock Name="txtCounter" Width="70" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
-                                      Text="140" Grid.Column="3" Margin="12,24,0,0" VerticalAlignment="Top"/>
+                                          TextChanged="txtStatus_TextChanged" MaxLength="2000"/>
+                </Grid>
+                <TextBlock Name="txtCounter" Visibility="Collapsed" Foreground="{StaticResource HikeLightGrey}" TextAlignment="Right"
+                           Text="140" Grid.Row="1" Margin="0,-10,20,10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
             </Grid>
-            <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,25,25,25" VerticalAlignment="Bottom" Height="48">
+            <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom" Height="48">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>

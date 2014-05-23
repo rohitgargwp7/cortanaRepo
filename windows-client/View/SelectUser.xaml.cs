@@ -977,7 +977,7 @@ namespace windows_client.View
                 {
                     PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
                     queryStrings.Clear();
-                    PageTitle.Text = AppResources.Share_With_Txt;
+                    PageTitle.Text = AppResources.Share_Txt;
                 }
 
                 if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)

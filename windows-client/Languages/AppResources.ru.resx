@@ -1396,7 +1396,7 @@
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>Разблокируйте, чтобы отправить сообщение.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>ПОДЕЛИТЬСЯ</value>
     <comment>Used in share photo</comment>
   </data>

@@ -1210,7 +1210,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>You have blocked {0}. Unblock to send a message.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>share</value>
     <comment>Used in share photo</comment>
   </data>
@@ -2167,5 +2167,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>You need to be 13+ to use hike</value>
+  </data>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>share with</value>
   </data>
 </root>

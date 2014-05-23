@@ -4516,6 +4516,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to share.
         /// </summary>
+        public static string Share_Txt {
+            get {
+                return ResourceManager.GetString("Share_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to share with.
+        /// </summary>
         public static string Share_With_Txt {
             get {
                 return ResourceManager.GetString("Share_With_Txt", resourceCulture);

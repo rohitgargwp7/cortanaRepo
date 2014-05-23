@@ -522,8 +522,7 @@ namespace windows_client.DbUtils
                 App.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }//if already at zero, do nothing
 
-            if (App.ViewModel.ConversationListPage != null)
-                App.ViewModel.ConversationListPage.ConversationListUpdated = true;
+            App.ViewModel.IsConversationUpdated = true;
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

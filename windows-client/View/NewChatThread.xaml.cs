@@ -110,7 +110,6 @@ namespace windows_client.View
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
-        ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -304,7 +303,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -321,7 +319,6 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        onlineStatus.Visibility = Visibility.Collapsed;
                         lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                     });
                 }
@@ -460,9 +457,12 @@ namespace windows_client.View
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrEmpty(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
             {
                 sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
+                //change image as text changed event is not raised
+                actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+                _isSendActivated = true;
             }
 
             IsSMSOptionValid = IsSMSOptionAvalable();
@@ -496,7 +496,7 @@ namespace windows_client.View
             {
                 if (App.newChatThreadPage != null)
                 {
-                    App.newChatThreadPage.gridStickers.Children.Remove(App.newChatThreadPage.pivotStickers);
+                    App.newChatThreadPage.stickerPallet.Children.Remove(App.newChatThreadPage.pivotStickers);
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, ee) =>
@@ -759,7 +759,7 @@ namespace windows_client.View
 
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
 
-                gridStickers.Children.Remove(pivotStickers);
+                stickerPallet.Children.Remove(pivotStickers);
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;
@@ -1051,19 +1051,7 @@ namespace windows_client.View
 
             initBlockUnblockState();
 
-            Object showNormalFtue;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.CHAT_FTUE, out showNormalFtue) && ((bool)showNormalFtue))
-            {
-                SendBackgroundChangedPacket(ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber));
-                PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
-            }
-            else
-            {
-                if (showNormalFtue != null && !(bool)showNormalFtue)
-                    App.ViewModel.ResetInAppTip(8);
-
-                ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
-            }
+            ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
 
             if (!mUserIsBlocked)
             {
@@ -1295,7 +1283,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -1305,7 +1292,6 @@ namespace windows_client.View
             }
             else
             {
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
             }
         }
@@ -1346,7 +1332,6 @@ namespace windows_client.View
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
 
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
                 if (isOnHike)
@@ -1621,12 +1606,17 @@ namespace windows_client.View
                     AddMessageToOcMessages(cm, true, false);
                 });
 
-                if (i == _unreadCount - 1 && _unreadMsg != null)
+                if (isInitialLaunch && i == _unreadCount - 1 && _unreadMsg != null)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        AddMessageToOcMessages(_unreadMsg, true, false);
-                        llsMessages.ScrollTo(_unreadMsg);
+                        if (_unreadMsg != null && llsMessages!=null)
+                        {
+                            AddMessageToOcMessages(_unreadMsg, true, false);
+
+                            if (ocMessages.Contains(_unreadMsg))
+                                llsMessages.ScrollTo(_unreadMsg);
+                        }
                     });
                 }
             }
@@ -1723,14 +1713,6 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
-
-            //add icon for send
-            sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.Relative);
-            sendIconButton.Text = AppResources.Send_Txt;
-            sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
-            sendIconButton.IsEnabled = false;
-            appBar.Buttons.Add(sendIconButton);
 
             //add icon for sticker
             stickersIconButton = new ApplicationBarIconButton();
@@ -1977,7 +1959,6 @@ namespace windows_client.View
                     stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
-                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     isTypingNotificationEnabled = true;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
@@ -2648,17 +2629,28 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
+        bool _isSendActivated = false;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text) && _isSendActivated)
+            {
+                _isSendActivated = false;
+                actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
+            }
+
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
 
             lastText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(lastText))
-            {
-                sendIconButton.IsEnabled = false;
                 return;
+
+            if (!_isSendActivated)
+            {
+                _isSendActivated = true;
+                actionIcon.Source = UI_Utils.Instance.SendMessageImage;
             }
+
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             sendStartTypingNotification();
 
@@ -2687,12 +2679,6 @@ namespace windows_client.View
             {
                 spSmsCharCounter.Visibility = Visibility.Collapsed;
             }
-            sendIconButton.IsEnabled = enableSendMsgButton;
-        }
-
-        private void sendMsgBtn_Click(object sender, EventArgs e)
-        {
-            SendMsg();
         }
 
         private void SendMsg()
@@ -2704,7 +2690,8 @@ namespace windows_client.View
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
-            sendIconButton.IsEnabled = false;
+            _isSendActivated = false;
+            actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
@@ -3538,7 +3525,6 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null)
                 {
                     lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = Visibility.Visible;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
                     if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
@@ -3704,14 +3690,13 @@ namespace windows_client.View
             HikeTitle.IsHitTestVisible = enable;
             llsMessages.IsHitTestVisible = enable;
             bottomPanel.IsHitTestVisible = enable;
-            WalkieTalkieMicIcon.IsHitTestVisible = enable;
             sendMsgTxtbox.IsHitTestVisible = enable;
+            actionIcon.IsHitTestVisible = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
 
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
 
@@ -4312,7 +4297,6 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                onlineStatus.Visibility = Visibility.Collapsed;
                                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                         }
@@ -6597,9 +6581,7 @@ namespace windows_client.View
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
             pivotStickers.MaxHeight = 265;
-            pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
-            pivotStickers.SetValue(Grid.RowProperty, 0);
-            gridStickers.Children.Add(pivotStickers);
+            stickerPallet.Children.Add(pivotStickers);
         }
 
         private void CreateStickerCategories()
@@ -6669,9 +6651,12 @@ namespace windows_client.View
 
         #region Walkie Talkie
 
-        private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
+        private void ActionIcon_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ShowWalkieTalkie();
+            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
+                ShowWalkieTalkie();
+            else
+                SendMsg();
         }
 
         private void ShowWalkieTalkie()
@@ -6722,9 +6707,6 @@ namespace windows_client.View
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
-
-            if (this.ApplicationBar != null)
-                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
@@ -6891,7 +6873,6 @@ namespace windows_client.View
             _microphone.Start();
             timeBar.Opacity = 1;
             maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
-            sendIconButton.IsEnabled = false;
             _recorderState = RecorderState.RECORDING;
         }
 
