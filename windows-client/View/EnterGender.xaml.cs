@@ -398,6 +398,11 @@ namespace windows_client.View
 
         private void boyButton_Click(object sender, RoutedEventArgs e)
         {
+            SelectBoy();
+        }
+
+        private void SelectBoy()
+        {
             if (gender == "m")
                 return;
             gender = "m";
@@ -415,6 +420,11 @@ namespace windows_client.View
         }
 
         private void girlButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectGirl();
+        }
+
+        private void SelectGirl()
         {
             if (gender == "f")
                 return;
@@ -480,6 +490,16 @@ namespace windows_client.View
                         break;
                 }
             }
+        }
+
+        private void BoyGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            SelectBoy();
+        }
+
+        private void GirlGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            SelectGirl();
         }
     }
 }
