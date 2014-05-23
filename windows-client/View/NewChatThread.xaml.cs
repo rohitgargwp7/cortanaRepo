@@ -1603,12 +1603,19 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (_unreadMsg != null && llsMessages!=null)
+                        try
                         {
-                            AddMessageToOcMessages(_unreadMsg, true, false);
+                            if (_unreadMsg != null && llsMessages != null)
+                            {
+                                AddMessageToOcMessages(_unreadMsg, true, false);
 
-                            if (ocMessages.Contains(_unreadMsg))
-                                llsMessages.ScrollTo(_unreadMsg);
+                                if (ocMessages.Contains(_unreadMsg))
+                                    llsMessages.ScrollTo(_unreadMsg);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("_unreadMsg cannot be scrolled: " + ex.StackTrace);
                         }
                     });
                 }
