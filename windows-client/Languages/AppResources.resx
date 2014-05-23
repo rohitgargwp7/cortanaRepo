@@ -1037,10 +1037,6 @@ Download it now http://hike.in and join the fun!</value>
     <value>tap here to invite</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>This group chat is muted</value>
-    <comment>xaml</comment>
-  </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Contact</value>
   </data>

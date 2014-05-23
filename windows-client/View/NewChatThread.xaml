@@ -82,10 +82,6 @@
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
             <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="#32000000" BorderThickness="0,0,0,1"/>
             <StackPanel Orientation="Vertical">
-                <Grid HorizontalAlignment="Stretch" Height="45" x:Name="gcMuteGrid" Visibility="Collapsed">
-                    <Border HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Canvas.ZIndex="-1" />
-                    <TextBlock x:Name="grpMuteText" Grid.Column="0" Margin="12,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White" FontWeight="Light"/>
-                </Grid>
                 <Grid Height="90">
                     <Grid Name="userHeader" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12">
                         <Grid.ColumnDefinitions>

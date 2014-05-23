@@ -165,17 +165,7 @@ namespace windows_client.View
             set
             {
                 if (value != _isMute)
-                {
                     _isMute = value;
-                    if (_isMute)
-                    {
-                        gcMuteGrid.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        gcMuteGrid.Visibility = Visibility.Collapsed;
-                    }
-                }
             }
         }
 
@@ -385,6 +375,8 @@ namespace windows_client.View
 
         }
 
+        bool _isDraftMessage;
+
         private void ManagePage()
         {
             bool isGC = false;
@@ -459,6 +451,7 @@ namespace windows_client.View
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
             {
+                _isDraftMessage = true;
                 sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
                 //change image as text changed event is not raised
                 actionIcon.Source = UI_Utils.Instance.SendMessageImage;
@@ -2651,8 +2644,13 @@ namespace windows_client.View
                 actionIcon.Source = UI_Utils.Instance.SendMessageImage;
             }
 
-            lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            sendStartTypingNotification();
+            if (_isDraftMessage)
+                _isDraftMessage = false;
+            else
+            {
+                lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
+                sendStartTypingNotification();
+            }
 
             if (!isOnHike && lastText.Length > 130)
             {

@@ -511,15 +511,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This group chat is muted.
-        /// </summary>
-        public static string ChatThread_GCMute {
-            get {
-                return ResourceManager.GetString("ChatThread_GCMute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Jump to latest.
         /// </summary>
         public static string ChatThread_JumpToLatest {
