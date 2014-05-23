@@ -932,6 +932,30 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage walkieTalkieImage;
+        public BitmapImage WalkieTalkieImage
+        {
+            get
+            {
+                if (walkieTalkieImage == null)
+                    walkieTalkieImage = new BitmapImage(new Uri("/View/images/Mic_icon_black_small.png", UriKind.Relative));
+
+                return walkieTalkieImage;
+            }
+        }
+
+        private BitmapImage sendMessageImage;
+        public BitmapImage SendMessageImage
+        {
+            get
+            {
+                if (sendMessageImage == null)
+                    sendMessageImage = new BitmapImage(new Uri("/View/images/sendMessage.png", UriKind.Relative));
+
+                return sendMessageImage;
+            }
+        }
+
         #region Nudge
 
         private BitmapImage nudgeSend;
@@ -1780,15 +1804,6 @@ namespace windows_client.utils
             get
             {
                 return _zeroThickness;
-            }
-        }
-
-        Thickness _negateThickness= new Thickness(0, -12, 0, -12);
-        public Thickness NegateThickness
-        {
-            get
-            {
-                return _negateThickness;
             }
         }
 

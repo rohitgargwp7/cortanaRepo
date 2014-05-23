@@ -222,6 +222,8 @@ namespace windows_client.View
             }
             else
                 txtStatus.Hint = hintText;
+
+            txtStatus.Height = 120;
         }
 
         public void SocialPostFB(JObject obj)
@@ -259,7 +261,7 @@ namespace windows_client.View
         private void txtStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
             int count = txtStatus.Text.Length;
-            if (count == 0 && moodId == 0)
+            if (String.IsNullOrWhiteSpace(txtStatus.Text) && moodId == 0)
             {
                 postStatusIcon.IsEnabled = false;
             }
@@ -277,6 +279,9 @@ namespace windows_client.View
         private void txtStatus_LostFocus(object sender, RoutedEventArgs e)
         {
             buttonGrid.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            txtStatus.Select(0, 0);
+            this.Focus();
+            txtStatus.Height = 480;
         }
 
         private void Fb_Tap(object sender, RoutedEventArgs e)

@@ -916,7 +916,7 @@ namespace windows_client.View
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
-                Opacity = 0.75
+                Opacity = 0.95
             };
 
             appBar.StateChanged -= appBar_StateChanged;

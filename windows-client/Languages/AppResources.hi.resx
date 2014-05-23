@@ -1397,7 +1397,7 @@ hike पिछली बार दिखे के साथ आपको गो
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>संदेश भेजने के लिए प्रतिबंध हटाएं |</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>सांझा करें |</value>
     <comment>Used in share photo</comment>
   </data>

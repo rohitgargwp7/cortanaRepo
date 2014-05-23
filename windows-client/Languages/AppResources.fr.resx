@@ -1397,7 +1397,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>Débloquer pour envoyer un message.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>PARTAGER</value>
     <comment>Used in share photo</comment>
   </data>

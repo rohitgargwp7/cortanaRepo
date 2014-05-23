@@ -1728,20 +1728,7 @@ namespace windows_client
                         cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
-                    {
-                        //v2 send cbg change event to v1
-                        // show normal message with upgrade message
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
-                        {
-                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
-                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED, jsonObj, ts);
-                        }
-                        else
-                        {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
-                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
-                        }
-                    }
+                        return;
 
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
 

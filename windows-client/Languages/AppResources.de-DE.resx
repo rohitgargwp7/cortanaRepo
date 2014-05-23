@@ -1389,7 +1389,7 @@
   <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
     <value>Entsperren, um Nachricht zu senden.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>TEILEN</value>
     <comment>Used in share photo</comment>
   </data>

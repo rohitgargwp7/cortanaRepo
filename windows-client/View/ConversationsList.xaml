@@ -71,7 +71,7 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="White">
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ConversationList">
-                    <Grid x:Name="emptyScreenGrid">
+                    <Grid x:Name="emptyScreenGrid" Opacity="0">
                         <Image Source="images/ConversationPage/empty_screen_logo_black.png" Height="135" VerticalAlignment="Center" Margin="0,0,0,82"/>
                         <Image Source="images/ConversationPage/empty_screen_tip_black.png" MaxHeight="75" VerticalAlignment="Bottom" Margin="0,0,0,82"/>
                         <Image Source="images/ConversationPage/empty_screen_tip_top.png" MaxHeight="90" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,25,0"/>
@@ -121,11 +121,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,3,9,0"/>
+                                            <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,9,0"/>
                                             <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
-                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,-5,0,0" FontWeight="Light"/>
-                                            <Image Grid.Column="2" Margin="12,0,0,5" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="24" Width="24"/>
-                                            <Border Grid.Column="2" Margin="12,0,0,5" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                                                 MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
+                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
+                                            <Border Grid.Column="2" Margin="12,0,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
                                         </Grid>
@@ -157,7 +157,7 @@
                         </Grid>
                         <TextBlock Grid.Row="0" Margin="0,20" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
-                            <Image Source="images/ConversationPage/sticker.png" Height="120" Stretch="Uniform"/>
+                            <Image Source="images/ConversationPage/favorites.png" Height="120" Stretch="Uniform"/>
                             <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                         </StackPanel>
                         <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
@@ -234,7 +234,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0" Background="#e7ebf0">
+            <controls:PivotItem Margin="0,-10,0,0" Background="#dee1e7">
                 <Grid Background="Transparent">
                     <Button x:Name="refreshBarButton" Canvas.ZIndex="1" Style="{StaticResource RefreshButtonStyle}" Click="refreshStatuses_Tap" Visibility="Collapsed" Margin="0,10,0,0" VerticalAlignment="Top">
                         <Button.Content>

@@ -90,7 +90,7 @@
                                 <TextBlock x:Name="earnFreeSmsTxt" Text="{Binding Path= LocalizedResources.FreeSMS_H2SSubHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" FontWeight="Light"/>
                                 <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1" FontSize="19"
                            Text="{Binding Path= LocalizedResources.FreeSMS_H2SText_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
-                                <Button Grid.Row="2" Content="{Binding Path= LocalizedResources.Start_Hiking_Button_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Width="150" Background="#2B8DDD" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" FontWeight="Light" Height="45" Margin="0,12" Click="startChat_Click"/>
+                                <Button Grid.Row="2" Content="{Binding Path= LocalizedResources.Start_Hiking_Button_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Width="150" Background="#2B8DDD" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" Height="45" Margin="0,12" Click="startChat_Click"/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -110,7 +110,7 @@
                         <TextBlock Text="{Binding Path= LocalizedResources.FreeSMS_InviteSMS_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" HorizontalAlignment="Left"/>
                         <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1"
                            Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="19"/>
-                        <Button Name="inviteNow" Grid.Row="2" Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Tap="InviteBtn_Tap" HorizontalAlignment="Left" Width="150" Background="#7CC300" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" FontWeight="Light" Height="45" Margin="0,12"/>
+                        <Button Name="inviteNow" Grid.Row="2" Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Tap="InviteBtn_Tap" HorizontalAlignment="Left" Width="150" Background="#7CC300" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" Height="45" Margin="0,12"/>
                     </Grid>
                 </Grid>
             </Grid>

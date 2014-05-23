@@ -80,7 +80,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
-            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="#1a000000" BorderThickness="0,0,0,2"/>
+            <Border x:Name="headerBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="#32000000" BorderThickness="0,0,0,1"/>
             <StackPanel Orientation="Vertical">
                 <Grid HorizontalAlignment="Stretch" Height="45" x:Name="gcMuteGrid" Visibility="Collapsed">
                     <Border HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Canvas.ZIndex="-1" />
@@ -99,7 +99,6 @@
                         <StackPanel Margin="12,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Tap="userHeader_Tap">
                             <TextBlock x:Name="userName" LineStackingStrategy="BaselineToBaseline" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" VerticalAlignment="Top" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
-                                <Image x:Name="onlineStatus" Source="/View/images/last_seen_clock_white.png" VerticalAlignment="Center" MaxHeight="13" MaxWidth="13" Margin="0,0,10,0" Visibility="Collapsed"/>
                                 <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Light"/>
                             </StackPanel>
                         </StackPanel>
@@ -175,7 +174,7 @@
                         <templateSelector:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
                             <templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                                 <DataTemplate>
-                                    <Grid Background="Transparent" Margin="24,-10,24,20" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
+                                    <Grid Background="Transparent" Margin="24,-5,24,10" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
@@ -197,7 +196,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                                 <DataTemplate>
-                                    <Grid Background="Transparent" Margin="12,-15,12,20" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
+                                    <Grid Background="Transparent" Margin="12,-5,12,10" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="14"/>
                                             <RowDefinition Height="Auto"/>
@@ -219,21 +218,21 @@
                             </templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
-                                    <Grid HorizontalAlignment="Right" Margin="0,-23,24,20" >
+                                    <Grid HorizontalAlignment="Right" Margin="0,-10,24,10" >
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                             <templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                                 <DataTemplate>
-                                    <Border HorizontalAlignment="Right" Margin="0,-23,24,20" CornerRadius="2">
+                                    <Border HorizontalAlignment="Right" Margin="0,-10,24,10" CornerRadius="2">
                                         <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                     </Border>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtMessageStatus>
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate x:Name="dtNotificationBubble">
-                                    <Grid Margin="24,3,24,20">
+                                    <Grid Margin="24,13,24,13">
                                         <Border CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
@@ -251,14 +250,14 @@
                             </templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                                 <DataTemplate x:Name="dtTypingNotificationBubble" >
-                                    <Grid HorizontalAlignment="Left" Margin="12,0,0,20">
+                                    <Grid HorizontalAlignment="Left" Margin="12,10,0,10">
                                         <Image Source="{Binding TypingNotificationImage}" Height="20" Width="40" HorizontalAlignment="Left"></Image>
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtTypingNotificationBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
                                 <DataTemplate x:Name="dtRecievedBubbleText" >
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
@@ -289,7 +288,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleText>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
                                 <DataTemplate x:Name="dtRecievedBubbleFile">
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -350,7 +349,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                                 <DataTemplate x:Name="dtRecievedBubbleLocation" >
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -397,7 +396,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleLocation>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                                 <DataTemplate x:Name="dtRecievedBubbleAudioFile" >
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -469,7 +468,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleAudioFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                                 <DataTemplate x:Name="dtRecievedBubbleNudge">
-                                    <Grid Background="Transparent" Margin="24,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="24,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -492,7 +491,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
                                 <DataTemplate x:Name="dtRecievedBubbleContact" >
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -512,7 +511,7 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                            <Grid Grid.Row="0">
+                                            <Grid Grid.Row="0" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
@@ -522,7 +521,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <TextBlock TextAlignment="Left" Grid.ColumnSpan="2" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
                                                 <Image Grid.Row="1" Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
                                                 <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
                                             </Grid>
@@ -533,7 +532,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleContact>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleUnknownFile>
                                 <DataTemplate x:Name="dtRecievedBubbleUnknownFile" >
-                                    <Grid Background="Transparent" Margin="12,0,0,20" HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -608,7 +607,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleUnknownFile>
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                                 <DataTemplate x:Name="dtRecievedSticker">
-                                    <Grid Background="Transparent" Margin="24,0,0,20"  HorizontalAlignment="Left">
+                                    <Grid Background="Transparent" Margin="24,10,0,10"  HorizontalAlignment="Left">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
@@ -656,7 +655,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
                                 <DataTemplate x:Name="dtSentBubbleText" >
-                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,10,12,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
@@ -693,7 +692,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleText>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
                                 <DataTemplate x:Name="DtSentBubbleLocation" >
-                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right"   >
+                                    <Grid Background="Transparent"  Margin="0,10,12,10" HorizontalAlignment="Right"   >
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -754,7 +753,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleLocation>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                                 <DataTemplate x:Name="dtSentBubbleFile" >
-                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,10,12,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -815,7 +814,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                                 <DataTemplate x:Name="dtSentBubbleAudioFile" >
-                                    <Grid Background="Transparent"  Margin="0,0,12,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,10,12,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -887,7 +886,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleAudioFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
                                 <DataTemplate x:Name="dtSentBubbleNudge" >
-                                    <Grid Background="Transparent"  Margin="0,0,24,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent"  Margin="0,10,24,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
@@ -916,7 +915,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleNudge>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
                                 <DataTemplate x:Name="dtSentBubbleContact" >
-                                    <Grid Background="Transparent" Margin="0,0,12,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent" Margin="0,10,12,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -967,7 +966,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleContact>
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleUnknownFile>
                                 <DataTemplate x:Name="dtSentBubbleUnknownFile" >
-                                    <Grid Background="Transparent" Margin="0,0,12,20" HorizontalAlignment="Right">
+                                    <Grid Background="Transparent" Margin="0,10,12,10" HorizontalAlignment="Right">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
@@ -1041,7 +1040,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentBubbleUnknownFile>
                             <templateSelector:ChatThreadTemplateSelector.DtSentSticker>
                                 <DataTemplate x:Name="dtSentSticker">
-                                    <Grid Background="Transparent" HorizontalAlignment="Right"  Margin="0,0,24,20">
+                                    <Grid Background="Transparent" HorizontalAlignment="Right"  Margin="0,10,24,10">
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                 <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
@@ -1081,7 +1080,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtSentSticker>
                             <templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate x:Name="dtStatusUpdateBubble">
-                                    <Grid Margin="0,0,0,20" HorizontalAlignment="Stretch">
+                                    <Grid Margin="0,10" HorizontalAlignment="Stretch">
                                         <Border Background="Black" Opacity="0.2"/>
                                         <Grid Margin="5,10">
                                             <Grid.ColumnDefinitions>
@@ -1138,8 +1137,8 @@
                                                TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" KeyDown="MsgCharTapped" 
                                                 MinHeight="72" MaxHeight="130" MaxLength="10000" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" VerticalScrollBarVisibility="Auto"  />
                     </Border>
-                    <Grid Grid.Column="1" MinWidth="60" Background="#eeeeec" Tap="Record_ActionIconTapped">
-                        <Image x:Name="WalkieTalkieMicIcon" Source="/View/images/Mic_icon_black_small.png" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,0,20" MaxHeight="30"/>
+                    <Grid Grid.Column="1" MinWidth="60" Background="#eeeeec" Tap="ActionIcon_Tapped">
+                        <Image x:Name="actionIcon" Source="/View/images/Mic_icon_black_small.png" HorizontalAlignment="Center" VerticalAlignment="Bottom" Stretch="Uniform" Margin="0,0,0,20" MaxHeight="30"/>
                     </Grid>
                 </Grid>
                 <Grid x:Name="recordGrid" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#eeeeec">
@@ -1284,11 +1283,12 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid Name="gridStickers" Visibility="Collapsed"  Background="#313334" Margin="0 0 0 0">
+                <Grid Name="gridStickers" Visibility="Collapsed" Background="#323232">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid x:Name="stickerPallet"/>
 
                     <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1" SelectionChanged="StickerCategory_SelectionChanged">
                         <ListBox.ItemsPanel>
