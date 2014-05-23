@@ -6302,7 +6302,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_DOGGY && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
+                            if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_EXPRESSIONS && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
                                 stickerPivot.ShowDownloadFailed();
                             stickerPivot.ShowHidMoreProgreesBar(false);
                         });
@@ -6478,20 +6478,20 @@ namespace windows_client.View
                         btnDownload.IsHitTestVisible = false;
                         btnFree.IsHitTestVisible = false;
                         break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
                         btnFree.IsHitTestVisible = false;
+                        break;
+                    case StickerHelper.CATEGORY_DOGGY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
                         break;
                     case StickerHelper.CATEGORY_BOLLYWOOD:
                         downloadDialogueImage.Source = UI_Utils.Instance.BollywoodOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
                         break;
                     case StickerHelper.CATEGORY_TROLL:
                         downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
@@ -6504,6 +6504,9 @@ namespace windows_client.View
                         break;
                     case StickerHelper.CATEGORY_INDIANS:
                         downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_SPORTS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.SportsOverlay;
                         break;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
@@ -6603,10 +6606,6 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
@@ -6615,7 +6614,7 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6631,7 +6630,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
