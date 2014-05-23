@@ -114,7 +114,6 @@ namespace windows_client.utils
                 {
                     _isSelected = value;
                     NotifyPropertyChanged("CategoryIcon");
-                    NotifyPropertyChanged("BackgroundColor");
                 }
             }
         }
@@ -125,7 +124,7 @@ namespace windows_client.utils
                 switch (_category)
                 {
                     case StickerHelper.CATEGORY_RECENT:
-                        return UI_Utils.Instance.RecentIcon;
+                        return _isSelected ? UI_Utils.Instance.RecentIconActive : UI_Utils.Instance.RecentIconInActive;
                     case StickerHelper.CATEGORY_HUMANOID:
                         return _isSelected ? UI_Utils.Instance.HumanoidActive : UI_Utils.Instance.HumanoidInactive;
                     case StickerHelper.CATEGORY_DOGGY:
@@ -162,7 +161,7 @@ namespace windows_client.utils
         {
             get
             {
-                return _isSelected ? UI_Utils.Instance.HikeBlue : UI_Utils.Instance.UntappedCategoryColor;
+                return UI_Utils.Instance.UntappedCategoryColor;
             }
         }
 

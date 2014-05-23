@@ -5419,52 +5419,51 @@ namespace windows_client.View
 
         private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconActive;
+            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 0;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Active;
+            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 1;
         }
 
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Active;
+            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 2;
-
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Active;
+            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 3;
         }
 
         private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
+            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Active;
             emoticonPivot.SelectedIndex = 4;
         }
 
@@ -5490,39 +5489,39 @@ namespace windows_client.View
                         gridShowRecents.Visibility = Visibility.Collapsed;
                     }
 
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconActive;
+                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 1:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Active;
+                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 2:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Active;
+                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 3:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Active;
+                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 4:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
+                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Active;
                     break;
             }
         }
