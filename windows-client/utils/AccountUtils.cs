@@ -470,7 +470,6 @@ namespace windows_client.utils
                     Compress4(x, postStream);
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
-                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
                     return;
                 #endregion
                 #region SOCIAL POST

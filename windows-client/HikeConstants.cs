@@ -105,9 +105,8 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 3; //seconds
-        public static readonly int SEND_END_TYPING_TIMER = 3; //seconds
-        public static readonly int SEND_START_TYPING_TIMER = 2; //seconds
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 6; //seconds
+        public static readonly int SEND_START_TYPING_TIMER = 4; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
@@ -381,6 +380,9 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
         public static readonly string START_HIKING = "startHiking";
+        public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
+        public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
+        public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";

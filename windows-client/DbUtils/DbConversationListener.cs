@@ -260,16 +260,17 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
+                byte[] fullViewBytes = (byte[])vals[1];
                 byte[] thumbnailBytes = (byte[])vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
-                    byte[] fullViewBytes = (byte[])vals[1];
                     string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveLargeImage(grpId, fullViewBytes);
                     MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);
                 }
                 else
                 {
+                    MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, fullViewBytes);
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, thumbnailBytes, false);
                 }
             }
@@ -522,8 +523,7 @@ namespace windows_client.DbUtils
                 App.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }//if already at zero, do nothing
 
-            if (App.ViewModel.ConversationListPage != null)
-                App.ViewModel.ConversationListPage.ConversationListUpdated = true;
+            App.ViewModel.IsConversationUpdated = true;
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

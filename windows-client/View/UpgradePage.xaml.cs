@@ -162,6 +162,29 @@ namespace windows_client.View
                             if (groupEmptyNameFound) //update whole file as well
                                 ConversationTableUtils.saveConvObjectList();
                         }
+
+
+                        #region changing hardcoded stickers
+                        //to download default stickers remopved from snuggles
+                        StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
+                        //remove expressions stickers if already downloaded to remove duplicacy
+                        StickerCategory.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
+
+                        //if default doggy stickers were in recents, then remove those
+                        List<string> listPreviousHardcodedDoggy = new List<string>
+                                     {
+                                      "001_hi.png",
+                                      "002_thumbsup.png",
+                                      "003_drooling.png",
+                                      "004_devilsmile.png",
+                                      "005_sorry.png",
+                                      "006_urgh.png",
+                                      "007_confused.png",
+                                      "008_dreaming.png"
+                                     };
+                        RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
+
+                        #endregion
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec

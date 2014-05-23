@@ -26,19 +26,31 @@ namespace windows_client.View
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
+            {
+                freeSMSGrid.Visibility = Visibility.Visible;
                 this.showFreeSMSToggle.Content = AppResources.On;
+                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            }
             else
+            {
+                freeSMSGrid.Visibility = Visibility.Collapsed;
                 this.showFreeSMSToggle.Content = AppResources.Off;
+                scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
         }
 
         private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
         {
+            freeSMSGrid.Visibility = Visibility.Visible;
+            scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
         {
+            freeSMSGrid.Visibility = Visibility.Collapsed;
+            scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
         }

@@ -62,12 +62,7 @@ namespace windows_client.View
         private bool _isStatusUpdatesNotMute;
         private bool isStatusMessagesLoaded = false;
         private bool showFreeMessageOverlay;
-        public bool ConversationListUpdated
-        {
-            get;
-            set;
-        }
-
+        
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
@@ -110,7 +105,6 @@ namespace windows_client.View
 
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
-            App.ViewModel.HidetypingNotification += HideTypingNotification;
 
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
@@ -237,10 +231,10 @@ namespace windows_client.View
             {
                 emptyScreenGrid.Opacity = 0;
 
-                if (ConversationListUpdated)
+                if (App.ViewModel.IsConversationUpdated)
                 {
                     llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
-                    ConversationListUpdated = false;
+                    App.ViewModel.IsConversationUpdated = false;
                 }
             }
 
@@ -1098,6 +1092,9 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
+
+                mObj.TypingNotificationText = null;
+
                 if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>

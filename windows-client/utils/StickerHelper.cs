@@ -29,12 +29,11 @@ namespace windows_client.utils
         public const string CATEGORY_TROLL = "rageface";
         public const string CATEGORY_AVATARS = "avatars";
         public const string CATEGORY_INDIANS = "indian";
+        public const string CATEGORY_SPORTS = "sports";
         public const string CATEGORY_LOVE = "love";
         public const string CATEGORY_ANGRY = "angry";
 
         public const string _stickerWVGAPath = "/View/images/stickers/WVGA/{0}/{1}";
-        public const string _sticker720path = "/View/images/stickers/720p/{0}/{1}";
-        public const string _stickerWXGApath = "/View/images/stickers/WXGA/{0}/{1}";
 
         public LruCache<string, BitmapImage> lruStickers = new LruCache<string, BitmapImage>(20, 0);
         public RecentStickerHelper recentStickerHelper;
@@ -52,17 +51,16 @@ namespace windows_client.utils
             "010_yawning.png"
         
         };
-
-        public static string[] arrayDefaultDoggyStickers = new string[]
+        public static string[] arrayDefaultExpressionStickers = new string[]
         {
-            "001_hi.png",
-            "002_thumbsup.png",
-            "003_drooling.png",
-            "004_devilsmile.png",
-            "005_sorry.png",
-            "006_urgh.png",
-            "007_confused.png",
-            "008_dreaming.png"
+           "001_gn.png",
+           "002_lol.png",
+           "003_rofl.png",
+           "004_lmao.png",
+           "005_omg.png",
+           "006_brb.png",
+           "007_gtg.png",
+           "008_xoxo.png"
         };
         private bool _isInitialised;
         private Dictionary<string, StickerCategory> _dictStickersCategories;
@@ -92,7 +90,7 @@ namespace windows_client.utils
 
                     InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
 
-                    InitialiseDefaultStickers(CATEGORY_DOGGY, arrayDefaultDoggyStickers);
+                    InitialiseDefaultStickers(CATEGORY_EXPRESSIONS, arrayDefaultExpressionStickers);
 
                     List<StickerCategory> listStickerCategories = StickerCategory.ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
@@ -170,6 +168,7 @@ namespace windows_client.utils
             StickerCategory.CreateCategory(CATEGORY_TROLL);
             StickerCategory.CreateCategory(CATEGORY_AVATARS);
             StickerCategory.CreateCategory(CATEGORY_INDIANS);
+            StickerCategory.CreateCategory(CATEGORY_SPORTS);
             StickerCategory.CreateCategory(CATEGORY_HUMANOID2);
             StickerCategory.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
             StickerCategory.CreateCategory(CATEGORY_LOVE);
@@ -199,17 +198,10 @@ namespace windows_client.utils
                     lruStickers.AddObject(category + "_" + stickerId, image);
                 return;
             }
-            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
+            if ((category == StickerHelper.CATEGORY_EXPRESSIONS && StickerHelper.arrayDefaultExpressionStickers.Contains(stickerId))
                 || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
             {
-                string url;
-                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                    url = _stickerWXGApath;
-                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                    url = StickerHelper._stickerWVGAPath;
-                else
-                    url = StickerHelper._sticker720path;
-                image.UriSource = new Uri(string.Format(url, category, stickerId), UriKind.Relative);
+                image.UriSource = new Uri(string.Format(StickerHelper._stickerWVGAPath, category, stickerId), UriKind.Relative);
                 if (isHighres)
                     App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                 else
@@ -262,7 +254,7 @@ namespace windows_client.utils
             BitmapImage bmp = HikeViewModel.stickerHelper.lruStickers.GetObject(category + "_" + stickerId);
             if (bmp != null)
                 return true;
-            if ((category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(stickerId))
+            if ((category == StickerHelper.CATEGORY_EXPRESSIONS && StickerHelper.arrayDefaultExpressionStickers.Contains(stickerId))
                 || (category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(stickerId)))
                 return true;
 
@@ -295,7 +287,6 @@ namespace windows_client.utils
             this._stickerImageBytes = stickerImageBytes;
             this._isHighRes = isHighRes;
         }
-
 
         public string Id
         {

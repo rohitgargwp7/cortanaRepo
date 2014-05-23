@@ -114,7 +114,6 @@ namespace windows_client.utils
                 {
                     _isSelected = value;
                     NotifyPropertyChanged("CategoryIcon");
-                    NotifyPropertyChanged("BackgroundColor");
                 }
             }
         }
@@ -125,7 +124,7 @@ namespace windows_client.utils
                 switch (_category)
                 {
                     case StickerHelper.CATEGORY_RECENT:
-                        return UI_Utils.Instance.RecentIcon;
+                        return _isSelected ? UI_Utils.Instance.RecentIconActive : UI_Utils.Instance.RecentIconInActive;
                     case StickerHelper.CATEGORY_HUMANOID:
                         return _isSelected ? UI_Utils.Instance.HumanoidActive : UI_Utils.Instance.HumanoidInactive;
                     case StickerHelper.CATEGORY_DOGGY:
@@ -144,6 +143,8 @@ namespace windows_client.utils
                         return _isSelected ? UI_Utils.Instance.AvatarsActive : UI_Utils.Instance.AvatarsInactive;
                     case StickerHelper.CATEGORY_INDIANS:
                         return _isSelected ? UI_Utils.Instance.IndianActive : UI_Utils.Instance.IndianInactive;
+                    case StickerHelper.CATEGORY_SPORTS:
+                        return _isSelected ? UI_Utils.Instance.SportsActive: UI_Utils.Instance.SportsInactive;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
                     case StickerHelper.CATEGORY_ANGRY:
@@ -160,7 +161,7 @@ namespace windows_client.utils
         {
             get
             {
-                return _isSelected ? UI_Utils.Instance.HikeBlue : UI_Utils.Instance.UntappedCategoryColor;
+                return UI_Utils.Instance.UntappedCategoryColor;
             }
         }
 
@@ -396,17 +397,10 @@ namespace windows_client.utils
             if (sticker == null || string.IsNullOrEmpty(sticker.Id) || string.IsNullOrEmpty(sticker.Category))
                 return null;
 
-            if ((sticker.Category == StickerHelper.CATEGORY_DOGGY && StickerHelper.arrayDefaultDoggyStickers.Contains(sticker.Id))
+            if ((sticker.Category == StickerHelper.CATEGORY_EXPRESSIONS && StickerHelper.arrayDefaultExpressionStickers.Contains(sticker.Id))
                 || (sticker.Category == StickerHelper.CATEGORY_HUMANOID && StickerHelper.arrayDefaultHumanoidStickers.Contains(sticker.Id)))
             {
-                string url;
-                if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                    url = StickerHelper._stickerWXGApath;
-                else if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                    url = StickerHelper._stickerWVGAPath;
-                else
-                    url = StickerHelper._sticker720path;
-                return new BitmapImage(new Uri(string.Format(url, sticker.Category, sticker.Id), UriKind.Relative));
+                return new BitmapImage(new Uri(string.Format(StickerHelper._stickerWVGAPath, sticker.Category, sticker.Id), UriKind.Relative));
             }
 
             try

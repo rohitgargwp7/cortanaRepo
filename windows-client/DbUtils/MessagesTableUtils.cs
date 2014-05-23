@@ -319,20 +319,6 @@ namespace windows_client.DbUtils
                         obj.LastMessage = convMsg.Message;
                     }
                 }
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
-                {
-                    if (!Utils.isGroupConversation(from))
-                    {
-                        if (from == App.MSISDN)
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                        else
-                            convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
-                    }
-                    else
-                    {
-                        obj.LastMessage = convMsg.Message;
-                    }
-                }
                 #endregion
                 #region OTHER MSGS
                 else

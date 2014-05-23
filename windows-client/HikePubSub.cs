@@ -61,8 +61,6 @@ namespace windows_client
 
         public static readonly string NEW_ACTIVITY = "new_activity";
 
-        public static readonly string END_TYPING_CONVERSATION = "endtypingconv";
-
         public static readonly string TYPING_CONVERSATION = "typingconv";
 
         public static readonly string TOKEN_CREATED = "tokencreated";

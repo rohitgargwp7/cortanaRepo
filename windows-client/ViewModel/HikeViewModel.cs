@@ -369,7 +369,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
             App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         private void RemoveListeners()
@@ -379,7 +378,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
             App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -468,20 +466,10 @@ namespace windows_client.ViewModel
                 scheduler.Schedule(tn.AutoHideAfterTyping, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
             }
             #endregion
-            #region END TYPING NOTIFICATION
-            else if (type == HikePubSub.END_TYPING_CONVERSATION)
-            {
-                object[] vals = (object[])obj;
-                if (HidetypingNotification != null)
-                    HidetypingNotification(null, vals);
-
-            }
-            #endregion
         }
 
         public event EventHandler<Object[]> ShowTypingNotification;
         public event EventHandler<Object[]> AutohideTypingNotification;
-        public event EventHandler<Object[]> HidetypingNotification;
 
         public void CallAutohide(object[] vals)
         {
@@ -1133,5 +1121,7 @@ namespace windows_client.ViewModel
             if (App.ViewModel.StatusNotificationsStatusChanged != null)
                 App.ViewModel.StatusNotificationsStatusChanged(null, null);
         }
+
+        public bool IsConversationUpdated { get; set; }
     }
 }

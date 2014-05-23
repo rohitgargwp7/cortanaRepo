@@ -96,7 +96,6 @@ namespace windows_client.View
         private long lastTextChangedTime;
         private long lastTypingNotificationSentTime;
         private long lastTypingNotificationShownTime;
-        private bool endTypingSent = true;
 
         private HikePubSub mPubSub;
         DispatcherTimer _h2hOfflineTimer;
@@ -111,7 +110,6 @@ namespace windows_client.View
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
-        ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton stickersIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -167,17 +165,7 @@ namespace windows_client.View
             set
             {
                 if (value != _isMute)
-                {
                     _isMute = value;
-                    if (_isMute)
-                    {
-                        gcMuteGrid.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        gcMuteGrid.Visibility = Visibility.Collapsed;
-                    }
-                }
             }
         }
 
@@ -231,7 +219,6 @@ namespace windows_client.View
 
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
-            App.ViewModel.HidetypingNotification += HideTypingNotification;
 
             if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
@@ -306,7 +293,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -323,7 +309,6 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        onlineStatus.Visibility = Visibility.Collapsed;
                         lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                     });
                 }
@@ -389,6 +374,8 @@ namespace windows_client.View
             }
 
         }
+
+        bool _isDraftMessage;
 
         private void ManagePage()
         {
@@ -462,9 +449,13 @@ namespace windows_client.View
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrEmpty(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
             {
+                _isDraftMessage = true;
                 sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
+                //change image as text changed event is not raised
+                actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+                _isSendActivated = true;
             }
 
             IsSMSOptionValid = IsSMSOptionAvalable();
@@ -498,7 +489,7 @@ namespace windows_client.View
             {
                 if (App.newChatThreadPage != null)
                 {
-                    App.newChatThreadPage.gridStickers.Children.Remove(App.newChatThreadPage.pivotStickers);
+                    App.newChatThreadPage.stickerPallet.Children.Remove(App.newChatThreadPage.pivotStickers);
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, ee) =>
@@ -761,7 +752,7 @@ namespace windows_client.View
 
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
 
-                gridStickers.Children.Remove(pivotStickers);
+                stickerPallet.Children.Remove(pivotStickers);
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;
@@ -909,7 +900,7 @@ namespace windows_client.View
                     isDisplayPicSet = true;
 
                 processGroupJoin(true);
-                
+
                 isOnHike = true;
                 isGroupChat = true;
 
@@ -1012,7 +1003,7 @@ namespace windows_client.View
                         avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
                     else
                         avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
-                    
+
                     userImage.Source = avatarImage;
                 }
             }
@@ -1056,19 +1047,7 @@ namespace windows_client.View
 
             initBlockUnblockState();
 
-            Object showNormalFtue;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.CHAT_FTUE, out showNormalFtue) && ((bool)showNormalFtue))
-            {
-                SendBackgroundChangedPacket(ChatBackgroundHelper.Instance.SetDefaultBackground(mContactNumber));
-                PhoneApplicationService.Current.State.Remove(HikeConstants.CHAT_FTUE);
-            }
-            else
-            {
-                if (showNormalFtue != null && !(bool)showNormalFtue)
-                    App.ViewModel.ResetInAppTip(8);
-
-                ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
-            }
+            ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(mContactNumber);
 
             if (!mUserIsBlocked)
             {
@@ -1140,7 +1119,7 @@ namespace windows_client.View
                     }
                 }
             }
-            
+
             /* This is done so that after Tombstone when this page is launched, no group is created again and again */
             this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
             PhoneApplicationService.Current.State.Remove(App.NEW_GROUP_ID);
@@ -1300,7 +1279,6 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            onlineStatus.Visibility = Visibility.Collapsed;
                             lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                         });
                     }
@@ -1310,7 +1288,6 @@ namespace windows_client.View
             }
             else
             {
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
             }
         }
@@ -1351,7 +1328,6 @@ namespace windows_client.View
                 showNoSmsLeftOverlay = false;
                 ToggleAlertOnNoSms(false);
 
-                onlineStatus.Visibility = Visibility.Collapsed;
                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
 
                 if (isOnHike)
@@ -1623,15 +1599,27 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToOcMessages(cm, true, false, true);
+                    AddMessageToOcMessages(cm, true, false);
                 });
 
-                if (i == _unreadCount - 1 && _unreadMsg != null)
+                if (isInitialLaunch && i == _unreadCount - 1 && _unreadMsg != null)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        AddMessageToOcMessages(_unreadMsg, true, false);
-                        llsMessages.ScrollTo(_unreadMsg);
+                        try
+                        {
+                            if (_unreadMsg != null && llsMessages != null)
+                            {
+                                AddMessageToOcMessages(_unreadMsg, true, false);
+
+                                if (ocMessages.Contains(_unreadMsg))
+                                    llsMessages.ScrollTo(_unreadMsg);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("_unreadMsg cannot be scrolled: " + ex.StackTrace);
+                        }
                     });
                 }
             }
@@ -1728,14 +1716,6 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
-
-            //add icon for send
-            sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.Relative);
-            sendIconButton.Text = AppResources.Send_Txt;
-            sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
-            sendIconButton.IsEnabled = false;
-            appBar.Buttons.Add(sendIconButton);
 
             //add icon for sticker
             stickersIconButton = new ApplicationBarIconButton();
@@ -1983,7 +1963,6 @@ namespace windows_client.View
                     stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
-                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     isTypingNotificationEnabled = true;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
@@ -2126,7 +2105,7 @@ namespace windows_client.View
 
         List<ConvMessage> listDownload = new List<ConvMessage>();
 
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool readFromDb = false)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
         {
             if (ocMessages == null)
                 return;
@@ -2228,8 +2207,6 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!readFromDb)
-                        ScheduleMsg(chatBubble);
                     chatBubble.IsSms = !isOnHike;
                     chatBubble.CurrentOrientation = this.Orientation;
                     ocMessages.Insert(insertPosition, chatBubble);
@@ -2560,15 +2537,6 @@ namespace windows_client.View
             }
         }
 
-        private void ScheduleMsg(ConvMessage convMessage)
-        {
-            if (convMessage != null && convMessage.IsSent && convMessage.MessageStatus == ConvMessage.State.SENT_UNCONFIRMED)
-            {
-                convMessage.SdrImageVisibility = Visibility.Collapsed;
-                scheduler.Schedule(convMessage.UpdateVisibilitySdrImage, TimeSpan.FromSeconds(5));
-            }
-        }
-
         #endregion
 
         #endregion
@@ -2665,21 +2633,35 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
+        bool _isSendActivated = false;
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text) && _isSendActivated)
+            {
+                _isSendActivated = false;
+                actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
+            }
+
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
 
             lastText = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(lastText))
-            {
-                sendIconButton.IsEnabled = false;
                 return;
-            }
-            lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(HikeConstants.SEND_END_TYPING_TIMER));
 
-            sendStartTypingNotification();
+            if (!_isSendActivated)
+            {
+                _isSendActivated = true;
+                actionIcon.Source = UI_Utils.Instance.SendMessageImage;
+            }
+
+            if (_isDraftMessage)
+                _isDraftMessage = false;
+            else
+            {
+                lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
+                sendStartTypingNotification();
+            }
 
             if (!isOnHike && lastText.Length > 130)
             {
@@ -2706,12 +2688,6 @@ namespace windows_client.View
             {
                 spSmsCharCounter.Visibility = Visibility.Collapsed;
             }
-            sendIconButton.IsEnabled = enableSendMsgButton;
-        }
-
-        private void sendMsgBtn_Click(object sender, EventArgs e)
-        {
-            SendMsg();
         }
 
         private void SendMsg()
@@ -2723,7 +2699,8 @@ namespace windows_client.View
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
-            sendIconButton.IsEnabled = false;
+            _isSendActivated = false;
+            actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
                 sendMsgTxtbox.Focus();
@@ -2738,9 +2715,6 @@ namespace windows_client.View
 
             if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
-
-            endTypingSent = true;
-            sendTypingNotification(false);
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             convMessage.IsSms = !isOnHike;
@@ -3074,6 +3048,9 @@ namespace windows_client.View
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.SetAttachmentState(Attachment.AttachmentState.CANCELED);
+
+            if (_unreadMsg != null && ocMessages.IndexOf(_unreadMsg) == ocMessages.IndexOf(msg) - 1)
+                ocMessages.Remove(_unreadMsg);
 
             bool delConv = false;
             ocMessages.Remove(msg);
@@ -3559,7 +3536,6 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null)
                 {
                     lastSeenTxt.Text = lastSeenStatus;
-                    onlineStatus.Visibility = Visibility.Visible;
                     lastSeenPannel.Visibility = Visibility.Visible;
 
                     if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
@@ -3725,14 +3701,13 @@ namespace windows_client.View
             HikeTitle.IsHitTestVisible = enable;
             llsMessages.IsHitTestVisible = enable;
             bottomPanel.IsHitTestVisible = enable;
-            WalkieTalkieMicIcon.IsHitTestVisible = enable;
             sendMsgTxtbox.IsHitTestVisible = enable;
+            actionIcon.IsHitTestVisible = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
 
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
 
@@ -3811,59 +3786,26 @@ namespace windows_client.View
             }
         }
 
-        void HideTypingNotification(object sender, object[] vals)
-        {
-            string typingNotSenderOrSendee = isGroupChat ? (string)vals[1] : (string)vals[0];
-            if (mContactNumber == typingNotSenderOrSendee)
-                HideTypingNotification();
-        }
-
-
-        private void sendTypingNotification(bool notificationType)
-        {
-            JObject obj = new JObject();
-            try
-            {
-                if (notificationType)
-                {
-
-                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
-
-                }
-                else
-                {
-                    obj.Add(HikeConstants.TYPE, NetworkManager.END_TYPING);
-                }
-                obj.Add(HikeConstants.TO, mContactNumber);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
-            }
-            object[] publishData = new object[2];
-            publishData[0] = obj;
-            publishData[1] = 0; //qos
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
-            //endTypingSent = !notificationType;
-        }
-
-        private void sendEndTypingNotification()
-        {
-            long currentTime = TimeUtils.getCurrentTimeStamp();
-            if (currentTime - lastTextChangedTime >= HikeConstants.SEND_END_TYPING_TIMER && !endTypingSent)
-            {
-                endTypingSent = true;
-                sendTypingNotification(false);
-            }
-        }
-
         private void sendStartTypingNotification()
         {
-            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime > HikeConstants.SEND_START_TYPING_TIMER)
+            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationSentTime >= HikeConstants.SEND_START_TYPING_TIMER)
             {
-                endTypingSent = false;
                 lastTypingNotificationSentTime = TimeUtils.getCurrentTimeStamp();
-                sendTypingNotification(true);
+
+                JObject obj = new JObject();
+                try
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
+                }
+                object[] publishData = new object[2];
+                publishData[0] = obj;
+                publishData[1] = 0; //qos
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
             }
         }
 
@@ -4366,7 +4308,6 @@ namespace windows_client.View
 
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                onlineStatus.Visibility = Visibility.Collapsed;
                                 lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
                             });
                         }
@@ -5484,52 +5425,51 @@ namespace windows_client.View
 
         private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotRecent.Source = UI_Utils.Instance.RecentIconActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 0;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Active;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 1;
         }
 
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Active;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 2;
-
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
-            emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Active;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 3;
         }
 
         private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-            emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Active;
             emoticonPivot.SelectedIndex = 4;
         }
 
@@ -5555,39 +5495,39 @@ namespace windows_client.View
                         gridShowRecents.Visibility = Visibility.Collapsed;
                     }
 
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 1:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Active;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 2:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Active;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 3:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.HikeBlue;
-                    emotHeaderRect3.Background = UI_Utils.Instance.UntappedCategoryColor;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Active;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 4:
-                    emotHeaderRectRecent.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect0.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect1.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect2.Background = UI_Utils.Instance.UntappedCategoryColor;
-                    emotHeaderRect3.Background = UI_Utils.Instance.HikeBlue;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Active;
                     break;
             }
         }
@@ -5817,17 +5757,19 @@ namespace windows_client.View
                 if (App.ViewModel.SelectedBackground.IsTile)
                 {
                     _tileBitmap = bg;
-                        GenerateTileBackground();
+                    GenerateTileBackground();
                 }
                 else
                 {
+                    chatBackground.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    chatBackground.VerticalAlignment = System.Windows.VerticalAlignment.Center;
                     chatBackground.Source = bg;
                 }
 
                 PostChangeBackgroundOperations();
                 return;
             }
-            
+
             _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
@@ -6365,7 +6307,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_DOGGY && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
+                            if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_EXPRESSIONS && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
                                 stickerPivot.ShowDownloadFailed();
                             stickerPivot.ShowHidMoreProgreesBar(false);
                         });
@@ -6541,20 +6483,20 @@ namespace windows_client.View
                         btnDownload.IsHitTestVisible = false;
                         btnFree.IsHitTestVisible = false;
                         break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
                         btnDownload.Content = AppResources.Installed_Txt;
                         btnDownload.IsHitTestVisible = false;
                         btnFree.IsHitTestVisible = false;
+                        break;
+                    case StickerHelper.CATEGORY_DOGGY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
                         break;
                     case StickerHelper.CATEGORY_KITTY:
                         downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
                         break;
                     case StickerHelper.CATEGORY_BOLLYWOOD:
                         downloadDialogueImage.Source = UI_Utils.Instance.BollywoodOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
                         break;
                     case StickerHelper.CATEGORY_TROLL:
                         downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
@@ -6567,6 +6509,9 @@ namespace windows_client.View
                         break;
                     case StickerHelper.CATEGORY_INDIANS:
                         downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
+                        break;
+                    case StickerHelper.CATEGORY_SPORTS:
+                        downloadDialogueImage.Source = UI_Utils.Instance.SportsOverlay;
                         break;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
@@ -6648,10 +6593,8 @@ namespace windows_client.View
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
             pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.MaxHeight = 270;
-            pivotStickers.Margin = UI_Utils.Instance.NegateThickness;
-            pivotStickers.SetValue(Grid.RowProperty, 0);
-            gridStickers.Children.Add(pivotStickers);
+            pivotStickers.MaxHeight = 265;
+            stickerPallet.Children.Add(pivotStickers);
         }
 
         private void CreateStickerCategories()
@@ -6668,10 +6611,6 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
@@ -6680,7 +6619,7 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6696,7 +6635,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6721,9 +6668,12 @@ namespace windows_client.View
 
         #region Walkie Talkie
 
-        private void Record_ActionIconTapped(object sender, System.Windows.Input.GestureEventArgs e)
+        private void ActionIcon_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ShowWalkieTalkie();
+            if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
+                ShowWalkieTalkie();
+            else
+                SendMsg();
         }
 
         private void ShowWalkieTalkie()
@@ -6774,9 +6724,6 @@ namespace windows_client.View
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
-
-            if (this.ApplicationBar != null)
-                (this.ApplicationBar.Buttons[0] as ApplicationBarIconButton).IsEnabled = false;
 
             recordButtonGrid.Background = gridBackgroundBeforeRecording;
             recordButton.Text = HOLD_AND_TALK;
@@ -6943,7 +6890,6 @@ namespace windows_client.View
             _microphone.Start();
             timeBar.Opacity = 1;
             maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
-            sendIconButton.IsEnabled = false;
             _recorderState = RecorderState.RECORDING;
         }
 
@@ -7084,7 +7030,7 @@ namespace windows_client.View
             return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
-        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2,0x43,0x4b,0x5c));
+        private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2, 0x43, 0x4b, 0x5c));
         private Microphone _microphone = Microphone.Default;     // Object representing the physical microphone on the device
         private byte[] _buffer;                                  // Dynamic buffer to retrieve audio data from the microphone
         private MemoryStream _stream = new MemoryStream();       // Stores the audio data for later playback

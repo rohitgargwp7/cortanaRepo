@@ -36,7 +36,11 @@ namespace windows_client.View
                     int maxChar = GetMaxCharForBlock(tempString);
                     string currentString = tempString.Substring(0, maxChar);
                     tempString = tempString.Substring(maxChar);
-                    RichTextBox rtb = new RichTextBox() { TextWrapping = TextWrapping.Wrap };
+                    RichTextBox rtb = new RichTextBox()
+                    {
+                        TextWrapping = TextWrapping.Wrap,
+                        Foreground = (SolidColorBrush)App.Current.Resources["HikeBlack"]
+                    };
                     rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.HyperLinkClickedDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
                 }

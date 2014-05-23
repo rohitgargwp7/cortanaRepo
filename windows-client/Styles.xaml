@@ -42,7 +42,7 @@
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
             <SolidColorBrush x:Key="HikeLightGrey" Color="#8c8c8c"/>
             <SolidColorBrush x:Key="HikeBlack" Color="#434b5c"/>
-            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#e6e9ee"/>
+            <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#434b5c"/>
 
             <MediaElement x:Key="GlobalMedia" AutoPlay="False" />
@@ -475,7 +475,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">
@@ -526,7 +526,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">
@@ -577,7 +577,7 @@
                 <Setter Property="Foreground" Value="#555555"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Width" Value="138"/>
+                <Setter Property="Width" Value="175"/>
                 <Setter Property="Height" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Template">
@@ -1070,7 +1070,7 @@
                                 </Border>
                                 <Border x:Name="HintBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{StaticResource PhoneTouchTargetOverhang}">
                                     <Grid>
-                                        <ContentControl x:Name="HintContent" Background="Transparent" Content="{TemplateBinding Hint}" HorizontalAlignment="Left" Margin="3,0,3,0" Style="{TemplateBinding HintStyle}" Visibility="{TemplateBinding ActualHintVisibility}" VerticalAlignment="Center"/>
+                                        <ContentControl x:Name="HintContent" Background="Transparent" Content="{TemplateBinding Hint}" HorizontalAlignment="Left" Margin="3,5,3,0" Style="{TemplateBinding HintStyle}" Visibility="{TemplateBinding ActualHintVisibility}" VerticalAlignment="Top"/>
                                         <ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Stretch" Margin="{StaticResource PhoneTextBoxInnerMargin}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="Stretch"/>
                                     </Grid>
                                 </Border>

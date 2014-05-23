@@ -212,27 +212,6 @@ namespace windows_client
                 return;
             }
             #endregion
-            #region END_TYPING
-            else if (END_TYPING == type) /* End Typing event received */
-            {
-                string sentTo = "";
-                try
-                {
-                    sentTo = (string)jsonObj[HikeConstants.TO];
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  END_TYPING, Exception : " + ex.StackTrace);
-                }
-
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = sentTo;
-                if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
-                return;
-            }
-            #endregion
             #region LAST_SEEN
             else if (LAST_SEEN == type) /* Last Seen received */
             {
@@ -667,8 +646,8 @@ namespace windows_client
                                                             thrAreFavs = true;
 
                                                             if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true; 
-                                                            
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
@@ -1772,20 +1751,7 @@ namespace windows_client
                         cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
-                    {
-                        //v2 send cbg change event to v1
-                        // show normal message with upgrade message
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
-                        {
-                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
-                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED, jsonObj, ts);
-                        }
-                        else
-                        {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
-                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
-                        }
-                    }
+                        return;
 
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
 

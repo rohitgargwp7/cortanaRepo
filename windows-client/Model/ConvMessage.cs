@@ -2175,14 +2175,6 @@ namespace windows_client.Model
             ChangingState = false;
         }
 
-        public void UpdateVisibilitySdrImage()
-        {
-            if (_fileAttachment == null)
-            {
-                SdrImageVisibility = Visibility.Visible;
-                NotifyPropertyChanged("SdrImageVisibility");
-            }
-        }
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj, long timeStamp = 0)
         {
             string grpId;

@@ -138,7 +138,7 @@ namespace windows_client.Controls
             vScrollBar = sender as ScrollBar;
             if (vScrollBar != null)
             {
-                if ((vScrollBar.Maximum - vScrollBar.Value) < 100 && llsStickerCategory.ManipulationState != ManipulationState.Idle)
+                if ((vScrollBar.Maximum - vScrollBar.Value) < 100)
                 {
                     StickerCategory stickerCategory;
                     //if download message is shown that means user has not yet requested download
