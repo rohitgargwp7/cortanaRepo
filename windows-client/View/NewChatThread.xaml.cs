@@ -5419,51 +5419,51 @@ namespace windows_client.View
 
         private void emotHeaderRectRecent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconActive;
-            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+            emotRecent.Source = UI_Utils.Instance.RecentIconActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 0;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Active;
-            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Active;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 1;
         }
 
         private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Active;
-            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Active;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 2;
         }
 
         private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Active;
-            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Active;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 3;
         }
 
         private void emotHeaderRect3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-            emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-            emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-            emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-            emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Active;
+            emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+            emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+            emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+            emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+            emotCat3.Source = UI_Utils.Instance.EmotCat4Active;
             emoticonPivot.SelectedIndex = 4;
         }
 
@@ -5489,39 +5489,39 @@ namespace windows_client.View
                         gridShowRecents.Visibility = Visibility.Collapsed;
                     }
 
-                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconActive;
-                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 1:
-                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Active;
-                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Active;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 2:
-                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Active;
-                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Active;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 3:
-                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Active;
-                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Inactive;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Active;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
                     break;
                 case 4:
-                    emotHeaderRectRecent.Source = UI_Utils.Instance.RecentIconInActive;
-                    emotHeaderRect0.Source = UI_Utils.Instance.EmotCat1Inactive;
-                    emotHeaderRect1.Source = UI_Utils.Instance.EmotCat2Inactive;
-                    emotHeaderRect2.Source = UI_Utils.Instance.EmotCat3Inactive;
-                    emotHeaderRect3.Source = UI_Utils.Instance.EmotCat4Active;
+                    emotRecent.Source = UI_Utils.Instance.RecentIconInActive;
+                    emotCat0.Source = UI_Utils.Instance.EmotCat1Inactive;
+                    emotCat1.Source = UI_Utils.Instance.EmotCat2Inactive;
+                    emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
+                    emotCat3.Source = UI_Utils.Instance.EmotCat4Active;
                     break;
             }
         }
