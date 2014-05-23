@@ -1087,13 +1087,14 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image MaxHeight="50" Margin="17,0,0,0" VerticalAlignment="Center" Source="{Binding StatusUpdateImage}"/>
-                                            <Grid Grid.Column="1" Margin="12,0,12,5" VerticalAlignment="Center">
+                                            <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
+                                            <Grid Grid.Column="1" Margin="12,0,12,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock FontSize="21" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" VerticalAlignment="Top"/>
+                                                <local:MyRichTextBox MaxLines="2" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
+                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,6,0,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
                                                 <TextBlock Grid.Row="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top"/>
                                             </Grid>
                                         </Grid>

@@ -27,6 +27,9 @@ namespace windows_client.Controls
         public static readonly DependencyProperty MaxCharsPerLineProperty =
             DependencyProperty.Register("MaxCharsPerLine", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
+        public static readonly DependencyProperty MaxLinesProperty =
+                    DependencyProperty.Register("MaxLines", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
+
         private string lastText = string.Empty;
         public string Text
         {
@@ -76,6 +79,18 @@ namespace windows_client.Controls
             }
         }
 
+        public Int32 MaxLines
+        {
+            get
+            {
+                return (Int32)GetValue(MaxLinesProperty);
+            }
+            set
+            {
+                SetValue(MaxLinesProperty, value);
+            }
+        }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -100,6 +115,12 @@ namespace windows_client.Controls
             if (MaxCharsPerLine > 0)
             {
                 var maxChar = Utils.GetMaxCharForBlock(text, 1, MaxCharsPerLine);
+                if (text.Length > maxChar)
+                    text = text.Substring(0, maxChar + 1).Trim() + "...";
+            }
+            else if (MaxLines > 0)
+            {
+                var maxChar = Utils.GetMaxCharForBlock(text, MaxLines);
                 if (text.Length > maxChar)
                     text = text.Substring(0, maxChar + 1).Trim() + "...";
             }
