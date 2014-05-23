@@ -185,6 +185,7 @@ namespace windows_client.View
                                     BitmapImage b = new BitmapImage();
                                     b.SetSource(s);
                                     imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b);
+                                    MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, imgBytes);
                                 }
                                 catch (Exception ex)
                                 {

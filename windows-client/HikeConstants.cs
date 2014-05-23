@@ -381,6 +381,9 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
         public static readonly string START_HIKING = "startHiking";
+        public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
+        public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
+        public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";

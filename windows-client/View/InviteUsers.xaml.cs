@@ -194,11 +194,9 @@ namespace windows_client.View
                 Analytics.SendClickEvent(HikeConstants.SELECT_ALL_INVITE);
 
             string msisdns = string.Empty, toNum = String.Empty;
-            int count = 0;
             JObject obj = new JObject();
             JArray numlist = new JArray();
             JObject data = new JObject();
-
 
             var smsString = AppResources.sms_invite_message;
             var ts = TimeUtils.getCurrentTimeStamp();
@@ -235,8 +233,7 @@ namespace windows_client.View
             {
                 App.MqttManagerInstance.mqttPublishToServer(obj);
 
-                if (count > 0)
-                    MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             else
             {

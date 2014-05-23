@@ -11,6 +11,7 @@ using Microsoft.Phone.Tasks;
 using windows_client.DbUtils;
 using System.Diagnostics;
 using windows_client.Languages;
+using windows_client.Model;
 
 
 namespace windows_client
@@ -129,11 +130,15 @@ namespace windows_client
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
+
+                    Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_STICKER_VIEWED);
                     break;
                 case 2: 
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+
+                    Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_CBG_VIEWED);
                     break;
             }
         }

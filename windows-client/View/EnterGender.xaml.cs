@@ -243,6 +243,8 @@ namespace windows_client.View
                 });
                 return;
             }
+
+            ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
             Debug.WriteLine("Post addbook request returned successfully .... ");
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap, false);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
