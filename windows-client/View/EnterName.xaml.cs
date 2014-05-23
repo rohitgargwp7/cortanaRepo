@@ -204,7 +204,10 @@ namespace windows_client
             {
                 string name = PhoneApplicationService.Current.State["fbName"] as string;
                 fbConnectText.Text = AppResources.Connected_Txt;
-                txtBxEnterName.Text = name;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        txtBxEnterName.Text = name;
+                    });
                 spFbConnect.MinWidth = 180;
                 spFbConnect.IsEnabled = false;
             }
