@@ -1919,7 +1919,7 @@ namespace windows_client.utils
             }
         }
 
-        Thickness _newCategoryThickness= new Thickness(0, 5, 0, 0);
+        Thickness _newCategoryThickness= new Thickness(0, 2, 0, 0);
         public Thickness NewCategoryThickness
         {
             get

@@ -225,7 +225,6 @@ namespace windows_client
 
                     profileImage.SetSource(memStream);
                     avatarImage.Source = profileImage;
-                    MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, fullViewImageBytes);
 
                     reloadImage = false;
                 }
