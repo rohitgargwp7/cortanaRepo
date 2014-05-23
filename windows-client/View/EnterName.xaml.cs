@@ -213,9 +213,9 @@ namespace windows_client
 
             if (reloadImage) // this will handle both deactivation and tombstone
             {
-                if (State.ContainsKey("img"))
+                if (PhoneApplicationService.Current.State.ContainsKey("img"))
                 {
-                    fullViewImageBytes = (byte[])State["img"];
+                    fullViewImageBytes = (byte[])PhoneApplicationService.Current.State["img"];
 
                     MemoryStream memStream = new MemoryStream(fullViewImageBytes);
                     memStream.Seek(0, SeekOrigin.Begin);
@@ -294,9 +294,9 @@ namespace windows_client
                     State.Remove("nameErrorTxt.Opacity");
                 }
 
-                State.Remove("img");
+                PhoneApplicationService.Current.State.Remove("img");
                 if (fullViewImageBytes != null)
-                    State["img"] = fullViewImageBytes;
+                    PhoneApplicationService.Current.State["img"] = fullViewImageBytes;
             }
             else
                 App.IS_TOMBSTONED = false;
