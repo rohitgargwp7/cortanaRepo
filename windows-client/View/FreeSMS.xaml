@@ -24,7 +24,7 @@
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Free_SMS_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer x:Name="scrollViewer" Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
