@@ -48,13 +48,11 @@ namespace windows_client.Mqtt
             "54.251.180.1",
             "54.251.180.4",
             "54.251.144.159",
-            "54.251.180.6",
-            "54.251.144.159",
             "54.251.180.6"
        };
 
         Random _random = new Random();
-        
+
         /// <summary>
         /// returns ip and if ip fails 5 times then it returns domain name
         /// </summary>
