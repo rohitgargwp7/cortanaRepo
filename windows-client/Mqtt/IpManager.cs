@@ -9,29 +9,22 @@ namespace windows_client.Mqtt
 {
     class IpManager
     {
-        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
-        private static volatile IpManager instance = null;
+        private static readonly IpManager instance = new IpManager();
+
+        private IpManager()
+        {
+            string[] iplist = null;
+            if (App.appSettings.TryGetValue(App.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
+            {
+                ProductionIps = iplist;
+            }
+        }
 
         byte count = 0;
         public static IpManager Instance
         {
             get
             {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                        {
-                            instance = new IpManager();
-                            string[] iplist = null;
-                            if (App.appSettings.TryGetValue(App.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
-                            {
-                                instance.ProductionIps = iplist;
-                            }
-                        }
-                    }
-                }
                 return instance;
             }
         }
