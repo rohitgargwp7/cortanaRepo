@@ -976,10 +976,11 @@ namespace windows_client.View
                     }
 
                     isOnHike = co.IsOnhike;
-                    if (App.IS_TOMBSTONED) // in this case avatar needs to be re calculated
+                    if (App.IS_TOMBSTONED || co.Avatar == null) // in this case avatar needs to be re calculated
                     {
                         co.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                     }
+
                     avatarImage = co.AvatarImage;
                     userImage.Source = co.AvatarImage;
                 }
