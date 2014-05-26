@@ -17,7 +17,7 @@
         <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged"/>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" ForegroundColor="#434b5c" BackgroundColor="#eff2f6">
+        <shell:ApplicationBar IsVisible="True" ForegroundColor="#2c313d" BackgroundColor="#eff2f6">
             <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/AppBar/icon_direction.png" Text="directions"/>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
