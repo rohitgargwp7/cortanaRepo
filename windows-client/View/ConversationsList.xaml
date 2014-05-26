@@ -74,7 +74,7 @@
                     <Grid x:Name="emptyScreenGrid" Opacity="0">
                         <Image Source="images/ConversationPage/empty_screen_logo_black.png" Height="135" VerticalAlignment="Center" Margin="0,0,0,82"/>
                         <Image Source="images/ConversationPage/empty_screen_tip_black.png" MaxHeight="75" VerticalAlignment="Bottom" Margin="0,0,0,82"/>
-                        <Image Source="images/ConversationPage/empty_screen_tip_top.png" MaxHeight="90" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,25,0"/>
+                        <Image Source="images/ConversationPage/empty_screen_tip_top.png" MaxHeight="90" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,18,0"/>
                     </Grid>
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 

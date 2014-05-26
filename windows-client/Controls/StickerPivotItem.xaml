@@ -45,7 +45,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" LayoutMode="Grid" MinHeight="200" GridCellSize="145,145" Margin="0,0,0,5">
+        <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" LayoutMode="Grid" MinHeight="200" GridCellSize="145,145">
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
                     <Grid>
