@@ -88,10 +88,8 @@ namespace windows_client.View
                         }
 
                         if (!blockedList.Contains(c))
-                        {
-                            c.IsUsedAtMiscPlaces = true;
                             blockedList.Add(c);
-                        }
+
                         if (blockedList.Count > 0)
                         {
                             txtEmptyScreen.Visibility = Visibility.Collapsed;
@@ -107,7 +105,6 @@ namespace windows_client.View
                     ContactInfo c = obj as ContactInfo;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        c.IsUsedAtMiscPlaces = true;
                         blockedList.Remove(c);
                         if (blockedList.Count == 0)
                         {
@@ -208,7 +205,6 @@ namespace windows_client.View
             App.ViewModel.BlockedHashset.Remove(c.Msisdn);
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
             
-            c.IsUsedAtMiscPlaces = true;
             c.IsSelected = false;
             blockedList.Remove(c);
             

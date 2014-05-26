@@ -95,6 +95,6 @@
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" ForegroundColor="#434b5c" BackgroundColor="#eff2f6"/>
+        <shell:ApplicationBar IsVisible="True" ForegroundColor="#2c313d" BackgroundColor="#eff2f6"/>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>
