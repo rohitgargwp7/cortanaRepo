@@ -2700,6 +2700,11 @@ namespace windows_client.View
             sendIconButton.IsEnabled = enableSendMsgButton;
         }
 
+        private void sendMsgBtn_Click(object sender, EventArgs e)
+        {
+            SendMsg();
+        }
+
         private void SendMsg()
         {
             if (mUserIsBlocked)
