@@ -32,7 +32,6 @@ namespace windows_client.Model
         private bool _onHike;
         private byte[] _avatar;
         private bool _isFav;
-        private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
         private int? _phoneNoKind;
 
         # region Users Table Members
@@ -229,18 +228,6 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsUsedAtMiscPlaces
-        {
-            get
-            {
-                return _isCloseFriendNux;
-            }
-            set
-            {
-                _isCloseFriendNux = value;
-            }
-        }
-
         Visibility _checkBoxVisibility = Visibility.Collapsed;
         public Visibility CheckBoxVisibility
         {
@@ -315,18 +302,16 @@ namespace windows_client.Model
                 return false;
             ContactInfo other = (ContactInfo)obj;
 
-            if (IsUsedAtMiscPlaces)
+            // if msisdn of two contacts are equal they should be equal
+            // if msisdn is not there then other things should be compared
+            if (!string.IsNullOrEmpty(_msisdn))
             {
-                // if msisdn of two contacts are equal they should be equal
-                // if msisdn is not there then other things should be compared
-                if (!string.IsNullOrEmpty(_msisdn))
-                {
-                    if (string.IsNullOrWhiteSpace(other.Msisdn))
-                        return false;
-                    else if (_msisdn == other.Msisdn)
-                        return true;
-                }
+                if (string.IsNullOrWhiteSpace(other.Msisdn))
+                    return false;
+                else if (_msisdn == other.Msisdn)
+                    return true;
             }
+            
             if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
