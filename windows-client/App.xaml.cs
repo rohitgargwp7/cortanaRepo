@@ -75,6 +75,7 @@ namespace windows_client
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
         public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
+        public static readonly string IP_LIST = "ip_list";
 
         public static string EMAIL = "email";
         public static string GENDER = "gender";

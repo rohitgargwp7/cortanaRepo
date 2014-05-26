@@ -667,8 +667,8 @@ namespace windows_client
                                                             thrAreFavs = true;
 
                                                             if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true; 
-                                                            
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
@@ -920,6 +920,31 @@ namespace windows_client
                                 popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
                                 App.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
                             }
+                        }
+                    }
+                    #endregion
+                    #region REFRESH IP LIST
+                    JToken iplist;
+                    if (data.TryGetValue(HikeConstants.IP_KEY, out iplist))
+                    {
+                        try
+                        {
+                            JArray jArray = (JArray)iplist;
+                            if (jArray != null && jArray.Count > 0)
+                            {
+                                string[] ips = new string[jArray.Count];
+
+                                for (int i = 0; i < jArray.Count; i++)
+                                {
+                                    ips[i] = (string)jArray[i];
+                                }
+
+                                App.WriteToIsoStorageSettings(App.IP_LIST, ips);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, List IPs, Exception : " + ex.StackTrace);
                         }
                     }
                     #endregion

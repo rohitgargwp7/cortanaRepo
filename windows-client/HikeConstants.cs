@@ -339,6 +339,7 @@ namespace windows_client
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
         public static readonly string REWARDS_TOKEN = "reward_token";
+        public static readonly string IP_KEY = "ip";
         public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 

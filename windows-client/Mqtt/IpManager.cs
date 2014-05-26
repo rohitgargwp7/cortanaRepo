@@ -24,6 +24,11 @@ namespace windows_client.Mqtt
                         if (instance == null)
                         {
                             instance = new IpManager();
+                            string[] iplist = null;
+                            if (App.appSettings.TryGetValue(App.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
+                            {
+                                instance.ProductionIps = iplist;
+                            }
                         }
                     }
                 }
