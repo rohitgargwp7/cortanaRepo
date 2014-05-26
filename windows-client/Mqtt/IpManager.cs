@@ -56,10 +56,13 @@ namespace windows_client.Mqtt
         Random _random = new Random();
         public string GetIp()
         {
+            bool mqttDmqttToggle = true;
+            App.appSettings.TryGetValue<bool>(App.MQTT_DMQTT_SETTING, out mqttDmqttToggle);
             string ip = string.Empty;
+
             if (AccountUtils.IsProd)
             {
-                if (count < 5)
+                if (count < 5 && mqttDmqttToggle)
                 {
                     ip = ProductionIps[_random.Next(ProductionIps.Length)];
                     count++;

@@ -590,7 +590,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.2", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.3", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -848,7 +848,7 @@ namespace windows_client
             }
             #endregion
             #region TUTORIAL
-            if (!isNewInstall && Utils.compareVersion("2.5.3.2", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.5.3.3", _currentVersion) == 1)
             {
                 if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
                     || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
@@ -1017,7 +1017,7 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.3.2") < 0)//if it is upgrade
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.3.3") < 0)//if it is upgrade
                 RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
