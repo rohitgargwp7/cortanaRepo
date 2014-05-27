@@ -173,6 +173,8 @@ namespace windows_client.View
 
             JObject obj = new JObject();
 
+            App.WriteToIsoStorageSettings(App.GENDER, gender);
+
             int age = 0;
             if (Int32.TryParse((string)App.appSettings[App.ACCOUNT_AGE], out age))
             {
