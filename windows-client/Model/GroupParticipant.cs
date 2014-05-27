@@ -16,9 +16,11 @@ using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
+using System.Runtime.Serialization;
 
 namespace windows_client.Model
 {
+    [DataContract]
     public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>, IBinarySerializable
     {
         private string _grpId;
@@ -61,6 +63,7 @@ namespace windows_client.Model
             _isDND = isDND;
         }
 
+        [DataMember]
         public string GroupId
         {
             get
@@ -75,6 +78,7 @@ namespace windows_client.Model
         }
 
         BitmapImage _memberImage;
+        [IgnoreDataMember]
         public BitmapImage MemberImage
         {
             get
@@ -91,6 +95,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public string Name
         {
             get
@@ -123,6 +128,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public string Msisdn
         {
             get
@@ -136,6 +142,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsOnHike
         {
             get
@@ -155,6 +162,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsDND
         {
             get
@@ -168,6 +176,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool HasOptIn
         {
             get
@@ -181,6 +190,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool HasLeft
         {
             get
@@ -194,6 +204,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsUsed
         {
             get
@@ -208,6 +219,7 @@ namespace windows_client.Model
         }
 
         bool _isOwner;
+        [DataMember]
         public bool IsOwner
         {
             get

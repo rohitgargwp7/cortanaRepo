@@ -325,7 +325,6 @@
                                                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="*"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
@@ -341,15 +340,16 @@
                                                             <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Text}" Foreground="Black" FontWeight="Light" VerticalAlignment="Top"
                                                                                      FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
                                                                                      ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                    <local:MyRichTextBox Grid.Row="1" Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
+                                                        
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
                                                                              FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
                                                                              LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                    <Image Grid.Row="2" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Image Grid.Row="1" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
                                                            Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                                            MaxHeight="300" Tap="ProTipImage_Tapped"/>
-                                                    <Button Grid.Row="3" Margin="0,5,0,0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
+                                                    <Button Grid.Row="2" Margin="0,5,0,0" HorizontalAlignment="Center" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
                                                             Style="{StaticResource NoButtonStyle}" Click="dismissProTip_Click"/>
                                                 </Grid>
                                             </Border>

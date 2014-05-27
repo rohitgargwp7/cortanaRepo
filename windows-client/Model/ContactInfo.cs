@@ -454,14 +454,17 @@ namespace windows_client.Model
             set;
         }
 
+        BitmapImage _avatarImage;
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
-                    // get image and save in cache too
-                    return UI_Utils.Instance.GetBitmapImage(_msisdn);
+                    if (_avatarImage == null)
+                        _avatarImage = UI_Utils.Instance.GetBitmapImage(_msisdn);
+
+                    return _avatarImage;
                 }
                 catch (Exception ex)
                 {
