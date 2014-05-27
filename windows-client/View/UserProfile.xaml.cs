@@ -379,6 +379,9 @@ namespace windows_client.View
                     InitHikeUserProfile();
             }
 
+            if (App.IS_TOMBSTONED)
+                avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
+
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
                 LoadHighResImage();
 
