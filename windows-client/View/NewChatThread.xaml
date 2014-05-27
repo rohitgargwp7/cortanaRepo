@@ -1434,8 +1434,8 @@
                             Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45" Tap="downloadStickers_Tap" />
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" Background="#2c2c2c" Height="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                <TextBlock FontFamily="Segoe WP SemiLight" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
+            <Grid Grid.Row="1" Background="#2c2c2c" MinHeight="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <TextBlock FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
             </Grid>
         </Grid>
        

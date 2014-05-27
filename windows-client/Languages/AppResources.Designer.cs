@@ -1454,7 +1454,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! whats your number?.
+        ///   Looks up a localized string similar to Hi! what&apos;s your number?.
         /// </summary>
         public static string EnterNumber_EnterNum_TxtBlk {
             get {

@@ -218,7 +218,7 @@
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Hi! whats your number?</value>
+    <value>Hi! what's your number?</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
