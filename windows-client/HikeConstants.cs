@@ -432,6 +432,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
+            public static readonly string GROUP_OWNER_CHANGED = "goc";
             public static readonly string DND_USER_IN_GROUP = "dugc";
 
             public static readonly string ACCOUNT_INFO = "ai";
@@ -454,6 +455,8 @@ namespace windows_client
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
             public static readonly string APP_UPDATE = "update";
+
+            public static readonly string MSISDN_KEYWORD = "msisdn";
         }
 
         public static class AppSettings

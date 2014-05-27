@@ -269,7 +269,7 @@ namespace windows_client.ViewModel
 
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
@@ -1114,6 +1114,7 @@ namespace windows_client.ViewModel
 
         #endregion
 
+        #region Status Update notification toggle
         public event EventHandler<EventArgs> StatusNotificationsStatusChanged;
 
         public void StatusNotificationSettingsChanged()
@@ -1122,6 +1123,19 @@ namespace windows_client.ViewModel
                 App.ViewModel.StatusNotificationsStatusChanged(null, null);
         }
 
+        #endregion
+
+        #region Group Owner Changed
+        public event EventHandler<object[]> GroupOwnerChangedEvent;
+        public void GroupOwnerChanged(object[] objArray)
+        {
+            if (App.ViewModel.GroupOwnerChangedEvent != null)
+                App.ViewModel.GroupOwnerChangedEvent(null, objArray);
+        }
+
+        #endregion
+
         public bool IsConversationUpdated { get; set; }
+
     }
 }
