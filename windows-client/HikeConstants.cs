@@ -94,7 +94,6 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 50;
         public static readonly int VIBRATE_DURATION = 700;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
-        public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
@@ -339,6 +338,7 @@ namespace windows_client
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
         public static readonly string REWARDS_TOKEN = "reward_token";
+        public static readonly string IP_KEY = "ip";
         public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 

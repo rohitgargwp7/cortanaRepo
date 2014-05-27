@@ -902,6 +902,31 @@ namespace windows_client
                         }
                     }
                     #endregion
+                    #region REFRESH IP LIST
+                    JToken iplist;
+                    if (data.TryGetValue(HikeConstants.IP_KEY, out iplist))
+                    {
+                        try
+                        {
+                            JArray jArray = (JArray)iplist;
+                            if (jArray != null && jArray.Count > 0)
+                            {
+                                string[] ips = new string[jArray.Count];
+
+                                for (int i = 0; i < jArray.Count; i++)
+                                {
+                                    ips[i] = (string)jArray[i];
+                                }
+
+                                App.WriteToIsoStorageSettings(App.IP_LIST, ips);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, List IPs, Exception : " + ex.StackTrace);
+                        }
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
