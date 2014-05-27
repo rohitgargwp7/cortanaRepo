@@ -1249,6 +1249,40 @@ namespace windows_client
             }
             #endregion
 
+            #region GROUP_OWNER_CHANGED
+            else if (HikeConstants.MqttMessageTypes.GROUP_OWNER_CHANGED == type) //Group chat end
+            {
+                try
+                {
+                    string groupId = (string)jsonObj[HikeConstants.TO];
+
+                    if (!App.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
+                        return;
+
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+
+                    JToken jtoken;
+                    if (data.TryGetValue(HikeConstants.MqttMessageTypes.MSISDN_KEYWORD, out jtoken))
+                    {
+                        string newOwner = (string)jtoken;
+
+                        if (string.IsNullOrEmpty(newOwner))
+                            return;
+
+                        if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
+                        {
+                            Object[] objArray = new object[] { groupId, newOwner };
+                            App.ViewModel.GroupOwnerChanged(objArray);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GOC packet : " + e.StackTrace);
+                }
+            }
+            #endregion
+
             #endregion
             #region INTERNATIONAL USER
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
