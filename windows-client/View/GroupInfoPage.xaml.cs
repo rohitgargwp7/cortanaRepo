@@ -454,6 +454,7 @@ namespace windows_client.View
                     LoadParticipants();
                     groupName = App.ViewModel.ConvMap[groupId].NameToShow;
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
+                    groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
