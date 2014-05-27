@@ -481,6 +481,8 @@ namespace windows_client.View
 
                     groupName = App.ViewModel.ConvMap[groupId].NameToShow; // change name of group
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
+
+                    groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
@@ -1154,8 +1156,12 @@ namespace windows_client.View
             groupNameTxtBox.Visibility = Visibility.Collapsed;
         }
 
-        void GroupOwnerChanged(object sender, string newOwner)
+        void GroupOwnerChanged(object sender, object[] objArray)
         {
+            if (groupId != (string)objArray[0])
+                return;
+
+            string newOwner = (string)objArray[1];
             var currentOwnerList = _participantList[0].Where(c => c.IsOwner);
             if (currentOwnerList != null && currentOwnerList.Count() > 0)
             {
@@ -1163,7 +1169,7 @@ namespace windows_client.View
                 gp.IsOwner = false;
             }
 
-            var newOwnerList = _participantList[0].Where(c => c.Msisdn==newOwner);
+            var newOwnerList = _participantList[0].Where(c => c.Msisdn == newOwner);
             if (newOwnerList != null && newOwnerList.Count() > 0)
             {
                 GroupParticipant gp = newOwnerList.First();

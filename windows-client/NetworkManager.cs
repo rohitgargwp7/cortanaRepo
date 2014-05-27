@@ -1271,7 +1271,8 @@ namespace windows_client
 
                         if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
                         {
-                            App.ViewModel.GroupOwnerChanged(newOwner);
+                            Object[] objArray = new object[] { groupId, newOwner };
+                            App.ViewModel.GroupOwnerChanged(objArray);
                         }
                     }
                 }

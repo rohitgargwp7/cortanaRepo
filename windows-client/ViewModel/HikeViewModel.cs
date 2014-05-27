@@ -1126,11 +1126,11 @@ namespace windows_client.ViewModel
         #endregion
 
         #region Group Owner Changed
-        public event EventHandler<string> GroupOwnerChangedEvent;
-        public void GroupOwnerChanged(string newOwner)
+        public event EventHandler<object[]> GroupOwnerChangedEvent;
+        public void GroupOwnerChanged(object[] objArray)
         {
             if (App.ViewModel.GroupOwnerChangedEvent != null)
-                App.ViewModel.GroupOwnerChangedEvent(null, newOwner);
+                App.ViewModel.GroupOwnerChangedEvent(null, objArray);
         }
 
         #endregion
