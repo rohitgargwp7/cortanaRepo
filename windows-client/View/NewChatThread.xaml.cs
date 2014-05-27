@@ -2919,7 +2919,8 @@ namespace windows_client.View
             }
         }
 
-        private void ChatMessageSelected(object sender, SelectionChangedEventArgs e)
+
+        private void ChatMessage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_hyperlinkedClicked)
             {
@@ -2927,8 +2928,13 @@ namespace windows_client.View
                 return;
             }
 
-            ConvMessage msg = llsMessages.SelectedItem as ConvMessage;
+            ConvMessage msg = (sender as Grid).DataContext as ConvMessage;
 
+            ChatMessageSelected(msg);
+        }
+
+        private void ChatMessageSelected(ConvMessage msg)
+        {
             if (msg != null)
             {
                 if ((msg.IsSent && msg.MessageStatus == ConvMessage.State.SENT_CONFIRMED) || msg.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
@@ -2966,10 +2972,10 @@ namespace windows_client.View
                         llsMessages.SelectedItem = null;
                     }
                     else
-                        FileAttachmentMessage_Tap(sender, e); // normal flow if all are sent files and send all sms option is not visible
+                        FileAttachmentMessage_Tap(msg); // normal flow if all are sent files and send all sms option is not visible
                 }
                 else
-                    FileAttachmentMessage_Tap(sender, e); // normal flow for recieved files
+                    FileAttachmentMessage_Tap(msg); // normal flow for recieved files
             }
         }
 
@@ -4874,7 +4880,7 @@ namespace windows_client.View
             }
         }
 
-        private void FileAttachmentMessage_Tap(object sender, SelectionChangedEventArgs e)
+        private void FileAttachmentMessage_Tap(ConvMessage convMessage)
         {
             if (_uploadProgressBarIsTapped)
             {
@@ -4885,9 +4891,6 @@ namespace windows_client.View
 
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
-
-            ConvMessage convMessage = llsMessages.SelectedItem as ConvMessage;
-            llsMessages.SelectedItem = null;
 
             if (convMessage == null)
                 return;
@@ -7395,5 +7398,6 @@ namespace windows_client.View
             });
         }
         #endregion
+
     }
 }
