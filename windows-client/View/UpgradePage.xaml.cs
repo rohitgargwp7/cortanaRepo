@@ -56,9 +56,6 @@ namespace windows_client.View
                         #endregion
                     }
 
-                    // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
-                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
-                        StatusMsgsTable.MessagesDbUpdateToLatestVersion();
 
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
@@ -66,6 +63,8 @@ namespace windows_client.View
                     bool dbUdated = false;
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
+                        StatusMsgsTable.MessagesDbUpdateToLatestVersion();
+
                         using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                         {
                             if (db.DatabaseExists())
@@ -98,8 +97,7 @@ namespace windows_client.View
                             }
                         }
 
-                        if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
-                            FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
+                        FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
                     }
 
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
