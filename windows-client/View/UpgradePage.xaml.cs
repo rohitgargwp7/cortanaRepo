@@ -101,8 +101,6 @@ namespace windows_client.View
                         if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
                             FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
                     }
-                    else
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
