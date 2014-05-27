@@ -826,7 +826,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//todo:update to next market build
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.3.4") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
