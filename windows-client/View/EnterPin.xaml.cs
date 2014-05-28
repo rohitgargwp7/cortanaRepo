@@ -201,8 +201,6 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
-                txtBxEnterPin.Focus();
-                txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
             });
         }
 
