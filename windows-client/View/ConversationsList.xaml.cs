@@ -1681,9 +1681,16 @@ namespace windows_client.View
                             rewardsMenu = new ApplicationBarMenuItem();
                             rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
                             rewardsMenu.Click += rewardsMenu_Click;
-                            rewardsMenu.IsEnabled = true;
-                            appBar.MenuItems.Insert(2, rewardsMenu);
                         }
+
+                        if (!appBar.MenuItems.Contains(rewardsMenu))
+                        {
+                            if (launchPagePivot.SelectedIndex == 1)
+                                appBar.MenuItems.Insert(1, rewardsMenu);
+                            else
+                                appBar.MenuItems.Insert(2, rewardsMenu);
+                        } 
+                        rewardsMenu.IsEnabled = true;
                     });
                 }
                 else // hide rewards option 
