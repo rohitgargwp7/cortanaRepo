@@ -33,7 +33,7 @@ namespace windows_client.View
     /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 2;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
 
         private bool _canGoBack = true;
         private bool _showSmsContacts;
