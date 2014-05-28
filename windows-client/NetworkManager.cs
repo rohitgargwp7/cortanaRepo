@@ -690,28 +690,30 @@ namespace windows_client
 
                                         #endregion
                                         #region REWARDS
-                                        if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                                         {
-                                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
-                                        }
-                                        // whenever this key will come toggle the show rewards thing
-                                        if (kkvv.Key == HikeConstants.SHOW_REWARDS)
-                                        {
-                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
-                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
-                                        }
-
-                                        if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
-                                        {
-                                            JObject ttObj = kkvv.Value.ToObject<JObject>();
-                                            if (ttObj != null)
+                                            if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
                                             {
-                                                int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
-                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
-                                                pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                            }
+                                            // whenever this key will come toggle the show rewards thing
+                                            if (kkvv.Key == HikeConstants.SHOW_REWARDS)
+                                            {
+                                                App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
+                                                pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                                            }
+
+                                            if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
+                                            {
+                                                JObject ttObj = kkvv.Value.ToObject<JObject>();
+                                                if (ttObj != null)
+                                                {
+                                                    int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
+                                                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
+                                                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                                }
                                             }
                                         }
-
                                         #endregion
                                         #region Profile Pic
 
@@ -834,13 +836,16 @@ namespace windows_client
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
-                    if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
-                        App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
-                    rew = null;
-                    if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                    if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                     {
-                        App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
-                        pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                        if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
+                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                        rew = null;
+                        if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                        {
+                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                        }
                     }
                     #endregion
                     #region batch push zone
