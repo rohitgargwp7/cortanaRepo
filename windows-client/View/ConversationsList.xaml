@@ -74,7 +74,7 @@
                     <Grid x:Name="emptyScreenGrid" Opacity="0">
                         <Image Source="images/ConversationPage/empty_screen_logo_black.png" Height="135" VerticalAlignment="Center" Margin="0,0,0,82"/>
                         <Image Source="images/ConversationPage/empty_screen_tip_black.png" MaxHeight="75" VerticalAlignment="Bottom" Margin="0,0,0,82"/>
-                        <Image Source="images/ConversationPage/empty_screen_tip_top.png" MaxHeight="90" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,25,0"/>
+                        <Image Source="images/ConversationPage/empty_screen_tip_top.png" MaxHeight="90" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,18,0"/>
                     </Grid>
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
@@ -256,7 +256,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding UserImage}" MaxHeight="69" MaxWidth="69" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                                                    <Image Source="{Binding UserImage}" MaxHeight="52" MaxWidth="52" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
                                                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="18,0,0,0">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
@@ -325,7 +325,6 @@
                                                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="*"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
@@ -341,15 +340,16 @@
                                                             <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Text}" Foreground="Black" FontWeight="Light" VerticalAlignment="Top"
                                                                                      FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
                                                                                      ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                    <local:MyRichTextBox Grid.Row="1" Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
+                                                        
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
                                                                              FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
                                                                              LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                    <Image Grid.Row="2" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Image Grid.Row="1" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
                                                            Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                                            MaxHeight="300" Tap="ProTipImage_Tapped"/>
-                                                    <Button Grid.Row="3" Margin="0,5,0,0" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
+                                                    <Button Grid.Row="2" Margin="0,5,0,0" HorizontalAlignment="Center" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
                                                             Style="{StaticResource NoButtonStyle}" Click="dismissProTip_Click"/>
                                                 </Grid>
                                             </Border>

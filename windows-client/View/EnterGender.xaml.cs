@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Text;
 using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -171,6 +172,8 @@ namespace windows_client.View
             bool isScanned;
 
             JObject obj = new JObject();
+
+            App.WriteToIsoStorageSettings(App.GENDER, gender);
 
             int age = 0;
             if (Int32.TryParse((string)App.appSettings[App.ACCOUNT_AGE], out age))
@@ -325,13 +328,14 @@ namespace windows_client.View
             Debug.WriteLine("Set Name post request returned successfully .... ");
         }
 
+        byte[] _fullViewImageBytes;
         private void UpdateProfileImage()
         {
-            var fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(HikeConstants.MY_PROFILE_PIC);
+            _fullViewImageBytes = MiscDBUtil.getLargeImageForMsisdn(HikeConstants.MY_PROFILE_PIC);
 
-            if (fullViewImageBytes != null)
+            if (_fullViewImageBytes != null)
             {
-                AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+                AccountUtils.updateProfileIcon(_fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
             }
             else
             {
@@ -348,10 +352,22 @@ namespace windows_client.View
                 {
                     if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
                     {
+                        progressBar.Opacity = 0;
                         MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
+                        return;
                     }
-                    //progressBarTop.IsEnabled = false;
-                    progressBar.Opacity = 0;
+
+                    var img = UI_Utils.Instance.createImageFromBytes(_fullViewImageBytes);
+                    WriteableBitmap writeableBitmap = new WriteableBitmap(img);
+
+                    byte[] thumbnailBytes = null;
+                    using (var msLargeImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                        thumbnailBytes = msLargeImage.ToArray();
+                    }
+
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, thumbnailBytes, false);
                     processProfile();
                 });
         }

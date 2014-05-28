@@ -16,7 +16,7 @@ namespace windows_client.DbUtils
 {
     public class GroupTableUtils
     {
-      
+
         public static void addGroupInfo(GroupInfo gi)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
@@ -38,6 +38,22 @@ namespace windows_client.DbUtils
             }
             return true;
         }
+
+        public static bool UpdateGroupOwner(string groupId, string groupOwner)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (gi == null)
+                    return false;
+                if (gi.GroupOwner == groupOwner)
+                    return false;
+                gi.GroupOwner = groupOwner;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+            return true;
+        }
+
 
         public static bool SetGroupDead(string groupId)
         {

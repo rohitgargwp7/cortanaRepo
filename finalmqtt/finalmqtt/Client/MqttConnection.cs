@@ -183,6 +183,7 @@ namespace finalmqtt.Client
         {
             dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
+            MQttLogging.LogWriter.Instance.WriteToLog("ip:" + host + "port:" + port);
 
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _socket.NoDelay = true;
@@ -696,7 +697,7 @@ namespace finalmqtt.Client
         {
             Double totalTimeTaken = (DateTime.Now - dt).TotalSeconds;
             Double timeForACkBac = (DateTime.Now - dt2).TotalSeconds;
-            MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MQTT connack recieved, STATUS:{0},Total connect time:{1}, time for ack:{2}",msg.getStatus(),totalTimeTaken,timeForACkBac));
+            MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MQTT connack recieved, STATUS:{0},Total connect time:{1}, time for ack:{2}", msg.getStatus(), totalTimeTaken, timeForACkBac));
 
             connackReceived = true;
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)

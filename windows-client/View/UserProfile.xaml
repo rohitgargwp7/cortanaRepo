@@ -29,8 +29,8 @@
                     <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="onProfilePicButtonTap">
                         <Image x:Name="avatarImage" Source="images\default_group.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
-                            <Border Background="{StaticResource HikeBlack}" Opacity="0.6" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                            <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12">
+                            <Border Background="{StaticResource HikeBlack}" Opacity="0.95" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="25">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
@@ -39,13 +39,13 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock FontSize="32" Name="txtUserName" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}"
+                                <TextBlock FontSize="32" Name="txtUserName" TextTrimming="WordEllipsis" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}"
                                             VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" Foreground="White">
                                     <toolkit:GestureService.GestureListener>
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>
                                 </TextBlock>
-                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="22" FontWeight="Light" Foreground="White">
+                                <TextBlock Name="txtMsisdn" Grid.Row="1" HorizontalAlignment="Left" FontSize="20" FontWeight="Light" Foreground="White">
                                     <toolkit:GestureService.GestureListener>
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />
                                     </toolkit:GestureService.GestureListener>

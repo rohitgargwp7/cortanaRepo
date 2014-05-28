@@ -902,6 +902,31 @@ namespace windows_client
                         }
                     }
                     #endregion
+                    #region REFRESH IP LIST
+                    JToken iplist;
+                    if (data.TryGetValue(HikeConstants.IP_KEY, out iplist))
+                    {
+                        try
+                        {
+                            JArray jArray = (JArray)iplist;
+                            if (jArray != null && jArray.Count > 0)
+                            {
+                                string[] ips = new string[jArray.Count];
+
+                                for (int i = 0; i < jArray.Count; i++)
+                                {
+                                    ips[i] = (string)jArray[i];
+                                }
+
+                                App.WriteToIsoStorageSettings(App.IP_LIST, ips);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, List IPs, Exception : " + ex.StackTrace);
+                        }
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -1254,6 +1279,40 @@ namespace windows_client
                 catch (Exception e)
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
+                }
+            }
+            #endregion
+
+            #region GROUP_OWNER_CHANGED
+            else if (HikeConstants.MqttMessageTypes.GROUP_OWNER_CHANGED == type) //Group chat end
+            {
+                try
+                {
+                    string groupId = (string)jsonObj[HikeConstants.TO];
+
+                    if (!App.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
+                        return;
+
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+
+                    JToken jtoken;
+                    if (data.TryGetValue(HikeConstants.MqttMessageTypes.MSISDN_KEYWORD, out jtoken))
+                    {
+                        string newOwner = (string)jtoken;
+
+                        if (string.IsNullOrEmpty(newOwner))
+                            return;
+
+                        if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
+                        {
+                            Object[] objArray = new object[] { groupId, newOwner };
+                            App.ViewModel.GroupOwnerChanged(objArray);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GOC packet : " + e.StackTrace);
                 }
             }
             #endregion
