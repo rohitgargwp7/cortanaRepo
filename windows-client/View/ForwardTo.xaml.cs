@@ -415,7 +415,16 @@ namespace windows_client.View
                 {
                     enterNameTxt.Select(startIndex, nameLength);
                     var cInfo = SelectedContacts[k];
-                    contactsListBox.ScrollTo(cInfo);
+
+                    try
+                    {
+                        contactsListBox.ScrollTo(cInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("enterNameTxt_Tap : cntact not present in list: " + cInfo.Name + cInfo.Msisdn + "\n" + ex.StackTrace);
+                    }
+
                     _contactToBeRemoved = cInfo;
                     return;
                 }

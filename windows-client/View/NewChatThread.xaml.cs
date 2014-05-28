@@ -5852,7 +5852,7 @@ namespace windows_client.View
         {
             _patternNotLoaded = !App.ViewModel.SelectedBackground.IsTile || _tileBitmap.PixelWidth == 0 ? true : false;
 
-            headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
+            headerBackground.Background = UI_Utils.Instance.Black10;
         }
 
         private void chatBackgroundList_SelectionChanged(object sender, SelectionChangedEventArgs e)
