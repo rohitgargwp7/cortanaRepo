@@ -192,7 +192,7 @@ namespace windows_client.utils
             get
             {
                 if (black == null)
-                    black = new SolidColorBrush(Color.FromArgb(25, 0x00, 0x00, 0x00));
+                    black = new SolidColorBrush(Color.FromArgb(0x0a, 0x00, 0x00, 0x00));
 
                 return black;
             }

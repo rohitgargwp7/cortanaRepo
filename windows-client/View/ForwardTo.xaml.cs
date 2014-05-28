@@ -151,6 +151,7 @@ namespace windows_client.View
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
 
             _refreshIconButton = new ApplicationBarIconButton();
