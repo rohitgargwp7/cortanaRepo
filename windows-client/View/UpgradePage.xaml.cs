@@ -138,7 +138,7 @@ namespace windows_client.View
                         }
                     }
 
-                    if (Utils.compareVersion("2.5.3.6", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
                     {
                         bool groupEmptyNameFound = false;
                         //conv map is initialised in app.xaml.cs
