@@ -87,7 +87,7 @@ namespace windows_client.View
 
             _selectAllButton = new ApplicationBarIconButton();
             _selectAllButton.IconUri = new Uri("/View/images/AppBar/appbar.select.png", UriKind.Relative);
-            _selectAllButton.Text = AppResources.AppBar_Done_Btn;
+            _selectAllButton.Text = AppResources.SelectAll_Txt;
             _selectAllButton.Click += selectAllButton_Click;
             _selectAllButton.IsEnabled = false;
             appBar.Buttons.Add(_selectAllButton);
