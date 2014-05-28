@@ -33,7 +33,7 @@ namespace windows_client.View
     /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 2;
 
         private bool _canGoBack = true;
         private bool _showSmsContacts;
@@ -1027,8 +1027,6 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 if (_isForward || _isGroupChat)
@@ -1055,7 +1053,7 @@ namespace windows_client.View
                                 return;
                             }
 
-                            if (_isGroupChat && (SelectedContacts.Count + _existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP))
+                            if (_isGroupChat && (SelectedContacts.Count + _existingGroupUsers >= MAX_USERS_ALLOWED_IN_GROUP))
                             {
                                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
                                 cInfo.IsSelected = false;
