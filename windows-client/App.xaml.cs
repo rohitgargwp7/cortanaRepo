@@ -518,10 +518,19 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
             var targetPage = e.Uri.ToString();
 
+            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
+            
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
                 {
+                    if (ps != PageState.CONVLIST_SCREEN)
+                    {
+                        Uri nUri = Utils.LoadPageUri(ps);
+                        mapper.UriMappings[0].MappedUri = nUri;
+                        return;
+                    } 
+                    
                     string msisdn = Utils.GetParamFromUri(targetPage);
                     if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
@@ -538,11 +547,25 @@ namespace windows_client
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
                 {
+                    if (ps != PageState.CONVLIST_SCREEN)
+                    {
+                        Uri nUri = Utils.LoadPageUri(ps);
+                        mapper.UriMappings[0].MappedUri = nUri;
+                        return;
+                    } 
+                    
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("FileId")) // SHARE PICKER CASE
                 {
+                    if (ps != PageState.CONVLIST_SCREEN)
+                    {
+                        Uri nUri = Utils.LoadPageUri(ps);
+                        mapper.UriMappings[0].MappedUri = nUri;
+                        return;
+                    } 
+                    
                     APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;

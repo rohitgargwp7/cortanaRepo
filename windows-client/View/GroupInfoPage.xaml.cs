@@ -675,7 +675,9 @@ namespace windows_client.View
             }
             else
             {
-                groupName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_NAME_FROM_CHATTHREAD))
+                    groupName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupNameTxtBox.IsReadOnly = false;
