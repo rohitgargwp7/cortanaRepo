@@ -142,8 +142,11 @@ namespace windows_client.View
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
 
+            ApplicationBar.StateChanged += ApplicationBar_StateChanged;
+            
             _refreshIconButton = new ApplicationBarIconButton();
             _refreshIconButton.IconUri = new Uri("/View/images/AppBar/icon_refresh.png", UriKind.Relative);
             _refreshIconButton.Text = AppResources.SelectUser_RefreshContacts_Txt;
@@ -155,6 +158,14 @@ namespace windows_client.View
             _onHikeFilterMenuItem.Text = _showSmsContacts ? AppResources.SelectUser_HideSmsContacts_Txt : AppResources.SelectUser_ShowSmsContacts_Txt;
             _onHikeFilterMenuItem.Click += OnHikeFilter_Click;
             ApplicationBar.MenuItems.Add(_onHikeFilterMenuItem);
+        }
+
+        void ApplicationBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
         }
 
         private void OnHikeFilter_Click(object sender, EventArgs e)

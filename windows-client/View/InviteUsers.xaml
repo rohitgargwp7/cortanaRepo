@@ -76,6 +76,11 @@
                         </Grid>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
+                <phone:LongListSelector.ListFooterTemplate>
+                    <DataTemplate>
+                        <Grid Height="80"/>
+                    </DataTemplate>
+                </phone:LongListSelector.ListFooterTemplate>
             </phone:LongListSelector>
         </Grid>
     </Grid>

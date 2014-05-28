@@ -95,7 +95,7 @@
                         <StackPanel Margin="12,0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Tap="userHeader_Tap">
                             <TextBlock x:Name="userName" LineStackingStrategy="BaselineToBaseline" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" VerticalAlignment="Top" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" x:Name="lastSeenPannel">
-                                <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Light"/>
+                                <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Normal"/>
                             </StackPanel>
                         </StackPanel>
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="chatPaint_Tap" Margin="0,0" Background="Transparent">

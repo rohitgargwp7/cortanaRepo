@@ -341,8 +341,8 @@
                                                                                      FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
                                                                                      ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
                                                         
-                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="#A1A1A1" FontWeight="Light"
-                                                                             FontSize="20" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="{StaticResource HikeLightGrey}" FontWeight="Light"
+                                                                             FontSize="22" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
                                                                              LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
                                                         </StackPanel>
                                                     </Grid>
