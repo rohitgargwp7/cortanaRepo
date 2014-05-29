@@ -3110,7 +3110,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1 friend.
+        ///   Looks up a localized string similar to 1 favorite.
         /// </summary>
         public static string NewComposeGroup_1Friend {
             get {

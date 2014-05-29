@@ -2114,7 +2114,7 @@
     <value>Freund per SMS einladen. Gratis-SMS nur in Indien möglich.</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 Freund</value>
+    <value>1 Favorit</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 Gruppen-Chat</value>

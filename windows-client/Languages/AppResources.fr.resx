@@ -2122,7 +2122,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>invite un ami par sms. Sms gratuits limités à l'Inde</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 ami</value>
+    <value>1 favori</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 tchat groupé</value>
@@ -2169,7 +2169,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>Tu dois avoir au moins 13 ans pour utiliser hike</value>
   </data>
-    <data name="Share_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>partager</value>
   </data>
 </root>

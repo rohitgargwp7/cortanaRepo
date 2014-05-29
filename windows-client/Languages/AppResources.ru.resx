@@ -2121,7 +2121,7 @@
     <value>пригласите друзей по SMS. Бесплатные SMS только в Индии.</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 друг</value>
+    <value>1 избранный контакт</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 групповой чат</value>

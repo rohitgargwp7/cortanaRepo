@@ -2120,7 +2120,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>invitar a amigo por SMS. Los SMS solo son gratis en India</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 amigo</value>
+    <value>1 favorito</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 chat en grupo</value>
