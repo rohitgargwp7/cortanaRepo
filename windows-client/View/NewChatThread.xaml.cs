@@ -2535,7 +2535,7 @@ namespace windows_client.View
                 #endregion
 
                 if (!insertAtTop && !isReceived)
-                    ScrollToBottom();
+                    ScrollToBottom(true);
 
             }
             catch (Exception e)
@@ -3364,6 +3364,12 @@ namespace windows_client.View
                 }
                 isStickersLoaded = true;
             }
+            else
+            {
+                var stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+                if (stickerCategory != null && stickerCategory.ShowDownloadMessage)
+                    ShowDownloadOverlay(true);
+            }
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -3526,11 +3532,11 @@ namespace windows_client.View
         /// <summary>
         /// this function is called from UI thread only. No need to synch.
         /// </summary>
-        private void ScrollToBottom()
+        private void ScrollToBottom(bool isForceScroll = false)
         {
             try
             {
-                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal || isForceScroll))
                 {
                     _userTappedJumpToBottom = false;
 
