@@ -6049,7 +6049,10 @@ namespace windows_client.View
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO && !convMessage.HasAttachment)
+                if ((convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                    || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                    || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
+                    && !convMessage.HasAttachment)
                     convMessage.CurrentOrientation = e.Orientation;
             }
 
@@ -7235,6 +7238,7 @@ namespace windows_client.View
                     if (_tap2SendAsSMSMessage == null)
                     {
                         _tap2SendAsSMSMessage = new ConvMessage();
+                        _tap2SendAsSMSMessage.CurrentOrientation = this.Orientation;
                         _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
@@ -7376,6 +7380,7 @@ namespace windows_client.View
                     if (_readByMessage == null)
                     {
                         _readByMessage = new ConvMessage();
+                        _readByMessage.CurrentOrientation = this.Orientation;
                         _readByMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.MESSAGE_STATUS;
                         _readByMessage.NotificationType = ConvMessage.MessageType.UNKNOWN;
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;

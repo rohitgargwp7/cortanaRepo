@@ -216,8 +216,9 @@
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Stretch" Margin="0,-10,24,10">
                                         <Grid HorizontalAlignment="Right" Tap="ChatMessage_Tapped">
-                                            <TextBlock FontSize="16" MaxWidth="{Binding MessageBubbleWidth}"
-                                                   Text="{Binding DispMessage}" FontWeight="Light" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
+                                            <TextBlock FontSize="16" Text="{Binding DispMessage}" FontWeight="Light" 
+                                                        VerticalAlignment="Center" HorizontalAlignment="Right" MaxWidth="{Binding MessageBubbleWidth}"
+                                                        Foreground="{Binding MessageTextForeGround}" TextWrapping="Wrap" TextAlignment="Right"/>
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
