@@ -856,35 +856,21 @@ namespace windows_client.View
         {
             if (_showExistingGroups)
             {
-                bool forwardedFromGroupChat = false;
-                string groupId = string.Empty;
-                if (App.newChatThreadPage != null)
-                {
-                    groupId = App.newChatThreadPage.mContactNumber;
-                    if (Utils.isGroupConversation(groupId))
-                    {
-                        forwardedFromGroupChat = true;
-                    }
-                }
-
                 var gi = GroupTableUtils.getAllGroupInfo();
 
                 foreach (var grp in gi)
                 {
-                    if (!forwardedFromGroupChat || grp.GroupId != groupId)//handled ended group
-                    {
-                        ContactInfo cInfo = new ContactInfo();
-                        cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
-                        cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
-                        cInfo.OnHike = true;
-                        cInfo.HasCustomPhoto = true;//show it is group chat
-                        cInfo.Msisdn = grp.GroupId;//groupid
-                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
-                        cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                        glist[1].Add(cInfo);
+                    ContactInfo cInfo = new ContactInfo();
+                    cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
+                    cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
+                    cInfo.OnHike = true;
+                    cInfo.HasCustomPhoto = true;//show it is group chat
+                    cInfo.Msisdn = grp.GroupId;//groupid
+                    cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
+                    cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    glist[1].Add(cInfo);
 
-                        groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
-                    }
+                    groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
                 }
             }
         }

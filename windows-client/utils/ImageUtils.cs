@@ -1904,7 +1904,7 @@ namespace windows_client.utils
 
         #region Thickness
 
-        private Thickness newChatThreadEmoticonMargin = new Thickness(0, 10, 0, -10);
+        private Thickness newChatThreadEmoticonMargin = new Thickness(0, 5, 0, -5);
         public Thickness NewChatThreadEmoticonMargin
         {
             get
@@ -1913,7 +1913,7 @@ namespace windows_client.utils
             }
         }
 
-        private Thickness convListEmoticonMargin = new Thickness(0, 3, 0, -5);
+        private Thickness convListEmoticonMargin = new Thickness(0, 0, 0, -5);
         public Thickness ConvListEmoticonMargin
         {
             get

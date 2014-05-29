@@ -281,7 +281,7 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <Border Grid.RowSpan="3" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,6" Foreground="{Binding MessageTextForeGround}" />
                                                 <local:MyRichTextBox TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Grid.Row="1" Text="{Binding DispMessage}" 
                                                                  FontFamily="Segoe WP SemiLight" LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="0,6,0,0" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                 <TextBlock Grid.Row="2" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="0,5,12,6" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
@@ -323,9 +323,9 @@
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 10, 0" Foreground="{Binding MessageTextForeGround}" />
-                                                        <Grid Grid.Row="1" HorizontalAlignment="Center">
-                                                            <Image MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" />
+                                                        <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
+                                                            <Image MaxWidth="180" MaxHeight="180" Margin="12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
                                                             <Image Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                         </Grid>
                                                     </Grid>
@@ -388,7 +388,7 @@
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
-                                                        <Image MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
+                                                        <Image MaxWidth="160" MaxHeight="160" HorizontalAlignment="Left" Source="{Binding MessageImage}"/>
                                                         <StackPanel MaxHeight="160" MaxWidth="200" Margin="12,0,0,0" Grid.Column="1" Visibility="{Binding LocationAddressVisibility}" VerticalAlignment="Top">
                                                             <TextBlock Text="{Binding PlaceName}" TextDecorations="Underline" Visibility="{Binding PlaceNameVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" FontWeight="SemiBold" />
                                                             <TextBlock Text="{Binding Address}" Visibility="{Binding AddressVisibility}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}" FontSize="18" TextTrimming="WordEllipsis" />
@@ -435,8 +435,8 @@
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                                        <Grid Grid.Row="1" Margin="10">
+                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" />
+                                                        <Grid Grid.Row="1" Margin="12,12,12,0">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="45"/>
                                                                 <ColumnDefinition Width="*"/>
@@ -452,7 +452,7 @@
                                                             </Grid>
                                                         </Grid>
                                                     </Grid>
-                                                    <Grid Grid.Row="1" Margin="0,-5,0,0">
+                                                    <Grid Grid.Row="1" Margin="0,5,0,0">
                                                         <TextBlock Text="{Binding FileSize}" Visibility="{Binding FileSizeVisibility}" HorizontalAlignment="Left" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" FontWeight="Light"/>
                                                         <TextBlock Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" FontWeight="Light"/>
                                                     </Grid>
@@ -490,7 +490,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12" Foreground="{Binding MessageTextForeGround}"/>
+                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}"/>
                                             <Image Grid.Row="1" Margin="0,0,0,10" Visibility="{Binding NormalNudgeVisibility}" Height="40" HorizontalAlignment="Left" Source="{Binding NudgeImage}"/>
                                             <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="65" Stretch="Uniform" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
                                             <Grid Grid.Row="2" HorizontalAlignment="Left" Margin="5,12">
@@ -534,7 +534,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock TextAlignment="Left" Grid.ColumnSpan="2" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
+                                                    <TextBlock TextAlignment="Left" Grid.ColumnSpan="2" Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" />
                                                     <Image Grid.Row="1" Width="35" Height="25" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding MessageImage}" />
                                                     <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
                                                 </Grid>
@@ -577,8 +577,8 @@
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12, 12, 0, 0" Foreground="{Binding MessageTextForeGround}" />
-                                                        <Grid Grid.Row="1" Margin="10 10 10 0" >
+                                                        <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" />
+                                                        <Grid Grid.Row="1" Margin="12,12,12,0" >
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="Auto"/>
@@ -634,7 +634,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,0,0" Foreground="{Binding MessageTextForeGround}"/>
+                                            <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}"/>
                                             <Grid Grid.Row="1" Visibility="{Binding IsStickerVisible}">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />

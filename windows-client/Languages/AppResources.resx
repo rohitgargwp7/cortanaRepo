@@ -1978,7 +1978,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>Wait for few seconds or check your number.</value>
   </data>
   <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
-    <value>You can write to support@hike.in or...</value>
+    <value>You can write to support@hike.in or</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
   </data>
   <data name="Directions_Txt" xml:space="preserve">

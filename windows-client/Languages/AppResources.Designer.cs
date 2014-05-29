@@ -1589,7 +1589,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can write to support@hike.in or....
+        ///   Looks up a localized string similar to You can write to support@hike.in or.
         /// </summary>
         public static string EnterPin_SMSError_Wait2_TxtBlk {
             get {
