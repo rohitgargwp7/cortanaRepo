@@ -5449,6 +5449,11 @@ namespace windows_client.View
             emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
             emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 0;
+
+            if (emotListRecent.Items.Count > 6)
+                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            else
+                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5506,6 +5511,11 @@ namespace windows_client.View
                         listTemp.Clear();
                         listTemp.AddRange(imagePathsForListRecent);
                         emotListRecent.ItemsSource = listTemp;
+
+                        if (emotListRecent.Items.Count > 6)
+                            emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                        else
+                            emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                     }
                     else
                     {
