@@ -98,6 +98,10 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
+                    
+                    if (isThumbnail)
+                        userProfileThumbnail = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+
                     statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline,
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes));
                     break;
