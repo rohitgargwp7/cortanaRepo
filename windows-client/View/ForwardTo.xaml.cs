@@ -879,10 +879,8 @@ namespace windows_client.View
         {
             if (_isGroupChat || _isForward || _showRecents)
             {
-                foreach (var entry in App.ViewModel.ConvMap)
+                foreach (var conv in App.ViewModel.MessageListPageCollection)
                 {
-                    var conv = entry.Value;
-
                     if (conv.IsGroupChat || Utils.IsHikeBotMsg(conv.Msisdn))
                         continue;
 
