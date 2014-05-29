@@ -43,7 +43,6 @@ namespace windows_client.View
         bool isDeleteAllChats = false;
         bool _isFavListBound = false;
         private bool firstLoad = true;
-        private bool showFreeSMS = false;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
@@ -62,7 +61,7 @@ namespace windows_client.View
         private bool _isStatusUpdatesNotMute;
         private bool isStatusMessagesLoaded = false;
         private bool showFreeMessageOverlay;
-        
+
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
@@ -339,6 +338,8 @@ namespace windows_client.View
             else
                 emptyScreenGrid.Opacity = 0;
 
+            appBar.IsMenuEnabled = true;
+
             if (delConvsMenu != null)
                 delConvsMenu.IsEnabled = true;
 
@@ -476,11 +477,15 @@ namespace windows_client.View
             inviteMenu.IsEnabled = false;//it will be enabled after loading of all conversations
             appBar.MenuItems.Add(inviteMenu);
 
-            rewardsMenu = new ApplicationBarMenuItem();
-            rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
-            rewardsMenu.Click += rewardsMenu_Click;
-            rewardsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
-            appBar.MenuItems.Add(rewardsMenu);
+            bool showRewards;
+            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
+            {
+                rewardsMenu = new ApplicationBarMenuItem();
+                rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
+                rewardsMenu.Click += rewardsMenu_Click;
+                rewardsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
+                appBar.MenuItems.Add(rewardsMenu);
+            }
 
             profileMenu = new ApplicationBarMenuItem();
             profileMenu.Text = AppResources.Profile_Txt;
@@ -501,6 +506,8 @@ namespace windows_client.View
             //deleteChatIconButton.Click += deleteChatIconButton_Click;
             //deleteChatIconButton.IsEnabled = true;
             //deleteAppBar.Buttons.Add(deleteChatIconButton);
+
+            appBar.IsMenuEnabled = false;
         }
 
         void rewardsMenu_Click(object sender, EventArgs e)
@@ -650,6 +657,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.CONTACT_ADDED, this);
             mPubSub.addListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
             mPubSub.addListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
+            mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
+
         }
 
         private void removeListeners()
@@ -672,6 +681,8 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.CONTACT_ADDED, this);
                 mPubSub.removeListener(HikePubSub.ADDRESSBOOK_UPDATED, this);
                 mPubSub.removeListener(HikePubSub.APP_UPDATE_AVAILABLE, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
+
             }
             catch (Exception ex)
             {
@@ -1102,7 +1113,7 @@ namespace windows_client.View
                         {
                             if (emptyScreenGrid.Opacity == 1)
                                 emptyScreenGrid.Opacity = 0;
-                            
+
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
                         }
@@ -1409,7 +1420,7 @@ namespace windows_client.View
                         if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
                         {
                             ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
-                            
+
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 hikeContactList.Remove(c);
@@ -1661,6 +1672,44 @@ namespace windows_client.View
                 ShowAppUpdateAvailableMessage();
             }
             #endregion
+            #region REWARDS TOGGLE
+            else if (HikePubSub.REWARDS_TOGGLE == type)
+            {
+                bool showRewards;
+                appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
+                if (showRewards) // show rewards option
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsMenu == null)
+                        {
+                            rewardsMenu = new ApplicationBarMenuItem();
+                            rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
+                            rewardsMenu.Click += rewardsMenu_Click;
+                        }
+
+                        if (!appBar.MenuItems.Contains(rewardsMenu))
+                        {
+                            if (launchPagePivot.SelectedIndex == 1)
+                                appBar.MenuItems.Insert(1, rewardsMenu);
+                            else
+                                appBar.MenuItems.Insert(2, rewardsMenu);
+                        } 
+                        rewardsMenu.IsEnabled = true;
+                    });
+                }
+                else // hide rewards option 
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsMenu != null)
+                            appBar.MenuItems.Remove(rewardsMenu);
+
+                        rewardsMenu = null;
+                    });
+                }
+            }
+            #endregion
         }
 
         private void UpdateFriendsCounter()
@@ -1881,7 +1930,7 @@ namespace windows_client.View
                     c = App.ViewModel.ContactsCache[convObj.Msisdn];
                 else
                     c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                
+
                 hikeContactList.Remove(c);
                 UpdateContactsOnHikeCounter();
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
@@ -2432,7 +2481,7 @@ namespace windows_client.View
                     bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
-                
+
                 if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
 

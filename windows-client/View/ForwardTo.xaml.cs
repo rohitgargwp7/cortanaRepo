@@ -151,6 +151,7 @@ namespace windows_client.View
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
 
             _refreshIconButton = new ApplicationBarIconButton();
@@ -415,7 +416,16 @@ namespace windows_client.View
                 {
                     enterNameTxt.Select(startIndex, nameLength);
                     var cInfo = SelectedContacts[k];
-                    contactsListBox.ScrollTo(cInfo);
+
+                    try
+                    {
+                        contactsListBox.ScrollTo(cInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("enterNameTxt_Tap : cntact not present in list: " + cInfo.Name + cInfo.Msisdn + "\n" + ex.StackTrace);
+                    }
+
                     _contactToBeRemoved = cInfo;
                     return;
                 }
@@ -1027,8 +1037,6 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 if (_isForward || _isGroupChat)
@@ -1055,7 +1063,7 @@ namespace windows_client.View
                                 return;
                             }
 
-                            if (_isGroupChat && (SelectedContacts.Count + _existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP))
+                            if (_isGroupChat && (SelectedContacts.Count + _existingGroupUsers >= MAX_USERS_ALLOWED_IN_GROUP))
                             {
                                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
                                 cInfo.IsSelected = false;

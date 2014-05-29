@@ -310,6 +310,7 @@ namespace windows_client.Model
                     return false;
                 else if (_msisdn == other.Msisdn)
                     return true;
+                else return false;
             }
             
             if (string.IsNullOrWhiteSpace(Name))

@@ -186,6 +186,18 @@ namespace windows_client.utils
             }
         }
 
+        private SolidColorBrush _black10;
+        public SolidColorBrush Black10
+        {
+            get
+            {
+                if (_black10 == null)
+                    _black10 = new SolidColorBrush(Color.FromArgb(0x0a, 0x00, 0x00, 0x00));
+
+                return _black10;
+            }
+        }
+
         private SolidColorBrush white;
         public SolidColorBrush White
         {

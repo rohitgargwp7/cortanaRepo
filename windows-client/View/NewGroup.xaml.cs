@@ -51,8 +51,8 @@ namespace windows_client.View
             ApplicationBar = appBar;
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.AppBar_Done_Btn;
+            nextIconButton.IconUri = new Uri("/View/images/AppBar/icon_next.png", UriKind.Relative);
+            nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += Next_Click;
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
