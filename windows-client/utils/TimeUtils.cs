@@ -143,38 +143,43 @@ namespace windows_client.utils
         public static string getRelativeTime(long timestamp)
         {
             TimeSpan ts = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Subtract(TimeSpan.FromSeconds(timestamp));
-            if (ts.TotalMinutes < 5) // 60 * 5 
+            double delta = ts.TotalSeconds;
+            if (delta < 300) // 60 * 5 
+            {
                 return AppResources.TimeUtils_Moments_Ago;
-
-            if (ts.TotalHours < 1) //60 * 60
+            }
+            if (delta < 3600) //60 * 60
+            {
                 return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, ts.Minutes);
-
-            if (ts.TotalMinutes < 90) // 1.5 * 60 * 60
+            }
+            if (delta < 5400) // 1.5 * 60 * 60
+            {
                 return AppResources.TimeUtils_An_hour_Ago_Txt;
-
-            if (ts.TotalMinutes < 180) //3 * 60 * 60
+            }
+            if (delta < 10800) //3 * 60 * 60
             {
                 int minuteOfHour = ts.Minutes % 60;
                 if (minuteOfHour < 30)
                     return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours);
                 return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours.ToString() + ".5");
             }
-
-            if (ts.TotalHours < 24) // 24 * 60 * 60
+            if (delta < 86400) // 24 * 60 * 60
+            {
                 return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours);
-
-            if (ts.TotalHours < 48) // 48 * 60 * 60
+            }
+            if (delta < 172800) // 48 * 60 * 60
+            {
                 return AppResources.Yesterday_Txt;
-            
-            if (ts.TotalDays < 30) // 30 * 24 * 60 * 60
+            }
+            if (delta < 2592000) // 30 * 24 * 60 * 60
+            {
                 return string.Format(AppResources.TimeUtils_X_Days_Ago_Txt, ts.Days);
-
-            if (ts.TotalDays < 365) // 12 * 30 * 24 * 60 * 60
+            }
+            if (delta < 31104000) // 12 * 30 * 24 * 60 * 60
             {
                 int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
                 return months <= 1 ? AppResources.TimeUtils_One_Month_Ago_Txt : string.Format(AppResources.TimeUtils_X_Month_Ago_Txt, months);
             }
-            
             int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
             return years <= 1 ? AppResources.TimeUtils_One_Year_Ago_Txt : string.Format(AppResources.TimeUtils_X_Years_Ago_Txt, years);
         }
