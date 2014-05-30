@@ -5457,9 +5457,9 @@ namespace windows_client.View
             emoticonPivot.SelectedIndex = 0;
 
             if (emotListRecent.Items.Count > 6)
-                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             else
-                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)

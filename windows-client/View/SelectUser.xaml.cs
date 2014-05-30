@@ -597,7 +597,6 @@ namespace windows_client.View
                 return;
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
             List<ContactInfo> deletedContacts = null;
             // Code to delete the removed contacts
@@ -650,6 +649,9 @@ namespace windows_client.View
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
                 }
             }
+
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -661,6 +663,14 @@ namespace windows_client.View
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
 
+            if (deletedContacts != null && deletedContacts.Count > 0)
+            {
+                Object[] obj = new object[2];
+                obj[0] = false;//denotes deleted contact
+                obj[1] = deletedContacts;
+                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+            }
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
@@ -668,14 +678,6 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = true;//denotes updated/added contact
                 obj[1] = updatedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
-            }
-
-            if (deletedContacts != null && deletedContacts.Count > 0)
-            {
-                Object[] obj = new object[2];
-                obj[0] = false;//denotes deleted contact
-                obj[1] = deletedContacts;
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
