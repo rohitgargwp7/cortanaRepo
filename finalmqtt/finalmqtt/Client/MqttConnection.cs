@@ -733,6 +733,11 @@ namespace finalmqtt.Client
                 _socket.Close();
                 _socket = null;
             }
+
+            if (input != null)
+            {
+                input.ClearStream();
+            }
         }
 
         private int GetCurrentSeconds()
