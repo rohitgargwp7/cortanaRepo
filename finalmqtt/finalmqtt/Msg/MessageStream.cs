@@ -22,6 +22,11 @@ namespace finalmqtt.Msg
         public MessageStream(int size)
         {
             data = new byte[size];
+            ClearStream();
+        }
+
+        public void ClearStream()
+        {
             startIndex = 0;
             endIndex = 0;
         }
