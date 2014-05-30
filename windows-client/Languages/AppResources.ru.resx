@@ -1379,7 +1379,7 @@
     <value>Вы ничего не опубликовали :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Имя группы может включать не более 30 символов.</value>
+    <value>Имя группы может включать не более 50 символов.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -2121,7 +2121,7 @@
     <value>пригласите друзей по SMS. Бесплатные SMS только в Индии.</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 друг</value>
+    <value>1 избранный контакт</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 групповой чат</value>

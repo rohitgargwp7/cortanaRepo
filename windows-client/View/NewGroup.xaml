@@ -25,7 +25,7 @@
             <Image Source="/View/images/FTUE/camera_icon_profile.png" MaxHeight="35" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,20"/>
         </Grid>
         <toolkit:PhoneTextBox x:Name="txtBxEnterName" Margin="12,20,12,5" Grid.Row="1" InputScope="Text"
-                            Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="30" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt , Source={StaticResource LocalizedStrings}}" />
+                            Style="{StaticResource PhoneTextBoxWithWhiteBackground}" MaxLength="50" TextChanged="txtBxEnterName_TextChanged" Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt , Source={StaticResource LocalizedStrings}}" />
         <Grid Margin="12,7,12,12" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

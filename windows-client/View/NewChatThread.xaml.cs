@@ -2535,7 +2535,7 @@ namespace windows_client.View
                 #endregion
 
                 if (!insertAtTop && !isReceived)
-                    ScrollToBottom();
+                    ScrollToBottom(true);
 
             }
             catch (Exception e)
@@ -3364,6 +3364,12 @@ namespace windows_client.View
                 }
                 isStickersLoaded = true;
             }
+            else
+            {
+                var stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+                if (stickerCategory != null && stickerCategory.ShowDownloadMessage)
+                    ShowDownloadOverlay(true);
+            }
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
@@ -3526,11 +3532,11 @@ namespace windows_client.View
         /// <summary>
         /// this function is called from UI thread only. No need to synch.
         /// </summary>
-        private void ScrollToBottom()
+        private void ScrollToBottom(bool isForceScroll = false)
         {
             try
             {
-                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal || isForceScroll))
                 {
                     _userTappedJumpToBottom = false;
 
@@ -5449,6 +5455,11 @@ namespace windows_client.View
             emotCat2.Source = UI_Utils.Instance.EmotCat3Inactive;
             emotCat3.Source = UI_Utils.Instance.EmotCat4Inactive;
             emoticonPivot.SelectedIndex = 0;
+
+            if (emotListRecent.Items.Count > 6)
+                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            else
+                emotRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5506,6 +5517,11 @@ namespace windows_client.View
                         listTemp.Clear();
                         listTemp.AddRange(imagePathsForListRecent);
                         emotListRecent.ItemsSource = listTemp;
+
+                        if (emotListRecent.Items.Count > 6)
+                            emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                        else
+                            emotListRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                     }
                     else
                     {
@@ -6039,7 +6055,10 @@ namespace windows_client.View
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO && !convMessage.HasAttachment)
+                if ((convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                    || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
+                    || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
+                    && !convMessage.HasAttachment)
                     convMessage.CurrentOrientation = e.Orientation;
             }
 
@@ -7225,6 +7244,7 @@ namespace windows_client.View
                     if (_tap2SendAsSMSMessage == null)
                     {
                         _tap2SendAsSMSMessage = new ConvMessage();
+                        _tap2SendAsSMSMessage.CurrentOrientation = this.Orientation;
                         _tap2SendAsSMSMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION;
                         _tap2SendAsSMSMessage.NotificationType = ConvMessage.MessageType.FORCE_SMS;
 
@@ -7366,6 +7386,7 @@ namespace windows_client.View
                     if (_readByMessage == null)
                     {
                         _readByMessage = new ConvMessage();
+                        _readByMessage.CurrentOrientation = this.Orientation;
                         _readByMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.MESSAGE_STATUS;
                         _readByMessage.NotificationType = ConvMessage.MessageType.UNKNOWN;
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
