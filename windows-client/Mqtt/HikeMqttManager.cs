@@ -301,6 +301,8 @@ namespace windows_client.Mqtt
                 {
                     try
                     {
+                        var str = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
+                        MQttLogging.LogWriter.Instance.WriteToLog("Unsent Message, write to db:: " + str + " : TimeStatmp:" + packet.Timestamp);
                         MqttDBUtils.addSentMessage(packet);
                     }
                     catch (Exception ex)
