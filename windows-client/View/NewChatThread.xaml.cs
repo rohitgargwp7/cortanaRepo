@@ -3467,6 +3467,7 @@ namespace windows_client.View
             recordGrid.Visibility = Visibility.Collapsed;
             sendMsgTxtbox.Visibility = Visibility.Visible;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[emoticon.Index];
+            sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
             SmileyParser.Instance.AddEmoticons(emoticon);
         }
 
@@ -3480,6 +3481,7 @@ namespace windows_client.View
             if (index >= SmileyParser.Instance.emoticonStrings.Length)
                 return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
             emotList0.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
         }
@@ -3494,6 +3496,7 @@ namespace windows_client.View
             if (index >= SmileyParser.Instance.emoticonStrings.Length)
                 return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
             emotList1.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
         }
@@ -3508,10 +3511,11 @@ namespace windows_client.View
             if (index >= SmileyParser.Instance.emoticonStrings.Length)
                 return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
             emotList2.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
-
         }
+
         private void emotList3_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (emotList3.SelectedIndex < 0)
@@ -3522,9 +3526,11 @@ namespace windows_client.View
             if (index >= SmileyParser.Instance.emoticonStrings.Length)
                 return;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
+            sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
             emotList3.SelectedIndex = -1;
             SmileyParser.Instance.AddEmoticons(index);
         }
+
         #endregion
 
         #region HELPER FUNCTIONS
