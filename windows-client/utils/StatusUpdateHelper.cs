@@ -99,11 +99,11 @@ namespace windows_client.utils
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
                     
+                    var img = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
                     if (isThumbnail)
-                        userProfileThumbnail = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+                        userProfileThumbnail = img;
 
-                    statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes));
+                    statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline, img);
                     break;
 
                 case StatusMessage.StatusType.IS_NOW_FRIEND:
