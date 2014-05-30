@@ -1379,7 +1379,7 @@
     <value>Вы ничего не опубликовали :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Имя группы может включать не более 30 символов.</value>
+    <value>Имя группы может включать не более 50 символов.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">

@@ -1375,7 +1375,7 @@ Download it now http://hike.in and join the fun!</value>
     <value>You haven't posted anything :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Group Name can have maximum 30 chars.</value>
+    <value>Group Name can have maximum 50 chars.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">

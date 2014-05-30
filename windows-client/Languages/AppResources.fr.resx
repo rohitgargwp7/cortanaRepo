@@ -1380,7 +1380,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Tu n'as rien publié :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Le nom du groupe peut faire 30 caractères au maximum.</value>
+    <value>Le nom du groupe peut faire 50 caractères au maximum.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">

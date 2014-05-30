@@ -1372,7 +1372,7 @@
     <value>Du hast bis jetzt noch nichts gepostet :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Gruppenname kann maximal 30 Zeichen betragen.</value>
+    <value>Gruppenname kann maximal 50 Zeichen betragen.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">

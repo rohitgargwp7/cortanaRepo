@@ -2021,7 +2021,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Name can have maximum 30 chars..
+        ///   Looks up a localized string similar to Group Name can have maximum 50 chars..
         /// </summary>
         public static string GroupInfo_GrpNameMaxLength_Txt {
             get {

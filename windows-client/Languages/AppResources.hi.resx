@@ -1380,7 +1380,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>आपने कुछ भी पोस्ट नहीं किया है!</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>समूह का नाम अधिकतम 30 अक्षर का हो सकता है |</value>
+    <value>समूह का नाम अधिकतम 50 अक्षर का हो सकता है |</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
