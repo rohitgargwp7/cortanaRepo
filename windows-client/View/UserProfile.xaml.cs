@@ -1400,7 +1400,6 @@ namespace windows_client.View
             {
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
-                txtAddedYouAsFriend.Text = firstName;
                 isOnHike = contactInfo.OnHike;
 
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
@@ -1417,9 +1416,7 @@ namespace windows_client.View
 
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
-                if (friendStatus < FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-                    txtSmsUserNameBlk.Text = firstName;
-                else
+                if (friendStatus >= FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
                 {
                     addToFavBtn.Visibility = Visibility.Collapsed;
                     isStatusLoaded = true;
