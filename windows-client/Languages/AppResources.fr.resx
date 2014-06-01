@@ -1380,7 +1380,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>Tu n'as rien publié :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Le nom du groupe peut faire 30 caractères au maximum.</value>
+    <value>Le nom du groupe peut faire 50 caractères au maximum.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -2122,7 +2122,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
     <value>invite un ami par sms. Sms gratuits limités à l'Inde</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 ami</value>
+    <value>1 favori</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 tchat groupé</value>
@@ -2169,7 +2169,7 @@ Rejoins-nous vite en la téléchargeant maintenant sur http://hike.in !</value>
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>Tu dois avoir au moins 13 ans pour utiliser hike</value>
   </data>
-    <data name="Share_Txt" xml:space="preserve">
+  <data name="Share_Txt" xml:space="preserve">
     <value>partager</value>
   </data>
 </root>

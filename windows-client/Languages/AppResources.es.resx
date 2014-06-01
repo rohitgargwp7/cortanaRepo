@@ -1378,7 +1378,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>No has publicado nada :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>El nombre del grupo puede tener un máximo de 30 caracteres.</value>
+    <value>El nombre del grupo puede tener un máximo de 50 caracteres.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -2120,7 +2120,7 @@ Descarga hike en http://hike.in... ¡y únete a la diversión!</value>
     <value>invitar a amigo por SMS. Los SMS solo son gratis en India</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 amigo</value>
+    <value>1 favorito</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 chat en grupo</value>

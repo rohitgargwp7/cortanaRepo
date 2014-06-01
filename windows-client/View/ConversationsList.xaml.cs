@@ -145,9 +145,14 @@ namespace windows_client.View
             if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
                 TotalUnreadStatuses = 0;
 
-            contactsCollectionView.Source = null;
-            favCollectionView.Source = null;
-            statusLLS.ItemsSource = null;
+            if (launchPagePivot.SelectedIndex != 1)
+            {
+                contactsCollectionView.Source = null;
+                favCollectionView.Source = null;
+            }
+
+            if (launchPagePivot.SelectedIndex != 2)
+                statusLLS.ItemsSource = null;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -161,28 +166,7 @@ namespace windows_client.View
             }
 
             if (launchPagePivot.SelectedIndex == 2)
-            {
                 TotalUnreadStatuses = 0;
-
-                if (isStatusMessagesLoaded)
-                {
-                    statusLLS.ItemsSource = App.ViewModel.StatusList;
-                    statusLLS.ScrollTo(statusLLS.ItemsSource[0]);
-
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (_statusSelectedIndex >= 0)
-                            {
-                                //retain scroll position
-                                statusLLS.ScrollTo(statusLLS.ItemsSource[_statusSelectedIndex]);
-                                _statusSelectedIndex = -1;
-                            }
-                        });
-                }
-            }
-
-            if (_isFavListBound && launchPagePivot.SelectedIndex == 1)
-                BindFriendsAsync();
 
             this.llsConversations.SelectedItem = null;
             this.statusLLS.SelectedItem = null;
@@ -2565,16 +2549,12 @@ namespace windows_client.View
             }
         }
 
-        int _statusSelectedIndex = -1;
-
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string[] statusImageInfo = new string[2];
             ImageStatus statusUpdate = (sender as Grid).DataContext as ImageStatus;
             if (statusUpdate != null)
             {
-                _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(statusUpdate);
-
                 statusImageInfo[0] = statusUpdate.Msisdn;
                 statusImageInfo[1] = statusUpdate.ServerId;
                 PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
@@ -2589,8 +2569,6 @@ namespace windows_client.View
             BaseStatusUpdate sb = (sender as Image).DataContext as BaseStatusUpdate;
             if (sb == null)
                 return;
-
-            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(sb);
 
             Object[] obj = new Object[2];
             obj[0] = sb.Msisdn;
@@ -2610,8 +2588,6 @@ namespace windows_client.View
             BaseStatusUpdate status = (sender as Border).DataContext as BaseStatusUpdate;
             if (status == null || status is ProTipStatusUpdate)
                 return;
-
-            _statusSelectedIndex = App.ViewModel.StatusList.IndexOf(status);
 
             if (_hyperlinkedInsideStatusUpdateClicked)
             {

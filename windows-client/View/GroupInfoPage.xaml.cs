@@ -201,7 +201,7 @@ namespace windows_client.View
                 return;
             }
             groupName = this.groupNameTxtBox.Text.Trim();
-            if (groupName.Length > 30)
+            if (groupName.Length > 50)
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_GrpNameMaxLength_Txt, AppResources.Error_Txt, MessageBoxButton.OK);
                 groupNameTxtBox.Focus();

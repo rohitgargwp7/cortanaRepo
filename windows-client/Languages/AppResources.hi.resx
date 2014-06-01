@@ -1380,7 +1380,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>आपने कुछ भी पोस्ट नहीं किया है!</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>समूह का नाम अधिकतम 30 अक्षर का हो सकता है |</value>
+    <value>समूह का नाम अधिकतम 50 अक्षर का हो सकता है |</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -2122,7 +2122,7 @@ hike पिछली बार दिखे के साथ आपको गो
     <value>दोस्तों को एसएमएस के द्वारा आमंत्रित करें। केवल भारत के भीतर मुफ्त एसएमएस</value>
   </data>
   <data name="NewComposeGroup_1Friend" xml:space="preserve">
-    <value>1 दोस्त</value>
+    <value>1 पसंदीदा</value>
   </data>
   <data name="NewComposeGroup_1GroupChat" xml:space="preserve">
     <value>1 समूह चैट</value>

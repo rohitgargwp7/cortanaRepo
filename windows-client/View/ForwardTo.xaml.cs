@@ -677,7 +677,6 @@ namespace windows_client.View
                 return;
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
             List<ContactInfo> deletedContacts = null;
             // Code to delete the removed contacts
@@ -730,6 +729,9 @@ namespace windows_client.View
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
                 }
             }
+            
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -741,6 +743,14 @@ namespace windows_client.View
                 UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
             }
 
+            if (deletedContacts != null && deletedContacts.Count > 0)
+            {
+                Object[] obj = new object[2];
+                obj[0] = false;//denotes deleted contact
+                obj[1] = deletedContacts;
+                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+            }
+
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
@@ -748,14 +758,6 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = true;//denotes updated/added contact
                 obj[1] = updatedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
-            }
-
-            if (deletedContacts != null && deletedContacts.Count > 0)
-            {
-                Object[] obj = new object[2];
-                obj[0] = false;//denotes deleted contact
-                obj[1] = deletedContacts;
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
@@ -856,35 +858,21 @@ namespace windows_client.View
         {
             if (_showExistingGroups)
             {
-                bool forwardedFromGroupChat = false;
-                string groupId = string.Empty;
-                if (App.newChatThreadPage != null)
-                {
-                    groupId = App.newChatThreadPage.mContactNumber;
-                    if (Utils.isGroupConversation(groupId))
-                    {
-                        forwardedFromGroupChat = true;
-                    }
-                }
-
                 var gi = GroupTableUtils.getAllGroupInfo();
 
                 foreach (var grp in gi)
                 {
-                    if (!forwardedFromGroupChat || grp.GroupId != groupId)//handled ended group
-                    {
-                        ContactInfo cInfo = new ContactInfo();
-                        cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
-                        cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
-                        cInfo.OnHike = true;
-                        cInfo.HasCustomPhoto = true;//show it is group chat
-                        cInfo.Msisdn = grp.GroupId;//groupid
-                        cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
-                        cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
-                        glist[1].Add(cInfo);
+                    ContactInfo cInfo = new ContactInfo();
+                    cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
+                    cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
+                    cInfo.OnHike = true;
+                    cInfo.HasCustomPhoto = true;//show it is group chat
+                    cInfo.Msisdn = grp.GroupId;//groupid
+                    cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
+                    cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    glist[1].Add(cInfo);
 
-                        groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
-                    }
+                    groupInfoDictionary[grp.GroupId] = grp.GroupOwner;
                 }
             }
         }
@@ -893,10 +881,8 @@ namespace windows_client.View
         {
             if (_isGroupChat || _isForward || _showRecents)
             {
-                foreach (var entry in App.ViewModel.ConvMap)
+                foreach (var conv in App.ViewModel.MessageListPageCollection)
                 {
-                    var conv = entry.Value;
-
                     if (conv.IsGroupChat || Utils.IsHikeBotMsg(conv.Msisdn))
                         continue;
 

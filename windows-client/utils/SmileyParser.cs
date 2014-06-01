@@ -999,8 +999,8 @@ namespace windows_client
                         //TODO check if imgPath is null or not
                         Image img = new Image();
                         img.Source = lookUpFromCache(regexMatch);
-                        img.Height = 35;
-                        img.Width = 35;
+                        img.Height = 30;
+                        img.Width = 30;
                         img.Margin = UI_Utils.Instance.NewChatThreadEmoticonMargin;
                         InlineUIContainer ui = new InlineUIContainer();
                         ui.Child = img;

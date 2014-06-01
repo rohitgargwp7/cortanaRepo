@@ -388,6 +388,11 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             Debug.WriteLine("OnDisconnected Called");
+            if (mqttConnection != null)
+            {
+                mqttConnection.MqttListener = null;
+                mqttConnection = null;
+            }
             IpManager.Instance.ResetIp();
             if (!disconnectExplicitly)
             {

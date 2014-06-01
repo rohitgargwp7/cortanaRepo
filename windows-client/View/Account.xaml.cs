@@ -79,7 +79,7 @@ namespace windows_client.View
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogoutFb();
+                LogoutFb(true);
 
             DeleteLocalStorage();
         }
@@ -146,7 +146,7 @@ namespace windows_client.View
                 return;
             }
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                LogoutFb();
+                LogoutFb(true);
             DeleteLocalStorage();
         }
 
@@ -197,7 +197,7 @@ namespace windows_client.View
             if (res != MessageBoxResult.OK)
                 return;
             shellProgress.IsIndeterminate = true;
-            LogoutFb();
+            LogoutFb(false);
         }
 
         private void UnlinkTwitter_tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -236,7 +236,11 @@ namespace windows_client.View
             });
         }
 
-        private void LogoutFb()
+        public void SocialDeleteFBOnAccountUnlinkDelete(JObject obj)
+        {
+        }
+
+        private void LogoutFb(bool isAccountDeleteUnlink)
         {
             Deployment.Current.Dispatcher.BeginInvoke(new Action(async delegate
               {
@@ -246,7 +250,10 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
             App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
 
-            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+            if(isAccountDeleteUnlink)
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);
+            else
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
         }
     }
 }

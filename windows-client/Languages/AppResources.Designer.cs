@@ -1589,7 +1589,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can write to support@hike.in or....
+        ///   Looks up a localized string similar to You can write to support@hike.in or.
         /// </summary>
         public static string EnterPin_SMSError_Wait2_TxtBlk {
             get {
@@ -2021,7 +2021,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Name can have maximum 30 chars..
+        ///   Looks up a localized string similar to Group Name can have maximum 50 chars..
         /// </summary>
         public static string GroupInfo_GrpNameMaxLength_Txt {
             get {
@@ -3110,7 +3110,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1 friend.
+        ///   Looks up a localized string similar to 1 favorite.
         /// </summary>
         public static string NewComposeGroup_1Friend {
             get {
