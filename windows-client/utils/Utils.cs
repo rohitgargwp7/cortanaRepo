@@ -38,7 +38,7 @@ namespace windows_client.utils
 
         public static bool isGroupConversation(string msisdn)
         {
-            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+            if (msisdn == HikeConstants.MY_PROFILE_PIC || msisdn.Contains(HikeConstants.MY_PROFILE_PIC))
                 return false;
             return !msisdn.StartsWith("+");
         }
