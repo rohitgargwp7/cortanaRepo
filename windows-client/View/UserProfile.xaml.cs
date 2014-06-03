@@ -252,7 +252,7 @@ namespace windows_client.View
 
         #endregion
 
-        object[] _groupParticipantObject;
+        GroupParticipant _groupParticipantObject;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -303,9 +303,9 @@ namespace windows_client.View
                 #region USER INFO FROM GROUP CHAT
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    _groupParticipantObject = o as object[];
-                    msisdn =(String) _groupParticipantObject[0];
-                    nameToShow = (String)_groupParticipantObject[1];
+                    _groupParticipantObject = o as GroupParticipant;
+                    msisdn = _groupParticipantObject.Msisdn;
+                    nameToShow = _groupParticipantObject.Name;
 
                     if (App.MSISDN == msisdn) // represents self page
                     {
@@ -315,7 +315,7 @@ namespace windows_client.View
                     {
                         InitAppBar();
                         profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
-                        isOnHike = (bool)_groupParticipantObject[2];
+                        isOnHike = _groupParticipantObject.IsOnHike;
                         InitChatIconBtn();
                     }
                 }
@@ -676,12 +676,12 @@ namespace windows_client.View
         private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
         {
             AddStatusToList(statusMessagesFromDB, messageFetchCount);
-            
+
             if (statusList.Count == 0)
                 ShowEmptyStatus();
             else
                 gridSmsUser.Visibility = Visibility.Collapsed;
-            
+
             statusLLS.ItemsSource = statusList;
         }
 
@@ -953,7 +953,7 @@ namespace windows_client.View
 
             isOnHike = true;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
-            
+
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
             postStatusButton.IconUri = new Uri("/View/images/AppBar/icon_status.png", UriKind.Relative);
             postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
@@ -1136,7 +1136,7 @@ namespace windows_client.View
                 txtSmsUserNameBlk.Text = AppResources.Profile_You_NoStatus_Txt;
             else
                 txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_NoStatus_Txt, firstName);
-           
+
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;

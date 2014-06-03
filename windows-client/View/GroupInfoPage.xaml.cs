@@ -872,8 +872,7 @@ namespace windows_client.View
             if (gp == null)
                 return;
 
-            object[] grpMemberObject = new object[3] { gp.Msisdn, gp.Name, gp.IsOnHike };
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = grpMemberObject;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
