@@ -1105,6 +1105,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to delete &amp; exit group.
+        /// </summary>
+        public static string DeleteAndExit_Txt {
+            get {
+                return ResourceManager.GetString("DeleteAndExit_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to unmark all.
         /// </summary>
         public static string DeSelectAll_Txt {
@@ -4816,6 +4825,15 @@ namespace windows_client.Languages {
         public static string TapHereToRetyTxt {
             get {
                 return ResourceManager.GetString("TapHereToRetyTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 day ago.
+        /// </summary>
+        public static string TimeUtils_1Day_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_1Day_Ago_Txt", resourceCulture);
             }
         }
         
