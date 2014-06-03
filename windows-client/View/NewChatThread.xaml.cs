@@ -4939,7 +4939,7 @@ namespace windows_client.View
                             bool taskPlaced = false;
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
-                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                convMessage.ChangingState = taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                             else if (ResumeTransfer(convMessage))
                                 taskPlaced = true;
 
@@ -4996,7 +4996,7 @@ namespace windows_client.View
                         else
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
 
-                        transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                     }
 
                     // if transfer was not placed because of queue limit reached then display limit reached message
