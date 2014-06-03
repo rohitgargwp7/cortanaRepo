@@ -185,6 +185,7 @@ namespace windows_client.View
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             ShowAddAsFriends();
+                            statusList.Clear();
                         });
                         break;
 

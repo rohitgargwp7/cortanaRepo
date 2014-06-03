@@ -79,6 +79,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to add member.
+        /// </summary>
+        public static string Add_Member_Txt {
+            get {
+                return ResourceManager.GetString("Add_Member_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add as favorite.
         /// </summary>
         public static string Add_To_Fav_Txt {

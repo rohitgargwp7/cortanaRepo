@@ -2167,6 +2167,10 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Share_With_Txt" xml:space="preserve">
     <value>share with</value>
   </data>
+  <data name="Add_Member_Txt" xml:space="preserve">
+    <value>add member</value>
+    <comment>max 10 char</comment>
+  </data>
   <data name="DeleteAndExit_Txt" xml:space="preserve">
     <value>delete &amp; exit group</value>
     <comment>max 20 char</comment>
