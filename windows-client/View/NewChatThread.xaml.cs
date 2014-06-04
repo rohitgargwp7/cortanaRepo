@@ -2135,7 +2135,6 @@ namespace windows_client.View
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    ConvMessage chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -2173,14 +2172,9 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
                         }
-
-                        if (convMessage.IsSent)
-                            chatBubble = convMessage;
-                        else if (chatBubble != null)
-                            chatBubble.GroupMemberName = isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
-                    if (chatBubble == null)
+                    if (!convMessage.IsSent)
                     {
                         if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
                         {
@@ -2198,25 +2192,22 @@ namespace windows_client.View
                             }
                         }
 
-                        chatBubble = convMessage;
                         if (convMessage.IsSent)
                         {
-                            chatBubble = convMessage;//todo:split
                             if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                                 || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, chatBubble);
+                                msgMap.Add(convMessage.MessageId, convMessage);
                         }
                         else
                         {
-                            chatBubble = convMessage;
-                            chatBubble.GroupMemberName = isGroupChat ?
+                            convMessage.GroupMemberName = isGroupChat ?
                                 GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                         }
                     }
 
-                    chatBubble.IsSms = !isOnHike;
-                    chatBubble.CurrentOrientation = this.Orientation;
-                    ocMessages.Insert(insertPosition, chatBubble);
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.CurrentOrientation = this.Orientation;
+                    ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
                 }
                 #endregion
