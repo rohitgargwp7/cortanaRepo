@@ -6018,20 +6018,11 @@ namespace windows_client.View
             }
             UsersTableUtils.addContact(contactInfo);
             mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
+            
             Dispatcher.BeginInvoke(() =>
             {
                 userName.Text = contactInfo.Name;
                 mContactName = contactInfo.Name;
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                {
-                    App.ViewModel.ConvMap[mContactNumber].ContactName = contactInfo.Name;
-                }
-                else
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(mContactNumber);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
                 if (count > 1)
                 {
                     MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, mContactNumber));
@@ -6043,7 +6034,7 @@ namespace windows_client.View
                 }
             });
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         #region Orientation Handling

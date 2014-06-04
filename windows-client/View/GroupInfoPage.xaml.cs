@@ -841,17 +841,6 @@ namespace windows_client.View
                         App.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
 
-                // update normal 1-1 chat contact
-                if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
-                {
-                    App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
-                }
-                else // fav and pending case update
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
                 if (count > 1)
                 {
                     MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, gp_obj.Msisdn));
@@ -862,7 +851,7 @@ namespace windows_client.View
                 }
             });
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)

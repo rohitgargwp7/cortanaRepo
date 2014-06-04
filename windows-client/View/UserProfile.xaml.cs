@@ -1392,25 +1392,19 @@ namespace windows_client.View
                     count++;
                 }
             }
+
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 
             nameToShow = contactInfo.Name;
+
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
 
             Dispatcher.BeginInvoke(() =>
             {
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
                 isOnHike = contactInfo.OnHike;
-
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    App.ViewModel.ConvMap[msisdn].ContactName = contactInfo.Name;
-                else
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(msisdn);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
 
                 if (App.newChatThreadPage != null && _groupParticipantObject == null)
                     App.newChatThreadPage.userName.Text = nameToShow;
@@ -1434,9 +1428,8 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null && App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
                     App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
             });
-
-            ContactUtils.UpdateGroupCacheWithContactName(msisdn, nameToShow);
         }
+
         #endregion
 
         private bool CheckUserInAddressBook()
