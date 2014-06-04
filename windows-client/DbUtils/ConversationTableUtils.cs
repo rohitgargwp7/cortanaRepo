@@ -13,7 +13,6 @@ using System.Threading;
 using System.Windows;
 using windows_client.Languages;
 using windows_client.ViewModel;
-using System.Threading.Tasks;
 
 namespace windows_client.DbUtils
 {
@@ -240,9 +239,8 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static async void updateConversation(ConversationListObject obj)
+        public static void updateConversation(ConversationListObject obj)
         {
-            await Task.Delay(1);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             //saveConvObjectList();
         }
