@@ -2174,35 +2174,32 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!convMessage.IsSent)
+                    if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
                     {
-                        if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                        JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
+                        convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
+                        GetHighResStickerForUi(convMessage);
+                    }
+                    else
+                    {
+                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
                         {
-                            JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
-                            convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
-                            GetHighResStickerForUi(convMessage);
+                            string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                            if (message.Length > 0)
+                                convMessage.Message = message;
                         }
-                        else
-                        {
-                            if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
-                            {
-                                string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
-                                if (message.Length > 0)
-                                    convMessage.Message = message;
-                            }
-                        }
+                    }
 
-                        if (convMessage.IsSent)
-                        {
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, convMessage);
-                        }
-                        else
-                        {
-                            convMessage.GroupMemberName = isGroupChat ?
-                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
-                        }
+                    if (convMessage.IsSent)
+                    {
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                            msgMap.Add(convMessage.MessageId, convMessage);
+                    }
+                    else
+                    {
+                        convMessage.GroupMemberName = isGroupChat ?
+                            GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
                     convMessage.IsSms = !isOnHike;
