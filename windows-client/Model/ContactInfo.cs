@@ -32,7 +32,6 @@ namespace windows_client.Model
         private bool _onHike;
         private byte[] _avatar;
         private bool _isFav;
-        private bool _isCloseFriendNux;//for Nux , this will also be used in equals function , if true we will compare msisdns only in equals function
         private int? _phoneNoKind;
 
         # region Users Table Members
@@ -181,22 +180,9 @@ namespace windows_client.Model
             set
             {
                 if (value != _isFav)
-                {
                     _isFav = value;
-                    if (((App)Application.Current).RootFrame.Content != null && ((App)Application.Current).RootFrame.Content is InviteUsers)
-                    {
-                        InviteUsers currentPage = ((App)Application.Current).RootFrame.Content as InviteUsers;
-                        if (currentPage != null)
-                        {
-                            currentPage.CheckBox_Tap(this);
-                        }
-                        NotifyPropertyChanged("IsFav");//it is binded with two way checkbox, so to update ui
-                    }
-                    else
-                        NotifyPropertyChanged("BlockUnblockText");
-                }
             }
-        }   // this is used in inviteUsers page , when you show hike users
+        }
 
         bool _isSelected;
         public bool IsSelected
@@ -232,16 +218,6 @@ namespace windows_client.Model
             }
         }
 
-        public string BlockUnblockText
-        {
-            get
-            {
-                if (_isFav)
-                    return AppResources.UnBlock_Txt;
-                return AppResources.Block_Txt;
-
-            }
-        }
         public bool IsEnabled
         {
             get
@@ -252,17 +228,23 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsUsedAtMiscPlaces
+        Visibility _checkBoxVisibility = Visibility.Collapsed;
+        public Visibility CheckBoxVisibility
         {
             get
             {
-                return _isCloseFriendNux;
+                return _checkBoxVisibility;
             }
             set
             {
-                _isCloseFriendNux = value;
+                if (value != _checkBoxVisibility)
+                {
+                    _checkBoxVisibility = value;
+                    NotifyPropertyChanged("CheckBoxVisibility");
+                }
             }
         }
+        
         public ContactInfo()
         {
             _name = null;
@@ -320,18 +302,17 @@ namespace windows_client.Model
                 return false;
             ContactInfo other = (ContactInfo)obj;
 
-            if (IsUsedAtMiscPlaces)
+            // if msisdn of two contacts are equal they should be equal
+            // if msisdn is not there then other things should be compared
+            if (!string.IsNullOrEmpty(_msisdn))
             {
-                // if msisdn of two contacts are equal they should be equal
-                // if msisdn is not there then other things should be compared
-                if (!string.IsNullOrEmpty(_msisdn))
-                {
-                    if (string.IsNullOrWhiteSpace(other.Msisdn))
-                        return false;
-                    else if (_msisdn == other.Msisdn)
-                        return true;
-                }
+                if (string.IsNullOrWhiteSpace(other.Msisdn))
+                    return false;
+                else if (_msisdn == other.Msisdn)
+                    return true;
+                else return false;
             }
+            
             if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
@@ -474,14 +455,17 @@ namespace windows_client.Model
             set;
         }
 
+        BitmapImage _avatarImage;
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
-                    // get image and save in cache too
-                    return UI_Utils.Instance.GetBitmapImage(_msisdn);
+                    if (_avatarImage == null)
+                        _avatarImage = UI_Utils.Instance.GetBitmapImage(_msisdn);
+
+                    return _avatarImage;
                 }
                 catch (Exception ex)
                 {

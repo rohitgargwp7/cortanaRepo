@@ -94,7 +94,6 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 50;
         public static readonly int VIBRATE_DURATION = 700;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
-        public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
@@ -106,9 +105,8 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 3; //seconds
-        public static readonly int SEND_END_TYPING_TIMER = 3; //seconds
-        public static readonly int SEND_START_TYPING_TIMER = 2; //seconds
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 6; //seconds
+        public static readonly int SEND_START_TYPING_TIMER = 4; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
@@ -117,7 +115,9 @@ namespace windows_client
 
         //Chat bubbles
         public static readonly int CHATBUBBLE_LANDSCAPE_WIDTH = 510;
+        public static readonly int CHATBUBBLE_LANDSCAPE_MINWIDTH = 170;
         public static readonly int CHATBUBBLE_PORTRAIT_WIDTH = 330;
+        public static readonly int CHATBUBBLE_PORTRAIT_MINWIDTH = 110;
 
         //file for sharing info with background agent
         public static readonly string BACKGROUND_AGENT_FILE = "token";
@@ -125,8 +125,6 @@ namespace windows_client
 
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
-        private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp8/black.html";
-        private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp8/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
@@ -184,10 +182,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return FAQS_LINK_BLACK;
-                }
                 return FAQS_LINK_WHITE;
             }
         }
@@ -196,10 +190,6 @@ namespace windows_client
         {
             get
             {
-                if (Utils.isDarkTheme())
-                {
-                    return TERMS_AND_CONDITIONS_BLACK;
-                }
                 return TERMS_AND_CONDITIONS_WHITE;
             }
         }
@@ -264,6 +254,7 @@ namespace windows_client
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
+        public static string REQUEST_DISPLAY_PIC = "rdp";
         public static string MSISDN = "msisdn";
         public static string MSISDNS = "msisdns";
         public static string NAME = "name";
@@ -331,6 +322,8 @@ namespace windows_client
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
+        public static string IS_PIC_DOWNLOADED = "isPicDownloaded";
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
@@ -345,6 +338,7 @@ namespace windows_client
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
         public static readonly string REWARDS_TOKEN = "reward_token";
+        public static readonly string IP_KEY = "ip";
         public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 
@@ -371,6 +365,7 @@ namespace windows_client
 
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
+        public static readonly int MAX_GROUP_MEMBER_SIZE = 50;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
@@ -386,6 +381,9 @@ namespace windows_client
         public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
         public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
         public static readonly string START_HIKING = "startHiking";
+        public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
+        public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
+        public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
@@ -434,6 +432,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
+            public static readonly string GROUP_OWNER_CHANGED = "goc";
             public static readonly string DND_USER_IN_GROUP = "dugc";
 
             public static readonly string ACCOUNT_INFO = "ai";
@@ -456,6 +455,8 @@ namespace windows_client
             public static readonly string APP_INFO = "app";
             public static readonly string FORCE_SMS = "fsms";
             public static readonly string APP_UPDATE = "update";
+
+            public static readonly string MSISDN_KEYWORD = "msisdn";
         }
 
         public static class AppSettings

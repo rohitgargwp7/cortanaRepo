@@ -9,77 +9,75 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
-    
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-    
+    shell:SystemTray.IsVisible="False">
+
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="646"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <TextBlock Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="23,0,0,0" Height="100"/>
-        </StackPanel>
+        <ProgressBar x:Name="shellProgress" Grid.RowSpan="2" VerticalAlignment="Top" 
+                         IsIndeterminate="true" Foreground="White"/>
 
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+        
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,5,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,0,0,0" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid  Tap="Unlink_Tap" >
+            <Grid Tap="Unlink_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Name="unlinkTxtBlk" Text="{Binding Path= LocalizedResources.Logout_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                <Image Height="30" Source="/View/images/settings/unlink_account.png" VerticalAlignment="Top" Margin="0,25,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Logout_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,30,0,0">
+            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Name="deleteTxtBlk" Text="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                <Image x:Name="deleteAccount" Height="30" Source="/View/images/settings/delete_account.png" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridFB" Grid.Row="2" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,30,0,0">
+            <Grid Name="gridFB" Grid.Row="2" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="UnlinkFb" Width="31" VerticalAlignment="Top" Margin="0,10,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.Unlink_Fb_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Unlink_Fb_SubHeader_Txt, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                <Image x:Name="UnlinkFb" Source="/View/images/settings/fb_unlink.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Fb_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Fb_SubHeader_Txt, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridTwitter" Grid.Row="3" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,30,0,0">
+            <Grid Name="gridTwitter" Grid.Row="3" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="UnlinkTwitter" Width="31" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.Unlink_Twitter_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Unlink_Twitter_SubHeader_Txt, Source={StaticResource LocalizedStrings}}" FontSize="19"/>
+                <Image x:Name="UnlinkTwitter" Source="/View/images/settings/tw_unlink.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Twitter_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Twitter_SubHeader_Txt, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
         </Grid>

@@ -38,6 +38,7 @@ namespace windows_client.Model
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
+        private string _draftMessage;
         #endregion
 
         #region Properties
@@ -214,7 +215,18 @@ namespace windows_client.Model
                     _muteVal = value;
 
                 NotifyPropertyChanged("MuteIconVisibility");
-                NotifyPropertyChanged("MuteIconTimeStampVisibility");
+                NotifyPropertyChanged("UnreadCircleVisibility");
+            }
+        }
+
+        public Visibility GroupIconVisibility
+        {
+            get
+            {
+                if (IsGroupChat)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
         }
 
@@ -226,14 +238,6 @@ namespace windows_client.Model
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
-            }
-        }
-
-        public BitmapImage MuteIcon
-        {
-            get
-            {
-                return UI_Utils.Instance.MuteIconForConversationView;
             }
         }
 
@@ -312,18 +316,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
+                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
-            }
-        }
-
-        public double UnreadCounterWidth
-        {
-            get
-            {
-                return getUnreadCounterWidth();
             }
         }
 
@@ -340,8 +336,16 @@ namespace windows_client.Model
                     _unreadCounter = value;
 
                     NotifyPropertyChanged("UnreadCounter");
-                    NotifyPropertyChanged("UnreadCounterWidth");
+                    NotifyPropertyChanged("UnreadCounterString");
                 }
+            }
+        }
+
+        public string UnreadCounterString
+        {
+            get
+            {
+                return _unreadCounter <= 9 ? _unreadCounter.ToString() : "9+";
             }
         }
 
@@ -384,7 +388,7 @@ namespace windows_client.Model
         {
             get
             {
-                return TimeStampVisibility == Visibility.Visible || MuteIconVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+                return TimeStampVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -454,8 +458,8 @@ namespace windows_client.Model
                     else if (_avatar == null)
                     {
                         if (Utils.isGroupConversation(_msisdn))
-                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
-                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
+                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn, false);
+                        return UI_Utils.Instance.getDefaultAvatar(Msisdn, false);
                     }
                     else
                     {
@@ -472,18 +476,14 @@ namespace windows_client.Model
             }
         }
 
-        public string LastMessageColor
+        public SolidColorBrush LastMessageColor
         {
             get
             {
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                {
-                    Color currentAccentColorHex =
-                       (Color)Application.Current.Resources["PhoneAccentColor"];
-                    return currentAccentColorHex.ToString();
-                }
+                    return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
                 else
-                    return "gray";
+                    return (SolidColorBrush)Application.Current.Resources["HikeLightGrey"];
             }
         }
 
@@ -544,6 +544,7 @@ namespace windows_client.Model
                 return Utils.isGroupConversation(_msisdn);
             }
         }
+
         public bool? _isGroupAlive;
         public bool IsGroupAlive
         {
@@ -561,6 +562,18 @@ namespace windows_client.Model
             }
         }
 
+        public string DraftMessage
+        {
+            get
+            {
+                return _draftMessage;
+            }
+            set
+            {
+                if (value != _draftMessage)
+                    _draftMessage = value;
+            }
+        }
         private long lastTypingNotificationShownTime;
         private string _typingNotificationText;
 
@@ -630,20 +643,6 @@ namespace windows_client.Model
             this._avatar = avatar;
         }
 
-        double getUnreadCounterWidth()
-        {
-            double defaultWidth = 17;
-            var num = UnreadCounter;
-
-            while (num != 0)
-            {
-                num /= 10;
-                defaultWidth += 8;
-            }
-
-            return defaultWidth;
-        }
-
         public int CompareTo(ConversationListObject rhs)
         {
             if (this.Equals(rhs))
@@ -696,6 +695,10 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
                 writer.Write(_unreadCounter);
+                if (_draftMessage == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_draftMessage);
             }
             catch (Exception ex)
             {
@@ -778,6 +781,18 @@ namespace windows_client.Model
                         _unreadCounter = 1;
                     else
                         _unreadCounter = 0;
+                }
+
+                try
+                {
+                    count = reader.ReadInt32();
+                    _draftMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (_draftMessage == "*@N@*") 
+                        _draftMessage = string.Empty;//so that on comparing with unsent empty text it returns true 
+                }
+                catch
+                {
+                    _draftMessage = string.Empty;
                 }
             }
             catch (Exception ex)

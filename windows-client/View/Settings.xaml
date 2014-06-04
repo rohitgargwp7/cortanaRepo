@@ -8,76 +8,119 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="23,0,0,0" Height="100"/>
-        </StackPanel>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,5,0,0" Background="Transparent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="0,0,0,0" Tap="Preferences_Tap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image x:Name="preferencesImage" Width="32" VerticalAlignment="Top" Margin="0,17,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_PreferencesSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="1" Margin="0,30,0,0" Tap="Notifications_Tap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image x:Name="notificationsImage" Width="32" VerticalAlignment="Top" Margin="0,17,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="2" Margin="0,30,0,0" Tap="Account_Tap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image x:Name="accountImage" Width="28" VerticalAlignment="Top" Margin="0,17,0,0"></Image>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_AccountSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="3" Margin="0,30,0,0" Tap="BlockList_Tap">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image x:Name="blockListImage" Width="32" VerticalAlignment="Top" Margin="0,17,0,0"/>
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                    <TextBlock Text="{Binding Path= LocalizedResources.SettingsSubtitle_Blocklist_Txt, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
-                </StackPanel>
-            </Grid>
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <Grid x:Name="ContentPanel" Margin="25,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,20,0,0" Tap="Notifications_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/notifications.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="SMS_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/free_sms.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SMSSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock x:Name="smsCounterText" Style="{StaticResource SettingsSubHeaderTextBlockStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Account_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/account.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_AccountSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+                
+                <Grid Grid.Row="3" Margin="0,20,0,0" Tap="Privacy_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/privacy.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_PrivacySettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SubtitlePrivacySettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="4" Margin="0,20,0,0" Tap="Preferences_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/preferences.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_PreferencesSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="5" Margin="0,20,0,0" Tap="Sync_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/sync.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SyncSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SubtitleSyncSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="6" Margin="0,20,0,25" Tap="Help_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/view/images/settings/help.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_HelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SubtitleHelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 
 

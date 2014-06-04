@@ -110,11 +110,6 @@ namespace windows_client.utils
             }
         }
 
-        public static bool isDarkTheme()
-        {
-            return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
-        }
-
         public static string[] splitUserJoinedMessage(string msg)
         {
             if (string.IsNullOrWhiteSpace(msg))
@@ -307,10 +302,7 @@ namespace windows_client.utils
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
             info[HikeConstants.OS_VERSION] = getOSVersion();
-            if (IsWP8)
-                info[HikeConstants.OS_NAME] = "win8";
-            else
-                info[HikeConstants.OS_NAME] = "win7";
+            info[HikeConstants.OS_NAME] = "win8";
             JObject infoPacket = new JObject();
             infoPacket[HikeConstants.DATA] = info;
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
@@ -413,16 +405,6 @@ namespace windows_client.utils
                     return string.Empty;
             }
         }
-
-        public static bool IsWP8
-        {
-            get
-            {
-                return Environment.OSVersion.Version >= TargetedVersion;
-            }
-        }
-
-        private static Version TargetedVersion = new Version(8, 0);
 
         public static Uri LoadPageUri(App.PageState pageState)
         {
@@ -634,6 +616,52 @@ namespace windows_client.utils
                 readBy = string.Format(AppResources.MessageStatus_ReadByMoreThanThree, readBy, count);
 
             return readBy;
+        }
+
+        static public int GetMaxCharForBlock(string message, int maxLinesPerBlock = 35, int maxCharsPerLine = 30)
+        {
+            string trimmedMessage = message;
+            int lineCount = 1;
+            int charCount = 0;
+            while (trimmedMessage.Length > 0)
+            {
+                char[] newLineChar = new char[] { '\r', '\n' };
+                int index = trimmedMessage.IndexOfAny(newLineChar);
+                if (index == -1)
+                {
+                    string currentString = trimmedMessage;
+                    charCount += currentString.Length;
+                    lineCount += Convert.ToInt32(Math.Floor(currentString.Length / (double)maxCharsPerLine));
+                    if (lineCount > maxLinesPerBlock)
+                    {
+                        charCount -= maxCharsPerLine * (lineCount - maxLinesPerBlock - 1);
+                        charCount -= currentString.Length % maxCharsPerLine;
+                    }
+                    break;
+                }
+                else if (index == 0)
+                {
+                    trimmedMessage = trimmedMessage.Substring(index + 1);
+                    lineCount += 1;
+                    charCount += 1;
+                    if (lineCount > maxLinesPerBlock)
+                        break;
+                }
+                else
+                {
+                    string currentString = trimmedMessage.Substring(0, index - 1);
+                    charCount += currentString.Length + 2;
+                    trimmedMessage = trimmedMessage.Substring(index + 1);
+                    lineCount += 1 + Convert.ToInt32(Math.Floor(currentString.Length / (double)maxCharsPerLine));
+                    if (lineCount > maxLinesPerBlock)
+                    {
+                        charCount -= (lineCount - maxLinesPerBlock - 2) > 0 ? maxCharsPerLine * (lineCount - maxLinesPerBlock - 2) : 0;
+                        charCount -= currentString.Length % maxCharsPerLine;
+                        break;
+                    }
+                }
+            }
+            return charCount;
         }
     }
 }

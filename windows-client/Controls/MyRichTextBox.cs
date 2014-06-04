@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using windows_client.utils;
 
 namespace windows_client.Controls
 {
@@ -22,6 +23,12 @@ namespace windows_client.Controls
 
         public static readonly DependencyProperty ColorProperty =
             DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(MyRichTextBox), new PropertyMetadata(default(SolidColorBrush)));
+
+        public static readonly DependencyProperty MaxCharsPerLineProperty =
+            DependencyProperty.Register("MaxCharsPerLine", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
+
+        public static readonly DependencyProperty MaxLinesProperty =
+                    DependencyProperty.Register("MaxLines", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
         private string lastText = string.Empty;
         public string Text
@@ -47,6 +54,7 @@ namespace windows_client.Controls
                 SetValue(TypeProperty, value);
             }
         }
+        
         public SolidColorBrush TextForeground
         {
             get
@@ -56,6 +64,30 @@ namespace windows_client.Controls
             set
             {
                 SetValue(ColorProperty, value);
+            }
+        }
+
+        public Int32 MaxCharsPerLine
+        {
+            get
+            {
+                return (Int32)GetValue(MaxCharsPerLineProperty);
+            }
+            set
+            {
+                SetValue(MaxCharsPerLineProperty, value);
+            }
+        }
+
+        public Int32 MaxLines
+        {
+            get
+            {
+                return (Int32)GetValue(MaxLinesProperty);
+            }
+            set
+            {
+                SetValue(MaxLinesProperty, value);
             }
         }
 
@@ -79,6 +111,19 @@ namespace windows_client.Controls
             if (text == lastText)
                 return;
             lastText = text;
+
+            if (MaxCharsPerLine > 0)
+            {
+                var maxChar = Utils.GetMaxCharForBlock(text, 1, MaxCharsPerLine);
+                if (text.Length > maxChar)
+                    text = text.Substring(0, maxChar + 1).Trim() + "...";
+            }
+            else if (MaxLines > 0)
+            {
+                var maxChar = Utils.GetMaxCharForBlock(text, MaxLines);
+                if (text.Length > maxChar)
+                    text = text.Substring(0, maxChar + 1).Trim() + "...";
+            }
 
             var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
             Blocks.Clear();

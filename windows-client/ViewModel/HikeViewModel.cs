@@ -23,12 +23,12 @@ using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
-using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
 using System.Web;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.ViewModel
 {
@@ -232,6 +232,8 @@ namespace windows_client.ViewModel
             LoadToolTipsDict();
             LoadCurrentLocation();
 
+            MiscDBUtil.LoadPendingUploadPicRequests();
+
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
@@ -267,7 +269,7 @@ namespace windows_client.ViewModel
 
                         App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         // Couldn't get current location - location might be disabled in settings
                         //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
@@ -367,7 +369,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
             App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         private void RemoveListeners()
@@ -377,7 +378,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
             App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -466,21 +466,10 @@ namespace windows_client.ViewModel
                 scheduler.Schedule(tn.AutoHideAfterTyping, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
             }
             #endregion
-            #region END TYPING NOTIFICATION
-            else if (type == HikePubSub.END_TYPING_CONVERSATION)
-            {
-                object[] vals = (object[])obj;
-                if (HidetypingNotification != null)
-                    HidetypingNotification(null, vals);
-
-            }
-            #endregion
         }
-
 
         public event EventHandler<Object[]> ShowTypingNotification;
         public event EventHandler<Object[]> AutohideTypingNotification;
-        public event EventHandler<Object[]> HidetypingNotification;
 
         public void CallAutohide(object[] vals)
         {
@@ -489,6 +478,7 @@ namespace windows_client.ViewModel
                 AutohideTypingNotification(null, vals);
             }
         }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -565,7 +555,7 @@ namespace windows_client.ViewModel
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 15, 0), FullTipMargin = new Thickness(10, 0, 10, 55) });
+            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(15, 0, 10, 0), FullTipMargin = new Thickness(25, 165, 25, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
             _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
@@ -617,6 +607,8 @@ namespace windows_client.ViewModel
         /// <param name="index">index of the tooltip you want to insert</param>
         public void DisplayTip(Panel element, int index)
         {
+            return;
+
             if (DictInAppTip == null)
                 return;
 
@@ -647,10 +639,8 @@ namespace windows_client.ViewModel
                 Canvas.SetZIndex(inAppTipUC, 3);
                 inAppTipUC.Visibility = Visibility.Visible;
 
-                if (index == 0 || index == 1 || index == 2 || index == 5 || index == 7 || index == 8)
+                if (index == 0 || index == 1 || index == 2 || index == 3 || index == 5 || index == 7 || index == 8)
                     inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
-                else if (index == 3)
-                    inAppTipUC.SetValue(Grid.RowSpanProperty, 2);
 
                 if (tip.Width != null)
                     inAppTipUC.Width = Convert.ToDouble(tip.Width);
@@ -703,6 +693,8 @@ namespace windows_client.ViewModel
         /// <param name="index">tool tip index to be removed</param>
         public void HideToolTip(Panel element, int index)
         {
+            return;
+
             if (DictInAppTip == null)
                 return;
 
@@ -822,7 +814,7 @@ namespace windows_client.ViewModel
         {
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
-                StatusMessage sm = new StatusMessage(msisdn, AppResources.Now_Friends_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
+                StatusMessage sm = new StatusMessage(msisdn, String.Empty, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1);
                 App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
@@ -1035,5 +1027,115 @@ namespace windows_client.ViewModel
             }
         }
         #endregion
+
+        #region NEW GROUP PIC
+
+        public List<GroupPic> PicUploadList = new List<GroupPic>();
+        bool _isUploading = false;
+
+        public void AddGroupPicForUpload(string id)
+        {
+            if (PicUploadList.Count == 10)
+            {
+                DeleteGroupImage(id);
+                return;
+            }
+
+            PicUploadList.Add(new GroupPic(id));
+            MiscDBUtil.SavePendingUploadPicRequests();
+            SendDisplayPic();
+        }
+
+        public void SendDisplayPic()
+        {
+            if (PicUploadList.Count == 0)
+                return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                return;
+
+            if (_isUploading)
+                return;
+
+            _isUploading = true;
+
+            var group = PicUploadList[0];
+            var buffer = MiscDBUtil.getLargeImageForMsisdn(group.GroupId);
+            AccountUtils.updateGroupIcon(buffer, new AccountUtils.postPicUploadResponseFunction(updateProfile_Callback), group);
+        }
+
+        private void updateProfile_Callback(JObject obj, GroupPic group)
+        {
+            _isUploading = false;
+
+            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+            {
+                if (group.IsRetried)
+                    DeleteGroupImageFromList(group);
+                else
+                    group.IsRetried = true;
+            }
+            else
+            {
+                if (PicUploadList.Contains(group))
+                    PicUploadList.Remove(group);
+            }
+
+            MiscDBUtil.SavePendingUploadPicRequests();
+
+            if (PicUploadList.Count > 0)
+                SendDisplayPic();
+        }
+
+        private void DeleteGroupImageFromList(GroupPic group)
+        {
+            DeleteGroupImage(group.GroupId);
+
+            if (PicUploadList.Contains(group))
+                PicUploadList.Remove(group);
+        }
+
+        private static void DeleteGroupImage(string id)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                try
+                {
+                    App.ViewModel.ConvMap[id].Avatar = null;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("HikeViewModel :: DeleteGroupImage : remove image from ConvObj, Exception : " + ex.StackTrace);
+                }
+            });
+
+            MiscDBUtil.DeleteImageForMsisdn(id);
+        }
+
+        #endregion
+
+        #region Status Update notification toggle
+        public event EventHandler<EventArgs> StatusNotificationsStatusChanged;
+
+        public void StatusNotificationSettingsChanged()
+        {
+            if (App.ViewModel.StatusNotificationsStatusChanged != null)
+                App.ViewModel.StatusNotificationsStatusChanged(null, null);
+        }
+
+        #endregion
+
+        #region Group Owner Changed
+        public event EventHandler<object[]> GroupOwnerChangedEvent;
+        public void GroupOwnerChanged(object[] objArray)
+        {
+            if (App.ViewModel.GroupOwnerChangedEvent != null)
+                App.ViewModel.GroupOwnerChangedEvent(null, objArray);
+        }
+
+        #endregion
+
+        public bool IsConversationUpdated { get; set; }
+
     }
 }

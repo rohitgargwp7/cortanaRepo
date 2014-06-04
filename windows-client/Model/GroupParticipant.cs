@@ -15,9 +15,12 @@ using System.IO;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using System.Windows.Media.Imaging;
+using System.Runtime.Serialization;
 
 namespace windows_client.Model
 {
+    [DataContract]
     public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>, IBinarySerializable
     {
         private string _grpId;
@@ -60,6 +63,7 @@ namespace windows_client.Model
             _isDND = isDND;
         }
 
+        [DataMember]
         public string GroupId
         {
             get
@@ -73,6 +77,25 @@ namespace windows_client.Model
             }
         }
 
+        BitmapImage _memberImage;
+        [IgnoreDataMember]
+        public BitmapImage MemberImage
+        {
+            get
+            {
+                return _memberImage;
+            }
+            set
+            {
+                if (value != MemberImage)
+                {
+                    _memberImage = value;
+                    NotifyPropertyChanged("MemberImage");
+                }
+            }
+        }
+
+        [DataMember]
         public string Name
         {
             get
@@ -105,6 +128,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public string Msisdn
         {
             get
@@ -118,6 +142,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsOnHike
         {
             get
@@ -137,6 +162,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsDND
         {
             get
@@ -150,6 +176,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool HasOptIn
         {
             get
@@ -163,6 +190,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool HasLeft
         {
             get
@@ -176,6 +204,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public bool IsUsed
         {
             get
@@ -189,10 +218,22 @@ namespace windows_client.Model
             }
         }
 
+        bool _isOwner;
+        [DataMember]
         public bool IsOwner
         {
-            get;
-            set;
+            get
+            {
+                return _isOwner;
+            }
+            set
+            {
+                if (value != _isOwner)
+                {
+                    _isOwner = value;
+                    NotifyPropertyChanged("IsOwnerVisibility");
+                }
+            }
         }
 
         public bool IsFav
@@ -209,36 +250,19 @@ namespace windows_client.Model
                 NotifyPropertyChanged("FavMsg");
             }
         }
+
         public string GroupInfoBlockText
         {
             get
             {
                 if (IsOwner)
-                {
                     return AppResources.Owner_Txt;
-                }
                 else if (!_isOnHike)
-                {
-
                     return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
-                }
-                return string.Empty;
+                else return string.Empty;
             }
         }
-        public Visibility ShowGroupInfoBLock
-        {
-            get
-            {
-                if (IsOwner || !_isOnHike)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
-            }
-        }
+        
         public string FavMsg
         {
             get
@@ -261,6 +285,14 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility IsOwnerVisibility
+        {
+            get
+            {
+                return _isOwner ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         public Visibility RemoveFromGroup
         {
             get;
@@ -277,23 +309,23 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility InviteToHikeVisibility
+        {
+            get
+            {
+                if (IsOnHike)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public Visibility ContextMenuVisibility
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public bool ContextMenuIsEnabled
-        {
-            get
-            {
-                if (ContextMenuVisibility == Visibility.Visible)
-                    return true;
-                return false;
             }
         }
 
@@ -303,7 +335,7 @@ namespace windows_client.Model
             {
                 if (_isOnHike)
                 {
-                    return UI_Utils.Instance.HikeMsgBackground;
+                    return UI_Utils.Instance.HikeBlue;
                 }
                 return UI_Utils.Instance.SmsBackground;
             }

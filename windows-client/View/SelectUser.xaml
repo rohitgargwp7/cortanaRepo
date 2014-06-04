@@ -1,0 +1,90 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="windows_client.View.SelectUser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="Black"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" toolkit:TiltEffect.IsTiltEnabled="True"
+    shell:SystemTray.IsVisible="False">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top" Background="Transparent"/>
+
+        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Chat_With_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" Margin="12" HorizontalAlignment="Stretch" 
+                                  Style="{StaticResource PhoneTextBoxWithWhiteBackground}"
+                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged" MaxHeight="150"/>
+
+            <Grid Grid.Row="1" x:Name="emptyGrid" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Image Source="/view/images/noResult.png" Height="110"/>
+                <TextBlock Grid.Row="1" x:Name="noResultTextBlock" Margin="0,10,0,0" Foreground="{StaticResource HikeGrey}"/>
+            </Grid>
+            
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="1" Margin="25,0,0,0" 
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          IsGroupingEnabled="True" HideEmptyGroups="True"
+                          GroupHeaderTemplate="{StaticResource AlphabeticGroupHeaderTemplate}"
+                          JumpListStyle="{StaticResource AlphabeticLongListSelectorJumpListStyle}">
+                <phone:LongListSelector.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,7,25,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding AvatarImage}" Height="60" Width="60" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="22,0" Tap="ContactItem_Tap" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
+                                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox Style="{StaticResource BlockUnBlockCheckBox}" Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"
+                                      Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-25,0"/>
+                        </Grid>
+                    </DataTemplate>
+                </phone:LongListSelector.ItemTemplate>
+                <phone:LongListSelector.ListFooterTemplate>
+                    <DataTemplate>
+                        <Grid Height="80"/>
+                    </DataTemplate>
+                </phone:LongListSelector.ListFooterTemplate>
+            </phone:LongListSelector>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

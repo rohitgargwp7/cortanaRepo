@@ -9,12 +9,11 @@
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="480"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    shell:SystemTray.IsVisible="False" Name="recordVideo">
+    shell:SystemTray.IsVisible="False">
 
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="White">
         <Rectangle Height="800" Width="480" 
                    VerticalAlignment="Bottom"
                    HorizontalAlignment="Center"
@@ -62,8 +61,8 @@
         </Grid>
 
         <Grid x:Name="SettingsGrid" Canvas.ZIndex="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
-            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" IsHitTestVisible="False"/>
-            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource PhoneBackgroundBrush}">
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" IsHitTestVisible="False"/>
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="White">
                 <Grid>
                     <ProgressBar IsIndeterminate="False" x:Name="loadingIndicator" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="Transparent"/>
                     <TextBlock Text="{Binding Path= LocalizedResources.Video_Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="32" Margin="12"/>
@@ -71,7 +70,8 @@
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel x:Name="cameraGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,20,12,12">
                         <TextBlock x:Name="cameraLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Camera_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker x:Name="cameraList" Width="460" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged" Margin="-2,0">
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlueHeader}" FontWeight="Light" Foreground="Black"
+                                            x:Name="cameraList" Width="460" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}"/>
@@ -81,7 +81,8 @@
                     </StackPanel>
                     <StackPanel x:Name="resolutionGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
                         <TextBlock x:Name="resolutionLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Reolution_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker Width="460" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged" Margin="-2,0">
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlueHeader}" FontWeight="Light" Foreground="Black"
+                                            Width="460" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Title}"/>
@@ -94,6 +95,6 @@
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True"/>
+        <shell:ApplicationBar IsVisible="True" ForegroundColor="#2c313d" BackgroundColor="#eff2f6"/>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

@@ -85,7 +85,7 @@ namespace windows_client.utils
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
 
-                    userName = (cn != null && string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
+                    userName = (cn != null && !string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
@@ -98,8 +98,12 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
-                    statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes));
+                    
+                    var img = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+                    if (isThumbnail)
+                        userProfileThumbnail = img;
+
+                    statusUpdate = new ImageStatus(userName, userProfileThumbnail, status, isShowOnTimeline, img);
                     break;
 
                 case StatusMessage.StatusType.IS_NOW_FRIEND:
@@ -198,7 +202,7 @@ namespace windows_client.utils
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, "Status Not Posted", MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Status_Not_Posted_Rename, MessageBoxButton.OK);
                     //                    postStatusIcon.IsEnabled = true;
                 });
             }

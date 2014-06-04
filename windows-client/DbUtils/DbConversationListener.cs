@@ -19,6 +19,7 @@ using windows_client.FileTransfers;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.DbUtils
 {
@@ -88,22 +89,24 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-
                 ConvMessage convMessage;
-
                 bool isNewGroup;
+                byte[] imageBytes = null;
+               
                 if (obj is object[])
                 {
                     object[] vals = (object[])obj;
                     convMessage = (ConvMessage)vals[0];
                     isNewGroup = (bool)vals[1];
+                    imageBytes = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 }
                 else
                 {
                     convMessage = (ConvMessage)obj;
                     isNewGroup = false;
                 }
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
+
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup, imageBytes);
                 if (convObj == null)
                     return;
 
@@ -177,7 +180,12 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
+                    {
+                        if (!NetworkInterface.GetIsNetworkAvailable())
+                            MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                    }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
@@ -252,16 +260,17 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
+                byte[] fullViewBytes = (byte[])vals[1];
                 byte[] thumbnailBytes = (byte[])vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
-                    byte[] fullViewBytes = (byte[])vals[1];
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId + HikeConstants.FULL_VIEW_IMAGE_PREFIX, fullViewBytes, false);
+                    MiscDBUtil.saveLargeImage(grpId, fullViewBytes);
                     MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);
                 }
                 else
                 {
+                    MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, fullViewBytes);
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, thumbnailBytes, false);
                 }
             }
@@ -278,6 +287,7 @@ namespace windows_client.DbUtils
                 string groupId = (string)obj;
                 ConversationTableUtils.deleteConversation(groupId);
                 //ConversationTableUtils.saveConvObjectList();
+                MiscDBUtil.DeleteImageForMsisdn(groupId);
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 GroupManager.Instance.GroupCache.Remove(groupId);
@@ -512,8 +522,7 @@ namespace windows_client.DbUtils
                 App.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }//if already at zero, do nothing
 
-            if (App.ViewModel.ConversationListPage != null)
-                App.ViewModel.ConversationListPage.ConversationListUpdated = true;
+            App.ViewModel.IsConversationUpdated = true;
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

@@ -35,17 +35,10 @@ namespace windows_client.View
             this.locationToggle.IsChecked = isLocationEnabled;
             this.locationToggle.Content = isLocationEnabled ? AppResources.On : AppResources.Off;
 
-            bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            this.showFreeSMSToggle.IsChecked = showFreeSMS;
-            if (showFreeSMS)
-                this.showFreeSMSToggle.Content = AppResources.On;
-            else
-                this.showFreeSMSToggle.Content = AppResources.Off;
-
             List<string> listSettingsValue = new List<string>();
             //by default immediate is to be shown
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
+
             byte firstSetting;
             if (App.appSettings.TryGetValue(App.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
             {
@@ -63,75 +56,26 @@ namespace windows_client.View
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
 
-            bool showlastSeen = true;
-            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
-                showlastSeen = true;
-            lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
+            bool value;
+            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out value))
+                value = true;
+            autoDownloadToggle.IsChecked = value;
+            this.autoDownloadToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            bool autoDownload;
-            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out autoDownload))
-                autoDownload = true;
-            autoDownloadToggle.IsChecked = autoDownload;
-            this.autoDownloadToggle.Content = autoDownload ? AppResources.On : AppResources.Off;
+            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out value))
+                value = true;
+            autoResumeToggle.IsChecked = value;
+            this.autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            bool autoUpload;
-            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out autoUpload))
-                autoUpload = true;
-            autoResumeToggle.IsChecked = autoUpload;
-            this.autoResumeToggle.Content = autoUpload ? AppResources.On : AppResources.Off;
-
-            bool enterToSend;
-            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out enterToSend))
-                enterToSend = true;
-            enterToSendToggle.IsChecked = enterToSend;
-            this.enterToSendToggle.Content = enterToSend ? AppResources.On : AppResources.Off;
-        }
-
-        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-        }
-
-        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
-        }
-
-        private void lastSeenTimeStampToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            lastSeenTimeStampToggle.Loaded -= lastSeenTimeStampToggle_Loaded;
-            lastSeenTimeStampToggle.Checked += lastSeenTimeStampToggle_Checked;
-            lastSeenTimeStampToggle.Unchecked += lastSeenTimeStampToggle_Unchecked;
-        }
-
-        private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.LAST_SEEN_SEETING);
-            App.appSettings.Save();
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, true);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-        }
-
-        private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.lastSeenTimeStampToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
-
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
-            JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, false);
-            obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out value))
+                value = true;
+            enterToSendToggle.IsChecked = value;
+            this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
+            
+            if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
+                value = true;
+            nudgeSettingToggle.IsChecked = value;
+            this.nudgeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -154,9 +98,7 @@ namespace windows_client.View
         {
             this.locationToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
-
-            App.appSettings.Remove(HikeConstants.LOCATION_DEVICE_COORDINATE);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(HikeConstants.LOCATION_DEVICE_COORDINATE);
         }
         private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
         {
@@ -167,15 +109,13 @@ namespace windows_client.View
         private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.AUTO_DOWNLOAD_SETTING);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING);
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
-            App.appSettings.Save();
         }
 
         private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
@@ -188,8 +128,7 @@ namespace windows_client.View
         private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoResumeToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.AUTO_RESUME_SETTING);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.AUTO_RESUME_SETTING);
 
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
@@ -198,7 +137,6 @@ namespace windows_client.View
         {
             this.autoResumeToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.AUTO_RESUME_SETTING, false);
-            App.appSettings.Save();
         }
 
         private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)
@@ -211,8 +149,7 @@ namespace windows_client.View
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.ENTER_TO_SEND);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(App.ENTER_TO_SEND);
 
             App.SendEnterToSendStatusToServer();
         }
@@ -221,15 +158,27 @@ namespace windows_client.View
         {
             this.enterToSendToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
-            App.appSettings.Save();
 
             App.SendEnterToSendStatusToServer();
         }
 
-        private async void btnGoToLockSettings_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void nudgeSettingsToggle_Loaded(object sender, RoutedEventArgs e)
         {
-            // Launch URI for the lock screen settings screen.
-            var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
+            nudgeSettingToggle.Loaded -= nudgeSettingsToggle_Loaded;
+            nudgeSettingToggle.Checked += nudgeSettingToggle_Checked;
+            nudgeSettingToggle.Unchecked += nudgeSettingToggle_UnChecked;
+        }
+
+        private void nudgeSettingToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.nudgeSettingToggle.Content = AppResources.On;
+            App.RemoveKeyFromAppSettings(App.SEND_NUDGE);
+        }
+
+        private void nudgeSettingToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            this.nudgeSettingToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.SEND_NUDGE, false);
         }
     }
 }

@@ -86,6 +86,18 @@ namespace windows_client.Model
             }
         }
 
+        SolidColorBrush _headerBackground;
+        public SolidColorBrush HeaderBackground
+        {
+            get
+            {
+                if (_headerBackground == null)
+                    _headerBackground = UI_Utils.Instance.ConvertStringToColor(HeaderColor);
+
+                return _headerBackground;
+            }
+        }
+
         BitmapImage _thumbnailPattern;
         public BitmapImage ThumbnailPattern
         {
@@ -158,6 +170,7 @@ namespace windows_client.Model
         public string SentBubbleBackground;
         public string ReceivedBubbleBackground;
         public string BubbleForeground;
+        public string HeaderColor;
         public string Foreground;
         public Int32 Position;
         public string ThumbnailPath;

@@ -40,9 +40,6 @@ namespace windows_client.View
 
             if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
             {
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (a, b) =>
                 {
@@ -59,16 +56,15 @@ namespace windows_client.View
                         #endregion
                     }
 
-                    // if current version is less than equal to 1.8.0.0 then upgrade Chats DB to add statusMessages table
-                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
-                        StatusMsgsTable.MessagesDbUpdateToLatestVersion();
 
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
-                    
+
                     bool dbUdated = false;
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
+                        StatusMsgsTable.MessagesDbUpdateToLatestVersion();
+
                         using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
                         {
                             if (db.DatabaseExists())
@@ -101,11 +97,8 @@ namespace windows_client.View
                             }
                         }
 
-                        if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1) // upgrade friend files for last seen time stamp
-                            FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
+                        FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
                     }
-                    else
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
                     if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
                     {
@@ -118,7 +111,7 @@ namespace windows_client.View
 
                                 // db was updated on upgrade from 1.8 hence we need to bump db version number
                                 // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
-                                if (version < 3)  
+                                if (version < 3)
                                 {
                                     dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
                                     dbUpdater.DatabaseSchemaVersion = 3;
@@ -127,7 +120,7 @@ namespace windows_client.View
                                     {
                                         dbUpdater.Execute();
                                     }
-                                    catch 
+                                    catch
                                     {
                                         Debug.WriteLine("db not upgrade in v 2.5.3.0");
                                     }
@@ -145,7 +138,7 @@ namespace windows_client.View
                         }
                     }
 
-                    if (Utils.compareVersion("2.5.3.1", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
                     {
                         bool groupEmptyNameFound = false;
                         //conv map is initialised in app.xaml.cs
@@ -165,6 +158,29 @@ namespace windows_client.View
                             if (groupEmptyNameFound) //update whole file as well
                                 ConversationTableUtils.saveConvObjectList();
                         }
+
+
+                        #region changing hardcoded stickers
+                        //to download default stickers remopved from snuggles
+                        StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
+                        //remove expressions stickers if already downloaded to remove duplicacy
+                        StickerCategory.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
+
+                        //if default doggy stickers were in recents, then remove those
+                        List<string> listPreviousHardcodedDoggy = new List<string>
+                                     {
+                                      "001_hi.png",
+                                      "002_thumbsup.png",
+                                      "003_drooling.png",
+                                      "004_devilsmile.png",
+                                      "005_sorry.png",
+                                      "006_urgh.png",
+                                      "007_confused.png",
+                                      "008_dreaming.png"
+                                     };
+                        RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
+
+                        #endregion
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
@@ -173,8 +189,6 @@ namespace windows_client.View
                 bw.RunWorkerCompleted += (a, b) =>
                 {
                     App.appInitialize();
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
 
                     string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
@@ -189,7 +203,8 @@ namespace windows_client.View
                         }
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                         string msisdn = Utils.GetParamFromUri(targetPage);
-                        if (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null)
+                        if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                         {
                             App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
                             PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
@@ -230,7 +245,7 @@ namespace windows_client.View
                         App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
                         int idx = targetPage.IndexOf("?") + 1;
                         string param = targetPage.Substring(idx);
-                        NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                        NavigationService.Navigate(new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative));
                     }
                     else
                     {

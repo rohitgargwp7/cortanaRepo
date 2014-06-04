@@ -49,6 +49,15 @@ namespace windows_client.View
                     string fileName;
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     msisdn = (string)profilePicTapped[0];
+
+                    if (!App.IS_TOMBSTONED && Utils.isGroupConversation(msisdn))
+                        FileImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
+                    else
+                    {
+                        string grpId = msisdn.Replace(":", "_");
+                        FileImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
+                    }
+
                     if (msisdn == App.MSISDN)
                         msisdn = HikeConstants.MY_PROFILE_PIC;
                     string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
@@ -63,24 +72,21 @@ namespace windows_client.View
                         fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
                         if (!Utils.isGroupConversation(msisdn))
-                            AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        {
+                            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + App.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                            else
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        }
                         else
                             AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
-                        fileName = UI_Utils.Instance.getDefaultAvatarFileName(msisdn,
-                            Utils.isGroupConversation(msisdn));
-                        byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
-                        if (defaultImageBytes == null || defaultImageBytes.Length == 0)
-                        {
-                            loadingProgress.Opacity = 1;
-                            AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
-                        }
+                        if (!Utils.isGroupConversation(msisdn))
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
                         else
-                        {
-                            this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
-                        }
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(msisdn, true);
                     }
                 }
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
@@ -155,6 +161,8 @@ namespace windows_client.View
                 else
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
+
+            PhoneApplicationService.Current.State[HikeConstants.IS_PIC_DOWNLOADED] = true;
         }
 
         private void onStatusImageDownloaded(byte[] fileBytes, object filePath)

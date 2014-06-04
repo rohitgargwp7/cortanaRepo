@@ -47,6 +47,8 @@ namespace windows_client
         public static readonly string SERVER_TIMESTAMP = "sts";
         public static readonly string LAST_SEEN = "ls";
 
+        public static readonly string REQUEST_DISPLAY_PIC = "rdp";
+
         public static readonly string STICKER = "stk";
 
         public static readonly string ACTION = "action";
@@ -174,6 +176,22 @@ namespace windows_client
                 }
             }
             #endregion
+            #region REQUEST_DISPLAY_PIC
+            else if (REQUEST_DISPLAY_PIC == type)
+            {
+                string grpId = "";
+                try
+                {
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  REQUEST_DISPLAY_PIC, Exception : " + ex.StackTrace);
+                }
+
+                App.ViewModel.AddGroupPicForUpload(grpId);
+            }
+            #endregion
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
@@ -191,27 +209,6 @@ namespace windows_client
                 vals[1] = sentTo;
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
-                return;
-            }
-            #endregion
-            #region END_TYPING
-            else if (END_TYPING == type) /* End Typing event received */
-            {
-                string sentTo = "";
-                try
-                {
-                    sentTo = (string)jsonObj[HikeConstants.TO];
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  END_TYPING, Exception : " + ex.StackTrace);
-                }
-
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = sentTo;
-                if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
@@ -449,7 +446,7 @@ namespace windows_client
                         try
                         {
                             App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                            this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                         }
                         catch (Exception ex)
                         {
@@ -607,6 +604,10 @@ namespace windows_client
                                                                 }
                                                                 catch { }
                                                             }
+
+                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                                                             else
@@ -643,6 +644,10 @@ namespace windows_client
                                                         else
                                                         {
                                                             thrAreFavs = true;
+
+                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
@@ -685,28 +690,30 @@ namespace windows_client
 
                                         #endregion
                                         #region REWARDS
-                                        if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                                         {
-                                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
-                                        }
-                                        // whenever this key will come toggle the show rewards thing
-                                        if (kkvv.Key == HikeConstants.SHOW_REWARDS)
-                                        {
-                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
-                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
-                                        }
-
-                                        if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
-                                        {
-                                            JObject ttObj = kkvv.Value.ToObject<JObject>();
-                                            if (ttObj != null)
+                                            if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
                                             {
-                                                int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
-                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
-                                                pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                            }
+                                            // whenever this key will come toggle the show rewards thing
+                                            if (kkvv.Key == HikeConstants.SHOW_REWARDS)
+                                            {
+                                                App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
+                                                pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                                            }
+
+                                            if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
+                                            {
+                                                JObject ttObj = kkvv.Value.ToObject<JObject>();
+                                                if (ttObj != null)
+                                                {
+                                                    int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
+                                                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
+                                                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                                }
                                             }
                                         }
-
                                         #endregion
                                         #region Profile Pic
 
@@ -829,13 +836,16 @@ namespace windows_client
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
-                    if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
-                        App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
-                    rew = null;
-                    if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                    if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                     {
-                        App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
-                        pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                        if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
+                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                        rew = null;
+                        if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                        {
+                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                        }
                     }
                     #endregion
                     #region batch push zone
@@ -897,6 +907,31 @@ namespace windows_client
                         }
                     }
                     #endregion
+                    #region REFRESH IP LIST
+                    JToken iplist;
+                    if (data.TryGetValue(HikeConstants.IP_KEY, out iplist))
+                    {
+                        try
+                        {
+                            JArray jArray = (JArray)iplist;
+                            if (jArray != null && jArray.Count > 0)
+                            {
+                                string[] ips = new string[jArray.Count];
+
+                                for (int i = 0; i < jArray.Count; i++)
+                                {
+                                    ips[i] = (string)jArray[i];
+                                }
+
+                                App.WriteToIsoStorageSettings(App.IP_LIST, ips);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG, List IPs, Exception : " + ex.StackTrace);
+                        }
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -950,7 +985,7 @@ namespace windows_client
                 JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
                 if (metaData != null)
                 {
-                    #region chat background 
+                    #region chat background
                     try
                     {
                         JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
@@ -1244,6 +1279,40 @@ namespace windows_client
             }
             #endregion
 
+            #region GROUP_OWNER_CHANGED
+            else if (HikeConstants.MqttMessageTypes.GROUP_OWNER_CHANGED == type) //Group chat end
+            {
+                try
+                {
+                    string groupId = (string)jsonObj[HikeConstants.TO];
+
+                    if (!App.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
+                        return;
+
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+
+                    JToken jtoken;
+                    if (data.TryGetValue(HikeConstants.MqttMessageTypes.MSISDN_KEYWORD, out jtoken))
+                    {
+                        string newOwner = (string)jtoken;
+
+                        if (string.IsNullOrEmpty(newOwner))
+                            return;
+
+                        if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
+                        {
+                            Object[] objArray = new object[] { groupId, newOwner };
+                            App.ViewModel.GroupOwnerChanged(objArray);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GOC packet : " + e.StackTrace);
+                }
+            }
+            #endregion
+
             #endregion
             #region INTERNATIONAL USER
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
@@ -1273,7 +1342,7 @@ namespace windows_client
 
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                     {
-                        StatusMessage sm = new StatusMessage(msisdn, AppResources.Friend_Confirm_Txt, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
+                        StatusMessage sm = new StatusMessage(msisdn, String.Empty, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
                         App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }
@@ -1723,22 +1792,9 @@ namespace windows_client
                         cm.MetaDataString = "{\"t\":\"cbg\"}";
                     }
                     else
-                    {
-                        //v2 send cbg change event to v1
-                        // show normal message with upgrade message
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
-                        {
-                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
-                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED, jsonObj, ts);
-                        }
-                        else
-                        {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
-                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED;
-                        }
-                    }
+                        return;
 
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, sender);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
 
                     if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                         cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;

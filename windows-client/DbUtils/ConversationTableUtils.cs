@@ -78,7 +78,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, string from = "")
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
                     groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
                     PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
                 }
-                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus, convMessage.MessageId);
+                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, imageBytes, convMessage.MessageStatus, convMessage.MessageId);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
+                obj.LastMessage = String.Format(AppResources.USER_OPTED_IN_MSG, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)

@@ -61,8 +61,6 @@ namespace windows_client.Mqtt
         // host name of the server we're receiving push notifications from
 
 
-        private String brokerHostName = AccountUtils.MQTT_HOST;
-
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
@@ -90,17 +88,7 @@ namespace windows_client.Mqtt
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-        private Dictionary<Int32, HikePacket> mqttIdToPacket;
-
-        private volatile bool disconnectCalled = false;
-
-        public HikePacket getPacketIfUnsent(int mqttId)
-        {
-            HikePacket packet;
-            mqttIdToPacket.TryGetValue(mqttId, out packet);
-            return packet;
-        }
-
+        private volatile bool disconnectExplicitly = false;
 
         private bool init()
         {
@@ -118,6 +106,8 @@ namespace windows_client.Mqtt
             this.connectionStatus = connectionStatus;
         }
 
+
+
         /*
  * Terminates a connection to the message broker.
  */
@@ -127,30 +117,18 @@ namespace windows_client.Mqtt
         {
             try
             {
-                if (mqttConnection != null)
-                {
-                    disconnectCalled = !reconnect;
-                    mqttConnection.disconnect(new DisconnectCB(reconnect, this));
-                    mqttConnection = null;
-                }
+                disconnectExplicitly = !reconnect;
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+
+                Debug.WriteLine("Disconnect from Broker Called");
+                if (mqttConnection != null)
+                    mqttConnection.disconnect();
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
             }
-        }
-
-        public void AddMqttListener()
-        {
-            if (mqttConnection != null)
-                mqttConnection.MqttListener = this;
-        }
-
-        public void RemoveMqttListener()
-        {
-            if (mqttConnection != null)
-                mqttConnection.MqttListener = null;
         }
 
         //synchronized
@@ -164,19 +142,24 @@ namespace windows_client.Mqtt
 
             if (mqttConnection == null)
             {
-                if (!init())
+                lock (lockObj)
                 {
-                    return;
+                    if (mqttConnection == null)
+                    {
+                        if (!init())
+                        {
+                            return;
+                        }
+                        mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
+                    }
                 }
-                mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                AddMqttListener();
             }
 
             try
             {
                 // try to connect
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                mqttConnection.connect();
+                mqttConnection.connect(IpManager.Instance.GetIp(), brokerPortNumber);
             }
             catch (Exception ex)
             {
@@ -188,12 +171,12 @@ namespace windows_client.Mqtt
 
         public bool isConnected()
         {
-            return (mqttConnection != null) && (MQTTConnectionStatus.CONNECTED == connectionStatus);
+            return (MQTTConnectionStatus.CONNECTED == connectionStatus);
         }
 
         public bool isConnecting()
         {
-            return (mqttConnection != null) && (MQTTConnectionStatus.CONNECTING == connectionStatus);
+            return (MQTTConnectionStatus.CONNECTING == connectionStatus);
         }
 
         private void unsubscribeFromTopics(string[] topics)
@@ -207,7 +190,8 @@ namespace windows_client.Mqtt
             {
                 for (int i = 0; i < topics.Length; i++)
                 {
-                    mqttConnection.unsubscribe(topics[i], null);
+                    if (mqttConnection != null)
+                        mqttConnection.unsubscribe(topics[i], null);
                 }
             }
             catch (Exception ex)
@@ -243,7 +227,8 @@ namespace windows_client.Mqtt
                 listTopics.Add(topics[i].Name);
                 listQos.Add(topics[i].qos);
             }
-            mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
+            if (mqttConnection != null)
+                mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
 
         }
 
@@ -254,41 +239,6 @@ namespace windows_client.Mqtt
         public MQTTConnectionStatus getConnectionStatus()
         {
             return connectionStatus;
-        }
-
-        public void ping()
-        {
-            try
-            {
-                if (disconnectCalled == false)
-                {
-                    if (mqttConnection != null)
-                    {
-                        mqttConnection.ping(new PingCB(this));
-                    }
-                    else
-                    {
-                        connect();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
-            }
-        }
-
-        public void reconnect()
-        {
-            if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
-                return;
-            if (mqttConnection != null)
-            {
-                mqttConnection.disconnect(new DisconnectCB(false, this));
-                mqttConnection = null;
-            }
-            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            connect();
         }
 
         private Border b = new Border();
@@ -316,19 +266,11 @@ namespace windows_client.Mqtt
             }
         }
 
-        private void connectAgain()
-        {
-            if (!isConnected() && !isConnecting() && connectionStatus != MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
-            {
-                connect();
-            }
-        }
-
         private void connectInBackground()
         {
             lock (lockObj)
             {
-                disconnectCalled = false;
+                disconnectExplicitly = false;
                 if (isConnected() || isConnecting())
                 {
                     return;
@@ -369,7 +311,8 @@ namespace windows_client.Mqtt
             PublishCB pbCB = null;
             if (qos > 0)
                 pbCB = new PublishCB(packet, this, qos, false);
-            mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB);
         }
@@ -389,7 +332,8 @@ namespace windows_client.Mqtt
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
                 messagesToSend[i] = packets[i].Message;
             }
-            mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     messagesToSend, QoS.AT_LEAST_ONCE,
                     messageCallbacks);
         }
@@ -410,23 +354,14 @@ namespace windows_client.Mqtt
             return topics.ToArray();
         }
 
-        void recursivePingSchedule(Action<TimeSpan> action)
-        {
-            action(TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
-            ping();
-        }
-
-        private volatile bool isRecursivePingScheduled = false;
-
         public void onConnected()
         {
+            Debug.WriteLine("SUCCESS: MQTT CONNECTED");
             if (isConnected())
             {
                 return;
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
-            if (!isRecursivePingScheduled)
-                scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
@@ -435,20 +370,28 @@ namespace windows_client.Mqtt
 
             sendAppFGStatusToServer();
 
-            if (packets == null)
-                return;
-            Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
-            sendAllUnsentMessages(packets);
-
+            if (packets != null)
+            {
+                Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
+                sendAllUnsentMessages(packets);
+            }
             PushHelper.Instance.ClearTile();
         }
 
         public void onDisconnected()
         {
-            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            mqttConnection = null;
-            if (!disconnectCalled)
-                disconnectFromBroker(true);
+            Debug.WriteLine("OnDisconnected Called");
+            if (mqttConnection != null)
+            {
+                mqttConnection.MqttListener = null;
+                mqttConnection = null;
+            }
+            IpManager.Instance.ResetIp();
+            if (!disconnectExplicitly)
+            {
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                connect();
+            }
         }
 
         public void onPublish(String topic, byte[] body)
@@ -523,7 +466,7 @@ namespace windows_client.Mqtt
                 data.Add(HikeConstants.JUSTOPENED, false);
 
             obj.Add(HikeConstants.DATA, data);
-           
+
             Object[] objArr = new object[2];
             objArr[0] = obj;
             objArr[1] = 0;
