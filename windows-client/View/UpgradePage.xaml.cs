@@ -159,7 +159,6 @@ namespace windows_client.View
                                 ConversationTableUtils.saveConvObjectList();
                         }
 
-
                         #region changing hardcoded stickers
                         //to download default stickers remopved from snuggles
                         StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
@@ -181,6 +180,83 @@ namespace windows_client.View
                         RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
 
                         #endregion
+                    }
+
+                    if (Utils.compareVersion("2.6.0.1", App.CURRENT_VERSION) == 1)
+                    {
+                        GroupManager.Instance.LoadGroupCache();
+
+                        Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+                        
+                        bool isFavUpdated = false, isPendingUpdated = false, isGroupUpdated = false;
+                        
+                        foreach (var id in hike_contacts_by_id.Keys)
+                        {
+                            var list = hike_contacts_by_id[id];
+                            foreach (var contactInfo in list)
+                            {
+                                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+                                {
+                                    try
+                                    {
+                                        if (App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName != contactInfo.Name)
+                                        {
+                                            App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName = contactInfo.Name;
+                                            ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
+                                    }
+                                }
+                                else // fav and pending case
+                                {
+                                    ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                                    if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
+                                    {
+                                        c.ContactName = contactInfo.Name;
+                                        MiscDBUtil.SaveFavourites(c);
+                                        isFavUpdated = true;
+                                    }
+                                    else
+                                    {
+                                        c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                                        if (c != null && c.ContactName != contactInfo.Name)
+                                        {
+                                            c.ContactName = contactInfo.Name;
+                                            isPendingUpdated = true;
+                                        }
+                                    }
+                                }
+
+                                if (GroupManager.Instance.GroupCache != null)
+                                {
+                                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                                    {
+                                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                        for (int i = 0; i < l.Count; i++)
+                                        {
+                                            if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
+                                            {
+                                                l[i].Name = contactInfo.Name;
+                                                isGroupUpdated = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isGroupUpdated)
+                            GroupManager.Instance.SaveGroupCache();
+
+                        if (isFavUpdated)
+                            MiscDBUtil.SaveFavourites();
+
+                        if (isPendingUpdated)
+                            MiscDBUtil.SavePendingRequests();
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec
