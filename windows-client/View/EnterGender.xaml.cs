@@ -256,7 +256,7 @@ namespace windows_client.View
             // waiting for DB to be created
             while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 120)
             {
-                Thread.Sleep(1 * 500);
+                Thread.Sleep(500);
                 count++;
             }
             if (!App.appSettings.Contains(App.IS_DB_CREATED)) // if DB is not created for so long
@@ -391,7 +391,7 @@ namespace windows_client.View
 
             nameErrorTxt.Opacity = 0;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
-            Thread.Sleep(1 * 500);
+           
             try
             {
                 App.appSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
