@@ -3903,7 +3903,6 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                Thread.Sleep(500);
 
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&

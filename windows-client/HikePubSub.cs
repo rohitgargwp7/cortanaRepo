@@ -258,7 +258,6 @@ namespace windows_client
                 for (int i = 0; i < list.Count; i++)
                 {
                     list[i].onEventReceived(type, o);
-                    Thread.Sleep(10);
                 }
             }
         }
