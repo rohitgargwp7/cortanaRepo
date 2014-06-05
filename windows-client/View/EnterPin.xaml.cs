@@ -172,7 +172,7 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove(CallMeTimer);
             }
 
-            callMeButton.Content = timerValue == 0 ? String.Format(AppResources.EnterPin_CallMe_Btn_Timer, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00")) : AppResources.EnterPin_CallMe_Btn;
+            callMeButton.Content = timerValue > 0 ? String.Format(AppResources.EnterPin_CallMe_Btn_Timer, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00")) : AppResources.EnterPin_CallMe_Btn;
             callMeButton.IsEnabled = timerValue == 0;
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
@@ -247,7 +247,7 @@ namespace windows_client
                 }
                 if (timerValue == 0 && callMeButton.IsEnabled == false)
                 {
-                    callMeButton.Content = String.Format(AppResources.EnterPin_CallMe_Btn, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00"));
+                    callMeButton.Content = AppResources.EnterPin_CallMe_Btn;
                     callMeButton.IsEnabled = true;
                     return;
                 }
@@ -262,7 +262,6 @@ namespace windows_client
                 App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
                 MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
-
             }
         }
 

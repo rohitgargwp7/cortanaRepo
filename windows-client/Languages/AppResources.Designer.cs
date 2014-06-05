@@ -79,6 +79,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to add member.
+        /// </summary>
+        public static string Add_Member_Txt {
+            get {
+                return ResourceManager.GetString("Add_Member_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add as favorite.
         /// </summary>
         public static string Add_To_Fav_Txt {
@@ -1101,6 +1110,15 @@ namespace windows_client.Languages {
         public static string Delete_Txt {
             get {
                 return ResourceManager.GetString("Delete_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to delete &amp; exit group.
+        /// </summary>
+        public static string DeleteAndExit_Txt {
+            get {
+                return ResourceManager.GetString("DeleteAndExit_Txt", resourceCulture);
             }
         }
         
@@ -4816,6 +4834,15 @@ namespace windows_client.Languages {
         public static string TapHereToRetyTxt {
             get {
                 return ResourceManager.GetString("TapHereToRetyTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 day ago.
+        /// </summary>
+        public static string TimeUtils_1Day_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_1Day_Ago_Txt", resourceCulture);
             }
         }
         

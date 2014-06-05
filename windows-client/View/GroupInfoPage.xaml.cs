@@ -87,8 +87,11 @@ namespace windows_client.View
             appBar = new ApplicationBar()
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
+
+            appBar.StateChanged += appBar_StateChanged;
 
             editNameIconButton = new ApplicationBarIconButton();
             editNameIconButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
@@ -104,7 +107,7 @@ namespace windows_client.View
 
             addIconButton = new ApplicationBarIconButton();
             addIconButton.IconUri = new Uri("/View/images/AppBar/appbar.add.rest.png", UriKind.Relative);
-            addIconButton.Text = AppResources.Add_AppBar_Txt;
+            addIconButton.Text = AppResources.Add_Member_Txt;
             addIconButton.Click += addIconButton_Click;
             appBar.Buttons.Add(addIconButton);
 
@@ -128,6 +131,14 @@ namespace windows_client.View
             editGroupNameAppBar.Buttons.Add(saveIconButton);
 
             this.ApplicationBar = appBar;
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
         }
 
         void inviteSMSparticipantsMenuItem_Click(object sender, EventArgs e)
@@ -841,17 +852,6 @@ namespace windows_client.View
                         App.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
 
-                // update normal 1-1 chat contact
-                if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
-                {
-                    App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
-                }
-                else // fav and pending case update
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
                 if (count > 1)
                 {
                     MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, gp_obj.Msisdn));
@@ -862,7 +862,7 @@ namespace windows_client.View
                 }
             });
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -872,8 +872,7 @@ namespace windows_client.View
             if (gp == null)
                 return;
 
-            object[] grpMemberObject = new object[3] { gp.Msisdn, gp.Name, gp.IsOnHike };
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = grpMemberObject;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 

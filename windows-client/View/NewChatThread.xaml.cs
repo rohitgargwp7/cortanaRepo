@@ -2135,7 +2135,6 @@ namespace windows_client.View
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    ConvMessage chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -2173,50 +2172,39 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return;
                         }
-
-                        if (convMessage.IsSent)
-                            chatBubble = convMessage;
-                        else if (chatBubble != null)
-                            chatBubble.GroupMemberName = isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
                     }
 
-                    if (chatBubble == null)
+                    if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
                     {
-                        if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                        JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
+                        convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
+                        GetHighResStickerForUi(convMessage);
+                    }
+                    else
+                    {
+                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
                         {
-                            JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
-                            convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
-                            GetHighResStickerForUi(convMessage);
-                        }
-                        else
-                        {
-                            if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
-                            {
-                                string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
-                                if (message.Length > 0)
-                                    convMessage.Message = message;
-                            }
-                        }
-
-                        chatBubble = convMessage;
-                        if (convMessage.IsSent)
-                        {
-                            chatBubble = convMessage;//todo:split
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, chatBubble);
-                        }
-                        else
-                        {
-                            chatBubble = convMessage;
-                            chatBubble.GroupMemberName = isGroupChat ?
-                                GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                            string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                            if (message.Length > 0)
+                                convMessage.Message = message;
                         }
                     }
 
-                    chatBubble.IsSms = !isOnHike;
-                    chatBubble.CurrentOrientation = this.Orientation;
-                    ocMessages.Insert(insertPosition, chatBubble);
+                    if (convMessage.IsSent)
+                    {
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                            msgMap.Add(convMessage.MessageId, convMessage);
+                    }
+                    else
+                    {
+                        convMessage.GroupMemberName = isGroupChat ?
+                            GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                    }
+
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.CurrentOrientation = this.Orientation;
+                    ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
                 }
                 #endregion
@@ -4938,7 +4926,7 @@ namespace windows_client.View
                             bool taskPlaced = false;
 
                             if (convMessage.FileAttachment.FileState == Attachment.AttachmentState.FAILED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || convMessage.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
-                                taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                convMessage.ChangingState = taskPlaced = FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                             else if (ResumeTransfer(convMessage))
                                 taskPlaced = true;
 
@@ -4995,7 +4983,7 @@ namespace windows_client.View
                         else
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
 
-                        transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                     }
 
                     // if transfer was not placed because of queue limit reached then display limit reached message
@@ -6026,20 +6014,11 @@ namespace windows_client.View
             }
             UsersTableUtils.addContact(contactInfo);
             mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
+            
             Dispatcher.BeginInvoke(() =>
             {
                 userName.Text = contactInfo.Name;
                 mContactName = contactInfo.Name;
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                {
-                    App.ViewModel.ConvMap[mContactNumber].ContactName = contactInfo.Name;
-                }
-                else
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(mContactNumber);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
                 if (count > 1)
                 {
                     MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, mContactNumber));
@@ -6051,7 +6030,7 @@ namespace windows_client.View
                 }
             });
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         #region Orientation Handling

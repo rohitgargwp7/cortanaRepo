@@ -806,7 +806,7 @@ namespace windows_client.DbUtils
                         {
                             using (var reader = new BinaryReader(file))
                             {
-                                ConversationListObject item = new ConversationListObject();
+                                ConversationListObject item = new ConversationListObject() { IsFav = true };
                                 try
                                 {
                                     item.ReadFavOrPending(reader);
@@ -870,7 +870,7 @@ namespace windows_client.DbUtils
                             {
                                 for (int i = 0; i < count; i++)
                                 {
-                                    ConversationListObject item = new ConversationListObject();
+                                    ConversationListObject item = new ConversationListObject() { IsFav = true };
                                     try
                                     {
                                         item.ReadFavOrPending(reader);

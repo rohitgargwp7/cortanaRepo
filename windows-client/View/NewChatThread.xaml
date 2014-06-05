@@ -326,7 +326,7 @@
                                                         <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" />
                                                         <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
                                                             <Image MaxWidth="180" MaxHeight="180" Margin="12,0" HorizontalAlignment="Left" x:Name="MessageImage" Source="{Binding MessageImage}"/>
-                                                            <Image Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
+                                                            <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                         </Grid>
                                                     </Grid>
                                                     <Grid Grid.Row="1" Margin="0,5,0,0">
@@ -442,7 +442,7 @@
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
                                                             <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                            <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                            <Image Stretch="Uniform" x:Name="PlayIcon" Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                                                             <Grid Grid.Column="1">
                                                                 <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                                     <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
@@ -724,7 +724,7 @@
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center">
-                                                <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                                <Image Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                             </Grid>
                                             <Grid Grid.Column="1">
                                                 <Grid.ColumnDefinitions>
@@ -787,7 +787,7 @@
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">
-                                                <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                                <Image Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                                 <Button Style="{StaticResource FileTransferProgressButtonStyle}" HorizontalAlignment="Right" Margin="-12,-20,2,0" Visibility="{Binding PauseResumeImageVisibility}" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                                     <Button.Content>
                                                         <Grid>
@@ -850,7 +850,7 @@
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">
-                                                <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                                <Image Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                                 <Button Style="{StaticResource FileTransferProgressButtonStyle}" HorizontalAlignment="Right" Margin="-12,-20,2,0" Visibility="{Binding PauseResumeImageVisibility}" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                                     <Button.Content>
                                                         <Grid>
@@ -883,7 +883,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                        <Image Stretch="Uniform" x:Name="PlayIcon" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                        <Image Stretch="Uniform" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
                                                         <Grid Grid.Column="1">
                                                             <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
                                                                 <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="MessageImage" Source="/View/images/Mic_icon_grey_small.png"/>
@@ -955,7 +955,7 @@
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center">
-                                                <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                                <Image Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                             </Grid>
                                             <Grid Grid.Column="1">
                                                 <Grid.ColumnDefinitions>
@@ -1008,7 +1008,7 @@
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">
-                                                <Image Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
+                                                <Image Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding FileFailedImage}" Margin="0,-14,0,0" Visibility="{Binding FileFailedImageVisibility}" Width="30" VerticalAlignment="Center" Stretch="Uniform"/>
                                                 <Button Style="{StaticResource FileTransferProgressButtonStyle}" HorizontalAlignment="Right" Margin="-12,-20,2,0" Visibility="{Binding PauseResumeImageVisibility}" Click="PauseResume_Tapped" Tag="{Binding MessageId}">
                                                     <Button.Content>
                                                         <Grid>
