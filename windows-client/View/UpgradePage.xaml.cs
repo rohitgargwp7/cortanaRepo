@@ -199,10 +199,17 @@ namespace windows_client.View
                                 {
                                     try
                                     {
-                                        if (App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName != contactInfo.Name)
+                                        var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                                        if (cObj.ContactName != contactInfo.Name)
                                         {
-                                            App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName = contactInfo.Name;
-                                            ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+                                            cObj.ContactName = contactInfo.Name;
+                                            ConversationTableUtils.updateConversation(cObj);
+
+                                            if (cObj.IsFav)
+                                            {
+                                                MiscDBUtil.SaveFavourites(cObj);
+                                                isFavUpdated = true;
+                                            }
                                         }
                                     }
                                     catch (Exception ex)
