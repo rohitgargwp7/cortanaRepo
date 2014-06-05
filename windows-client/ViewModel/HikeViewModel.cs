@@ -523,12 +523,13 @@ namespace windows_client.ViewModel
             {
                 try
                 {
-                    App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName = contactInfo.Name;
-                    ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+                    var cObj = ConvMap[contactInfo.Msisdn];
+                    cObj.ContactName = contactInfo.Name;
+                    ConversationTableUtils.updateConversation(cObj);
 
-                    if (App.ViewModel.ConvMap[contactInfo.Msisdn].IsFav)
+                    if (cObj.IsFav)
                     {
-                        MiscDBUtil.SaveFavourites(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+                        MiscDBUtil.SaveFavourites(cObj);
                         MiscDBUtil.SaveFavourites();
                     }
                 }
