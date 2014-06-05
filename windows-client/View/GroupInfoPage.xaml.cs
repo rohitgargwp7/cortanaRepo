@@ -87,8 +87,11 @@ namespace windows_client.View
             appBar = new ApplicationBar()
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
+
+            appBar.StateChanged += appBar_StateChanged;
 
             editNameIconButton = new ApplicationBarIconButton();
             editNameIconButton.IconUri = new Uri("/View/images/AppBar/icon_edit.png", UriKind.Relative);
@@ -128,6 +131,14 @@ namespace windows_client.View
             editGroupNameAppBar.Buttons.Add(saveIconButton);
 
             this.ApplicationBar = appBar;
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+                ApplicationBar.Opacity = 1;
+            else
+                ApplicationBar.Opacity = 0.95;
         }
 
         void inviteSMSparticipantsMenuItem_Click(object sender, EventArgs e)

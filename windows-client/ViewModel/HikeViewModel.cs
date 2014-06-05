@@ -525,10 +525,16 @@ namespace windows_client.ViewModel
                 {
                     App.ViewModel.ConvMap[contactInfo.Msisdn].ContactName = contactInfo.Name;
                     ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+
+                    if (App.ViewModel.ConvMap[contactInfo.Msisdn].IsFav)
+                    {
+                        MiscDBUtil.SaveFavourites(App.ViewModel.ConvMap[contactInfo.Msisdn]);
+                        MiscDBUtil.SaveFavourites();
+                    }
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
+                    Debug.WriteLine("SAVE CONTACT NAME :: Update contact name exception " + e.StackTrace);
                 }
             }
             else // fav and pending case
