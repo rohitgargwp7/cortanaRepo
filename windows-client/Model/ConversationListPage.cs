@@ -515,6 +515,17 @@ namespace windows_client.Model
             }
         }
 
+        public string DeleteMsg
+        {
+            get
+            {
+                if (IsGroupChat && IsGroupAlive) // if already favourite
+                    return AppResources.DeleteAndExit_Txt;
+                else
+                    return AppResources.Delete_Txt;
+            }
+        }
+
         public string ProfileMsg
         {
             get

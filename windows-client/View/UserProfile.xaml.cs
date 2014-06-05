@@ -185,6 +185,7 @@ namespace windows_client.View
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             ShowAddAsFriends();
+                            statusList.Clear();
                         });
                         break;
 
@@ -251,7 +252,7 @@ namespace windows_client.View
 
         #endregion
 
-        object[] _groupParticipantObject;
+        GroupParticipant _groupParticipantObject;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -302,9 +303,9 @@ namespace windows_client.View
                 #region USER INFO FROM GROUP CHAT
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    _groupParticipantObject = o as object[];
-                    msisdn =(String) _groupParticipantObject[0];
-                    nameToShow = (String)_groupParticipantObject[1];
+                    _groupParticipantObject = o as GroupParticipant;
+                    msisdn = _groupParticipantObject.Msisdn;
+                    nameToShow = _groupParticipantObject.Name;
 
                     if (App.MSISDN == msisdn) // represents self page
                     {
@@ -314,7 +315,7 @@ namespace windows_client.View
                     {
                         InitAppBar();
                         profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
-                        isOnHike = (bool)_groupParticipantObject[2];
+                        isOnHike = _groupParticipantObject.IsOnHike;
                         InitChatIconBtn();
                     }
                 }
@@ -675,12 +676,12 @@ namespace windows_client.View
         private void CreateStatusUi(List<StatusMessage> statusMessagesFromDB, int messageFetchCount)
         {
             AddStatusToList(statusMessagesFromDB, messageFetchCount);
-            
+
             if (statusList.Count == 0)
                 ShowEmptyStatus();
             else
                 gridSmsUser.Visibility = Visibility.Collapsed;
-            
+
             statusLLS.ItemsSource = statusList;
         }
 
@@ -952,7 +953,7 @@ namespace windows_client.View
 
             isOnHike = true;
             txtOnHikeSmsTime.Visibility = Visibility.Visible;
-            
+
             ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
             postStatusButton.IconUri = new Uri("/View/images/AppBar/icon_status.png", UriKind.Relative);
             postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
@@ -1135,7 +1136,7 @@ namespace windows_client.View
                 txtSmsUserNameBlk.Text = AppResources.Profile_You_NoStatus_Txt;
             else
                 txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_NoStatus_Txt, firstName);
-           
+
             btnInvite.Visibility = Visibility.Collapsed;
             imgInviteLock.Source = null;//left null so that it occupies blank space
             imgInviteLock.Visibility = Visibility.Visible;
@@ -1391,25 +1392,19 @@ namespace windows_client.View
                     count++;
                 }
             }
+
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 
             nameToShow = contactInfo.Name;
+
+            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
 
             Dispatcher.BeginInvoke(() =>
             {
                 txtUserName.Text = nameToShow;
                 firstName = Utils.GetFirstName(nameToShow);
                 isOnHike = contactInfo.OnHike;
-
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    App.ViewModel.ConvMap[msisdn].ContactName = contactInfo.Name;
-                else
-                {
-                    ConversationListObject co = App.ViewModel.GetFav(msisdn);
-                    if (co != null)
-                        co.ContactName = contactInfo.Name;
-                }
 
                 if (App.newChatThreadPage != null && _groupParticipantObject == null)
                     App.newChatThreadPage.userName.Text = nameToShow;
@@ -1433,9 +1428,8 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null && App.newChatThreadPage.ApplicationBar.MenuItems != null && App.newChatThreadPage.ApplicationBar.MenuItems.Contains(App.newChatThreadPage.addUserMenuItem))
                     App.newChatThreadPage.ApplicationBar.MenuItems.Remove(App.newChatThreadPage.addUserMenuItem);
             });
-
-            ContactUtils.UpdateGroupCacheWithContactName(msisdn, nameToShow);
         }
+
         #endregion
 
         private bool CheckUserInAddressBook()

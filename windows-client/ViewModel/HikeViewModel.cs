@@ -517,6 +517,51 @@ namespace windows_client.ViewModel
             }
         }
 
+        public void UpdateNameOnSaveContact(ContactInfo contactInfo)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+            {
+                try
+                {
+                    var cObj = ConvMap[contactInfo.Msisdn];
+                    cObj.ContactName = contactInfo.Name;
+                    ConversationTableUtils.updateConversation(cObj);
+
+                    if (cObj.IsFav)
+                    {
+                        MiscDBUtil.SaveFavourites(cObj);
+                        MiscDBUtil.SaveFavourites();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("SAVE CONTACT NAME :: Update contact name exception " + e.StackTrace);
+                }
+            }
+            else // fav and pending case
+            {
+                ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                if (c != null) // this user is in favs
+                {
+                    c.ContactName = contactInfo.Name;
+                    MiscDBUtil.SaveFavourites(c);
+                    MiscDBUtil.SaveFavourites();
+                }
+                else
+                {
+                    c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                    if (c != null)
+                    {
+                        c.ContactName = contactInfo.Name;
+                        MiscDBUtil.SavePendingRequests();
+                    }
+                }
+            }
+
+            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+        }
+
         #region In Apptips
 
         List<HikeToolTip> _toolTipsList;
