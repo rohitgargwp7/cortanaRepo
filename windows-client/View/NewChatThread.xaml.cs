@@ -2604,7 +2604,7 @@ namespace windows_client.View
             {
                 if (mUserIsBlocked || !isGroupAlive)
                     return;
-                App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
+                
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
                 NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
@@ -2621,7 +2621,6 @@ namespace windows_client.View
             if (openChatBackgroundButton.Opacity == 0)
                 return;
 
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;

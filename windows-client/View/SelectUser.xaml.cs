@@ -469,7 +469,6 @@ namespace windows_client.View
             }
 
             contactsListBox.IsHitTestVisible = false;
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             DisableApplicationBar();
 
             if (progressIndicator == null)
