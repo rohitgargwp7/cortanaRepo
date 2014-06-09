@@ -1272,29 +1272,31 @@ namespace windows_client.View
             }
         }
 
-        BackgroundWorker _worker;
+        BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
-                if (_worker == null)
-                    _worker = new BackgroundWorker();
-
-                _worker.DoWork += (ss, ee) =>
+                if (_lastSeenWorker == null)
                 {
-                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
-                        _lastSeenHelper.requestLastSeen(mContactNumber);
-                    else
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
-                        });
-                    }
-                };
+                    _lastSeenWorker = new BackgroundWorker();
 
-                _worker.RunWorkerAsync();
+                    _lastSeenWorker.DoWork += (ss, ee) =>
+                    {
+                        var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                        if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
+                            _lastSeenHelper.requestLastSeen(mContactNumber);
+                        else
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                            });
+                        }
+                    };
+                }
+
+                _lastSeenWorker.RunWorkerAsync();
             }
             else
             {
