@@ -3890,7 +3890,13 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                Thread.Sleep(500);
+
+                bool showPush = true;
+                try
+                {
+                    showPush = (Boolean)vals[2];
+                }
+                catch { }
 
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
@@ -3956,7 +3962,7 @@ namespace windows_client.View
                         }
                     });
                 }
-                else // this is to show toast notification
+                else if(showPush) // this is to show toast notification
                 {
                     ConversationListObject val;
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg

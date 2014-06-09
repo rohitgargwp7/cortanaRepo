@@ -478,7 +478,7 @@ namespace windows_client
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
             if (e.NotificationType == NetworkNotificationType.InterfaceConnected ||
-                e.NotificationType == NetworkNotificationType.InterfaceDisconnected) //TODO in wp7 branch - Madur Garg
+                e.NotificationType == NetworkNotificationType.InterfaceDisconnected)
             {
                 if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {

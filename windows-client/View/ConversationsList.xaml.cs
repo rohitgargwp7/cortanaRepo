@@ -1057,7 +1057,7 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        public async void onEventReceived(string type, object obj)
+        public void onEventReceived(string type, object obj)
         {
             if (obj == null)
             {
@@ -1073,6 +1073,13 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
+
+                bool showPush = true;
+                try
+                {
+                    showPush = (Boolean)vals[2];
+                }
+                catch { }
 
                 mObj.TypingNotificationText = null;
 
@@ -1095,7 +1102,7 @@ namespace windows_client.View
                     });
                 }
 
-                if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
+                if (App.newChatThreadPage == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
                     bool isHikeJingleEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
@@ -1103,7 +1110,6 @@ namespace windows_client.View
                     {
                         PlayAudio();
                     }
-                    await Task.Delay(500);
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled)
