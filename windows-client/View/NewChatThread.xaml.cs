@@ -236,7 +236,7 @@ namespace windows_client.View
         {
             _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
-            _lastSeenHelper.requestLastSeen(mContactNumber);
+            GetUserLastSeen();
         }
 
         bool isNudgeOn = true;
