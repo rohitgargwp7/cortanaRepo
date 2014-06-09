@@ -236,7 +236,8 @@ namespace windows_client.View
         {
             _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
-            GetUserLastSeen();
+            if (!mUserIsBlocked && !isGroupChat)
+                GetUserLastSeen();
         }
 
         bool isNudgeOn = true;
@@ -1271,11 +1272,13 @@ namespace windows_client.View
             }
         }
 
+        BackgroundWorker _worker;
         private void GetUserLastSeen()
         {
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
-                BackgroundWorker _worker = new BackgroundWorker();
+                if (_worker == null)
+                    _worker = new BackgroundWorker();
 
                 _worker.DoWork += (ss, ee) =>
                 {
@@ -2612,7 +2615,7 @@ namespace windows_client.View
             {
                 if (mUserIsBlocked || !isGroupAlive)
                     return;
-                
+
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
                 NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
@@ -3967,7 +3970,7 @@ namespace windows_client.View
                         }
                     });
                 }
-                else if(showPush) // this is to show toast notification
+                else if (showPush) // this is to show toast notification
                 {
                     ConversationListObject val;
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg
