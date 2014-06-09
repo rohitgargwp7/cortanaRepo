@@ -369,7 +369,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ReadByInfo");
                     _readByInfo = value;
-                    NotifyPropertyChanged("ReadByInfo");
                 }
             }
         }
@@ -800,27 +799,6 @@ namespace windows_client.Model
         }
 
         private bool imageDownloadFailed = false;
-        public BitmapImage MessageImage
-        {
-            get
-            {
-                if (_stickerObj != null)
-                {
-                    return _stickerObj.StickerImage;
-                }
-
-                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
-                    return UI_Utils.Instance.BlackContactIcon;
-                }
-                else if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
-                {
-                    return UI_Utils.Instance.createImageFromBytes(_fileAttachment.Thumbnail);
-                }
-                return null;
-            }
-        }
-
         public bool ImageDownloadFailed
         {
             get
@@ -831,7 +809,6 @@ namespace windows_client.Model
             {
                 imageDownloadFailed = value;
                 NotifyPropertyChanged("FileSize");
-                NotifyPropertyChanged("MessageImage");
                 NotifyPropertyChanged("ShowForwardMenu");
                 NotifyPropertyChanged("IsStickerVisible");
                 NotifyPropertyChanged("IsStickerLoading");

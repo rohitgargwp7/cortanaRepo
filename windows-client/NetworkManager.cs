@@ -1812,8 +1812,7 @@ namespace windows_client
                     {
                         bool isPush = true;
                         JToken pushJToken;
-                        var jData = (JObject)jsonObj[HikeConstants.DATA];
-                        if (jData.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                        if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
                             isPush = (Boolean)pushJToken; 
                         
                             object[] vals;
