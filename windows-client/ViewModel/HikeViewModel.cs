@@ -1182,5 +1182,17 @@ namespace windows_client.ViewModel
 
         public bool IsConversationUpdated { get; set; }
 
+        #region Request Last Seen
+
+        public event EventHandler<EventArgs> RequestLastSeenEvent;
+
+        public void RequestLastSeen()
+        {
+            if (RequestLastSeenEvent != null)
+                RequestLastSeenEvent(null, null);
+        }
+       
+        #endregion Request Last Seen
+
     }
 }

@@ -421,6 +421,8 @@ namespace windows_client
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
+
+                App.ViewModel.RequestLastSeen();
             }
 
             NetworkManager.turnOffNetworkManager = false;
@@ -496,6 +498,8 @@ namespace windows_client
                     //upload pending group images when network reconnects
                     if (App.ViewModel.PendingRequests.Count > 0)
                         App.ViewModel.SendDisplayPic();
+
+                    App.ViewModel.RequestLastSeen();
                 }
                 else
                 {
@@ -513,7 +517,7 @@ namespace windows_client
             var targetPage = e.Uri.ToString();
 
             appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-            
+
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
@@ -523,8 +527,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     string msisdn = Utils.GetParamFromUri(targetPage);
                     if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
@@ -546,8 +550,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
@@ -558,8 +562,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;

@@ -213,6 +213,7 @@ namespace windows_client.View
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
 
+            App.ViewModel.RequestLastSeenEvent += RequestLastSeenHandler;
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
             ocMessages = new ObservableCollection<ConvMessage>();
@@ -229,6 +230,14 @@ namespace windows_client.View
                 llsMessages.DoubleTap -= MessageList_DoubleTap;
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
+        }
+
+        void RequestLastSeenHandler(object sender, EventArgs e)
+        {
+            _lastSeenHelper.UpdateLastSeen -= LastSeenResponseReceived;
+            _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
+            if (!mUserIsBlocked && !isGroupChat)
+                GetUserLastSeen();
         }
 
         bool isNudgeOn = true;
@@ -1263,27 +1272,31 @@ namespace windows_client.View
             }
         }
 
+        BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
             if (!App.appSettings.Contains(App.LAST_SEEN_SEETING))
             {
-                BackgroundWorker _worker = new BackgroundWorker();
-
-                _worker.DoWork += (ss, ee) =>
+                if (_lastSeenWorker == null)
                 {
-                    var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
-                    if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
-                        _lastSeenHelper.requestLastSeen(mContactNumber);
-                    else
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
-                        });
-                    }
-                };
+                    _lastSeenWorker = new BackgroundWorker();
 
-                _worker.RunWorkerAsync();
+                    _lastSeenWorker.DoWork += (ss, ee) =>
+                    {
+                        var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
+                        if (fStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT && !isGroupChat && isOnHike)
+                            _lastSeenHelper.requestLastSeen(mContactNumber);
+                        else
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                lastSeenTxt.Text = isOnHike ? AppResources.On_Hike : AppResources.On_SMS;
+                            });
+                        }
+                    };
+                }
+
+                _lastSeenWorker.RunWorkerAsync();
             }
             else
             {
@@ -1966,7 +1979,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
-                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0; 
+                    sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
@@ -2604,7 +2617,7 @@ namespace windows_client.View
             {
                 if (mUserIsBlocked || !isGroupAlive)
                     return;
-                
+
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
                 NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
@@ -2633,7 +2646,7 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(sendMsgTxtbox.Text) && _isSendActivated)
             {
                 _isSendActivated = false;
-                sendIconButton.IsEnabled = false; 
+                sendIconButton.IsEnabled = false;
                 actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
             }
 
@@ -2702,7 +2715,7 @@ namespace windows_client.View
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
             _isSendActivated = false;
-            sendIconButton.IsEnabled = false; 
+            sendIconButton.IsEnabled = false;
             actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
 
             if (emoticonPanel.Visibility == Visibility.Collapsed)
@@ -3726,7 +3739,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable; 
+            sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
@@ -3959,7 +3972,7 @@ namespace windows_client.View
                         }
                     });
                 }
-                else if(showPush) // this is to show toast notification
+                else if (showPush) // this is to show toast notification
                 {
                     ConversationListObject val;
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg
@@ -6017,7 +6030,7 @@ namespace windows_client.View
             }
             UsersTableUtils.addContact(contactInfo);
             mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
-            
+
             Dispatcher.BeginInvoke(() =>
             {
                 userName.Text = contactInfo.Name;
@@ -6042,7 +6055,7 @@ namespace windows_client.View
             for (int i = 0; i < ocMessages.Count; i++)
             {
                 ConvMessage convMessage = ocMessages[i];
-                if ((convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                if ((convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
                     || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
                     && !convMessage.HasAttachment)
@@ -6746,7 +6759,7 @@ namespace windows_client.View
                 CancelBackgroundChange();
 
             sendIconButton.IsEnabled = false;
-            
+
             this.Focus(); // remove focus from textbox
             recordGrid.Visibility = Visibility.Visible;
             sendMsgTxtbox.Visibility = Visibility.Collapsed;
