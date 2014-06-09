@@ -130,6 +130,12 @@ namespace windows_client
             {
                 try
                 {
+                    bool isPush = true;
+                    JToken pushJToken;
+                    var jData = (JObject)jsonObj[HikeConstants.DATA];
+                    if (jData.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                        isPush = (Boolean)pushJToken;
+
                     ConvMessage convMessage = null;
                     try
                     {
@@ -163,10 +169,11 @@ namespace windows_client
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    object[] vals = new object[2];
+                    object[] vals = new object[3];
 
                     vals[0] = convMessage;
                     vals[1] = obj;
+                    vals[2] = isPush;
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception ex)
@@ -1199,6 +1206,7 @@ namespace windows_client
                             object[] oa = new object[2];
                             oa[0] = cm;
                             oa[1] = obj;
+
                             this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
                             this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
                         }
@@ -1528,6 +1536,7 @@ namespace windows_client
                         object[] vals = new object[2];
                         vals[0] = cm;
                         vals[1] = null; // always send null as we dont want any activity on conversation page
+
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
@@ -1801,10 +1810,17 @@ namespace windows_client
 
                     if (obj != null)
                     {
-                        object[] vals;
+                        bool isPush = true;
+                        JToken pushJToken;
+                        var jData = (JObject)jsonObj[HikeConstants.DATA];
+                        if (jData.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                            isPush = (Boolean)pushJToken; 
+                        
+                            object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
+                        vals[2] = isPush;
 
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
@@ -1882,9 +1898,9 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    bool isPush = (bool)data[HikeConstants.PUSH];
+                    bool isRegisterPush = (bool)data[HikeConstants.PUSH];
 
-                    if (isPush)
+                    if (isRegisterPush)
                         PushHelper.Instance.registerPushnotifications(true);
 
                 }

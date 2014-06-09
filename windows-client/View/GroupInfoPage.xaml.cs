@@ -143,7 +143,6 @@ namespace windows_client.View
 
         void inviteSMSparticipantsMenuItem_Click(object sender, EventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
             //TODO start this loop from end, after sorting is done on onHike status
             string msisdns = string.Empty, toNum = String.Empty;
             JObject obj = new JObject();
@@ -978,7 +977,6 @@ namespace windows_client.View
                     int count = 0;
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
                     FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (gp.IsOnHike)//on hike and in address book will be checked by convlist page
@@ -1028,9 +1026,8 @@ namespace windows_client.View
                             App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, gp.Msisdn);
                         }
                     }
-                    App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
+                 
                     FriendsTableUtils.SetFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
-
                 }
             }
         }

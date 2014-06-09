@@ -31,20 +31,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Margin="0,20,0,0" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image Source="/view/images/settings/block_list.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
-                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-                </StackPanel>
-            </Grid>
-            
-            <toolkit:ToggleSwitch Grid.Row="1" Margin="-10,20,-10,-10" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+            <toolkit:ToggleSwitch Margin="-10,20,-10,-10" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
+            
+            <Button Grid.Row="1" Margin="0,20,0,0" Width="435" HorizontalAlignment="Stretch" Height="50" Style="{StaticResource YesButtonStyle}" Content="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}" Tap="BlockList_Tap" />
 
         </Grid>
     </Grid>

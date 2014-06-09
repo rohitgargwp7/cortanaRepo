@@ -119,7 +119,7 @@
                                 </Button.Content>
                             </Button>
                         </Grid>
-                        <TextBlock x:Name="chatThemeHeaderTxt" FontFamily="Segoe WP SemiLight" FontSize="38" Foreground="White"
+                        <TextBlock x:Name="chatThemeHeaderTxt" FontWeight="Light" FontSize="38" Foreground="White"
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
                         <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}"
@@ -1355,7 +1355,7 @@
                 <Button Grid.Column="0" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="clickPhoto_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_camera_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_camera_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Camera_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
@@ -1364,7 +1364,7 @@
                 <Button Grid.Column="1" Grid.Row="0" Margin="0,0,1,0" Background="#292929" Tap="sendImage_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_photo_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_photo_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock  Margin="5,25,5,0" Text="{Binding Path= LocalizedResources.Attachment_Photo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" Foreground="#f6f6f6" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
@@ -1373,7 +1373,7 @@
                 <Button Grid.Column="2" Grid.Row="0" Background="#292929" Tap="sendVideo_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Margin="0,5,0,0" Orientation="Vertical"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_video_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_video_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
@@ -1382,7 +1382,7 @@
                 <Button Grid.Column="0" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendAudio_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_audio_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_audio_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
@@ -1391,7 +1391,7 @@
                 <Button Grid.Column="1" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="shareLocation_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_location_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_location_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Margin="5,20,5,0" Text="{Binding Path= LocalizedResources.Attachment_Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
@@ -1400,7 +1400,7 @@
                 <Button Name="spContactTransfer" Grid.Column="2" Grid.Row="1" Margin="0,1,1,0" Background="#292929" Tap="sendContact_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Style="{StaticResource AttachmentIconButtonStyle}">
                     <Button.Content>
                         <StackPanel Margin="0,5,0,0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image Source="images\menu_contact_icon.png" Height="45" HorizontalAlignment="Center"/>
+                            <Image Source="images\menu_contact_icon.png" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Margin="5,20,5,5" Text="{Binding Path= LocalizedResources.Attachement_Contact_Txt, Source={StaticResource LocalizedStrings}}" FontSize="16" HorizontalAlignment="Center" Foreground="#f6f6f6" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>

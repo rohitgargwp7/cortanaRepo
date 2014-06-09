@@ -524,7 +524,6 @@ namespace windows_client.View
 
             var id = App.MSISDN == msisdn ? HikeConstants.MY_PROFILE_PIC : msisdn;
 
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
             object[] fileTapped = new object[2];
             fileTapped[0] = id;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
@@ -884,7 +883,6 @@ namespace windows_client.View
 
         private void EditProfile_Tap(object sender, EventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
@@ -1178,7 +1176,6 @@ namespace windows_client.View
 
         private void Yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
             if (!isStatusLoaded)
