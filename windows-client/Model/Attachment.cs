@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.IO;
 using System;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -120,6 +123,23 @@ namespace windows_client.Model
                 {
                     _fileState = value;
                 }
+            }
+        }
+
+        BitmapImage _thumbnailImage;
+        public BitmapImage ThumbnailImage
+        {
+            get
+            {
+                if (_thumbnailImage == null)
+                {
+                    if (Thumbnail != null)
+                        _thumbnailImage = UI_Utils.Instance.createImageFromBytes(Thumbnail);
+
+                    //todo handle default thumbnail
+                }
+
+                return _thumbnailImage;
             }
         }
 
