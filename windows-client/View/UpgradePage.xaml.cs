@@ -187,83 +187,86 @@ namespace windows_client.View
                         GroupManager.Instance.LoadGroupCache();
 
                         Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
-                        
-                        bool isFavUpdated = false, isPendingUpdated = false, isGroupUpdated = false;
-                        
-                        foreach (var id in hike_contacts_by_id.Keys)
-                        {
-                            var list = hike_contacts_by_id[id];
-                            foreach (var contactInfo in list)
-                            {
-                                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
-                                {
-                                    try
-                                    {
-                                        var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
-                                        if (cObj.ContactName != contactInfo.Name)
-                                        {
-                                            cObj.ContactName = contactInfo.Name;
-                                            ConversationTableUtils.updateConversation(cObj);
 
-                                            if (cObj.IsFav)
+                        if (hike_contacts_by_id != null)
+                        {
+                            bool isFavUpdated = false, isPendingUpdated = false, isGroupUpdated = false;
+
+                            foreach (var id in hike_contacts_by_id.Keys)
+                            {
+                                var list = hike_contacts_by_id[id];
+                                foreach (var contactInfo in list)
+                                {
+                                    if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+                                    {
+                                        try
+                                        {
+                                            var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                                            if (cObj.ContactName != contactInfo.Name)
                                             {
-                                                MiscDBUtil.SaveFavourites(cObj);
-                                                isFavUpdated = true;
+                                                cObj.ContactName = contactInfo.Name;
+                                                ConversationTableUtils.updateConversation(cObj);
+
+                                                if (cObj.IsFav)
+                                                {
+                                                    MiscDBUtil.SaveFavourites(cObj);
+                                                    isFavUpdated = true;
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
+                                        }
+                                    }
+                                    else // fav and pending case
+                                    {
+                                        ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                                        if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
+                                        {
+                                            c.ContactName = contactInfo.Name;
+                                            MiscDBUtil.SaveFavourites(c);
+                                            isFavUpdated = true;
+                                        }
+                                        else
+                                        {
+                                            c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                                            if (c != null && c.ContactName != contactInfo.Name)
+                                            {
+                                                c.ContactName = contactInfo.Name;
+                                                isPendingUpdated = true;
                                             }
                                         }
                                     }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
-                                    }
-                                }
-                                else // fav and pending case
-                                {
-                                    ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
 
-                                    if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
+                                    if (GroupManager.Instance.GroupCache != null)
                                     {
-                                        c.ContactName = contactInfo.Name;
-                                        MiscDBUtil.SaveFavourites(c);
-                                        isFavUpdated = true;
-                                    }
-                                    else
-                                    {
-                                        c = App.ViewModel.GetPending(contactInfo.Msisdn);
-                                        if (c != null && c.ContactName != contactInfo.Name)
+                                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
                                         {
-                                            c.ContactName = contactInfo.Name;
-                                            isPendingUpdated = true;
-                                        }
-                                    }
-                                }
-
-                                if (GroupManager.Instance.GroupCache != null)
-                                {
-                                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                                    {
-                                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                                        for (int i = 0; i < l.Count; i++)
-                                        {
-                                            if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
+                                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                            for (int i = 0; i < l.Count; i++)
                                             {
-                                                l[i].Name = contactInfo.Name;
-                                                isGroupUpdated = true;
+                                                if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
+                                                {
+                                                    l[i].Name = contactInfo.Name;
+                                                    isGroupUpdated = true;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+
+                            if (isGroupUpdated)
+                                GroupManager.Instance.SaveGroupCache();
+
+                            if (isFavUpdated)
+                                MiscDBUtil.SaveFavourites();
+
+                            if (isPendingUpdated)
+                                MiscDBUtil.SavePendingRequests();
                         }
-
-                        if (isGroupUpdated)
-                            GroupManager.Instance.SaveGroupCache();
-
-                        if (isFavUpdated)
-                            MiscDBUtil.SaveFavourites();
-
-                        if (isPendingUpdated)
-                            MiscDBUtil.SavePendingRequests();
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec

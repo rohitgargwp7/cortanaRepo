@@ -2612,7 +2612,7 @@ namespace windows_client.View
             {
                 if (mUserIsBlocked || !isGroupAlive)
                     return;
-                App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
+                
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
                 NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
@@ -2629,7 +2629,6 @@ namespace windows_client.View
             if (openChatBackgroundButton.Opacity == 0)
                 return;
 
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
@@ -3900,6 +3899,10 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
+                bool showPush = true;
+                if (vals.Length == 3)
+                    showPush = (Boolean)vals[2];
+
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -3964,7 +3967,7 @@ namespace windows_client.View
                         }
                     });
                 }
-                else // this is to show toast notification
+                else if(showPush) // this is to show toast notification
                 {
                     ConversationListObject val;
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg

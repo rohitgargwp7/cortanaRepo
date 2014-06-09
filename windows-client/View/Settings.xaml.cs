@@ -35,19 +35,16 @@ namespace windows_client.View
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.PREFERENCES);
             NavigationService.Navigate(new Uri("/View/Preferences.xaml", UriKind.Relative));
         }
 
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.NOTIFICATIONS);
             NavigationService.Navigate(new Uri("/View/Notifications.xaml", UriKind.Relative));
         }
 
         private void Account_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.ACCOUNT);
             NavigationService.Navigate(new Uri("/View/Account.xaml", UriKind.Relative));
         }
 
@@ -74,7 +71,6 @@ namespace windows_client.View
             }
 
             LayoutRoot.IsHitTestVisible = false;
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
 
             if (progressIndicator == null)
                 progressIndicator = new ProgressIndicatorControl();

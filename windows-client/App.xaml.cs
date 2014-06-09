@@ -436,9 +436,6 @@ namespace windows_client
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
 
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
-
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
 
             if (IS_VIEWMODEL_LOADED)
@@ -456,9 +453,6 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject(); //check for null
-
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -486,7 +480,7 @@ namespace windows_client
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
             if (e.NotificationType == NetworkNotificationType.InterfaceConnected ||
-                e.NotificationType == NetworkNotificationType.InterfaceDisconnected) //TODO in wp7 branch - Madur Garg
+                e.NotificationType == NetworkNotificationType.InterfaceDisconnected)
             {
                 if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -698,9 +692,6 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
 
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
-
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -714,9 +705,6 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
-
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
