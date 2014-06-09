@@ -3892,11 +3892,8 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 bool showPush = true;
-                try
-                {
+                if (vals.Length == 3)
                     showPush = (Boolean)vals[2];
-                }
-                catch { }
 
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&

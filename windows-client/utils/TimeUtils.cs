@@ -152,7 +152,7 @@ namespace windows_client.utils
                 return AppResources.TimeUtils_Moments_Ago;
             
             if (ts.TotalMinutes < 60) //60 * 60
-                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, ts.TotalMinutes);
+                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, ts.Minutes);
             
             if (ts.TotalHours < 1.5) // 1.5 * 60 * 60
                 return AppResources.TimeUtils_An_hour_Ago_Txt;

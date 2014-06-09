@@ -1075,11 +1075,8 @@ namespace windows_client.View
                     return;
 
                 bool showPush = true;
-                try
-                {
+                if(vals.Length == 3)
                     showPush = (Boolean)vals[2];
-                }
-                catch { }
 
                 mObj.TypingNotificationText = null;
 
