@@ -266,11 +266,12 @@
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
-                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
-                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
-                                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                            </toolkit:ContextMenu>
+                                                <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Copy"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
+                                                </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
                                               StrokeThickness="2" Canvas.ZIndex="1" Stretch="Uniform" UseLayoutRounding="False" Width="10" Fill="{Binding BubbleBackGroundColor}"/>
@@ -303,6 +304,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid>
@@ -366,6 +368,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
@@ -415,6 +418,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_DirectMessage" Visibility="{Binding DirectMessageVisibility}"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid>
@@ -488,6 +492,7 @@
                                             <toolkit:ContextMenuService.ContextMenu>
                                                 <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}"/>
@@ -514,6 +519,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Path Data="M1,0 L0,1 L1,2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,12,-4,0" 
@@ -557,6 +563,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid>
@@ -632,6 +639,7 @@
                                                 <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <TextBlock Text="{Binding GroupMemberName}" Visibility="{Binding GroupMemberVisibility}" FontSize="22" FontFamily="Segoe WP Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}"/>
