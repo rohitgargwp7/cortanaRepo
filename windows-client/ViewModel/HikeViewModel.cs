@@ -29,6 +29,7 @@ using System.Web;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
+using Coding4Fun.Phone.Controls;
 
 namespace windows_client.ViewModel
 {
@@ -1191,8 +1192,23 @@ namespace windows_client.ViewModel
             if (RequestLastSeenEvent != null)
                 RequestLastSeenEvent(null, null);
         }
-       
+
         #endregion Request Last Seen
 
+
+        public void Toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ToastPrompt toast = sender as ToastPrompt;
+            string msisdn = (string)toast.Tag;
+            ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (co == null)
+                return;
+
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+            string uri = "/View/NewChatThread.xaml?" + msisdn;
+            App page = (App)Application.Current;
+            page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
+        }
     }
 }

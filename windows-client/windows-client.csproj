@@ -215,7 +215,7 @@
     <Compile Include="Model\StatusUpdates\ProTipStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\BaseStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
-    <Compile Include="Model\Sticker\Sticker.cs" />
+    <Compile Include="Model\Sticker\StickerObj.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />

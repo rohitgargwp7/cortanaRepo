@@ -13,9 +13,10 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using windows_client.Model.Sticker;
+using windows_client.utils;
 using windows_client.ViewModel;
 
-namespace windows_client.utils
+namespace windows_client.Model.Sticker
 {
     public class StickerCategory : INotifyPropertyChanged
     {

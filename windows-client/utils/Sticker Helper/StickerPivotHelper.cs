@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using windows_client.Controls;
+using windows_client.Model.Sticker;
 using windows_client.ViewModel;
 
 namespace windows_client.utils
