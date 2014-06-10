@@ -858,20 +858,6 @@ namespace windows_client.View
                 }
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             }
-            int count = 0;
-            IEnumerable<JournalEntry> entries = NavigationService.BackStack;
-            foreach (JournalEntry entry in entries)
-            {
-                count++;
-            }
-            if (count == 3) // case when userprofile is opened from Group Info page
-            {
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry(); // this will remove groupinfo
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry(); // this will remove chat thread
-            }
-            Debug.WriteLine(count);
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }

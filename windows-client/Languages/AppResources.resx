@@ -2178,4 +2178,7 @@ Download it now http://hike.in and join the fun!</value>
   <data name="TimeUtils_1Day_Ago_Txt" xml:space="preserve">
     <value>1 day ago</value>
   </data>
+  <data name="DirectMsg_Txt" xml:space="preserve">
+    <value>direct message</value>
+  </data>
 </root>
