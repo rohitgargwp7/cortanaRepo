@@ -4002,6 +4002,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
+                        toast.Tag = cObj.Msisdn;
                         toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
                         toast.Message = cObj.ToastText;//cannot use convMesssage.Message because for gc it does not have group member name 
                         toast.Foreground = UI_Utils.Instance.White;
@@ -4009,8 +4010,8 @@ namespace windows_client.View
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
                         toast.VerticalContentAlignment = VerticalAlignment.Center;
                         toast.MaxHeight = 60;
+                        toast.Tap += App.ViewModel.Toast_Tap;
                         toast.Show();
-
                     });
                 }
             }
@@ -4537,6 +4538,8 @@ namespace windows_client.View
             }
             #endregion
         }
+
+
 
         private void groupChatEnd()
         {
