@@ -341,6 +341,7 @@ namespace windows_client.View
 
                 else // obj is ContactInfo obj
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
@@ -352,20 +353,15 @@ namespace windows_client.View
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
-                while (NavigationService.BackStack.Count() > 1)
-                    NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
-                //list<Contact Info>
                 if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.GROUP_CHAT, out statusObject))
                     this.State[HikeConstants.GROUP_CHAT] = statusObject;
                 else
                     statusObject = this.State[HikeConstants.GROUP_CHAT];
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
@@ -374,16 +370,12 @@ namespace windows_client.View
                     this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = statusObject;
                 else
                     statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
-                IEnumerable<JournalEntry> entries = NavigationService.BackStack;
-                int count = 0;
-                foreach (JournalEntry entry in entries)
-                    count++;
-                if (count > 1) // this represents we came to this page from timeline directly
-                    if (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
             }
 
+            while (NavigationService.BackStack.Count() > 1)
+                NavigationService.RemoveBackEntry();
         }
 
         bool _isDraftMessage;
@@ -922,16 +914,6 @@ namespace windows_client.View
                 userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber, false);
 
                 HandleNewGroup(convObj);
-
-                try
-                {
-                    while (NavigationService.BackStack.Count() > 1)
-                        NavigationService.RemoveBackEntry();
-                }
-                catch
-                {
-                    Debug.WriteLine("Group Compose screen not removed");
-                }
             }
 
             #endregion
@@ -3002,6 +2984,42 @@ namespace windows_client.View
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
         {
             _isContextMenuOpen = true;
+        }
+
+
+        private void MenuItem_Click_DirectMessage(object sender, RoutedEventArgs e)
+        {
+            ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
+            var msisdn = convMessage.GroupParticipant;
+
+            ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (co != null)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+            }
+            else
+            {
+                ContactInfo cn = null;
+
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    cn = App.ViewModel.ContactsCache[msisdn];
+                else
+                {
+                    cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
+                    if (cn == null)
+                        cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
+
+                    cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+                    App.ViewModel.ContactsCache[msisdn] = cn;
+                }
+
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
+            }
+
+            string uri = "/View/NewChatThread.xaml?" + msisdn;
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
@@ -7420,6 +7438,5 @@ namespace windows_client.View
             });
         }
         #endregion
-
     }
 }

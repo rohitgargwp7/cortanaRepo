@@ -1141,6 +1141,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to direct message.
+        /// </summary>
+        public static string DirectMsg_Txt {
+            get {
+                return ResourceManager.GetString("DirectMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is on DND. Waiting for {0} to reply..
         /// </summary>
         public static string DND_USER {

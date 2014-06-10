@@ -672,15 +672,15 @@ namespace windows_client.utils
             }
         }
 
-        private BitmapImage fileAttachmnetIcon;
+        private BitmapImage fileAttachmentIcon;
         public BitmapImage AttachmentIcon
         {
             get
             {
-                if (fileAttachmnetIcon == null)
-                    fileAttachmnetIcon = new BitmapImage(new Uri("/View/images/icon_file_attachment.png", UriKind.Relative));
+                if (fileAttachmentIcon == null)
+                    fileAttachmentIcon = new BitmapImage(new Uri("/View/images/icon_file_attachment.png", UriKind.Relative));
 
-                return fileAttachmnetIcon;
+                return fileAttachmentIcon;
             }
         }
 
@@ -929,18 +929,6 @@ namespace windows_client.utils
                     typingNotificationBlack = new BitmapImage(new Uri("/view/images/typing.png", UriKind.Relative));
 
                 return typingNotificationBlack;
-            }
-        }
-
-        private BitmapImage blackContactIcon;
-        public BitmapImage BlackContactIcon
-        {
-            get
-            {
-                if (blackContactIcon == null)
-                    blackContactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon_black.png", UriKind.Relative));
-
-                return blackContactIcon;
             }
         }
 

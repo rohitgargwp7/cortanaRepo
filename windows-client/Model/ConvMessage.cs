@@ -784,6 +784,32 @@ namespace windows_client.Model
             }
         }
 
+        bool _isGroup;
+        bool IsGroup
+        {
+            get
+            {
+                return _isGroup;
+            }
+            set
+            {
+                if (value != _isGroup)
+                {
+                    _isGroup = value;
+                    NotifyPropertyChanged("DirectMessageVisibility");
+                }
+            }
+        }
+
+        public Visibility DirectMessageVisibility
+        {
+            get
+            {
+                return IsGroup ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -1255,6 +1281,8 @@ namespace windows_client.Model
             set
             {
                 _groupMemeberName = value;
+                NotifyPropertyChanged("GroupMemberName");
+                IsGroup = true;
             }
         }
 
