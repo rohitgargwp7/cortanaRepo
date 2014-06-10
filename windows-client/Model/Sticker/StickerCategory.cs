@@ -1,0 +1,392 @@
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using windows_client.Model.Sticker;
+using windows_client.ViewModel;
+
+namespace windows_client.utils
+{
+    public class StickerCategory : INotifyPropertyChanged
+    {
+        private string _category;
+        private bool _hasMoreStickers = true;
+        private bool _showDownloadMessage = true;
+        private bool _hasNewStickers = false;
+        private ObservableCollection<StickerObj> _listStickers;
+        private bool _isDownLoading;
+        private bool _isSelected;
+        private static object readWriteLock = new object();
+
+        public string Category
+        {
+            get
+            {
+                return _category;
+            }
+        }
+
+        /// <summary>
+        /// currenty request has been sent to server for download
+        /// </summary>
+        public bool IsDownLoading
+        {
+            get
+            {
+                return _isDownLoading;
+            }
+            set
+            {
+                _isDownLoading = value;
+            }
+        }
+
+        /// <summary>
+        /// shows server has more stickers for download
+        /// </summary>
+        public bool HasMoreStickers
+        {
+            get
+            {
+                return _hasMoreStickers;
+            }
+            set
+            {
+                _hasMoreStickers = value;
+                NotifyPropertyChanged("BorderThickness");
+            }
+        }
+
+        /// <summary>
+        /// to show stickers download overlay
+        /// </summary>
+        public bool ShowDownloadMessage
+        {
+            get
+            {
+                return _showDownloadMessage;
+            }
+            set
+            {
+                _showDownloadMessage = value;
+            }
+        }
+
+        /// <summary>
+        /// shows category has newly downloaded stickers
+        /// </summary>
+        public bool HasNewStickers
+        {
+            get
+            {
+                return _hasNewStickers;
+            }
+            set
+            {
+                _hasNewStickers = value;
+                NotifyPropertyChanged("BorderThickness");
+            }
+        }
+
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    NotifyPropertyChanged("CategoryIcon");
+                }
+            }
+        }
+        public BitmapImage CategoryIcon
+        {
+            get
+            {
+                switch (_category)
+                {
+                    case StickerHelper.CATEGORY_RECENT:
+                        return _isSelected ? UI_Utils.Instance.RecentIconActive : UI_Utils.Instance.RecentIconInActive;
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        return _isSelected ? UI_Utils.Instance.HumanoidActive : UI_Utils.Instance.HumanoidInactive;
+                    case StickerHelper.CATEGORY_DOGGY:
+                        return _isSelected ? UI_Utils.Instance.DoggyActive : UI_Utils.Instance.DoggyInactive;
+                    case StickerHelper.CATEGORY_KITTY:
+                        return _isSelected ? UI_Utils.Instance.KittyActive : UI_Utils.Instance.KittyInactive;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        return _isSelected ? UI_Utils.Instance.ExpressionsActive : UI_Utils.Instance.ExpressionsInactive;
+                    case StickerHelper.CATEGORY_BOLLYWOOD:
+                        return _isSelected ? UI_Utils.Instance.BollywoodActive : UI_Utils.Instance.BollywoodInactive;
+                    case StickerHelper.CATEGORY_TROLL:
+                        return _isSelected ? UI_Utils.Instance.TrollActive : UI_Utils.Instance.TrollInactive;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        return _isSelected ? UI_Utils.Instance.Humanoid2Active : UI_Utils.Instance.Humanoid2Inactive;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        return _isSelected ? UI_Utils.Instance.AvatarsActive : UI_Utils.Instance.AvatarsInactive;
+                    case StickerHelper.CATEGORY_INDIANS:
+                        return _isSelected ? UI_Utils.Instance.IndianActive : UI_Utils.Instance.IndianInactive;
+                    case StickerHelper.CATEGORY_SPORTS:
+                        return _isSelected ? UI_Utils.Instance.SportsActive: UI_Utils.Instance.SportsInactive;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
+                    case StickerHelper.CATEGORY_ANGRY:
+                        return _isSelected ? UI_Utils.Instance.AngryActive : UI_Utils.Instance.AngryInactive;
+                    case StickerHelper.CATEGORY_LOVE:
+                        return _isSelected ? UI_Utils.Instance.LoveActive : UI_Utils.Instance.LoveInactive;
+                    default:
+                        return new BitmapImage();
+                }
+            }
+        }
+
+        public SolidColorBrush BackgroundColor
+        {
+            get
+            {
+                return UI_Utils.Instance.UntappedCategoryColor;
+            }
+        }
+
+        public Thickness BorderThickness
+        {
+            get
+            {
+                if (_hasNewStickers || _hasMoreStickers)
+                    return UI_Utils.Instance.NewCategoryThickness;
+                else
+                    return UI_Utils.Instance.ZeroThickness;
+            }
+        }
+        public ObservableCollection<StickerObj> ListStickers
+        {
+            get
+            {
+                return _listStickers;
+            }
+            set
+            {
+                _listStickers = value;
+            }
+        }
+        public StickerCategory(string category, bool hasMoreStickers)
+            : this(category)
+        {
+            this._hasMoreStickers = hasMoreStickers;
+        }
+
+        public StickerCategory(string category)
+        {
+            this._category = category;
+            _listStickers = new ObservableCollection<StickerObj>();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify that a property changed
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StickerCategory :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                    }
+                });
+            }
+        }
+
+        public void WriteHighResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes)
+        {
+            lock (readWriteLock)
+            {
+                if (listStickersImageBytes != null && listStickersImageBytes.Count > 0)
+                {
+                    try
+                    {
+                        string folder = StickerHelper.STICKERS_DIR + "\\" + StickerHelper.HIGH_RESOLUTION_DIR + "\\" + _category;
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR);
+                            }
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.HIGH_RESOLUTION_DIR))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.HIGH_RESOLUTION_DIR);
+                            }
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.HIGH_RESOLUTION_DIR + "\\" + _category))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.HIGH_RESOLUTION_DIR + "\\" + _category);
+                            }
+                            foreach (KeyValuePair<string, Byte[]> keyValuePair in listStickersImageBytes)
+                            {
+                                string fileName = folder + "\\" + keyValuePair.Key;
+                                try
+                                {
+                                    Byte[] imageBytes = keyValuePair.Value;
+                                    if (imageBytes == null || imageBytes.Length == 0)
+                                        continue;
+                                    using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                    {
+                                        using (BinaryWriter writer = new BinaryWriter(file))
+                                        {
+                                            writer.Write(imageBytes.Length);
+                                            writer.Write(imageBytes);
+                                            writer.Flush();
+                                            writer.Close();
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Writing HIgh res Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StickerCategory::WriteToFile, Exception:" + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public void WriteLowResToFile(List<KeyValuePair<string, Byte[]>> listStickersImageBytes, bool hasMoreStickers)
+        {
+            lock (readWriteLock)
+            {
+                if (listStickersImageBytes != null)
+                {
+                    try
+                    {
+                        string folder = StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category;
+
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                        {
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR);
+                            }
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR);
+                            }
+                            if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category))
+                            {
+                                store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category);
+                            }
+
+                            foreach (KeyValuePair<string, byte[]> keyValuePair in listStickersImageBytes)
+                            {
+                                string fileName = folder + "\\" + keyValuePair.Key;
+
+                                try
+                                {
+                                    Byte[] imageBytes = keyValuePair.Value;
+                                    if (imageBytes == null || imageBytes.Length == 0)
+                                        continue;
+                                    using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                    {
+                                        using (BinaryWriter writer = new BinaryWriter(file))
+                                        {
+                                            writer.Write(imageBytes == null ? 0 : imageBytes.Length);
+                                            writer.Write(imageBytes);
+                                            writer.Flush();
+                                            writer.Close();
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Writing Sticker:{0} failed,Exception:{1}", fileName, ex.Message);
+                                }
+                            }
+                            string metadataFile = folder + "\\" + StickerHelper.METADATA;
+                            using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    _hasMoreStickers = hasMoreStickers;
+                                    writer.Write(_hasMoreStickers);
+                                    writer.Write(_showDownloadMessage);
+                                    writer.Write(_hasNewStickers);
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StickerCategory::WriteToFile, Exception:" + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public void SetDownloadMessage(bool showDownloadMessage)
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string folder = StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!store.DirectoryExists(StickerHelper.STICKERS_DIR))
+                        {
+                            store.CreateDirectory(StickerHelper.STICKERS_DIR);
+                        }
+                        if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR))
+                        {
+                            store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR);
+                        }
+                        if (!store.DirectoryExists(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category))
+                        {
+                            store.CreateDirectory(StickerHelper.STICKERS_DIR + "\\" + StickerHelper.LOW_RESOLUTION_DIR + "\\" + _category);
+                        }
+                        string metadataFile = folder + "\\" + StickerHelper.METADATA;
+                        using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                this._showDownloadMessage = showDownloadMessage;
+                                writer.Write(_hasMoreStickers);
+                                writer.Write(showDownloadMessage);
+                                writer.Write(_hasNewStickers);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::SetDownloadMessage, Exception:" + ex.Message);
+                }
+            }
+        }
+       
+    }
+}

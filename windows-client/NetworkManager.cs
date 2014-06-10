@@ -13,6 +13,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
+using windows_client.utils.Sticker_Helper;
 
 namespace windows_client
 {
@@ -1669,7 +1670,7 @@ namespace windows_client
                     if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                        StickerCategory.UpdateHasMoreMessages(category, true, true);
+                        StickerHelper.UpdateHasMoreMessages(category, true, true);
 
                         //reset in app tip for "New Stickers"
                         App.ViewModel.ResetInAppTip(1);
@@ -1683,14 +1684,14 @@ namespace windows_client
                         {
                             listStickers.Add((string)jarray[i]);
                         }
-                        StickerCategory.DeleteSticker(category, listStickers);
+                        StickerHelper.DeleteSticker(category, listStickers);
                         RecentStickerHelper.DeleteSticker(category, listStickers);
 
                     }
                     else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                        StickerCategory.DeleteCategory(category);
+                        StickerHelper.DeleteCategory(category);
                         RecentStickerHelper.DeleteCategory(category);
                     }
 

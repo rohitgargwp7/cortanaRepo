@@ -43,6 +43,7 @@ using System.Windows.Input;
 using System.Windows.Documents;
 using Windows.System;
 using Windows.Storage;
+using windows_client.Model.Sticker;
 
 namespace windows_client.View
 {
@@ -2172,7 +2173,7 @@ namespace windows_client.View
                     if (!string.IsNullOrEmpty(convMessage.MetaDataString) && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
                     {
                         JObject meataDataJson = JObject.Parse(convMessage.MetaDataString);
-                        convMessage.StickerObj = new Sticker((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
+                        convMessage.StickerObj = new StickerObj((string)meataDataJson[HikeConstants.CATEGORY_ID], (string)meataDataJson[HikeConstants.STICKER_ID], null, true);
                         GetHighResStickerForUi(convMessage);
                     }
                     else
@@ -3028,7 +3029,7 @@ namespace windows_client.View
             {
                 Object[] obj = new Object[1];
                 obj[0] = convMessage.MetaDataString;
-                Sticker sticker = new Sticker(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
+                StickerObj sticker = new StickerObj(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
 
                 if (HikeViewModel.stickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
                     HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
@@ -6171,11 +6172,11 @@ namespace windows_client.View
         /// get low res sticker from pallette
         /// </summary>
         /// <param name="sticker">low res sticker from pallette</param>
-        public void SendSticker(Sticker sticker)
+        public void SendSticker(StickerObj sticker)
         {
             ConvMessage conv = new ConvMessage(AppResources.Sticker_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
             conv.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
-            conv.StickerObj = new Sticker(sticker.Category, sticker.Id, null, true);
+            conv.StickerObj = new StickerObj(sticker.Category, sticker.Id, null, true);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             AddNewMessageToUI(conv, false);
             HikeViewModel.stickerHelper.recentStickerHelper.AddSticker(sticker);
@@ -6194,7 +6195,7 @@ namespace windows_client.View
                 convMessage.StickerObj.IsStickerDownloaded = true;
             else
             {
-                image = StickerCategory.GetHighResolutionSticker(convMessage.StickerObj);
+                image = StickerHelper.GetHighResolutionSticker(convMessage.StickerObj);
                 if (image == null)
                 {
                     List<ConvMessage> listDownloading;
@@ -6328,7 +6329,7 @@ namespace windows_client.View
             {
                 List<string> listStickerIds = new List<string>();
                 JArray existingIds = new JArray();
-                foreach (Sticker sticker in stickerCategory.ListStickers)
+                foreach (StickerObj sticker in stickerCategory.ListStickers)
                 {
                     existingIds.Add(sticker.Id);
                 }
@@ -6460,7 +6461,7 @@ namespace windows_client.View
                         {
                             Byte[] lowResImageBytes = UI_Utils.Instance.PngImgToJpegByteArray(highResImage);
                             listLowResStickersBytes.Add(new KeyValuePair<string, byte[]>(stickerId, lowResImageBytes));
-                            stickerCategory.ListStickers.Add(new Sticker(category, stickerId, lowResImageBytes, false));
+                            stickerCategory.ListStickers.Add(new StickerObj(category, stickerId, lowResImageBytes, false));
                         }
                     }
                     if (convMessage != null)
