@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Collections;
 using System.Windows.Controls.Primitives;
 using windows_client.Languages;
+using windows_client.Model.Sticker;
 
 namespace windows_client.Controls
 {
@@ -30,18 +31,18 @@ namespace windows_client.Controls
             _category = category;
         }
 
-        public void SetLlsSource(ObservableCollection<Sticker> listStickers)
+        public void SetLlsSource(ObservableCollection<StickerObj> listStickers)
         {
             llsStickerCategory.ItemsSource = listStickers;
         }
-        public void SetLlsSourceList(List<Sticker> listStickers)
+        public void SetLlsSourceList(List<StickerObj> listStickers)
         {
             llsStickerCategory.ItemsSource = listStickers;
         }
         private void Stickers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             LongListSelector llsStickerCategory = (sender as LongListSelector);
-            Sticker sticker = llsStickerCategory.SelectedItem as Sticker;
+            StickerObj sticker = llsStickerCategory.SelectedItem as StickerObj;
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Controls;
 using Microsoft.Phone.Controls;
+using windows_client.Model.Sticker;
 
 namespace windows_client.Model
 {
@@ -38,7 +39,7 @@ namespace windows_client.Model
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
-        private Sticker _stickerObj;
+        private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
         private string _readByInfo;
@@ -460,7 +461,7 @@ namespace windows_client.Model
             }
         }
 
-        public Sticker StickerObj
+        public StickerObj StickerObj
         {
             set
             {

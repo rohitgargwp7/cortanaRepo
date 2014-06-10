@@ -18,6 +18,7 @@ using Microsoft.Phone.Data.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.Misc;
 using System.Diagnostics;
+using windows_client.utils.Sticker_Helper;
 
 namespace windows_client.View
 {
@@ -161,9 +162,9 @@ namespace windows_client.View
 
                         #region changing hardcoded stickers
                         //to download default stickers remopved from snuggles
-                        StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
+                        StickerHelper.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
                         //remove expressions stickers if already downloaded to remove duplicacy
-                        StickerCategory.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
+                        StickerHelper.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
 
                         //if default doggy stickers were in recents, then remove those
                         List<string> listPreviousHardcodedDoggy = new List<string>
