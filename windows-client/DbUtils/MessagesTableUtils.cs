@@ -298,7 +298,7 @@ namespace windows_client.DbUtils
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        obj.LastMessage = gp != null ? (gp.FirstName + "- " + convMsg.Message) : convMsg.Message;
+                        obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
                     }
                     else
                         obj.LastMessage = convMsg.Message;
