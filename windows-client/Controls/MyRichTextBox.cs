@@ -30,6 +30,12 @@ namespace windows_client.Controls
         public static readonly DependencyProperty MaxLinesProperty =
                     DependencyProperty.Register("MaxLines", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
+        public static readonly DependencyProperty GroupMemberNameProperty =
+                    DependencyProperty.Register("GroupMemberName", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String)));
+
+        public static readonly DependencyProperty GroupMemberMsisdnProperty =
+                    DependencyProperty.Register("GroupMemberMsisdn", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String)));
+
         private string lastText = string.Empty;
         public string Text
         {
@@ -91,6 +97,30 @@ namespace windows_client.Controls
             }
         }
 
+        public String GroupMemberName
+        {
+            get
+            {
+                return (String)GetValue(GroupMemberNameProperty);
+            }
+            set
+            {
+                SetValue(GroupMemberNameProperty, value);
+            }
+        }
+
+        public String GroupMemberMsisdn
+        {
+            get
+            {
+                return (String)GetValue(GroupMemberMsisdnProperty);
+            }
+            set
+            {
+                SetValue(GroupMemberMsisdnProperty, value);
+            }
+        }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -125,8 +155,23 @@ namespace windows_client.Controls
                     text = text.Substring(0, maxChar + 1).Trim() + "...";
             }
 
-            var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(text);
             Blocks.Clear();
+
+            Run groupMemberName = null;
+            if (!String.IsNullOrEmpty(GroupMemberName))
+            {
+                groupMemberName = new Run();
+                groupMemberName.FontWeight = FontWeights.SemiBold;
+                groupMemberName.FontSize = this.FontSize;
+             
+                if (!String.IsNullOrEmpty(GroupMemberMsisdn) && GroupMemberName != GroupMemberMsisdn)
+                    groupMemberName.Text = String.Format("{0} {1}- ", GroupMemberName, GroupMemberMsisdn);
+                else
+                    groupMemberName.Text = String.Format("{0} - ", GroupMemberName);
+            }
+
+            var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(groupMemberName, text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(groupMemberName,text);
+
             Blocks.Add(paragraph);
         }
 
