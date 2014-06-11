@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using windows_client.Misc;
 using windows_client.ViewModel;
 
 namespace windows_client.Model.Sticker
 {
-    public class StickerObj : IBinarySerializable
+    public class StickerObj : IBinarySerializable,INotifyPropertyChanged
     {
         private string _id;
         private string _category;
@@ -103,5 +106,31 @@ namespace windows_client.Model.Sticker
                 return true;
             return base.Equals(obj);
         }
+
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify that a property changed
+        public void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("StickerObj :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                    }
+                });
+            }
+        }
+
+        #endregion
     }
 }

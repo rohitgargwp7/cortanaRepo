@@ -835,11 +835,14 @@ namespace windows_client.Model
             set
             {
                 imageDownloadFailed = value;
-                NotifyPropertyChanged("FileSize");
                 NotifyPropertyChanged("ShowForwardMenu");
                 NotifyPropertyChanged("IsStickerVisible");
                 NotifyPropertyChanged("IsStickerLoading");
                 NotifyPropertyChanged("IsHttpFailed");
+                if (StickerObj != null)
+                {
+                    StickerObj.NotifyPropertyChanged("StickerImage");
+                }
             }
         }
 
