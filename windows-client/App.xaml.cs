@@ -363,7 +363,6 @@ namespace windows_client
             RootFrame.Navigated += RootFrame_Navigated;
 
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
-            (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)

@@ -135,8 +135,13 @@ namespace windows_client.Model
                 {
                     if (Thumbnail != null)
                         _thumbnailImage = UI_Utils.Instance.createImageFromBytes(Thumbnail);
-
-                    //todo handle default thumbnail
+                    else
+                    {
+                        if (ContentType.Contains(HikeConstants.VIDEO))
+                            return UI_Utils.Instance.Video_Default;
+                        else if (ContentType.Contains(HikeConstants.IMAGE))
+                            return UI_Utils.Instance.Image_Default;
+                    }
                 }
 
                 return _thumbnailImage;
