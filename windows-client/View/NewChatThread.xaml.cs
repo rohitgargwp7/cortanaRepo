@@ -2194,8 +2194,12 @@ namespace windows_client.View
                     }
                     else
                     {
-                        convMessage.GroupMemberName = isGroupChat ?
-                            GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName + "-" : string.Empty;
+                        if (isGroupChat)
+                        {
+                            var gp = GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
+                            convMessage.GroupMemberName = gp.Name;
+                            convMessage.IsInAddressBook = gp.IsInAddressBook;
+                        }
                     }
 
                     convMessage.IsSms = !isOnHike;

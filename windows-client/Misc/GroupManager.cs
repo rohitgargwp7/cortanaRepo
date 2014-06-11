@@ -66,21 +66,39 @@ namespace windows_client.Misc
                     }
                 }
             }
+            
+            var isInAdressBook = false;
             ContactInfo cInfo = null;
+
             if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            {
                 cInfo = App.ViewModel.ContactsCache[msisdn];
+
+                if (cInfo.Name != null)
+                    isInAdressBook = true;
+            }
             else
+            {
                 cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+            
+                if (cInfo != null)
+                    isInAdressBook = true;
+            }
+
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
+            gp.IsInAddressBook = isInAdressBook;
+            
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
+                SaveGroupCache();
                 return gp;
             }
 
             List<GroupParticipant> ll = new List<GroupParticipant>();
             ll.Add(gp);
             groupCache.Add(grpId, ll);
+            SaveGroupCache();
             return gp;
         }
 
@@ -491,6 +509,7 @@ namespace windows_client.Misc
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
+                    gp.IsInAddressBook = true;
                     if (App.ViewModel.ConvMap.ContainsKey(grpId))
                     {
                         GroupInfo g = null;

@@ -2066,7 +2066,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your friends have been invited.
+        ///   Looks up a localized string similar to Your friends have been invited to join hike.
         /// </summary>
         public static string GroupInfo_InviteSent_MsgBoxText_Txt {
             get {
