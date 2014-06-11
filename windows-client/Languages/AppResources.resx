@@ -693,7 +693,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Your friends have been invited</value>
+    <value>Your friends have been invited to join hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
