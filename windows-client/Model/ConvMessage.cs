@@ -1307,7 +1307,7 @@ namespace windows_client.Model
         {
             get
             {
-                return IsInAddressBook ? String.Empty : "(" + _groupParticipant + ") ";
+                return IsInAddressBook && _groupParticipant != GroupMemberName ? String.Empty : "(" + _groupParticipant + ") ";
             }
         }
 

@@ -956,6 +956,35 @@ namespace windows_client.utils
             }
         }
 
+        #region Attachments
+
+        private BitmapImage image_Default;
+        public BitmapImage Image_Default
+        {
+            get
+            {
+                if (image_Default == null)
+                    image_Default = new BitmapImage(new Uri("/View/images/image_Default.png", UriKind.Relative));
+
+                return image_Default;
+            }
+        }
+
+        private BitmapImage video_Default;
+        public BitmapImage Video_Default
+        {
+            get
+            {
+                if (video_Default == null)
+                    video_Default = new BitmapImage(new Uri("/View/images/video_Default.png", UriKind.Relative));
+
+                return video_Default;
+            }
+        }
+        
+        #endregion
+
+
         #region Nudge
 
         private BitmapImage nudgeSend;

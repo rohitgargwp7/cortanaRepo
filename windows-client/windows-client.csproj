@@ -573,6 +573,7 @@
     <Content Include="View\images\emoticons\emote_cat3_inactive.png" />
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
+    <Content Include="View\images\image_default.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
@@ -891,6 +892,7 @@
     <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\video_default.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_contact_icon.png" />
