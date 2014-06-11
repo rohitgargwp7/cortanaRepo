@@ -183,7 +183,7 @@ namespace windows_client.View
                         #endregion
                     }
 
-                    if (Utils.compareVersion("2.6.0.1", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.2", App.CURRENT_VERSION) == 1)
                     {
                         GroupManager.Instance.LoadGroupCache();
 
@@ -259,15 +259,25 @@ namespace windows_client.View
                                 }
                             }
 
-                            if (isGroupUpdated)
-                                GroupManager.Instance.SaveGroupCache();
-
                             if (isFavUpdated)
                                 MiscDBUtil.SaveFavourites();
 
                             if (isPendingUpdated)
                                 MiscDBUtil.SavePendingRequests();
                         }
+
+                        var contactList = UsersTableUtils.getAllContacts();
+
+                        foreach (var id in GroupManager.Instance.GroupCache.Keys)
+                        {
+                            var grp = GroupManager.Instance.GroupCache[id];
+                            foreach (var participant in grp)
+                            {
+                                participant.IsInAddressBook = contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
+                            }
+                        }
+
+                        GroupManager.Instance.SaveGroupCache();
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec

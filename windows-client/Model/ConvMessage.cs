@@ -318,6 +318,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
+                    NotifyPropertyChanged("GroupMemberMsisdn");
                 }
             }
         }
@@ -1271,6 +1272,23 @@ namespace windows_client.Model
             }
         }
 
+        bool _isInAddressBook;
+        public bool IsInAddressBook
+        {
+            get
+            {
+                return _isInAddressBook;
+            }
+            set
+            {
+                if (value != _isInAddressBook)
+                {
+                    _isInAddressBook = value;
+                    NotifyPropertyChanged("GroupMemberMsisdn");
+                }
+            }
+        }
+
         private string _groupMemeberName;
         public string GroupMemberName
         {
@@ -1283,6 +1301,14 @@ namespace windows_client.Model
                 _groupMemeberName = value;
                 NotifyPropertyChanged("GroupMemberName");
                 IsGroup = true;
+            }
+        }
+
+        public string GroupMemberMsisdn
+        {
+            get
+            {
+                return IsInAddressBook ? String.Empty : "(" + _groupParticipant + ") ";
             }
         }
 
