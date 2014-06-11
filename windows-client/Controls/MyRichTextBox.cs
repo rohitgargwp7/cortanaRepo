@@ -163,8 +163,9 @@ namespace windows_client.Controls
                 groupMemberName = new Run();
                 groupMemberName.FontWeight = FontWeights.SemiBold;
                 groupMemberName.FontSize = this.FontSize;
-             
-                if (!String.IsNullOrEmpty(GroupMemberMsisdn) && GroupMemberName != GroupMemberMsisdn)
+                groupMemberName.FontFamily = new FontFamily("Segoe WP SemiLight");
+
+                if (!String.IsNullOrEmpty(GroupMemberMsisdn) && !GroupMemberMsisdn.Contains(GroupMemberName))
                     groupMemberName.Text = String.Format("{0} {1}- ", GroupMemberName, GroupMemberMsisdn);
                 else
                     groupMemberName.Text = String.Format("{0} - ", GroupMemberName);

@@ -326,7 +326,6 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock MaxWidth="{Binding MessageBubbleWidth}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" >
                                                             <Run Text="{Binding GroupMemberName}"/>
-                                                            <Run Text=" "/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
                                                         </TextBlock>
@@ -391,7 +390,6 @@
                                                     </Grid.RowDefinitions>
                                                     <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,0,0,12" Foreground="{Binding MessageTextForeGround}">
                                                         <Run Text="{Binding GroupMemberName}"/>
-                                                        <Run Text=" "/>
                                                         <Run Text="{Binding GroupMemberMsisdn}"/>
                                                         <Run Text="- "/>
                                                     </TextBlock>
@@ -450,7 +448,6 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
                                                             <Run Text="{Binding GroupMemberName}"/>
-                                                            <Run Text=" "/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
                                                         </TextBlock>
@@ -511,7 +508,6 @@
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
                                                 <Run Text="{Binding GroupMemberName}"/>
-                                                <Run Text=" "/>
                                                 <Run Text="{Binding GroupMemberMsisdn}"/>
                                                 <Run Text="- "/>
                                             </TextBlock>
@@ -561,7 +557,6 @@
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" TextAlignment="Left" Grid.ColumnSpan="2" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
                                                         <Run Text="{Binding GroupMemberName}"/>
-                                                        <Run Text=" "/>
                                                         <Run Text="{Binding GroupMemberMsisdn}"/>
                                                         <Run Text="- "/>
                                                     </TextBlock>
@@ -610,7 +605,6 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
                                                             <Run Text="{Binding GroupMemberName}"/>
-                                                            <Run Text=" "/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
                                                         </TextBlock>
@@ -673,7 +667,6 @@
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
                                                 <Run Text="{Binding GroupMemberName}"/>
-                                                <Run Text=" "/>
                                                 <Run Text="{Binding GroupMemberMsisdn}"/>
                                                 <Run Text="- "/>
                                             </TextBlock>
