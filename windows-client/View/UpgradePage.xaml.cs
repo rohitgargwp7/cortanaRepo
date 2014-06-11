@@ -19,6 +19,8 @@ using System.IO.IsolatedStorage;
 using windows_client.Misc;
 using System.Diagnostics;
 using windows_client.utils.Sticker_Helper;
+using windows_client.ViewModel;
+using windows_client.Model.Sticker;
 
 namespace windows_client.View
 {
@@ -191,7 +193,7 @@ namespace windows_client.View
 
                         if (hike_contacts_by_id != null)
                         {
-                            bool isFavUpdated = false, isPendingUpdated = false, isGroupUpdated = false;
+                            bool isFavUpdated = false, isPendingUpdated = false;
 
                             foreach (var id in hike_contacts_by_id.Keys)
                             {
@@ -251,7 +253,6 @@ namespace windows_client.View
                                                 if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
                                                 {
                                                     l[i].Name = contactInfo.Name;
-                                                    isGroupUpdated = true;
                                                 }
                                             }
                                         }
@@ -273,11 +274,34 @@ namespace windows_client.View
                             var grp = GroupManager.Instance.GroupCache[id];
                             foreach (var participant in grp)
                             {
-                                participant.IsInAddressBook = contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
+                                participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
                             }
                         }
 
                         GroupManager.Instance.SaveGroupCache();
+
+                        #region Remove Angry pack
+
+                        RecentStickerHelper recentSticker;
+                        if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+                        {
+                            recentSticker = new RecentStickerHelper();
+                            recentSticker.LoadSticker();
+                        }
+                        else
+                            recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+
+                        List<string> listAngrySticker = new List<string>();
+                        foreach (StickerObj sticker in recentSticker.listRecentStickers)
+                        {
+                            if (sticker.Category == StickerHelper.CATEGORY_ANGRY)
+                            {
+                                listAngrySticker.Add(sticker.Id);
+                            }
+                        }
+
+                        StickerHelper.DeleteLowResCategory(StickerHelper.CATEGORY_ANGRY, listAngrySticker);
+                        #endregion
                     }
 
                     Thread.Sleep(2000);//added so that this shows at least for 2 sec

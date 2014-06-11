@@ -6582,9 +6582,6 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_LOVE:
                         downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
                         break;
-                    case StickerHelper.CATEGORY_ANGRY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.AngryOverlay;
-                        break;
                 }
 
                 overlayBorder.Tap += overlayBorder_Tapped;
@@ -6706,10 +6703,6 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
@@ -6718,7 +6711,6 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

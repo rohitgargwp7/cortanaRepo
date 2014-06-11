@@ -718,7 +718,6 @@
     <Content Include="View\images\settings\unblock.png" />
     <Content Include="View\images\settings\unlink_account.png" />
     <Content Include="View\images\noResult.png" />
-    <Content Include="View\images\stickers\categorySets\angry_overlay.png" />
     <Content Include="View\images\stickers\categorySets\avatars_active.png" />
     <Content Include="View\images\stickers\categorySets\avatars_inactive.png" />
     <Content Include="View\images\stickers\categorySets\bolly_active.png" />
@@ -764,8 +763,6 @@
     <Content Include="View\images\stickers\WVGA\humanoid\010_yawning.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
-    <Content Include="View\images\stickers\categorySets\angry_active.png" />
-    <Content Include="View\images\stickers\categorySets\angry_inactive.png" />
     <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />

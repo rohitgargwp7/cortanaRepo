@@ -181,7 +181,6 @@ namespace windows_client.utils
             StickerHelper.CreateCategory(CATEGORY_HUMANOID2);
             StickerHelper.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
             StickerHelper.CreateCategory(CATEGORY_LOVE);
-            StickerHelper.CreateCategory(CATEGORY_ANGRY);
         }
 
         /// <summary>
@@ -588,6 +587,45 @@ namespace windows_client.utils
             }
         }
 
+
+        /// <summary>
+        /// Deletes low res stickers except list of sticker passed
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="listStickerIds">list stickers not to be deleted</param>
+        public static void DeleteLowResCategory(string category, List<string> listStickerIds)
+        {
+            if (string.IsNullOrEmpty(category) || listStickerIds == null || listStickerIds.Count == 0)
+                return;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                        if (store.DirectoryExists(folder))
+                        {
+                            string[] files = store.GetFileNames(folder + "\\*");
+                            if (files != null)
+                                foreach (string stickerId in files)
+                                {
+                                    if (listStickerIds != null && listStickerIds.Contains(stickerId))
+                                        continue;
+                                    string fileName = folder + "\\" + stickerId;
+                                    if (store.FileExists(fileName))
+                                        store.DeleteFile(fileName);
+                                }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                }
+            }
+        }
         public static void UpdateHasMoreMessages(string category, bool hasMoreStickers, bool hasNewMessages)
         {
             if (string.IsNullOrEmpty(category))
