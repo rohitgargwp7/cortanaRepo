@@ -55,7 +55,7 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="10 5 0 10" Background="{StaticResource PhoneAccentBrush}">
+                            <Grid Margin="10 5 0 10" Background="{StaticResource HikeBlueHeader}">
                                 <Border BorderBrush="{Binding ThumbnailBorder}" Width="100" Height="100" BorderThickness="4" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
                                 <Image Source="{Binding Thumbnail}" Height="100" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>

@@ -333,7 +333,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top"/>
+                                                        <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top"/>
                                                         <StackPanel Grid.Column="1" Margin="18,0,12,0">
                                                             <TextBlock FontFamily="Segoe WP Semibold" FontSize="18" Foreground="Black" VerticalAlignment="Top"
                                                                            Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
@@ -398,7 +398,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
+                                                    <Image Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
                                                     <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
@@ -451,7 +451,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/View/images/ConversationPage/tutorial_preview.png" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                    <Image Source="/View/images/ConversationPage/tutorial_preview.jpg" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
                     <Grid Grid.Column="1" Margin="18,-5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

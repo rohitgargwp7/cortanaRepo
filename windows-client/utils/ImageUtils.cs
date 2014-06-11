@@ -636,6 +636,18 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage playAudioIcon;
+        public BitmapImage PlayAudioIcon
+        {
+            get
+            {
+                if (playAudioIcon == null)
+                    playAudioIcon = new BitmapImage(new Uri("/View/images/playAudio_icon.png", UriKind.Relative));
+
+                return playAudioIcon;
+            }
+        }
+
         private BitmapImage pauseIcon;
         public BitmapImage PauseIcon
         {
@@ -645,6 +657,30 @@ namespace windows_client.utils
                     pauseIcon = new BitmapImage(new Uri("/View/images/pause_icon.png", UriKind.Relative));
 
                 return pauseIcon;
+            }
+        }
+
+        private BitmapImage retryIcon;
+        public BitmapImage RetryIcon
+        {
+            get
+            {
+                if (retryIcon == null)
+                    retryIcon = new BitmapImage(new Uri("/View/images/retry_icon.png", UriKind.Relative));
+
+                return retryIcon;
+            }
+        }
+
+        private BitmapImage retryAudioIcon;
+        public BitmapImage RetryAudioIcon
+        {
+            get
+            {
+                if (retryAudioIcon == null)
+                    retryAudioIcon = new BitmapImage(new Uri("/View/images/retryAudio_icon.png", UriKind.Relative));
+
+                return retryAudioIcon;
             }
         }
 
@@ -660,15 +696,27 @@ namespace windows_client.utils
             }
         }
 
-        private BitmapImage downloadIconBigger;
-        public BitmapImage DownloadIconBigger
+        private BitmapImage downloadAudioIcon;
+        public BitmapImage DownloadAudioIcon
         {
             get
             {
-                if (downloadIconBigger == null)
-                    downloadIconBigger = new BitmapImage(new Uri("/View/images/download_icon_big.png", UriKind.Relative));
+                if (downloadAudioIcon == null)
+                    downloadAudioIcon = new BitmapImage(new Uri("/View/images/downloadAudio_icon.png", UriKind.Relative));
 
-                return downloadIconBigger;
+                return downloadAudioIcon;
+            }
+        }
+
+        private BitmapImage _downloadIconUnknownFileType;
+        public BitmapImage DownloadIconUnknownFileType
+        {
+            get
+            {
+                if (_downloadIconUnknownFileType == null)
+                    _downloadIconUnknownFileType = new BitmapImage(new Uri("/View/images/download_icon_big.png", UriKind.Relative));
+
+                return _downloadIconUnknownFileType;
             }
         }
 
@@ -955,6 +1003,35 @@ namespace windows_client.utils
                 return sendMessageImage;
             }
         }
+
+        #region Attachments
+
+        private BitmapImage image_Default;
+        public BitmapImage Image_Default
+        {
+            get
+            {
+                if (image_Default == null)
+                    image_Default = new BitmapImage(new Uri("/View/images/image_Default.png", UriKind.Relative));
+
+                return image_Default;
+            }
+        }
+
+        private BitmapImage video_Default;
+        public BitmapImage Video_Default
+        {
+            get
+            {
+                if (video_Default == null)
+                    video_Default = new BitmapImage(new Uri("/View/images/video_Default.png", UriKind.Relative));
+
+                return video_Default;
+            }
+        }
+        
+        #endregion
+
 
         #region Nudge
 
@@ -1930,19 +2007,19 @@ namespace windows_client.utils
                     switch (index)
                     {
                         case 0:
-                            defaultUserAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_blue.png", UriKind.Relative));
+                            defaultUserAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_blue.jpg", UriKind.Relative));
                             break;
                         case 1:
-                            defaultUserAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_green.png", UriKind.Relative));
+                            defaultUserAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_green.jpg", UriKind.Relative));
                             break;
                         case 2:
-                            defaultUserAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_orange.png", UriKind.Relative));
+                            defaultUserAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_orange.jpg", UriKind.Relative));
                             break;
                         case 3:
-                            defaultUserAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_pink.png", UriKind.Relative));
+                            defaultUserAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_pink.jpg", UriKind.Relative));
                             break;
                         case 4:
-                            defaultUserAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_purple.png", UriKind.Relative));
+                            defaultUserAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_hires_purple.jpg", UriKind.Relative));
                             break;
                     }
                 }
@@ -1956,19 +2033,19 @@ namespace windows_client.utils
                     switch (index)
                     {
                         case 0:
-                            defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_blue.png", UriKind.Relative));
+                            defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_blue.jpg", UriKind.Relative));
                             break;
                         case 1:
-                            defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_green.png", UriKind.Relative));
+                            defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_green.jpg", UriKind.Relative));
                             break;
                         case 2:
-                            defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_orange.png", UriKind.Relative));
+                            defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_orange.jpg", UriKind.Relative));
                             break;
                         case 3:
-                            defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_pink.png", UriKind.Relative));
+                            defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_pink.jpg", UriKind.Relative));
                             break;
                         case 4:
-                            defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_purple.png", UriKind.Relative));
+                            defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_purple.jpg", UriKind.Relative));
                             break;
                     }
                 }
@@ -1988,19 +2065,19 @@ namespace windows_client.utils
                     switch (index)
                     {
                         case 0:
-                            defaultGroupAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_blue.png", UriKind.Relative));
+                            defaultGroupAvatarsHighRes[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_blue.jpg", UriKind.Relative));
                             break;
                         case 1:
-                            defaultGroupAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_green.png", UriKind.Relative));
+                            defaultGroupAvatarsHighRes[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_green.jpg", UriKind.Relative));
                             break;
                         case 2:
-                            defaultGroupAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_orange.png", UriKind.Relative));
+                            defaultGroupAvatarsHighRes[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_orange.jpg", UriKind.Relative));
                             break;
                         case 3:
-                            defaultGroupAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_pink.png", UriKind.Relative));
+                            defaultGroupAvatarsHighRes[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_pink.jpg", UriKind.Relative));
                             break;
                         case 4:
-                            defaultGroupAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_purple.png", UriKind.Relative));
+                            defaultGroupAvatarsHighRes[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_hires_purple.jpg", UriKind.Relative));
                             break;
                     }
                 }
@@ -2014,19 +2091,19 @@ namespace windows_client.utils
                     switch (index)
                     {
                         case 0:
-                            defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_blue.png", UriKind.Relative));
+                            defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_blue.jpg", UriKind.Relative));
                             break;
                         case 1:
-                            defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_green.png", UriKind.Relative));
+                            defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_green.jpg", UriKind.Relative));
                             break;
                         case 2:
-                            defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_orange.png", UriKind.Relative));
+                            defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_orange.jpg", UriKind.Relative));
                             break;
                         case 3:
-                            defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_pink.png", UriKind.Relative));
+                            defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_pink.jpg", UriKind.Relative));
                             break;
                         case 4:
-                            defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_purple.png", UriKind.Relative));
+                            defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/default_avatar_group_purple.jpg", UriKind.Relative));
                             break;
                     }
                 }
