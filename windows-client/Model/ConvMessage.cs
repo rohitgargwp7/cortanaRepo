@@ -572,7 +572,7 @@ namespace windows_client.Model
                 if (_fileAttachment != null)
                 {
                     if (!IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                        return UI_Utils.Instance.DownloadIconBigger;
+                        return UI_Utils.Instance.DownloadIconUnknownFileType;
                     else
                         return UI_Utils.Instance.AttachmentIcon;
                 }
@@ -625,7 +625,7 @@ namespace windows_client.Model
         {
             get
             {
-                return ChangingState ? 0.4 : 1;
+                return ChangingState ? 0.6 : 1;
             }
         }
 
@@ -849,7 +849,9 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED && _fileAttachment.FileState != Attachment.AttachmentState.FAILED)
+                        || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED 
+                        || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED )
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -864,12 +866,29 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
-                        return UI_Utils.Instance.DownloadIcon;
+                    if (_fileAttachment.FileState == Attachment.AttachmentState.FAILED)
+                    {
+                        if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.RetryAudioIcon;
+                        else
+                            return UI_Utils.Instance.RetryIcon;
+                    }
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
+                    {
+                        if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.DownloadAudioIcon;
+                        else
+                            return UI_Utils.Instance.DownloadIcon;
+                    }
                     else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                         return UI_Utils.Instance.BlankBitmapImage;
-                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
-                        return UI_Utils.Instance.PauseIcon;
+                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    {
+                        if (IsPlaying)
+                            return UI_Utils.Instance.PauseIcon;
+                        else
+                            return UI_Utils.Instance.PlayAudioIcon;
+                    }
                     else
                         return UI_Utils.Instance.PlayIcon;
                 }
@@ -1307,7 +1326,7 @@ namespace windows_client.Model
         {
             get
             {
-                return IsInAddressBook && _groupParticipant != GroupMemberName ? String.Empty : "(" + _groupParticipant + ") ";
+                return IsInAddressBook || GroupMemberName.Equals(_groupParticipant) ? String.Empty : "(" + _groupParticipant + ") ";
             }
         }
 

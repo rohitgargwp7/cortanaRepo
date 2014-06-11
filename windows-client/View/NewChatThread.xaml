@@ -306,7 +306,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <Grid>
+                                            <Grid HorizontalAlignment="Left">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
@@ -319,19 +319,19 @@
                                                         <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                                    <Grid>
+                                                    <Grid HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock MaxWidth="{Binding MessageBubbleWidth}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" >
+                                                        <TextBlock MaxWidth="200" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" HorizontalAlignment="Left" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" >
                                                             <Run Text="{Binding GroupMemberName}"/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
                                                         </TextBlock>
                                                         <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
                                                             <Image MaxWidth="180" MaxHeight="180" Margin="12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
-                                                            <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
+                                                            <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxHeight="75" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                         </Grid>
                                                     </Grid>
                                                     <Grid Grid.Row="1" Margin="0,5,0,0">
@@ -393,7 +393,7 @@
                                                         <Run Text="{Binding GroupMemberMsisdn}"/>
                                                         <Run Text="- "/>
                                                     </TextBlock>
-                                                    <Grid Grid.Row="1">
+                                                    <Grid Grid.Row="1" HorizontalAlignment="Left">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="Auto" />
@@ -428,7 +428,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_DirectMessage" Visibility="{Binding DirectMessageVisibility}"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <Grid>
+                                            <Grid HorizontalAlignment="Left">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
@@ -441,12 +441,12 @@
                                                         <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                                    <Grid>
+                                                    <Grid HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
+                                                        <TextBlock MaxWidth="180" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}" TextAlignment="Left" HorizontalAlignment="Left">
                                                             <Run Text="{Binding GroupMemberName}"/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
@@ -456,14 +456,14 @@
                                                                 <ColumnDefinition Width="45"/>
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                            <Image Stretch="Uniform" x:Name="PlayIcon" Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding PlayIconImage}" Grid.Row="1" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                            <Border Margin="0" Background="#3a4150" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
+                                                            <Image Stretch="Uniform" Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding PlayIconImage}" Grid.Row="1" MaxHeight="18" VerticalAlignment="Center"/>
                                                             <Grid Grid.Column="1">
                                                                 <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                                                    <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/View/images/Mic_icon_grey_small.png"/>
-                                                                    <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
+                                                                    <Image Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/View/images/Mic_icon_grey_small.png" MaxHeight="21"/>
+                                                                    <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontWeight="Light" VerticalAlignment="Center" TextAlignment="Left"/>
                                                                 </StackPanel>
-                                                                <ProgressBar Style="{StaticResource AudioFilePlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
+                                                                <ProgressBar Style="{StaticResource AudioFilePlayProgressBarStyle}" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
                                                             </Grid>
                                                         </Grid>
                                                     </Grid>
@@ -506,7 +506,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
+                                            <TextBlock MaxWidth="250" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
                                                 <Run Text="{Binding GroupMemberName}"/>
                                                 <Run Text="{Binding GroupMemberMsisdn}"/>
                                                 <Run Text="- "/>
@@ -549,19 +549,16 @@
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
                                                         <RowDefinition Height="Auto" />
-                                                        <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" TextAlignment="Left" Grid.ColumnSpan="2" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
+                                                    <TextBlock MaxWidth="300" TextWrapping="Wrap" TextAlignment="Left" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
                                                         <Run Text="{Binding GroupMemberName}"/>
                                                         <Run Text="{Binding GroupMemberMsisdn}"/>
                                                         <Run Text="- "/>
                                                     </TextBlock>
-                                                    <Image Grid.Row="1" Margin="12,12,12,0" HorizontalAlignment="Left" Source="/View/images/menu_contact_icon_black.png" Height="50" />
-                                                    <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="0,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                    <StackPanel Grid.Row="1" Margin="12,12,12,0" Orientation="Horizontal" HorizontalAlignment="Left">
+                                                        <Image HorizontalAlignment="Left" Source="/View/images/menu_contact_icon_black.png" Height="50" />
+                                                        <TextBlock HorizontalAlignment="Left" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight" Grid.Column="1" Margin="5,8,5,0" TextWrapping="Wrap" MinWidth="150" MaxWidth="330" Foreground="{Binding MessageTextForeGround}"/>
+                                                    </StackPanel>
                                                 </Grid>
                                                 <TextBlock Grid.Row="1" Text="{Binding TimeStampStr}" HorizontalAlignment="Right" Margin="12,5,12,6" FontSize="18" Foreground="{Binding MessageTextForeGround}" FontWeight="Light"/>
                                             </Grid>
@@ -585,7 +582,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <Grid>
+                                            <Grid HorizontalAlignment="Left">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
@@ -603,7 +600,7 @@
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
+                                                        <TextBlock MaxWidth="250" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="12,12,12,0" Foreground="{Binding MessageTextForeGround}">
                                                             <Run Text="{Binding GroupMemberName}"/>
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
@@ -620,8 +617,8 @@
                                                                         <RowDefinition Height="Auto" />
                                                                         <RowDefinition Height="Auto" />
                                                                     </Grid.RowDefinitions>
-                                                                    <TextBlock Text="{Binding FileName}" TextTrimming="WordEllipsis"  Foreground="{Binding MessageTextForeGround}"/>
-                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="16" Opacity="0.7" Foreground="{Binding MessageTextForeGround}"/>
+                                                                    <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}"/>
+                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" FontSize="16" Opacity="0.7" Foreground="{Binding MessageTextForeGround}"/>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
@@ -665,7 +662,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <TextBlock MaxWidth="{Binding MessageBubbleWidth}" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
+                                            <TextBlock MaxWidth="250" TextWrapping="Wrap" Visibility="{Binding GroupMemberVisibility}" FontFamily="Segoe WP SemiLight" FontWeight="Semibold" Margin="0,12,12,12" Foreground="{Binding MessageTextForeGround}">
                                                 <Run Text="{Binding GroupMemberName}"/>
                                                 <Run Text="{Binding GroupMemberMsisdn}"/>
                                                 <Run Text="- "/>
@@ -851,7 +848,7 @@
                                                     <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
                                                     <Grid HorizontalAlignment="Center">
                                                         <Image MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
-                                                        <Image x:Name="PlayIcon" Source="{Binding PlayIconImage}" Visibility="{Binding PlayIconVisibility}" MaxWidth="43" MaxHeight="42" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
+                                                        <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxHeight="75" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                     </Grid>
                                                     <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="12,5,0,6">
                                                         <Grid.ColumnDefinitions>
@@ -917,12 +914,12 @@
                                                             <ColumnDefinition Width="45"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Border Margin="0" Background="Black" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
-                                                        <Image Stretch="Uniform" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxWidth="45" MaxHeight="45" VerticalAlignment="Center"/>
+                                                        <Border Margin="0" Background="#3a4150" Canvas.ZIndex="-1" Grid.ColumnSpan="2"/>
+                                                        <Image Stretch="Uniform" Opacity="{Binding PauseResumeImageOpacity}" Source="{Binding PlayIconImage}" Grid.Row="1" HorizontalAlignment="Center" MaxHeight="18" VerticalAlignment="Center"/>
                                                         <Grid Grid.Column="1">
                                                             <StackPanel Orientation="Horizontal" Canvas.ZIndex="2">
-                                                                <Image Margin="10,0,0,0" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/View/images/Mic_icon_grey_small.png"/>
-                                                                <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontSize="24" VerticalAlignment="Center" TextAlignment="Left"/>
+                                                                <Image Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/View/images/Mic_icon_grey_small.png" MaxHeight="21"/>
+                                                                <TextBlock Margin="10,0,0,0" Text="{Binding PlayTimeText}" Foreground="White" FontWeight="Light" VerticalAlignment="Center" TextAlignment="Left"/>
                                                             </StackPanel>
                                                             <ProgressBar Style="{StaticResource AudioFilePlayProgressBarStyle}" x:Name="playProgress" Value="{Binding PlayProgressBarValue}" Width="180" Height="45" Background="#999999" Foreground="#333333" Minimum="0" Maximum="100"/>
                                                         </Grid>
