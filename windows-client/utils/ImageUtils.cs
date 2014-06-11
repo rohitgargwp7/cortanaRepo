@@ -1412,18 +1412,6 @@ namespace windows_client.utils
                 return sportsOverlay;
             }
         }
-        private BitmapImage angryOverlay;
-        public BitmapImage AngryOverlay
-        {
-            get
-            {
-                if (angryOverlay == null)
-                    angryOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_overlay.png", UriKind.Relative));
-
-                return angryOverlay;
-            }
-        }
-
         private BitmapImage loveOverlay;
         public BitmapImage LoveOverlay
         {
@@ -1607,18 +1595,6 @@ namespace windows_client.utils
             }
         }
 
-        private BitmapImage angryInactive;
-        public BitmapImage AngryInactive
-        {
-            get
-            {
-                if (angryInactive == null)
-                    angryInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_inactive.png", UriKind.Relative));
-
-                return angryInactive;
-            }
-        }
-
         private BitmapImage recentIconInActive;
         public BitmapImage RecentIconInActive
         {
@@ -1761,18 +1737,6 @@ namespace windows_client.utils
                 return sportsActive;
             }
         }
-        private BitmapImage angryActive;
-        public BitmapImage AngryActive
-        {
-            get
-            {
-                if (angryActive == null)
-                    angryActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/angry_active.png", UriKind.Relative));
-
-                return angryActive;
-            }
-        }
-
         private BitmapImage loveActive;
         public BitmapImage LoveActive
         {

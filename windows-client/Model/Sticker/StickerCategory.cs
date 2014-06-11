@@ -144,8 +144,6 @@ namespace windows_client.Model.Sticker
                         return _isSelected ? UI_Utils.Instance.SportsActive: UI_Utils.Instance.SportsInactive;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
-                    case StickerHelper.CATEGORY_ANGRY:
-                        return _isSelected ? UI_Utils.Instance.AngryActive : UI_Utils.Instance.AngryInactive;
                     case StickerHelper.CATEGORY_LOVE:
                         return _isSelected ? UI_Utils.Instance.LoveActive : UI_Utils.Instance.LoveInactive;
                     default:

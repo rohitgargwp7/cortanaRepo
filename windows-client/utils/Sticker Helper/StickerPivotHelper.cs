@@ -99,11 +99,6 @@ namespace windows_client.utils
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_ANGRY)) != null)
-                {
-                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
-                    pivotIndex++;
-                }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
