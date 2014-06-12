@@ -1377,20 +1377,21 @@ namespace windows_client.View
 
         private void processGroupJoin(bool isNewgroup)
         {
-
-
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>();
 
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
+                
                 for (int i = 0; i < contactsForGroup.Count; i++)
                 {
                     GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
+                    gp.IsInAddressBook = contactsForGroup[i].IsInAddressBook;
                     l.Add(gp);
                     usersToAdd.Add(gp);
                 }
+
                 GroupManager.Instance.GroupCache[mContactNumber] = l;
             }
             else // existing group so just add members
@@ -1400,6 +1401,7 @@ namespace windows_client.View
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
                     List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
+                    
                     if (gl == null)
                         gl = new List<GroupParticipant>();
 
@@ -1415,11 +1417,14 @@ namespace windows_client.View
                             break;
                         }
                     }
+
                     if (addNewparticipant)
                     {
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                         GroupManager.Instance.GroupCache[mContactNumber].Add(gp);
                     }
+
+                    gp.IsInAddressBook = contactsForGroup[i].IsInAddressBook;
                     usersToAdd.Add(gp);
                 }
             }
