@@ -86,7 +86,7 @@
                                         <toolkit:ContextMenu Background="Black" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
                                             <toolkit:MenuItem Foreground="White" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                             <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Foreground="White" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -156,7 +156,7 @@
                             <ProgressBar VerticalContentAlignment="Center" Background="Transparent" IsIndeterminate="True" IsEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                         </Grid>
                         <TextBlock Grid.Row="0" Margin="0,20" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
-                        <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,15" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,0,0,20" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/favorites.png" Height="120" Stretch="Uniform"/>
                             <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                         </StackPanel>
@@ -190,8 +190,8 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <TextBlock Grid.Row="2" Margin="0,5,0,15" Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
-                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,30,0,15" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
+                        <TextBlock Grid.Row="2" Margin="0,20" Name="txtContactsOnHike" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
+                        <StackPanel x:Name="emptyListPlaceholderHikeContacts" Margin="0,0,0,20" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Visibility="Collapsed">
                             <Image Source="images/ConversationPage/sticker.png" Height="120"/>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_InviteFriendsHike_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
                             <Button Content="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}" Height="44" Width="138" Style="{StaticResource YesButtonStyle}" HorizontalAlignment="Center" Tap="InviteBtn_Tap" Margin="0,12,0,0"/>
@@ -333,7 +333,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top"/>
+                                                        <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top"/>
                                                         <StackPanel Grid.Column="1" Margin="18,0,12,0">
                                                             <TextBlock FontFamily="Segoe WP Semibold" FontSize="18" Foreground="Black" VerticalAlignment="Top"
                                                                            Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
@@ -398,7 +398,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Source="/View/images/ConversationPage/hike_logo.png" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
+                                                    <Image Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
                                                     <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Left">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
@@ -451,7 +451,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/View/images/ConversationPage/tutorial_preview.png" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
+                    <Image Source="/View/images/ConversationPage/tutorial_preview.jpg" MaxHeight="45" MaxWidth="45" VerticalAlignment="Top" HorizontalAlignment="Left" Tap="statusBubblePhoto_Tap"/>
                     <Grid Grid.Column="1" Margin="18,-5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

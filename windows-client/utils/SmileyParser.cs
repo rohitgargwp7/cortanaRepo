@@ -842,10 +842,14 @@ namespace windows_client
             return new Regex("(" + patternString.ToString(), RegexOptions.Compiled);
         }
 
-        public Paragraph LinkifyEmoticons(string messageString)
+        public Paragraph LinkifyEmoticons(Run gmName, string messageString)
         {
             MatchCollection matchCollection = EmoticonRegex.Matches(messageString);
             Paragraph p = new Paragraph();
+
+            if (gmName != null)
+                p.Inlines.Add(gmName);
+
             int startIndex = 0;
             int endIndex = -1;
             int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
@@ -885,7 +889,7 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAllPerTextBlock(string originalMessage, SolidColorBrush foreground, ViewMoreLinkClickedDelegate viewMoreClicked, HyperLinkClickedDelegate hyperlinkClicked)
+        public Paragraph LinkifyAllPerTextBlock(Run gmName, string originalMessage, SolidColorBrush foreground, ViewMoreLinkClickedDelegate viewMoreClicked, HyperLinkClickedDelegate hyperlinkClicked)
         {
             int maxChar = Utils.GetMaxCharForBlock(originalMessage);
             bool isMessageExtended = false;
@@ -895,7 +899,7 @@ namespace windows_client
                 message = originalMessage.Substring(0, maxChar + 1);
                 isMessageExtended = true;
             }
-            var p = LinkifyAll(message, foreground, hyperlinkClicked);
+            var p = LinkifyAll(gmName, message, foreground, hyperlinkClicked);
             if (isMessageExtended)
             {
                 p.Inlines.Add(new LineBreak());
@@ -918,10 +922,14 @@ namespace windows_client
             return p;
         }
 
-        public Paragraph LinkifyAll(string message, SolidColorBrush foreground, HyperLinkClickedDelegate hyperlinkClicked)
+        public Paragraph LinkifyAll(Run gmName, string message, SolidColorBrush foreground, HyperLinkClickedDelegate hyperlinkClicked)
         {
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
+            
+            if (gmName != null)
+                p.Inlines.Add(gmName);
+
             int startIndex = 0;
             int endIndex = -1;
             int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;

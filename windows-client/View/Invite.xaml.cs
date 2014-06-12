@@ -52,7 +52,6 @@ namespace windows_client.View
 
         private void Email_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE_EMAIL);
             string inviteToken = "";
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
@@ -71,8 +70,6 @@ namespace windows_client.View
 
         private void Messaging_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE_MESSAGE);
-
             Analytics.SendClickEvent(HikeConstants.INVITE_SMS_SCREEN_FROM_INVITE);
             string uri = "/View/InviteUsers.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));

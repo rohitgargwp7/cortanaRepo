@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.IO;
 using System;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -120,6 +123,28 @@ namespace windows_client.Model
                 {
                     _fileState = value;
                 }
+            }
+        }
+
+        BitmapImage _thumbnailImage;
+        public BitmapImage ThumbnailImage
+        {
+            get
+            {
+                if (_thumbnailImage == null)
+                {
+                    if (Thumbnail != null)
+                        _thumbnailImage = UI_Utils.Instance.createImageFromBytes(Thumbnail);
+                    else
+                    {
+                        if (ContentType.Contains(HikeConstants.VIDEO))
+                            return UI_Utils.Instance.Video_Default;
+                        else if (ContentType.Contains(HikeConstants.IMAGE))
+                            return UI_Utils.Instance.Image_Default;
+                    }
+                }
+
+                return _thumbnailImage;
             }
         }
 

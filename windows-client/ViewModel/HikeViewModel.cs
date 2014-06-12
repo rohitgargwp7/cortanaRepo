@@ -29,6 +29,7 @@ using System.Web;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
+using Coding4Fun.Phone.Controls;
 
 namespace windows_client.ViewModel
 {
@@ -515,6 +516,51 @@ namespace windows_client.ViewModel
             {
                 return _contactsCache;
             }
+        }
+
+        public void UpdateNameOnSaveContact(ContactInfo contactInfo)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+            {
+                try
+                {
+                    var cObj = ConvMap[contactInfo.Msisdn];
+                    cObj.ContactName = contactInfo.Name;
+                    ConversationTableUtils.updateConversation(cObj);
+
+                    if (cObj.IsFav)
+                    {
+                        MiscDBUtil.SaveFavourites(cObj);
+                        MiscDBUtil.SaveFavourites();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("SAVE CONTACT NAME :: Update contact name exception " + e.StackTrace);
+                }
+            }
+            else // fav and pending case
+            {
+                ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                if (c != null) // this user is in favs
+                {
+                    c.ContactName = contactInfo.Name;
+                    MiscDBUtil.SaveFavourites(c);
+                    MiscDBUtil.SaveFavourites();
+                }
+                else
+                {
+                    c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                    if (c != null)
+                    {
+                        c.ContactName = contactInfo.Name;
+                        MiscDBUtil.SavePendingRequests();
+                    }
+                }
+            }
+
+            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         #region In Apptips
@@ -1137,5 +1183,32 @@ namespace windows_client.ViewModel
 
         public bool IsConversationUpdated { get; set; }
 
+        #region Request Last Seen
+
+        public event EventHandler<EventArgs> RequestLastSeenEvent;
+
+        public void RequestLastSeen()
+        {
+            if (RequestLastSeenEvent != null)
+                RequestLastSeenEvent(null, null);
+        }
+
+        #endregion Request Last Seen
+
+
+        public void Toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ToastPrompt toast = sender as ToastPrompt;
+            string msisdn = (string)toast.Tag;
+            ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (co == null)
+                return;
+
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+            string uri = "/View/NewChatThread.xaml?" + msisdn;
+            App page = (App)Application.Current;
+            page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
+        }
     }
 }

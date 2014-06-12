@@ -36,6 +36,7 @@ namespace windows_client
             {
                 ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
                 BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                Opacity = 0.95
             };
 
             nextIconButton = new ApplicationBarIconButton();

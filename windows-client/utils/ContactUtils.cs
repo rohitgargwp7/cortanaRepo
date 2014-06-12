@@ -320,6 +320,7 @@ namespace windows_client.utils
                         if (l[i].Msisdn == number)
                         {
                             l[i].Name = name;
+                            l[i].IsInAddressBook = true;
                             shouldSave = true;
                         }
                     }

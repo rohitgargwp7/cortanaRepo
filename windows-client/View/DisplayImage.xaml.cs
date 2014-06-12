@@ -72,7 +72,12 @@ namespace windows_client.View
                         fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
                         if (!Utils.isGroupConversation(msisdn))
-                            AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        {
+                            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + App.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                            else
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                        }
                         else
                             AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }

@@ -548,7 +548,6 @@ namespace windows_client.View
                 return;
             }
 
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             contactsListBox.IsHitTestVisible = false;
             DisableApplicationBar();
 

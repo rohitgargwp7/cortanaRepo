@@ -354,8 +354,6 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
-
-            postAnalytics();
         }
 
         private void ShowLaunchMessages()
@@ -502,7 +500,6 @@ namespace windows_client.View
 
             try
             {
-                App.AnalyticsInstance.addEvent(Analytics.REWARDS);
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
             }
             catch (Exception ex)
@@ -513,7 +510,6 @@ namespace windows_client.View
 
         void inviteMenu_Click(object sender, EventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.INVITE);
             Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
             try
             {
@@ -569,7 +565,6 @@ namespace windows_client.View
 
         void settingsMenu_Click(object sender, EventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
             NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
@@ -720,7 +715,6 @@ namespace windows_client.View
             emptyScreenGrid.Opacity = 1;
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
-            App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
             shellProgress.IsIndeterminate = false;
             isDeleteAllChats = false;
         }
@@ -753,7 +747,6 @@ namespace windows_client.View
             //    return;
             //}
 
-            App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
@@ -767,7 +760,6 @@ namespace windows_client.View
             //    return;
             //}
 
-            App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
@@ -1070,7 +1062,7 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        public async void onEventReceived(string type, object obj)
+        public void onEventReceived(string type, object obj)
         {
             if (obj == null)
             {
@@ -1086,6 +1078,10 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
+
+                bool showPush = true;
+                if(vals.Length == 3)
+                    showPush = (Boolean)vals[2];
 
                 mObj.TypingNotificationText = null;
 
@@ -1108,7 +1104,7 @@ namespace windows_client.View
                     });
                 }
 
-                if (App.newChatThreadPage == null && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
+                if (App.newChatThreadPage == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
                     bool isHikeJingleEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
@@ -1116,7 +1112,6 @@ namespace windows_client.View
                     {
                         PlayAudio();
                     }
-                    await Task.Delay(500);
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled)
@@ -1877,7 +1872,6 @@ namespace windows_client.View
                     favourites.Visibility = System.Windows.Visibility.Collapsed;
                     //addFavsPanel.Opacity = 0;
                 }
-                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
 
                 FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
@@ -1951,7 +1945,6 @@ namespace windows_client.View
                         hikeContactListBox.Visibility = Visibility.Collapsed;
                     }
                 }
-                App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
             }
         }
 
@@ -1974,28 +1967,6 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
-
-        #region ANALYTICS
-        public void postAnalytics()
-        {
-            long lastAnalyticsTimeStamp = -1;
-            App.appSettings.TryGetValue<long>(App.LAST_ANALYTICS_POST_TIME, out lastAnalyticsTimeStamp);
-            if (lastAnalyticsTimeStamp > 0 && TimeUtils.isAnalyticsTimeElapsed(lastAnalyticsTimeStamp))
-            {
-                JObject analyticsJson = App.AnalyticsInstance.serialize();
-                if (analyticsJson != null)
-                {
-                    object[] publishData = new object[2];
-                    publishData[0] = analyticsJson;
-                    publishData[1] = 1; //qos
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
-                    App.AnalyticsInstance.clearObject();
-                }
-                App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
-            }
-        }
-
-        #endregion
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
@@ -2433,7 +2404,6 @@ namespace windows_client.View
 
         private void yes_Click(object sender, RoutedEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendRequestStatusUpdate fObj = (sender as Button).DataContext as FriendRequestStatusUpdate;
             if (fObj != null)
             {
@@ -2873,8 +2843,6 @@ namespace windows_client.View
             {
                 if (obj.IsGroupChat)
                 {
-                    App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
-                    PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
                     NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
                 }

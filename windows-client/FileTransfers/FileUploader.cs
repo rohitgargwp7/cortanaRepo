@@ -379,18 +379,14 @@ namespace windows_client.FileTransfers
                 return;
             }
 
-            var param = new Dictionary<string, string>();
-            param.Add("Cookie", req.Headers["Cookie"]);
-            param.Add("X-SESSION-ID", req.Headers["X-SESSION-ID"]);
-            param.Add("X-CONTENT-RANGE", req.Headers["X-CONTENT-RANGE"]);
-            var bytesToUpload = getMultiPartBytes(partialDataBytes, param);
+            var bytesToUpload = getMultiPartBytes(partialDataBytes);
 
             req.BeginGetRequestStream(UploadPostRequestCallback, new object[] { req, bytesToUpload });
         }
 
-        byte[] getMultiPartBytes(byte[] data, Dictionary<string, string> param)
+        byte[] getMultiPartBytes(byte[] data)
         {
-            String boundaryMessage = getBoundaryMessage(param);
+            String boundaryMessage = getBoundaryMessage();
             String endBoundary = "\r\n--" + _boundary + "--\r\n";
 
             var bos = new MemoryStream();
@@ -408,14 +404,9 @@ namespace windows_client.FileTransfers
             return bos.ToArray();
         }
 
-        String getBoundaryMessage(Dictionary<string, string> param)
+        String getBoundaryMessage()
         {
             String res = "--" + _boundary + "\r\n";
-
-            var keys = param.Keys;
-
-            foreach (var keyValue in param)
-                res += "Content-Disposition: form-data; name=\"" + keyValue.Key + "\"\r\n" + "\r\n" + keyValue.Value + "\r\n" + "--" + _boundary + "\r\n";
 
             // keep ct empty since we are not sure about content type for images and video
             var ct = ContentType.Contains(HikeConstants.IMAGE) || ContentType.Contains(HikeConstants.VIDEO) ? "" : ContentType;

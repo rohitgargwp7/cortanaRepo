@@ -13,6 +13,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
+using windows_client.utils.Sticker_Helper;
 
 namespace windows_client
 {
@@ -130,6 +131,12 @@ namespace windows_client
             {
                 try
                 {
+                    bool isPush = true;
+                    JToken pushJToken;
+                    var jData = (JObject)jsonObj[HikeConstants.DATA];
+                    if (jData.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                        isPush = (Boolean)pushJToken;
+
                     ConvMessage convMessage = null;
                     try
                     {
@@ -163,10 +170,11 @@ namespace windows_client
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    object[] vals = new object[2];
+                    object[] vals = new object[3];
 
                     vals[0] = convMessage;
                     vals[1] = obj;
+                    vals[2] = isPush;
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception ex)
@@ -1204,6 +1212,7 @@ namespace windows_client
                             object[] oa = new object[2];
                             oa[0] = cm;
                             oa[1] = obj;
+
                             this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
                             this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
                         }
@@ -1550,6 +1559,7 @@ namespace windows_client
                         object[] vals = new object[2];
                         vals[0] = cm;
                         vals[1] = null; // always send null as we dont want any activity on conversation page
+
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
@@ -1683,7 +1693,7 @@ namespace windows_client
                     if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                        StickerCategory.UpdateHasMoreMessages(category, true, true);
+                        StickerHelper.UpdateHasMoreMessages(category, true, true);
 
                         //reset in app tip for "New Stickers"
                         App.ViewModel.ResetInAppTip(1);
@@ -1697,14 +1707,14 @@ namespace windows_client
                         {
                             listStickers.Add((string)jarray[i]);
                         }
-                        StickerCategory.DeleteSticker(category, listStickers);
+                        StickerHelper.DeleteSticker(category, listStickers);
                         RecentStickerHelper.DeleteSticker(category, listStickers);
 
                     }
                     else if (subType == HikeConstants.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
-                        StickerCategory.DeleteCategory(category);
+                        StickerHelper.DeleteCategory(category);
                         RecentStickerHelper.DeleteCategory(category);
                     }
 
@@ -1790,7 +1800,7 @@ namespace windows_client
                     ChatThemeData bg = null;
                     if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
                     {
-                        if (bg.Timestamp >= ts || bg.BackgroundId == bgId)
+                        if (bg.Timestamp > ts || bg.BackgroundId == bgId)
                             return;
                     }
 
@@ -1824,10 +1834,16 @@ namespace windows_client
 
                     if (obj != null)
                     {
-                        object[] vals;
+                        bool isPush = true;
+                        JToken pushJToken;
+                        if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                            isPush = (Boolean)pushJToken; 
+                        
+                            object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
+                        vals[2] = isPush;
 
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
@@ -1905,9 +1921,9 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    bool isPush = (bool)data[HikeConstants.PUSH];
+                    bool isRegisterPush = (bool)data[HikeConstants.PUSH];
 
-                    if (isPush)
+                    if (isRegisterPush)
                         PushHelper.Instance.registerPushnotifications(true);
 
                 }

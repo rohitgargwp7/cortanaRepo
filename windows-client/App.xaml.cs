@@ -365,7 +365,6 @@ namespace windows_client
             RootFrame.Navigated += RootFrame_Navigated;
 
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
-            (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = UI_Utils.Instance.HikeBlue.Color;
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -427,6 +426,8 @@ namespace windows_client
             {
                 if (ps == PageState.CONVLIST_SCREEN)
                     MqttManagerInstance.connect();
+
+                App.ViewModel.RequestLastSeen();
             }
 
             NetworkManager.turnOffNetworkManager = false;
@@ -440,9 +441,6 @@ namespace windows_client
             MQttLogging.LogWriter.Instance.WriteToLog("APP DEACTIVATED");
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
 
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
 
@@ -462,10 +460,6 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             MQttLogging.LogWriter.Instance.WriteToLog("APP CLOSING");
-
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject(); //check for null
-
             sendAppBgStatusToServer();
             //appDeinitialize();
         }
@@ -493,7 +487,7 @@ namespace windows_client
         {
             //reconnect mqtt whenever phone is reconnected without relaunch 
             if (e.NotificationType == NetworkNotificationType.InterfaceConnected ||
-                e.NotificationType == NetworkNotificationType.InterfaceDisconnected) //TODO in wp7 branch - Madur Garg
+                e.NotificationType == NetworkNotificationType.InterfaceDisconnected)
             {
                 if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -513,6 +507,8 @@ namespace windows_client
                     //upload pending group images when network reconnects
                     if (App.ViewModel.PendingRequests.Count > 0)
                         App.ViewModel.SendDisplayPic();
+
+                    App.ViewModel.RequestLastSeen();
                 }
                 else
                 {
@@ -532,7 +528,7 @@ namespace windows_client
             var targetPage = e.Uri.ToString();
 
             appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-            
+
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
@@ -542,8 +538,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     string msisdn = Utils.GetParamFromUri(targetPage);
                     if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
@@ -565,8 +561,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
@@ -577,8 +573,8 @@ namespace windows_client
                         Uri nUri = Utils.LoadPageUri(ps);
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
-                    } 
-                    
+                    }
+
                     APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;
@@ -614,7 +610,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.5.3.8", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.0.2", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -707,9 +703,6 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
 
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
-
             if (IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -723,9 +716,6 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            if (App.AnalyticsInstance != null)
-                App.AnalyticsInstance.saveObject();
-
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
@@ -863,16 +853,16 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.5.3.8") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
-                    StickerCategory.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
+                    StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
 
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion
             #region TUTORIAL
-            if (!isNewInstall && Utils.compareVersion("2.5.3.8", _currentVersion) == 1)
+            if (!isNewInstall && Utils.compareVersion("2.6.0.0", _currentVersion) == 1)
             {
                 if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
                     || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
@@ -1041,7 +1031,7 @@ namespace windows_client
             }
             #endregion
             #region CHAT_FTUE
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.3.8") < 0)//if it is upgrade
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
                 RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
 
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade

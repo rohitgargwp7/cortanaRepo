@@ -18,6 +18,9 @@ using Microsoft.Phone.Data.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.Misc;
 using System.Diagnostics;
+using windows_client.utils.Sticker_Helper;
+using windows_client.ViewModel;
+using windows_client.Model.Sticker;
 
 namespace windows_client.View
 {
@@ -138,7 +141,7 @@ namespace windows_client.View
                         }
                     }
 
-                    if (Utils.compareVersion("2.5.3.8", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
                     {
                         bool groupEmptyNameFound = false;
                         //conv map is initialised in app.xaml.cs
@@ -159,12 +162,11 @@ namespace windows_client.View
                                 ConversationTableUtils.saveConvObjectList();
                         }
 
-
                         #region changing hardcoded stickers
                         //to download default stickers remopved from snuggles
-                        StickerCategory.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
+                        StickerHelper.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
                         //remove expressions stickers if already downloaded to remove duplicacy
-                        StickerCategory.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
+                        StickerHelper.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
 
                         //if default doggy stickers were in recents, then remove those
                         List<string> listPreviousHardcodedDoggy = new List<string>
@@ -180,6 +182,125 @@ namespace windows_client.View
                                      };
                         RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
 
+                        #endregion
+                    }
+
+                    if (Utils.compareVersion("2.6.0.2", App.CURRENT_VERSION) == 1)
+                    {
+                        GroupManager.Instance.LoadGroupCache();
+
+                        Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+
+                        if (hike_contacts_by_id != null)
+                        {
+                            bool isFavUpdated = false, isPendingUpdated = false;
+
+                            foreach (var id in hike_contacts_by_id.Keys)
+                            {
+                                var list = hike_contacts_by_id[id];
+                                foreach (var contactInfo in list)
+                                {
+                                    if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+                                    {
+                                        try
+                                        {
+                                            var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                                            if (cObj.ContactName != contactInfo.Name)
+                                            {
+                                                cObj.ContactName = contactInfo.Name;
+                                                ConversationTableUtils.updateConversation(cObj);
+
+                                                if (cObj.IsFav)
+                                                {
+                                                    MiscDBUtil.SaveFavourites(cObj);
+                                                    isFavUpdated = true;
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
+                                        }
+                                    }
+                                    else // fav and pending case
+                                    {
+                                        ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                                        if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
+                                        {
+                                            c.ContactName = contactInfo.Name;
+                                            MiscDBUtil.SaveFavourites(c);
+                                            isFavUpdated = true;
+                                        }
+                                        else
+                                        {
+                                            c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                                            if (c != null && c.ContactName != contactInfo.Name)
+                                            {
+                                                c.ContactName = contactInfo.Name;
+                                                isPendingUpdated = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (GroupManager.Instance.GroupCache != null)
+                                    {
+                                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                                        {
+                                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                            for (int i = 0; i < l.Count; i++)
+                                            {
+                                                if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
+                                                {
+                                                    l[i].Name = contactInfo.Name;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (isFavUpdated)
+                                MiscDBUtil.SaveFavourites();
+
+                            if (isPendingUpdated)
+                                MiscDBUtil.SavePendingRequests();
+                        }
+
+                        var contactList = UsersTableUtils.getAllContacts();
+
+                        foreach (var id in GroupManager.Instance.GroupCache.Keys)
+                        {
+                            var grp = GroupManager.Instance.GroupCache[id];
+                            foreach (var participant in grp)
+                            {
+                                participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
+                            }
+                        }
+
+                        GroupManager.Instance.SaveGroupCache();
+
+                        #region Remove Angry pack
+
+                        RecentStickerHelper recentSticker;
+                        if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+                        {
+                            recentSticker = new RecentStickerHelper();
+                            recentSticker.LoadSticker();
+                        }
+                        else
+                            recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+
+                        List<string> listAngrySticker = new List<string>();
+                        foreach (StickerObj sticker in recentSticker.listRecentStickers)
+                        {
+                            if (sticker.Category == StickerHelper.CATEGORY_ANGRY)
+                            {
+                                listAngrySticker.Add(sticker.Id);
+                            }
+                        }
+
+                        StickerHelper.DeleteLowResCategory(StickerHelper.CATEGORY_ANGRY, listAngrySticker);
                         #endregion
                     }
 

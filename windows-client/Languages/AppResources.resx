@@ -693,7 +693,7 @@ Download it now http://hike.in and join the fun!</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Your friends have been invited</value>
+    <value>Your friends have been invited to join hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
@@ -2166,5 +2166,19 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="Share_With_Txt" xml:space="preserve">
     <value>share with</value>
+  </data>
+  <data name="Add_Member_Txt" xml:space="preserve">
+    <value>add member</value>
+    <comment>max 10 char</comment>
+  </data>
+  <data name="DeleteAndExit_Txt" xml:space="preserve">
+    <value>delete &amp; exit group</value>
+    <comment>max 20 char</comment>
+  </data>
+  <data name="TimeUtils_1Day_Ago_Txt" xml:space="preserve">
+    <value>1 day ago</value>
+  </data>
+  <data name="DirectMsg_Txt" xml:space="preserve">
+    <value>direct message</value>
   </data>
 </root>

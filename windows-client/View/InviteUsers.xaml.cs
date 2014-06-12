@@ -74,6 +74,8 @@ namespace windows_client.View
                     noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
                 }
             };
+
+            enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
         }
 
         private void initPage()
