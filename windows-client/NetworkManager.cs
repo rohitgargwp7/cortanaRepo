@@ -402,22 +402,37 @@ namespace windows_client
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList, isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
-                else if (GroupManager.Instance.GroupCache != null)
+                else
                 {
-                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                    //remove image if stored.
+                    if (App.ViewModel.ConvMap.ContainsKey(uMsisdn))
                     {
-                        bool shouldSave = false;
-                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                        for (int i = 0; i < l.Count; i++)
+                        if (App.ViewModel.ConvMap[uMsisdn].Avatar != null)
                         {
-                            if (l[i].Msisdn == uMsisdn)
-                            {
-                                l[i].IsOnHike = false;
-                                shouldSave = true;
-                            }
+                            App.ViewModel.ConvMap[uMsisdn].Avatar = null;
+                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
-                        if (shouldSave)
-                            GroupManager.Instance.SaveGroupCache(key);
+                    }
+                    
+                    MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
+
+                    if (GroupManager.Instance.GroupCache != null)
+                    {
+                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                        {
+                            bool shouldSave = false;
+                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                            for (int i = 0; i < l.Count; i++)
+                            {
+                                if (l[i].Msisdn == uMsisdn)
+                                {
+                                    l[i].IsOnHike = false;
+                                    shouldSave = true;
+                                }
+                            }
+                            if (shouldSave)
+                                GroupManager.Instance.SaveGroupCache(key);
+                        }
                     }
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
