@@ -3002,6 +3002,9 @@ namespace windows_client.View
 
             if (co != null)
             {
+                if (co.Avatar == null)
+                    co.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             }
             else
