@@ -1081,6 +1081,15 @@ namespace windows_client.View
 
                             SelectedContacts.Add(cInfo);
                         }
+                        else
+                        {
+                            var list = SelectedContacts.Where(m => m.Msisdn == cInfo.Msisdn && m.Msisdn.Contains(m.Name));
+                            if (list.Count() > 0)
+                            {
+                                var contact = list.First();
+                                contact.Name = cInfo.Name;
+                            }
+                        }
                     }
                     else
                     {

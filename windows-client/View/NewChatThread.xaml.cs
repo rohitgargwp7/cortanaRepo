@@ -1377,8 +1377,10 @@ namespace windows_client.View
 
         private void processGroupJoin(bool isNewgroup)
         {
+
+
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
-            List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
+            List<GroupParticipant> usersToAdd = new List<GroupParticipant>();
 
             if (isNewgroup) // if new group add all members to the group
             {
