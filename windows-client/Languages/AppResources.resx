@@ -650,14 +650,13 @@
     <comment>Contact Utils</comment>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi, 
+    <value>I just downloaded the new hike messenger. What a big change from WhatsApp!
 
-I just got the awesome new hike messenger, it's faster, simpler and even more beautiful!
-Check out their hilarious new stickers and you'll surely never send another plain boring message!
+It's got amazing Stickers, the ability to choose who sees my Last Seen and some really cool Chat Themes.
+ 
+The best part? Hike has thing called Hidden Mode that lets you hide your private chats, from the world! Awesome!
 
-hike also gives you the choice of Privacy with Last Seen so that you can keep you close friends closer.
-
-Download it now http://hike.in and join the fun!</value>
+Download it like asap from http://hike.in!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -711,10 +710,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="GrpName_Txt" xml:space="preserve">
     <value>Group Name</value>
     <comment>General Text</comment>
-  </data>
-  <data name="Hike_txt" xml:space="preserve">
-    <value>hike. </value>
-    <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>Friends Invited</value>
@@ -1523,9 +1518,6 @@ Download it now http://hike.in and join the fun!</value>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>last seen yesterday at {0}</value>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Keep close friends close</value>
-  </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Retry</value>
   </data>
@@ -2180,5 +2172,8 @@ Download it now http://hike.in and join the fun!</value>
   </data>
   <data name="DirectMsg_Txt" xml:space="preserve">
     <value>direct message</value>
+  </data>
+  <data name="Invite_Email_Subject" xml:space="preserve">
+    <value>hike up your life</value>
   </data>
 </root>
