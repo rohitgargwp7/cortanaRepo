@@ -363,6 +363,7 @@ namespace windows_client
             RootFrame.Navigated += RootFrame_Navigated;
 
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
+            (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneAccentColor"];
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -598,7 +599,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.0.2", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.0.3", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
