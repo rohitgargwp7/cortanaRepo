@@ -480,9 +480,9 @@ namespace windows_client.View
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, leaveMsisdn, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (gp.IsOnHike)
+                    if (gp.IsOnHike && _participantList[0].Contains(gp))
                         _participantList[0].Remove(gp);
-                    else
+                    else if(_participantList[1].Contains(gp))
                     {
                         _participantList[1].Remove(gp);
                         smsUsers--;
@@ -546,11 +546,17 @@ namespace windows_client.View
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    _participantList[1].Remove(gp);
-                    _participantList[0].Add(gp);
-                    smsUsers--;
-                    if (smsUsers == 0)
-                        appBar.IsMenuEnabled = false;
+                    if (_participantList[1].Contains(gp))
+                        _participantList[1].Remove(gp);
+
+                    if (!_participantList[0].Contains(gp))
+                    {
+                        _participantList[0].Add(gp);
+                        smsUsers--;
+
+                        if (smsUsers == 0)
+                            appBar.IsMenuEnabled = false;
+                    }
                 });
             }
             #endregion
@@ -559,13 +565,20 @@ namespace windows_client.View
             {
                 string ms = (string)obj;
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
+                gp.IsOnHike = false;
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    _participantList[0].Remove(gp);
-                    _participantList[1].Add(gp);
-                    smsUsers++;
-                    gp.IsOnHike = false;
-                    appBar.IsMenuEnabled = true;
+                    if (_participantList[0].Contains(gp))
+                        _participantList[0].Remove(gp);
+
+                    if (!_participantList[1].Contains(gp))
+                    {
+                        _participantList[1].Add(gp);
+                        smsUsers++;
+
+                        appBar.IsMenuEnabled = true;
+                    }
                 });
             }
 
