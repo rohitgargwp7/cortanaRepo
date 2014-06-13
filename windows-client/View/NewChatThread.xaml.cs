@@ -1279,7 +1279,8 @@ namespace windows_client.View
                     };
                 }
 
-                _lastSeenWorker.RunWorkerAsync();
+                if (!_lastSeenWorker.IsBusy)
+                    _lastSeenWorker.RunWorkerAsync();
             }
             else
             {
