@@ -29,6 +29,8 @@
             <Color x:Key="PhoneTextBoxSelectionForegroundColor">#FFFFFFFF</Color>
             <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
 
+            <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
+
             <SolidColorBrush x:Key="HyperlinkButtonBackgroundThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="HyperlinkButtonBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="HyperlinkDisabledThemeBrush" Color="#66000000" />
