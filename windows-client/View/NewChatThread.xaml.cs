@@ -2198,7 +2198,7 @@ namespace windows_client.View
                     if (convMessage.IsSent)
                     {
                         if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)) && !msgMap.ContainsKey(convMessage.MessageId))
                             msgMap.Add(convMessage.MessageId, convMessage);
                     }
                     else
