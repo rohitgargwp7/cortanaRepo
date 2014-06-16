@@ -320,7 +320,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsInAddressBook)
+                if (IsInAddressBook || Msisdn == App.MSISDN)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }

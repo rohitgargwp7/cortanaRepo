@@ -1282,7 +1282,8 @@ namespace windows_client.View
                     };
                 }
 
-                _lastSeenWorker.RunWorkerAsync();
+                if (!_lastSeenWorker.IsBusy)
+                    _lastSeenWorker.RunWorkerAsync();
             }
             else
             {
@@ -1381,17 +1382,20 @@ namespace windows_client.View
         private void processGroupJoin(bool isNewgroup)
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
-            List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
+            List<GroupParticipant> usersToAdd = new List<GroupParticipant>();
 
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
+                
                 for (int i = 0; i < contactsForGroup.Count; i++)
                 {
                     GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
+                    gp.IsInAddressBook = contactsForGroup[i].IsInAddressBook;
                     l.Add(gp);
                     usersToAdd.Add(gp);
                 }
+
                 GroupManager.Instance.GroupCache[mContactNumber] = l;
             }
             else // existing group so just add members
@@ -1401,6 +1405,7 @@ namespace windows_client.View
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
                     List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
+                    
                     if (gl == null)
                         gl = new List<GroupParticipant>();
 
@@ -1416,11 +1421,14 @@ namespace windows_client.View
                             break;
                         }
                     }
+
                     if (addNewparticipant)
                     {
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                         GroupManager.Instance.GroupCache[mContactNumber].Add(gp);
                     }
+
+                    gp.IsInAddressBook = contactsForGroup[i].IsInAddressBook;
                     usersToAdd.Add(gp);
                 }
             }
@@ -2195,7 +2203,7 @@ namespace windows_client.View
                     if (convMessage.IsSent)
                     {
                         if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)) && !msgMap.ContainsKey(convMessage.MessageId))
                             msgMap.Add(convMessage.MessageId, convMessage);
                     }
                     else
@@ -3006,6 +3014,9 @@ namespace windows_client.View
 
             if (co != null)
             {
+                if (co.Avatar == null)
+                    co.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             }
             else
@@ -3194,6 +3205,11 @@ namespace windows_client.View
                     obj.MessageStatus = ConvMessage.State.UNKNOWN;
                     obj.TimeStamp = lastMessageBubble.Timestamp;
                 }
+            }
+            else if (isGroupChat)
+            {
+                obj.LastMessage = String.Empty;
+                obj.MessageStatus = ConvMessage.State.UNKNOWN;
             }
             else
             {

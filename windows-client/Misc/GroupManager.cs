@@ -529,7 +529,7 @@ namespace windows_client.Misc
             }
         }
 
-        public void RefreshGroupCache(ContactInfo cn, Dictionary<string, GroupInfo> allGrpsInfo)
+        public void RefreshGroupCache(ContactInfo cn, Dictionary<string, GroupInfo> allGrpsInfo, bool isNew)
         {
             if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
                 return;
@@ -540,7 +540,7 @@ namespace windows_client.Misc
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
-                    gp.IsInAddressBook = true;
+                    gp.IsInAddressBook = isNew ? true : false;
                     if (App.ViewModel.ConvMap.ContainsKey(grpId))
                     {
                         GroupInfo g = null;

@@ -401,6 +401,8 @@ namespace windows_client.utils
                     return "team hike";
                 case HikeConstants.FTUE_GAMING_MSISDN:
                     return "Games on hike";
+                case HikeConstants.FTUE_HIKE_DAILY_MSISDN:
+                    return "hike daily";
                 default:
                     return string.Empty;
             }

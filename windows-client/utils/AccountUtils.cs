@@ -1082,7 +1082,7 @@ namespace windows_client.utils
                                     }
                                 }
 
-                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo);
+                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo, true);
                             }
 
                             server_contacts.Add(cn);

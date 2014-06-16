@@ -185,7 +185,7 @@ namespace windows_client.View
                         #endregion
                     }
 
-                    if (Utils.compareVersion("2.6.0.2", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.4", App.CURRENT_VERSION) == 1)
                     {
                         GroupManager.Instance.LoadGroupCache();
 
@@ -301,6 +301,11 @@ namespace windows_client.View
                         }
 
                         StickerHelper.DeleteLowResCategory(StickerHelper.CATEGORY_ANGRY, listAngrySticker);
+
+                        String category;
+                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+                            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
+
                         #endregion
                     }
 

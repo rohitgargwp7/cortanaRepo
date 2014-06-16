@@ -449,6 +449,8 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsInAddressBook { get; set; }
+
         public FriendsTableUtils.FriendStatusEnum FriendStatus
         {
             get;

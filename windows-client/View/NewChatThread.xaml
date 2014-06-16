@@ -610,8 +610,8 @@
                                                                 <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
-                                                            <Grid Grid.Column="1" Background="#dddddd">
+                                                            <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Top" Source="{Binding UnknownFileTypeIconImage}" />
+                                                            <Grid Grid.Column="1">
                                                                 <Grid Margin="5" Width="180">
                                                                     <Grid.RowDefinitions>
                                                                         <RowDefinition Height="Auto" />
@@ -1072,8 +1072,8 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Source="{Binding UnknownFileTypeIconImage}" />
-                                                        <Grid Grid.Column="1" Background="#dddddd">
+                                                        <Image Height="60" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Top" Source="{Binding UnknownFileTypeIconImage}" />
+                                                        <Grid Grid.Column="1">
                                                             <Grid Margin="5" Width="180">
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto" />
