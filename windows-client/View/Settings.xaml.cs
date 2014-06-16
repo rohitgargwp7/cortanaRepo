@@ -249,7 +249,7 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
             }
 

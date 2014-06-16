@@ -218,7 +218,7 @@
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Hallo! Wie lautet deine Handynummer?</value>
+    <value>Hallo! Wie lautet deine Nummer?</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
@@ -650,7 +650,7 @@
     <comment>Contact Utils</comment>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hallo, ich hab gerade den coolen neuen hike-Messenger runtergeladen, der jetzt noch schneller, einfacher und schöner ist! Die neuen witzigen Sticker sind super. Damit verschickst du sicher nie wieder langweilige Nachrichten! Mit der Funktion "Zuletzt online" gibt dir hike auch noch mehr Privatsphäre, damit du mit engen Freunden noch enger Kontakt halten kannst. Lade hike jetzt herunter auf http://hike.in und hab Spaß damit!</value>
+    <value>Ich habe soeben den neuen hike-Messenger heruntergeladen. Was für ein Unterschied zu WhatsApp! Hike hat tolle Sticker zu bieten und ich kann selbst bestimmen, welche Personen erfahren dürfen, wann ich zuletzt online war. Außerdem sind die Chatmotive echt cool. Und das Beste daran ist, dass Hike einen Geheimmodus hat, über den ich private Nachrichten vor der Welt verbergen kann! Einfach spitze! Lade dir die App schnell herunter: http://hike.in.</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -686,7 +686,7 @@
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Deine Freunde wurden eigeladen</value>
+    <value>Deine Freunde wurden eingeladen, hike beizutreten</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
@@ -704,10 +704,6 @@
   <data name="GrpName_Txt" xml:space="preserve">
     <value>Gruppenname</value>
     <comment>General Text</comment>
-  </data>
-  <data name="Hike_txt" xml:space="preserve">
-    <value>hike. </value>
-    <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>Freunde eingeladen</value>
@@ -1030,10 +1026,6 @@
     <value>Hier tippen und einladen</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>Dieser Gruppenchat ist stumm geschaltet.</value>
-    <comment>xaml</comment>
-  </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Kontakt</value>
   </data>
@@ -1203,8 +1195,8 @@
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>Du hast {0} geblockt. Entsperre ihn/sie, um eine Nachricht zu schicken.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
-    <value>Teilen mit</value>
+  <data name="Share_Txt" xml:space="preserve">
+    <value>Teilen</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
@@ -1372,7 +1364,7 @@
     <value>Du hast bis jetzt noch nichts gepostet :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Gruppenname kann maximal 50 Zeichen betragen.</value>
+    <value>Der Gruppenname kann bis zu 50 Zeichen enthalten.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -1497,7 +1489,7 @@
     <comment>length-4 fixed</comment>
   </data>
   <data name="InternetChargesMayApply_txt" xml:space="preserve">
-    <value>*Für den Download werden Mobilfunkdaten verwendet. Senden ist kostenlos.</value>
+    <value>*Für den Download fällt Datenverbrauch an. Das Senden ist kostenlos.</value>
   </data>
   <data name="StickerDownloadFailed" xml:space="preserve">
     <value>Kein Sticker-Download.</value>
@@ -1520,9 +1512,6 @@
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>Gestern zuletzt online um {0}</value>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Behalte enge Freunde in deiner Nähe</value>
-  </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Erneut versuchen</value>
   </data>
@@ -1537,7 +1526,7 @@
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} ist offline. Tippe auf „Chat“, um die Nachricht als hike-SMS zu senden</value>
+    <value>{0} ist offline. Tippe auf „Chatten“, um die Nachricht als hike-SMS zu senden.</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Du hast alle deine Frei-SMS aufgebraucht. Lade mehr Freunde zu hike ein und verdiene mehr Frei-SMS.</value>
@@ -1975,7 +1964,7 @@
     <value>Warte ein paar Sekunden oder überprüfe deine Nummer.</value>
   </data>
   <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
-    <value>Du kannst an support@hike.in schreiben oder...</value>
+    <value>Du kannst an support@hike.in schreiben oder</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
   </data>
   <data name="Directions_Txt" xml:space="preserve">
@@ -2161,7 +2150,24 @@
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>Du musst mind. 13 Jahre alt sein, um hike verwenden zu können</value>
   </data>
-  <data name="Share_Txt" xml:space="preserve">
-    <value>Teilen</value>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>Teilen mit</value>
+  </data>
+  <data name="Add_Member_Txt" xml:space="preserve">
+    <value>Mitglied hinzufügen</value>
+    <comment>max 10 char</comment>
+  </data>
+  <data name="DeleteAndExit_Txt" xml:space="preserve">
+    <value>Löschen &amp; Gruppe verlassen</value>
+    <comment>max 20 char</comment>
+  </data>
+  <data name="TimeUtils_1Day_Ago_Txt" xml:space="preserve">
+    <value>Vor 1 Tag</value>
+  </data>
+  <data name="DirectMsg_Txt" xml:space="preserve">
+    <value>Direktnachricht</value>
+  </data>
+  <data name="Invite_Email_Subject" xml:space="preserve">
+    <value>Lebe dein Leben mit hike</value>
   </data>
 </root>

@@ -106,7 +106,7 @@ namespace windows_client.View
                         MakeFilteredJumpList();
 
                     contactsListBox.ItemsSource = _filteredGroupedContactList;
-                    
+
                     if (_filteredGroupedContactList == null || _filteredGroupedContactList.Where(c => c.Count > 0).Count() == 0)
                     {
                         emptyGrid.Visibility = Visibility.Visible;
@@ -146,7 +146,7 @@ namespace windows_client.View
             };
 
             ApplicationBar.StateChanged += ApplicationBar_StateChanged;
-            
+
             _refreshIconButton = new ApplicationBarIconButton();
             _refreshIconButton.IconUri = new Uri("/View/images/AppBar/icon_refresh.png", UriKind.Relative);
             _refreshIconButton.Text = AppResources.SelectUser_RefreshContacts_Txt;
@@ -285,7 +285,7 @@ namespace windows_client.View
                     contactsListBox.ItemsSource = null;
 
                     emptyGrid.Visibility = Visibility.Visible;
-                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
 
                     return;
                 }
@@ -315,7 +315,7 @@ namespace windows_client.View
                 }
                 else
                     emptyGrid.Visibility = Visibility.Collapsed;
-             
+
                 Thread.Sleep(5);
                 return;
             }
@@ -342,8 +342,8 @@ namespace windows_client.View
                     noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
                 }
                 else
-                    emptyGrid.Visibility = Visibility.Collapsed; 
-                
+                    emptyGrid.Visibility = Visibility.Collapsed;
+
                 Thread.Sleep(2);
             };
         }
@@ -645,12 +645,12 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
             }
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            
+
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -713,7 +713,7 @@ namespace windows_client.View
                         noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
                     }
                     else
-                        emptyGrid.Visibility = Visibility.Collapsed; 
+                        emptyGrid.Visibility = Visibility.Collapsed;
                 }
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();

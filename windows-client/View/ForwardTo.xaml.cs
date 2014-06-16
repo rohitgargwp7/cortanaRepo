@@ -290,7 +290,7 @@ namespace windows_client.View
                     contactsListBox.ItemsSource = null;
 
                     emptyGrid.Visibility = Visibility.Visible;
-                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
 
                     return;
                 }
@@ -728,12 +728,12 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
             }
-            
+
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            
+
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
