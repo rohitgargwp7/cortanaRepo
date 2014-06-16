@@ -3202,7 +3202,12 @@ namespace windows_client.View
                     obj.TimeStamp = lastMessageBubble.Timestamp;
                 }
             }
-            else if (!isGroupChat)
+            else if (isGroupChat)
+            {
+                obj.LastMessage = String.Empty;
+                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+            }
+            else
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
