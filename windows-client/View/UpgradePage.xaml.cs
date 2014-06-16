@@ -185,7 +185,7 @@ namespace windows_client.View
                         #endregion
                     }
 
-                    if (Utils.compareVersion("2.6.0.3", App.CURRENT_VERSION) == 1)
+                    if (Utils.compareVersion("2.6.0.4", App.CURRENT_VERSION) == 1)
                     {
                         GroupManager.Instance.LoadGroupCache();
 
