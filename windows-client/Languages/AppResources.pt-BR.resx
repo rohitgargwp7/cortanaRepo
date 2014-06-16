@@ -218,7 +218,7 @@
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Olá! Qual é o seu número?</value>
+    <value>Oi! Qual é o seu telefone?</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
@@ -322,7 +322,7 @@
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
-    <value>termos &amp; privacidade</value>
+    <value>termos e privacidade</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
@@ -650,14 +650,7 @@
     <comment>Contact Utils</comment>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Olá, 
-
-Eu acabei de obter o novo e incrível hike messenger, que é mais rápido, mais simples e mais bonito!
-Veja os novos e engraçados adesivos: você nunca mais vai enviar outra mensagem sem graça!
-
-Com o hike você pode escolher a Privacidade com os Vistos pela Última vez, para manter os amigos próximos mais próximos.
-
-Baixe-o agora http://hike.in e venha para a diversão!</value>
+    <value>Acabo de baixar o novo hike messenger. Que diferença do WhatsApp! Ele tem adesivos incríveis, a possibilidade de escolher quem vê meus Vistos pela última vez e temas de conversa muito legais. A melhor parte? O hike tem algo chamado Modo Oculto, que permite esconder suas conversas particulares do resto do mundo. Incrível! Baixe-o já em http://hike.in!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -693,7 +686,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Seus amigos foram convidados</value>
+    <value>Seus amigos foram convidados para entrar no hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
@@ -711,10 +704,6 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="GrpName_Txt" xml:space="preserve">
     <value>Nome do grupo</value>
     <comment>General Text</comment>
-  </data>
-  <data name="Hike_txt" xml:space="preserve">
-    <value>hike. </value>
-    <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>Amigos convidados</value>
@@ -1037,10 +1026,6 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>toque aqui para convidar</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>Essa conversa foi silenciada</value>
-    <comment>xaml</comment>
-  </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Contato</value>
   </data>
@@ -1105,7 +1090,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Compartilhe Visto por último e Atualizações de status somente com Contatos Favoritos.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>adicionar</value>
+    <value>add</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>novo status</value>
@@ -1210,8 +1195,8 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>Você bloqueou {0}. Desbloqueie para enviar uma mensagem.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
-    <value>compartilhar com</value>
+  <data name="Share_Txt" xml:space="preserve">
+    <value>compartilhar</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
@@ -1379,7 +1364,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Você ainda não publicou nada :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>O nome do grupo pode ter no máximo 50 caracteres.</value>
+    <value>O nome do grupo pode ter no máximo 50 caracteres</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -1504,7 +1489,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>length-4 fixed</comment>
   </data>
   <data name="InternetChargesMayApply_txt" xml:space="preserve">
-    <value>*O download incorre em tarifa de dados. O envio é gratuito.</value>
+    <value>*No download há custo de dados. O envio é gratuito.</value>
   </data>
   <data name="StickerDownloadFailed" xml:space="preserve">
     <value>Falha ao baixar adesivo.</value>
@@ -1527,9 +1512,6 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>visto pela última vez ontem às {0}</value>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Mantenha próximos os amigos próximos</value>
-  </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Tentar novamente</value>
   </data>
@@ -1544,7 +1526,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} está off-line. Toque na conversa para enviar como sms do hike</value>
+    <value>{0} está offline. Toque na conversa para enviar como hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Parece que todos seus créditos de SMS grátis acabaram. Convide mais amigos para o hike e ganhe SMS grátis</value>
@@ -1720,7 +1702,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Apertar enter envia uma mensagem</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>free SMS</value>
+    <value>SMS grátis</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>Convidar</value>
@@ -1787,7 +1769,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>{0} alterou o tema do bate-papo. Para usar os novos temas de bate-papo, atualize o hike. http://hike.in.</value>
   </data>
   <data name="In_App_Tip_9" xml:space="preserve">
-    <value>Confira os impressionantes novos Temas chat!</value>
+    <value>Confira os novos incríveis temas de conversa!</value>
   </data>
   <data name="ChatThemeHeader_Txt" xml:space="preserve">
     <value>temas do bate-papo</value>
@@ -1916,7 +1898,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>começar a usar o hike</value>
   </data>
   <data name="Add_AppBar_Txt" xml:space="preserve">
-    <value>adicionar</value>
+    <value>add</value>
   </data>
   <data name="ChangePic_AppBar_Txt" xml:space="preserve">
     <value>mudar foto</value>
@@ -1982,7 +1964,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Aguarde alguns segundos ou verifique o número.</value>
   </data>
   <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
-    <value>Você pode escrever para support@hike.in ou...</value>
+    <value>Você pode escrever para support@hike.in ou</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
   </data>
   <data name="Directions_Txt" xml:space="preserve">
@@ -2007,7 +1989,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>Casar antes dos 20 é como sair de uma festa antes das 8!</value>
   </data>
   <data name="RandomText_Boy3" xml:space="preserve">
-    <value>Escute, sorria, concorde e faça o que diabos quiser!</value>
+    <value>Ouça, sorria, concorde e faça o que que quiser!</value>
   </data>
   <data name="RandomText_Boy4" xml:space="preserve">
     <value>Os homens falam cerca de 2.000 palavras por dia!</value>
@@ -2019,7 +2001,7 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
     <value>temos uma experiência personalizada para cada um</value>
   </data>
   <data name="RandomText_Girl1" xml:space="preserve">
-    <value>Do meu jeito ou de jeito nenhum!</value>
+    <value>Faça do meu jeito ou vá embora!</value>
   </data>
   <data name="RandomText_Girl2" xml:space="preserve">
     <value>Garotas comportadas quase nunca ficam famosas</value>
@@ -2168,7 +2150,24 @@ Baixe-o agora http://hike.in e venha para a diversão!</value>
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>Você deve ter 13 anos ou mais para usar o hike</value>
   </data>
-  <data name="Share_Txt" xml:space="preserve">
-    <value>compartilhar</value>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>compartilhar com</value>
+  </data>
+  <data name="Add_Member_Txt" xml:space="preserve">
+    <value>+ membro</value>
+    <comment>max 10 char</comment>
+  </data>
+  <data name="DeleteAndExit_Txt" xml:space="preserve">
+    <value>excluir &amp; sair grupo</value>
+    <comment>max 20 char</comment>
+  </data>
+  <data name="TimeUtils_1Day_Ago_Txt" xml:space="preserve">
+    <value>1 dia atrás</value>
+  </data>
+  <data name="DirectMsg_Txt" xml:space="preserve">
+    <value>mensagem direta</value>
+  </data>
+  <data name="Invite_Email_Subject" xml:space="preserve">
+    <value>O hike facilita sua vida</value>
   </data>
 </root>
