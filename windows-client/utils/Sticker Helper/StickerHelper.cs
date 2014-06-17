@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using windows_client.Misc;
 using windows_client.Model.Sticker;
 using windows_client.utils.Sticker_Helper;
@@ -513,6 +514,15 @@ namespace windows_client.utils
         {
             if (string.IsNullOrEmpty(category) || string.IsNullOrEmpty(stickerId))
                 return;
+
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            if (stickerCategory != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                   {
+                       stickerCategory.ListStickers.Remove(new StickerObj(category, stickerId, null, false));
+                   });
+            }
             lock (readWriteLock)
             {
                 try
@@ -549,6 +559,17 @@ namespace windows_client.utils
         {
             if (string.IsNullOrEmpty(category) || listStickerIds == null || listStickerIds.Count == 0)
                 return;
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            if (stickerCategory != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (string stickerId in listStickerIds)
+                    {
+                        stickerCategory.ListStickers.Remove(new StickerObj(category, stickerId, null, false));
+                    }
+                });
+            }
             lock (readWriteLock)
             {
                 try
