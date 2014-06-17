@@ -1387,7 +1387,7 @@ namespace windows_client.View
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
-                
+
                 for (int i = 0; i < contactsForGroup.Count; i++)
                 {
                     GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
@@ -1405,7 +1405,7 @@ namespace windows_client.View
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
                     List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
-                    
+
                     if (gl == null)
                         gl = new List<GroupParticipant>();
 
@@ -3016,7 +3016,7 @@ namespace windows_client.View
             {
                 if (co.Avatar == null)
                     co.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                
+
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             }
             else
@@ -6676,9 +6676,12 @@ namespace windows_client.View
         {
             StickerPivotHelper.Instance.InitialiseStickerPivot();
             pivotStickers = StickerPivotHelper.Instance.StickerPivot;
-            pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
-            pivotStickers.MaxHeight = 265;
-            stickerPallet.Children.Add(pivotStickers);
+            if (!stickerPallet.Children.Contains(pivotStickers))
+            {
+                pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
+                pivotStickers.MaxHeight = 265;
+                stickerPallet.Children.Add(pivotStickers);
+            }
         }
 
         private void CreateStickerCategories()
