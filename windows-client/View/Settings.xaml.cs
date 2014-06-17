@@ -218,6 +218,7 @@ namespace windows_client.View
                     allGroupsInfo[gl[i].GroupId] = gl[i];
                 }
 
+                bool isFavUpdated = false, isPendingUpdated = false;
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
                     ContactInfo cinfo = ContactUtils.hike_contactsMap[id][0];
@@ -240,10 +241,22 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(cinfo.Msisdn);
+
                         if (obj == null) // this msisdn is not in favs , check in pending
+                        {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
+                        }
                         if (obj != null)
+                        {
                             obj.ContactName = null;
+                            isPendingUpdated = true;
+                        }
+
+                        if (obj.IsFav)
+                        {
+                            MiscDBUtil.SaveFavourites(obj);
+                            isFavUpdated = true;
+                        }
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
@@ -251,6 +264,12 @@ namespace windows_client.View
                     cinfo.Name = cinfo.Msisdn;
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
+
+                if (isFavUpdated)
+                    MiscDBUtil.SaveFavourites();
+
+                if (isPendingUpdated)
+                    MiscDBUtil.SavePendingRequests();
             }
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
