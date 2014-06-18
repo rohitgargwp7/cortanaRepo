@@ -720,6 +720,8 @@ namespace windows_client.View
                 //remove new group pic key
                 PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
 
+                App.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
+
                 base.OnRemovedFromJournal(e);
                 removeListeners();
                 RemoveEmmaBot();
