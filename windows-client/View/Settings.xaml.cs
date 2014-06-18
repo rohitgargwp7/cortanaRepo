@@ -245,15 +245,16 @@ namespace windows_client.View
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
+
+                            if (obj != null)
+                            {
+                                obj.ContactName = null;
+                                isPendingUpdated = true;
+                            }
                         }
-                        if (obj != null)
+                        else
                         {
                             obj.ContactName = null;
-                            isPendingUpdated = true;
-                        }
-
-                        if (obj.IsFav)
-                        {
                             MiscDBUtil.SaveFavourites(obj);
                             isFavUpdated = true;
                         }
@@ -273,7 +274,7 @@ namespace windows_client.View
             }
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            
+
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -338,8 +339,8 @@ namespace windows_client.View
                 }
 
                 e.Cancel = true;
-            } 
-            
+            }
+
             base.OnBackKeyPress(e);
         }
 
