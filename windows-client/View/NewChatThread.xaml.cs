@@ -707,7 +707,6 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
                 ConversationTableUtils.saveConvObjectList();
             }
-
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;

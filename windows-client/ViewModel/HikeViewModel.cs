@@ -533,6 +533,13 @@ namespace windows_client.ViewModel
                         MiscDBUtil.SaveFavourites(cObj);
                         MiscDBUtil.SaveFavourites();
                     }
+
+                    cObj = App.ViewModel.GetPending(contactInfo.Msisdn);
+                    if (cObj != null)
+                    {
+                        cObj.ContactName = contactInfo.Name;
+                        MiscDBUtil.SavePendingRequests();
+                    }
                 }
                 catch (Exception e)
                 {
