@@ -108,6 +108,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
+        ApplicationBarMenuItem clearChatItem;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
@@ -1765,7 +1766,7 @@ namespace windows_client.View
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
-                ApplicationBarMenuItem clearChatItem = new ApplicationBarMenuItem();
+                clearChatItem = new ApplicationBarMenuItem();
                 clearChatItem.Text = AppResources.Clear_Chat_Txt;
                 clearChatItem.Click += clearChatItem_Click;
                 appBar.MenuItems.Add(clearChatItem);
@@ -1799,13 +1800,15 @@ namespace windows_client.View
                 appBar.MenuItems.Add(infoMenuItem);
             }
 
-            if (!isGroupChat)
-            {
-                blockMenuItem = new ApplicationBarMenuItem();
-                blockMenuItem.Text = AppResources.Block_Txt;
-                blockMenuItem.Click += blockMenuItem_Click;
-                appBar.MenuItems.Add(blockMenuItem);
-            }
+            clearChatItem = new ApplicationBarMenuItem();
+            clearChatItem.Text = AppResources.Clear_Chat_Txt;
+            clearChatItem.Click += clearChatItem_Click;
+            appBar.MenuItems.Add(clearChatItem);
+
+            blockMenuItem = new ApplicationBarMenuItem();
+            blockMenuItem.Text = AppResources.Block_Txt;
+            blockMenuItem.Click += blockMenuItem_Click;
+            appBar.MenuItems.Add(blockMenuItem);
         }
 
         void blockMenuItem_Click(object sender, EventArgs e)
