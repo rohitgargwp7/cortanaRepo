@@ -1033,7 +1033,12 @@ namespace windows_client.View
             ApplicationBar.IsMenuEnabled = true;
 
             if (_doneIconButton != null)
-                _doneIconButton.IsEnabled = true;
+            {
+                if (_isGroupChat && !_isExistingGroup) // case if group is new
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 1;
+                else
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
+            }
         }
 
         #region Contact Select Based Functions
