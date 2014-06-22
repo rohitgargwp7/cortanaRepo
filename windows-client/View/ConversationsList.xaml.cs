@@ -2235,7 +2235,8 @@ namespace windows_client.View
                     {
                         if (_refreshBarCount == 0 && value > 0)
                         {
-                            refreshBarButton.Visibility = System.Windows.Visibility.Visible;
+                            if (isStatusMessagesLoaded && launchPagePivot.SelectedIndex == 2)
+                                refreshBarButton.Visibility = System.Windows.Visibility.Visible;
                         }
                         else if (_refreshBarCount > 0 && value == 0)
                         {
