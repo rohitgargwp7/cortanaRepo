@@ -1792,10 +1792,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 LayoutRoot.IsHitTestVisible = false;
-                appBar.IsMenuEnabled = false;
-                composeIconButton.IsEnabled = false;
-                postStatusIconButton.IsEnabled = false;
-                groupChatIconButton.IsEnabled = false;
+                disableAppBar();
             });
         }
 
@@ -1949,13 +1946,17 @@ namespace windows_client.View
         private void disableAppBar()
         {
             composeIconButton.IsEnabled = false;
-            appBar.IsMenuEnabled = false;
+            postStatusIconButton.IsEnabled = false;
+            groupChatIconButton.IsEnabled = false;
+            ApplicationBar.IsMenuEnabled = false;
         }
 
         private void enableAppBar()
         {
             composeIconButton.IsEnabled = true;
-            appBar.IsMenuEnabled = true;
+            postStatusIconButton.IsEnabled = true;
+            groupChatIconButton.IsEnabled = true;
+            ApplicationBar.IsMenuEnabled = true;
         }
 
         private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
