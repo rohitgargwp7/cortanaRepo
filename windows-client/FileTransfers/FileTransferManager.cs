@@ -23,8 +23,8 @@ namespace windows_client.FileTransfers
         const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
         const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
         const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
-        const int WifiBuffer =  1048576;
-        const int MobileBuffer =  102400;
+        const int WifiBuffer = 1048576;
+        const int MobileBuffer = 102400;
         const int NoOfParallelRequest = 20;
         static int MaxQueueCount = 30;
 
@@ -86,7 +86,7 @@ namespace windows_client.FileTransfers
 
             string fileName = null;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                     return false;
@@ -184,7 +184,7 @@ namespace windows_client.FileTransfers
                 return false;
 
             FileInfoBase fInfo = null;
-         
+
             if (GetAttachmentStatus(key, isSent, out fInfo) && !TaskMap.ContainsKey(key))
             {
                 // if file was cancelled, prevent resume
@@ -287,18 +287,22 @@ namespace windows_client.FileTransfers
             return ThreadPool.QueueUserWorkItem(fileInfo.Start);
         }
 
-        public async void PopulatePreviousTasks()
+        public void PopulatePreviousTasks()
         {
-            await Task.Delay(1);
+            BackgroundWorker worker = new BackgroundWorker();
 
-            if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
+            worker.DoWork += (ss, ee) =>
             {
-                PopulateUploads();
-                PopulateDownloads();
-             
-                if (PendingTasks.Count > 0)
-                    StartTask();
-            }
+                if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
+                {
+                    PopulateUploads();
+                    PopulateDownloads();
+
+                    if (PendingTasks.Count > 0)
+                        StartTask();
+                }
+            };
+            worker.RunWorkerAsync();
         }
 
         void PopulateUploads()
@@ -307,7 +311,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -350,7 +354,7 @@ namespace windows_client.FileTransfers
             {
                 try
                 {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(FILE_TRANSFER_DIRECTORY_NAME))
                             return;
@@ -495,7 +499,7 @@ namespace windows_client.FileTransfers
                 task.FileState = FileTransferState.CANCELED;
                 task.Delete();
             }
-            
+
             PendingTasks.Clear();
         }
 
