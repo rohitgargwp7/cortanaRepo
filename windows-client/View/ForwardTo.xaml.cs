@@ -724,15 +724,16 @@ namespace windows_client.View
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
+
+                            if (obj != null)
+                            {
+                                obj.ContactName = null;
+                                isPendingUpdated = true;
+                            }
                         }
-                        if (obj != null)
+                        else
                         {
                             obj.ContactName = null;
-                            isPendingUpdated = true;
-                        }
-
-                        if (obj.IsFav)
-                        {
                             MiscDBUtil.SaveFavourites(obj);
                             isFavUpdated = true;
                         }
@@ -1065,7 +1066,8 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
-                            if (IsUserBlocked(cInfo))
+                            if (IsUserBlocked(cInfo) 
+                                || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
                                 cInfo.IsSelected = false;
                                 return;
