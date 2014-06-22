@@ -289,20 +289,20 @@ namespace windows_client.FileTransfers
 
         public void PopulatePreviousTasks()
         {
-            BackgroundWorker worker = new BackgroundWorker();
-
-            worker.DoWork += (ss, ee) =>
+            if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
             {
-                if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
+                BackgroundWorker worker = new BackgroundWorker();
+
+                worker.DoWork += (ss, ee) =>
                 {
                     PopulateUploads();
                     PopulateDownloads();
 
                     if (PendingTasks.Count > 0)
                         StartTask();
-                }
-            };
-            worker.RunWorkerAsync();
+                };
+                worker.RunWorkerAsync();
+            }
         }
 
         void PopulateUploads()
