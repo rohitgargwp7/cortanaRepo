@@ -108,7 +108,6 @@ namespace windows_client.Model
                 {
                     _name = value;
                     NotifyPropertyChanged("Name");
-                    NotifyPropertyChanged("AddUserVisibility");
                 }
             }
         }
@@ -218,6 +217,24 @@ namespace windows_client.Model
             }
         }
 
+        bool _isInAddressBook;
+        [DataMember]
+        public bool IsInAddressBook
+        {
+            get
+            {
+                return _isInAddressBook;
+            }
+            set
+            {
+                if (value != _isInAddressBook)
+                {
+                    NotifyPropertyChanged("AddUserVisibility");
+                    _isInAddressBook = value;
+                }
+            }
+        }
+
         bool _isOwner;
         [DataMember]
         public bool IsOwner
@@ -303,9 +320,9 @@ namespace windows_client.Model
         {
             get
             {
-                if (_msisdn.Contains(_name))
-                    return Visibility.Visible;
-                return Visibility.Collapsed;
+                if (IsInAddressBook || Msisdn == App.MSISDN)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
             }
         }
 
@@ -384,6 +401,7 @@ namespace windows_client.Model
                 writer.Write(_isDND);
                 writer.Write(_hasOptIn);
                 writer.Write(_isUsed);
+                writer.Write(_isInAddressBook);
             }
             catch (Exception ex)
             {
@@ -413,6 +431,7 @@ namespace windows_client.Model
                 _isDND = reader.ReadBoolean();
                 _hasOptIn = reader.ReadBoolean();
                 _isUsed = reader.ReadBoolean();
+                _isInAddressBook = reader.ReadBoolean();
             }
             catch (Exception ex)
             {

@@ -92,7 +92,7 @@ namespace windows_client
         public static readonly int ATTACHMENT_MAX_HEIGHT = 800;
         public static readonly int ATTACHMENT_MAX_WIDTH = 800;
         public static readonly int MAX_EMOTICON_SUPPORTED = 50;
-        public static readonly int VIBRATE_DURATION = 700;
+        public static readonly int VIBRATE_DURATION = 200;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
@@ -175,6 +175,7 @@ namespace windows_client
         public const string FTUE_TEAMHIKE_MSISDN = "+hike+";
         public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
         public const string FTUE_GAMING_MSISDN = "+hike2+";
+        public const string FTUE_HIKE_DAILY_MSISDN = "+hike3+";
 
         public static readonly string VERSION = "version";
 

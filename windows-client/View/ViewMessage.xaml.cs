@@ -41,7 +41,7 @@ namespace windows_client.View
                         TextWrapping = TextWrapping.Wrap,
                         Foreground = (SolidColorBrush)App.Current.Resources["HikeBlack"]
                     };
-                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(currentString, phoneForeground, new SmileyParser.HyperLinkClickedDelegate(hyperlink_Click_CallBack)));
+                    rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(null, currentString, phoneForeground, new SmileyParser.HyperLinkClickedDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
                 }
             }

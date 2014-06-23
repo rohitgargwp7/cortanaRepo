@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,7 @@ using windows_client.utils;
 
 namespace windows_client.Model
 {
+    [DataContract]
     public class PhotoClass : INotifyPropertyChanged
     {
         Picture _pic;
@@ -21,7 +23,7 @@ namespace windows_client.Model
         {
             get
             {
-                return AddMoreImage ? new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute)) : App.ViewModel.GetMftImageCache(_pic);
+                return AddMoreImage ? new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute)) : App.ViewModel.GetMftImageCache(Pic);
             }
         }
         public BitmapImage ImageSource
@@ -30,41 +32,51 @@ namespace windows_client.Model
             {
                 BitmapImage _image = new BitmapImage();
 
-                if (_pic != null)
+                if (Pic != null)
                 {
-                    int toWidth = UI_Utils.Instance.GetMaxToWidthForImage(_pic.Height, _pic.Width);
+                    int toWidth = UI_Utils.Instance.GetMaxToWidthForImage(Pic.Height, Pic.Width);
                     if (toWidth != 0)
                         _image.DecodePixelWidth = toWidth;
-                    _image.SetSource(_pic.GetImage());
+                    _image.SetSource(Pic.GetImage());
                 }
                 return _image;
             }
         }
+
+        [DataMember]
         public DateTime TimeStamp { get; set; }
+
+        [DataMember]
         public string Title { get; set; }
         public Picture Pic
         {
             get
             {
+                if (_pic == null)
+                {
+                    //this will trigger only in case of tombstoning
+                    MediaLibrary lib = new MediaLibrary();
+                    var list = lib.Pictures.Where(x => x.Date == TimeStamp);
+                    if (list != null && list.Count() > 0)
+                    {
+                        _pic = list.FirstOrDefault();
+                    }
+                }
                 return _pic;
             }
         }
 
-        //default constructor added so that it can be serialized and deserialized by phone application service 
-        public PhotoClass()
-        {
-        }
         public PhotoClass(Picture pic)
         {
             _pic = pic;
         }
-
+        [DataMember]
         public bool AddMoreImage
         {
             get;
             set;
         }
-
+        [DataMember]
         public bool IsSelected
         {
             get

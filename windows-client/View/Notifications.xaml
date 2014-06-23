@@ -44,7 +44,7 @@
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
             <toolkit:ListPicker Grid.Row="4" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
 
-            <Button Margin="12,20,0,0" Width="425" Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
+            <Button Margin="12,20,0,0" Width="425" Height="50" Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

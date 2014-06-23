@@ -35,19 +35,16 @@ namespace windows_client.View
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.PREFERENCES);
             NavigationService.Navigate(new Uri("/View/Preferences.xaml", UriKind.Relative));
         }
 
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.NOTIFICATIONS);
             NavigationService.Navigate(new Uri("/View/Notifications.xaml", UriKind.Relative));
         }
 
         private void Account_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.ACCOUNT);
             NavigationService.Navigate(new Uri("/View/Account.xaml", UriKind.Relative));
         }
 
@@ -74,7 +71,6 @@ namespace windows_client.View
             }
 
             LayoutRoot.IsHitTestVisible = false;
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
 
             if (progressIndicator == null)
                 progressIndicator = new ProgressIndicatorControl();
@@ -222,6 +218,7 @@ namespace windows_client.View
                     allGroupsInfo[gl[i].GroupId] = gl[i];
                 }
 
+                bool isFavUpdated = false, isPendingUpdated = false;
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
                     ContactInfo cinfo = ContactUtils.hike_contactsMap[id][0];
@@ -244,21 +241,40 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(cinfo.Msisdn);
+
                         if (obj == null) // this msisdn is not in favs , check in pending
+                        {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
-                        if (obj != null)
+
+                            if (obj != null)
+                            {
+                                obj.ContactName = null;
+                                isPendingUpdated = true;
+                            }
+                        }
+                        else
+                        {
                             obj.ContactName = null;
+                            MiscDBUtil.SaveFavourites(obj);
+                            isFavUpdated = true;
+                        }
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
+
+                if (isFavUpdated)
+                    MiscDBUtil.SaveFavourites();
+
+                if (isPendingUpdated)
+                    MiscDBUtil.SavePendingRequests();
             }
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            
+
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -323,8 +339,8 @@ namespace windows_client.View
                 }
 
                 e.Cancel = true;
-            } 
-            
+            }
+
             base.OnBackKeyPress(e);
         }
 

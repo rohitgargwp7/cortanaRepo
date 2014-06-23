@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace windows_client.Model
 {
-    public class Analytics : IBinarySerializable
+    public class Analytics
     {
         //co = conversations screen
         public static readonly string DELETE_ALL_CHATS = "coDelAll";
@@ -63,8 +63,6 @@ namespace windows_client.Model
         public static readonly string ADD_FAVS_CONTEXT_MENU_GROUP_INFO = "giATFCM";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
-        private Dictionary<string, int> eventMap = null;
-
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile Analytics instance = null;
 
@@ -77,138 +75,10 @@ namespace windows_client.Model
                     lock (syncRoot)
                     {
                         if (instance == null)
-                        {
                             instance = new Analytics();
-                            instance.readObject();
-                        }
                     }
                 }
                 return instance;
-            }
-        }
-
-        private Analytics()
-        {
-            eventMap = new Dictionary<string, int>();
-        }
-
-        public void addEvent(string eventKey)
-        {
-            int currentValue = 0;
-            if (eventMap.ContainsKey(eventKey))
-            {
-                currentValue = eventMap[eventKey];
-            }
-            eventMap[eventKey] = currentValue + 1;
-        }
-
-        public JObject serialize()
-        {
-            if (eventMap == null || eventMap.Count == 0)
-                return null;
-            JObject eventsData = new JObject();
-            eventsData[HikeConstants.TAG] = "wp8";
-            foreach (KeyValuePair<string, int> entry in eventMap)
-            {
-                if (entry.Value > 0)
-                {
-                    eventsData[entry.Key] = entry.Value;
-                }
-            }
-            JObject serializedJson = new JObject();
-            serializedJson[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
-            serializedJson[HikeConstants.DATA] = eventsData;
-            return serializedJson;
-        }
-
-        public void Write(BinaryWriter writer)
-        {
-            writer.Write(eventMap.Count);
-            foreach (KeyValuePair<string, int> entry in eventMap)
-            {
-                writer.WriteString(entry.Key);
-                writer.Write(entry.Value);
-            }
-        }
-
-        public void Read(BinaryReader reader)
-        {
-            int count = 0;
-            try // here end of stream error cound come
-            {
-                count = reader.ReadInt32();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
-            }
-            string key;
-            int value = -1;
-            /*
-             * exception shud be handled for each element rather than complete set.
-             * reason : there could be problem in 1 or 2 entries and hence all other entries should be recoreded
-             * in the map.
-             */
-            for (int i = 0; i < count; i++)
-            {
-                try
-                {
-                    key = reader.ReadString();
-                    value = reader.ReadInt32();
-                    if (!String.IsNullOrEmpty(key) && value > 0)
-                        eventMap[key] = value;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Analytics :: Read : read item, Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        public void clearObject() //call after publish
-        {
-            if (eventMap != null)
-                eventMap.Clear();
-        }
-
-        public void saveObject()
-        {
-            string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
-            if (eventMap != null && eventMap.Count > 0)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                    {
-                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                    }
-                    using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        using (var writer = new BinaryWriter(file))
-                        {
-                            this.Write(writer);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void readObject()
-        {
-            string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY) || !store.FileExists(filePath))
-                {
-                    return;
-                }
-                using (var file = store.OpenFile(filePath, FileMode.Open, FileAccess.Read))
-                {
-                    using (var reader = new BinaryReader(file))
-                    {
-                        this.Read(reader);
-                    }
-                }
             }
         }
 
@@ -254,6 +124,7 @@ namespace windows_client.Model
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
+
         public static void SendAnalyticsEvent(string eventType, string key, JToken value)
         {
             if (string.IsNullOrEmpty(key))

@@ -218,7 +218,7 @@
     <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
-    <value>Привет! Укажите свой номер</value>
+    <value>Привет! Какой у вас номер?</value>
     <comment>Enter phone msg.</comment>
   </data>
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
@@ -322,7 +322,7 @@
     <comment>Push Notification msg</comment>
   </data>
   <data name="WelcomePage_TnP_HlBtn" xml:space="preserve">
-    <value>условия и конфиденциальность &amp;</value>
+    <value>условия и конфиденциальность</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
   <data name="Email_Txt" xml:space="preserve">
@@ -650,14 +650,7 @@
     <comment>Contact Utils</comment>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Привет! 
-
-У меня появилось новое приложение-чат — hike! Еще удобнее, быстрее и привлекательнее.
-Только полюбуйся на классные стикеры, и ты больше никогда не захочешь посылать скучные сообщения простым текстом.
-
-Кроме того, hike ценит конфиденциальность, так что ты можешь раскрывать свой статус в сети только выбранным друзьям.
-
-Скачай hike прямо сейчас на сайте http://hike.in и начинай общаться!</value>
+    <value>Я пользуюсь новым приложением для чата - hike. Небо и земля по сравнению с WhatsApp! Здесь классные стикеры, темы чата и можно выбирать, кому показывать свое последнее появление в сети. А круче всего то, что в hike есть "скрытый режим", который позволяет скрыть ото всех свои личные чаты. Просто супер! Скорее скачивай с http://hike.in</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -693,7 +686,7 @@
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
-    <value>Ваши друзья приглашены</value>
+    <value>Ваши друзья приглашены в hike</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_InviteSMSUsers_Menu_Txt" xml:space="preserve">
@@ -711,10 +704,6 @@
   <data name="GrpName_Txt" xml:space="preserve">
     <value>Имя группы</value>
     <comment>General Text</comment>
-  </data>
-  <data name="Hike_txt" xml:space="preserve">
-    <value>hike. </value>
-    <comment>General text</comment>
   </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>Друзья приглашены</value>
@@ -1037,10 +1026,6 @@
     <value>нажмите, чтобы пригласить</value>
     <comment>tap to invite text</comment>
   </data>
-  <data name="ChatThread_GCMute" xml:space="preserve">
-    <value>Групповой чат без звука</value>
-    <comment>xaml</comment>
-  </data>
   <data name="ContactTransfer_Text" xml:space="preserve">
     <value>Контакт</value>
   </data>
@@ -1105,7 +1090,7 @@
     <value>Делитесь обновлениями статуса и сведениями о своем последнем появлении в сети только с избранными контактами.</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>добавить</value>
+    <value>add</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>новый статус</value>
@@ -1210,8 +1195,8 @@
   <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
     <value>Вы заблокировали пользователя {0}. Разблокируйте, чтобы отправить сообщение.</value>
   </data>
-  <data name="Share_With_Txt" xml:space="preserve">
-    <value>поделиться с</value>
+  <data name="Share_Txt" xml:space="preserve">
+    <value>поделиться</value>
     <comment>Used in share photo</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
@@ -1379,7 +1364,7 @@
     <value>Вы ничего не опубликовали :(</value>
   </data>
   <data name="GroupInfo_GrpNameMaxLength_Txt" xml:space="preserve">
-    <value>Имя группы может включать не более 50 символов.</value>
+    <value>Имя группы должно содержать не более 50 символов.</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
@@ -1527,9 +1512,6 @@
   <data name="Last_Seen_Yesterday_At" xml:space="preserve">
     <value>в последний раз вчера в {0}</value>
   </data>
-  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
-    <value>Держите близких друзей как можно ближе</value>
-  </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
     <value>Повторить</value>
   </data>
@@ -1544,7 +1526,7 @@
     <comment>verb(length 12)</comment>
   </data>
   <data name="Send_All_As_SMS" xml:space="preserve">
-    <value>{0} не в сети. Нажмите чат, чтобы отправить сообщение как SMS hike</value>
+    <value>{0} не в сети. Коснитесь чата, чтобы отправить hike sms</value>
   </data>
   <data name="H2HOfline_0SMS_Message" xml:space="preserve">
     <value>Вы исчерпали свой запас бесплатных SMS. Пригласите еще друзей в hike, чтобы получить бесплатные SMS</value>
@@ -1720,7 +1702,7 @@
     <value>Нажмите Enter, чтобы отправить сообщение</value>
   </data>
   <data name="Free_SMS_Txt" xml:space="preserve">
-    <value>free SMS</value>
+    <value>бесплатные SMS</value>
   </data>
   <data name="Invite_Header_Txt" xml:space="preserve">
     <value>пригласить</value>
@@ -1916,7 +1898,7 @@
     <value>начать общаться</value>
   </data>
   <data name="Add_AppBar_Txt" xml:space="preserve">
-    <value>добавить</value>
+    <value>add</value>
   </data>
   <data name="ChangePic_AppBar_Txt" xml:space="preserve">
     <value>сменить картинку</value>
@@ -1982,7 +1964,7 @@
     <value>Подождите пару секунд или проверьте свой номер.</value>
   </data>
   <data name="EnterPin_SMSError_Wait2_TxtBlk" xml:space="preserve">
-    <value>Напишите на support@hike.in или...</value>
+    <value>Вы можете написать по адресу support@hike.in или</value>
     <comment>dont translate "support@hike.in", it is email id</comment>
   </data>
   <data name="Directions_Txt" xml:space="preserve">
@@ -2168,7 +2150,24 @@
   <data name="AgeInavlid_Txt" xml:space="preserve">
     <value>Вам должно быть не менее 13 лет, чтобы использовать hike.</value>
   </data>
-  <data name="Share_Txt" xml:space="preserve">
-    <value>поделиться</value>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>поделиться с</value>
+  </data>
+  <data name="Add_Member_Txt" xml:space="preserve">
+    <value>добав. уч.</value>
+    <comment>max 10 char</comment>
+  </data>
+  <data name="DeleteAndExit_Txt" xml:space="preserve">
+    <value>удал. и выйти из гр.&amp;</value>
+    <comment>max 20 char</comment>
+  </data>
+  <data name="TimeUtils_1Day_Ago_Txt" xml:space="preserve">
+    <value>1 день назад</value>
+  </data>
+  <data name="DirectMsg_Txt" xml:space="preserve">
+    <value>прямое сообщение</value>
+  </data>
+  <data name="Invite_Email_Subject" xml:space="preserve">
+    <value>Обогати свою жизнь с hike</value>
   </data>
 </root>

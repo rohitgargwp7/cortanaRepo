@@ -290,7 +290,7 @@ namespace windows_client.View
                     contactsListBox.ItemsSource = null;
 
                     emptyGrid.Visibility = Visibility.Visible;
-                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
 
                     return;
                 }
@@ -308,6 +308,7 @@ namespace windows_client.View
                     defaultContact.Msisdn = num;
                     defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == num).Count() > 0;
+                    defaultContact.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == num).Count() > 0 ? true : false;
                     defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                 }
 
@@ -482,6 +483,7 @@ namespace windows_client.View
                         continue;
 
                     cn.IsSelected = SelectedContacts.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
+                    cn.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == cn.Msisdn).Count() > 0 ? true : false;
                     cn.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
 
                     bool containsCharacter = false;
@@ -524,6 +526,7 @@ namespace windows_client.View
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
                     defaultContact.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                    defaultContact.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0 ? true : false;
                 }
             }
 
@@ -548,7 +551,6 @@ namespace windows_client.View
                 return;
             }
 
-            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             contactsListBox.IsHitTestVisible = false;
             DisableApplicationBar();
 
@@ -695,6 +697,7 @@ namespace windows_client.View
                     allGroupsInfo[gl[i].GroupId] = gl[i];
                 }
 
+                bool isFavUpdated = false, isPendingUpdated = false;
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
                     ContactInfo cinfo = ContactUtils.hike_contactsMap[id][0];
@@ -717,21 +720,40 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(cinfo.Msisdn);
+                        
                         if (obj == null) // this msisdn is not in favs , check in pending
+                        {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
-                        if (obj != null)
+
+                            if (obj != null)
+                            {
+                                obj.ContactName = null;
+                                isPendingUpdated = true;
+                            }
+                        }
+                        else
+                        {
                             obj.ContactName = null;
+                            MiscDBUtil.SaveFavourites(obj);
+                            isFavUpdated = true;
+                        }
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo);
+                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
+
+                if (isFavUpdated)
+                    MiscDBUtil.SaveFavourites();
+
+                if (isPendingUpdated)
+                    MiscDBUtil.SavePendingRequests();
             }
-            
+
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-            
+
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -837,6 +859,7 @@ namespace windows_client.View
                 //Added IsSelected because if user resyncs contacts, the new contacts should be pre selected if they ere already selected
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
+                cInfo.IsInAddressBook = true;
 
                 if (cInfo.OnHike)
                     glist[3].Add(cInfo);
@@ -907,6 +930,7 @@ namespace windows_client.View
                         cInfo.Msisdn = conv.Msisdn;
                         cInfo.Avatar = conv.Avatar;
                         cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
+                        cInfo.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == conv.Msisdn).Count() > 0 ? true : false;
                         cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                         glist[0].Add(cInfo);
 
@@ -951,6 +975,7 @@ namespace windows_client.View
                 cInfo.Msisdn = friend.Msisdn;
                 cInfo.Avatar = friend.Avatar;
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
+                cInfo.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == friend.Msisdn).Count() > 0 ? true : false;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
                 glist[2].Add(cInfo);
 
@@ -1079,6 +1104,8 @@ namespace windows_client.View
 
                             if (defaultContact == cInfo)
                                 defaultContact = new ContactInfo();
+
+                            cInfo.IsInAddressBook = _allContactsList == null ? false : _allContactsList.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0 ? true : false;
 
                             SelectedContacts.Add(cInfo);
                         }

@@ -71,8 +71,6 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             initializeCredits();
-            hikeToSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
-            earnFreeSmsTxt.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x55, 0x55, 0x55));
         }
 
         public void onEventReceived(string type, object obj)

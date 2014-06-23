@@ -253,7 +253,7 @@ namespace windows_client.FileTransfers
                 byte[] newBytes = null;
                 using (BinaryReader br = new BinaryReader(responseStream))
                 {
-                    while (BytesTransfered != TotalBytes && FileState == FileTransferState.STARTED)
+                    while (BytesTransfered < TotalBytes && FileState == FileTransferState.STARTED)
                     {
                         newBytes = br.ReadBytes(BlockSize);
                         if (newBytes.Length == 0)
@@ -296,7 +296,7 @@ namespace windows_client.FileTransfers
                         Delete();
                         OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                     }
-                    else if (BytesTransfered == TotalBytes - 1)
+                    else if (BytesTransfered >= TotalBytes - 1) // if greater file should file md5 and go into fail state
                     {
                         CheckIfComplete();
                     }

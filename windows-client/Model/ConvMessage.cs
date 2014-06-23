@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Controls;
 using Microsoft.Phone.Controls;
+using windows_client.Model.Sticker;
 
 namespace windows_client.Model
 {
@@ -38,7 +39,7 @@ namespace windows_client.Model
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
-        private Sticker _stickerObj;
+        private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
         private string _readByInfo;
@@ -317,6 +318,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("GroupParticipant");
                     _groupParticipant = value;
                     NotifyPropertyChanged("GroupParticipant");
+                    NotifyPropertyChanged("GroupMemberMsisdn");
                 }
             }
         }
@@ -369,7 +371,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ReadByInfo");
                     _readByInfo = value;
-                    NotifyPropertyChanged("ReadByInfo");
                 }
             }
         }
@@ -461,7 +462,7 @@ namespace windows_client.Model
             }
         }
 
-        public Sticker StickerObj
+        public StickerObj StickerObj
         {
             set
             {
@@ -572,7 +573,7 @@ namespace windows_client.Model
                 if (_fileAttachment != null)
                 {
                     if (!IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
-                        return UI_Utils.Instance.DownloadIconBigger;
+                        return UI_Utils.Instance.DownloadIconUnknownFileType;
                     else
                         return UI_Utils.Instance.AttachmentIcon;
                 }
@@ -625,7 +626,7 @@ namespace windows_client.Model
         {
             get
             {
-                return ChangingState ? 0.4 : 1;
+                return ChangingState ? 0.6 : 1;
             }
         }
 
@@ -784,6 +785,32 @@ namespace windows_client.Model
             }
         }
 
+        bool _isGroup;
+        bool IsGroup
+        {
+            get
+            {
+                return _isGroup;
+            }
+            set
+            {
+                if (value != _isGroup)
+                {
+                    _isGroup = value;
+                    NotifyPropertyChanged("DirectMessageVisibility");
+                }
+            }
+        }
+
+        public Visibility DirectMessageVisibility
+        {
+            get
+            {
+                return IsGroup ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+
         private PageOrientation _currentOrientation;
         public PageOrientation CurrentOrientation
         {
@@ -800,27 +827,6 @@ namespace windows_client.Model
         }
 
         private bool imageDownloadFailed = false;
-        public BitmapImage MessageImage
-        {
-            get
-            {
-                if (_stickerObj != null)
-                {
-                    return _stickerObj.StickerImage;
-                }
-
-                if (_fileAttachment != null && _fileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                {
-                    return UI_Utils.Instance.BlackContactIcon;
-                }
-                else if (_fileAttachment != null && _fileAttachment.Thumbnail != null)
-                {
-                    return UI_Utils.Instance.createImageFromBytes(_fileAttachment.Thumbnail);
-                }
-                return null;
-            }
-        }
-
         public bool ImageDownloadFailed
         {
             get
@@ -830,12 +836,14 @@ namespace windows_client.Model
             set
             {
                 imageDownloadFailed = value;
-                NotifyPropertyChanged("FileSize");
-                NotifyPropertyChanged("MessageImage");
                 NotifyPropertyChanged("ShowForwardMenu");
                 NotifyPropertyChanged("IsStickerVisible");
                 NotifyPropertyChanged("IsStickerLoading");
                 NotifyPropertyChanged("IsHttpFailed");
+                if (StickerObj != null)
+                {
+                    StickerObj.NotifyPropertyChanged("StickerImage");
+                }
             }
         }
 
@@ -845,7 +853,9 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
-                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED) || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
+                    if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED && _fileAttachment.FileState != Attachment.AttachmentState.FAILED)
+                        || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED 
+                        || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED )
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -860,12 +870,29 @@ namespace windows_client.Model
             {
                 if (_fileAttachment != null)
                 {
-                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.FAILED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
-                        return UI_Utils.Instance.DownloadIcon;
+                    if (_fileAttachment.FileState == Attachment.AttachmentState.FAILED)
+                    {
+                        if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.RetryAudioIcon;
+                        else
+                            return UI_Utils.Instance.RetryIcon;
+                    }
+                    if (!IsSent && (_fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED || _fileAttachment.FileState == Attachment.AttachmentState.CANCELED))
+                    {
+                        if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            return UI_Utils.Instance.DownloadAudioIcon;
+                        else
+                            return UI_Utils.Instance.DownloadIcon;
+                    }
                     else if (_fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED || _fileAttachment.FileState == Attachment.AttachmentState.NOT_STARTED)
                         return UI_Utils.Instance.BlankBitmapImage;
-                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO) && IsPlaying)
-                        return UI_Utils.Instance.PauseIcon;
+                    else if (_fileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    {
+                        if (IsPlaying)
+                            return UI_Utils.Instance.PauseIcon;
+                        else
+                            return UI_Utils.Instance.PlayAudioIcon;
+                    }
                     else
                         return UI_Utils.Instance.PlayIcon;
                 }
@@ -1267,6 +1294,23 @@ namespace windows_client.Model
             }
         }
 
+        bool _isInAddressBook;
+        public bool IsInAddressBook
+        {
+            get
+            {
+                return _isInAddressBook;
+            }
+            set
+            {
+                if (value != _isInAddressBook)
+                {
+                    _isInAddressBook = value;
+                    NotifyPropertyChanged("GroupMemberMsisdn");
+                }
+            }
+        }
+
         private string _groupMemeberName;
         public string GroupMemberName
         {
@@ -1277,6 +1321,16 @@ namespace windows_client.Model
             set
             {
                 _groupMemeberName = value;
+                NotifyPropertyChanged("GroupMemberName");
+                IsGroup = true;
+            }
+        }
+
+        public string GroupMemberMsisdn
+        {
+            get
+            {
+                return !IsGroup || IsInAddressBook || _groupParticipant.Contains(GroupMemberName) ? String.Empty : "(" + _groupParticipant + ") ";
             }
         }
 

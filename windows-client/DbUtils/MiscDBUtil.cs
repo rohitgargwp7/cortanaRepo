@@ -14,6 +14,7 @@ using windows_client.utils;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
+using windows_client.utils.Sticker_Helper;
 
 namespace windows_client.DbUtils
 {
@@ -139,7 +140,7 @@ namespace windows_client.DbUtils
             App.appSettings[App.PRO_TIP_COUNT] = 2; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
-            StickerCategory.DeleteAllCategories();//deletes all categories + downloaded stickers
+            StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
             RecentStickerHelper.DeleteRecents();
             StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
             #endregion
@@ -806,7 +807,7 @@ namespace windows_client.DbUtils
                         {
                             using (var reader = new BinaryReader(file))
                             {
-                                ConversationListObject item = new ConversationListObject();
+                                ConversationListObject item = new ConversationListObject() { IsFav = true };
                                 try
                                 {
                                     item.ReadFavOrPending(reader);
@@ -870,7 +871,7 @@ namespace windows_client.DbUtils
                             {
                                 for (int i = 0; i < count; i++)
                                 {
-                                    ConversationListObject item = new ConversationListObject();
+                                    ConversationListObject item = new ConversationListObject() { IsFav = true };
                                     try
                                     {
                                         item.ReadFavOrPending(reader);
