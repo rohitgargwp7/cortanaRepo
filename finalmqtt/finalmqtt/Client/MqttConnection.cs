@@ -190,7 +190,11 @@ namespace finalmqtt.Client
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
-            _socket.ConnectAsync(socketEventArg);
+            if (!_socket.ConnectAsync(socketEventArg))
+            {
+                MQttLogging.LogWriter.Instance.WriteToLog("Connect Async connected synchronously");
+                ProcessSocketConnected(socketEventArg);
+            }
         }
 
         DateTime dt2;
@@ -201,6 +205,15 @@ namespace finalmqtt.Client
         /// <param name="s"></param>
         /// <param name="e"></param>
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
+        {
+            ProcessSocketConnected(e);
+        }
+
+        /// <summary>
+        /// Process callback of socket connection
+        /// </summary>
+        /// <param name="e">Socket event arguement</param>
+        private void ProcessSocketConnected(SocketAsyncEventArgs e)
         {
             Double timeTaken = (DateTime.Now - dt).TotalSeconds;
             dt2 = DateTime.Now;
@@ -232,7 +245,12 @@ namespace finalmqtt.Client
                     socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
                     socketEventArg.SetBuffer(bufferForSocketReads, 0, socketReadBufferSize);
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
-                    _socket.ReceiveAsync(socketEventArg);
+
+                    if (!_socket.ReceiveAsync(socketEventArg))
+                    {
+                        ProcessDataRead(socketEventArg);
+                        MQttLogging.LogWriter.Instance.WriteToLog("Messsage sent synchronously");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -247,6 +265,15 @@ namespace finalmqtt.Client
         /// <param name="s"></param>
         /// <param name="e"></param>
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
+        {
+            ProcessDataRead(e);
+        }
+
+        /// <summary>
+        /// Process callback of data read from socket
+        /// </summary>
+        /// <param name="e"></param>
+        private void ProcessDataRead(SocketAsyncEventArgs e)
         {
             try
             {
@@ -275,7 +302,6 @@ namespace finalmqtt.Client
                 MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Exception:" + ex.Message);
                 disconnect();
             }
-
         }
 
         /// <summary>
@@ -291,30 +317,70 @@ namespace finalmqtt.Client
             }
         }
 
+        /// <summary>
+        /// Async Callback for succesful data sent
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="e"></param>
         private void onDataSent(object s, SocketAsyncEventArgs e)
         {
-            _lastWriteTime = GetCurrentSeconds();
+            OnDataSentSuccess(e as SocketEventArguemntsMessageId);
         }
 
+        private void OnDataSentSuccess(SocketEventArguemntsMessageId e)
+        {
+            if (e.SocketError == SocketError.Success)
+            {
+                List<short> listMessageId = e.MessageId;
+                if (listMessageId != null && listMessageId.Count > 0)
+                {
+                    foreach (short messageId in listMessageId)
+                    {
+                        if (messageId != 0)
+                        {
+                            Callback cb;
+                            IDisposable scheduledAction;
+                            cb = MsgCallBacksMapGetValue(messageId);
+                            if (cb != null)
+                            {
+                                scheduledAction = ScheduledActionsMapGetValue(messageId);
+                                if (scheduledAction != null)
+                                {
+                                    ScheduledActionsMapRemove(messageId);
+                                    scheduledAction.Dispose();
+                                }
+                                MsgCallbacksMapRemove(messageId);
+                                cb.onSuccess();
+                            }
+                        }
+                    }
+                }
+                _lastWriteTime = GetCurrentSeconds();
+            }
+        }
         /// <summary>
         /// sends raw bytes of data through socket
         /// </summary>
         /// <param name="data"></param>
-        public void sendMessage(byte[] data)
+        public void sendMessage(byte[] data, List<short> listMessageId)
         {
             try
             {
                 if (_socket != null && _socket.Connected)
                 {
-                    SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                    SocketEventArguemntsMessageId socketEventArg = new SocketEventArguemntsMessageId();
                     socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
                     socketEventArg.UserToken = null;
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
                     socketEventArg.SetBuffer(data, 0, data.Length);
-                    _socket.SendAsync(socketEventArg);
-
+                    socketEventArg.MessageId = listMessageId;
                     var str = Encoding.UTF8.GetString(data, 0, data.Length);
                     MQttLogging.LogWriter.Instance.WriteToLog("Socket write:MSG SENT:: " + str);
+                    if (!_socket.SendAsync(socketEventArg))
+                    {
+                        MQttLogging.LogWriter.Instance.WriteToLog("Messsage sent synchronously");
+                        OnDataSentSuccess(socketEventArg);
+                    }
                 }
             }
             catch (Exception ex)
@@ -456,9 +522,11 @@ namespace finalmqtt.Client
             }
             try
             {
+                List<short> listMessageIds = new List<short>();
                 for (int i = 0; i < msg.Length; i++)
                 {
                     Message messsage = msg[i];
+                    listMessageIds.Add((short)(messsage is RetryableMessage ? ((RetryableMessage)messsage).getMessageId() : 0));
                     var data = msg[i].messageContent();
                     combinedMessageBytes.AddRange(data);
                     var str = Encoding.UTF8.GetString(data, 0, data.Length);
@@ -467,7 +535,7 @@ namespace finalmqtt.Client
                     else
                         MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, Data:{0}", str));
                 }
-                sendMessage(combinedMessageBytes.ToArray());
+                sendMessage(combinedMessageBytes.ToArray(), listMessageIds);
                 combinedMessageBytes.Clear();
             }
             catch (ObjectDisposedException ode)

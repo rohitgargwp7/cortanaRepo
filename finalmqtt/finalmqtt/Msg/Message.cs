@@ -81,7 +81,8 @@ namespace finalmqtt.Msg
                     MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, MQTT ID:{0}, Data:{1}", ((RetryableMessage)this).getMessageId(), str));
                 else
                     MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, Data:{0}", str));
-                mqttConnection.sendMessage(data);
+                List<short> listMessageIds=new List<short>(){(short)(this is RetryableMessage ? ((RetryableMessage)this).getMessageId() : 0)};
+                mqttConnection.sendMessage(data, listMessageIds);
             }
             catch
             {
