@@ -54,6 +54,8 @@ namespace windows_client
 
         public static readonly string ACTION = "action";
 
+        public static readonly string ICON_REMOVE = "icr";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -1924,6 +1926,19 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: ACTION, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
 
+            }
+            #endregion
+            #region IC REMOVE
+            else if (type == ICON_REMOVE)
+            {
+                try
+                {
+                    MiscDBUtil.DeleteImageForMsisdn(msisdn);
+                }
+                catch (JsonReaderException ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
             }
             #endregion
             #region OTHER

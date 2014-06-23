@@ -23,6 +23,11 @@ namespace windows_client.View
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
+            bool value;
+            if (!App.appSettings.TryGetValue(App.DISPLAYPIC_EVERYONE, out value))
+                value = true;
+            profilePictureToggle.IsChecked = value;
+            this.profilePictureToggle.Content = value ? AppResources.Settings_ProfilePicture_Everyone : AppResources.Settings_ProfilePicture_Favorites;
         }
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -60,6 +65,40 @@ namespace windows_client.View
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.LASTSEENONOFF, false);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void profilePictureToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            profilePictureToggle.Loaded -= profilePictureToggle_Loaded;
+            profilePictureToggle.Checked += profilePictureToggle_Checked;
+            profilePictureToggle.Unchecked += profilePictureToggle_UnChecked;
+        }
+
+        private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.profilePictureToggle.Content = AppResources.Settings_ProfilePicture_Everyone;
+            App.RemoveKeyFromAppSettings(App.DISPLAYPIC_EVERYONE);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.AVATAR, 1);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+        }
+
+        private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            this.profilePictureToggle.Content = AppResources.Settings_ProfilePicture_Favorites;
+            App.WriteToIsoStorageSettings(App.DISPLAYPIC_EVERYONE, false);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
