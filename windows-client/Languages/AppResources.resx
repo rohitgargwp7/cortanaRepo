@@ -181,10 +181,6 @@
     <value>remove from favorites</value>
     <comment>fix char length(29)</comment>
   </data>
-  <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no favorites</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
     <value>invite friends</value>
     <comment>Profile (xaml)</comment>
@@ -2175,5 +2171,11 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>hike up your life</value>
+  </data>
+  <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
+    <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
+  </data>
+  <data name="Add_To_Favorites_Txt" xml:space="preserve">
+    <value>add to favorites</value>
   </data>
 </root>

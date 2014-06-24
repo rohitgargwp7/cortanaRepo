@@ -873,10 +873,7 @@ namespace windows_client.View
                             favourites.Visibility = System.Windows.Visibility.Visible;
                         }
                         else
-                        {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                            addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
-                        }
 
                         if (hikeContactList.Count == 0)
                         {

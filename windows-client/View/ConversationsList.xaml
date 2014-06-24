@@ -157,8 +157,9 @@
                         </Grid>
                         <TextBlock Grid.Row="0" Margin="0,20" Name="txtCircleOfFriends" Visibility="Collapsed" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SubHeaderTextBlock}"/>
                         <StackPanel x:Name="emptyListPlaceholderFiends" Margin="0,0,0,20" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" Visibility="Collapsed">
-                            <Image Source="images/ConversationPage/favorites.png" Height="120" Stretch="Uniform"/>
-                            <TextBlock Name="addContactsTxtBlk" Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#555555"/>
+                            <Image Source="images/ConversationPage/favorites.png" Height="155" Stretch="Uniform"/>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Add_To_Favorites_Txt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" Style="{StaticResource FTUECardHeaderStyle}"/>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Add_To_Favorites_SubTxt, Source={StaticResource LocalizedStrings}}" Margin="0,18,0,0" Style="{StaticResource FTUECardSubHeaderStyle}"/>
                         </StackPanel>
                         <ListBox x:Name="favourites" ItemsSource="{Binding Source={StaticResource favCollectionViewKey}}" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                                  Grid.Row="1" Tap="favourites_Tap">
@@ -431,7 +432,6 @@
                     </phone:LongListSelector>
                 </Grid>
             </controls:PivotItem>
-
         </controls:Pivot>
 
         <!--<Rectangle x:Name="overlay" Visibility="Collapsed" Opacity="0.95" Grid.RowSpan="2" Fill="{StaticResource HikeBlack}"/>
