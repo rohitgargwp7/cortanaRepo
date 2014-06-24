@@ -209,10 +209,10 @@ namespace windows_client.View
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
+                emptyScreenGrid.Visibility = Visibility.Visible;
             else
             {
-                emptyScreenGrid.Opacity = 0;
+                emptyScreenGrid.Visibility = Visibility.Collapsed;
 
                 if (App.ViewModel.IsConversationUpdated)
                 {
@@ -317,10 +317,7 @@ namespace windows_client.View
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
-            else
-                emptyScreenGrid.Opacity = 0;
+            emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
             appBar.IsMenuEnabled = true;
 
@@ -400,7 +397,7 @@ namespace windows_client.View
                              App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                          }//if already at zero, do nothing
 
-                         emptyScreenGrid.Opacity = 0;
+                         emptyScreenGrid.Visibility = Visibility.Collapsed;
                      });
                 }
             }
@@ -712,7 +709,7 @@ namespace windows_client.View
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenGrid.Opacity = 1;
+            emptyScreenGrid.Visibility = Visibility.Visible;
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             shellProgress.IsIndeterminate = false;
@@ -769,9 +766,7 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenGrid.Opacity = 1;
-            }
+                emptyScreenGrid.Visibility = Visibility.Visible;
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
             {
@@ -1083,8 +1078,8 @@ namespace windows_client.View
                     {
                         try
                         {
-                            if (emptyScreenGrid.Opacity == 1)
-                                emptyScreenGrid.Opacity = 0;
+                            if (emptyScreenGrid.Visibility == Visibility.Visible)
+                                emptyScreenGrid.Visibility = Visibility.Collapsed;
 
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
@@ -1552,7 +1547,7 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Remove(co);
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
-                        emptyScreenGrid.Opacity = 1;
+                        emptyScreenGrid.Visibility = Visibility.Visible;
                 });
             }
             #endregion
