@@ -611,6 +611,8 @@
     <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
+    <Content Include="View\images\ConversationPage\timeline.jpg" />
+    <Content Include="View\images\ConversationPage\timelineQuote.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />

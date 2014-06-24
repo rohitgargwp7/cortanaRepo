@@ -1205,12 +1205,6 @@ Download it like asap from http://hike.in!</value>
     <value>Tap to {0} this person</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
-  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>update status</value>
-  </data>
-  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
-    <value>Looks like you haven't posted any status update yet.</value>
-  </data>
   <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
     <value>Hey {0}!</value>
     <comment>{0} replaced by user name</comment>
@@ -1253,11 +1247,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Me_Txt" xml:space="preserve">
     <value>Me</value>
   </data>
-  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>view favorites</value>
-  </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your favorite contacts here</value>
+    <value>Tap here to post a status update. Only your favorites can see them.</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>invite friends to hike</value>
@@ -2177,5 +2168,8 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>add to favorites</value>
+  </data>
+  <data name="Express_Yourself_Txt" xml:space="preserve">
+    <value>express yourself</value>
   </data>
 </root>

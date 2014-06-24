@@ -2541,6 +2541,12 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
+        private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
         private void statusItem_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_buttonInsideStatusUpdateTapped)

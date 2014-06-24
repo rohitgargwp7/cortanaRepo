@@ -393,30 +393,35 @@
                                     </templateSelector:StatusTemplateSelector.DTTextStatus>
                                     <templateSelector:StatusTemplateSelector.DTDefaultStatus>
                                         <DataTemplate>
-                                            <Border Style="{StaticResource StatusUpdateContainerStyle}">
-                                                <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="52"/>
-                                                    <Grid Grid.Column="1" Margin="18,0,10,0" HorizontalAlignment="Left">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource StatusUpdateNameTextBlock}"/>
-                                                        <TextBlock Text="{Binding Text}" Grid.Row="1" Style="{StaticResource StatusUpdateNameTextBlock}"/>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Grid.Row="2" FontSize="20" Margin="0,5,0,0" Style="{StaticResource StatusUpdateContentTextBlock}"/>
-                                                        <Button Margin="0,12" Content="{Binding Path= LocalizedResources.Conversations_BtnCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="3" Click="CircleOfFriends_Click" Style="{StaticResource YesButtonStyle}"/>
-                                                        <StackPanel Grid.Row="4" Margin="0,10,0,0">
-                                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_AskPostStatus_Txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="20" Margin="0,2" Style="{StaticResource StatusUpdateContentTextBlock}"/>
-                                                            <Button Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.Conversations_BtnUpdateStatus_Txt, Source={StaticResource LocalizedStrings}}" Click="UpdateStatus_Click" Style="{StaticResource NoButtonStyle}"/>
-                                                        </StackPanel>
+                                            <Border Tap="DefaultStatus_Tap" Style="{StaticResource StatusUpdateContainerStyle}">
+                                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                        <Image MaxHeight="225" Source="/view/images/ConversationPage/timeline.jpg" Canvas.ZIndex="-1"/>
+                                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Image Source="/View/images/moods/14Chilling.png" MaxHeight="48"/>
+                                                            <Image Source="/View/images/moods/15InLove.png" MaxHeight="48" Grid.Column="1" Margin="30,0"/>
+                                                            <Image Source="/View/images/moods/13Reading.png" MaxHeight="48" Grid.Column="2"/>
+                                                        </Grid>
                                                     </Grid>
+                                                    <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,-20,0,0">
+                                                        <Ellipse Height="40" Width="40" Fill="White"/>
+                                                        <Image Canvas.ZIndex="1" Source="/view/images/ConversationPage/timelineQuote.png" MaxHeight="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                    <TextBlock Text="{Binding Path= LocalizedResources.Express_Yourself_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUECardHeaderStyle}"/>
+                                                    <TextBlock Margin="25,10,25,40" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="3" Style="{StaticResource FTUECardSubHeaderStyle}"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>

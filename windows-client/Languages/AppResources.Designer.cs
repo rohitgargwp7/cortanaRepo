@@ -700,24 +700,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to view favorites.
-        /// </summary>
-        public static string Conversations_BtnCircleOfFriends_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_BtnCircleOfFriends_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to update status.
-        /// </summary>
-        public static string Conversations_BtnUpdateStatus_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_BtnUpdateStatus_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to favorites.
         /// </summary>
         public static string Conversations_Circle_Of_friends_txt {
@@ -808,15 +790,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Looks like you haven&apos;t posted any status update yet..
-        /// </summary>
-        public static string Conversations_EmptyStatus_AskPostStatus_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_EmptyStatus_AskPostStatus_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hey {0}!.
         /// </summary>
         public static string Conversations_EmptyStatus_Hey_Txt {
@@ -835,7 +808,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can see updates from your favorite contacts here.
+        ///   Looks up a localized string similar to Tap here to post a status update. Only your favorites can see them..
         /// </summary>
         public static string Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt {
             get {
@@ -1656,6 +1629,15 @@ namespace windows_client.Languages {
         public static string Error_Txt {
             get {
                 return ResourceManager.GetString("Error_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to express yourself.
+        /// </summary>
+        public static string Express_Yourself_Txt {
+            get {
+                return ResourceManager.GetString("Express_Yourself_Txt", resourceCulture);
             }
         }
         
