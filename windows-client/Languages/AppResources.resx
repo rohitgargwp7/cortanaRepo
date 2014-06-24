@@ -2169,7 +2169,13 @@ Download it like asap from http://hike.in!</value>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>add to favorites</value>
   </data>
+  <data name="Conversations_EmptyScreenWelcome_Txt" xml:space="preserve">
+    <value>Hike is full of awesome things that we would like to show you.</value>
+  </data>
   <data name="Express_Yourself_Txt" xml:space="preserve">
     <value>express yourself</value>
+  </data>
+  <data name="StartExploring_Txt" xml:space="preserve">
+    <value>start exploring</value>
   </data>
 </root>

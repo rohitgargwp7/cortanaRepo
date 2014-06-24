@@ -965,7 +965,7 @@ namespace windows_client.utils
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
                 int hikeCount = 1, smsCount = 1;
-                List<ContactInfo> msgToShow = null;
+                List<string> msgToShow = null;
                 List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
@@ -1021,13 +1021,13 @@ namespace windows_client.utils
                                     if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
                                     {
                                         msisdns.Add(cn.Msisdn);
-                                        msgToShow.Add(cn);
+                                        msgToShow.Add(cn.Msisdn);
                                         hikeCount++;
                                     }
                                     if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE) && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
                                     {
                                         msisdns.Add(cn.Msisdn);
-                                        msgToShow.Add(cn);
+                                        msgToShow.Add(cn.Msisdn);
                                         smsCount++;
                                     }
                                 }

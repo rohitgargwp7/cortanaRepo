@@ -244,7 +244,7 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Border Background="{TemplateBinding Background}" Margin="{StaticResource PhoneHorizontalMargin}" Padding="{TemplateBinding Padding}">
-                                    <TextBlock x:Name="TextElement" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Text="{TemplateBinding Content}" TextDecorations="Underline" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    <TextBlock x:Name="TextElement" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Text="{TemplateBinding Content}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                 </Border>
                             </Border>
                         </ControlTemplate>
@@ -1863,6 +1863,14 @@
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0,0,0,0"/>
                 <Setter Property="Margin" Value="12,12,12,0"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+
+            <Style x:Key="FTUECardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderThickness" Value="1,0,1,1"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>

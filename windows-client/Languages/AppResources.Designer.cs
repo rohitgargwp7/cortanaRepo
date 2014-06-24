@@ -790,6 +790,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hike is full of awesome things that we would like to show you..
+        /// </summary>
+        public static string Conversations_EmptyScreenWelcome_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_EmptyScreenWelcome_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hey {0}!.
         /// </summary>
         public static string Conversations_EmptyStatus_Hey_Txt {
@@ -4698,6 +4707,15 @@ namespace windows_client.Languages {
         public static string Start_Hiking_Button_Txt {
             get {
                 return ResourceManager.GetString("Start_Hiking_Button_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to start exploring.
+        /// </summary>
+        public static string StartExploring_Txt {
+            get {
+                return ResourceManager.GetString("StartExploring_Txt", resourceCulture);
             }
         }
         
