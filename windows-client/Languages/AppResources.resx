@@ -2172,10 +2172,16 @@ Download it like asap from http://hike.in!</value>
   <data name="Conversations_EmptyScreenWelcome_Txt" xml:space="preserve">
     <value>Hike is full of awesome things that we would like to show you.</value>
   </data>
+  <data name="Conversations_Empty_PeopleOnHike_Txt" xml:space="preserve">
+    <value>Hey, {0} people you know are on hike, start chatting.</value>
+  </data>
   <data name="Express_Yourself_Txt" xml:space="preserve">
     <value>express yourself</value>
   </data>
   <data name="StartExploring_Txt" xml:space="preserve">
     <value>start exploring</value>
+  </data>
+  <data name="See_All_Txt" xml:space="preserve">
+    <value>see all hgy</value>
   </data>
 </root>

@@ -964,13 +964,13 @@ namespace windows_client.utils
 
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int hikeCount = 1, smsCount = 1;
-                List<string> msgToShow = null;
+                int ContactInfo = 1, smsCount = 1;
+                List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
                 if (!isRefresh)
                 {
-                    msgToShow = new List<ContactInfo>(5);
+                    msgToShow = new List<ContactInfo>();
                     msisdns = new List<string>();
                 }
                 else // if refresh case load groups in cache
@@ -1018,17 +1018,10 @@ namespace windows_client.utils
                             {
                                 if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
                                 {
-                                    if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                                    if (onhike && !msisdns.Contains(cn.Msisdn))
                                     {
                                         msisdns.Add(cn.Msisdn);
-                                        msgToShow.Add(cn.Msisdn);
-                                        hikeCount++;
-                                    }
-                                    if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith(HikeConstants.INDIA_COUNTRY_CODE) && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
-                                    {
-                                        msisdns.Add(cn.Msisdn);
-                                        msgToShow.Add(cn.Msisdn);
-                                        smsCount++;
+                                        msgToShow.Add(cn);
                                     }
                                 }
                             }

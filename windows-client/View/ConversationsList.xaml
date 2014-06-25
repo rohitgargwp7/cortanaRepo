@@ -71,39 +71,87 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="White">
             <controls:PivotItem Margin="0,-10,0,0" Background="White">
                 <Grid x:Name="ConversationList">
-                    <Grid x:Name="emptyScreenGrid" Visibility="Collapsed">
-                        <Border x:Name="welcomeGrid" Style="{StaticResource StatusUpdateContainerStyle}">
-                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Image MaxHeight="285" Source="/view/images/ConversationPage/welcomeChat.jpg" Canvas.ZIndex="-1"/>
-                                <Border Grid.Row="1" Style="{StaticResource FTUECardStyle}">
-                                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,-20,0,0">
-                                            <Ellipse Height="40" Width="40" Fill="White"/>
-                                            <Image Canvas.ZIndex="1" Source="/view/images/ConversationPage/hikeLove.png" MaxHeight="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Grid>
-                                        <TextBlock x:Name="welcomeText" Grid.Row="1" Style="{StaticResource FTUECardHeaderStyle}"/>
-                                        <TextBlock Margin="25,10" Text="{Binding Path= LocalizedResources.Conversations_EmptyScreenWelcome_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUECardSubHeaderStyle}"/>
-                                        <Line Grid.Row="3" Margin="0,24" X1="432" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="LightGray"/>
-                                        <HyperlinkButton Margin="0,0,0,24" Grid.Row="4" Content="{Binding Path= LocalizedResources.StartExploring_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontWeight="Light"/>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </Grid>
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
                                             HorizontalAlignment="Stretch">
+                        <phone:LongListSelector.ListHeader>
+                            <Grid Name="emptyScreenGrid" Visibility="Collapsed" toolkit:TiltEffect.SuppressTilt="True">
+                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="12" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Image MaxHeight="285" Source="/view/images/ConversationPage/welcomeChat.jpg" Canvas.ZIndex="-1"/>
+                                        <Border Grid.Row="1" Style="{StaticResource FTUECardStyle}">
+                                            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,-20,0,0">
+                                                    <Ellipse Height="40" Width="40" Fill="White"/>
+                                                    <Image Canvas.ZIndex="1" Source="/view/images/ConversationPage/hikeLove.png" MaxHeight="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Grid>
+                                                <TextBlock x:Name="welcomeText" Grid.Row="1" Style="{StaticResource FTUECardHeaderStyle}"/>
+                                                <TextBlock Margin="25,10" Text="{Binding Path= LocalizedResources.Conversations_EmptyScreenWelcome_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUECardSubHeaderStyle}"/>
+                                                <Line Grid.Row="3" Margin="0,20,0,0" X1="432" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="LightGray"/>
+                                                <HyperlinkButton Margin="0,15,0,20" Grid.Row="4" Content="{Binding Path= LocalizedResources.StartExploring_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontWeight="Light" toolkit:TiltEffect.SuppressTilt="False"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                    <Border Margin="12" x:Name="peopleOnHikeBorder" Grid.Row="1" BorderThickness="1" Style="{StaticResource FTUECardStyle}" Visibility="Collapsed">
+                                        <Grid Margin="24,12" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" HorizontalAlignment="Left" TextAlignment="Left" Margin="0,0,0,15"/>
+                                            <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="hikeContacts_Tap" toolkit:TiltEffect.SuppressTilt="False">
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid HorizontalAlignment="Center" MinWidth="60" Tap="hikeContacts_Tap" >
+                                                                <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
+                                                            </Grid>
+                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="White">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                <TextBlock Text="{Binding Name}" Style="{StaticResource ContactNameTextBlock}" TextTrimming="WordEllipsis"/>
+                                                                <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <Line Grid.Row="2" Margin="-12,15,-12,0" X1="432" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="LightGray"/>
+                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontWeight="Light" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </phone:LongListSelector.ListHeader>
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
