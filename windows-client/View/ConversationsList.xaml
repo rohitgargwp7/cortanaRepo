@@ -318,7 +318,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <phone:LongListSelector x:Name="statusLLS" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Background="#E2E4E8" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
+                    <phone:LongListSelector x:Name="statusLLS" ItemRealized="statusLLS_ItemRealized" toolkit:TiltEffect.SuppressTilt="True" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <templateSelector:StatusTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">

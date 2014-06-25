@@ -163,6 +163,11 @@ namespace windows_client.View
 
         public void OnNextClick(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
+
+            isClicked = true;
+
             girlButton.IsEnabled = false;
             boyButton.IsEnabled = false;
             progressBar.Opacity = 1;
