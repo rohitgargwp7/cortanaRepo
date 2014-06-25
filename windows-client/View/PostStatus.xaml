@@ -19,6 +19,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            
+            <ProgressBar x:Name="shellProgress" Grid.RowSpan="3" VerticalAlignment="Top" Canvas.ZIndex="1" 
+                         IsIndeterminate="false" Foreground="White" Background="Transparent"/>
 
             <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
                 <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"/>
