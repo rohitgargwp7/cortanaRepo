@@ -350,6 +350,7 @@ namespace finalmqtt.Client
                                     scheduledAction.Dispose();
                                 }
                                 MsgCallbacksMapRemove(messageId);
+                                MQttLogging.LogWriter.Instance.WriteToLog(string.Format("Socket Write success,MessageId:{0}", messageId));
                                 cb.onSuccess();
                             }
                         }
@@ -733,6 +734,7 @@ namespace finalmqtt.Client
                             scheduledAction.Dispose();
                         }
                         MsgCallbacksMapRemove(messageId);
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("Ack received for messageId:{0}", messageId));
                         cb.onSuccess();
                     }
                 }

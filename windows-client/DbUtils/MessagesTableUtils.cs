@@ -355,39 +355,46 @@ namespace windows_client.DbUtils
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            try
             {
-                ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
-                if (message != null)
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
-                    var msgState = (ConvMessage.State)val;
-
-                    if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
+                    if (message != null)
                     {
-                        if (msgState == ConvMessage.State.SENT_DELIVERED)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        var msgState = (ConvMessage.State)val;
+
+                        if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                        {
+                            if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        }
+
+                        if ((int)message.MessageStatus < val)
+                        {
+                            if (fromUser == null || fromUser == message.Msisdn)
+                            {
+                                message.MessageStatus = (ConvMessage.State)val;
+                                SubmitWithConflictResolve(context);
+                                return message.Msisdn;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
                     }
-
-                    if ((int)message.MessageStatus < val)
+                    else
                     {
-                        if (fromUser == null || fromUser == message.Msisdn)
-                        {
-                            message.MessageStatus = (ConvMessage.State)val;
-                            SubmitWithConflictResolve(context);
-                            return message.Msisdn;
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        return null;
                     }
                 }
-                else
-                {
-                    return null;
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MessageTableUtils :: updateMsgStatus, Exception : " + ex.StackTrace);
             }
             return null;
         }
