@@ -2091,12 +2091,15 @@ namespace windows_client.View
 
         private void hikeContacts_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            var listBox = sender as ListBox;
-            ContactInfo c = listBox.SelectedItem as ContactInfo;
-            
+            ContactInfo c = hikeContactListBox.SelectedItem as ContactInfo;
             if (c == null)
                 return;
 
+            StartNewChatWithSelectContact(c);
+        }
+
+        private void StartNewChatWithSelectContact(ContactInfo c)
+        {
             object objToSend;
             if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
                 objToSend = App.ViewModel.ConvMap[c.Msisdn];
@@ -2824,6 +2827,17 @@ namespace windows_client.View
         private void SeeAllButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
+        }
+
+        private void DefaultChat_Selected(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            ContactInfo c = listBox.SelectedItem as ContactInfo;
+            
+            if (c == null)
+                return;
+
+            StartNewChatWithSelectContact(c);
         }
 
         #endregion

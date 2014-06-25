@@ -3991,7 +3991,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to see all hgy.
+        ///   Looks up a localized string similar to see all.
         /// </summary>
         public static string See_All_Txt {
             get {

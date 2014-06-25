@@ -116,7 +116,7 @@
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" HorizontalAlignment="Left" TextAlignment="Left" Margin="0,0,0,15"/>
-                                            <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="hikeContacts_Tap" toolkit:TiltEffect.SuppressTilt="False">
+                                            <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="DefaultChat_Selected" toolkit:TiltEffect.SuppressTilt="False">
                                                 <ListBox.ItemContainerStyle>
                                                     <Style TargetType="ListBoxItem">
                                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -130,10 +130,10 @@
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <Grid HorizontalAlignment="Center" MinWidth="60" Tap="hikeContacts_Tap" >
+                                                            <Grid HorizontalAlignment="Center" MinWidth="60">
                                                                 <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
                                                             </Grid>
-                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Tap="hikeContacts_Tap" Background="White">
+                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Background="White">
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
