@@ -737,6 +737,8 @@ namespace windows_client.View
             //    return;
             //}
 
+            Analytics.SendClickEvent(HikeConstants.NEW_CHAT_FROM_TOP_BAR);
+
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
@@ -2826,6 +2828,7 @@ namespace windows_client.View
 
         private void SeeAllButton_Click(object sender, RoutedEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_SEE_ALL_CLICKED);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
@@ -2836,6 +2839,8 @@ namespace windows_client.View
             
             if (c == null)
                 return;
+
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_START_CHAT_CLICKED);
 
             StartNewChatWithSelectContact(c);
         }
