@@ -335,9 +335,16 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                FileState = FileTransferState.FAILED;
-                Save();
-                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                if (ShouldRetry())
+                {
+                    Start(null);
+                }
+                else // Bad Network and retry timed out
+                {
+                    FileState = FileTransferState.FAILED;
+                    Save();
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                }
             }
         }
 
@@ -559,7 +566,7 @@ namespace windows_client.FileTransfers
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if (code == HttpStatusCode.BadRequest) // server error during upload
+            else if (code == HttpStatusCode.NotFound) // server error during upload
             {
                 FileState = FileTransferState.FAILED;
                 Delete();
