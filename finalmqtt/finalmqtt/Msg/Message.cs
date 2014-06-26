@@ -76,12 +76,13 @@ namespace finalmqtt.Msg
             byte[] data = messageData.ToArray();
             try
             {
-                mqttConnection.sendMessage(data);
+                short messageId = (short)(this is RetryableMessage ? ((RetryableMessage)this).getMessageId() : 0);
+                mqttConnection.sendMessage(data, messageId);
             }
-            catch 
+            catch
             {
                 throw;
-            } 
+            }
         }
 
 
