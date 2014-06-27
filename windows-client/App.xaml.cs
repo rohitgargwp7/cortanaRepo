@@ -989,7 +989,7 @@ namespace windows_client
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
                 if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT))
-                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 1);
             }
             #endregion
             #region POST APP INFO ON UPDATE

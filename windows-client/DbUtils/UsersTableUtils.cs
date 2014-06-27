@@ -124,6 +124,15 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Int32 getHikeContactCount()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN select user;
+                return users.Count();
+            }
+        }
+
         public static List<ContactInfo> getAllContactsByGroup()
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
