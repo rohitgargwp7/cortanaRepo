@@ -285,12 +285,16 @@ namespace windows_client.utils
         public static string getDeviceModel()
         {
             string model = null;
+            string manufacturer = null;
             object theModel = null;
 
+            object manufacturerObj = null;
+            if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceManufacturer", out manufacturerObj))
+                manufacturer = manufacturerObj as string;
             if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceName", out theModel))
                 model = theModel as string;
 
-            return model;
+            return string.Format("{0} {1}", manufacturerObj, theModel);
         }
 
         public static JObject deviceInforForAnalytics()
