@@ -137,7 +137,28 @@
                                                 <TextBlock Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Intro_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardSubHeaderStyle}" Canvas.ZIndex="1"/>
                                             </Grid>
                                         </Grid>
-                                        <Border Grid.Row="1" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToFav_Tapped">
+                                        <Border Grid.Row="1" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToInvite_Tapped">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/inviteCard.png" Canvas.ZIndex="-1"/>
+                                                <Grid Grid.Column="1" MaxHeight="160">
+                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_InviteNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" FontWeight="Light" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0"/>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                        <Border Grid.Row="2" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToFav_Tapped">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -158,7 +179,7 @@
                                                 </Grid>
                                             </Grid>
                                         </Border>
-                                        <Border Grid.Row="2" Style="{StaticResource FTUESmallCardStyle}">
+                                        <Border Grid.Row="3" Style="{StaticResource FTUESmallCardStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -179,7 +200,7 @@
                                                 </Grid>
                                             </Grid>
                                         </Border>
-                                        <Border Grid.Row="3" Style="{StaticResource FTUESmallCardStyle}">
+                                        <Border Grid.Row="4" Style="{StaticResource FTUESmallCardStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -196,27 +217,6 @@
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
                                                         <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt2, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border Grid.Row="4" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToInvite_Tapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/inviteCard.png" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_InviteNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" FontWeight="Light" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
