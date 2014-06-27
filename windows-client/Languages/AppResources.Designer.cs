@@ -853,7 +853,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to some amazing things you can do on hike.
+        ///   Looks up a localized string similar to amazing things you can do on hike.
         /// </summary>
         public static string Conversations_FTUE_Intro_Txt {
             get {
@@ -862,7 +862,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now invite friends via SMS for free. No charges apply..
+        ///   Looks up a localized string similar to You&apos;ll earn Rs20 talk-time for each friend that joins hike because of you :).
         /// </summary>
         public static string Conversations_FTUE_Invite_SubTxt {
             get {
@@ -871,7 +871,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to free sms invites.
+        ///   Looks up a localized string similar to invite friends.
         /// </summary>
         public static string Conversations_FTUE_Invite_Txt {
             get {

@@ -2191,7 +2191,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Intro_Txt" xml:space="preserve">
-    <value>some amazing things you can do on hike</value>
+    <value>amazing things you can do on hike</value>
     <comment>max length 40</comment>
   </data>
   <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
@@ -2199,11 +2199,11 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>Now invite friends via SMS for free. No charges apply.</value>
+    <value>You'll earn Rs20 talk-time for each friend that joins hike because of you :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
-    <value>free sms invites</value>
+    <value>invite friends</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
