@@ -2180,41 +2180,54 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Conversations_FTUE_H2O_SubTxt" xml:space="preserve">
     <value>Send messages to friends even when they are offline</value>
+    <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
     <value>It works like magic</value>
+    <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
     <value>hike offline</value>
+    <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Intro_Txt" xml:space="preserve">
     <value>some amazing things you can do on hike</value>
+    <comment>max length 40</comment>
   </data>
   <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
     <value>start inviting now</value>
+    <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
     <value>Now invite friends via SMS for free. No charges apply.</value>
+    <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
     <value>free sms invites</value>
+    <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
     <value>tap here to choose them</value>
+    <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
     <value>Only favorites can see your last seen &amp; status updates</value>
+    <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_Txt" xml:space="preserve">
     <value>last seen</value>
+    <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
     <value>When words can’t express,  say it with a sticker</value>
+    <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
     <value>You’ll love them!</value>
+    <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_Txt" xml:space="preserve">
     <value>stickers</value>
+    <comment>max length 20</comment>
   </data>
 </root>
