@@ -128,7 +128,7 @@ namespace windows_client.DbUtils
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN orderby user.Name select user;
+                var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN select user;
                 return users.Count();
             }
         }
