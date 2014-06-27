@@ -964,7 +964,6 @@ namespace windows_client.utils
 
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int ContactInfo = 1, smsCount = 1;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
@@ -1099,8 +1098,5 @@ namespace windows_client.utils
                 return null;
             }
         }
-
-
-
     }
 }
