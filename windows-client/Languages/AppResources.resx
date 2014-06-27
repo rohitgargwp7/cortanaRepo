@@ -2167,10 +2167,7 @@ Download it like asap from http://hike.in!</value>
     <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
-    <value>add to favorites</value>
-  </data>
-  <data name="Conversations_EmptyScreenWelcome_Txt" xml:space="preserve">
-    <value>Hike is full of awesome things that we would like to show you.</value>
+    <value>add favorites</value>
   </data>
   <data name="Conversations_Empty_PeopleOnHike_Txt" xml:space="preserve">
     <value>Hey, {0} people you know are on hike, start chatting.</value>
@@ -2178,10 +2175,46 @@ Download it like asap from http://hike.in!</value>
   <data name="Express_Yourself_Txt" xml:space="preserve">
     <value>express yourself</value>
   </data>
-  <data name="StartExploring_Txt" xml:space="preserve">
-    <value>start exploring</value>
-  </data>
   <data name="See_All_Txt" xml:space="preserve">
     <value>see all</value>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt" xml:space="preserve">
+    <value>Send messages to friends even when they are offline</value>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
+    <value>It works like magic</value>
+  </data>
+  <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
+    <value>hike offline</value>
+  </data>
+  <data name="Conversations_FTUE_Intro_Txt" xml:space="preserve">
+    <value>some amazing things you can do on hike</value>
+  </data>
+  <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
+    <value>start inviting now</value>
+  </data>
+  <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
+    <value>Now invite friends via SMS for free. No charges apply.</value>
+  </data>
+  <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
+    <value>free sms invites</value>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
+    <value>tap here to choose them</value>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
+    <value>Only favorites can see your last seen &amp; status updates</value>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_Txt" xml:space="preserve">
+    <value>last seen</value>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
+    <value>When words can’t express,  say it with a sticker</value>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
+    <value>You’ll love them!</value>
+  </data>
+  <data name="Conversations_FTUE_Sticker_Txt" xml:space="preserve">
+    <value>stickers</value>
   </data>
 </root>

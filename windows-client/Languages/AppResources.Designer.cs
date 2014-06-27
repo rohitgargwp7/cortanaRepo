@@ -106,7 +106,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add to favorites.
+        ///   Looks up a localized string similar to add favorites.
         /// </summary>
         public static string Add_To_Favorites_Txt {
             get {
@@ -799,15 +799,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hike is full of awesome things that we would like to show you..
-        /// </summary>
-        public static string Conversations_EmptyScreenWelcome_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_EmptyScreenWelcome_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hey {0}!.
         /// </summary>
         public static string Conversations_EmptyStatus_Hey_Txt {
@@ -831,6 +822,123 @@ namespace windows_client.Languages {
         public static string Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt {
             get {
                 return ResourceManager.GetString("Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send messages to friends even when they are offline.
+        /// </summary>
+        public static string Conversations_FTUE_H2O_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_H2O_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It works like magic.
+        /// </summary>
+        public static string Conversations_FTUE_H2O_SubTxt2 {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_H2O_SubTxt2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hike offline.
+        /// </summary>
+        public static string Conversations_FTUE_H2O_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_H2O_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to some amazing things you can do on hike.
+        /// </summary>
+        public static string Conversations_FTUE_Intro_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Intro_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now invite friends via SMS for free. No charges apply..
+        /// </summary>
+        public static string Conversations_FTUE_Invite_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Invite_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to free sms invites.
+        /// </summary>
+        public static string Conversations_FTUE_Invite_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Invite_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to start inviting now.
+        /// </summary>
+        public static string Conversations_FTUE_InviteNow_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_InviteNow_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tap here to choose them.
+        /// </summary>
+        public static string Conversations_FTUE_LastSeen_LinkTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_LastSeen_LinkTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only favorites can see your last seen &amp; status updates.
+        /// </summary>
+        public static string Conversations_FTUE_LastSeen_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_LastSeen_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to last seen.
+        /// </summary>
+        public static string Conversations_FTUE_LastSeen_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_LastSeen_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When words can’t express,  say it with a sticker.
+        /// </summary>
+        public static string Conversations_FTUE_Sticker_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Sticker_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You’ll love them!.
+        /// </summary>
+        public static string Conversations_FTUE_Sticker_SubTxt2 {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Sticker_SubTxt2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to stickers.
+        /// </summary>
+        public static string Conversations_FTUE_Sticker_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Sticker_Txt", resourceCulture);
             }
         }
         
@@ -4725,15 +4833,6 @@ namespace windows_client.Languages {
         public static string Start_Hiking_Button_Txt {
             get {
                 return ResourceManager.GetString("Start_Hiking_Button_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to start exploring.
-        /// </summary>
-        public static string StartExploring_Txt {
-            get {
-                return ResourceManager.GetString("StartExploring_Txt", resourceCulture);
             }
         }
         

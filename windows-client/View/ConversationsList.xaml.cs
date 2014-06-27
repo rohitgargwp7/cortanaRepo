@@ -117,7 +117,6 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-            welcomeText.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName);
         }
 
         string _firstName;
@@ -1102,7 +1101,6 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
-                    welcomeText.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName);
                 });
             }
             #endregion
@@ -3001,6 +2999,16 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
     }
 }
