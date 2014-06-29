@@ -668,7 +668,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
 
             if (_stopContactScanning)
             {

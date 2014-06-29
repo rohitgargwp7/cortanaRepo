@@ -89,7 +89,7 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" Margin="0,0,0,15"/>
+                                            <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" Margin="0,0,0,15" HorizontalAlignment="Left"/>
                                             <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="DefaultChat_Selected" toolkit:TiltEffect.SuppressTilt="False">
                                                 <ListBox.ItemContainerStyle>
                                                     <Style TargetType="ListBoxItem">
