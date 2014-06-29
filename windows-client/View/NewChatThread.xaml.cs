@@ -708,7 +708,6 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
                 ConversationTableUtils.saveConvObjectList();
             }
-
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;
@@ -720,6 +719,8 @@ namespace windows_client.View
             {
                 //remove new group pic key
                 PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
+
+                App.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
 
                 base.OnRemovedFromJournal(e);
                 removeListeners();
