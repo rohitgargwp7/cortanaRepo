@@ -112,7 +112,7 @@
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
                                                                 </Grid.RowDefinitions>
-                                                                <TextBlock Text="{Binding Name}" Style="{StaticResource ContactNameTextBlock}" TextTrimming="WordEllipsis"/>
+                                                                <TextBlock Text="{Binding NameToshow}" Style="{StaticResource ContactNameTextBlock}" TextTrimming="WordEllipsis"/>
                                                                 <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
                                                             </Grid>
                                                         </Grid>

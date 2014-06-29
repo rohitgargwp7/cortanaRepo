@@ -396,8 +396,15 @@ namespace windows_client.View
 
             int usersOnHike = UsersTableUtils.getHikeContactCount();
 
-            peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
-            peopleOnHikeBorder.Visibility = Visibility.Visible;
+            if (usersOnHike != 0)
+            {
+                peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                peopleOnHikeBorder.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                peopleOnHikeBorder.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void initAppBar()
