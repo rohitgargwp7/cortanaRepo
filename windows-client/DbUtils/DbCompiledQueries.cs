@@ -124,6 +124,20 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetHikeContactFromMsisdn
+        {
+            get
+            {
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                    CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
+                    ((HikeUsersDb hdc, string m) =>
+                        from o in hdc.users
+                        where o.Msisdn == m && o.OnHike == true
+                        select o);
+                return q;
+            }
+        }
+
         public static Func<HikeUsersDb, IQueryable<Blocked>> GetBlockList
         {
             get

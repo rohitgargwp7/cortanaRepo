@@ -219,7 +219,7 @@ namespace windows_client.View
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
-                ShowLaunchMessages();
+                ShowFTUEOnHikeCard();
             }
             else
             {
@@ -327,7 +327,7 @@ namespace windows_client.View
             emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-                ShowLaunchMessages();
+                ShowFTUEOnHikeCard();
 
             appBar.IsMenuEnabled = true;
 
@@ -363,23 +363,55 @@ namespace windows_client.View
             }
         }
 
-        private void ShowLaunchMessages()
+        private void ShowFTUEOnHikeCard()
         {
             if (peopleOnHikeListBox.ItemsSource == null)
             {
                 List<ContactInfo> cl = null;
-                App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out cl);
-                
-                if (cl == null)
+                List<string> contacts = null;
+                App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out contacts);
+
+                if (contacts == null)
                     return;
-             
+
+                cl = new List<ContactInfo>();
+                ContactInfo cn;
+                foreach (var msisdn in contacts)
+                {
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        cn = App.ViewModel.ContactsCache[msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
+                        if (cn != null)
+                            App.ViewModel.ContactsCache[msisdn] = cn;
+                    }
+
+                    if (cn != null)
+                        cl.Add(cn);
+                }
+
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
-            int usersOnHike = UsersTableUtils.getHikeContactCount();
-
-            peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
-            peopleOnHikeBorder.Visibility = Visibility.Visible;
+            var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
+            if (list != null)
+            {
+                int usersOnHike = UsersTableUtils.getHikeContactCount();
+                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                
+                if (usersOnHike != 0)
+                {
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeBorder.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    peopleOnHikeBorder.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+                peopleOnHikeBorder.Visibility = Visibility.Collapsed;
         }
 
         private void initAppBar()
@@ -688,7 +720,7 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
             emptyScreenGrid.Visibility = Visibility.Visible;
-            ShowLaunchMessages();
+            ShowFTUEOnHikeCard();
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             shellProgress.IsIndeterminate = false;
@@ -749,7 +781,7 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
-                ShowLaunchMessages();
+                ShowFTUEOnHikeCard();
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -1532,7 +1564,7 @@ namespace windows_client.View
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
                         emptyScreenGrid.Visibility = Visibility.Visible;
-                        ShowLaunchMessages();
+                        ShowFTUEOnHikeCard();
                     }
                 });
             }

@@ -770,6 +770,10 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Upgrade Pref Contacts Fix
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.1.3") < 0)
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
+            #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {

@@ -950,12 +950,44 @@ namespace windows_client.utils
             return updateContacts;
         }
 
-        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id, bool isRefresh)
+        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id)
         {
+            bool isRefresh = true;
             try
             {
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                     return null;
+
+                JToken token;
+                if (obj.TryGetValue("pref", out token))
+                {
+                    isRefresh = false;
+
+                    JObject pref = (JObject)token;
+                    if (pref != null)
+                    {
+                        List<string> prefContactList = null;
+                        pref.TryGetValue("contacts", out token);
+                        JArray prefContacts = (JArray)token;
+
+                        if (prefContacts != null)
+                        {
+                            foreach (var entry in prefContacts)
+                            {
+                                var msisdn = (string)entry;
+                                if (msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
+                                {
+                                    if (prefContactList == null)
+                                        prefContactList = new List<string>();
+                                    
+                                    prefContactList.Add(msisdn);
+                                }
+                            }
+                        }
+
+                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, prefContactList);
+                    }
+                }
 
                 JObject addressbook = (JObject)obj["addressbook"];
 
@@ -967,12 +999,8 @@ namespace windows_client.utils
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
-                if (!isRefresh)
-                {
-                    msgToShow = new List<ContactInfo>();
-                    msisdns = new List<string>();
-                }
-                else // if refresh case load groups in cache
+                
+                if (isRefresh)
                 {
                     GroupManager.Instance.LoadGroupCache();
                     List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
@@ -1013,18 +1041,7 @@ namespace windows_client.utils
                             ContactInfo cinfo = cList[i];
                             ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo, cinfo.PhoneNoKind);
 
-                            if (!isRefresh) // this is case for new installation
-                            {
-                                if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
-                                {
-                                    if (onhike && !msisdns.Contains(cn.Msisdn))
-                                    {
-                                        msisdns.Add(cn.Msisdn);
-                                        msgToShow.Add(cn);
-                                    }
-                                }
-                            }
-                            else // this is refresh contacts case
+                            if (isRefresh) // this is case for new installation
                             {
                                 if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
                                 {
@@ -1080,9 +1097,6 @@ namespace windows_client.utils
                 msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-
-                if (!isRefresh)
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
 
                 return server_contacts;
             }

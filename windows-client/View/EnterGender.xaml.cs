@@ -254,7 +254,7 @@ namespace windows_client.View
 
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
             Debug.WriteLine("Post addbook request returned successfully .... ");
-            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap, false);
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
             int count = 1;
