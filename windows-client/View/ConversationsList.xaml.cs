@@ -373,7 +373,7 @@ namespace windows_client.View
 
                 if (contacts == null)
                     return;
-             
+
                 cl = new List<ContactInfo>();
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
@@ -390,21 +390,28 @@ namespace windows_client.View
                     if (cn != null)
                         cl.Add(cn);
                 }
-                
+
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
-            int usersOnHike = UsersTableUtils.getHikeContactCount();
-
-            if (usersOnHike != 0)
+            var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
+            if (list != null)
             {
-                peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
-                peopleOnHikeBorder.Visibility = Visibility.Visible;
+                int usersOnHike = UsersTableUtils.getHikeContactCount();
+                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                
+                if (usersOnHike != 0)
+                {
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeBorder.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    peopleOnHikeBorder.Visibility = Visibility.Collapsed;
+                }
             }
             else
-            {
                 peopleOnHikeBorder.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void initAppBar()
