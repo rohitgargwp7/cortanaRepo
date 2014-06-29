@@ -169,6 +169,24 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static ContactInfo getHikeContactInfoFromMSISDN(string msisdn)
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetHikeContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("UserTableUtils :: getContactInfoFromMSISDN : getContactInfoFromMSISDN, Exception : " + ex.StackTrace);
+                    res = null;
+                }
+                return (res == null || res.Count == 0) ? null : res.First();
+            }
+        }
+
         public static void deleteAllContacts()
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))

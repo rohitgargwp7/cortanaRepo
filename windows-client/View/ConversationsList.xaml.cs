@@ -382,7 +382,7 @@ namespace windows_client.View
                         cn = App.ViewModel.ContactsCache[msisdn];
                     else
                     {
-                        cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
                         if (cn != null)
                             App.ViewModel.ContactsCache[msisdn] = cn;
                     }
