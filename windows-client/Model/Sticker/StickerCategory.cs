@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using windows_client.Misc;
 using windows_client.Model.Sticker;
 using windows_client.utils;
 using windows_client.ViewModel;
@@ -27,6 +28,8 @@ namespace windows_client.Model.Sticker
         private ObservableCollection<StickerObj> _listStickers;
         private bool _isDownLoading;
         private bool _isSelected;
+        private string _overlayBackground;
+        private string _overlayText;
         private static object readWriteLock = new object();
 
         public string Category
@@ -172,6 +175,7 @@ namespace windows_client.Model.Sticker
                     return UI_Utils.Instance.ZeroThickness;
             }
         }
+
         public ObservableCollection<StickerObj> ListStickers
         {
             get
@@ -183,6 +187,7 @@ namespace windows_client.Model.Sticker
                 _listStickers = value;
             }
         }
+
         public StickerCategory(string category, bool hasMoreStickers)
             : this(category)
         {
@@ -194,6 +199,78 @@ namespace windows_client.Model.Sticker
             this._category = category;
             _listStickers = new ObservableCollection<StickerObj>();
         }
+
+        #region Overlay Properties
+        SolidColorBrush _overlayBackgroundColor;
+        public SolidColorBrush OverlayBackgroundColor
+        {
+            get
+            {
+                if (_overlayBackgroundColor == null)
+                    _overlayBackgroundColor = UI_Utils.Instance.ConvertStringToColor(_overlayBackground);
+
+                return _overlayBackgroundColor;
+            }
+        }
+
+        public string OverlayText
+        {
+            get
+            {
+                return _overlayText;
+            }
+            set
+            {
+                _overlayText = value;
+            }
+        }
+
+        public BitmapImage OverlayImage
+        {
+            get
+            {
+                switch (_category)
+                {
+                    case StickerHelper.CATEGORY_HUMANOID:
+                        return UI_Utils.Instance.HumanoidOverlay;
+                    case StickerHelper.CATEGORY_EXPRESSIONS:
+                        return UI_Utils.Instance.ExpressionsOverlay;
+                    case StickerHelper.CATEGORY_DOGGY:
+                        return UI_Utils.Instance.DoggyOverlay;
+                    case StickerHelper.CATEGORY_KITTY:
+                        return UI_Utils.Instance.KittyOverlay;
+                    case StickerHelper.CATEGORY_BOLLYWOOD:
+                        return UI_Utils.Instance.BollywoodOverlay;
+                    case StickerHelper.CATEGORY_TROLL:
+                        return UI_Utils.Instance.TrollOverlay;
+                    case StickerHelper.CATEGORY_HUMANOID2:
+                        return UI_Utils.Instance.Humanoid2Overlay;
+                    case StickerHelper.CATEGORY_AVATARS:
+                        return UI_Utils.Instance.AvatarsOverlay;
+                    case StickerHelper.CATEGORY_INDIANS:
+                        return UI_Utils.Instance.IndiansOverlay;
+                    case StickerHelper.CATEGORY_JELLY:
+                        return UI_Utils.Instance.JellyOverlay;
+                    case StickerHelper.CATEGORY_SPORTS:
+                        return UI_Utils.Instance.SportsOverlay;
+                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                        return UI_Utils.Instance.SmileyExpressionsOverlay;
+                    case StickerHelper.CATEGORY_LOVE:
+                        return UI_Utils.Instance.LoveOverlay;
+                }
+                return null;
+            }
+        }
+
+        public string OverlayBackgroundColorString
+        {
+            set
+            {
+                _overlayBackground = value;
+            }
+        }
+
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -329,9 +406,7 @@ namespace windows_client.Model.Sticker
                                 using (BinaryWriter writer = new BinaryWriter(file))
                                 {
                                     _hasMoreStickers = hasMoreStickers;
-                                    writer.Write(_hasMoreStickers);
-                                    writer.Write(_showDownloadMessage);
-                                    writer.Write(_hasNewStickers);
+                                    this.Write(writer);
                                     writer.Flush();
                                     writer.Close();
                                 }
@@ -373,9 +448,7 @@ namespace windows_client.Model.Sticker
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
                                 this._showDownloadMessage = showDownloadMessage;
-                                writer.Write(_hasMoreStickers);
-                                writer.Write(showDownloadMessage);
-                                writer.Write(_hasNewStickers);
+                                this.Write(writer);
                                 writer.Flush();
                                 writer.Close();
                             }
@@ -388,6 +461,31 @@ namespace windows_client.Model.Sticker
                 }
             }
         }
-       
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(_hasMoreStickers);
+            writer.Write(_showDownloadMessage);
+            writer.Write(_hasNewStickers);
+            writer.WriteString(_overlayText);
+            writer.WriteString(_overlayBackground);
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            _hasMoreStickers = reader.ReadBoolean();
+            _showDownloadMessage = reader.ReadBoolean();
+            _hasNewStickers = reader.ReadBoolean();
+
+            try
+            {
+                _overlayText = reader.ReadString();
+                _overlayBackground = reader.ReadString();
+            }
+            catch
+            {
+            }
+        }
+
     }
 }

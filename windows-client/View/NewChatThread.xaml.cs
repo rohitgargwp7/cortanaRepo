@@ -6557,77 +6557,34 @@ namespace windows_client.View
         public void ShowDownloadOverlay(bool show)
         {
             EnableDisableUI(!show);
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory == null)
+                return;
+            gridDownloadStickers.DataContext = stickerCategory;
 
             if (show)
             {
-                switch (_selectedCategory)
+                if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID || _selectedCategory == StickerHelper.CATEGORY_EXPRESSIONS)
                 {
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        downloadDialogueImage.Source = UI_Utils.Instance.HumanoidOverlay;
-                        btnDownload.Content = AppResources.Installed_Txt;
-                        btnDownload.IsHitTestVisible = false;
-                        btnFree.IsHitTestVisible = false;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
-                        btnDownload.Content = AppResources.Installed_Txt;
-                        btnDownload.IsHitTestVisible = false;
-                        btnFree.IsHitTestVisible = false;
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        downloadDialogueImage.Source = UI_Utils.Instance.BollywoodOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_HUMANOID2:
-                        downloadDialogueImage.Source = UI_Utils.Instance.Humanoid2Overlay;
-                        break;
-                    case StickerHelper.CATEGORY_AVATARS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_INDIANS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_JELLY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.JellyOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_SPORTS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.SportsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_LOVE:
-                        downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
-                        break;
+                    btnDownload.Content = AppResources.Installed_Txt;
+                    btnDownload.IsHitTestVisible = false;
+                    btnFree.IsHitTestVisible = false;
                 }
-
                 overlayBorder.Tap += overlayBorder_Tapped;
-
                 overlayBorder.Visibility = Visibility.Visible;
                 gridDownloadStickers.Visibility = Visibility.Visible;
             }
             else
             {
                 overlayBorder.Tap -= overlayBorder_Tapped;
-
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
                     btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
-                    StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
                     if (stickerCategory.ShowDownloadMessage)
                         stickerCategory.SetDownloadMessage(false);
                 }
-
                 overlayBorder.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
             }
