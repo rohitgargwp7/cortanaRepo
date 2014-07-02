@@ -399,7 +399,7 @@ namespace windows_client.View
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
-            if (!MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
                 profileFTUECard.Visibility = Visibility.Collapsed;
             else
                 profileFTUECard.Visibility = Visibility.Visible;
