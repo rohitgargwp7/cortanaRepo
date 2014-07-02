@@ -968,8 +968,8 @@ namespace windows_client
                         }
                         else
                         {
-                            MyLink.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
-                            MyLink.MouseOverForeground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                            MyLink.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlue"];
+                            MyLink.MouseOverForeground = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                         }
 
                         string url = regexMatch;

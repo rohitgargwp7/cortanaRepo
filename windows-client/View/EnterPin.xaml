@@ -45,7 +45,7 @@
                                   HorizontalAlignment="Center" Width="440" Foreground="Black" InputScope="Number" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" >
                 <TextBlock Text="{Binding Path= LocalizedResources.EnterPin_WrongNumMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="20" Margin="0,0,-10,0"/>
-                <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlueHeader}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"/>
+                <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlue}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"/>
             </StackPanel>
         </Grid>
 
@@ -59,7 +59,7 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
             <TextBlock Grid.Row="1" Foreground="#888888" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_Wait1_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
-            <controls:MyRichTextBox Grid.Row="2" Foreground="#888888" TextForeground="{StaticResource HikeBlueHeader}" HorizontalAlignment="Center" TextAlignment="Center" LinkifyAll="True" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_Wait2_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
+            <controls:MyRichTextBox Grid.Row="2" Foreground="#888888" TextForeground="{StaticResource HikeBlue}" HorizontalAlignment="Center" TextAlignment="Center" LinkifyAll="True" Text="{Binding Path= LocalizedResources.EnterPin_SMSError_Wait2_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="18"/>
             <Button Grid.Row="3" Margin="0,18,0,0" Width="300" Height="44" FontSize="20" HorizontalAlignment="Center" x:Name="callMeButton" IsEnabled="False" Tap="callMe_Tap" Style="{StaticResource YesButtonStyle}"/>
         </Grid>
     </Grid>

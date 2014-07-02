@@ -13,7 +13,7 @@
     shell:SystemTray.IsVisible="False">
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
         <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
 
         <phone:LongListSelector x:Name="groupChatParticipants" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -65,7 +65,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
-                            <TextBlock Text="{Binding Msisdn}" Grid.Row="1" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" />
+                            <TextBlock Text="{Binding Msisdn}" Grid.Row="1" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}" FontSize="18" />
                         </Grid>
                         <Image Grid.Column="2" Source="/view/images/owner.png" MaxHeight="40" Visibility="{Binding IsOwnerVisibility}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,0,0"/>
                     </Grid>

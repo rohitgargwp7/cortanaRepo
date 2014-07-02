@@ -102,7 +102,7 @@ namespace windows_client.View
                         boyButtonImage.Source = UI_Utils.Instance.BoySelectedImage;
                         girlButtonImage.Source = UI_Utils.Instance.GirlUnSelectedImage;
 
-                        boyText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                        boyText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                         girlText.Foreground = (SolidColorBrush)App.Current.Resources["HikeGrey"];
 
                         if (randomText.Text == AppResources.RandomText_DefaultTxt)
@@ -431,7 +431,7 @@ namespace windows_client.View
             boyButtonImage.Source = UI_Utils.Instance.BoySelectedImage;
             girlButtonImage.Source = UI_Utils.Instance.GirlUnSelectedImage;
 
-            boyText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+            boyText.Foreground = (SolidColorBrush)App.Current.Resources["HikeBlue"];
             girlText.Foreground = (SolidColorBrush)App.Current.Resources["HikeGrey"];
 
             App.WriteToIsoStorageSettings(App.ACCOUNT_GENDER, gender);
