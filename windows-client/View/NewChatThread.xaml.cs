@@ -6595,6 +6595,9 @@ namespace windows_client.View
                     case StickerHelper.CATEGORY_INDIANS:
                         downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
                         break;
+                    case StickerHelper.CATEGORY_JELLY:
+                        downloadDialogueImage.Source = UI_Utils.Instance.JellyOverlay;
+                        break;
                     case StickerHelper.CATEGORY_SPORTS:
                         downloadDialogueImage.Source = UI_Utils.Instance.SportsOverlay;
                         break;
@@ -6717,6 +6720,10 @@ namespace windows_client.View
                     listStickerCategories.Add(stickerCategory);
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }

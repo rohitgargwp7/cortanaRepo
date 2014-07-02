@@ -140,8 +140,10 @@ namespace windows_client.Model.Sticker
                         return _isSelected ? UI_Utils.Instance.AvatarsActive : UI_Utils.Instance.AvatarsInactive;
                     case StickerHelper.CATEGORY_INDIANS:
                         return _isSelected ? UI_Utils.Instance.IndianActive : UI_Utils.Instance.IndianInactive;
+                    case StickerHelper.CATEGORY_JELLY:
+                        return _isSelected ? UI_Utils.Instance.JellyActive : UI_Utils.Instance.JellyInactive;
                     case StickerHelper.CATEGORY_SPORTS:
-                        return _isSelected ? UI_Utils.Instance.SportsActive: UI_Utils.Instance.SportsInactive;
+                        return _isSelected ? UI_Utils.Instance.SportsActive : UI_Utils.Instance.SportsInactive;
                     case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
                     case StickerHelper.CATEGORY_LOVE:

@@ -1401,6 +1401,17 @@ namespace windows_client.utils
                 return indiansOverlay;
             }
         }
+        private BitmapImage jellyOverlay;
+        public BitmapImage JellyOverlay
+        {
+            get
+            {
+                if (jellyOverlay == null)
+                    jellyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/jelly_overlay.png", UriKind.Relative));
+
+                return jellyOverlay;
+            }
+        }
         private BitmapImage sportsOverlay;
         public BitmapImage SportsOverlay
         {
@@ -1572,6 +1583,17 @@ namespace windows_client.utils
                 return indianInactive;
             }
         }
+        private BitmapImage jellyInactive;
+        public BitmapImage JellyInactive
+        {
+            get
+            {
+                if (jellyInactive == null)
+                    jellyInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/jelly_inactive.png", UriKind.Relative));
+
+                return jellyInactive;
+            }
+        }
         private BitmapImage sportsInactive;
         public BitmapImage SportsInactive
         {
@@ -1724,6 +1746,17 @@ namespace windows_client.utils
                     indianActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_active.png", UriKind.Relative));
 
                 return indianActive;
+            }
+        }
+        private BitmapImage jellyActive;
+        public BitmapImage JellyActive
+        {
+            get
+            {
+                if (jellyActive == null)
+                    jellyActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/jelly_active.png", UriKind.Relative));
+
+                return jellyActive;
             }
         }
         private BitmapImage sportsActive;

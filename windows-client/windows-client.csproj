@@ -739,6 +739,9 @@
     <Content Include="View\images\stickers\categorySets\humanoid2_inactive.png" />
     <Content Include="View\images\stickers\categorySets\humanoid_active.png" />
     <Content Include="View\images\stickers\categorySets\humanoid_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_active.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_overlay.png" />
     <Content Include="View\images\stickers\categorySets\kitty_active.png" />
     <Content Include="View\images\stickers\categorySets\kitty_inactive.png" />
     <Content Include="View\images\stickers\categorySets\love_overlay.png" />
