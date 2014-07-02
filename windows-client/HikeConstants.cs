@@ -385,6 +385,9 @@ namespace windows_client
         public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
         public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
         public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
+        public static readonly string FTUE_CARD_SEE_ALL_CLICKED = "ftueCardSeeAllClicked";
+        public static readonly string FTUE_CARD_START_CHAT_CLICKED = "ftueCardStartChatClicked";
+        public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar ";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";

@@ -784,6 +784,10 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Upgrade Pref Contacts Fix
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.1.3") < 0)
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
+            #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {
@@ -1003,7 +1007,7 @@ namespace windows_client
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
                 if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT))
-                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 1);
             }
             #endregion
             #region POST APP INFO ON UPDATE

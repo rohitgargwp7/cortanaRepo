@@ -901,13 +901,6 @@ namespace windows_client.View
             if (gp_obj == null)
                 return;
 
-            if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
-                return;
-
-            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
-            if (ci != null)
-                return;
-
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 

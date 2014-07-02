@@ -615,9 +615,14 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
-    <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
+    <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
+    <Content Include="View\images\ConversationPage\inviteCard.png" />
+    <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
+    <Content Include="View\images\ConversationPage\stickerCard.jpg" />
+    <Content Include="View\images\ConversationPage\timeline.jpg" />
+    <Content Include="View\images\ConversationPage\timelineQuote.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
@@ -643,8 +648,6 @@
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />
     <Content Include="View\images\ConversationPage\Chat_Selected.png" />
-    <Content Include="View\images\ConversationPage\empty_screen_logo_black.png" />
-    <Content Include="View\images\ConversationPage\empty_screen_tip_black.png" />
     <Content Include="View\images\ConversationPage\friend_Notselected.png" />
     <Content Include="View\images\ConversationPage\friend_selected.png" />
     <Content Include="View\images\ConversationPage\hike_header.png" />

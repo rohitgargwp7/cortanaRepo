@@ -1189,8 +1189,6 @@ namespace windows_client
                 Logging.LogWriter.Instance.WriteToLog(string.Format("Group pic change recieved for group:{0}, json:{1}", groupId, jsonObj.ToString()));
 
                 string from = (string)jsonObj[HikeConstants.FROM];
-                if (from == App.MSISDN) // if you changed the pic simply ignore
-                    return;
                 ConversationListObject cObj;
                 if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
