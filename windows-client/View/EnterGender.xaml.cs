@@ -163,6 +163,11 @@ namespace windows_client.View
 
         public void OnNextClick(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
+
+            isClicked = true;
+
             girlButton.IsEnabled = false;
             boyButton.IsEnabled = false;
             progressBar.Opacity = 1;
@@ -249,7 +254,7 @@ namespace windows_client.View
 
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
             Debug.WriteLine("Post addbook request returned successfully .... ");
-            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap, false);
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
             int count = 1;
