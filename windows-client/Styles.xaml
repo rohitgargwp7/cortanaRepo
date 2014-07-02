@@ -1837,7 +1837,6 @@
 
             <Style x:Key="FTUESmallCardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
                 <Setter Property="FontSize" Value="24"/>
-                <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>

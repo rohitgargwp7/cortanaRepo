@@ -363,6 +363,8 @@ namespace windows_client.View
             }
         }
 
+        int _usersOnHike;
+
         private void ShowFTUEOnHikeCard()
         {
             if (peopleOnHikeListBox.ItemsSource == null)
@@ -389,6 +391,9 @@ namespace windows_client.View
 
                     if (cn != null)
                         cl.Add(cn);
+
+                    if (cl.Count >= 4)
+                        break;
                 }
 
                 peopleOnHikeListBox.ItemsSource = cl;
@@ -397,12 +402,12 @@ namespace windows_client.View
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
             {
-                int usersOnHike = UsersTableUtils.getHikeContactCount();
-                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                _usersOnHike = UsersTableUtils.getHikeContactCount();
+                _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
                 
-                if (usersOnHike != 0)
+                if (_usersOnHike != 0)
                 {
-                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                     peopleOnHikeBorder.Visibility = Visibility.Visible;
                 }
                 else
@@ -1133,6 +1138,7 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                 });
             }
             #endregion
