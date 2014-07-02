@@ -415,7 +415,7 @@ namespace windows_client
                             this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
-                    
+
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
                     if (GroupManager.Instance.GroupCache != null)
@@ -1831,9 +1831,9 @@ namespace windows_client
                         bool isPush = true;
                         JToken pushJToken;
                         if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
-                            isPush = (Boolean)pushJToken; 
-                        
-                            object[] vals;
+                            isPush = (Boolean)pushJToken;
+
+                        object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
@@ -1934,6 +1934,29 @@ namespace windows_client
                 try
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = null;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
+                    {
+                        c.Avatar = null;
+                    }
+                    c = App.ViewModel.GetPending(msisdn);
+                    if (c != null) // for pending requests
+                    {
+                        c.Avatar = null;
+                    }
+
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    {
+                        // if bitmap is not already updated by fav or pending , simply remove the old image
+                        UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                        // this is done to notify that image is changed so load new one.
+                        App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                    }
                 }
                 catch (JsonReaderException ex)
                 {
