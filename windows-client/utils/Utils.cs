@@ -561,7 +561,7 @@ namespace windows_client.utils
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
-            data.Add(HikeConstants.Extras.SEND_BOT, true);
+            data.Add(HikeConstants.Extras.SEND_BOT, false);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
