@@ -285,6 +285,7 @@ namespace windows_client
         public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
         public static string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
         public static string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+        public static string SET_PROFILE_PIC = "setProfilePic";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";

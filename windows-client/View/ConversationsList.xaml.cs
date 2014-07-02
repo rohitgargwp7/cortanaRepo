@@ -399,6 +399,11 @@ namespace windows_client.View
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
+            if (!MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+            else
+                profileFTUECard.Visibility = Visibility.Visible;
+
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
             {
@@ -2881,8 +2886,6 @@ namespace windows_client.View
             StartNewChatWithSelectContact(c);
         }
 
-        #endregion
-
         private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -2900,6 +2903,31 @@ namespace windows_client.View
                 }
             }
         }
+
+        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+
+        private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
+        }
+
+        private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+            PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        #endregion
 
         #region Typing Notification
 
@@ -3037,16 +3065,6 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
     }
 }

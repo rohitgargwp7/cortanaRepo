@@ -26,7 +26,7 @@
             <Color x:Key="PhoneTextBoxEditBorderColor">#DE000000</Color>
             <Color x:Key="PhoneTextBoxForegroundColor">#DE000000</Color>
             <Color x:Key="PhoneTextBoxReadOnlyColor">#2E000000</Color>
-            <Color x:Key="PhoneTextBoxSelectionForegroundColor">#FFFFFFFF</Color>
+            <Color x:Key="PhoneTextBoxSelectionForegroundColor">#fff7f7f7</Color>
             <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
 
             <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
@@ -42,7 +42,7 @@
             <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
             <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
-            <SolidColorBrush x:Key="HikeLightGrey" Color="#e9e9e9"/>
+            <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
             <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
             
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
@@ -1591,7 +1591,7 @@
             </Style>
 
             <Style TargetType="toolkit:ToggleSwitch">
-                <Setter Property="Background" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource HikeWhite}"/>
                 <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}"/>
                 <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeLarge}"/>
                 <Setter Property="Foreground" Value="Black"/>
@@ -1633,7 +1633,7 @@
                 </Setter>
             </Style>
             <Style TargetType="toolkitPrimitives:ToggleSwitchButton">
-                <Setter Property="Background" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource HikeWhite}"/>
                 <Setter Property="IsTabStop" Value="False"/>
                 <Setter Property="SwitchForeground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="Template">
@@ -1709,12 +1709,8 @@
                 <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="LineStackingStrategy" Value="BaselineToBaseline"/>
             </Style>
-            
-            <Style x:Key="BaseTextBlock" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="Black"/>
-            </Style>
 
-            <Style x:Key="WelcomePageHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="WelcomePageHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="#535e6d"/>
                 <Setter Property="FontSize" Value="38"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -1724,7 +1720,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="ConversationChatHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ConversationChatHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="36"/>
                 <Setter Property="Margin" Value="0,-5,0,5"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -1735,7 +1731,7 @@
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
-            <Style x:Key="ConversationChatTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ConversationChatTimestampTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="TextAlignment" Value="Left"/>
@@ -1744,7 +1740,7 @@
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
-            <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="TextAlignment" Value="Center"/>
@@ -1754,13 +1750,13 @@
                 <Setter Property="Margin" Value="0,0,0,1"/>
             </Style>
 
-            <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="42"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="White"/>
             </Style>
 
-            <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="32"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontWeight" Value="Normal"/>
@@ -1779,7 +1775,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ContactNameTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="FontSize" Value="28"/>
@@ -1787,7 +1783,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="ContactMsisdnTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ContactMsisdnTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -1795,20 +1791,20 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
-            <Style x:Key="StatusUpdateContentTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateContentTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="22"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
             </Style>
 
-            <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1817,7 +1813,7 @@
                 <Setter Property="Margin" Value="0,0,20,0"/>
             </Style>
 
-            <Style x:Key="FTUECardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUECardHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="40"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1827,7 +1823,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUECardSubHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUECardSubHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="MaxWidth" Value="400"/>
@@ -1838,7 +1834,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUESmallCardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUESmallCardHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="24"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
@@ -1847,7 +1843,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUESmallCardSubHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUESmallCardSubHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
@@ -1857,7 +1853,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="SettingsHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SettingsHeaderTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="44"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1865,7 +1861,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="SettingsSubHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SettingsSubHeaderTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>

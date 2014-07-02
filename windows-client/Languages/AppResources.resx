@@ -2183,7 +2183,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
-    <value>It works like magic</value>
+    <value>it works like magic</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
@@ -2223,11 +2223,35 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
-    <value>You’ll love them!</value>
+    <value>you’ll love them!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_Txt" xml:space="preserve">
     <value>stickers</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_GroupNow_Txt" xml:space="preserve">
+    <value>tap to get started</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">
+    <value>Chat with upto 100 friends, its bigger than ever</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Group_Txt" xml:space="preserve">
+    <value>group chat</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
+    <value>tap here to set it</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
+    <value>It will help your friends to find you easily on hike</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Profile_Txt" xml:space="preserve">
+    <value>profile picture</value>
     <comment>max length 20</comment>
   </data>
 </root>
