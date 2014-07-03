@@ -106,7 +106,7 @@ namespace windows_client.View
 
             doneIconButton = new ApplicationBarIconButton();
             doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
-            doneIconButton.Text = AppResources.OK;
+            doneIconButton.Text = AppResources.AppBar_Done_Btn;
             doneIconButton.Click += doneIconButton_Click;
         }
 

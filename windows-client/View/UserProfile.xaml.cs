@@ -609,7 +609,7 @@ namespace windows_client.View
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
-                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.StatusUpdate_Photo, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
                         serverId, TimeUtils.getCurrentTimeStamp(), -1, true);
                     StatusMsgsTable.InsertStatusMsg(sm, false);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);

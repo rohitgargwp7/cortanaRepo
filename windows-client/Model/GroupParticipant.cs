@@ -155,7 +155,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnHike");
                     _isOnHike = value;
                     NotifyPropertyChanged("IsOnHike");
-                    NotifyPropertyChanged("GroupInfoBlockText");
                 }
             }
         }
@@ -267,18 +266,6 @@ namespace windows_client.Model
             }
         }
 
-        public string GroupInfoBlockText
-        {
-            get
-            {
-                if (IsOwner)
-                    return AppResources.Owner_Txt;
-                else if (!_isOnHike)
-                    return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
-                else return string.Empty;
-            }
-        }
-        
         public string FavMsg
         {
             get

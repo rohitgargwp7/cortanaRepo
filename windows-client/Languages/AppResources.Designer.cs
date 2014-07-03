@@ -160,7 +160,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next.
+        ///   Looks up a localized string similar to next.
         /// </summary>
         public static string AppBar_Next_Btn {
             get {
@@ -340,7 +340,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retry.
+        ///   Looks up a localized string similar to retry.
         /// </summary>
         public static string Button_Retry_Txt {
             get {
@@ -358,7 +358,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back.
+        ///   Looks up a localized string similar to back.
         /// </summary>
         public static string Camera_Back {
             get {
@@ -367,7 +367,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Front.
+        ///   Looks up a localized string similar to front.
         /// </summary>
         public static string Camera_Front {
             get {
@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera:.
+        ///   Looks up a localized string similar to camera:.
         /// </summary>
         public static string Camera_Label {
             get {
@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot change Profile Image. Try Later!!.
+        ///   Looks up a localized string similar to Cannot change profile image. Try again later..
         /// </summary>
         public static string Cannot_Change_Img_Error_Txt {
             get {
@@ -412,7 +412,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot change Group Image. Try Later!!.
+        ///   Looks up a localized string similar to Cannot change group image. Try later!!.
         /// </summary>
         public static string CannotChangeGrpImg_Txt {
             get {
@@ -421,7 +421,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot change GroupName. Try Later!!.
+        ///   Looks up a localized string similar to Cannot change group name. Try later!!.
         /// </summary>
         public static string CannotChangeGrpName_Txt {
             get {
@@ -435,51 +435,6 @@ namespace windows_client.Languages {
         public static string ChangePic_AppBar_Txt {
             get {
                 return ResourceManager.GetString("ChangePic_AppBar_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chat Themes!.
-        /// </summary>
-        public static string Chat_FTUE_chatThemes {
-            get {
-                return ResourceManager.GetString("Chat_FTUE_chatThemes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Give it a spin!.
-        /// </summary>
-        public static string Chat_FTUE_giveSpin {
-            get {
-                return ResourceManager.GetString("Chat_FTUE_giveSpin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to We&apos;ve got a gift for you!.
-        /// </summary>
-        public static string Chat_FTUE_HappyHiking {
-            get {
-                return ResourceManager.GetString("Chat_FTUE_HappyHiking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Gift.
-        /// </summary>
-        public static string Chat_FTUE_OpenGift {
-            get {
-                return ResourceManager.GetString("Chat_FTUE_OpenGift", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Personalise your chat with gorgeous themes..
-        /// </summary>
-        public static string Chat_FTUE_personalise {
-            get {
-                return ResourceManager.GetString("Chat_FTUE_personalise", resourceCulture);
             }
         }
         
@@ -547,7 +502,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump to latest.
+        ///   Looks up a localized string similar to jump to latest.
         /// </summary>
         public static string ChatThread_JumpToLatest {
             get {
@@ -1204,7 +1159,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Critical update!.
+        ///   Looks up a localized string similar to Critical Update!.
         /// </summary>
         public static string CRITICAL_UPDATE_HEADING {
             get {
@@ -1330,16 +1285,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to done.
-        /// </summary>
-        public static string Done_Txt {
-            get {
-                return ResourceManager.GetString("Done_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download.
+        ///   Looks up a localized string similar to download.
         /// </summary>
         public static string Download_txt {
             get {
@@ -1597,15 +1543,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed. Close App and try again !!.
-        /// </summary>
-        public static string EnterName_Failed_Txt {
-            get {
-                return ResourceManager.GetString("EnterName_Failed_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Getting you in.
         /// </summary>
         public static string EnterName_Msg_TxtBlk {
@@ -1624,29 +1561,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error!! Name not set. Try Again!!.
+        ///   Looks up a localized string similar to Error! Name not set. Try Again!.
         /// </summary>
         public static string EnterName_NameErrorTxt {
             get {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scanning Contacts ....
-        /// </summary>
-        public static string EnterName_ScanningContacts_Txt {
-            get {
-                return ResourceManager.GetString("EnterName_ScanningContacts_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You&apos;re all set on .
-        /// </summary>
-        public static string EnterName_YourMsisdn_TxtBlk {
-            get {
-                return ResourceManager.GetString("EnterName_YourMsisdn_TxtBlk", resourceCulture);
             }
         }
         
@@ -1759,7 +1678,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We sent you a 4 digit SMS PIN. Enter It..
+        ///   Looks up a localized string similar to We sent you a 4 digit SMS PIN. Enter it..
         /// </summary>
         public static string EnterPin_PinMsg_TxtBlk {
             get {
@@ -2146,15 +2065,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GROUP NAME.
-        /// </summary>
-        public static string GROUP_NAME_TXT {
-            get {
-                return ResourceManager.GetString("GROUP_NAME_TXT", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This group chat is blocked. Would you like to unblock the group owner?.
         /// </summary>
         public static string GroupBlocked_PomptTxt {
@@ -2218,7 +2128,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Name can have maximum 50 chars..
+        ///   Looks up a localized string similar to Group name can have maximum 50 chars..
         /// </summary>
         public static string GroupInfo_GrpNameMaxLength_Txt {
             get {
@@ -2277,15 +2187,6 @@ namespace windows_client.Languages {
         public static string GrpChat_Txt {
             get {
                 return ResourceManager.GetString("GrpChat_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Group Name.
-        /// </summary>
-        public static string GrpName_Txt {
-            get {
-                return ResourceManager.GetString("GrpName_Txt", resourceCulture);
             }
         }
         
@@ -2470,24 +2371,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View the meet hike walkthrough.
-        /// </summary>
-        public static string Help_WalkthroughText {
-            get {
-                return ResourceManager.GetString("Help_WalkthroughText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Walkthrough.
-        /// </summary>
-        public static string Help_WalkthroughTitle {
-            get {
-                return ResourceManager.GetString("Help_WalkthroughTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hold and talk.
         /// </summary>
         public static string Hold_And_Talk {
@@ -2596,7 +2479,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installed.
+        ///   Looks up a localized string similar to installed.
         /// </summary>
         public static string Installed_Txt {
             get {
@@ -2659,16 +2542,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite.
-        /// </summary>
-        public static string Invite_Small {
-            get {
-                return ResourceManager.GetString("Invite_Small", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invited.
+        ///   Looks up a localized string similar to invited.
         /// </summary>
         public static string Invited {
             get {
@@ -2875,7 +2749,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8.
+        ///   Looks up a localized string similar to Memory Limit Reached.
         /// </summary>
         public static string Memory_Limit_Reached_Header {
             get {
@@ -2965,7 +2839,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Angry .
+        ///   Looks up a localized string similar to Angry.
         /// </summary>
         public static string Mood_Angry {
             get {
@@ -2983,7 +2857,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boozing .
+        ///   Looks up a localized string similar to Boozing.
         /// </summary>
         public static string Mood_Boozing {
             get {
@@ -2992,7 +2866,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Busy .
+        ///   Looks up a localized string similar to Busy.
         /// </summary>
         public static string Mood_Busy {
             get {
@@ -3001,7 +2875,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Caffeinated .
+        ///   Looks up a localized string similar to Caffeinated.
         /// </summary>
         public static string Mood_Caffeinated {
             get {
@@ -3010,7 +2884,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chilling .
+        ///   Looks up a localized string similar to Chilling.
         /// </summary>
         public static string Mood_Chilling {
             get {
@@ -3019,7 +2893,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Coding .
+        ///   Looks up a localized string similar to Coding.
         /// </summary>
         public static string Mood_Coding {
             get {
@@ -3028,7 +2902,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confused .
+        ///   Looks up a localized string similar to Confused.
         /// </summary>
         public static string Mood_Confused {
             get {
@@ -3046,7 +2920,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Driving .
+        ///   Looks up a localized string similar to Driving.
         /// </summary>
         public static string Mood_Driving {
             get {
@@ -3064,7 +2938,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gaming .
+        ///   Looks up a localized string similar to Gaming.
         /// </summary>
         public static string Mood_Gaming {
             get {
@@ -3073,7 +2947,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Happy .
+        ///   Looks up a localized string similar to Happy.
         /// </summary>
         public static string Mood_Happy {
             get {
@@ -3082,7 +2956,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hungover .
+        ///   Looks up a localized string similar to Hungover.
         /// </summary>
         public static string Mood_Hungover {
             get {
@@ -3091,7 +2965,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In a movie .
+        ///   Looks up a localized string similar to In a movie.
         /// </summary>
         public static string Mood_In_a_movie {
             get {
@@ -3100,7 +2974,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In love .
+        ///   Looks up a localized string similar to In love.
         /// </summary>
         public static string Mood_In_love {
             get {
@@ -3109,7 +2983,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insomniac .
+        ///   Looks up a localized string similar to Insomniac.
         /// </summary>
         public static string Mood_Insomniac {
             get {
@@ -3118,7 +2992,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Love it .
+        ///   Looks up a localized string similar to Love it.
         /// </summary>
         public static string Mood_Love_it {
             get {
@@ -3127,7 +3001,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Middle finger .
+        ///   Looks up a localized string similar to Middle finger.
         /// </summary>
         public static string Mood_Middle_finger {
             get {
@@ -3154,7 +3028,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running late .
+        ///   Looks up a localized string similar to Running late.
         /// </summary>
         public static string Mood_Running_late {
             get {
@@ -3163,7 +3037,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sad .
+        ///   Looks up a localized string similar to Sad.
         /// </summary>
         public static string Mood_Sad {
             get {
@@ -3172,7 +3046,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shopping .
+        ///   Looks up a localized string similar to Shopping.
         /// </summary>
         public static string Mood_Shopping {
             get {
@@ -3199,7 +3073,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sleepy .
+        ///   Looks up a localized string similar to Sleepy.
         /// </summary>
         public static string Mood_Sleepy {
             get {
@@ -3208,7 +3082,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stuck in traffic .
+        ///   Looks up a localized string similar to Stuck in traffic.
         /// </summary>
         public static string Mood_Stuck_in_traffic {
             get {
@@ -3217,7 +3091,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Studying .
+        ///   Looks up a localized string similar to Studying.
         /// </summary>
         public static string Mood_Studying {
             get {
@@ -3487,7 +3361,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Important update!.
+        ///   Looks up a localized string similar to Important Update!.
         /// </summary>
         public static string NORMAL_UPDATE_HEADING {
             get {
@@ -3559,15 +3433,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK.
-        /// </summary>
-        public static string OK {
-            get {
-                return ResourceManager.GetString("OK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to On.
         /// </summary>
         public static string On {
@@ -3631,15 +3496,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to owner.
-        /// </summary>
-        public static string Owner_Txt {
-            get {
-                return ResourceManager.GetString("Owner_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
         public static string Pause_Txt {
@@ -3663,15 +3519,6 @@ namespace windows_client.Languages {
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Changed profile picture.
-        /// </summary>
-        public static string PicUpdate_StatusTxt {
-            get {
-                return ResourceManager.GetString("PicUpdate_StatusTxt", resourceCulture);
             }
         }
         
@@ -3847,7 +3694,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to is sharing Last Seen and Status Updates with you. Would you like to do the same?.
+        ///   Looks up a localized string similar to is sharing last seen and status updates with you. Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {
@@ -3892,7 +3739,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share your Last Seen and Status Updates only with Favorite Contacts..
+        ///   Looks up a localized string similar to Share your last seen and status updates only with favorite contacts..
         /// </summary>
         public static string ProfileToBeFriendBlk1 {
             get {
@@ -4045,51 +3892,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TAP TO PLAY.
-        /// </summary>
-        public static string RecordAudio_Play {
-            get {
-                return ResourceManager.GetString("RecordAudio_Play", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PLAYING.
-        /// </summary>
-        public static string RecordAudio_Playing {
-            get {
-                return ResourceManager.GetString("RecordAudio_Playing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TAP ICON TO RECORD.
-        /// </summary>
-        public static string RecordAudio_Record {
-            get {
-                return ResourceManager.GetString("RecordAudio_Record", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to RECORDING.
-        /// </summary>
-        public static string RecordAudio_Recording {
-            get {
-                return ResourceManager.GetString("RecordAudio_Recording", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to record audio.
-        /// </summary>
-        public static string RecordMedia_Title {
-            get {
-                return ResourceManager.GetString("RecordMedia_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to release to send.
         /// </summary>
         public static string Release_To_Send {
@@ -4126,7 +3928,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolution:.
+        ///   Looks up a localized string similar to resolution:.
         /// </summary>
         public static string Reolution_Label {
             get {
@@ -4198,7 +4000,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User already added !!.
+        ///   Looks up a localized string similar to User already added.
         /// </summary>
         public static string SelectUser_AlreadyAdded_Txt {
             get {
@@ -4230,15 +4032,6 @@ namespace windows_client.Languages {
         public static string SelectUser_CantAddUser_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_CantAddUser_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}[{1}] will be removed from group..
-        /// </summary>
-        public static string SelectUser_ContactRemoved_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_ContactRemoved_Txt", resourceCulture);
             }
         }
         
@@ -4360,15 +4153,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove Contact?.
-        /// </summary>
-        public static string SelectUser_RemoveContact_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_RemoveContact_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to show sms contacts.
         /// </summary>
         public static string SelectUser_ShowSmsContacts_Txt {
@@ -4383,15 +4167,6 @@ namespace windows_client.Languages {
         public static string SelectUser_SmsMsg_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_SmsMsg_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tap here to message this person.
-        /// </summary>
-        public static string SelectUser_TapMsg_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_TapMsg_Txt", resourceCulture);
             }
         }
         
@@ -4774,38 +4549,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Location Service is working, but it cannot get location data..
-        /// </summary>
-        public static string ShareLocation_LocationServiceWorking_Txt {
-            get {
-                return ResourceManager.GetString("ShareLocation_LocationServiceWorking_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hike Location Setting is disabled. Would you like to turn it ON?.
         /// </summary>
         public static string ShareLocation_LocationSettingsNotEnabled_Txt {
             get {
                 return ResourceManager.GetString("ShareLocation_LocationSettingsNotEnabled_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please wait while your position is determined.....
-        /// </summary>
-        public static string ShareLocation_PlsWaitForPosition_Txt {
-            get {
-                return ResourceManager.GetString("ShareLocation_PlsWaitForPosition_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to share location.
-        /// </summary>
-        public static string ShareLocation_Txt {
-            get {
-                return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
             }
         }
         
@@ -4860,24 +4608,6 @@ namespace windows_client.Languages {
         public static string SMS_Works_Only_In_India_Txt {
             get {
                 return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Social.
-        /// </summary>
-        public static string Social_Txt {
-            get {
-                return ResourceManager.GetString("Social_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to retrieve request token..
-        /// </summary>
-        public static string SocialPages_UnableToRetrieveToken_Txt {
-            get {
-                return ResourceManager.GetString("SocialPages_UnableToRetrieveToken_Txt", resourceCulture);
             }
         }
         
@@ -5386,7 +5116,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to High Quality (720p).
+        ///   Looks up a localized string similar to high quality (720p).
         /// </summary>
         public static string Video_High_Quality_Txt {
             get {
@@ -5395,7 +5125,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Low Quality (QVGA).
+        ///   Looks up a localized string similar to low quality (QVGA).
         /// </summary>
         public static string Video_Low_Quality_Txt {
             get {
@@ -5413,7 +5143,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Standard Quality (VGA) (default).
+        ///   Looks up a localized string similar to standard quality (VGA) (default).
         /// </summary>
         public static string Video_Standard_Quality_Txt {
             get {
@@ -5508,15 +5238,6 @@ namespace windows_client.Languages {
         public static string WAITING_TO_JOIN {
             get {
                 return ResourceManager.GetString("WAITING_TO_JOIN", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to swipe left to continue.
-        /// </summary>
-        public static string Walkthrough_H2H_SwipeLeft {
-            get {
-                return ResourceManager.GetString("Walkthrough_H2H_SwipeLeft", resourceCulture);
             }
         }
         

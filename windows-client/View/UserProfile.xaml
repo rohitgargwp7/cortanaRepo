@@ -39,7 +39,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock FontSize="32" Name="txtUserName" TextTrimming="WordEllipsis" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}"
+                                <TextBlock FontSize="32" Name="txtUserName" TextTrimming="WordEllipsis"
                                             VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" Foreground="White">
                                     <toolkit:GestureService.GestureListener>
                                         <toolkit:GestureListener Tap="GestureListener_Tap" />

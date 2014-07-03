@@ -33,7 +33,7 @@
                                 <TextBlock x:Name="groupNameTextBlock" Foreground="White" FontSize="32" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
                             </Grid>
                             <toolkit:PhoneTextBox LineStackingStrategy="BaselineToBaseline" Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
-                                              FontSize="32" MaxLength="50" Margin="-13,-14.5" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
+                                              FontSize="32" MaxLength="50" Margin="-13,-14.5" Name="groupNameTxtBox" Height="72" 
                                               VerticalAlignment="Center" TextWrapping="NoWrap" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
                                               InputScope="Text" Style="{StaticResource TextBoxWithTransparentBackground}" Visibility="Collapsed"/>
                             <TextBlock x:Name="groupData" Grid.Row="1" Foreground="White" FontSize="20"/>
