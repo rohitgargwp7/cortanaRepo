@@ -46,12 +46,12 @@ private copy.
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
 
-    <SolidColorBrush x:Key="HikeWhite" Color="#f7f7f7"/>
-    <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
-    <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
-    <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
-    <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
-    <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
+    <SolidColorBrush x:Key="HikeWhite" Color="{StaticResource HikeWhiteColor}"/>
+    <SolidColorBrush x:Key="HikeBlue" Color="{StaticResource HikeBlueColor}"/>
+    <SolidColorBrush x:Key="HikeGrey" Color="{StaticResource HikeGreyColor}"/>
+    <SolidColorBrush x:Key="HikeDarkGrey" Color="{StaticResource HikeDarkGreyColor}"/>
+    <SolidColorBrush x:Key="HikeLightGrey" Color="{StaticResource HikeLightGreyColor}"/>
+    <SolidColorBrush x:Key="HikeBlack" Color="{StaticResource HikeBlackColor}"/>
 
     <SolidColorBrush x:Key="HikeBGBrush" Color="{StaticResource HikeWhiteColor}"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="{StaticResource HikeBlackColor}"/>
@@ -1613,7 +1613,7 @@ private copy.
         <Setter Property="Background" Value="{StaticResource HikeBGBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}"/>
         <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeLarge}"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="{StaticResource HikeFGBrush}"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="SwitchForeground" Value="{StaticResource HikeBlue}"/>
@@ -1706,15 +1706,15 @@ private copy.
                                             <TranslateTransform x:Name="BackgroundTranslation"/>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
-                                    <Border BorderBrush="Black" BorderThickness="3">
-                                        <Border BorderBrush="White" BorderThickness="4"/>
+                                    <Border BorderBrush="{StaticResource HikeFGBrush}" BorderThickness="3">
+                                        <Border BorderBrush="{StaticResource HikeBGBrush}" BorderThickness="4"/>
                                     </Border>
                                 </Grid>
-                                <Border x:Name="SwitchThumb" BorderBrush="White" BorderThickness="4,0" HorizontalAlignment="Left" Height="38" Margin="-4,0" Width="28">
+                                <Border x:Name="SwitchThumb" BorderBrush="{StaticResource HikeBGBrush}" BorderThickness="4,0" HorizontalAlignment="Left" Height="38" Margin="-4,0" Width="28">
                                     <Border.RenderTransform>
                                         <TranslateTransform x:Name="ThumbTranslation"/>
                                     </Border.RenderTransform>
-                                    <Border x:Name="ThumbCenter" BorderBrush="Black" BorderThickness="2" Background="Black"/>
+                                    <Border x:Name="ThumbCenter" BorderBrush="{StaticResource HikeFGBrush}" BorderThickness="2" Background="{StaticResource HikeFGBrush}"/>
                                 </Border>
                             </Grid>
                         </Grid>
@@ -1725,7 +1725,7 @@ private copy.
     </Style>
 
     <Style TargetType="TextBlock">
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="{StaticResource HikeFGBrush}"/>
         <Setter Property="LineStackingStrategy" Value="BaselineToBaseline"/>
     </Style>
 

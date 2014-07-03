@@ -2254,4 +2254,7 @@ Download it like asap from http://hike.in!</value>
     <value>profile picture</value>
     <comment>max length 20</comment>
   </data>
+  <data name="BlackSettings_Txt" xml:space="preserve">
+    <value>Night mode</value>
+  </data>
 </root>

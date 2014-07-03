@@ -29,7 +29,7 @@
                     <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="onProfilePicButtonTap">
                         <Image x:Name="avatarImage" Source="images\default_group.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
-                            <Border Background="{StaticResource HikeFGBrush}" Opacity="0.95" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <Border Background="{StaticResource HikeBlack}" Opacity="0.95" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="25">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
