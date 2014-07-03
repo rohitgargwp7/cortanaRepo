@@ -762,9 +762,9 @@ namespace windows_client.utils
                 case StickerHelper.CATEGORY_TROLL:
                     return "#349d26";
                 case StickerHelper.CATEGORY_HUMANOID2:
-                    return "#dc357c";
+                    return "#c63070";
                 case StickerHelper.CATEGORY_AVATARS:
-                    return "#d01b21";
+                    return "#b9181d";
                 case StickerHelper.CATEGORY_INDIANS:
                     return "#6238b7";
                 case StickerHelper.CATEGORY_JELLY:
@@ -794,7 +794,7 @@ namespace windows_client.utils
                 case StickerHelper.CATEGORY_BOLLYWOOD:
                     return "Bollywood Masala";
                 case StickerHelper.CATEGORY_TROLL:
-                    return "What's your Rage Face?";
+                    return "Rage Face";
                 case StickerHelper.CATEGORY_HUMANOID2:
                     return "You & I";
                 case StickerHelper.CATEGORY_AVATARS:
