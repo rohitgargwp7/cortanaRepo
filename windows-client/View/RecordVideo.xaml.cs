@@ -73,6 +73,12 @@ namespace windows_client.View
 
         private void InitAppBar()
         {
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
+            };
+
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
             sendIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
