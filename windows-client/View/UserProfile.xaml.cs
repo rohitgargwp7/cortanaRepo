@@ -458,8 +458,8 @@ namespace windows_client.View
             }
 
             ContextMenu menu = new ContextMenu();
-            menu.Background = UI_Utils.Instance.Black;
-            menu.Foreground = UI_Utils.Instance.White;
+            menu.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
+            menu.Foreground = (SolidColorBrush)App.Current.Resources["HikeContextMenuFGBrush"];
             menu.IsZoomEnabled = false;
 
             MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };

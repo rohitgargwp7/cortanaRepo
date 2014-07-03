@@ -38,13 +38,14 @@ private copy.
 
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
-    
+
     <Color x:Key="HikeBlackColor">#2c313d</Color>
 
     <SolidColorBrush x:Key="HikeWhite" Color="#f7f7f7"/>
     <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
     <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
     <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
+    <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
     <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
 
     <SolidColorBrush x:Key="HikeBGBrush" Color="#1b1b1b"/>
@@ -911,20 +912,32 @@ private copy.
                                 <VisualState x:Name="Focused">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="HintBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBGBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="HintContent">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeLightGrey}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeFGBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unfocused">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="HintBorder">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBGBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="HintContent">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeLightGrey}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeFGBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
