@@ -326,7 +326,7 @@ namespace windows_client.View
                     InitSelfProfile();
 
                     #region SET PROFILE PIC
-                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
                     {
                         try
                         {
@@ -336,7 +336,7 @@ namespace windows_client.View
                         {
                             Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
                         }
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
                     }
                     #endregion
                 }
