@@ -4405,25 +4405,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everyone.
-        /// </summary>
-        public static string Settings_ProfilePicture_Everyone {
-            get {
-                return ResourceManager.GetString("Settings_ProfilePicture_Everyone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Favorites Only.
-        /// </summary>
-        public static string Settings_ProfilePicture_Favorites {
-            get {
-                return ResourceManager.GetString("Settings_ProfilePicture_Favorites", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show profile picture to:.
+        ///   Looks up a localized string similar to Show profile picture to Favorites only.
         /// </summary>
         public static string Settings_ProfilePictureToggleSwitchHeader {
             get {

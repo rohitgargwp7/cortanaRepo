@@ -2177,12 +2177,6 @@ Download it like asap from http://hike.in!</value>
     <value>hike up your life</value>
   </data>
   <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
-    <value>Show profile picture to:</value>
-  </data>
-  <data name="Settings_ProfilePicture_Everyone" xml:space="preserve">
-    <value>Everyone</value>
-  </data>
-  <data name="Settings_ProfilePicture_Favorites" xml:space="preserve">
-    <value>Favorites Only</value>
+    <value>Show profile picture to Favorites only</value>
   </data>
 </root>

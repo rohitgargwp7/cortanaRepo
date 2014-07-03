@@ -27,7 +27,7 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue(App.DISPLAYPIC_EVERYONE, out value))
                 value = true;
             profilePictureToggle.IsChecked = value;
-            this.profilePictureToggle.Content = value ? AppResources.Settings_ProfilePicture_Everyone : AppResources.Settings_ProfilePicture_Favorites;
+            this.profilePictureToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -78,7 +78,7 @@ namespace windows_client.View
 
         private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.profilePictureToggle.Content = AppResources.Settings_ProfilePicture_Everyone;
+            this.profilePictureToggle.Content = AppResources.On;
             App.RemoveKeyFromAppSettings(App.DISPLAYPIC_EVERYONE);
 
             JObject obj = new JObject();
@@ -92,7 +92,7 @@ namespace windows_client.View
 
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
         {
-            this.profilePictureToggle.Content = AppResources.Settings_ProfilePicture_Favorites;
+            this.profilePictureToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.DISPLAYPIC_EVERYONE, false);
 
             JObject obj = new JObject();
