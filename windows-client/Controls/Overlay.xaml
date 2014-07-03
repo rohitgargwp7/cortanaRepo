@@ -20,7 +20,7 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <Border Background="{StaticResource HikeBlack}" Opacity="0.95" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Border Background="{StaticResource HikeOverlayBGBrush}" Opacity="0.95" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <Border x:Name="content" VerticalAlignment="Center" Background="White" Margin="40">
             <Grid Margin="25">
                 <Grid.RowDefinitions>

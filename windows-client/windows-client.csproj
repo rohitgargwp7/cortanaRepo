@@ -247,6 +247,7 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="Model\Sticker\StickerCategory.cs" />
     <Compile Include="utils\Sticker Helper\StickerHelper.cs" />
+    <Compile Include="utils\ThemeManager.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -374,9 +375,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles.xaml">
+    <Resource Include="DarkTheme.xaml">
       <SubType>Designer</SubType>
-    </Page>
+    </Resource>
+    <Resource Include="LightTheme.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

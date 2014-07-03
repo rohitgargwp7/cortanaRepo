@@ -178,6 +178,7 @@ namespace windows_client
         public const string FTUE_HIKE_DAILY_MSISDN = "+hike3+";
 
         public static readonly string VERSION = "version";
+        public static readonly string BLACK_THEME = "black_theme";
 
         public static string FAQS_LINK
         {

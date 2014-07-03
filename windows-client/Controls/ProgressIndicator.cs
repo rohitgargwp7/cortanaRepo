@@ -23,7 +23,7 @@ namespace windows_client.Controls
         public ProgressIndicatorControl()
         {
             overlayrectangle = new Rectangle();
-            overlayrectangle.Fill = (SolidColorBrush)App.Current.Resources["HikeBlack"];
+            overlayrectangle.Fill = (SolidColorBrush)App.Current.Resources["HikeOverlayBGBrush"];
             overlayrectangle.Visibility = Visibility.Collapsed;
             overlayrectangle.Opacity = 0.95;
 
@@ -37,7 +37,7 @@ namespace windows_client.Controls
             txtProgressText.TextWrapping = TextWrapping.Wrap;
             txtProgressText.HorizontalAlignment = HorizontalAlignment.Center;
             txtProgressText.TextAlignment = TextAlignment.Center;
-            txtProgressText.Foreground = UI_Utils.Instance.White;
+            txtProgressText.Foreground = (SolidColorBrush)App.Current.Resources["HikeOverlayFGBrush"];
             spProgress.Children.Add(txtProgressText);
 
             pBar = new ProgressBar();

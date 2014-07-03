@@ -16,7 +16,7 @@
 
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,7 +27,7 @@
 
         <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.Row="5" VerticalAlignment="Top" Foreground="White"/>
 
-        <Grid Background="{StaticResource HikeBlue}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
@@ -68,7 +68,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="4">
             <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Gender_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                        Style="{StaticResource EditProfileLabelTextBlock}"/>
-            <toolkit:ListPicker x:Name="genderListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeBlue}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeBlack}"/>
+            <toolkit:ListPicker x:Name="genderListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeBlue}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}"/>
         </StackPanel>
     </Grid>
 

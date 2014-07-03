@@ -13,7 +13,7 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     shell:SystemTray.IsVisible="False">
 
-    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Rectangle Height="800" Width="480" 
                    VerticalAlignment="Bottom"
                    HorizontalAlignment="Center"

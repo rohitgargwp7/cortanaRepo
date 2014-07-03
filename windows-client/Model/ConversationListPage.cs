@@ -483,7 +483,7 @@ namespace windows_client.Model
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
                     return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
-                    return (SolidColorBrush)Application.Current.Resources["HikeDarkGrey"];
+                    return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
             }
         }
 

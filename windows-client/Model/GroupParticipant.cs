@@ -155,7 +155,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnHike");
                     _isOnHike = value;
                     NotifyPropertyChanged("IsOnHike");
-                    NotifyPropertyChanged("SquareColor");
                     NotifyPropertyChanged("GroupInfoBlockText");
                 }
             }
@@ -343,18 +342,6 @@ namespace windows_client.Model
                 if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public SolidColorBrush SquareColor
-        {
-            get
-            {
-                if (_isOnHike)
-                {
-                    return UI_Utils.Instance.HikeBlue;
-                }
-                return UI_Utils.Instance.SmsBackground;
             }
         }
 
