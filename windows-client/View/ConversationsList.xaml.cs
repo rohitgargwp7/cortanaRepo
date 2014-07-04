@@ -65,6 +65,15 @@ namespace windows_client.View
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
+        DefaultStatus DefaultStatus
+        {
+            get
+            {
+                if (_defaultStatus == null)
+                    _defaultStatus = new DefaultStatus();
+                return _defaultStatus;
+            }
+        }
 
         #endregion
 
@@ -108,7 +117,6 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-            _defaultStatus = new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName));
         }
 
         string _firstName;
@@ -209,10 +217,13 @@ namespace windows_client.View
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
+            {
+                emptyScreenGrid.Visibility = Visibility.Visible;
+                ShowFTUEOnHikeCard();
+            }
             else
             {
-                emptyScreenGrid.Opacity = 0;
+                emptyScreenGrid.Visibility = Visibility.Collapsed;
 
                 if (App.ViewModel.IsConversationUpdated)
                 {
@@ -310,17 +321,13 @@ namespace windows_client.View
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
-            {
-                ShowLaunchMessages();
-            }
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
+            emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
-            else
-                emptyScreenGrid.Opacity = 0;
+                ShowFTUEOnHikeCard();
 
             appBar.IsMenuEnabled = true;
 
@@ -356,55 +363,55 @@ namespace windows_client.View
             }
         }
 
-        private void ShowLaunchMessages()
+        private void ShowFTUEOnHikeCard()
         {
-            List<ContactInfo> cl = null;
-            App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out cl);
-            if (cl == null)
+            if (peopleOnHikeListBox.ItemsSource == null)
             {
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
-                return;
-            }
-            Random rnd = new Random();
-            for (int i = 0; i < cl.Count; i++)
-            {
-                ConvMessage c = null;
-                JObject j = new JObject();
-                if (cl[i].OnHike)
+                List<ContactInfo> cl = null;
+                List<string> contacts = null;
+                App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out contacts);
+
+                if (contacts == null)
+                    return;
+
+                cl = new List<ContactInfo>();
+                ContactInfo cn;
+                foreach (var msisdn in contacts)
                 {
-                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
-                    c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = string.Format(rnd.Next(1, 3) == 1 ? AppResources.Conversations_MessageOnHike_Txt : AppResources.Conversations_SayHI_Txt, cl[i].Name);
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        cn = App.ViewModel.ContactsCache[msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
+                        if (cn != null)
+                            App.ViewModel.ContactsCache[msisdn] = cn;
+                    }
+
+                    if (cn != null)
+                        cl.Add(cn);
+                }
+
+                peopleOnHikeListBox.ItemsSource = cl;
+            }
+
+            var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
+            if (list != null)
+            {
+                int usersOnHike = UsersTableUtils.getHikeContactCount();
+                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                
+                if (usersOnHike != 0)
+                {
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeBorder.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.SMS_USER;
-                    c = new ConvMessage(ConvMessage.ParticipantInfoState.SMS_USER, j);
-                    c.Message = string.Format(AppResources.Conversations_OnSMS_Txt, cl[i].Name);
-                }
-                c.Msisdn = cl[i].Msisdn;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(c, false);
-                if (convObj != null)
-                {
-                    //cannot use convMap here because object has pushed to map but not to ui
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                     {
-                         int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
-                         if (index < 0)//not present in oc
-                         {
-                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                         }
-                         else if (index > 0)
-                         {
-                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                         }//if already at zero, do nothing
-
-                         emptyScreenGrid.Opacity = 0;
-                     });
+                    peopleOnHikeBorder.Visibility = Visibility.Collapsed;
                 }
             }
-            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
+            else
+                peopleOnHikeBorder.Visibility = Visibility.Collapsed;
         }
 
         private void initAppBar()
@@ -712,7 +719,8 @@ namespace windows_client.View
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenGrid.Opacity = 1;
+            emptyScreenGrid.Visibility = Visibility.Visible;
+            ShowFTUEOnHikeCard();
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             shellProgress.IsIndeterminate = false;
@@ -760,6 +768,8 @@ namespace windows_client.View
             //    return;
             //}
 
+            Analytics.SendClickEvent(HikeConstants.NEW_CHAT_FROM_TOP_BAR);
+
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
@@ -770,7 +780,8 @@ namespace windows_client.View
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenGrid.Opacity = 1;
+                emptyScreenGrid.Visibility = Visibility.Visible;
+                ShowFTUEOnHikeCard();
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -873,10 +884,7 @@ namespace windows_client.View
                             favourites.Visibility = System.Windows.Visibility.Visible;
                         }
                         else
-                        {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                            addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
-                        }
 
                         if (hikeContactList.Count == 0)
                         {
@@ -934,7 +942,7 @@ namespace windows_client.View
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(_defaultStatus);
+                            App.ViewModel.StatusList.Add(DefaultStatus);
 
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
@@ -1075,7 +1083,7 @@ namespace windows_client.View
                     return;
 
                 bool showPush = true;
-                if(vals.Length == 3)
+                if (vals.Length == 3)
                     showPush = (Boolean)vals[2];
 
                 mObj.TypingNotificationText = null;
@@ -1086,8 +1094,8 @@ namespace windows_client.View
                     {
                         try
                         {
-                            if (emptyScreenGrid.Opacity == 1)
-                                emptyScreenGrid.Opacity = 0;
+                            if (emptyScreenGrid.Visibility == Visibility.Visible)
+                                emptyScreenGrid.Visibility = Visibility.Collapsed;
 
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
@@ -1125,7 +1133,6 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
-                    _defaultStatus.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName);
                 });
             }
             #endregion
@@ -1297,7 +1304,7 @@ namespace windows_client.View
                         }
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(_defaultStatus);
+                            App.ViewModel.StatusList.Add(DefaultStatus);
                     }
                 });
             }
@@ -1460,7 +1467,7 @@ namespace windows_client.View
                                                 App.ViewModel.StatusList.Remove(f);
 
                                                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                                                    App.ViewModel.StatusList.Add(_defaultStatus);
+                                                    App.ViewModel.StatusList.Add(DefaultStatus);
                                             }
                                             catch (Exception e)
                                             {
@@ -1555,7 +1562,10 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Remove(co);
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
-                        emptyScreenGrid.Opacity = 1;
+                    {
+                        emptyScreenGrid.Visibility = Visibility.Visible;
+                        ShowFTUEOnHikeCard();
+                    }
                 });
             }
             #endregion
@@ -1668,7 +1678,7 @@ namespace windows_client.View
                                 appBar.MenuItems.Insert(1, rewardsMenu);
                             else
                                 appBar.MenuItems.Insert(2, rewardsMenu);
-                        } 
+                        }
                         rewardsMenu.IsEnabled = true;
                     });
                 }
@@ -1783,10 +1793,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 LayoutRoot.IsHitTestVisible = false;
-                appBar.IsMenuEnabled = false;
-                composeIconButton.IsEnabled = false;
-                postStatusIconButton.IsEnabled = false;
-                groupChatIconButton.IsEnabled = false;
+                disableAppBar();
             });
         }
 
@@ -1940,13 +1947,17 @@ namespace windows_client.View
         private void disableAppBar()
         {
             composeIconButton.IsEnabled = false;
-            appBar.IsMenuEnabled = false;
+            postStatusIconButton.IsEnabled = false;
+            groupChatIconButton.IsEnabled = false;
+            ApplicationBar.IsMenuEnabled = false;
         }
 
         private void enableAppBar()
         {
             composeIconButton.IsEnabled = true;
-            appBar.IsMenuEnabled = true;
+            postStatusIconButton.IsEnabled = true;
+            groupChatIconButton.IsEnabled = true;
+            ApplicationBar.IsMenuEnabled = true;
         }
 
         private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2107,6 +2118,11 @@ namespace windows_client.View
             if (c == null)
                 return;
 
+            StartNewChatWithSelectContact(c);
+        }
+
+        private void StartNewChatWithSelectContact(ContactInfo c)
+        {
             object objToSend;
             if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
                 objToSend = App.ViewModel.ConvMap[c.Msisdn];
@@ -2226,7 +2242,8 @@ namespace windows_client.View
                     {
                         if (_refreshBarCount == 0 && value > 0)
                         {
-                            refreshBarButton.Visibility = System.Windows.Visibility.Visible;
+                            if (isStatusMessagesLoaded && launchPagePivot.SelectedIndex == 2)
+                                refreshBarButton.Visibility = System.Windows.Visibility.Visible;
                         }
                         else if (_refreshBarCount > 0 && value == 0)
                         {
@@ -2469,7 +2486,7 @@ namespace windows_client.View
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
 
                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                    App.ViewModel.StatusList.Add(_defaultStatus);
+                    App.ViewModel.StatusList.Add(DefaultStatus);
 
                 MiscDBUtil.SavePendingRequests();
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -2822,6 +2839,35 @@ namespace windows_client.View
         }
         #endregion
 
+        #region FTUE
+
+        private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
+        private void SeeAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_SEE_ALL_CLICKED);
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
+        }
+
+        private void DefaultChat_Selected(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            ContactInfo c = listBox.SelectedItem as ContactInfo;
+            
+            if (c == null)
+                return;
+
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_START_CHAT_CLICKED);
+
+            StartNewChatWithSelectContact(c);
+        }
+
+        #endregion
+
         private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -2976,6 +3022,16 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
     }
 }

@@ -181,10 +181,6 @@
     <value>remove from favorites</value>
     <comment>fix char length(29)</comment>
   </data>
-  <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no favorites</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
     <value>invite friends</value>
     <comment>Profile (xaml)</comment>
@@ -1209,12 +1205,6 @@ Download it like asap from http://hike.in!</value>
     <value>Tap to {0} this person</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
   </data>
-  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>update status</value>
-  </data>
-  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
-    <value>Looks like you haven't posted any status update yet.</value>
-  </data>
   <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
     <value>Hey {0}!</value>
     <comment>{0} replaced by user name</comment>
@@ -1257,11 +1247,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Me_Txt" xml:space="preserve">
     <value>Me</value>
   </data>
-  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>view favorites</value>
-  </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>You can see updates from your favorite contacts here</value>
+    <value>Tap here to post a status update. Only your favorites can see them.</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>invite friends to hike</value>
@@ -2177,6 +2164,73 @@ Download it like asap from http://hike.in!</value>
     <value>hike up your life</value>
   </data>
   <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
-    <value>Show profile picture to Favorites only</value>
+    <value>Show profile picture to favorites only</value>
+  </data>
+    <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
+    <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
+  </data>
+  <data name="Add_To_Favorites_Txt" xml:space="preserve">
+    <value>add favorites</value>
+  </data>
+  <data name="Conversations_Empty_PeopleOnHike_Txt" xml:space="preserve">
+    <value>Hey, {0} people you know are on hike, start chatting.</value>
+  </data>
+  <data name="Express_Yourself_Txt" xml:space="preserve">
+    <value>express yourself</value>
+  </data>
+  <data name="See_All_Txt" xml:space="preserve">
+    <value>see all</value>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt" xml:space="preserve">
+    <value>Send messages to friends even when they are offline</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
+    <value>It works like magic</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
+    <value>hike offline</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_Intro_Txt" xml:space="preserve">
+    <value>amazing things you can do on hike</value>
+    <comment>max length 40</comment>
+  </data>
+  <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
+    <value>start inviting now</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
+    <value>You'll earn Rs20 talk-time for each friend that joins hike because of you :)</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
+    <value>invite friends</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
+    <value>tap here to choose them</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
+    <value>Only favorites can see your last seen &amp; status updates</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_Txt" xml:space="preserve">
+    <value>last seen</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
+    <value>When words can’t express,  say it with a sticker</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
+    <value>You’ll love them!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_Txt" xml:space="preserve">
+    <value>stickers</value>
+    <comment>max length 20</comment>
   </data>
 </root>

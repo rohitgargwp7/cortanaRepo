@@ -752,7 +752,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
 
             if (_stopContactScanning)
             {
@@ -1034,7 +1034,12 @@ namespace windows_client.View
             ApplicationBar.IsMenuEnabled = true;
 
             if (_doneIconButton != null)
-                _doneIconButton.IsEnabled = true;
+            {
+                if (_isGroupChat && !_isExistingGroup) // case if group is new
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 1;
+                else
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
+            }
         }
 
         #region Contact Select Based Functions
@@ -1061,7 +1066,8 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
-                            if (IsUserBlocked(cInfo))
+                            if (IsUserBlocked(cInfo) 
+                                || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
                                 cInfo.IsSelected = false;
                                 return;

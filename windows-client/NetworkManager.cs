@@ -1177,8 +1177,6 @@ namespace windows_client
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string from = (string)jsonObj[HikeConstants.FROM];
-                if (from == App.MSISDN) // if you changed the pic simply ignore
-                    return;
                 ConversationListObject cObj;
                 if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
