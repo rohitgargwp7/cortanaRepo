@@ -176,6 +176,7 @@ namespace windows_client
         public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
         public const string FTUE_GAMING_MSISDN = "+hike2+";
         public const string FTUE_HIKE_DAILY_MSISDN = "+hike3+";
+        public const string FTUE_HIKE_SUPPORT_MSISDN = "+hike4+";
 
         public static readonly string VERSION = "version";
 
