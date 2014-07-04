@@ -808,7 +808,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap to get started.
+        ///   Looks up a localized string similar to tap to create a group.
         /// </summary>
         public static string Conversations_FTUE_GroupNow_Txt {
             get {

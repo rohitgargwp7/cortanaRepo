@@ -2112,7 +2112,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_GroupNow_Txt" xml:space="preserve">
-    <value>tap to get started</value>
+    <value>tap to create a group</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">

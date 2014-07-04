@@ -21,7 +21,8 @@ private copy.
     <system:String x:Key="ChatsTabImageNotSelected">/View/images/ConversationPage/chat_NotSelected.png</system:String>
     <system:String x:Key="FriendsTabImageNotSelected">/View/images/ConversationPage/friend_NotSelected.png</system:String>
     <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelected.png</system:String>
-    
+    <system:String x:Key="GroupIndicator">/View/images/ConversationPage/groupIndicator.png</system:String>
+
     <Color x:Key="PhoneSubtleColor">#66000000</Color>
     
     <Color x:Key="PhoneTextBoxColor">#26000000</Color>

@@ -616,6 +616,7 @@
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
+    <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
     <Content Include="View\images\ConversationPage\inviteCard.jpg" />

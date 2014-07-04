@@ -297,7 +297,7 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="/View/images/ConversationPage/groupIndicator.png" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
+                                            <Image Source="{StaticResource GroupIndicator}" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
                                             <Grid HorizontalAlignment="Stretch" Grid.Column="1" Background="Transparent">
                                                 <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
                                             </Grid>
@@ -605,7 +605,7 @@
                                                         </Grid>
                                                     </Grid>
                                                     <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,-20,0,0">
-                                                        <Ellipse Height="40" Width="40" Fill="White"/>
+                                                        <Ellipse Height="40" Width="40" Fill="{StaticResource HikeBGBrush}"/>
                                                         <Image Canvas.ZIndex="1" Source="/view/images/ConversationPage/timelineQuote.png" MaxHeight="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Grid>
                                                     <TextBlock Text="{Binding Path= LocalizedResources.Express_Yourself_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUECardHeaderStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
