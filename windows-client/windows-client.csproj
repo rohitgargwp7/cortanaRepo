@@ -609,10 +609,12 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
     <Content Include="View\images\ConversationPage\favorites.png" />
+    <Content Include="View\images\ConversationPage\groupCard.jpg" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
-    <Content Include="View\images\ConversationPage\inviteCard.png" />
+    <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
+    <Content Include="View\images\ConversationPage\profileCard.jpg" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />

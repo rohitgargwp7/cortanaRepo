@@ -146,7 +146,7 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
@@ -254,7 +254,7 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 

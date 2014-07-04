@@ -363,6 +363,8 @@ namespace windows_client.View
             }
         }
 
+        int _usersOnHike;
+
         private void ShowFTUEOnHikeCard()
         {
             if (peopleOnHikeListBox.ItemsSource == null)
@@ -389,20 +391,28 @@ namespace windows_client.View
 
                     if (cn != null)
                         cl.Add(cn);
+
+                    if (cl.Count >= 4)
+                        break;
                 }
 
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
+            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+            else
+                profileFTUECard.Visibility = Visibility.Visible;
+
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
             {
-                int usersOnHike = UsersTableUtils.getHikeContactCount();
-                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                _usersOnHike = UsersTableUtils.getHikeContactCount();
+                _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
                 
-                if (usersOnHike != 0)
+                if (_usersOnHike != 0)
                 {
-                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                     peopleOnHikeBorder.Visibility = Visibility.Visible;
                 }
                 else
@@ -1133,6 +1143,7 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                 });
             }
             #endregion
@@ -2875,8 +2886,6 @@ namespace windows_client.View
             StartNewChatWithSelectContact(c);
         }
 
-        #endregion
-
         private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -2894,6 +2903,31 @@ namespace windows_client.View
                 }
             }
         }
+
+        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+
+        private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
+        }
+
+        private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+            PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        #endregion
 
         #region Typing Notification
 
@@ -3031,16 +3065,6 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
     }
 }

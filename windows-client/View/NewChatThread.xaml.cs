@@ -5797,7 +5797,7 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 progressBar.Foreground = UI_Utils.Instance.Black;
-                smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeLightGrey"];
+                smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
                 nudgeBorder.Background = UI_Utils.Instance.White;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;

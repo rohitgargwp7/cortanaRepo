@@ -26,7 +26,7 @@
             <Color x:Key="PhoneTextBoxEditBorderColor">#DE000000</Color>
             <Color x:Key="PhoneTextBoxForegroundColor">#DE000000</Color>
             <Color x:Key="PhoneTextBoxReadOnlyColor">#2E000000</Color>
-            <Color x:Key="PhoneTextBoxSelectionForegroundColor">#FFFFFFFF</Color>
+            <Color x:Key="PhoneTextBoxSelectionForegroundColor">#fff7f7f7</Color>
             <Color x:Key="PhoneTextCaretColor">#DE000000</Color>
 
             <Color x:Key="PhoneAccentColor">#2B8DDD</Color>
@@ -37,11 +37,14 @@
             <SolidColorBrush x:Key="HyperlinkForegroundThemeBrush" Color="#FF4F1ACB" />
             <SolidColorBrush x:Key="HyperlinkPointerOverForegroundThemeBrush" Color="#CC4F1ACB" />
             <SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="#994F1ACB" />
-            
-            <SolidColorBrush x:Key="HikeBlueHeader" Color="#2B8DDD"/>
+
+            <SolidColorBrush x:Key="HikeWhite" Color="#f7f7f7"/>
+            <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
             <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
-            <SolidColorBrush x:Key="HikeLightGrey" Color="#666666"/>
+            <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
+            <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
             <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
+            
             <SolidColorBrush x:Key="ConversationAppBarBackground" Color="#eff2f6"/>
             <SolidColorBrush x:Key="ConversationAppBarForeground" Color="#2c313d"/>
 
@@ -215,7 +218,7 @@
             </Style>
 
             <Style TargetType="HyperlinkButton">
-                <Setter Property="Foreground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMedium}"/>
                 <Setter Property="Padding" Value="0"/>
@@ -273,7 +276,7 @@
                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneButtonBasePressedForegroundBrush}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlueHeader}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
@@ -700,7 +703,7 @@
                 <Setter Property="Background" Value="{StaticResource PhoneTextBoxBrush}"/>
                 <Setter Property="Foreground" Value="#565d6e"/>
                 <Setter Property="BorderBrush" Value="#26000000"/>
-                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
                 <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
                 <Setter Property="Padding" Value="18,5"/>
@@ -751,7 +754,7 @@
                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlueHeader}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
@@ -846,7 +849,7 @@
                 <Setter Property="Background" Value="{StaticResource PhoneTextBoxBrush}"/>
                 <Setter Property="Foreground" Value="{StaticResource PhoneTextBoxForegroundBrush}"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
                 <Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
                 <Setter Property="Padding" Value="{StaticResource PhoneBorderThickness}"/>
@@ -994,7 +997,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="CaretBrush" Value="White"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="SelectionBackground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Padding" Value="0"/>
@@ -1160,7 +1163,7 @@
                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneButtonBasePressedForegroundBrush}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlueHeader}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
@@ -1209,13 +1212,13 @@
                                         <VisualState x:Name="Pressed">
                                             <Storyboard>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="CheckBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlueHeader}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="CheckMark">
                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="Black"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="IndeterminateMark">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlueHeader}"/>
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
@@ -1348,7 +1351,7 @@
 									Storyboard.TargetProperty="BorderBrush"
 									Duration="0">
                                         <DiscreteObjectKeyFrame
-										Value="{StaticResource HikeBlueHeader}"
+										Value="{StaticResource HikeBlue}"
 										KeyTime="0"/>
                                     </ObjectAnimationUsingKeyFrames>
                                 </Storyboard>
@@ -1556,7 +1559,7 @@
 
             <DataTemplate x:Key="AlphabeticGroupHeaderTemplate">
                 <Border Background="Transparent">
-                    <Border Background="{StaticResource HikeBlueHeader}" 
+                    <Border Background="{StaticResource HikeBlue}" 
                         Width="60" Height="60" HorizontalAlignment="Left" Margin="0,12,0,18">
                         <TextBlock Text="{Binding Title}" 
                                 Foreground="White" FontSize="24" Margin="12,0,0,5"
@@ -1588,13 +1591,13 @@
             </Style>
 
             <Style TargetType="toolkit:ToggleSwitch">
-                <Setter Property="Background" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource HikeWhite}"/>
                 <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyLight}"/>
                 <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeLarge}"/>
                 <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="IsTabStop" Value="False"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                <Setter Property="SwitchForeground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="SwitchForeground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="VerticalContentAlignment" Value="Top"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -1630,9 +1633,9 @@
                 </Setter>
             </Style>
             <Style TargetType="toolkitPrimitives:ToggleSwitchButton">
-                <Setter Property="Background" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource HikeWhite}"/>
                 <Setter Property="IsTabStop" Value="False"/>
-                <Setter Property="SwitchForeground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="SwitchForeground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="toolkitPrimitives:ToggleSwitchButton">
@@ -1706,12 +1709,8 @@
                 <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="LineStackingStrategy" Value="BaselineToBaseline"/>
             </Style>
-            
-            <Style x:Key="BaseTextBlock" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="Black"/>
-            </Style>
 
-            <Style x:Key="WelcomePageHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="WelcomePageHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="#535e6d"/>
                 <Setter Property="FontSize" Value="38"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -1721,7 +1720,7 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="ConversationChatHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ConversationChatHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="36"/>
                 <Setter Property="Margin" Value="0,-5,0,5"/>
                 <Setter Property="FontWeight" Value="Light"/>
@@ -1732,7 +1731,7 @@
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
-            <Style x:Key="ConversationChatTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ConversationChatTimestampTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="TextAlignment" Value="Left"/>
@@ -1741,7 +1740,7 @@
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
             </Style>
 
-            <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="UnreadCounterTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="TextAlignment" Value="Center"/>
@@ -1751,13 +1750,13 @@
                 <Setter Property="Margin" Value="0,0,0,1"/>
             </Style>
 
-            <Style x:Key="HeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="42"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="White"/>
             </Style>
 
-            <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SubHeaderTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="32"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontWeight" Value="Normal"/>
@@ -1769,14 +1768,14 @@
             </Style>
 
             <Style x:Key="EditProfileLabelTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
-                <Setter Property="Foreground" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="FontSize" Value="28"/>
                 <Setter Property="Margin" Value="25,12,25,6"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="ContactNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="ContactNameTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="FontSize" Value="28"/>
@@ -1784,28 +1783,28 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="ContactMsisdnTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
-                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+            <Style x:Key="ContactMsisdnTextBlock" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateNameTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
 
-            <Style x:Key="StatusUpdateContentTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateContentTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="22"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
-                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
             </Style>
 
-            <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="StatusUpdateTimestampTextBlock" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1814,7 +1813,7 @@
                 <Setter Property="Margin" Value="0,0,20,0"/>
             </Style>
 
-            <Style x:Key="FTUECardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUECardHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="40"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1824,20 +1823,19 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUECardSubHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUECardSubHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="MaxWidth" Value="400"/>
-                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="TextAlignment" Value="Center"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUESmallCardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUESmallCardHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="24"/>
-                <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -1845,17 +1843,17 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="FTUESmallCardSubHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="FTUESmallCardSubHeaderStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="Light"/>
-                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="TextAlignment" Value="Left"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style x:Key="SettingsHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SettingsHeaderTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="44"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="{StaticResource HikeBlack}"/>
@@ -1863,9 +1861,9 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="SettingsSubHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+            <Style x:Key="SettingsSubHeaderTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="18"/>
-                <Setter Property="Foreground" Value="{StaticResource HikeLightGrey}"/>
+                <Setter Property="Foreground" Value="{StaticResource HikeDarkGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="MaxWidth" Value="350"/>
@@ -1873,7 +1871,7 @@
             </Style>
 
             <Style x:Key="UnreadNotificationCounterContainerStyle" TargetType="Border">
-                <Setter Property="Background" Value="{StaticResource HikeBlueHeader}"/>
+                <Setter Property="Background" Value="{StaticResource HikeBlue}"/>
                 <Setter Property="Height" Value="22"/>
                 <Setter Property="MinWidth" Value="22"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -1884,7 +1882,7 @@
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Margin" Value="12,12,12,0"/>
-                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="{StaticResource HikeLightGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
             </Style>
@@ -1892,7 +1890,7 @@
             <Style x:Key="FTUECardStyle" TargetType="Border">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="1,0,1,1"/>
-                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="{StaticResource HikeLightGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
             </Style>
@@ -1900,7 +1898,7 @@
             <Style x:Key="FTUESmallCardStyle" TargetType="Border">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="{StaticResource HikeLightGrey}"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Margin" Value="0,6"/>

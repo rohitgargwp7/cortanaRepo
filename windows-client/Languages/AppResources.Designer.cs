@@ -790,7 +790,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hey, {0} people you know are on hike, start chatting..
+        ///   Looks up a localized string similar to Hey {0}, {1} people you know are on hike, start chatting..
         /// </summary>
         public static string Conversations_Empty_PeopleOnHike_Txt {
             get {
@@ -826,6 +826,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chat with upto 100 friends, its bigger than ever.
+        /// </summary>
+        public static string Conversations_FTUE_Group_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Group_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to group chat.
+        /// </summary>
+        public static string Conversations_FTUE_Group_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Group_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tap to get started.
+        /// </summary>
+        public static string Conversations_FTUE_GroupNow_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_GroupNow_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send messages to friends even when they are offline.
         /// </summary>
         public static string Conversations_FTUE_H2O_SubTxt {
@@ -835,7 +862,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It works like magic.
+        ///   Looks up a localized string similar to it works like magic.
         /// </summary>
         public static string Conversations_FTUE_H2O_SubTxt2 {
             get {
@@ -862,7 +889,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ll earn Rs20 talk-time for each friend that joins hike because of you :).
+        ///   Looks up a localized string similar to You&apos;ll earn Rs20 talk-time for each friend that joins hike :).
         /// </summary>
         public static string Conversations_FTUE_Invite_SubTxt {
             get {
@@ -916,6 +943,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It will help your friends to find you easily on hike.
+        /// </summary>
+        public static string Conversations_FTUE_Profile_SubTxt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Profile_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to profile picture.
+        /// </summary>
+        public static string Conversations_FTUE_Profile_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_Profile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tap here to set it.
+        /// </summary>
+        public static string Conversations_FTUE_ProfileNow_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_FTUE_ProfileNow_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When words can’t express,  say it with a sticker.
         /// </summary>
         public static string Conversations_FTUE_Sticker_SubTxt {
@@ -925,7 +979,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You’ll love them!.
+        ///   Looks up a localized string similar to you’ll love them!.
         /// </summary>
         public static string Conversations_FTUE_Sticker_SubTxt2 {
             get {

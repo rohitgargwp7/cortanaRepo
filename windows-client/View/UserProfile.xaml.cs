@@ -324,6 +324,21 @@ namespace windows_client.View
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
                 {
                     InitSelfProfile();
+
+                    #region SET PROFILE PIC
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
+                    {
+                        try
+                        {
+                            photoChooserTask.Show();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
+                        }
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
+                    }
+                    #endregion
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE

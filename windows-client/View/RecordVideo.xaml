@@ -13,7 +13,7 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     shell:SystemTray.IsVisible="False">
 
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
         <Rectangle Height="800" Width="480" 
                    VerticalAlignment="Bottom"
                    HorizontalAlignment="Center"
@@ -70,7 +70,7 @@
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel x:Name="cameraGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,20,12,12">
                         <TextBlock x:Name="cameraLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Camera_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlueHeader}" FontWeight="Light" Foreground="Black"
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlue}" FontWeight="Light" Foreground="Black"
                                             x:Name="cameraList" Width="460" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>
@@ -81,7 +81,7 @@
                     </StackPanel>
                     <StackPanel x:Name="resolutionGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
                         <TextBlock x:Name="resolutionLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Reolution_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlueHeader}" FontWeight="Light" Foreground="Black"
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlue}" FontWeight="Light" Foreground="Black"
                                             Width="460" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>

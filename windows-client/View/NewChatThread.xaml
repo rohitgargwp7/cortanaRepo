@@ -1183,10 +1183,10 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="smsCounterTxtBlk" FontSize="18" Margin="24,0,0,12" Visibility="Collapsed" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                <TextBlock x:Name="smsCounterTxtBlk" FontSize="18" Margin="24,0,0,12" Visibility="Collapsed" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 24 12" Visibility="Collapsed" Name="spSmsCharCounter">
-                    <TextBlock Name="txtMsgCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
-                    <TextBlock Name="txtMsgCharCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                    <TextBlock Name="txtMsgCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
+                    <TextBlock Name="txtMsgCharCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
                 </StackPanel>
             </Grid>
 

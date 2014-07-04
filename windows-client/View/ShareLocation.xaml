@@ -16,7 +16,7 @@
 
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -57,7 +57,7 @@
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="15,0,0,0">
                                     <TextBlock Text="{Binding title}" FontWeight="Light" FontSize="32" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding vicinity}" FontWeight="Light" FontSize="18" Foreground="{StaticResource HikeLightGrey}" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
+                                    <TextBlock Text="{Binding vicinity}" FontWeight="Light" FontSize="18" Foreground="{StaticResource HikeDarkGrey}" TextWrapping="Wrap" Visibility="{Binding VicinityVisibility}"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

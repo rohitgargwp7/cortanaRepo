@@ -12,7 +12,7 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -20,7 +20,7 @@
         
         <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <Grid Background="{StaticResource HikeBlue}" Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
@@ -48,8 +48,8 @@
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="{Binding Name}" FontWeight="Light" TextTrimming="WordEllipsis" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="0,0,0,0" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}" FontSize="18" Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
                             <Image Grid.Column="2" Source="/View/images/settings/block.png" Height="27" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"/>
