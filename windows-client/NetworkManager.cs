@@ -801,6 +801,17 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region DP PRIVACY SETTING
+                                        else if (kkvv.Key == HikeConstants.AVATAR)
+                                        {
+                                            int value = (int)kkvv.Value;
+                                            if (value == 2)
+                                            {
+                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                            }
+                                        }
+                                        #endregion
+
                                     }
                                     catch (Exception ex)
                                     {

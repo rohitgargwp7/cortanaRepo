@@ -23,9 +23,7 @@ namespace windows_client.View
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
-            bool value;
-            if (!App.appSettings.TryGetValue(App.DISPLAYPIC_EVERYONE, out value))
-                value = true;
+            bool value = App.appSettings.TryGetValue(App.DISPLAYPIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.On : AppResources.Off;
         }
@@ -79,12 +77,12 @@ namespace windows_client.View
         private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.DISPLAYPIC_EVERYONE);
+            App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.AVATAR, 1);
+            data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
@@ -93,12 +91,12 @@ namespace windows_client.View
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.DISPLAYPIC_EVERYONE, false);
+            App.RemoveKeyFromAppSettings(App.DISPLAYPIC_FAV_ONLY);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.AVATAR, 2);
+            data.Add(HikeConstants.AVATAR, 1);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
