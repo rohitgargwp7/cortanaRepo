@@ -754,7 +754,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hey {0}, {1} people you know are on hike, start chatting..
+        ///   Looks up a localized string similar to hey {0}, {1} people you know are on hike, start chatting..
         /// </summary>
         public static string Conversations_Empty_PeopleOnHike_Txt {
             get {
