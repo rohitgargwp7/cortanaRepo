@@ -466,48 +466,39 @@ namespace windows_client
                 st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    try
                     {
-                        try
-                        {
-                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
-                        }
-                    });
+                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
+                    }
                 }
                 else // update fav and contact section
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    if (msisdn == null)
+                        return;
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
                     {
-                        if (msisdn == null)
-                            return;
-                        bool isPendingOrFav = false;
-                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                        if (c != null) // for favourites
-                        {
-                            c.Avatar = imageBytes;
-                            isPendingOrFav = true;
-                        }
+                        c.Avatar = imageBytes;
+                    }
+                    else
+                    {
                         c = App.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
-                            isPendingOrFav = true;
                         }
-
-                        if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        {
-                            // if bitmap is not already updated by fav or pending , simply remove the old image
-                            if (!isPendingOrFav)
-                                UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                            // this is done to notify that image is changed so load new one.
-                            App.ViewModel.ContactsCache[msisdn].Avatar = null;
-                        }
-                    });
+                    }
+                }
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                {
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    // this is done to notify that image is changed so load new one.
+                    App.ViewModel.ContactsCache[msisdn].Avatar = null;
                 }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
@@ -1934,6 +1925,7 @@ namespace windows_client
                 try
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
@@ -1944,19 +1936,21 @@ namespace windows_client
                     {
                         c.Avatar = null;
                     }
-                    c = App.ViewModel.GetPending(msisdn);
-                    if (c != null) // for pending requests
+                    else
                     {
-                        c.Avatar = null;
+                        c = App.ViewModel.GetPending(msisdn);
+                        if (c != null) // for pending requests
+                        {
+                            c.Avatar = null;
+                        }
                     }
 
                     if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
                     {
-                        // if bitmap is not already updated by fav or pending , simply remove the old image
-                        UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
                         // this is done to notify that image is changed so load new one.
                         App.ViewModel.ContactsCache[msisdn].Avatar = null;
                     }
+                    App.ViewModel.UpdateUserImageInStatus(msisdn);
                 }
                 catch (JsonReaderException ex)
                 {

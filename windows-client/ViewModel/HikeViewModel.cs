@@ -1217,5 +1217,16 @@ namespace windows_client.ViewModel
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
+
+        public async void UpdateUserImageInStatus(string msisdn)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in App.ViewModel.StatusList)
+            {
+                if (status.Msisdn == msisdn)
+                    status.UpdateImage();
+            }
+        }
     }
 }
