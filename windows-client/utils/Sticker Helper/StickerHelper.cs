@@ -32,6 +32,7 @@ namespace windows_client.utils
         public const string CATEGORY_TROLL = "rageface";
         public const string CATEGORY_AVATARS = "avatars";
         public const string CATEGORY_INDIANS = "indian";
+        public const string CATEGORY_JELLY = "jelly";
         public const string CATEGORY_SPORTS = "sports";
         public const string CATEGORY_LOVE = "love";
         public const string CATEGORY_ANGRY = "angry";
@@ -178,6 +179,7 @@ namespace windows_client.utils
             StickerHelper.CreateCategory(CATEGORY_TROLL);
             StickerHelper.CreateCategory(CATEGORY_AVATARS);
             StickerHelper.CreateCategory(CATEGORY_INDIANS);
+            StickerHelper.CreateCategory(CATEGORY_JELLY);
             StickerHelper.CreateCategory(CATEGORY_SPORTS);
             StickerHelper.CreateCategory(CATEGORY_HUMANOID2);
             StickerHelper.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
@@ -399,6 +401,36 @@ namespace windows_client.utils
                     {
                         store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
                     }
+                    string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
+                    StickerCategory stickerCategory = new StickerCategory(category);
+                    if (store.FileExists(metadataFile))
+                    {
+                        using (var file = store.OpenFile(metadataFile, FileMode.Open, FileAccess.Read))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                try
+                                {
+                                    stickerCategory.Read(reader);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Exception in reading sticker file,message:" + ex.Message);
+                                }
+                            }
+                        }
+                    }
+                    stickerCategory.OverlayText = GetOverLayText(category);
+                    stickerCategory.OverlayBackgroundColorString = GetOverLayColor(category);
+                    using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            stickerCategory.Write(writer);
+                            writer.Flush();
+                            writer.Close();
+                        }
+                    }
                 }
 
             }
@@ -434,9 +466,7 @@ namespace windows_client.utils
                                                 {
                                                     if (stickerId == METADATA)
                                                     {
-                                                        stickerCategory.HasMoreStickers = reader.ReadBoolean();
-                                                        stickerCategory.ShowDownloadMessage = reader.ReadBoolean();
-                                                        stickerCategory.HasNewStickers = reader.ReadBoolean();
+                                                        stickerCategory.Read(reader);
                                                     }
                                                     else
                                                     {
@@ -715,6 +745,73 @@ namespace windows_client.utils
             }
         }
 
+        public static string GetOverLayColor(string _category)
+        {
+            switch (_category)
+            {
+                case StickerHelper.CATEGORY_HUMANOID:
+                    return "#008bd3";
+                case StickerHelper.CATEGORY_EXPRESSIONS:
+                    return "#00a470";
+                case StickerHelper.CATEGORY_DOGGY:
+                    return "#9d5c2c";
+                case StickerHelper.CATEGORY_KITTY:
+                    return "#267be1";
+                case StickerHelper.CATEGORY_BOLLYWOOD:
+                    return "#d59022";
+                case StickerHelper.CATEGORY_TROLL:
+                    return "#349d26";
+                case StickerHelper.CATEGORY_HUMANOID2:
+                    return "#c63070";
+                case StickerHelper.CATEGORY_AVATARS:
+                    return "#b9181d";
+                case StickerHelper.CATEGORY_INDIANS:
+                    return "#6238b7";
+                case StickerHelper.CATEGORY_JELLY:
+                    return "#663129";
+                case StickerHelper.CATEGORY_SPORTS:
+                    return "#a77a11";
+                case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                    return "#3a2533";
+                case StickerHelper.CATEGORY_LOVE:
+                    return "#d83a59";
+            }
+            return string.Empty;
+        }
+
+        public static string GetOverLayText(string _category)
+        {
+            switch (_category)
+            {
+                case StickerHelper.CATEGORY_HUMANOID:
+                    return "We are Hikins";
+                case StickerHelper.CATEGORY_EXPRESSIONS:
+                    return "Express it all";
+                case StickerHelper.CATEGORY_DOGGY:
+                    return "Adorable Snuggles";
+                case StickerHelper.CATEGORY_KITTY:
+                    return "Meow, I'm Miley!";
+                case StickerHelper.CATEGORY_BOLLYWOOD:
+                    return "Bollywood Masala";
+                case StickerHelper.CATEGORY_TROLL:
+                    return "Rage Face";
+                case StickerHelper.CATEGORY_HUMANOID2:
+                    return "You & I";
+                case StickerHelper.CATEGORY_AVATARS:
+                    return "Superhero Avatars";
+                case StickerHelper.CATEGORY_INDIANS:
+                    return "Things Indians Say";
+                case StickerHelper.CATEGORY_JELLY:
+                    return "Wicked Jellies";
+                case StickerHelper.CATEGORY_SPORTS:
+                    return "Sports Maniacs";
+                case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                    return "Wacky Smileys";
+                case StickerHelper.CATEGORY_LOVE:
+                    return "Love You Forever";
+            }
+            return string.Empty;
+        }
     }
 }
 
