@@ -2141,4 +2141,7 @@ Download it like asap from http://hike.in!</value>
   <data name="CloseApp_Txt" xml:space="preserve">
     <value>Please close the app and start it again to change the theme.</value>
   </data>
+  <data name="RestartApp_Txt" xml:space="preserve">
+    <value>Restart App</value>
+  </data>
 </root>

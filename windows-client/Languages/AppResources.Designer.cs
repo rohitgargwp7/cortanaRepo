@@ -3955,6 +3955,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restart App.
+        /// </summary>
+        public static string RestartApp_Txt {
+            get {
+                return ResourceManager.GetString("RestartApp_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {
