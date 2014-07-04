@@ -538,6 +538,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please close the app and start it again to change the theme..
+        /// </summary>
+        public static string CloseApp_Txt {
+            get {
+                return ResourceManager.GetString("CloseApp_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Great! {0} will now able to see your Last Seen and Status Updates..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {

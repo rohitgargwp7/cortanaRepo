@@ -193,16 +193,30 @@ namespace windows_client.View
             blackSettingToggle.Unchecked += blackSettingToggle_UnChecked;
         }
 
+        bool _isPopUpDisplayed;
+
         private void blackSettingToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.blackSettingToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings(HikeConstants.BLACK_THEME, true);
+
+            if (!_isPopUpDisplayed)
+            {
+                MessageBox.Show(AppResources.CloseApp_Txt);
+                _isPopUpDisplayed = true;
+            }
         }
 
         private void blackSettingToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.blackSettingToggle.Content = AppResources.Off;
             App.RemoveKeyFromAppSettings(HikeConstants.BLACK_THEME);
+
+            if (!_isPopUpDisplayed)
+            {
+                MessageBox.Show(AppResources.CloseApp_Txt);
+                _isPopUpDisplayed = true;
+            }
         }
     }
 }
