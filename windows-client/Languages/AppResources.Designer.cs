@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Night mode.
+        ///   Looks up a localized string similar to Black theme.
         /// </summary>
         public static string BlackSettings_Txt {
             get {
@@ -4351,7 +4351,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to turn on/off auto download, location service and more.
+        ///   Looks up a localized string similar to black theme, auto download, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {

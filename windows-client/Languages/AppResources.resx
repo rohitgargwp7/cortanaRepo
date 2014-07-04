@@ -1306,7 +1306,7 @@ Download it like asap from http://hike.in!</value>
     <value>preferences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>turn on/off auto download, location service and more</value>
+    <value>black theme, auto download, location service and more</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>drag here to delete</value>
@@ -2136,6 +2136,6 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="BlackSettings_Txt" xml:space="preserve">
-    <value>Night mode</value>
+    <value>Black theme</value>
   </data>
 </root>

@@ -65,6 +65,8 @@ private copy.
     <SolidColorBrush x:Key="HikeContextMenuBGBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeContextMenuFGBrush" Color="Black"/>
     <SolidColorBrush x:Key="HikeCheckBoxBrush" Color="White"/>
+    <SolidColorBrush x:Key="HikeFreeSMSCardBrush" Color="#232323"/>
+    <SolidColorBrush x:Key="HikeEarnFreeSMSBrush" Color="White"/>
 
     <SolidColorBrush x:Key="AppBarBackground" Color="#232323"/>
     <SolidColorBrush x:Key="AppBarForeground" Color="#ffffff"/>

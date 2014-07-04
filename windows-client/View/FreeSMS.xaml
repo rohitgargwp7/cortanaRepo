@@ -40,7 +40,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid HorizontalAlignment="Stretch" Background="#f2f2f2">
+                    <Grid HorizontalAlignment="Stretch" Background="{StaticResource HikeFreeSMSCardBrush}">
                         <Grid Margin="25">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -93,7 +93,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Foreground="#555555" Text="{Binding Path= LocalizedResources.FreeSMS_H2SSubHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" FontWeight="Light"/>
+                                    <TextBlock Foreground="{StaticResource HikeEarnFreeSMSBrush}" Text="{Binding Path= LocalizedResources.FreeSMS_H2SSubHeader_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="32" HorizontalAlignment="Left" FontWeight="Light"/>
                                     <TextBlock HorizontalAlignment="Left" Foreground="{StaticResource PhoneSubtleBrush}" Margin="0,0,0,10" Grid.Row="1" FontSize="19"
                            Text="{Binding Path= LocalizedResources.FreeSMS_H2SText_TxtBlk, Source={StaticResource LocalizedStrings}}"/>
                                     <Button Grid.Row="2" Content="{Binding Path= LocalizedResources.Start_Hiking_Button_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Width="150" Background="#2B8DDD" Style="{StaticResource ButtonWithNoPressedStateStyle}" Foreground="White" Height="45" Margin="0,12" Click="startChat_Click"/>
@@ -101,7 +101,7 @@
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="InviteFriendsGrid" Grid.Row="2" Background="#f2f2f2">
+                    <Grid x:Name="InviteFriendsGrid" Grid.Row="2" Background="{StaticResource HikeFreeSMSCardBrush}">
                         <Grid Margin="25">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
