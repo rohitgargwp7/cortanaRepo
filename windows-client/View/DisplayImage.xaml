@@ -31,7 +31,7 @@
                 </Image.RenderTransform>
             </Image>
 
-            <ProgressBar x:Name="loadingProgress" Opacity="0"  IsEnabled="True" IsIndeterminate="True"/>
+            <ProgressBar x:Name="loadingProgress" Opacity="0" Background="Transparent" IsEnabled="True" IsIndeterminate="True"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

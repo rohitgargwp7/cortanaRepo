@@ -16,7 +16,7 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
-        <ProgressBar x:Name="shellProgress" Foreground="White" IsIndeterminate="False" VerticalAlignment="Top" Canvas.ZIndex="1"/>
+        <ProgressBar x:Name="shellProgress" Background="Transparent" Foreground="White" IsIndeterminate="False" VerticalAlignment="Top" Canvas.ZIndex="1"/>
         <phone:LongListSelector x:Name="statusLLS" ItemRealized="StatusLls_ItemRealised"
                                 Style="{StaticResource LongListSelectorWithOverlappingScrollBar}">
             <phone:LongListSelector.ListHeader>

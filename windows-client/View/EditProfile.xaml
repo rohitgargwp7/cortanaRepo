@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.Row="5" VerticalAlignment="Top" Foreground="White"/>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.Row="5" VerticalAlignment="Top" Foreground="White" Background="Transparent"/>
 
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}"/>

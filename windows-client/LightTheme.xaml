@@ -48,7 +48,7 @@ private copy.
     <Color x:Key="HikeDarkGreyColor">#666666</Color>
     <Color x:Key="HikeLightGreyColor">#e3e3e3</Color>
     <Color x:Key="HikeBlackColor">#2c313d</Color>
-    <Color x:Key="FriendBGColor">#d7d8dc</Color>
+    <SolidColorBrush x:Key="FriendBGColor" Color="#d7d8dc"/>
 
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
@@ -68,6 +68,7 @@ private copy.
     <SolidColorBrush x:Key="HikeCardBackgroundBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeContextMenuBGBrush" Color="Black"/>
     <SolidColorBrush x:Key="HikeContextMenuFGBrush" Color="White"/>
+    <SolidColorBrush x:Key="HikeCheckBoxBrush" Color="Black"/>
 
     <SolidColorBrush x:Key="AppBarBackground" Color="{StaticResource AppBarWhiteBackgroundColor}"/>
     <SolidColorBrush x:Key="AppBarForeground" Color="{StaticResource AppBarWhiteForegroundColor}"/>
@@ -1307,9 +1308,9 @@ private copy.
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0" VerticalAlignment="Top">
-                                <Border x:Name="CheckBackground" BorderBrush="#565d6e" BorderThickness="{StaticResource PhoneBorderThickness}" Background="White" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
-                                <Rectangle x:Name="IndeterminateMark" Fill="{StaticResource PhoneRadioCheckBoxCheckBrush}" HorizontalAlignment="Center" Height="16" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="16"/>
-                                <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="#565d6e" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="3" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
+                                <Border x:Name="CheckBackground" BorderBrush="Black" BorderThickness="{StaticResource PhoneBorderThickness}" Background="Transparent" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
+                                <Rectangle x:Name="IndeterminateMark" Fill="Transparent" HorizontalAlignment="Center" Height="16" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="16"/>
+                                <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="Black" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="3" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
                             </Grid>
                             <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="12,0,0,0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Grid>

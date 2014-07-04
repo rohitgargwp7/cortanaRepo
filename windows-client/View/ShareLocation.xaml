@@ -22,7 +22,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.RowSpan="2" VerticalAlignment="Top" Foreground="White"/>
+        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Grid.RowSpan="2" VerticalAlignment="Top" Foreground="White" Background="Transparent"/>
 
         <Grid x:Name="MapGrid">
             <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged" Tap="map_Tap"/>

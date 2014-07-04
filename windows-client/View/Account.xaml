@@ -21,7 +21,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" Grid.RowSpan="2" VerticalAlignment="Top" 
+        <ProgressBar x:Name="shellProgress" Grid.RowSpan="2" VerticalAlignment="Top" Background="Transparent"
                          IsIndeterminate="true" Foreground="White"/>
 
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">

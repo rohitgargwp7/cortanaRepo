@@ -14,7 +14,7 @@
     
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
+        <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
 
         <phone:LongListSelector x:Name="groupChatParticipants" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 GroupHeaderTemplate="{StaticResource GroupInfoGroupHeaderTemplate}" IsGroupingEnabled="True" HideEmptyGroups="True"
