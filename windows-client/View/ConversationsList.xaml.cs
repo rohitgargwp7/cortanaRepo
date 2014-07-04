@@ -199,21 +199,26 @@ namespace windows_client.View
                 {
                     LoadMessages();
                 };
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+
+                bw.RunWorkerCompleted += (ss, ee) =>
+                    {
+                        loadingCompleted();
+
+                        if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
+                        {
+                            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                                ShowAppUpdateAvailableMessage();
+                            else
+                                ShowInvitePopups();
+                        }
+                    };
+
                 bw.RunWorkerAsync();
 
                 #endregion
+
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
-
-                if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
-                {
-
-                    if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                        ShowAppUpdateAvailableMessage();
-                    else
-                        ShowInvitePopups();
-                }
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -319,7 +324,7 @@ namespace windows_client.View
         }
 
         /* This function will run on UI Thread */
-        private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadingCompleted()
         {
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
@@ -347,10 +352,10 @@ namespace windows_client.View
                 rewardsMenu.IsEnabled = true;
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-            {
                 NetworkManager.turnOffNetworkManager = false;
-            }
+            
             App.MqttManagerInstance.connect();
+            
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
@@ -2793,7 +2798,8 @@ namespace windows_client.View
         #region Overlay
         void ShowInvitePopups()
         {
-            Object[] obj;
+            Object[] obj = null;
+
             if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
             {
                 showFreeMessageOverlay = obj == null;
@@ -2819,26 +2825,25 @@ namespace windows_client.View
                 customOverlay.SetVisibility(true);
             }
         }
+
         void customOverlay_VisibilityChanged(object sender, EventArgs e)
         {
             Overlay overlay = sender as Overlay;
             if (overlay.Visibility == Visibility.Collapsed)
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = true;
-                }
-                appBar.IsMenuEnabled = true;
+                
+                ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
             }
             else
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = false;
-                }
-                appBar.IsMenuEnabled = false;
+                
+                ApplicationBar.IsMenuEnabled = false;
                 launchPagePivot.IsHitTestVisible = false;
             }
         }

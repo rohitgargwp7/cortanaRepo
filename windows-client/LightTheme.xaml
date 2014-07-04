@@ -55,8 +55,6 @@ private copy.
 
     <SolidColorBrush x:Key="HikeBGBrush" Color="{StaticResource HikeWhiteColor}"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="{StaticResource HikeBlackColor}"/>
-    <SolidColorBrush x:Key="HikeOverlayBGBrush" Color="{StaticResource HikeBlackColor}"/>
-    <SolidColorBrush x:Key="HikeOverlayFGBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeHeaderBrush" Color="{StaticResource HikeBlueColor}"/>
     <SolidColorBrush x:Key="HikeSubTextForegroundBrush" Color="{StaticResource HikeDarkGreyColor}"/>
     <SolidColorBrush x:Key="HikeCardStrokeBrush" Color="{StaticResource HikeLightGreyColor}"/>
