@@ -202,7 +202,7 @@ namespace windows_client.View
 
             if (!_isPopUpDisplayed)
             {
-                MessageBox.Show(AppResources.CloseApp_Txt);
+                MessageBox.Show(AppResources.CloseApp_Txt, AppResources.RestartApp_Txt, MessageBoxButton.OK);
                 _isPopUpDisplayed = true;
             }
         }
@@ -214,7 +214,7 @@ namespace windows_client.View
 
             if (!_isPopUpDisplayed)
             {
-                MessageBox.Show(AppResources.CloseApp_Txt);
+                MessageBox.Show(AppResources.CloseApp_Txt, AppResources.RestartApp_Txt, MessageBoxButton.OK);
                 _isPopUpDisplayed = true;
             }
         }

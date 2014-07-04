@@ -3955,7 +3955,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restart App.
+        ///   Looks up a localized string similar to Restart.
         /// </summary>
         public static string RestartApp_Txt {
             get {
