@@ -844,7 +844,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.1.4") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
