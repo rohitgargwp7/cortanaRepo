@@ -13,10 +13,15 @@ private copy.
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- white theme values -->
 
+    <system:String x:Key="ChatsTabImageNotSelected">/View/images/ConversationPage/chat_NotSelected.png</system:String>
+    <system:String x:Key="FriendsTabImageNotSelected">/View/images/ConversationPage/friend_NotSelected.png</system:String>
+    <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelected.png</system:String>
+    
     <Color x:Key="PhoneSubtleColor">#66000000</Color>
     
     <Color x:Key="PhoneTextBoxColor">#26000000</Color>

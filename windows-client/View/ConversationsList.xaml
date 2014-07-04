@@ -176,7 +176,7 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
                                                         <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#04c127"/>
+                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
