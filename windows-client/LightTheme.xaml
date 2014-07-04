@@ -48,6 +48,7 @@ private copy.
     <Color x:Key="HikeDarkGreyColor">#666666</Color>
     <Color x:Key="HikeLightGreyColor">#e3e3e3</Color>
     <Color x:Key="HikeBlackColor">#2c313d</Color>
+    <Color x:Key="FriendBGColor">#d7d8dc</Color>
 
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>

@@ -55,7 +55,7 @@
                         </Grid>
                     </Grid>
                     <Grid Name="gridAddFriendStrip" Grid.Row="1" Visibility="Collapsed">
-                        <StackPanel  Name="spAddFriendInvite" Visibility="Collapsed" Background="#d7d8dc">
+                        <StackPanel  Name="spAddFriendInvite" Visibility="Collapsed" Background="{StaticResource FriendBGColor}">
                             <TextBlock x:Name="txtAddedYouAsFriend" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Semibold"  Margin="25,10,25,0" Foreground="{StaticResource HikeFGBrush}" HorizontalAlignment="Center" TextAlignment="Center"/>
                             <TextBlock TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Regular" Foreground="{StaticResource HikeFGBrush}" Margin="20,0" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="0,10" HorizontalAlignment="Center">
@@ -63,7 +63,7 @@
                                 <Button x:Name="noBtn" Margin="12,0,0,5" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="No_Click" Style="{StaticResource NoButtonStyle}" toolkit:TiltEffect.IsTiltEnabled="True"/>
                             </StackPanel>
                         </StackPanel>
-                        <Grid  Name="spAddFriend" Visibility="Collapsed" Background="#d7d8dc" MinHeight="100">
+                        <Grid  Name="spAddFriend" Visibility="Collapsed" Background="{StaticResource FriendBGColor}" MinHeight="100">
                             <Button Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" MinWidth="180" Style="{StaticResource AddAsFriendButtonStyle}" Tap="AddAsFriend_Tap" toolkit:TiltEffect.IsTiltEnabled="True"/>
                         </Grid>
                     </Grid>

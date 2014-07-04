@@ -47,6 +47,8 @@ private copy.
 
     <Color x:Key="HikeBlackColor">#2c313d</Color>
 
+    <Color x:Key="FriendBGColor">#232323</Color>
+
     <SolidColorBrush x:Key="HikeWhite" Color="#f7f7f7"/>
     <SolidColorBrush x:Key="HikeBlue" Color="#2B8DDD"/>
     <SolidColorBrush x:Key="HikeGrey" Color="#CCCCCC"/>
