@@ -324,6 +324,21 @@ namespace windows_client.View
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
                 {
                     InitSelfProfile();
+
+                    #region SET PROFILE PIC
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
+                    {
+                        try
+                        {
+                            photoChooserTask.Show();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
+                        }
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
+                    }
+                    #endregion
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
@@ -426,8 +441,8 @@ namespace windows_client.View
                 {
                     appBar = new ApplicationBar()
                        {
-                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                            Opacity = 0.95
                        };
 
@@ -443,8 +458,8 @@ namespace windows_client.View
             }
 
             ContextMenu menu = new ContextMenu();
-            menu.Background = UI_Utils.Instance.Black;
-            menu.Foreground = UI_Utils.Instance.White;
+            menu.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
+            menu.Foreground = (SolidColorBrush)App.Current.Resources["HikeContextMenuFGBrush"];
             menu.IsZoomEnabled = false;
 
             MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
@@ -594,7 +609,7 @@ namespace windows_client.View
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
-                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.StatusUpdate_Photo, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
                         serverId, TimeUtils.getCurrentTimeStamp(), -1, true);
                     StatusMsgsTable.InsertStatusMsg(sm, false);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
@@ -902,8 +917,8 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -1067,8 +1082,8 @@ namespace windows_client.View
             {
                 ApplicationBar = new ApplicationBar()
                    {
-                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                    };
             }
 

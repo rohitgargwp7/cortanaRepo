@@ -176,8 +176,10 @@ namespace windows_client
         public const string FTUE_HIKEBOT_MSISDN = "+hike1+";
         public const string FTUE_GAMING_MSISDN = "+hike2+";
         public const string FTUE_HIKE_DAILY_MSISDN = "+hike3+";
+        public const string FTUE_HIKE_SUPPORT_MSISDN = "+hike4+";
 
         public static readonly string VERSION = "version";
+        public static readonly string BLACK_THEME = "black_theme";
 
         public static string FAQS_LINK
         {
@@ -285,6 +287,7 @@ namespace windows_client
         public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
         public static string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
         public static string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+        public static string SET_PROFILE_PIC = "setProfilePic";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";

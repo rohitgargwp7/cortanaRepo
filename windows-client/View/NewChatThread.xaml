@@ -72,7 +72,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
+        <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White"/>
 
         <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
             <Image x:Name="chatBackground" Stretch="None"/>
@@ -123,7 +123,7 @@
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
                         <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}"
-                                VerticalAlignment="Center" Background="#66000000"  toolkit:TiltEffect.IsTiltEnabled="True"/>
+                                VerticalAlignment="Center" Background="#66000000" Foreground="White" toolkit:TiltEffect.IsTiltEnabled="True"/>
                     </Grid>
                 </Grid>
             </StackPanel>
@@ -494,7 +494,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleNudge>
                                 <DataTemplate x:Name="dtRecievedBubbleNudge">
                                     <Grid Background="Transparent" Margin="24,10,0,10" HorizontalAlignment="Stretch">
-                                       <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
+                                        <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
@@ -569,7 +569,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedBubbleUnknownFile>
                                 <DataTemplate x:Name="dtRecievedBubbleUnknownFile" >
                                     <Grid Background="Transparent" Margin="12,10,0,10" HorizontalAlignment="Stretch">
-                                       <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
+                                        <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
@@ -650,7 +650,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtRecievedSticker>
                                 <DataTemplate x:Name="dtRecievedSticker">
                                     <Grid Background="Transparent" Margin="24,10,0,10" HorizontalAlignment="Stretch">
-                                       <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
+                                        <Grid HorizontalAlignment="Left" Tap="ChatMessage_Tapped">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
@@ -805,7 +805,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtSentBubbleFile>
                                 <DataTemplate x:Name="dtSentBubbleFile" >
                                     <Grid Background="Transparent"  Margin="0,10,12,10" HorizontalAlignment="Stretch">
-                                       <Grid HorizontalAlignment="Right" Tap="ChatMessage_Tapped">
+                                        <Grid HorizontalAlignment="Right" Tap="ChatMessage_Tapped">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
@@ -1183,13 +1183,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="smsCounterTxtBlk" FontSize="18" Margin="24,0,0,12" Visibility="Collapsed" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                <TextBlock x:Name="smsCounterTxtBlk" FontSize="18" Margin="24,0,0,12" Visibility="Collapsed" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 24 12" Visibility="Collapsed" Name="spSmsCharCounter">
-                    <TextBlock Name="txtMsgCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
-                    <TextBlock Name="txtMsgCharCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}"/>
+                    <TextBlock Name="txtMsgCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
+                    <TextBlock Name="txtMsgCharCount" FontSize="18" FontWeight="Light" Foreground="{StaticResource HikeDarkGrey}"/>
                 </StackPanel>
             </Grid>
-            
+
             <Grid Background="#eeeeec">
                 <Grid Background="#eeeeec">
                     <Grid.ColumnDefinitions>
@@ -1217,7 +1217,7 @@
                     </Grid>
                 </Grid>
             </Grid>
-            
+
             <Grid Visibility="Collapsed"  x:Name="emoticonPanel" MaxHeight="350" MinHeight="319" Background="#323232">
                 <Grid Name="gridEmoticons" Visibility="Collapsed">
                     <Grid.RowDefinitions>
@@ -1458,20 +1458,35 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid VerticalAlignment="Stretch">
-                <Image Name="downloadDialogueImage" Canvas.ZIndex="-1" Width="340" Stretch="Uniform"/>
-                <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,5">
-                    <Button Name="btnDownload" Width="150" Foreground="White" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" 
+            <Grid VerticalAlignment="Stretch" Background="{Binding OverlayBackgroundColor}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Height="285" Width="285" Margin="30,30,30,20">
+                    <Image Name="downloadDialogueImage" MaxHeight="280" MaxWidth="280" VerticalAlignment="Center" HorizontalAlignment="Center" Source="{Binding OverlayImage}"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="20,0,0,10">
+                        <TextBlock Name="overlayText" Opacity="0.8" FontSize="26" Text="{Binding OverlayText}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="140" TextWrapping="Wrap"/>
+                    </Grid>
+                    <Grid Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <Button Name="btnDownload" Width="150" Foreground="White" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}" 
                             VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="18" Height="70" BorderBrush="#3d3d3d" Background="#3d3d3d" Tap="downloadStickers_Tap" Margin="10 0 0 10"/>
-                    <Button Name="btnFree" Background="#7aa700" Foreground="White" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}"
+                        <Button Name="btnFree" Background="#7aa700" Foreground="White" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}"
                             Padding="0" VerticalAlignment="Bottom" FontFamily="Segoe WP Regular" FontSize="12" BorderThickness="0" Margin="105 0 0 45" Tap="downloadStickers_Tap" />
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid Grid.Row="1" Background="#2c2c2c" MinHeight="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                 <TextBlock Margin="0,5" FontFamily="Segoe WP SemiLight" TextWrapping="Wrap" Foreground="#878787" FontSize="16" Text="{Binding Path= LocalizedResources.InternetChargesMayApply_txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Grid>
         </Grid>
-       
+
         <Grid Canvas.ZIndex="4" x:Name="WalkieTalkieGrid" Visibility="Collapsed" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

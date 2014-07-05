@@ -11,14 +11,14 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
 
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_HelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
@@ -94,7 +94,7 @@
         
         <StackPanel VerticalAlignment="Bottom" Grid.Row="2" HorizontalAlignment="Center">
                 <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                           x:Name="applicationVersion" Text="1.1.0.0" Foreground="{StaticResource HikeLightGrey}"/>
+                           x:Name="applicationVersion" Text="1.1.0.0" Foreground="{StaticResource HikeSubTextForegroundBrush}"/>
             <Image Source="/View/images/settings/made_with_love.png" Margin="0,10,0,0"/>
         </StackPanel>
     </Grid>

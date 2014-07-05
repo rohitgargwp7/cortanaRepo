@@ -199,21 +199,26 @@ namespace windows_client.View
                 {
                     LoadMessages();
                 };
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+
+                bw.RunWorkerCompleted += (ss, ee) =>
+                    {
+                        loadingCompleted();
+
+                        if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
+                        {
+                            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                                ShowAppUpdateAvailableMessage();
+                            else
+                                ShowInvitePopups();
+                        }
+                    };
+
                 bw.RunWorkerAsync();
 
                 #endregion
+
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
-
-                if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
-                {
-
-                    if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                        ShowAppUpdateAvailableMessage();
-                    else
-                        ShowInvitePopups();
-                }
             }
             // this should be called only if its not first load as it will get called in first load section
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -319,7 +324,7 @@ namespace windows_client.View
         }
 
         /* This function will run on UI Thread */
-        private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadingCompleted()
         {
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
@@ -347,10 +352,10 @@ namespace windows_client.View
                 rewardsMenu.IsEnabled = true;
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-            {
                 NetworkManager.turnOffNetworkManager = false;
-            }
+            
             App.MqttManagerInstance.connect();
+            
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
@@ -362,6 +367,8 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
         }
+
+        int _usersOnHike;
 
         private void ShowFTUEOnHikeCard()
         {
@@ -389,20 +396,28 @@ namespace windows_client.View
 
                     if (cn != null)
                         cl.Add(cn);
+
+                    if (cl.Count >= 4)
+                        break;
                 }
 
                 peopleOnHikeListBox.ItemsSource = cl;
             }
 
+            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+            else
+                profileFTUECard.Visibility = Visibility.Visible;
+
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
             {
-                int usersOnHike = UsersTableUtils.getHikeContactCount();
-                usersOnHike = usersOnHike < list.Count() ? list.Count() : usersOnHike;
+                _usersOnHike = UsersTableUtils.getHikeContactCount();
+                _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
                 
-                if (usersOnHike != 0)
+                if (_usersOnHike != 0)
                 {
-                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, usersOnHike);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                     peopleOnHikeBorder.Visibility = Visibility.Visible;
                 }
                 else
@@ -418,8 +433,8 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -1138,6 +1153,7 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                 });
             }
             #endregion
@@ -2787,7 +2803,8 @@ namespace windows_client.View
         #region Overlay
         void ShowInvitePopups()
         {
-            Object[] obj;
+            Object[] obj = null;
+
             if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
             {
                 showFreeMessageOverlay = obj == null;
@@ -2813,26 +2830,25 @@ namespace windows_client.View
                 customOverlay.SetVisibility(true);
             }
         }
+
         void customOverlay_VisibilityChanged(object sender, EventArgs e)
         {
             Overlay overlay = sender as Overlay;
             if (overlay.Visibility == Visibility.Collapsed)
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = true;
-                }
-                appBar.IsMenuEnabled = true;
+                
+                ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
             }
             else
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = false;
-                }
-                appBar.IsMenuEnabled = false;
+                
+                ApplicationBar.IsMenuEnabled = false;
                 launchPagePivot.IsHitTestVisible = false;
             }
         }
@@ -2880,8 +2896,6 @@ namespace windows_client.View
             StartNewChatWithSelectContact(c);
         }
 
-        #endregion
-
         private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -2899,6 +2913,31 @@ namespace windows_client.View
                 }
             }
         }
+
+        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            launchPagePivot.SelectedIndex = 1;
+        }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+
+        private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
+        }
+
+        private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+            PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        #endregion
 
         #region Typing Notification
 
@@ -3036,16 +3075,6 @@ namespace windows_client.View
         private void friendsTabImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            launchPagePivot.SelectedIndex = 1;
-        }
-
-        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
     }
 }

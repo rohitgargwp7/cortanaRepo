@@ -41,8 +41,8 @@ namespace windows_client
 
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = (Color)App.Current.Resources["AppBarWhiteForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarWhiteBackgroundColor"]
             };
 
             cameraIconButton = new ApplicationBarIconButton();

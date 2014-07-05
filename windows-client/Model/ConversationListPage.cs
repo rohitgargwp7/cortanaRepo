@@ -481,9 +481,9 @@ namespace windows_client.Model
             get
             {
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                    return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                    return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
-                    return (SolidColorBrush)Application.Current.Resources["HikeLightGrey"];
+                    return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
             }
         }
 
