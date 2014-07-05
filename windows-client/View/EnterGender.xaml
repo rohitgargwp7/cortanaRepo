@@ -63,7 +63,7 @@
                            Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
                            HorizontalAlignment="Center" VerticalAlignment="Center" 
                            Opacity="0" FontSize="18" Foreground="Red" />
-            <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18"
+            <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18" Foreground="Black"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
                            Opacity="0"/>
             <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" 

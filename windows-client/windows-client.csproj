@@ -247,6 +247,7 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="Model\Sticker\StickerCategory.cs" />
     <Compile Include="utils\Sticker Helper\StickerHelper.cs" />
+    <Compile Include="utils\ThemeManager.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -374,9 +375,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles.xaml">
+    <Resource Include="DarkTheme.xaml">
       <SubType>Designer</SubType>
-    </Page>
+    </Resource>
+    <Resource Include="LightTheme.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -608,13 +612,17 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
+    <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
+    <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
+    <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
     <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
     <Content Include="View\images\ConversationPage\profileCard.jpg" />
+    <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />

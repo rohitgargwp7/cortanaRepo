@@ -14,13 +14,13 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource HikeBlue}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Invite_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 

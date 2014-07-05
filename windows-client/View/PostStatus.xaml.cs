@@ -41,8 +41,8 @@ namespace windows_client.View
             this.Loaded += new RoutedEventHandler(PostStatusPage_Loaded);
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
             };
 
             postStatusIcon = new ApplicationBarIconButton();

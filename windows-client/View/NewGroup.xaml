@@ -13,7 +13,7 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -32,10 +32,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image Source="/View/images/notification_Image_Grey.png" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBlock Grid.Column="1" x:Name="groupCreateTip" FontSize="16" Foreground="{StaticResource HikeDarkGrey}" HorizontalAlignment="Center" TextAlignment="Left"/>
+            <TextBlock Grid.Column="1" x:Name="groupCreateTip" FontSize="16" Foreground="{StaticResource HikeSubTextForegroundBrush}" HorizontalAlignment="Center" TextAlignment="Left"/>
         </Grid>
         <Grid MinHeight="30" Grid.Row="3">
-            <ProgressBar x:Name="progressBar"  Background="Transparent" IsIndeterminate="True" 
+            <ProgressBar x:Name="progressBar" Background="Transparent" IsIndeterminate="True" 
                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Opacity="0" Margin="0,10,0,0"/>
         </Grid>
     </Grid>

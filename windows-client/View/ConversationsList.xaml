@@ -32,7 +32,7 @@
         </CollectionViewSource>
     </phone:PhoneApplicationPage.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeWhite}">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -42,7 +42,7 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <Grid Grid.Row="0" HorizontalAlignment="Stretch" Height="90" Background="{StaticResource HikeBlue}">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -68,8 +68,8 @@
             </Grid>
         </Grid>
 
-        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeWhite}">
-            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeWhite}">
+        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeBGBrush}">
+            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeBGBrush}">
                 <Grid x:Name="ConversationList">
                     <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
                                             VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
@@ -107,7 +107,7 @@
                                                             <Grid HorizontalAlignment="Center" MinWidth="60">
                                                                 <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
                                                             </Grid>
-                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Background="White">
+                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Background="{StaticResource HikeCardBackgroundBrush}">
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
@@ -119,8 +119,8 @@
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
-                                            <Rectangle Height="1" Width="432" Grid.Row="2" Margin="-12,15,-12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeLightGrey}" StrokeThickness="1"/>
-                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Light" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
+                                            <Rectangle Height="1" Width="432" Grid.Row="2" Margin="-12,15,-12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}" StrokeThickness="1"/>
+                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="24" FontWeight="Normal" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
                                         </Grid>
                                     </Border>
                                     <Grid Grid.Row="1" Margin="12,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -134,8 +134,8 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
                                         <Grid Margin="0,6,0,12">
-                                            <Rectangle Height="1" Width="456" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeLightGrey}"/>
-                                            <Grid Background="{StaticResource HikeWhite}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Rectangle Height="1" Width="456" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}"/>
+                                            <Grid Background="{StaticResource HikeBGBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <TextBlock Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Intro_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardSubHeaderStyle}" Canvas.ZIndex="1" FontWeight="Normal"/>
                                             </Grid>
                                         </Grid>
@@ -176,7 +176,7 @@
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
                                                         <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#04c127"/>
+                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
@@ -273,10 +273,10 @@
                             <DataTemplate>
                                 <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
                                     <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu Background="Black" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
-                                            <toolkit:MenuItem Foreground="White" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
+                                        <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -297,7 +297,7 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="/View/images/ConversationPage/groupIndicator.png" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
+                                            <Image Source="{StaticResource GroupIndicator}" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
                                             <Grid HorizontalAlignment="Stretch" Grid.Column="1" Background="Transparent">
                                                 <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
                                             </Grid>
@@ -332,7 +332,7 @@
                 </Grid>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeWhite}">
+            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeBGBrush}">
                 <ScrollViewer>
                     <Grid x:Name="contactGrid" Margin="25,0,25,12">
                         <Grid.RowDefinitions>
@@ -361,8 +361,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Background="Black" Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="White"/>
+                                            <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" Name="favCtxMenu" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Click="RemoveFavourite_Click" Foreground="{StaticResource HikeContextMenuFGBrush}"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                         <Grid HorizontalAlignment="Center" MinWidth="60" >
@@ -425,7 +425,7 @@
                 </ScrollViewer>
             </controls:PivotItem>
 
-            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeWhite}">
+            <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeBGBrush}">
                 <Grid Background="Transparent">
                     <Button x:Name="refreshBarButton" Canvas.ZIndex="1" Style="{StaticResource RefreshButtonStyle}" Click="refreshStatuses_Tap" Visibility="Collapsed" Margin="0,10,0,0" VerticalAlignment="Top">
                         <Button.Content>
@@ -532,7 +532,7 @@
                                                                                      FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
                                                                                      ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
                                                         
-                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="{StaticResource HikeDarkGrey}" FontWeight="Light"
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="{StaticResource HikeSubTextForegroundBrush}" FontWeight="Light"
                                                                              FontSize="22" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
                                                                              LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
                                                         </StackPanel>
@@ -593,19 +593,9 @@
                                                     </Grid.RowDefinitions>
                                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                                         <Image MaxHeight="225" Source="/view/images/ConversationPage/timeline.jpg" Canvas.ZIndex="-1"/>
-                                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Image Source="/View/images/moods/14Chilling.png" MaxHeight="48"/>
-                                                            <Image Source="/View/images/moods/15InLove.png" MaxHeight="48" Grid.Column="1" Margin="30,0"/>
-                                                            <Image Source="/View/images/moods/13Reading.png" MaxHeight="48" Grid.Column="2"/>
-                                                        </Grid>
                                                     </Grid>
                                                     <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,-20,0,0">
-                                                        <Ellipse Height="40" Width="40" Fill="White"/>
+                                                        <Ellipse Height="40" Width="40" Fill="{StaticResource HikeCardBackgroundBrush}"/>
                                                         <Image Canvas.ZIndex="1" Source="/view/images/ConversationPage/timelineQuote.png" MaxHeight="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Grid>
                                                     <TextBlock Text="{Binding Path= LocalizedResources.Express_Yourself_Txt, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUECardHeaderStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
