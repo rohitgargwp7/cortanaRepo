@@ -68,7 +68,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="4">
             <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Gender_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                        Style="{StaticResource EditProfileLabelTextBlock}"/>
-            <toolkit:ListPicker x:Name="genderListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeBlue}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}"/>
+            <toolkit:ListPicker x:Name="genderListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}"/>
         </StackPanel>
     </Grid>
 
