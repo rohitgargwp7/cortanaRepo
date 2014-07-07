@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Black theme.
+        ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {
             get {
@@ -799,7 +799,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chat with upto 100 friends, its bigger than ever.
+        ///   Looks up a localized string similar to Chat with up to {0} friends, its bigger than ever.
         /// </summary>
         public static string Conversations_FTUE_Group_SubTxt {
             get {
@@ -817,7 +817,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap to create a group.
+        ///   Looks up a localized string similar to tap here to create a group!.
         /// </summary>
         public static string Conversations_FTUE_GroupNow_Txt {
             get {
@@ -835,7 +835,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to it works like magic.
+        ///   Looks up a localized string similar to it works like magic!.
         /// </summary>
         public static string Conversations_FTUE_H2O_SubTxt2 {
             get {
@@ -880,7 +880,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to start inviting now.
+        ///   Looks up a localized string similar to tap here to invite now!.
         /// </summary>
         public static string Conversations_FTUE_InviteNow_Txt {
             get {
@@ -889,7 +889,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap here to choose them.
+        ///   Looks up a localized string similar to tap here to choose them!.
         /// </summary>
         public static string Conversations_FTUE_LastSeen_LinkTxt {
             get {
@@ -1503,33 +1503,6 @@ namespace windows_client.Languages {
         public static string Empty_Field_Error {
             get {
                 return ResourceManager.GetString("Empty_Field_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I am a boy.
-        /// </summary>
-        public static string EnterGenter_Boy_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Boy_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I am a girl.
-        /// </summary>
-        public static string EnterGenter_Girl_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Girl_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pick one....
-        /// </summary>
-        public static string EnterGenter_Header_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Header_Txt", resourceCulture);
             }
         }
         
@@ -3757,105 +3730,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I haven&apos;t been this excited about Friday, since last Friday.
-        /// </summary>
-        public static string RandomText_Boy1 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
-        /// </summary>
-        public static string RandomText_Boy2 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Listen, smile, agree and do whatever the hell you were gonna do!.
-        /// </summary>
-        public static string RandomText_Boy3 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Boys speak about 2000 words a day!.
-        /// </summary>
-        public static string RandomText_Boy4 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Is there an autocorrect that works on life decisions?.
-        /// </summary>
-        public static string RandomText_Boy5 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to we have got a tailored experience for both.
-        /// </summary>
-        public static string RandomText_DefaultTxt {
-            get {
-                return ResourceManager.GetString("RandomText_DefaultTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to My way or the highway!.
-        /// </summary>
-        public static string RandomText_Girl1 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Well behaved girls rarely make history.
-        /// </summary>
-        public static string RandomText_Girl2 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I am size awesome.
-        /// </summary>
-        public static string RandomText_Girl3 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
-        /// </summary>
-        public static string RandomText_Girl4 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Girls speak about 7,000 words a day!.
-        /// </summary>
-        public static string RandomText_Girl5 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rate Now.
         /// </summary>
         public static string Rate_Now_Txt {
@@ -4369,7 +4243,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to black theme, auto download, location service and more.
+        ///   Looks up a localized string similar to dark theme, auto download, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {

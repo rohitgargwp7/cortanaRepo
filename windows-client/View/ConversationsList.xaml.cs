@@ -372,6 +372,13 @@ namespace windows_client.View
 
         private void ShowFTUEOnHikeCard()
         {
+            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+            else
+                profileFTUECard.Visibility = Visibility.Visible;
+
+            groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+
             if (peopleOnHikeListBox.ItemsSource == null)
             {
                 List<ContactInfo> cl = null;
@@ -403,11 +410,6 @@ namespace windows_client.View
 
                 peopleOnHikeListBox.ItemsSource = cl;
             }
-
-            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
-                profileFTUECard.Visibility = Visibility.Collapsed;
-            else
-                profileFTUECard.Visibility = Visibility.Visible;
 
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
@@ -1103,7 +1105,7 @@ namespace windows_client.View
                     return;
 
                 bool showPush = true;
-                if (vals.Length == 3)
+                if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
 
                 mObj.TypingNotificationText = null;
@@ -2873,6 +2875,7 @@ namespace windows_client.View
 
         private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_POST_STATUS_CLICKED);
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -2916,22 +2919,26 @@ namespace windows_client.View
 
         private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_LAST_SEEN_CLICKED);
             launchPagePivot.SelectedIndex = 1;
         }
 
         private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_INVITE_CLICKED);
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
 
         private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_GROUP_CHAT_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
         private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_PROFILE_PIC_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
             PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));

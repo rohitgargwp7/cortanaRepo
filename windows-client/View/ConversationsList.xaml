@@ -42,7 +42,7 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <Grid Background="{StaticResource HikeHeaderBrush}"  HorizontalAlignment="Stretch" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -120,7 +120,7 @@
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
                                             <Rectangle Height="1" Width="432" Grid.Row="2" Margin="-12,15,-12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}" StrokeThickness="1"/>
-                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="24" FontWeight="Normal" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
+                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
                                         </Grid>
                                     </Border>
                                     <Grid Grid.Row="1" Margin="12,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -175,7 +175,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                                        <TextBlock x:Name="groupCountCard" Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
                                                         <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
                                                     </Grid>
                                                 </Grid>

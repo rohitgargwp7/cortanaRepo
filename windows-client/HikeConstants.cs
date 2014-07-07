@@ -369,7 +369,7 @@ namespace windows_client
 
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
-        public static readonly int MAX_GROUP_MEMBER_SIZE = 50;
+        public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
@@ -390,7 +390,13 @@ namespace windows_client
         public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
         public static readonly string FTUE_CARD_SEE_ALL_CLICKED = "ftueCardSeeAllClicked";
         public static readonly string FTUE_CARD_START_CHAT_CLICKED = "ftueCardStartChatClicked";
-        public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar ";
+        public static readonly string FTUE_CARD_LAST_SEEN_CLICKED = "ftueCardLastSeenClicked";
+        public static readonly string FTUE_CARD_GROUP_CHAT_CLICKED = "ftueCardGroupChatClicked";
+        public static readonly string FTUE_CARD_PROFILE_PIC_CLICKED = "ftueCardProfilePicClicked";
+        public static readonly string FTUE_CARD_POST_STATUS_CLICKED = "ftueCardPostStatusClicked";
+        public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
+        public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
+        public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
@@ -481,6 +487,8 @@ namespace windows_client
             public static readonly string NEW_UPDATE_AVAILABLE = "New_Update_Available";
             public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
             public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
+            public static readonly string LAST_USER_JOIN_TIMESTAMP = "lastUjTs";
+
         }
 
         public static class NokiaHere

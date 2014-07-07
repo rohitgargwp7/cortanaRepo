@@ -74,9 +74,11 @@
 
         <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White"/>
 
-        <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
+        <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-3">
             <Image x:Name="chatBackground" Stretch="None"/>
         </Border>
+        
+        <Grid x:Name="darkModeLayer" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" Background="#0a000000" Canvas.ZIndex="-2"/>
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
@@ -122,7 +124,7 @@
                         <TextBlock x:Name="chatThemeHeaderTxt" FontWeight="Light" FontSize="38" Foreground="White"
                                Text="{Binding Path= LocalizedResources.ChatThemeHeader_Txt, Source={StaticResource LocalizedStrings}}" 
                                Grid.Column="1" Margin="3,-4,0,0" VerticalAlignment="Center"/>
-                        <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.Done_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}"
+                        <Button x:Name="doneButton" Content="{Binding Path= LocalizedResources.AppBar_Done_Btn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Right" FontWeight="Light" Width="120" Height="70" Grid.Column="2" Click="chatPaintSave_Click" Style="{StaticResource SaveButtonChatThemeStyle}"
                                 VerticalAlignment="Center" Background="#66000000" Foreground="White" toolkit:TiltEffect.IsTiltEnabled="True"/>
                     </Grid>
                 </Grid>
@@ -235,7 +237,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate>
                                     <Grid Margin="24,13,24,13">
-                                        <Border CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
+                                        <Border CornerRadius="4" BorderThickness="1" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -618,7 +620,7 @@
                                                                         <RowDefinition Height="Auto" />
                                                                     </Grid.RowDefinitions>
                                                                     <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}"/>
-                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" FontSize="16" Opacity="0.7" Foreground="{Binding MessageTextForeGround}"/>
+                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
@@ -1080,7 +1082,7 @@
                                                                     <RowDefinition Height="Auto" />
                                                                 </Grid.RowDefinitions>
                                                                 <TextBlock Text="{Binding FileName}" TextTrimming="WordEllipsis"  Foreground="Black"/>
-                                                                <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="16" Opacity="0.7" Foreground="Black"/>
+                                                                <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="18" FontWeight="Light" Foreground="Black"/>
                                                             </Grid>
                                                         </Grid>
                                                     </Grid>

@@ -1306,7 +1306,7 @@ Download it like asap from http://hike.in!</value>
     <value>preferences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>black theme, auto download, location service and more</value>
+    <value>dark theme, auto download, location service and more</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>drag here to delete</value>
@@ -1847,48 +1847,6 @@ Download it like asap from http://hike.in!</value>
   <data name="Empty_Field_Error" xml:space="preserve">
     <value>Field cannot be empty</value>
   </data>
-  <data name="EnterGenter_Boy_Txt" xml:space="preserve">
-    <value>I am a boy</value>
-  </data>
-  <data name="EnterGenter_Girl_Txt" xml:space="preserve">
-    <value>I am a girl</value>
-  </data>
-  <data name="EnterGenter_Header_Txt" xml:space="preserve">
-    <value>Pick one...</value>
-  </data>
-  <data name="RandomText_Boy1" xml:space="preserve">
-    <value>I haven't been this excited about Friday, since last Friday</value>
-  </data>
-  <data name="RandomText_Boy2" xml:space="preserve">
-    <value>Getting married before 20 is like leaving a party before 8!</value>
-  </data>
-  <data name="RandomText_Boy3" xml:space="preserve">
-    <value>Listen, smile, agree and do whatever the hell you were gonna do!</value>
-  </data>
-  <data name="RandomText_Boy4" xml:space="preserve">
-    <value>Boys speak about 2000 words a day!</value>
-  </data>
-  <data name="RandomText_Boy5" xml:space="preserve">
-    <value>Is there an autocorrect that works on life decisions?</value>
-  </data>
-  <data name="RandomText_DefaultTxt" xml:space="preserve">
-    <value>we have got a tailored experience for both</value>
-  </data>
-  <data name="RandomText_Girl1" xml:space="preserve">
-    <value>My way or the highway!</value>
-  </data>
-  <data name="RandomText_Girl2" xml:space="preserve">
-    <value>Well behaved girls rarely make history</value>
-  </data>
-  <data name="RandomText_Girl3" xml:space="preserve">
-    <value>I am size awesome</value>
-  </data>
-  <data name="RandomText_Girl4" xml:space="preserve">
-    <value>Getting married before 20 is like leaving a party before 8!</value>
-  </data>
-  <data name="RandomText_Girl5" xml:space="preserve">
-    <value>Girls speak about 7,000 words a day!</value>
-  </data>
   <data name="StatusTut_Text" xml:space="preserve">
     <value>Amazing weather for an evening drive! #delhi</value>
   </data>
@@ -2064,7 +2022,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
-    <value>it works like magic</value>
+    <value>it works like magic!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
@@ -2076,7 +2034,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 40</comment>
   </data>
   <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
-    <value>start inviting now</value>
+    <value>tap here to invite now!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
@@ -2088,7 +2046,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>tap here to choose them</value>
+    <value>tap here to choose them!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2112,11 +2070,11 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_GroupNow_Txt" xml:space="preserve">
-    <value>tap to create a group</value>
+    <value>tap here to create a group!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">
-    <value>Chat with upto 100 friends, its bigger than ever</value>
+    <value>Chat with up to {0} friends, its bigger than ever</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Group_Txt" xml:space="preserve">
@@ -2136,7 +2094,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="BlackSettings_Txt" xml:space="preserve">
-    <value>Black theme</value>
+    <value>Dark theme</value>
   </data>
   <data name="CloseApp_Txt" xml:space="preserve">
     <value>Please close the app and start it again to change the theme.</value>

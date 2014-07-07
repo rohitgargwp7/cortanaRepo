@@ -232,6 +232,9 @@ namespace windows_client.View
                 llsMessages.DoubleTap -= MessageList_DoubleTap;
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
+
+            if (App.ViewModel.IsDarkMode)
+                darkModeLayer.Visibility = Visibility.Visible;
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -944,11 +947,9 @@ namespace windows_client.View
                 if (obj.Name != null)
                     mContactName = obj.Name;
                 else
-                {
                     mContactName = obj.Msisdn;
-                    isAddUser = true;
-                }
 
+                isAddUser = !obj.IsInAddressBook;
                 isOnHike = obj.OnHike;
 
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
@@ -3956,7 +3957,7 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 bool showPush = true;
-                if (vals.Length == 3)
+                if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
 
                 //TODO handle vibration for user profile and GC.
@@ -5805,7 +5806,7 @@ namespace windows_client.View
                 progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
-                nudgeBorder.Background = UI_Utils.Instance.White;
+                nudgeBorder.Background = UI_Utils.Instance.Transparent;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
                 nudgeText.Foreground = UI_Utils.Instance.Black;
             }
@@ -6670,11 +6671,11 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
