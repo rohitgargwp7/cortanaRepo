@@ -235,7 +235,7 @@ namespace windows_client
                 spFbConnect.IsEnabled = false;
             }
 
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
 
             if (reloadImage) // this will handle both deactivation and tombstone
             {
@@ -327,7 +327,7 @@ namespace windows_client
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove("fbName");
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
         }
 
         private void facebook_Tap(object sender, RoutedEventArgs e)
@@ -347,7 +347,7 @@ namespace windows_client
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
                 txtBxEnterName.IsEnabled = true;
                 return;
             }
@@ -375,7 +375,7 @@ namespace windows_client
 
                     avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
                     progressBar.Opacity = 0;
-                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+                    nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
                     txtBxEnterName.IsEnabled = true;
                 }
                 catch (Exception ex)
@@ -386,7 +386,7 @@ namespace windows_client
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 progressBar.Opacity = 0;
-                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
+                nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
                 txtBxEnterName.IsEnabled = true;
 
                 if (e.Error != null)

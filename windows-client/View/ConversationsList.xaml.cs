@@ -2870,6 +2870,7 @@ namespace windows_client.View
 
         private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_POST_STATUS_CLICKED);
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -2913,22 +2914,26 @@ namespace windows_client.View
 
         private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_LAST_SEEN_CLICKED);
             launchPagePivot.SelectedIndex = 1;
         }
 
         private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_INVITE_CLICKED);
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
 
         private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_GROUP_CHAT_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
         private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_PROFILE_PIC_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
             PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
