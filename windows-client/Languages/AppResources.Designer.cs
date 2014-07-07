@@ -817,7 +817,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap to create a group.
+        ///   Looks up a localized string similar to tap here to create a group!.
         /// </summary>
         public static string Conversations_FTUE_GroupNow_Txt {
             get {
@@ -835,7 +835,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to it works like magic.
+        ///   Looks up a localized string similar to it works like magic!.
         /// </summary>
         public static string Conversations_FTUE_H2O_SubTxt2 {
             get {
@@ -880,7 +880,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to start inviting now.
+        ///   Looks up a localized string similar to tap here to invite now!.
         /// </summary>
         public static string Conversations_FTUE_InviteNow_Txt {
             get {
@@ -889,7 +889,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap here to choose them.
+        ///   Looks up a localized string similar to tap here to choose them!.
         /// </summary>
         public static string Conversations_FTUE_LastSeen_LinkTxt {
             get {

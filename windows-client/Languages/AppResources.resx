@@ -2022,7 +2022,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
-    <value>it works like magic</value>
+    <value>it works like magic!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
@@ -2034,7 +2034,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 40</comment>
   </data>
   <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
-    <value>start inviting now</value>
+    <value>tap here to invite now!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
@@ -2046,7 +2046,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>tap here to choose them</value>
+    <value>tap here to choose them!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2070,7 +2070,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_GroupNow_Txt" xml:space="preserve">
-    <value>tap to create a group</value>
+    <value>tap here to create a group!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">

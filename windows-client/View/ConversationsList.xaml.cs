@@ -372,6 +372,13 @@ namespace windows_client.View
 
         private void ShowFTUEOnHikeCard()
         {
+            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+            else
+                profileFTUECard.Visibility = Visibility.Visible;
+
+            groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+
             if (peopleOnHikeListBox.ItemsSource == null)
             {
                 List<ContactInfo> cl = null;
@@ -403,13 +410,6 @@ namespace windows_client.View
 
                 peopleOnHikeListBox.ItemsSource = cl;
             }
-
-            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
-                profileFTUECard.Visibility = Visibility.Collapsed;
-            else
-                profileFTUECard.Visibility = Visibility.Visible;
-
-            groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
 
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
