@@ -401,11 +401,6 @@ namespace windows_client
             ChangeProfile();
         }
 
-        private void txtBxEnterAge_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text) ? true : false;
-        }
-
         public void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {
             // test this is called
