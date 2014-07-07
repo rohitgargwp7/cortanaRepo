@@ -6664,11 +6664,11 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
