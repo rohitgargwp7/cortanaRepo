@@ -355,9 +355,6 @@
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\TimeUtils.cs" />
-    <Compile Include="View\EnterGender.xaml.cs">
-      <DependentUpon>EnterGender.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -510,10 +507,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\EnterGender.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.config">
@@ -659,10 +652,6 @@
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
     <Content Include="View\images\ConversationPage\sticker.png" />
-    <Content Include="View\images\FTUE\boy_selected.png" />
-    <Content Include="View\images\FTUE\boy_unselected.png" />
-    <Content Include="View\images\FTUE\girl_selected.png" />
-    <Content Include="View\images\FTUE\girl_unselected.png" />
     <Content Include="View\images\FTUE\p1.png" />
     <Content Include="View\images\FTUE\p2.png" />
     <Content Include="View\images\FTUE\p3.png" />
