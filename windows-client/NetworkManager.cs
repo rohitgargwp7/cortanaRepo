@@ -413,7 +413,7 @@ namespace windows_client
                             this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
-                    
+
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
                     if (GroupManager.Instance.GroupCache != null)
@@ -1827,9 +1827,9 @@ namespace windows_client
                         bool isPush = true;
                         JToken pushJToken;
                         if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
-                            isPush = (Boolean)pushJToken; 
-                        
-                            object[] vals;
+                            isPush = (Boolean)pushJToken;
+
+                        object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
@@ -2091,22 +2091,12 @@ namespace windows_client
             foreach (string key in GroupManager.Instance.GroupCache.Keys)
             {
                 List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                for (int i = 0; i < l.Count; i++)
+                GroupParticipant gp = l.Find(x => x.Msisdn == ms);
+                if (gp != null)
                 {
-                    if (l[i].Msisdn == ms) // if this msisdn exists in group
+                    if (isOptInMsg)
                     {
-                        ConvMessage convMsg = null;
-                        if (!isOptInMsg) // represents UJ event
-                        {
-                            if (l[i].IsOnHike)  // if this user is already on hike
-                                continue;
-                            l[i].IsOnHike = true;
-                            if (!GroupTableUtils.IsGroupAlive(key)) // if group is dead simply dont do anything
-                                continue;
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
-                        }
-                        else
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
 
                         object[] values = null;
                         convMsg.Msisdn = key;
@@ -2141,9 +2131,10 @@ namespace windows_client
                         values[1] = co;
 
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
-                        l[i].HasOptIn = true;
-                        break;
                     }
+                    else
+                        gp.IsOnHike = true;
+                    gp.HasOptIn = true;
                 }
             }
             GroupManager.Instance.SaveGroupCache();
