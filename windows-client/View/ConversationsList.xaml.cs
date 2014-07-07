@@ -409,6 +409,8 @@ namespace windows_client.View
             else
                 profileFTUECard.Visibility = Visibility.Visible;
 
+            groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+
             var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
             if (list != null)
             {

@@ -1306,7 +1306,7 @@ Download it like asap from http://hike.in!</value>
     <value>preferences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>black theme, auto download, location service and more</value>
+    <value>dark theme, auto download, location service and more</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>drag here to delete</value>
@@ -2116,7 +2116,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">
-    <value>Chat with upto 100 friends, its bigger than ever</value>
+    <value>Chat with up to {0} friends, its bigger than ever</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Group_Txt" xml:space="preserve">
@@ -2136,7 +2136,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="BlackSettings_Txt" xml:space="preserve">
-    <value>Black theme</value>
+    <value>Dark theme</value>
   </data>
   <data name="CloseApp_Txt" xml:space="preserve">
     <value>Please close the app and start it again to change the theme.</value>

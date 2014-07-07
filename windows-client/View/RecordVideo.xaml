@@ -70,22 +70,22 @@
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel x:Name="cameraGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,20,12,12">
                         <TextBlock x:Name="cameraLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Camera_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlue}" FontWeight="Light" Foreground="{StaticResource HikeFGBrush}"
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeFGBrush}" FontWeight="Light" Foreground="{StaticResource HikeFGBrush}"
                                             x:Name="cameraList" Width="460" HorizontalAlignment="Stretch" SelectionChanged="cameraList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" Foreground="{StaticResource HikeFGBrush}"/>
+                                    <TextBlock Text="{Binding}"/>
                                 </DataTemplate>
                             </toolkit:ListPicker.ItemTemplate>
                         </toolkit:ListPicker>
                     </StackPanel>
                     <StackPanel x:Name="resolutionGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
                         <TextBlock x:Name="resolutionLabel" Foreground="{StaticResource PhoneSubtleBrush}" Text="{Binding Path= LocalizedResources.Reolution_Label, Source={StaticResource LocalizedStrings}}"/>
-                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeBlue}" FontWeight="Light" Foreground="{StaticResource HikeFGBrush}"
+                        <toolkit:ListPicker Template="{StaticResource EditProfileListPicker}" BorderBrush="{StaticResource HikeFGBrush}" FontWeight="Light" Foreground="{StaticResource HikeFGBrush}"
                                             Width="460" x:Name="resolutionList" HorizontalAlignment="Stretch" SelectionChanged="resolutionList_SelectionChanged" Margin="-2,0">
                             <toolkit:ListPicker.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource HikeFGBrush}"/>
+                                    <TextBlock Text="{Binding Title}"/>
                                 </DataTemplate>
                             </toolkit:ListPicker.ItemTemplate>
                         </toolkit:ListPicker>
