@@ -573,54 +573,6 @@ namespace windows_client.utils
             }
         }
 
-        private BitmapImage girlSelectedImage;
-        public BitmapImage GirlSelectedImage
-        {
-            get
-            {
-                if (girlSelectedImage == null)
-                    girlSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_selected.png", UriKind.Relative));
-
-                return girlSelectedImage;
-            }
-        }
-
-        private BitmapImage girlUnSelectedImage;
-        public BitmapImage GirlUnSelectedImage
-        {
-            get
-            {
-                if (girlUnSelectedImage == null)
-                    girlUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_unselected.png", UriKind.Relative));
-
-                return girlUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boyUnSelectedImage;
-        public BitmapImage BoyUnSelectedImage
-        {
-            get
-            {
-                if (boyUnSelectedImage == null)
-                    boyUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_unselected.png", UriKind.Relative));
-
-                return boyUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boySelectedImage;
-        public BitmapImage BoySelectedImage
-        {
-            get
-            {
-                if (boySelectedImage == null)
-                    boySelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_selected.png", UriKind.Relative));
-
-                return boySelectedImage;
-            }
-        }
-
         #endregion
 
         #region File Transfer

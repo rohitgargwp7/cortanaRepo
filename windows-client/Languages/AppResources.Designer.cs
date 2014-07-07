@@ -1507,33 +1507,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I am a boy.
-        /// </summary>
-        public static string EnterGenter_Boy_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Boy_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I am a girl.
-        /// </summary>
-        public static string EnterGenter_Girl_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Girl_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pick one....
-        /// </summary>
-        public static string EnterGenter_Header_Txt {
-            get {
-                return ResourceManager.GetString("EnterGenter_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm your number.
         /// </summary>
         public static string EnterMsisdn_ConfirmNumber_Txt {
@@ -3753,105 +3726,6 @@ namespace windows_client.Languages {
         public static string ProfileToBeFriendBlk1 {
             get {
                 return ResourceManager.GetString("ProfileToBeFriendBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I haven&apos;t been this excited about Friday, since last Friday.
-        /// </summary>
-        public static string RandomText_Boy1 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
-        /// </summary>
-        public static string RandomText_Boy2 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Listen, smile, agree and do whatever the hell you were gonna do!.
-        /// </summary>
-        public static string RandomText_Boy3 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Boys speak about 2000 words a day!.
-        /// </summary>
-        public static string RandomText_Boy4 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Is there an autocorrect that works on life decisions?.
-        /// </summary>
-        public static string RandomText_Boy5 {
-            get {
-                return ResourceManager.GetString("RandomText_Boy5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to we have got a tailored experience for both.
-        /// </summary>
-        public static string RandomText_DefaultTxt {
-            get {
-                return ResourceManager.GetString("RandomText_DefaultTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to My way or the highway!.
-        /// </summary>
-        public static string RandomText_Girl1 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Well behaved girls rarely make history.
-        /// </summary>
-        public static string RandomText_Girl2 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I am size awesome.
-        /// </summary>
-        public static string RandomText_Girl3 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting married before 20 is like leaving a party before 8!.
-        /// </summary>
-        public static string RandomText_Girl4 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Girls speak about 7,000 words a day!.
-        /// </summary>
-        public static string RandomText_Girl5 {
-            get {
-                return ResourceManager.GetString("RandomText_Girl5", resourceCulture);
             }
         }
         

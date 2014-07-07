@@ -943,11 +943,9 @@ namespace windows_client.View
                 if (obj.Name != null)
                     mContactName = obj.Name;
                 else
-                {
                     mContactName = obj.Msisdn;
-                    isAddUser = true;
-                }
 
+                isAddUser = !obj.IsInAddressBook;
                 isOnHike = obj.OnHike;
 
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
