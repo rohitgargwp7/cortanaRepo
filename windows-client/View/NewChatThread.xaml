@@ -74,9 +74,11 @@
 
         <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White"/>
 
-        <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-4">
+        <Border Grid.RowSpan="3" x:Name="BackgroundColor" Canvas.ZIndex="-3">
             <Image x:Name="chatBackground" Stretch="None"/>
         </Border>
+        
+        <Grid x:Name="darkModeLayer" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" Background="#0a000000" Canvas.ZIndex="-2"/>
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="HikeTitle" HorizontalAlignment="Stretch">
@@ -235,7 +237,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtNotificationBubble>
                                 <DataTemplate>
                                     <Grid Margin="24,13,24,13">
-                                        <Border CornerRadius="4" BorderThickness="1" Opacity="0.9" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
+                                        <Border CornerRadius="4" BorderThickness="1" Margin="0,-3" Background="{Binding BorderBackgroundColor}" BorderBrush="{Binding NotificationBorderBrush}" HorizontalAlignment="Stretch" />
                                         <Grid HorizontalAlignment="Stretch" Margin="12 3" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>

@@ -652,10 +652,6 @@
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
     <Content Include="View\images\ConversationPage\sticker.png" />
-    <Content Include="View\images\FTUE\boy_selected.png" />
-    <Content Include="View\images\FTUE\boy_unselected.png" />
-    <Content Include="View\images\FTUE\girl_selected.png" />
-    <Content Include="View\images\FTUE\girl_unselected.png" />
     <Content Include="View\images\FTUE\p1.png" />
     <Content Include="View\images\FTUE\p2.png" />
     <Content Include="View\images\FTUE\p3.png" />

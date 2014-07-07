@@ -232,6 +232,9 @@ namespace windows_client.View
                 llsMessages.DoubleTap -= MessageList_DoubleTap;
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
+
+            if (App.ViewModel.IsDarkMode)
+                darkModeLayer.Visibility = Visibility.Visible;
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -5797,7 +5800,7 @@ namespace windows_client.View
                 progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
-                nudgeBorder.Background = UI_Utils.Instance.White;
+                nudgeBorder.Background = UI_Utils.Instance.Transparent;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
                 nudgeText.Foreground = UI_Utils.Instance.Black;
             }

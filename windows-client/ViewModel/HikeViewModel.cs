@@ -210,6 +210,9 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
 
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
+
             LoadViewModelObjects();
         }
 
@@ -1202,7 +1205,6 @@ namespace windows_client.ViewModel
 
         #endregion Request Last Seen
 
-
         public void Toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ToastPrompt toast = sender as ToastPrompt;
@@ -1217,5 +1219,12 @@ namespace windows_client.ViewModel
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
+
+        public Boolean IsDarkMode
+        {
+            get;
+            private set;
+        }
+
     }
 }

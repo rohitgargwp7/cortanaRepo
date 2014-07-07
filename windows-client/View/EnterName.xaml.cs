@@ -125,8 +125,7 @@ namespace windows_client
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
             App.appSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
 
-            progressBar.Opacity = 0;
-            progressBar.IsEnabled = false;
+            progressBar.Opacity = 1;
 
             JObject obj = new JObject();
 
