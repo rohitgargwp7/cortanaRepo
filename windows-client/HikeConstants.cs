@@ -368,7 +368,7 @@ namespace windows_client
 
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
-        public static readonly int MAX_GROUP_MEMBER_SIZE = 50;
+        public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
