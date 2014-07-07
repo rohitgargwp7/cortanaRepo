@@ -3950,7 +3950,7 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 bool showPush = true;
-                if (vals.Length == 3)
+                if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
 
                 //TODO handle vibration for user profile and GC.
