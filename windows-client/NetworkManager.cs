@@ -369,10 +369,12 @@ namespace windows_client
             {
                 JObject o = null;
                 string uMsisdn = null;
+                long serverTimestamp = 0;
                 try
                 {
                     o = (JObject)jsonObj[HikeConstants.DATA];
                     uMsisdn = (string)o[HikeConstants.MSISDN];
+                    serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
                 }
                 catch (Exception ex)
                 {
@@ -392,14 +394,15 @@ namespace windows_client
                 GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
+                    long lastTimeStamp;
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                        return;
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
                     // if user is in contact list then only show the joined msg
                     ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
-                    bool isUserInContactList = c != null ? true : false;
-                    if (isUserInContactList && c.OnHike) // if user exists and is already on hike , do nothing
-                        return;
 
                     // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList, isRejoin);
+                    ProcessUoUjMsgs(jsonObj, false, c != null, isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
                 else

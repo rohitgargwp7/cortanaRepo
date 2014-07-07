@@ -481,6 +481,8 @@ namespace windows_client
             public static readonly string NEW_UPDATE_AVAILABLE = "New_Update_Available";
             public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
             public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
+            public static readonly string LAST_USER_JOIN_TIMESTAMP = "lastUjTs";
+
         }
 
         public static class NokiaHere
