@@ -618,7 +618,7 @@
                                                                         <RowDefinition Height="Auto" />
                                                                     </Grid.RowDefinitions>
                                                                     <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" Foreground="{Binding MessageTextForeGround}"/>
-                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" FontSize="16" Opacity="0.7" Foreground="{Binding MessageTextForeGround}"/>
+                                                                    <TextBlock Grid.Row="1" Text="{Binding FileType}" FontSize="18" FontWeight="Light" Foreground="{Binding MessageTextForeGround}"/>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
@@ -1080,7 +1080,7 @@
                                                                     <RowDefinition Height="Auto" />
                                                                 </Grid.RowDefinitions>
                                                                 <TextBlock Text="{Binding FileName}" TextTrimming="WordEllipsis"  Foreground="Black"/>
-                                                                <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="16" Opacity="0.7" Foreground="Black"/>
+                                                                <TextBlock Grid.Row="1" Text="{Binding FileType}" TextTrimming="WordEllipsis" FontSize="18" FontWeight="Light" Foreground="Black"/>
                                                             </Grid>
                                                         </Grid>
                                                     </Grid>
