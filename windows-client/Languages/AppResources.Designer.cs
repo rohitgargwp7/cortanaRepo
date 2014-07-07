@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Black theme.
+        ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {
             get {
@@ -799,7 +799,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chat with upto 100 friends, its bigger than ever.
+        ///   Looks up a localized string similar to Chat with up to {0} friends, its bigger than ever.
         /// </summary>
         public static string Conversations_FTUE_Group_SubTxt {
             get {
@@ -4369,7 +4369,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to black theme, auto download, location service and more.
+        ///   Looks up a localized string similar to dark theme, auto download, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {
