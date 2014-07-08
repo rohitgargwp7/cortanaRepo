@@ -98,10 +98,10 @@ namespace windows_client
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
         public static readonly int MAX_THUMBNAILSIZE = 4800;
-       
+
         public const byte MAX_IMAGES_SHARE = 15;
         public const int STATUS_INITIAL_FETCH_COUNT = 31;
-        public const int STATUS_SUBSEQUENT_FETCH_COUNT = 21; 
+        public const int STATUS_SUBSEQUENT_FETCH_COUNT = 21;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -212,6 +212,7 @@ namespace windows_client
 
         /* how often to ping the server */
         public static readonly short KEEP_ALIVE = 10 * 60; /* 10 minutes */
+        public static readonly int SERVER_UNAVAILABLE_MAX_CONNECT_TIME = 9; /* 9 minutes */
 
         /* how often to ping after a failure */
         public static readonly int RECONNECT_TIME = 10; /* 10 seconds */
