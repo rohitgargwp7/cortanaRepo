@@ -480,5 +480,14 @@ namespace windows_client.Mqtt
 
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
         }
+
+        IDisposable scheduledConnect = null;
+
+        public void ScheduleConnect(int seconds)
+        {
+            if (scheduledConnect != null)
+                scheduledConnect.Dispose();
+            scheduledConnect = scheduler.Schedule(connect, TimeSpan.FromSeconds(seconds));
+        }
     }
 }
