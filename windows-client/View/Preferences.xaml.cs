@@ -15,6 +15,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -199,6 +200,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings(HikeConstants.BLACK_THEME, true);
+            Analytics.SendAnalyticsEvent(HikeConstants.DARK_MODE_CLICKED, "on");
 
             if (!_isPopUpDisplayed)
             {
@@ -211,6 +213,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.Off;
             App.RemoveKeyFromAppSettings(HikeConstants.BLACK_THEME);
+            Analytics.SendAnalyticsEvent(HikeConstants.DARK_MODE_CLICKED, "off");
 
             if (!_isPopUpDisplayed)
             {
