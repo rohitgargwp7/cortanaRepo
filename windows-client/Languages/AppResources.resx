@@ -2038,7 +2038,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>You'll earn Rs20 talk-time for each friend that joins hike :)</value>
+    <value>You'll earn Rs 20 talk-time for each friend that joins hike :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
