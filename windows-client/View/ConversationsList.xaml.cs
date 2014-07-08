@@ -2909,6 +2909,7 @@ namespace windows_client.View
             {
                 if (obj.IsGroupChat)
                 {
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
                     NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
                 }
