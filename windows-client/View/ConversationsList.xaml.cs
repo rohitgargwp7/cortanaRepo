@@ -224,7 +224,8 @@ namespace windows_client.View
             else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
-                ShowFTUEOnHikeCard();
+                ShowFTUECards();
+                UpdateLayout();
             }
             else
             {
@@ -332,7 +333,7 @@ namespace windows_client.View
             emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-                ShowFTUEOnHikeCard();
+                ShowFTUECards();
 
             appBar.IsMenuEnabled = true;
 
@@ -370,14 +371,21 @@ namespace windows_client.View
 
         int _usersOnHike;
 
-        private void ShowFTUEOnHikeCard()
+        private void ShowFTUECards()
         {
-            if (MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.hasCustomProfileImage(App.MSISDN))
                 profileFTUECard.Visibility = Visibility.Collapsed;
-            else
-                profileFTUECard.Visibility = Visibility.Visible;
 
-            groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+            if (String.IsNullOrEmpty(groupCountCard.Text))
+                groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+
+            if (h2oFTUECard.Visibility == Visibility.Collapsed)
+            {
+                bool showFreeSMS = true;
+                App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+                if (showFreeSMS && App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+                    h2oFTUECard.Visibility = Visibility.Visible;
+            }
 
             if (peopleOnHikeListBox.ItemsSource == null)
             {
@@ -737,7 +745,7 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Clear();
             App.ViewModel.MessageListPageCollection.Clear();
             emptyScreenGrid.Visibility = Visibility.Visible;
-            ShowFTUEOnHikeCard();
+            ShowFTUECards();
             enableAppBar();
             NetworkManager.turnOffNetworkManager = false;
             shellProgress.IsIndeterminate = false;
@@ -798,7 +806,7 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
-                ShowFTUEOnHikeCard();
+                ShowFTUECards();
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
@@ -1582,7 +1590,7 @@ namespace windows_client.View
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
                         emptyScreenGrid.Visibility = Visibility.Visible;
-                        ShowFTUEOnHikeCard();
+                        ShowFTUECards();
                     }
                 });
             }

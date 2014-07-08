@@ -862,7 +862,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ll earn Rs20 talk-time for each friend that joins hike :).
+        ///   Looks up a localized string similar to You&apos;ll earn Rs 20 talk-time for each friend that joins hike :).
         /// </summary>
         public static string Conversations_FTUE_Invite_SubTxt {
             get {

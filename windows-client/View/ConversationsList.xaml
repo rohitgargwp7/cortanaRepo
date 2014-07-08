@@ -175,7 +175,7 @@
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock x:Name="groupCountCard" Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                                        <TextBlock x:Name="groupCountCard" Margin="0,10" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
                                                         <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
                                                     </Grid>
                                                 </Grid>
@@ -223,7 +223,7 @@
                                                 </Grid>
                                             </Grid>
                                         </Border>
-                                        <Border Grid.Row="5" Style="{StaticResource FTUESmallCardStyle}">
+                                        <Border x:Name="h2oFTUECard" Visibility="Collapsed" Grid.Row="5" Style="{StaticResource FTUESmallCardStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
