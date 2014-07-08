@@ -72,7 +72,7 @@ namespace windows_client.View
                 value = true;
             enterToSendToggle.IsChecked = value;
             this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
-            
+
             if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
                 value = true;
             nudgeSettingToggle.IsChecked = value;
@@ -90,7 +90,7 @@ namespace windows_client.View
             locationToggle.Checked += locationToggle_Checked;
             locationToggle.Unchecked += locationToggle_Unchecked;
         }
-        
+
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.On;
@@ -151,7 +151,7 @@ namespace windows_client.View
             enterToSendToggle.Checked += enterToSendToggle_Checked;
             enterToSendToggle.Unchecked += enterToSendToggle_Unchecked;
         }
-        
+
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
@@ -200,7 +200,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings(HikeConstants.BLACK_THEME, true);
-            Analytics.SendAnalyticsEvent(HikeConstants.DARK_MODE_CLICKED, "on");
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 1);
 
             if (!_isPopUpDisplayed)
             {
@@ -213,7 +213,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.Off;
             App.RemoveKeyFromAppSettings(HikeConstants.BLACK_THEME);
-            Analytics.SendAnalyticsEvent(HikeConstants.DARK_MODE_CLICKED, "off");
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 0);
 
             if (!_isPopUpDisplayed)
             {
