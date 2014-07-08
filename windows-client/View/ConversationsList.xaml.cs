@@ -383,7 +383,7 @@ namespace windows_client.View
             {
                 bool showFreeSMS = true;
                 App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-                if (showFreeSMS && !App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+                if (showFreeSMS && App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
                     h2oFTUECard.Visibility = Visibility.Visible;
             }
 
