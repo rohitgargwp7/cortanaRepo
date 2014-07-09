@@ -371,8 +371,11 @@ namespace windows_client.Model
             {
                 if (!string.IsNullOrWhiteSpace(_contactName))
                     return _contactName;
-                else
-                    return _msisdn;
+                else if (IsGroupChat)
+                {
+                    return string.Empty;
+                }
+                return _msisdn;
             }
         }
 
@@ -798,7 +801,7 @@ namespace windows_client.Model
                 {
                     count = reader.ReadInt32();
                     _draftMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_draftMessage == "*@N@*") 
+                    if (_draftMessage == "*@N@*")
                         _draftMessage = string.Empty;//so that on comparing with unsent empty text it returns true 
                 }
                 catch
