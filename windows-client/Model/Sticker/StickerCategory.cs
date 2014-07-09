@@ -82,7 +82,10 @@ namespace windows_client.Model.Sticker
             }
             set
             {
-                _showDownloadMessage = value;
+                if (value != _showDownloadMessage)
+                {
+                    _showDownloadMessage = value;
+                }
             }
         }
 
@@ -447,7 +450,7 @@ namespace windows_client.Model.Sticker
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
-                                this._showDownloadMessage = showDownloadMessage;
+                                ShowDownloadMessage = showDownloadMessage;
                                 this.Write(writer);
                                 writer.Flush();
                                 writer.Close();
@@ -465,7 +468,7 @@ namespace windows_client.Model.Sticker
         public void Write(BinaryWriter writer)
         {
             writer.Write(_hasMoreStickers);
-            writer.Write(_showDownloadMessage);
+            writer.Write(ShowDownloadMessage);
             writer.Write(_hasNewStickers);
             writer.WriteString(_overlayText);
             writer.WriteString(_overlayBackground);
@@ -474,7 +477,7 @@ namespace windows_client.Model.Sticker
         public void Read(BinaryReader reader)
         {
             _hasMoreStickers = reader.ReadBoolean();
-            _showDownloadMessage = reader.ReadBoolean();
+            ShowDownloadMessage = reader.ReadBoolean();
             _hasNewStickers = reader.ReadBoolean();
 
             try
