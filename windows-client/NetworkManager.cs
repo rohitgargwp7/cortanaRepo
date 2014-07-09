@@ -1038,7 +1038,7 @@ namespace windows_client
                     JToken gName;
                     //pubsub for gcn is not raised
                     if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                        groupName = gName.ToString();
+                        groupName = gName.ToString().Trim();
 
                     #endregion
                 }
@@ -1144,6 +1144,7 @@ namespace windows_client
                 try
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
+                    groupName = groupName.Trim();
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
