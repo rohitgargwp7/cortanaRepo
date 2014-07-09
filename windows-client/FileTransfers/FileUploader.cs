@@ -320,7 +320,7 @@ namespace windows_client.FileTransfers
                     BeginUploadPostRequest();
                 }
             }
-            else if (responseCode == HttpStatusCode.NotFound)
+            else if (responseCode == HttpStatusCode.NotFound || responseCode == HttpStatusCode.InternalServerError)
             {
                 // fresh upload
 
@@ -566,7 +566,7 @@ namespace windows_client.FileTransfers
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if (code == HttpStatusCode.NotFound) // server error during upload
+            else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload
             {
                 FileState = FileTransferState.FAILED;
                 Delete();

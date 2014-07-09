@@ -2058,7 +2058,7 @@ Download it like asap from http://hike.in!</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
-    <value>When words can’t express,  say it with a sticker</value>
+    <value>When words can’t express, say it with a sticker</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">

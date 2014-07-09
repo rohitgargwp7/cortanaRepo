@@ -322,7 +322,7 @@ namespace windows_client.FileTransfers
                     }
                 }
             }
-            else if (responseCode == HttpStatusCode.BadRequest || responseCode == HttpStatusCode.NotFound)
+            else if (responseCode == HttpStatusCode.BadRequest || responseCode == HttpStatusCode.NotFound || responseCode == HttpStatusCode.InternalServerError)
             {
                 // file does not exist on server
                 FileState = FileTransferState.DOES_NOT_EXIST;

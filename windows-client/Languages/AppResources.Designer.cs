@@ -943,7 +943,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When words can’t express,  say it with a sticker.
+        ///   Looks up a localized string similar to When words can’t express, say it with a sticker.
         /// </summary>
         public static string Conversations_FTUE_Sticker_SubTxt {
             get {
