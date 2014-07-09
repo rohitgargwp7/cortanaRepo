@@ -369,12 +369,8 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_contactName))
+                if (!string.IsNullOrWhiteSpace(_contactName) || IsGroupChat)
                     return _contactName;
-                else if (IsGroupChat)
-                {
-                    return string.Empty;
-                }
                 return _msisdn;
             }
         }
