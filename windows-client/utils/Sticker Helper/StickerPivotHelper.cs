@@ -134,5 +134,10 @@ namespace windows_client.utils
             _stickerPivot.Items.Add(pvt);
         }
 
+        public void ClearData()
+        {
+            dictStickersPivot.Clear();
+            isInitialised = false;
+        }
     }
 }
