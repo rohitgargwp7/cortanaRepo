@@ -862,7 +862,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ll earn Rs20 talk-time for each friend that joins hike :).
+        ///   Looks up a localized string similar to You&apos;ll earn Rs 20 talk-time for each friend that joins hike :).
         /// </summary>
         public static string Conversations_FTUE_Invite_SubTxt {
             get {
@@ -943,7 +943,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When words can’t express,  say it with a sticker.
+        ///   Looks up a localized string similar to When words can’t express, say it with a sticker.
         /// </summary>
         public static string Conversations_FTUE_Sticker_SubTxt {
             get {

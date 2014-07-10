@@ -510,6 +510,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
+            stickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();

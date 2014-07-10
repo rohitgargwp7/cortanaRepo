@@ -6302,8 +6302,8 @@ namespace windows_client.View
             //so that after reopening of ct , if pivot index are same we need to update pivot selection explicitly 
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
                 UpdateStickerPivot();
-
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
+            else
+                pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             foreach (StickerCategory stCategory in listStickerCategories)
             {

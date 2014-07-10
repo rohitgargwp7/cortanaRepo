@@ -1012,8 +1012,6 @@ namespace windows_client.utils
 
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                List<ContactInfo> msgToShow = null;
-                List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
                 
                 if (isRefresh)
@@ -1109,11 +1107,6 @@ namespace windows_client.utils
 
                 if (isPendingSaved)
                     MiscDBUtil.SavePendingRequests();
-
-                msisdns = null;
-                Debug.WriteLine("Total contacts with no msisdn : {0}" + count);
-                Debug.WriteLine("Total contacts inserted : {0}" + totalContacts);
-
 
                 return server_contacts;
             }

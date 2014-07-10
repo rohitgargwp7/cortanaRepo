@@ -87,7 +87,10 @@ namespace windows_client.Misc
 
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             gp.IsInAddressBook = isInAdressBook;
-            
+
+            if (gp.Msisdn == App.MSISDN)
+                return gp;
+
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
