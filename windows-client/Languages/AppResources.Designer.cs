@@ -889,7 +889,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap here to choose them!.
+        ///   Looks up a localized string similar to choose them wisely!.
         /// </summary>
         public static string Conversations_FTUE_LastSeen_LinkTxt {
             get {

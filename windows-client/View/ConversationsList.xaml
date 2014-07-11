@@ -71,204 +71,204 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeBGBrush}">
             <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeBGBrush}">
                 <Grid x:Name="ConversationList">
-                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
-                                            VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
-                                            HorizontalAlignment="Stretch">
-                        <phone:LongListSelector.ListHeader>
-                            <Grid Name="emptyScreenGrid" Visibility="Collapsed" toolkit:TiltEffect.SuppressTilt="True">
-                                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <ListBox Name="emptyScreenGrid" Visibility="Collapsed">
+                        <ListBoxItem toolkit:TiltEffect.SuppressTilt="True">
+                            <Border Margin="12,12,12,0" x:Name="peopleOnHikeBorder" BorderThickness="1" Style="{StaticResource FTUECardStyle}" Visibility="Collapsed">
+                                <Grid Margin="24,12" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <Border Margin="12" x:Name="peopleOnHikeBorder" BorderThickness="1" Style="{StaticResource FTUECardStyle}" Visibility="Collapsed">
-                                        <Grid Margin="24,12" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" TextAlignment="Left" Margin="0,0,0,15" HorizontalAlignment="Left"/>
+                                    <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="DefaultChat_Selected" toolkit:TiltEffect.SuppressTilt="False">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid HorizontalAlignment="Center" MinWidth="60">
+                                                        <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
+                                                    </Grid>
+                                                    <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Background="{StaticResource HikeCardBackgroundBrush}">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <TextBlock Text="{Binding NameToshow}" Style="{StaticResource ContactNameTextBlock}" TextTrimming="WordEllipsis"/>
+                                                        <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
+                                                    </Grid>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                    <Rectangle Height="1" Width="432" Grid.Row="2" Margin="-12,15,-12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}" StrokeThickness="1"/>
+                                    <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem toolkit:TiltEffect.SuppressTilt="True">
+                            <Grid Margin="12,12,12,6">
+                                <Rectangle Height="1" Width="456" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}"/>
+                                <Grid Background="{StaticResource HikeBGBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Intro_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardSubHeaderStyle}" Canvas.ZIndex="1" FontWeight="Normal"/>
+                                </Grid>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Border Style="{StaticResource FTUESmallCardStyle}" Tap="GoToGroup_Tapped">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/groupCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="*"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock FontSize="32" x:Name="peopleOnHikeText" Style="{StaticResource FTUECardHeaderStyle}" TextAlignment="Left" Margin="0,0,0,15" HorizontalAlignment="Left"/>
-                                            <ListBox x:Name="peopleOnHikeListBox" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="DefaultChat_Selected" toolkit:TiltEffect.SuppressTilt="False">
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Grid HorizontalAlignment="Center" MinWidth="60">
-                                                                <Image Source="{Binding AvatarImage}" MaxHeight="60" MaxWidth="60" HorizontalAlignment="Center"/>
-                                                            </Grid>
-                                                            <Grid Grid.Column="1" Margin="22,0,0,0" HorizontalAlignment="Stretch" Background="{StaticResource HikeCardBackgroundBrush}">
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                <TextBlock Text="{Binding NameToshow}" Style="{StaticResource ContactNameTextBlock}" TextTrimming="WordEllipsis"/>
-                                                                <TextBlock Grid.Row="1" Text="{Binding Msisdn}" Style="{StaticResource ContactMsisdnTextBlock}" VerticalAlignment="Bottom"/>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
-                                            <Rectangle Height="1" Width="432" Grid.Row="2" Margin="-12,15,-12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}" StrokeThickness="1"/>
-                                            <HyperlinkButton Margin="0,15,0,10" Grid.Row="3" Content="{Binding Path= LocalizedResources.See_All_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Normal" toolkit:TiltEffect.SuppressTilt="False" Click="SeeAllButton_Click"/>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock x:Name="groupCountCard" Margin="0,10" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
                                         </Grid>
-                                    </Border>
-                                    <Grid Grid.Row="1" Margin="12,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid Margin="0,6,0,12">
-                                            <Rectangle Height="1" Width="456" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource HikeCardStrokeBrush}"/>
-                                            <Grid Background="{StaticResource HikeBGBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <TextBlock Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Intro_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardSubHeaderStyle}" Canvas.ZIndex="1" FontWeight="Normal"/>
-                                            </Grid>
-                                        </Grid>
-                                        <Border Grid.Row="1" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToFav_Tapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/lastSeenCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Foreground="#f59029" Content="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_LinkTxt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border Grid.Row="2" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToGroup_Tapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/groupCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Group_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock x:Name="groupCountCard" Margin="0,10" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_GroupNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#cf5645"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border x:Name="profileFTUECard" Grid.Row="3" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToProfile_Tapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/profileCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Profile_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Profile_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_ProfileNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#238cdc"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border Grid.Row="4" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToInvite_Tapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/inviteCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_InviteNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#01b085"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border x:Name="h2oFTUECard" Visibility="Collapsed" Grid.Row="5" Style="{StaticResource FTUESmallCardStyle}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/H2OCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_SubTxt2, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUESmallCardSubHeaderStyle}" FontWeight="Normal"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
-                                        <Border Grid.Row="6" Style="{StaticResource FTUESmallCardStyle}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image MaxHeight="160" Source="/view/images/ConversationPage/stickerCard.jpg" Canvas.ZIndex="-1"/>
-                                                <Grid Grid.Column="1" MaxHeight="160">
-                                                    <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
-                                                        <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
-                                                        <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt2, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUESmallCardSubHeaderStyle}" FontWeight="Normal"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                        </phone:LongListSelector.ListHeader>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Border x:Name="profileFTUECard" Style="{StaticResource FTUESmallCardStyle}" Tap="GoToProfile_Tapped">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/profileCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Profile_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Profile_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_ProfileNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#238cdc"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Border Style="{StaticResource FTUESmallCardStyle}" Tap="GoToInvite_Tapped">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/inviteCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Invite_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <HyperlinkButton Grid.Row="2" Content="{Binding Path= LocalizedResources.Conversations_FTUE_InviteNow_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" toolkit:TiltEffect.SuppressTilt="False" Margin="-12,0" Foreground="#01b085"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Border Style="{StaticResource FTUESmallCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/lastSeenCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <TextBlock Grid.Row="2" Text="{Binding Path= LocalizedResources.Conversations_FTUE_LastSeen_LinkTxt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardSubHeaderStyle}" FontWeight="Normal"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem toolkit:TiltEffect.SuppressTilt="True">
+                            <Border x:Name="h2oFTUECard" Visibility="Collapsed" Style="{StaticResource FTUESmallCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/H2OCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_H2O_SubTxt2, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUESmallCardSubHeaderStyle}" FontWeight="Normal"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem toolkit:TiltEffect.SuppressTilt="True">
+                            <Border Style="{StaticResource FTUESmallCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image MaxHeight="160" Source="/view/images/ConversationPage/stickerCard.jpg" Canvas.ZIndex="-1"/>
+                                    <Grid Grid.Column="1" MaxHeight="160">
+                                        <Grid Margin="24,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="248">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_Txt, Source={StaticResource LocalizedStrings}}" Style="{StaticResource FTUESmallCardHeaderStyle}"/>
+                                            <TextBlock Margin="0,10" Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Style="{StaticResource FTUESmallCardSubHeaderStyle}"/>
+                                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FTUE_Sticker_SubTxt2, Source={StaticResource LocalizedStrings}}" Grid.Row="2" Style="{StaticResource FTUESmallCardSubHeaderStyle}" FontWeight="Normal"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Grid Height="80"/>
+                        </ListBoxItem>
+                    </ListBox>
+                    <phone:LongListSelector x:Name="llsConversations" SelectionChanged="llsConversations_SelectionChanged" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
+                                            VirtualizingStackPanel.VirtualizationMode="Recycling" VerticalAlignment="Stretch" 
+                                            HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
