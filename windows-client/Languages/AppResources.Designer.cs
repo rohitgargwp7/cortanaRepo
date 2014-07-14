@@ -934,7 +934,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tap here to set it.
+        ///   Looks up a localized string similar to tap here to set it!.
         /// </summary>
         public static string Conversations_FTUE_ProfileNow_Txt {
             get {

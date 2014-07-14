@@ -236,7 +236,14 @@ namespace windows_client.View
 
                 if (App.ViewModel.IsConversationUpdated && App.ViewModel.MessageListPageCollection[0] != null)
                 {
-                    llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    try
+                    {
+                        llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("llsConversations Scroll to null Exception :: OnNavigatedTo");
+                    }
                     App.ViewModel.IsConversationUpdated = false;
                 }
             }
