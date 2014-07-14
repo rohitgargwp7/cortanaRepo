@@ -459,10 +459,11 @@ namespace windows_client.View
 
             ContextMenu menu = new ContextMenu();
             menu.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
-            menu.Foreground = (SolidColorBrush)App.Current.Resources["HikeContextMenuFGBrush"];
             menu.IsZoomEnabled = false;
 
             MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
+            menuItemCopy.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
+            menuItemCopy.Foreground = (SolidColorBrush)App.Current.Resources["HikeContextMenuFGBrush"];
             menuItemCopy.Header = AppResources.Copy_txt;
             menuItemCopy.Click += menuItemCopy_Click;
 
