@@ -1936,6 +1936,6 @@ private copy.
         <Setter Property="BorderBrush" Value="{StaticResource HikeCardStrokeBrush}"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="Margin" Value="0,6"/>
+        <Setter Property="Margin" Value="12,6"/>
     </Style>
 </ResourceDictionary>

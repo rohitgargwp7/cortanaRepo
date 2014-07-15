@@ -230,10 +230,20 @@ namespace windows_client.View
             else
             {
                 emptyScreenGrid.Visibility = Visibility.Collapsed;
+                
+                if (llsConversations.Visibility == Visibility.Collapsed)
+                    llsConversations.Visibility = Visibility.Visible;
 
-                if (App.ViewModel.IsConversationUpdated)
+                if (App.ViewModel.IsConversationUpdated && App.ViewModel.MessageListPageCollection[0] != null)
                 {
-                    llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    try
+                    {
+                        llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("llsConversations Scroll to null Exception :: OnNavigatedTo");
+                    }
                     App.ViewModel.IsConversationUpdated = false;
                 }
             }
@@ -373,6 +383,9 @@ namespace windows_client.View
 
         private void ShowFTUECards()
         {
+            if (llsConversations.Visibility == Visibility.Visible)
+                llsConversations.Visibility = Visibility.Collapsed;
+
             if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.hasCustomProfileImage(App.MSISDN))
                 profileFTUECard.Visibility = Visibility.Collapsed;
 
@@ -1122,7 +1135,10 @@ namespace windows_client.View
                             if (emptyScreenGrid.Visibility == Visibility.Visible)
                                 emptyScreenGrid.Visibility = Visibility.Collapsed;
 
-                            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                            if (llsConversations.Visibility == Visibility.Collapsed)
+                                llsConversations.Visibility = Visibility.Visible;
+
+                            if (App.ViewModel.MessageListPageCollection.Count > 0 && App.ViewModel.MessageListPageCollection[0] != null)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
                         }
                         catch (Exception ex)
@@ -2919,12 +2935,6 @@ namespace windows_client.View
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                 }
             }
-        }
-
-        private void GoToFav_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_LAST_SEEN_CLICKED);
-            launchPagePivot.SelectedIndex = 1;
         }
 
         private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
