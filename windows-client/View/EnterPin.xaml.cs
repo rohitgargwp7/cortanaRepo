@@ -284,6 +284,7 @@ namespace windows_client
             }
         }
 
+        bool _hyperlinkedClicked = false;
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedClicked = true;
