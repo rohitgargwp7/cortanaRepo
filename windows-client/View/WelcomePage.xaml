@@ -85,7 +85,7 @@
         </Grid>
         <Grid Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20">
             <StackPanel Grid.Row="1" x:Name="termsGrid" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <HyperlinkButton Name="termsLink" Height="70" Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" FontSize="18" FontStyle="Normal" Tap="Privacy_Tap" Foreground="#cccccc"/>
+                <HyperlinkButton Name="termsLink" Height="70" Margin="0,12,0,0" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" FontSize="18" FontStyle="Normal" Tap="Privacy_Tap" Foreground="#cccccc" Style="{StaticResource HyperlinkButtonUnderlineStyle}"/>
                 <TextBlock FontSize="18" TextWrapping="Wrap" MaxWidth="400" Margin="24,-10,24,0" TextAlignment="Center" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Foreground="#cccccc"/>
             </StackPanel>
         </Grid>

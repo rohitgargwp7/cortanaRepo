@@ -45,7 +45,7 @@
                                   HorizontalAlignment="Center" Width="440" Foreground="Black" InputScope="Number" TextChanged="txtBxEnterPin_TextChanged" MaxLength="6" />
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" >
                 <TextBlock Foreground="Black" Text="{Binding Path= LocalizedResources.EnterPin_WrongNumMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="20" Margin="0,0,-10,0"/>
-                <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlue}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click"/>
+                <HyperlinkButton x:Name="btnWrongMsisdn" Content="{Binding Path= LocalizedResources.EnterPin_Taphere_TxtBlk, Source={StaticResource LocalizedStrings}}" Foreground="{StaticResource HikeBlue}" FontSize="20" BorderThickness="0"  Margin="0,-15,0,-10" Click="btnWrongMsisdn_Click" Style="{StaticResource HyperlinkButtonUnderlineStyle}"/>
             </StackPanel>
         </Grid>
 
