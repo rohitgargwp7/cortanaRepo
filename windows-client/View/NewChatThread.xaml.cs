@@ -1884,9 +1884,12 @@ namespace windows_client.View
 
                 ClearChat();
 
-                ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
-                obj.LastMessage = String.Empty;
-                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
+                    ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
+                    obj.LastMessage = String.Empty;
+                    obj.MessageStatus = ConvMessage.State.UNKNOWN;
+                }
             }
         }
 
