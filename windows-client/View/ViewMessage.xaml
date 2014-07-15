@@ -21,7 +21,6 @@
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.ViewMessage_Title_txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
-        j
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <ScrollViewer>
                 <StackPanel Name="stMessage" Margin="20,0"/>
