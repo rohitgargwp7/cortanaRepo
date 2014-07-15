@@ -284,5 +284,11 @@ namespace windows_client
             }
         }
 
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
+        }
     }
 }
