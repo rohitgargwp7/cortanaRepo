@@ -210,9 +210,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
 
-            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
-                IsDarkMode = true;
-
             LoadViewModelObjects();
         }
 
@@ -240,6 +237,9 @@ namespace windows_client.ViewModel
 
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
         }
 
         /// <summary>
