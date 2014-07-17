@@ -3763,6 +3763,8 @@ namespace windows_client.View
 
         private void showOverlay(bool show)
         {
+            this.Focus();//remove focus from textbox if exsist
+
             EnableDisableUI(!show);
 
             if (show)
