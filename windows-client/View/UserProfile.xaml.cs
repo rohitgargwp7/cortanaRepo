@@ -1157,6 +1157,7 @@ namespace windows_client.View
             {
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
+                addToFavBtn.Style = (Style)App.Current.Resources["NoButtonStyle"];
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
@@ -1166,6 +1167,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            addToFavBtn.Style = (Style)App.Current.Resources["YesButtonStyle"];
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
