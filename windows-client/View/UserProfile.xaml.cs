@@ -1394,6 +1394,15 @@ namespace windows_client.View
                 }
             }
 
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
+            }
+
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 
