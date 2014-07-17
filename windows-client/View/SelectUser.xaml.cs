@@ -975,6 +975,8 @@ namespace windows_client.View
                     }
                 }
 
+                App.ViewModel.DeleteImageForMsisdn(ci.Msisdn);
+
                 FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
             }

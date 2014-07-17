@@ -1835,6 +1835,9 @@ namespace windows_client.View
                 }
             }
 
+            userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
+            App.ViewModel.DeleteImageForMsisdn(mContactNumber);
+
             FriendsTableUtils.SetFriendStatus(mContactNumber, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
 
@@ -4570,8 +4573,6 @@ namespace windows_client.View
             }
             #endregion
         }
-
-
 
         private void groupChatEnd()
         {
