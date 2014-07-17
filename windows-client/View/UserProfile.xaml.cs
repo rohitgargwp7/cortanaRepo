@@ -368,31 +368,31 @@ namespace windows_client.View
 
                 firstName = Utils.GetFirstName(nameToShow);
 
-                //if blocked user show block ui and return
-                if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
-                {
-                    isBlocked = true;
-                    ShowBlockedUser();
-                    if (appBar != null)
-                        appBar.IsVisible = false;
-                    return;
-                }
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
                     isInAddressBook = CheckUserInAddressBook();
                 };
-                bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += delegate
                 {
+                    //if blocked user show block ui and return
+                    if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
+                    {
+                        isBlocked = true;
+                        ShowBlockedUser();
+                        if (appBar != null)
+                            appBar.IsVisible = false;
+                        return;
+                    } 
+                    
                     LoadCallCopyOptions();
-                };
 
-                if (!isOnHike)//sms user
-                    ShowNonHikeUser();
-                else
-                    InitHikeUserProfile();
+                    if (!isOnHike)//sms user
+                        ShowNonHikeUser();
+                    else
+                        InitHikeUserProfile();
+                };
+                bw.RunWorkerAsync();
             }
 
             if (App.IS_TOMBSTONED)
