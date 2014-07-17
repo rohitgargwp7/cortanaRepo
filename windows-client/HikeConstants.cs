@@ -5,6 +5,7 @@ namespace windows_client
 {
     public class HikeConstants
     {
+        public static readonly string TMP = "Hello_Constant";
         public static readonly string MESSAGE = "msg";
         public static readonly string UI_TOPIC = "/u";
         public static readonly string APP_TOPIC = "/a";
