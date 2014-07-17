@@ -50,8 +50,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
-                    <Image Source="images\ConversationPage\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15" Tap="hikeLogo_Tapped">
+                    <Image x:Name="headerIcon" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
                 </Grid>
                 <Grid Grid.Column="1" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Image x:Name="chatsTabImage" Stretch="Uniform" Height="26" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -271,9 +271,10 @@
                                             HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
+                                <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold" Visibility="{Binding ChatVisibility}">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding HideUnhideChatText}" Visibility="{Binding HideUnhideChatVisibility}" Click="MenuItem_Click_HideChat"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>

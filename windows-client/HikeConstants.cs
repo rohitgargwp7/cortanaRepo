@@ -180,6 +180,7 @@ namespace windows_client
 
         public static readonly string VERSION = "version";
         public static readonly string BLACK_THEME = "black_theme";
+        public static readonly string HIDDEN_MODE = "hidden_mode";
 
         public static string FAQS_LINK
         {

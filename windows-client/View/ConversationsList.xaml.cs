@@ -117,6 +117,11 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
+            else
+                headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
         }
 
         string _firstName;
@@ -2096,7 +2101,7 @@ namespace windows_client.View
             if (favourites.SelectedItem != null)
             {
                 ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-                if (obj == null)
+                if (obj == null || (!App.ViewModel.IsHiddenModeActive && obj.IsHidden))
                     return;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 string uri = "/View/NewChatThread.xaml";
@@ -2167,6 +2172,9 @@ namespace windows_client.View
         {
             ContactInfo c = hikeContactListBox.SelectedItem as ContactInfo;
             if (c == null)
+                return;
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
                 return;
 
             StartNewChatWithSelectContact(c);
@@ -2618,6 +2626,9 @@ namespace windows_client.View
                 _hyperlinkedInsideStatusUpdateClicked = false;
                 return;
             }
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(status.Msisdn) && App.ViewModel.ConvMap[status.Msisdn].IsHidden)
+                return;
 
             if (status.Msisdn == App.MSISDN)
             {
@@ -3097,5 +3108,28 @@ namespace windows_client.View
         {
             launchPagePivot.SelectedIndex = 1;
         }
+
+        #region Hidden Mode
+
+        private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            App.ViewModel.SetHiddenMode();
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
+            else
+                headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
+        }
+
+        private void MenuItem_Click_HideChat(object sender, RoutedEventArgs e)
+        {
+            var obj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (obj != null)
+            {
+                obj.IsHidden = !obj.IsHidden;
+            }
+        }
+
+        #endregion
     }
 }

@@ -2353,6 +2353,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to mark chat as hidden.
+        /// </summary>
+        public static string Hide_Txt {
+            get {
+                return ResourceManager.GetString("Hide_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hold and talk.
         /// </summary>
         public static string Hold_And_Talk {
@@ -4815,6 +4824,15 @@ namespace windows_client.Languages {
         public static string UnBlock_Txt {
             get {
                 return ResourceManager.GetString("UnBlock_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mark chat as unhidden.
+        /// </summary>
+        public static string Unhide_Txt {
+            get {
+                return ResourceManager.GetString("Unhide_Txt", resourceCulture);
             }
         }
         

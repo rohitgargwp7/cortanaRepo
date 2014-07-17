@@ -65,6 +65,58 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage _headerIcon;
+        public BitmapImage HeaderIcon
+        {
+            get
+            {
+                if (_headerIcon == null)
+                    _headerIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hike_header.png", UriKind.Relative));
+
+                return _headerIcon;
+            }
+        }
+
+        #region Hidden Mode
+
+        BitmapImage _hiddenModeHeaderIcon;
+        public BitmapImage HiddenModeHeaderIcon
+        {
+            get
+            {
+                if (_hiddenModeHeaderIcon == null)
+                    _hiddenModeHeaderIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeHeaderIcon.png", UriKind.Relative));
+
+                return _hiddenModeHeaderIcon;
+            }
+        }
+
+        BitmapImage _hiddenModeChatUnread;
+        public BitmapImage HiddenModeChatUnread
+        {
+            get
+            {
+                if (_hiddenModeChatUnread == null)
+                    _hiddenModeChatUnread = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeChatUnread.png", UriKind.Relative));
+
+                return _hiddenModeChatUnread;
+            }
+        }
+
+        BitmapImage _hiddenModeChatRead;
+        public BitmapImage HiddenModeChatRead
+        {
+            get
+            {
+                if (_hiddenModeChatRead == null)
+                    _hiddenModeChatRead = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeChatRead.png", UriKind.Relative));
+
+                return _hiddenModeChatRead;
+            }
+        }
+
+        #endregion
+
         #region Chat Thread Colors
 
         private SolidColorBrush textBoxBackground;

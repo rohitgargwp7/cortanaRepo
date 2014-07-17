@@ -240,6 +240,9 @@ namespace windows_client.ViewModel
 
             if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
                 IsDarkMode = true;
+            
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+                IsHiddenModeActive = true;
         }
 
         /// <summary>
@@ -1227,5 +1230,23 @@ namespace windows_client.ViewModel
             private set;
         }
 
+        public Boolean IsHiddenModeActive
+        {
+            get;
+            private set;
+        }
+
+        public void SetHiddenMode()
+        {
+            IsHiddenModeActive = !IsHiddenModeActive;
+
+            if (IsHiddenModeActive)
+                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE, true);
+            else
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE);
+
+            foreach (var conv in MessageListPageCollection)
+                conv.HiddenModeToggled();
+        }
     }
 }

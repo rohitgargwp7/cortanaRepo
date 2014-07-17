@@ -616,6 +616,9 @@
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
     <Content Include="View\images\ConversationPage\profileCard.jpg" />
     <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
+    <Content Include="View\images\ConversationPage\hiddenModeChatUnread.png" />
+    <Content Include="View\images\ConversationPage\hiddenModeChatRead.png" />
+    <Content Include="View\images\ConversationPage\hiddenModeHeaderIcon.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />

@@ -435,6 +435,58 @@ namespace windows_client.Model
             }
         }
 
+        bool _isHidden = false;
+        public bool IsHidden
+        {
+            get
+            {
+                return _isHidden;
+            }
+            set
+            {
+                if (_isHidden != value)
+                {
+                    _isHidden = value;
+                    NotifyPropertyChanged("ChatVisibility");
+                    NotifyPropertyChanged("HideUnhideChatVisibility");
+                    NotifyPropertyChanged("HideUnhideChatText");
+                }
+            }
+        }
+
+        public string HideUnhideChatText
+        {
+            get
+            {
+                if (IsHidden)
+                    return AppResources.Unhide_Txt;
+                else
+                    return AppResources.Hide_Txt;
+            }
+        }
+
+        public Visibility HideUnhideChatVisibility
+        {
+            get
+            {
+                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ChatVisibility
+        {
+            get
+            {
+                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : IsHidden ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public void HiddenModeToggled()
+        {
+            NotifyPropertyChanged("ChatVisibility");
+            NotifyPropertyChanged("HideUnhideChatVisibility");
+        }
+
         public BitmapImage ConvImage
         {
             get
@@ -709,6 +761,7 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_draftMessage);
+                writer.Write(_isHidden);
             }
             catch (Exception ex)
             {
@@ -803,6 +856,15 @@ namespace windows_client.Model
                 catch
                 {
                     _draftMessage = string.Empty;
+                }
+                
+                try
+                {
+                    _isHidden = reader.ReadBoolean();
+                }
+                catch
+                {
+                    _isHidden = false;
                 }
             }
             catch (Exception ex)

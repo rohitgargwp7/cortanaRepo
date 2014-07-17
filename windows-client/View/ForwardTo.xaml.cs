@@ -1087,6 +1087,9 @@ namespace windows_client.View
                                 return;
                             }
 
+                            if (_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                                    return;
+
                             if (!_isContactShared && _isFreeSmsOn && _isForward)
                             {
                                 if (!Utils.isGroupConversation(cInfo.Msisdn))
@@ -1169,6 +1172,9 @@ namespace windows_client.View
                         return;
 
                     if (IsUserBlocked(cInfo))
+                        return;
+
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                         return;
 
                     PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cInfo;
