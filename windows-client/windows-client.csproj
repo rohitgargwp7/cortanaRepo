@@ -217,6 +217,7 @@
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\Sticker\StickerObj.cs" />
     <Compile Include="Model\TypingNotification.cs" />
+    <Compile Include="Model\Video\VideoObj.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
     <Compile Include="Mqtt\IpManager.cs" />
@@ -346,6 +347,9 @@
     </Compile>
     <Compile Include="View\ViewPhotoAlbums.xaml.cs">
       <DependentUpon>ViewPhotoAlbums.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewVideos.xaml.cs">
+      <DependentUpon>ViewVideos.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
@@ -500,6 +504,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ViewPhotoAlbums.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ViewVideos.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1113,7 +1121,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj">
+      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
+      <Name>WindowsPhoneRuntimeComponent1</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

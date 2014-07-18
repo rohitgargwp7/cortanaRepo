@@ -632,7 +632,8 @@ namespace windows_client.View
             #endregion
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
             {
                 AudioFileTransfer();
             }
@@ -3493,7 +3494,7 @@ namespace windows_client.View
 
         private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/ViewVideos.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
@@ -4832,7 +4833,20 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
+            {
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED];
+                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_THUMB_SHARED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
+                if (fileBytes == null)
+                {
+                    return;
+                }
+
+                isAudio = false;
+            }
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
