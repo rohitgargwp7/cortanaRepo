@@ -119,9 +119,9 @@ namespace windows_client.View
             _firstName = Utils.GetFirstName(_userName);
 
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
-                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
-            else
                 headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
+            else
+                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
         }
 
         string _firstName;
@@ -3116,9 +3116,9 @@ namespace windows_client.View
             App.ViewModel.SetHiddenMode();
 
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
-                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
-            else
                 headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
+            else
+                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
         }
 
         private void MenuItem_Click_HideChat(object sender, RoutedEventArgs e)
