@@ -101,7 +101,7 @@ namespace windows_client
         private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -770,7 +770,7 @@ namespace windows_client
         private static void instantiateClasses(bool initInUpgradePage)
         {
             #region Upgrade Pref Contacts Fix
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.1.10") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
             #endregion
             #region ProTips 2.3.0.0
@@ -843,7 +843,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.1.10") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
