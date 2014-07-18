@@ -210,9 +210,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
 
-            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
-                IsDarkMode = true;
-
             LoadViewModelObjects();
         }
 
@@ -240,6 +237,9 @@ namespace windows_client.ViewModel
 
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
         }
 
         /// <summary>
@@ -1094,7 +1094,7 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 10)
             {
-                DeleteGroupImage(id);
+                DeleteImageForMsisdn(id);
                 return;
             }
 
@@ -1146,13 +1146,13 @@ namespace windows_client.ViewModel
 
         private void DeleteGroupImageFromList(GroupPic group)
         {
-            DeleteGroupImage(group.GroupId);
+            DeleteImageForMsisdn(group.GroupId);
 
             if (PicUploadList.Contains(group))
                 PicUploadList.Remove(group);
         }
 
-        private static void DeleteGroupImage(string id)
+        public void DeleteImageForMsisdn(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

@@ -297,6 +297,30 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage madeInIndiaWhite;
+        public BitmapImage MadeInIndiaWhite
+        {
+            get
+            {
+                if (madeInIndiaWhite == null)
+                    madeInIndiaWhite = new BitmapImage(new Uri("/View/images/settings/made_with_love.png", UriKind.Relative));
+
+                return madeInIndiaWhite;
+            }
+        }
+
+        private BitmapImage madeInIndiaBlack;
+        public BitmapImage MadeInIndiaBlack
+        {
+            get
+            {
+                if (madeInIndiaBlack == null)
+                    madeInIndiaBlack = new BitmapImage(new Uri("/View/images/settings/made_with_love_Black.jpg", UriKind.Relative));
+
+                return madeInIndiaBlack;
+            }
+        }
+
         #region System Notifications
 
         private BitmapImage onHikeImage;

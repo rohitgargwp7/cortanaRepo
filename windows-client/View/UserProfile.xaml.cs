@@ -368,31 +368,31 @@ namespace windows_client.View
 
                 firstName = Utils.GetFirstName(nameToShow);
 
-                //if blocked user show block ui and return
-                if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
-                {
-                    isBlocked = true;
-                    ShowBlockedUser();
-                    if (appBar != null)
-                        appBar.IsVisible = false;
-                    return;
-                }
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
                     isInAddressBook = CheckUserInAddressBook();
                 };
-                bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += delegate
                 {
+                    //if blocked user show block ui and return
+                    if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
+                    {
+                        isBlocked = true;
+                        ShowBlockedUser();
+                        if (appBar != null)
+                            appBar.IsVisible = false;
+                        return;
+                    } 
+                    
                     LoadCallCopyOptions();
-                };
 
-                if (!isOnHike)//sms user
-                    ShowNonHikeUser();
-                else
-                    InitHikeUserProfile();
+                    if (!isOnHike)//sms user
+                        ShowNonHikeUser();
+                    else
+                        InitHikeUserProfile();
+                };
+                bw.RunWorkerAsync();
             }
 
             if (App.IS_TOMBSTONED)
@@ -1157,6 +1157,7 @@ namespace windows_client.View
             {
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
+                addToFavBtn.Style = (Style)App.Current.Resources["NoButtonStyle"];
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
@@ -1166,6 +1167,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            addToFavBtn.Style = (Style)App.Current.Resources["YesButtonStyle"];
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
@@ -1390,6 +1392,15 @@ namespace windows_client.View
                     contactInfo.OnHike = onhike;
                     count++;
                 }
+            }
+
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
             }
 
             UsersTableUtils.addContact(contactInfo);
