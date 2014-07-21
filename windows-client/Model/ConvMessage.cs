@@ -134,7 +134,7 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
-                if (obj.TryGetValue("st", out jt))
+                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
@@ -174,10 +174,15 @@ namespace windows_client.Model
                 return ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             else  // shows type == null
             {
-                JArray dndNumbers = (JArray)obj["dndnumbers"]; // dead code - handling done for dndnumbers in MessageMetaData.cs
-                if (dndNumbers != null)
+                // maybe dead code - handling done for dndnumbers in MessageMetaData.cs
+                JToken jarray;
+                if (obj.TryGetValue(HikeConstants.DND_NUMBERS, out jarray))
                 {
-                    return ParticipantInfoState.DND_USER;
+                    JArray dndNumbers = (JArray)jarray; 
+                    if (dndNumbers != null)
+                    {
+                        return ParticipantInfoState.DND_USER;
+                    }
                 }
             }
             return ParticipantInfoState.NO_INFO;

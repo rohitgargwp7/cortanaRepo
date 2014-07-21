@@ -1835,6 +1835,9 @@ namespace windows_client.View
                 }
             }
 
+            userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
+            App.ViewModel.DeleteImageForMsisdn(mContactNumber);
+
             FriendsTableUtils.SetFriendStatus(mContactNumber, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
 
@@ -3763,6 +3766,8 @@ namespace windows_client.View
 
         private void showOverlay(bool show)
         {
+            this.Focus();//remove focus from textbox if exsist
+
             EnableDisableUI(!show);
 
             if (show)
@@ -4568,8 +4573,6 @@ namespace windows_client.View
             }
             #endregion
         }
-
-
 
         private void groupChatEnd()
         {
@@ -6080,6 +6083,16 @@ namespace windows_client.View
                     count++;
                 }
             }
+
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
+            }
+
             UsersTableUtils.addContact(contactInfo);
             mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 

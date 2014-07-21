@@ -1097,7 +1097,7 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 10)
             {
-                DeleteGroupImage(id);
+                DeleteImageForMsisdn(id);
                 return;
             }
 
@@ -1149,13 +1149,13 @@ namespace windows_client.ViewModel
 
         private void DeleteGroupImageFromList(GroupPic group)
         {
-            DeleteGroupImage(group.GroupId);
+            DeleteImageForMsisdn(group.GroupId);
 
             if (PicUploadList.Contains(group))
                 PicUploadList.Remove(group);
         }
 
-        private static void DeleteGroupImage(string id)
+        public void DeleteImageForMsisdn(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
