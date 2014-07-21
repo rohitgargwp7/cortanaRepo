@@ -1,0 +1,13 @@
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\App.g.cs
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\MainPage.g.cs
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.g.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Resources.AppResources.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.de-DE.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.es.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.fr.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.hi.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.pt-BR.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.Languages.AppResources.ru.resources
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.csproj.GenerateResource.Cache
+C:\Users\Abhishek\Desktop\windows-client\windows-hike-client\ModularClasses\obj\Debug\ModularClasses.csprojResolveAssemblyReference.cache
