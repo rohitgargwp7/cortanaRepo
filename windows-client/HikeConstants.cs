@@ -257,6 +257,13 @@ namespace windows_client
         public static readonly string BACKGROUND_ID = "bg_id";
         public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
 
+        public static readonly string STEALTH = "stlth";
+        public static readonly string RESET = "reset";
+        public static readonly string CHAT_ENABLED = "en";
+        public static readonly string CHAT_DISABLED = "di";
+        public static readonly string HIDDEN_MODE_ENABLED = "enabled";
+        public static readonly string HIDDEN_MODE_TYPE = "ts";
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string REQUEST_DISPLAY_PIC = "rdp";

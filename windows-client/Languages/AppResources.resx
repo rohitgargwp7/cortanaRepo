@@ -2103,9 +2103,9 @@ Download it like asap from http://hike.in!</value>
     <value>Restart</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>mark chat as hidden</value>
+    <value>hide chat</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>mark chat as unhidden</value>
+    <value>unhide chat</value>
   </data>
 </root>

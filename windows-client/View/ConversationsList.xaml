@@ -42,6 +42,8 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
+        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False"/>
+        
         <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>

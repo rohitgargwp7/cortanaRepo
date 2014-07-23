@@ -161,6 +161,9 @@
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PasswordPopUpUC.xaml.cs">
+      <DependentUpon>PasswordPopUpUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
@@ -367,6 +370,10 @@
     </Page>
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PasswordPopUpUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>

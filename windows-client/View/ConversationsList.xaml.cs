@@ -758,6 +758,16 @@ namespace windows_client.View
             isDeleteAllChats = true;
             shellProgress.IsIndeterminate = true;
             disableAppBar();
+
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.RESET, true);
+            
+            hideObj.Add(HikeConstants.DATA, data);
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+
             NetworkManager.turnOffNetworkManager = true;
             ClearAllDB();
             App.ViewModel.ConvMap.Clear();
@@ -835,6 +845,20 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
+
+            if (convObj.IsHidden)
+            {
+                JObject hideObj = new JObject();
+                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+
+                JObject data = new JObject();
+                JArray msisdn = new JArray();
+                msisdn.Add(convObj.Msisdn);
+                data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+
+                hideObj.Add(HikeConstants.DATA, data);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+            }
         }
 
         bool isContactListLoaded = false;
@@ -2031,6 +2055,13 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (passwordOverlay.IsShow)
+            {
+                passwordOverlay.IsShow = false;
+                e.Cancel = true;
+                return;
+            }
+
             if (App.IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -3119,14 +3150,43 @@ namespace windows_client.View
 
         #region Hidden Mode
 
+        string _password;
+
         private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!App.ViewModel.IsHiddenModeActive)
+                passwordOverlay.IsShow = true;
+            else
+                InitHidddenMode();
+        }
+
+        private void InitHidddenMode()
         {
             App.ViewModel.SetHiddenMode();
 
+            //send qos 0 for toggling for stealth mode on server
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
+
+            JObject data = new JObject();
+            
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+            {
                 headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
+                data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
+            }
             else
+            {
                 headerIcon.Source = UI_Utils.Instance.HeaderIcon;
+                data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
+            }
+
+            hideObj.Add(HikeConstants.DATA, data);
+
+            Object[] objArr = new object[2];
+            objArr[0] = hideObj;
+            objArr[1] = 0;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, objArr);
         }
 
         private void MenuItem_Click_HideChat(object sender, RoutedEventArgs e)
@@ -3135,7 +3195,37 @@ namespace windows_client.View
             if (obj != null)
             {
                 obj.IsHidden = !obj.IsHidden;
+
+                JObject hideObj = new JObject();
+                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+
+                JObject data = new JObject();
+                JArray msisdn = new JArray();
+                msisdn.Add(obj.Msisdn);
+
+                if (obj.IsHidden)
+                    data.Add(HikeConstants.CHAT_ENABLED, msisdn);
+                else
+                    data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+
+                hideObj.Add(HikeConstants.DATA, data);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
             }
+        }
+
+        void passwordOverlay_PasswordEntered(object sender, EventArgs e)
+        {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                if (String.IsNullOrWhiteSpace(_password))
+                    _password = popup.Password;
+
+                if(_password == popup.Password)
+                    InitHidddenMode();
+            }
+
+            popup.IsShow = false;
         }
 
         #endregion

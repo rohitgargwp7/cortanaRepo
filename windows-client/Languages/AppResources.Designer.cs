@@ -2353,7 +2353,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to mark chat as hidden.
+        ///   Looks up a localized string similar to hide chat.
         /// </summary>
         public static string Hide_Txt {
             get {
@@ -4828,7 +4828,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to mark chat as unhidden.
+        ///   Looks up a localized string similar to unhide chat.
         /// </summary>
         public static string Unhide_Txt {
             get {
