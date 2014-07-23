@@ -225,7 +225,7 @@ namespace windows_client.View
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
-            else if (App.ViewModel.MessageListPageCollection.Count == 0)
+            else if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
                 ShowFTUECards();
@@ -234,7 +234,7 @@ namespace windows_client.View
             else
             {
                 emptyScreenGrid.Visibility = Visibility.Collapsed;
-                
+
                 if (llsConversations.Visibility == Visibility.Collapsed)
                     llsConversations.Visibility = Visibility.Visible;
 
@@ -344,10 +344,13 @@ namespace windows_client.View
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
-            emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+            {
+                emptyScreenGrid.Visibility = Visibility.Visible;
                 ShowFTUECards();
+            }
+            else
+                emptyScreenGrid.Visibility = Visibility.Collapsed;
 
             appBar.IsMenuEnabled = true;
 
@@ -365,9 +368,9 @@ namespace windows_client.View
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 NetworkManager.turnOffNetworkManager = false;
-            
+
             App.MqttManagerInstance.connect();
-            
+
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
@@ -438,7 +441,7 @@ namespace windows_client.View
             {
                 _usersOnHike = UsersTableUtils.getHikeContactCount();
                 _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
-                
+
                 if (_usersOnHike != 0)
                 {
                     peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
@@ -771,7 +774,7 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
             {
                 emptyScreenGrid.Visibility = Visibility.Visible;
                 ShowFTUECards();
@@ -1571,7 +1574,7 @@ namespace windows_client.View
                     ConversationListObject co = obj as ConversationListObject;
                     App.ViewModel.MessageListPageCollection.Remove(co);
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                     {
                         emptyScreenGrid.Visibility = Visibility.Visible;
                         ShowFTUECards();
@@ -2840,7 +2843,7 @@ namespace windows_client.View
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
                     button.IsEnabled = true;
-                
+
                 ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
@@ -2849,7 +2852,7 @@ namespace windows_client.View
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
                     button.IsEnabled = false;
-                
+
                 ApplicationBar.IsMenuEnabled = false;
                 launchPagePivot.IsHitTestVisible = false;
             }
@@ -2890,7 +2893,7 @@ namespace windows_client.View
         {
             var listBox = sender as ListBox;
             ContactInfo c = listBox.SelectedItem as ContactInfo;
-            
+
             if (c == null)
                 return;
 
@@ -3098,8 +3101,7 @@ namespace windows_client.View
             {
                 InitHidddenMode();
 
-                var list = App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false);
-                if (list == null || list.Count() == 0)
+                if (App.ViewModel.MessageListPageCollection.Count == 0 || App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0)
                 {
                     emptyScreenGrid.Visibility = Visibility.Visible;
                     ShowFTUECards();
@@ -3117,7 +3119,7 @@ namespace windows_client.View
                 emptyScreenGrid.Visibility = Visibility.Collapsed;
                 llsConversations.Visibility = Visibility.Visible;
             }
-            
+
             App.ViewModel.SetHiddenMode();
 
             //send qos 0 for toggling for stealth mode on server
@@ -3125,7 +3127,7 @@ namespace windows_client.View
             hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
 
             JObject data = new JObject();
-            
+
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
             {
                 headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
@@ -3187,7 +3189,7 @@ namespace windows_client.View
                 if (String.IsNullOrWhiteSpace(_password))
                     _password = popup.Password;
 
-                if(_password == popup.Password)
+                if (_password == popup.Password)
                     InitHidddenMode();
             }
 
