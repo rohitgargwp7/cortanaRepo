@@ -3152,6 +3152,11 @@ namespace windows_client.View
 
         string _password;
 
+        /// <summary>
+        /// Function called when hike logo tapped
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!App.ViewModel.IsHiddenModeActive)
@@ -3160,6 +3165,9 @@ namespace windows_client.View
                 InitHidddenMode();
         }
 
+        /// <summary>
+        /// Initialize hidden mode.
+        /// </summary>
         private void InitHidddenMode()
         {
             App.ViewModel.SetHiddenMode();
@@ -3189,6 +3197,11 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, objArr);
         }
 
+        /// <summary>
+        /// Mark individual chat as hidden/unhidden
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_Click_HideChat(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -3213,6 +3226,11 @@ namespace windows_client.View
             }
         }
 
+        /// <summary>
+        /// password has been entered by the user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void passwordOverlay_PasswordEntered(object sender, EventArgs e)
         {
             var popup = sender as PasswordPopUpUC;
