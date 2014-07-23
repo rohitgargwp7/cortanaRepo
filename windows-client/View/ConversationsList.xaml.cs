@@ -48,7 +48,6 @@ namespace windows_client.View
         private ApplicationBar appBar;
         //private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
-        ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem muteStatusMenu;
         ApplicationBarMenuItem settingsMenu;
         ApplicationBarMenuItem profileMenu;
@@ -352,9 +351,6 @@ namespace windows_client.View
 
             appBar.IsMenuEnabled = true;
 
-            if (delConvsMenu != null)
-                delConvsMenu.IsEnabled = true;
-
             if (settingsMenu != null)
                 settingsMenu.IsEnabled = true;
 
@@ -489,12 +485,6 @@ namespace windows_client.View
             postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
             postStatusIconButton.IsEnabled = true;
             appBar.Buttons.Add(postStatusIconButton);
-
-            delConvsMenu = new ApplicationBarMenuItem();
-            delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
-            delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
-            delConvsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
-            appBar.MenuItems.Add(delConvsMenu);
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
@@ -750,56 +740,6 @@ namespace windows_client.View
 
         #region AppBar Button Events
 
-        private void deleteAllConvs_Click(object sender, EventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
-            if (result != MessageBoxResult.OK)
-                return;
-            isDeleteAllChats = true;
-            shellProgress.IsIndeterminate = true;
-            disableAppBar();
-
-            JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
-
-            JObject data = new JObject();
-            data.Add(HikeConstants.RESET, true);
-            
-            hideObj.Add(HikeConstants.DATA, data);
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
-
-            NetworkManager.turnOffNetworkManager = true;
-            ClearAllDB();
-            App.ViewModel.ConvMap.Clear();
-            App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenGrid.Visibility = Visibility.Visible;
-            ShowFTUECards();
-            enableAppBar();
-            NetworkManager.turnOffNetworkManager = false;
-            shellProgress.IsIndeterminate = false;
-            isDeleteAllChats = false;
-        }
-
-        private void ClearAllDB()
-        {
-            MessagesTableUtils.deleteAllMessages();
-            ConversationTableUtils.deleteAllConversations();
-            MiscDBUtil.DeleteAllAttachmentData();
-            foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
-            {
-                if (Utils.isGroupConversation(convMsisdn))
-                {
-                    JObject jObj = new JObject();
-                    jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
-                    jObj[HikeConstants.TO] = convMsisdn;
-                    App.MqttManagerInstance.mqttPublishToServer(jObj);
-                }
-            }
-            GroupManager.Instance.GroupCache.Clear();
-            GroupManager.Instance.DeleteAllGroups();
-            GroupTableUtils.deleteAllGroups();
-        }
-
         private void createGroup_Click(object sender, EventArgs e)
         {
             //if (TutorialStatusUpdate.Visibility == Visibility.Visible)
@@ -876,17 +816,11 @@ namespace windows_client.View
 
             if (_newIndex == 0)
             {
-                if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(0, delConvsMenu);
-
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
             }
             else if (_newIndex == 1) // favourite
             {
-                if (appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Remove(delConvsMenu);
-
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
                 // there will be two background workers that will independently load three sections
@@ -974,9 +908,6 @@ namespace windows_client.View
             else if (_newIndex == 2)
             {
                 ProTipCount = 0;
-
-                if (appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Remove(delConvsMenu);
 
                 if (!appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Insert(0, muteStatusMenu);
@@ -3160,9 +3091,20 @@ namespace windows_client.View
         private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!App.ViewModel.IsHiddenModeActive)
+            {
                 passwordOverlay.IsShow = true;
+            }
             else
+            {
                 InitHidddenMode();
+
+                var list = App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false);
+                if (list == null || list.Count() == 0)
+                {
+                    emptyScreenGrid.Visibility = Visibility.Visible;
+                    ShowFTUECards();
+                }
+            }
         }
 
         /// <summary>
@@ -3170,6 +3112,12 @@ namespace windows_client.View
         /// </summary>
         private void InitHidddenMode()
         {
+            if (App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == true).Count() > 0)
+            {
+                emptyScreenGrid.Visibility = Visibility.Collapsed;
+                llsConversations.Visibility = Visibility.Visible;
+            }
+            
             App.ViewModel.SetHiddenMode();
 
             //send qos 0 for toggling for stealth mode on server
