@@ -3847,7 +3847,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Contact.
+        ///   Looks up a localized string similar to save contact.
         /// </summary>
         public static string Save_Contact_Txt {
             get {
