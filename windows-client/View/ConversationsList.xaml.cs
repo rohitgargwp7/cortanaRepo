@@ -3174,6 +3174,7 @@ namespace windows_client.View
         }
 
         bool _confirmPassword;
+        string _tempPassword;
 
         /// <summary>
         /// password has been entered by the user
@@ -3189,15 +3190,20 @@ namespace windows_client.View
                 {
                     if (_confirmPassword)
                     {
+                        if (_tempPassword.Equals(popup.Password))
+                        {
+                            _password = popup.Password;
+                            InitHidddenMode();
+                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                        }
+
                         _confirmPassword = false;
-                        _password = popup.Password;
-                        InitHidddenMode();
                         popup.IsShow = false;
-                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
                     }
                     else
                     {
                         _confirmPassword = true;
+                        _tempPassword = popup.Password;
                         popup.Text = AppResources.ConfirmPassword_Txt;
                         popup.Password = String.Empty;
                     }
