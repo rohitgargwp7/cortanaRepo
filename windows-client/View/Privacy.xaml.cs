@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.Languages;
 using Newtonsoft.Json.Linq;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -23,6 +24,9 @@ namespace windows_client.View
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                hiddenModeGrid.Visibility = Visibility.Visible;
         }
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -62,6 +66,36 @@ namespace windows_client.View
             data.Add(HikeConstants.LASTSEENONOFF, false);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void ResetHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
+
+            while (NavigationService.BackStack.Count() > 1)
+                NavigationService.RemoveBackEntry();
+
+            NavigationService.GoBack();
+        }
+
+        bool _isChangePassword;
+        bool _isConfirmPassword;
+        string _password;
+        string _tempPassword;
+
+        private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void popup_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void passwordOverlay_PasswordEntered(object sender, EventArgs e)
+        {
+
         }
     }
 }

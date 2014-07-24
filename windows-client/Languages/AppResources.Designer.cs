@@ -196,7 +196,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contact Info.
+        ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string Attachement_Contact_Txt {
             get {
@@ -426,6 +426,24 @@ namespace windows_client.Languages {
         public static string CannotChangeGrpName_Txt {
             get {
                 return ResourceManager.GetString("CannotChangeGrpName_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to change your hidden mode password.
+        /// </summary>
+        public static string ChangePassword_SubTxt {
+            get {
+                return ResourceManager.GetString("ChangePassword_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to change password.
+        /// </summary>
+        public static string ChangePassword_Txt {
+            get {
+                return ResourceManager.GetString("ChangePassword_Txt", resourceCulture);
             }
         }
         
@@ -3856,6 +3874,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to forgot your password? reset hidden mode. All hidden chats will be deleted..
+        /// </summary>
+        public static string ResetHiddenMode_SubTxt {
+            get {
+                return ResourceManager.GetString("ResetHiddenMode_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to reset hidden mode.
+        /// </summary>
+        public static string ResetHiddenMode_Txt {
+            get {
+                return ResourceManager.GetString("ResetHiddenMode_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
         public static string RestartApp_Txt {
@@ -3870,6 +3906,15 @@ namespace windows_client.Languages {
         public static string Save_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save contact.
+        /// </summary>
+        public static string Save_Contact_Txt {
+            get {
+                return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
             }
         }
         

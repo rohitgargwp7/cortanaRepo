@@ -1021,7 +1021,7 @@ Download it like asap from http://hike.in!</value>
     <value>system health</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>Share Contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Send Audio</value>
@@ -2115,5 +2115,20 @@ Download it like asap from http://hike.in!</value>
   <data name="EnterPassword_Txt" xml:space="preserve">
     <value>enter your password</value>
     <comment>max 25 char</comment>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>save contact</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>change your hidden mode password</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>change password</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>forgot your password? reset hidden mode. All hidden chats will be deleted.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>reset hidden mode</value>
   </data>
 </root>

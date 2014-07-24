@@ -302,7 +302,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Source="{StaticResource GroupIndicator}" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
                                             <Grid HorizontalAlignment="Stretch" Grid.Column="1" Background="Transparent">
-                                                <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
+                                                <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}" Foreground="{Binding ChatHeaderForegroundColor}"/>
                                             </Grid>
                                             <Grid Background="Transparent" Grid.Column="2" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding MuteIconTimeStampVisibility}">
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Visibility="{Binding TimeStampVisibility}" Style="{StaticResource ConversationChatTimestampTextBlock}"/>
@@ -317,10 +317,10 @@
                                             <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,9,0"/>
                                             <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
                                                                  MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
-                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
-                                            <Image Grid.Column="2" Margin="12,3,0,0" Source="{Binding HiddenSheildIcon}" Visibility="{Binding HiddenSheildVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="24" Width="24" Canvas.ZIndex="-1"/>
-                                            <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top" Canvas.ZIndex="-1"/>
-                                            <TextBlock Grid.Column="2" Margin="12,0,0,0" Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}" Visibility="{Binding UnreadCounterVisibility}"/>
+                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="{Binding MuteIconImage}" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
+                                            <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                                <TextBlock Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}"/>
+                                            </Border>
                                         </Grid>
                                     </Grid>
                                 </Grid>

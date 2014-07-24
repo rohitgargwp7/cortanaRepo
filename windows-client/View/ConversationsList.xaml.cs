@@ -1959,7 +1959,15 @@ namespace windows_client.View
             }
         }
 
+        private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
 
+            if (selectedItem == null)
+                return;
+
+            Clipboard.SetText(selectedItem.Text);
+        }
         #endregion
 
         private void disableAppBar()
@@ -3119,6 +3127,11 @@ namespace windows_client.View
 
             App.ViewModel.SetHiddenMode();
 
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    UpdateLayout();
+                });
+
             //send qos 0 for toggling for stealth mode on server
             JObject hideObj = new JObject();
             hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
@@ -3232,4 +3245,5 @@ namespace windows_client.View
 
         #endregion
     }
+    
 }

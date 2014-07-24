@@ -53,6 +53,7 @@ private copy.
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
 
+    <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
     <SolidColorBrush x:Key="HikeWhite" Color="{StaticResource HikeWhiteColor}"/>
     <SolidColorBrush x:Key="HikeBlue" Color="{StaticResource HikeBlueColor}"/>
     <SolidColorBrush x:Key="HikeGrey" Color="{StaticResource HikeGreyColor}"/>

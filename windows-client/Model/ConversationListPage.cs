@@ -166,7 +166,6 @@ namespace windows_client.Model
                     NotifyPropertyChanged("LastMessageColor");
                     NotifyPropertyChanged("SDRStatusImage");
                     NotifyPropertyChanged("SDRStatusImageVisible");
-                    NotifyPropertyChanged("UnreadCounterVisibility");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                 }
 
@@ -216,8 +215,8 @@ namespace windows_client.Model
                     _muteVal = value;
 
                 NotifyPropertyChanged("MuteIconVisibility");
-                NotifyPropertyChanged("UnreadCounterVisibility");
                 NotifyPropertyChanged("UnreadCircleVisibility");
+                NotifyPropertyChanged("MuteIconImage");
             }
         }
 
@@ -230,6 +229,11 @@ namespace windows_client.Model
                 else
                     return Visibility.Collapsed;
             }
+        }
+
+        public BitmapImage MuteIconImage
+        {
+            get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
         public Visibility MuteIconVisibility
@@ -318,18 +322,7 @@ namespace windows_client.Model
         {
             get
             {
-                if ((!App.ViewModel.IsHiddenModeActive || !IsHidden) && MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility UnreadCounterVisibility
-        {
-            get
-            {
-                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
+                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -373,7 +366,6 @@ namespace windows_client.Model
                 if (value != _isFirstMsg)
                 {
                     _isFirstMsg = value;
-                    NotifyPropertyChanged("UnreadCounterVisibility");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                 }
             }
@@ -462,10 +454,7 @@ namespace windows_client.Model
                 {
                     _isHidden = value;
                     NotifyPropertyChanged("ChatVisibility");
-                    NotifyPropertyChanged("HideUnhideChatVisibility");
                     NotifyPropertyChanged("HideUnhideChatText");
-                    NotifyPropertyChanged("HiddenSheildVisibility");
-                    NotifyPropertyChanged("UnreadCircleVisibility");
                 }
             }
         }
@@ -497,29 +486,10 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility HiddenSheildVisibility
-        {
-            get
-            {
-                return MuteIconVisibility == Visibility.Visible ? Visibility.Collapsed : App.ViewModel.IsHiddenModeActive && IsHidden ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        public BitmapImage HiddenSheildIcon
-        {
-            get
-            {
-                return _unreadCounter == 0 ? UI_Utils.Instance.HiddenModeChatRead : UI_Utils.Instance.HiddenModeChatUnread;
-            }
-        }
-
         public void HiddenModeToggled()
         {
             NotifyPropertyChanged("ChatVisibility");
             NotifyPropertyChanged("HideUnhideChatVisibility");
-            NotifyPropertyChanged("HiddenSheildVisibility");
-            NotifyPropertyChanged("HiddenSheildIcon");
-            NotifyPropertyChanged("UnreadCircleVisibility");
         }
 
         public BitmapImage ConvImage
@@ -566,10 +536,21 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                if (!string.IsNullOrEmpty(_typingNotificationText))
                     return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
                     return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
+            }
+        }
+
+        public SolidColorBrush ChatHeaderForegroundColor
+        {
+            get
+            {
+                if (IsHidden)
+                    return (SolidColorBrush)Application.Current.Resources["StealthRed"];
+                else
+                    return (SolidColorBrush)Application.Current.Resources["HikeFGBrush"];
             }
         }
 
@@ -688,7 +669,6 @@ namespace windows_client.Model
                     if (!string.IsNullOrEmpty(_typingNotificationText))
                         lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
                     NotifyPropertyChanged("LastMessage");
-                    NotifyPropertyChanged("UnreadCounterVisibility");
                     NotifyPropertyChanged("UnreadCircleVisibility");
                     NotifyPropertyChanged("SDRStatusImageVisible");
                     NotifyPropertyChanged("LastMessageColor");

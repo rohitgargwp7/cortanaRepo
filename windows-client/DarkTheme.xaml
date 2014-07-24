@@ -55,6 +55,7 @@ private copy.
     <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
     <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
     <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
+    <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
 
     <SolidColorBrush x:Key="HikeBGBrush" Color="#1b1b1b"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="#ffffff"/>

@@ -77,6 +77,29 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage _muteIconBlue;
+        public BitmapImage MuteIconBlue
+        {
+            get
+            {
+                if (_muteIconBlue == null)
+                    _muteIconBlue = new BitmapImage(new Uri("/View/images/ConversationPage/mute_icon_blue.png", UriKind.Relative));
+
+                return _muteIconBlue;
+            }
+        }
+
+        BitmapImage _muteIconGray;
+        public BitmapImage MuteIconGray
+        {
+            get
+            {
+                if (_muteIconGray == null)
+                    _muteIconGray = new BitmapImage(new Uri("/View/images/ConversationPage/mute_icon_gray.png", UriKind.Relative));
+
+                return _muteIconGray;
+            }
+        }
         #region Hidden Mode
 
         BitmapImage _hiddenModeHeaderIcon;
@@ -88,30 +111,6 @@ namespace windows_client.utils
                     _hiddenModeHeaderIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeHeaderIcon.png", UriKind.Relative));
 
                 return _hiddenModeHeaderIcon;
-            }
-        }
-
-        BitmapImage _hiddenModeChatUnread;
-        public BitmapImage HiddenModeChatUnread
-        {
-            get
-            {
-                if (_hiddenModeChatUnread == null)
-                    _hiddenModeChatUnread = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeChatUnread.png", UriKind.Relative));
-
-                return _hiddenModeChatUnread;
-            }
-        }
-
-        BitmapImage _hiddenModeChatRead;
-        public BitmapImage HiddenModeChatRead
-        {
-            get
-            {
-                if (_hiddenModeChatRead == null)
-                    _hiddenModeChatRead = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeChatRead.png", UriKind.Relative));
-
-                return _hiddenModeChatRead;
             }
         }
 

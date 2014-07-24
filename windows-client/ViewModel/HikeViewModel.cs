@@ -407,8 +407,11 @@ namespace windows_client.ViewModel
                         }
                         else if (index > 0)
                         {
-                            App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                            if (!mObj.IsGroupChat || mObj.MuteVal == 0) // dont move muted gc
+                            {
+                                App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                                App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                            }
                         }//if already at zero, do nothing
                     });
             }

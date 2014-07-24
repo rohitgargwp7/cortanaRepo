@@ -620,6 +620,7 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
     <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_blue.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
@@ -631,8 +632,6 @@
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
     <Content Include="View\images\ConversationPage\profileCard.jpg" />
     <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
-    <Content Include="View\images\ConversationPage\hiddenModeChatUnread.png" />
-    <Content Include="View\images\ConversationPage\hiddenModeChatRead.png" />
     <Content Include="View\images\ConversationPage\hiddenModeHeaderIcon.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
@@ -668,7 +667,7 @@
     <Content Include="View\images\ConversationPage\friend_Notselected.png" />
     <Content Include="View\images\ConversationPage\friend_selected.png" />
     <Content Include="View\images\ConversationPage\hike_header.png" />
-    <Content Include="View\images\ConversationPage\mute_icon_main_b.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_gray.png" />
     <Content Include="View\images\ConversationPage\refresh_bar_arrow.png" />
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
