@@ -46,7 +46,6 @@
                     <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Logout_Txt, Source={StaticResource LocalizedStrings}}"/>
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
-         
             </Grid>
             <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
