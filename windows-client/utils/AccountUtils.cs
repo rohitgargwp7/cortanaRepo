@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -140,7 +140,8 @@ namespace windows_client.utils
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
-            LAST_SEEN_POST, SOCIAL_INVITE, POST_GROUP_ICON
+            LAST_SEEN_POST, SOCIAL_INVITE, POST_GROUP_ICON,
+            HIDE_MESSAGE_PREVIEW
         }
 
         public static void AddToken(HttpWebRequest req)
@@ -314,6 +315,15 @@ namespace windows_client.utils
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
+        }
+
+        public static void postHideMessagePreview(string push_token, bool on_off, parametrisedPostResponseFunction finalCallbackFunction, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/device")) as HttpWebRequest;
+            AddToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.HIDE_MESSAGE_PREVIEW, push_token, on_off, finalCallbackFunction, obj });
         }
 
         public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
@@ -518,6 +528,7 @@ namespace windows_client.utils
                     data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
                     break;
                 #endregion
+                #region POST INFO ON APP UPDATE
                 case RequestType.POST_INFO_ON_APP_UPDATE:
                     finalCallbackFunction = vars[2] as postResponseFunction;
                     data[HikeConstants.OS_NAME] = "win8";
@@ -526,6 +537,7 @@ namespace windows_client.utils
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
                     data[HikeConstants.DEVICE_TYPE_KEY] = "windows";
                     break;
+                #endregion
                 #region POST STATUS
                 case RequestType.POST_STATUS:
                     data = vars[2] as JObject;
@@ -537,6 +549,17 @@ namespace windows_client.utils
                     data = vars[2] as JObject;
                     finalCallbackFunction = vars[3];
                     obj = vars[4];
+                    break;
+                #endregion
+                #region POST HIDE MESSAGE PREVIEW
+                case RequestType.HIDE_MESSAGE_PREVIEW:
+                    string push_token = (string)vars[2];
+                    bool on_off = (bool)vars[3];
+                    finalCallbackFunction = vars[4] as parametrisedPostResponseFunction;
+                    obj = vars[5];
+                    data.Add("dev_token",push_token);
+                    data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
+                    data.Add(HikeConstants.PREVIEW, on_off);
                     break;
                 #endregion
                 #region DEFAULT

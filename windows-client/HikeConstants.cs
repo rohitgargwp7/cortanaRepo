@@ -5,7 +5,6 @@ namespace windows_client
 {
     public class HikeConstants
     {
-        public static readonly string TMP = "Hello_Constant";
         public static readonly string MESSAGE = "msg";
         public static readonly string UI_TOPIC = "/u";
         public static readonly string APP_TOPIC = "/a";
@@ -286,6 +285,7 @@ namespace windows_client
         public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
         public static string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
         public static string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+        public static readonly string PREVIEW = "preview";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -397,6 +397,7 @@ namespace windows_client
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
         public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
+        
 
         #endregion
 

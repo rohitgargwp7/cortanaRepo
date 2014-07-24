@@ -49,6 +49,9 @@ namespace windows_client
         public static readonly string USE_LOCATION_SETTING = "locationSet";
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
+
+        public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
+
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
@@ -102,7 +105,7 @@ namespace windows_client
         private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;

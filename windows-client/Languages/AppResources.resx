@@ -1144,7 +1144,7 @@ Download it like asap from http://hike.in!</value>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
     <value>group message</value>
   </data>
-  <data name="FB_Connect_Txt" xml:space="preserve">
+  <data name="s" xml:space="preserve">
     <value>connect with facebook</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
@@ -2085,7 +2085,7 @@ Download it like asap from http://hike.in!</value>
     <value>FAQs, contact us and more</value>
   </data>
   <data name="Settings_SubtitlePrivacySettings_Txt" xml:space="preserve">
-    <value>control block list and last seen status</value>
+    <value>hide your message preview, control block list and last seen status</value>
   </data>
   <data name="Settings_SubtitleSMSSettings_Txt" xml:space="preserve">
     <value>{0} free SMS left</value>
@@ -2175,5 +2175,9 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>hike up your life</value>
+  </data>
+  <data name="Hide_Message_Preview" xml:space="preserve">
+    <value>Hide message preview</value>
+    <comment>For Hiding Message in Notification feature</comment>
   </data>
 </root>

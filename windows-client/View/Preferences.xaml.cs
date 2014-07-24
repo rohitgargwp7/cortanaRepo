@@ -15,6 +15,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
@@ -71,7 +72,7 @@ namespace windows_client.View
                 value = true;
             enterToSendToggle.IsChecked = value;
             this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
-            
+
             if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
                 value = true;
             nudgeSettingToggle.IsChecked = value;
@@ -84,7 +85,7 @@ namespace windows_client.View
             locationToggle.Checked += locationToggle_Checked;
             locationToggle.Unchecked += locationToggle_Unchecked;
         }
-        
+
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.On;
@@ -145,7 +146,7 @@ namespace windows_client.View
             enterToSendToggle.Checked += enterToSendToggle_Checked;
             enterToSendToggle.Unchecked += enterToSendToggle_Unchecked;
         }
-        
+
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
