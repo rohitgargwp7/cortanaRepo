@@ -3105,5 +3105,16 @@ namespace windows_client.View
         {
             launchPagePivot.SelectedIndex = 1;
         }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selected = (sender as MenuItem).DataContext as BaseStatusUpdate;
+            if(selected == null)
+            {
+                return;
+            }
+            Clipboard.SetText(selected.Text);
+        }
     }
+    
 }
