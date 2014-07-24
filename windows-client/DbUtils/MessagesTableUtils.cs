@@ -298,10 +298,64 @@ namespace windows_client.DbUtils
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        var msg = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        obj.LastMessage = msg;
+
+                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        {
+                            string toastText = "Sent you a message";
+
+                            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                                toastText = "Sent you a sticker";
+                            else if (convMsg.FileAttachment != null)
+                            {
+                                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                                    toastText = "Sent you an image";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                                    toastText = "Sent you an audio";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                                    toastText = "Sent you a video";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                                    toastText = "Sent you a contact";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                    toastText = "Sent you a location";
+                                else
+                                    toastText = "Sent you a file";
+                            }
+
+                            msg = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
+                            obj.ToastText = msg;
+                        }
                     }
                     else
+                    {
                         obj.LastMessage = convMsg.Message;
+
+                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        {
+                            string toastText = "Sent you a message";
+                            
+                            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                                toastText = "Sent you a sticker";
+                            else if (convMsg.FileAttachment != null)
+                            {     
+                                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                                    toastText = "Sent you an image";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                                    toastText = "Sent you an audio";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                                    toastText = "Sent you a video";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                                    toastText = "Sent you a contact";
+                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                                    toastText = "Sent you a location";
+                                else
+                                    toastText = "Sent you a file";
+                            }
+
+                            obj.ToastText = toastText;                           
+                        }
+                    }
                 }
                 #endregion
                 #region Chat Background Changed

@@ -2344,15 +2344,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide message preview.
-        /// </summary>
-        public static string Hide_Message_Preview {
-            get {
-                return ResourceManager.GetString("Hide_Message_Preview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to hold and talk.
         /// </summary>
         public static string Hold_And_Talk {
@@ -2745,6 +2736,15 @@ namespace windows_client.Languages {
         public static string Message_Cancelled {
             get {
                 return ResourceManager.GetString("Message_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message preview.
+        /// </summary>
+        public static string Message_Preview {
+            get {
+                return ResourceManager.GetString("Message_Preview", resourceCulture);
             }
         }
         
@@ -3474,6 +3474,15 @@ namespace windows_client.Languages {
         public static string OnSms_Txt {
             get {
                 return ResourceManager.GetString("OnSms_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OOPS! Something went wrong.
+        /// </summary>
+        public static string Oops_Something_Wrong_Txt {
+            get {
+                return ResourceManager.GetString("Oops_Something_Wrong_Txt", resourceCulture);
             }
         }
         
@@ -4333,7 +4342,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hide your message preview, control block list and last seen status.
+        ///   Looks up a localized string similar to control block list and last seen status.
         /// </summary>
         public static string Settings_SubtitlePrivacySettings_Txt {
             get {
@@ -4378,7 +4387,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to turn on/off jingle, vibrate and more.
+        ///   Looks up a localized string similar to turn on/off jingle, message preview and more.
         /// </summary>
         public static string SettingsSubtitle_Notification_Txt {
             get {
@@ -4788,6 +4797,24 @@ namespace windows_client.Languages {
         public static string Today_Txt {
             get {
                 return ResourceManager.GetString("Today_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turning message preview OFF.
+        /// </summary>
+        public static string Turning_Message_Preview_Off {
+            get {
+                return ResourceManager.GetString("Turning_Message_Preview_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turning message preview ON.
+        /// </summary>
+        public static string Turning_Message_Preview_On {
+            get {
+                return ResourceManager.GetString("Turning_Message_Preview_On", resourceCulture);
             }
         }
         
