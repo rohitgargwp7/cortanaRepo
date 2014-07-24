@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -625,6 +625,7 @@
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
     <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
+    <Content Include="View\images\ConversationPage\hiddenModeSheild.png" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
     <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
@@ -636,6 +637,8 @@
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />
+    <Content Include="View\images\ConversationPage\tip_Arrow.png" />
+    <Content Include="View\images\ConversationPage\tip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />

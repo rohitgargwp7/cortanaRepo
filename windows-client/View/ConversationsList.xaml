@@ -42,7 +42,7 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False"/>
+        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="popup_PasswordOverlayVisibilityChanged"/>
         
         <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
@@ -318,9 +318,9 @@
                                             <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
                                                                  MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
                                             <Image Grid.Column="2" Margin="12,0,0,0" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
-                                            <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                                <TextBlock Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}"/>
-                                            </Border>
+                                            <Image Grid.Column="2" Margin="12,3,0,0" Source="{Binding HiddenSheildIcon}" Visibility="{Binding HiddenSheildVisibility}" VerticalAlignment="Top" HorizontalAlignment="Right" Height="24" Width="24" Canvas.ZIndex="-1"/>
+                                            <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top" Canvas.ZIndex="-1"/>
+                                            <TextBlock Grid.Column="2" Margin="12,0,0,0" Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}" Visibility="{Binding UnreadCounterVisibility}"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>

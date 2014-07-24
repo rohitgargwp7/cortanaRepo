@@ -19,6 +19,27 @@ namespace windows_client.Controls
             Visibility = Visibility.Collapsed;
         }
 
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof(String), typeof(PasswordPopUpUC), new PropertyMetadata(OnTextChanged));
+
+        public String Text
+        {
+            get
+            {
+                return (String)GetValue(TextProperty);
+            }
+            set
+            {
+                SetValue(TextProperty, value);
+            }
+        }
+
+        private static void OnTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            PasswordPopUpUC passwordControl = obj as PasswordPopUpUC;
+            passwordControl.headingText.Text = (String)e.NewValue;
+        }
+
         public static readonly DependencyProperty IsShowProperty = DependencyProperty.Register(
             "IsShow", typeof(Boolean), typeof(PasswordPopUpUC), new PropertyMetadata(OnIsShowChanged));
 
@@ -39,6 +60,9 @@ namespace windows_client.Controls
             PasswordPopUpUC passwordControl = obj as PasswordPopUpUC;
             passwordControl.Visibility = (Boolean)e.NewValue ? Visibility.Visible : Visibility.Collapsed;
             passwordControl.Password = null;
+
+            if (passwordControl.PasswordOverlayVisibilityChanged != null)
+                passwordControl.PasswordOverlayVisibilityChanged(passwordControl, null);
         }
 
         String _password;
@@ -98,21 +122,21 @@ namespace windows_client.Controls
                     rec4.Fill = UI_Utils.Instance.Transparent;
                     break;
                 case 1:
-                    rec1.Fill = UI_Utils.Instance.Black;
+                    rec1.Fill = UI_Utils.Instance.White;
                     rec2.Fill = UI_Utils.Instance.Transparent;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
                     break;
                 case 2:
-                    rec1.Fill = UI_Utils.Instance.Black;
-                    rec2.Fill = UI_Utils.Instance.Black;
+                    rec1.Fill = UI_Utils.Instance.White;
+                    rec2.Fill = UI_Utils.Instance.White;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
                     break;
                 case 3:
-                    rec1.Fill = UI_Utils.Instance.Black;
-                    rec2.Fill = UI_Utils.Instance.Black;
-                    rec3.Fill = UI_Utils.Instance.Black;
+                    rec1.Fill = UI_Utils.Instance.White;
+                    rec2.Fill = UI_Utils.Instance.White;
+                    rec3.Fill = UI_Utils.Instance.White;
                     rec4.Fill = UI_Utils.Instance.Transparent;
                     break;
                 default:
@@ -121,5 +145,6 @@ namespace windows_client.Controls
         }
 
         public event EventHandler<EventArgs> PasswordEntered;
+        public event EventHandler<EventArgs> PasswordOverlayVisibilityChanged;
     }
 }

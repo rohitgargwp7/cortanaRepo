@@ -93,9 +93,7 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-            {
                 this.Loaded += ConversationsList_Loaded;
-            }
 
             ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
             ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
@@ -117,10 +115,8 @@ namespace windows_client.View
 
             _firstName = Utils.GetFirstName(_userName);
 
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
-                headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
-            else
-                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
+            headerIcon.Source = App.appSettings.Contains(HikeConstants.HIDDEN_MODE) ? UI_Utils.Instance.HiddenModeHeaderIcon : UI_Utils.Instance.HeaderIcon;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password);
         }
 
         string _firstName;
@@ -3095,6 +3091,7 @@ namespace windows_client.View
         {
             if (!App.ViewModel.IsHiddenModeActive)
             {
+                passwordOverlay.Text = AppResources.EnterPassword_Txt;
                 passwordOverlay.IsShow = true;
             }
             else
@@ -3176,6 +3173,8 @@ namespace windows_client.View
             }
         }
 
+        bool _confirmPassword;
+
         /// <summary>
         /// password has been entered by the user
         /// </summary>
@@ -3187,13 +3186,42 @@ namespace windows_client.View
             if (popup != null)
             {
                 if (String.IsNullOrWhiteSpace(_password))
-                    _password = popup.Password;
-
-                if (_password == popup.Password)
+                {
+                    if (_confirmPassword)
+                    {
+                        _confirmPassword = false;
+                        _password = popup.Password;
+                        InitHidddenMode();
+                        popup.IsShow = false;
+                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                    }
+                    else
+                    {
+                        _confirmPassword = true;
+                        popup.Text = AppResources.ConfirmPassword_Txt;
+                        popup.Password = String.Empty;
+                    }
+                }
+                else if (_password == popup.Password)
+                {
                     InitHidddenMode();
+                    popup.IsShow = false;
+                }
             }
+        }
 
-            popup.IsShow = false;
+        /// <summary>
+        /// Handle password visibility changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void popup_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
+        {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                ApplicationBar.IsVisible = popup.IsShow ? false : true;
+            }
         }
 
         #endregion

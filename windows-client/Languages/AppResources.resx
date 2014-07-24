@@ -2108,4 +2108,12 @@ Download it like asap from http://hike.in!</value>
   <data name="Unhide_Txt" xml:space="preserve">
     <value>unhide chat</value>
   </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>confirm your password</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>enter your password</value>
+    <comment>max 25 char</comment>
+  </data>
 </root>

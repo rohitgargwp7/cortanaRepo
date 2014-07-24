@@ -574,6 +574,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to confirm your password.
+        /// </summary>
+        public static string ConfirmPassword_Txt {
+            get {
+                return ResourceManager.GetString("ConfirmPassword_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to connected.
         /// </summary>
         public static string Connected_Txt {
@@ -1602,6 +1611,15 @@ namespace windows_client.Languages {
         public static string EnterNumber_VerifyNumberMsg_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterNumber_VerifyNumberMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enter your password.
+        /// </summary>
+        public static string EnterPassword_Txt {
+            get {
+                return ResourceManager.GetString("EnterPassword_Txt", resourceCulture);
             }
         }
         
