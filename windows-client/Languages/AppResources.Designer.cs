@@ -196,7 +196,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contact Info.
+        ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string Attachement_Contact_Txt {
             get {
