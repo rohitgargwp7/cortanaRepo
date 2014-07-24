@@ -550,7 +550,7 @@
                                         <DataTemplate>
                                             <Border Tap="statusItem_Tap" Style="{StaticResource StatusUpdateContainerStyle}">
                                                 <toolkit:ContextMenuService.ContextMenu>
-                                                    <toolkit:ContextMenu x:Name="ContextMenu" Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                         <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="Copy_Click" />
                                                     </toolkit:ContextMenu>
                                                 </toolkit:ContextMenuService.ContextMenu>
