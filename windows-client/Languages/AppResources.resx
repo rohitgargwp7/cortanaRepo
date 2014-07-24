@@ -2102,4 +2102,7 @@ Download it like asap from http://hike.in!</value>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>Save Contact</value>
+  </data>
 </root>
