@@ -1021,7 +1021,7 @@ Download it like asap from http://hike.in!</value>
     <value>system health</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>Share Contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Send Audio</value>
@@ -2101,5 +2101,8 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>save contact</value>
   </data>
 </root>
