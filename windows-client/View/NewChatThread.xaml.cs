@@ -5015,8 +5015,13 @@ namespace windows_client.View
                 }
                 else
                 {
+                    if (!NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                        return;
+                    }
+
                     // Uploads
-                    // dont need to check for network available as they will be failed by file transfer manager
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     {
                         convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
@@ -5066,9 +5071,7 @@ namespace windows_client.View
                 }
             }
             else
-            {
                 displayAttachment(convMessage);
-            }
 
             llsMessages.SelectedItem = null;
         }
