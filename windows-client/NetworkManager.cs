@@ -369,10 +369,12 @@ namespace windows_client
             {
                 JObject o = null;
                 string uMsisdn = null;
+                long serverTimestamp = 0;
                 try
                 {
                     o = (JObject)jsonObj[HikeConstants.DATA];
                     uMsisdn = (string)o[HikeConstants.MSISDN];
+                    serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
                 }
                 catch (Exception ex)
                 {
@@ -392,14 +394,15 @@ namespace windows_client
                 GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
+                    long lastTimeStamp;
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                        return;
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
                     // if user is in contact list then only show the joined msg
                     ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
-                    bool isUserInContactList = c != null ? true : false;
-                    if (isUserInContactList && c.OnHike) // if user exists and is already on hike , do nothing
-                        return;
 
                     // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList, isRejoin);
+                    ProcessUoUjMsgs(jsonObj, false, c != null, isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
                 else
@@ -413,7 +416,7 @@ namespace windows_client
                             this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
-                    
+
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
                     if (GroupManager.Instance.GroupCache != null)
@@ -1035,7 +1038,7 @@ namespace windows_client
                     JToken gName;
                     //pubsub for gcn is not raised
                     if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                        groupName = gName.ToString();
+                        groupName = gName.ToString().Trim();
 
                     #endregion
                 }
@@ -1141,6 +1144,7 @@ namespace windows_client
                 try
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
+                    groupName = groupName.Trim();
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
@@ -1184,8 +1188,6 @@ namespace windows_client
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string from = (string)jsonObj[HikeConstants.FROM];
-                if (from == App.MSISDN) // if you changed the pic simply ignore
-                    return;
                 ConversationListObject cObj;
                 if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
@@ -1829,9 +1831,9 @@ namespace windows_client
                         bool isPush = true;
                         JToken pushJToken;
                         if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
-                            isPush = (Boolean)pushJToken; 
-                        
-                            object[] vals;
+                            isPush = (Boolean)pushJToken;
+
+                        object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
@@ -2093,22 +2095,12 @@ namespace windows_client
             foreach (string key in GroupManager.Instance.GroupCache.Keys)
             {
                 List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                for (int i = 0; i < l.Count; i++)
+                GroupParticipant gp = l.Find(x => x.Msisdn == ms);
+                if (gp != null)
                 {
-                    if (l[i].Msisdn == ms) // if this msisdn exists in group
+                    if (isOptInMsg)
                     {
-                        ConvMessage convMsg = null;
-                        if (!isOptInMsg) // represents UJ event
-                        {
-                            if (l[i].IsOnHike)  // if this user is already on hike
-                                continue;
-                            l[i].IsOnHike = true;
-                            if (!GroupTableUtils.IsGroupAlive(key)) // if group is dead simply dont do anything
-                                continue;
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
-                        }
-                        else
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
 
                         object[] values = null;
                         convMsg.Msisdn = key;
@@ -2143,9 +2135,10 @@ namespace windows_client
                         values[1] = co;
 
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
-                        l[i].HasOptIn = true;
-                        break;
                     }
+                    else
+                        gp.IsOnHike = true;
+                    gp.HasOptIn = true;
                 }
             }
             GroupManager.Instance.SaveGroupCache();

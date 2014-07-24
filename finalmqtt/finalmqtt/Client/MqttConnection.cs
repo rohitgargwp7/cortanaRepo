@@ -186,7 +186,8 @@ namespace finalmqtt.Client
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
-            _socket.ConnectAsync(socketEventArg);
+            if (!_socket.ConnectAsync(socketEventArg))
+                ProcessSocketConnected(socketEventArg);
         }
 
         /// <summary>
@@ -196,6 +197,15 @@ namespace finalmqtt.Client
         /// <param name="s"></param>
         /// <param name="e"></param>
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
+        {
+            ProcessSocketConnected(e);
+        }
+
+        /// <summary>
+        /// Process callback of socket connection
+        /// </summary>
+        /// <param name="e">Socket event arguement</param>
+        private void ProcessSocketConnected(SocketAsyncEventArgs e)
         {
             //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
@@ -222,7 +232,9 @@ namespace finalmqtt.Client
                     socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
                     socketEventArg.SetBuffer(bufferForSocketReads, 0, socketReadBufferSize);
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
-                    _socket.ReceiveAsync(socketEventArg);
+
+                    if (!_socket.ReceiveAsync(socketEventArg))
+                        ProcessDataRead(socketEventArg);
                 }
                 catch (Exception e)
                 {
@@ -236,6 +248,15 @@ namespace finalmqtt.Client
         /// <param name="s"></param>
         /// <param name="e"></param>
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
+        {
+            ProcessDataRead(e);
+        }
+
+        /// <summary>
+        /// Process callback of data read from socket
+        /// </summary>
+        /// <param name="e"></param>
+        private void ProcessDataRead(SocketAsyncEventArgs e)
         {
             try
             {
@@ -256,7 +277,6 @@ namespace finalmqtt.Client
             {
                 disconnect();
             }
-
         }
 
         /// <summary>
@@ -272,7 +292,17 @@ namespace finalmqtt.Client
             }
         }
 
+        /// <summary>
+        /// Async Callback for succesful data sent
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="e"></param>
         private void onDataSent(object s, SocketAsyncEventArgs e)
+        {
+            OnDataSentSuccess();
+        }
+
+        private void OnDataSentSuccess()
         {
             _lastWriteTime = GetCurrentSeconds();
         }
@@ -292,7 +322,8 @@ namespace finalmqtt.Client
                     socketEventArg.UserToken = null;
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
                     socketEventArg.SetBuffer(data, 0, data.Length);
-                    _socket.SendAsync(socketEventArg);
+                    if (!_socket.SendAsync(socketEventArg))
+                        OnDataSentSuccess();
                 }
             }
             catch

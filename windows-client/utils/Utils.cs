@@ -285,12 +285,17 @@ namespace windows_client.utils
         public static string getDeviceModel()
         {
             string model = null;
-            object theModel = null;
+            string manufacturer = null;
 
+            object theModel = null;
+            object manufacturerObj = null;
+
+            if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceManufacturer", out manufacturerObj))
+                manufacturer = manufacturerObj as string;
             if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceName", out theModel))
                 model = theModel as string;
 
-            return model;
+            return string.Format("{0} {1}", manufacturer ?? string.Empty, model ?? string.Empty);
         }
 
         public static JObject deviceInforForAnalytics()
@@ -403,6 +408,8 @@ namespace windows_client.utils
                     return "Games on hike";
                 case HikeConstants.FTUE_HIKE_DAILY_MSISDN:
                     return "hike daily";
+                case HikeConstants.FTUE_HIKE_SUPPORT_MSISDN:
+                    return "hike support";
                 default:
                     return string.Empty;
             }
@@ -556,7 +563,7 @@ namespace windows_client.utils
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
-            data.Add(HikeConstants.Extras.SEND_BOT, true);
+            data.Add(HikeConstants.Extras.SEND_BOT, false);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

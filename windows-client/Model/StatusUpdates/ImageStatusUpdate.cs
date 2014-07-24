@@ -32,7 +32,7 @@ namespace windows_client.Model
                     if (IsUnread != true) //read status
                         return UI_Utils.Instance.StatusTextForeground;
                     else
-                        return (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                        return (SolidColorBrush)App.Current.Resources["HikeBlue"];
                 }
                 else
                     return UI_Utils.Instance.StatusTextForeground;

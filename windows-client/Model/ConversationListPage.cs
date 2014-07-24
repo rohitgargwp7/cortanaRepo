@@ -369,10 +369,9 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_contactName))
+                if (!string.IsNullOrWhiteSpace(_contactName) || IsGroupChat)
                     return _contactName;
-                else
-                    return _msisdn;
+                return _msisdn;
             }
         }
 
@@ -481,9 +480,9 @@ namespace windows_client.Model
             get
             {
                 if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                    return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                    return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
-                    return (SolidColorBrush)Application.Current.Resources["HikeLightGrey"];
+                    return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
             }
         }
 
@@ -798,7 +797,7 @@ namespace windows_client.Model
                 {
                     count = reader.ReadInt32();
                     _draftMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_draftMessage == "*@N@*") 
+                    if (_draftMessage == "*@N@*")
                         _draftMessage = string.Empty;//so that on comparing with unsent empty text it returns true 
                 }
                 catch

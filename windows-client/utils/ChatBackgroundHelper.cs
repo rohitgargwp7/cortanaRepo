@@ -207,11 +207,19 @@ namespace windows_client.utils
         /// <param name="bgId">chat theme id</param>
         public void UpdateChatBgMap(string msisdn, string bgId)
         {
-            ChatBgMap[msisdn] = new ChatThemeData()
+            if (ChatBgMap.ContainsKey(msisdn))
             {
-                BackgroundId = bgId,
-                Timestamp = TimeUtils.getCurrentTimeStamp()
-            };
+                ChatBgMap[msisdn].BackgroundId = bgId;
+                ChatBgMap[msisdn].Timestamp = TimeUtils.getCurrentTimeStamp();
+            }
+            else
+            {
+                ChatBgMap[msisdn] = new ChatThemeData()
+                {
+                    BackgroundId = bgId,
+                    Timestamp = TimeUtils.getCurrentTimeStamp()
+                };
+            }
 
             SaveChatBgMapToFile();
         }
@@ -232,37 +240,7 @@ namespace windows_client.utils
                 }
             }
 
-            ChatBgMap[msisdn] = new ChatThemeData()
-            {
-                BackgroundId = "0",
-                Timestamp = TimeUtils.getCurrentTimeStamp()
-            };
-
             App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.IsDefault == true).First();
-
-            SaveChatBgMapToFile();
-        }
-
-        /// <summary>
-        /// Apply a random background as default if required
-        /// </summary>
-        /// <param name="msisdn"></param>
-        /// <returns></returns>
-        public String SetDefaultBackground(string msisdn)
-        {
-            int id = random.Next(3);
-
-            if (id == 0)
-                id = 24;
-            else if (id == 1)
-                id = 25;
-            else
-                id = 26;
-
-            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.ID == id.ToString()).First();
-            UpdateChatBgMap(msisdn, App.ViewModel.SelectedBackground.ID);
-
-            return App.ViewModel.SelectedBackground.ID;
         }
 
         /// <summary>

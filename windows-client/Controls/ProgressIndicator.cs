@@ -69,6 +69,8 @@ namespace windows_client.Controls
             txtProgressText.Text = text;
             pBar.IsIndeterminate = true;
             isShown = true;
+
+            grid.IsHitTestVisible = false;
         }
 
         public void Hide(Grid grid)
@@ -84,6 +86,8 @@ namespace windows_client.Controls
 
             pBar.IsIndeterminate = false;
             isShown = false;
+
+            grid.IsHitTestVisible = true;
         }
     }
 }

@@ -10,8 +10,6 @@ namespace windows_client.Mqtt
     public class ConnectCB : Callback
     {
         private HikeMqttManager hikeMqttManager;
-        private IScheduler scheduler = Scheduler.NewThread;
-
 
         public ConnectCB(HikeMqttManager hikeMqttManager)
         {
@@ -43,9 +41,15 @@ namespace windows_client.Mqtt
                 }
                 App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
             }
+            else if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.SERVER_UNAVAILABLE))
+            {
+                Random rnd = new Random();
+                int nextscheduleTime = rnd.Next(HikeConstants.SERVER_UNAVAILABLE_MAX_CONNECT_TIME) + 1;//in minutes
+                hikeMqttManager.ScheduleConnect(nextscheduleTime * 60);
+            }
             else if (hikeMqttManager.connectionStatus != HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
             {
-                scheduler.Schedule(hikeMqttManager.connect, TimeSpan.FromSeconds(5));
+                hikeMqttManager.ScheduleConnect(5);
             }
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
         }

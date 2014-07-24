@@ -85,6 +85,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("Name");
                     _name = value;
                     NotifyPropertyChanged("Name");
+                    NotifyPropertyChanged("NameToshow");
                 }
             }
         }
@@ -167,6 +168,14 @@ namespace windows_client.Model
                 NotifyPropertyChanging("PhoneNoKind");
                 _phoneNoKind = value;
                 NotifyPropertyChanged("PhoneNoKind");
+            }
+        }
+
+        public string NameToshow
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Name) ? Msisdn : Name;
             }
         }
 

@@ -13,12 +13,7 @@
     shell:SystemTray.IsVisible="False">
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <maps:Map x:Name="MyMap" LandmarksEnabled="True" ZoomLevelChanged="ZoomLevelChanged"/>
     </Grid>
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" ForegroundColor="#2c313d" BackgroundColor="#eff2f6">
-            <shell:ApplicationBarIconButton Click="Direction_Click" IconUri="view/images/AppBar/icon_direction.png" Text="directions"/>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>
