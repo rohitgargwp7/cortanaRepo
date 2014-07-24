@@ -37,7 +37,7 @@ namespace windows_client.View
 
             picturesUpload = new ApplicationBarIconButton();
             picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
-            picturesUpload.Text = AppResources.Done_Txt;
+            picturesUpload.Text = AppResources.AppBar_Done_Btn;
             picturesUpload.Click += OnPicturesUploadClick;
 
             multipleSelect = new ApplicationBarIconButton();

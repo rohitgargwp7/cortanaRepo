@@ -33,7 +33,6 @@ namespace windows_client
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string ACCOUNT_GENDER = "accountGender";
-        public static readonly string ACCOUNT_AGE = "accountAge";
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
@@ -770,6 +769,10 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Upgrade Pref Contacts Fix
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
+            #endregion
             #region ProTips 2.3.0.0
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
             {
@@ -840,7 +843,7 @@ namespace windows_client
 
             #endregion
             #region STCIKERS
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
             {
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
@@ -989,7 +992,7 @@ namespace windows_client
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
                 if (isNewInstall && !appSettings.Contains(App.PRO_TIP_COUNT))
-                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 2);
+                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, 1);
             }
             #endregion
             #region POST APP INFO ON UPDATE

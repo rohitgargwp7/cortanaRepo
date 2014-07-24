@@ -28,8 +28,8 @@ namespace windows_client
 
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = (Color)App.Current.Resources["AppBarWhiteForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarWhiteBackgroundColor"]
             };
 
             nextIconButton = new ApplicationBarIconButton();
@@ -284,5 +284,12 @@ namespace windows_client
             }
         }
 
+        bool _hyperlinkedClicked = false;
+        void Hyperlink_Clicked(object sender, EventArgs e)
+        {
+            _hyperlinkedClicked = true;
+
+            App.ViewModel.Hyperlink_Clicked(sender as object[]);
+        }
     }
 }

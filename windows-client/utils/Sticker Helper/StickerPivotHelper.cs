@@ -69,12 +69,12 @@ namespace windows_client.utils
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
@@ -85,6 +85,11 @@ namespace windows_client.utils
                     pivotIndex++;
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                    pivotIndex++;
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
@@ -129,5 +134,10 @@ namespace windows_client.utils
             _stickerPivot.Items.Add(pvt);
         }
 
+        public void ClearData()
+        {
+            dictStickersPivot.Clear();
+            isInitialised = false;
+        }
     }
 }

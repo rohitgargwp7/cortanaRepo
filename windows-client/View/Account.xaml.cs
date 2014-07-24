@@ -170,6 +170,7 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                StickerPivotHelper.Instance.ClearData();
                 App.ViewModel.ClearViewModel();
                 try
                 {

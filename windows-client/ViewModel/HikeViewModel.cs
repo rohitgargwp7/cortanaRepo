@@ -237,6 +237,9 @@ namespace windows_client.ViewModel
 
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
         }
 
         /// <summary>
@@ -507,6 +510,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
+            stickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
@@ -1090,7 +1094,7 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 10)
             {
-                DeleteGroupImage(id);
+                DeleteImageForMsisdn(id);
                 return;
             }
 
@@ -1142,13 +1146,13 @@ namespace windows_client.ViewModel
 
         private void DeleteGroupImageFromList(GroupPic group)
         {
-            DeleteGroupImage(group.GroupId);
+            DeleteImageForMsisdn(group.GroupId);
 
             if (PicUploadList.Contains(group))
                 PicUploadList.Remove(group);
         }
 
-        private static void DeleteGroupImage(string id)
+        public void DeleteImageForMsisdn(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -1202,7 +1206,6 @@ namespace windows_client.ViewModel
 
         #endregion Request Last Seen
 
-
         public void Toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ToastPrompt toast = sender as ToastPrompt;
@@ -1217,5 +1220,12 @@ namespace windows_client.ViewModel
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
+
+        public Boolean IsDarkMode
+        {
+            get;
+            private set;
+        }
+
     }
 }

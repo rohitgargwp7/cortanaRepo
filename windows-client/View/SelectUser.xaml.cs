@@ -140,8 +140,8 @@ namespace windows_client.View
         {
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -669,7 +669,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
 
             if (_stopContactScanning)
             {
@@ -974,6 +974,8 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     }
                 }
+
+                App.ViewModel.DeleteImageForMsisdn(ci.Msisdn);
 
                 FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
                 App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);

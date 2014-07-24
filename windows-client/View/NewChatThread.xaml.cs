@@ -108,6 +108,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
+        ApplicationBarMenuItem clearChatItem;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
@@ -231,6 +232,9 @@ namespace windows_client.View
                 llsMessages.DoubleTap -= MessageList_DoubleTap;
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
+
+            if (App.ViewModel.IsDarkMode)
+                darkModeLayer.Visibility = Visibility.Visible;
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -942,11 +946,9 @@ namespace windows_client.View
                 if (obj.Name != null)
                     mContactName = obj.Name;
                 else
-                {
                     mContactName = obj.Msisdn;
-                    isAddUser = true;
-                }
 
+                isAddUser = !obj.IsInAddressBook;
                 isOnHike = obj.OnHike;
 
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
@@ -1766,7 +1768,7 @@ namespace windows_client.View
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
-                ApplicationBarMenuItem clearChatItem = new ApplicationBarMenuItem();
+                clearChatItem = new ApplicationBarMenuItem();
                 clearChatItem.Text = AppResources.Clear_Chat_Txt;
                 clearChatItem.Click += clearChatItem_Click;
                 appBar.MenuItems.Add(clearChatItem);
@@ -1800,13 +1802,15 @@ namespace windows_client.View
                 appBar.MenuItems.Add(infoMenuItem);
             }
 
-            if (!isGroupChat)
-            {
-                blockMenuItem = new ApplicationBarMenuItem();
-                blockMenuItem.Text = AppResources.Block_Txt;
-                blockMenuItem.Click += blockMenuItem_Click;
-                appBar.MenuItems.Add(blockMenuItem);
-            }
+            clearChatItem = new ApplicationBarMenuItem();
+            clearChatItem.Text = AppResources.Clear_Chat_Txt;
+            clearChatItem.Click += clearChatItem_Click;
+            appBar.MenuItems.Add(clearChatItem);
+
+            blockMenuItem = new ApplicationBarMenuItem();
+            blockMenuItem.Text = AppResources.Block_Txt;
+            blockMenuItem.Click += blockMenuItem_Click;
+            appBar.MenuItems.Add(blockMenuItem);
         }
 
         void blockMenuItem_Click(object sender, EventArgs e)
@@ -1830,6 +1834,9 @@ namespace windows_client.View
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - list.Count);
                 }
             }
+
+            userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
+            App.ViewModel.DeleteImageForMsisdn(mContactNumber);
 
             FriendsTableUtils.SetFriendStatus(mContactNumber, FriendsTableUtils.FriendStatusEnum.NOT_SET);
             App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
@@ -1880,9 +1887,12 @@ namespace windows_client.View
 
                 ClearChat();
 
-                ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
-                obj.LastMessage = String.Empty;
-                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
+                    ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
+                    obj.LastMessage = String.Empty;
+                    obj.MessageStatus = ConvMessage.State.UNKNOWN;
+                }
             }
         }
 
@@ -3756,6 +3766,8 @@ namespace windows_client.View
 
         private void showOverlay(bool show)
         {
+            this.Focus();//remove focus from textbox if exsist
+
             EnableDisableUI(!show);
 
             if (show)
@@ -3947,7 +3959,7 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 bool showPush = true;
-                if (vals.Length == 3)
+                if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
 
                 //TODO handle vibration for user profile and GC.
@@ -4561,8 +4573,6 @@ namespace windows_client.View
             }
             #endregion
         }
-
-
 
         private void groupChatEnd()
         {
@@ -5794,9 +5804,9 @@ namespace windows_client.View
             if (App.ViewModel.SelectedBackground.IsDefault)
             {
                 progressBar.Foreground = UI_Utils.Instance.Black;
-                smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeLightGrey"];
+                smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
                 nudgeBorder.BorderBrush = UI_Utils.Instance.Black;
-                nudgeBorder.Background = UI_Utils.Instance.White;
+                nudgeBorder.Background = UI_Utils.Instance.Transparent;
                 nudgeImage.Source = UI_Utils.Instance.BlueSentNudgeImage;
                 nudgeText.Foreground = UI_Utils.Instance.Black;
             }
@@ -6073,6 +6083,16 @@ namespace windows_client.View
                     count++;
                 }
             }
+
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
+            }
+
             UsersTableUtils.addContact(contactInfo);
             mPubSub.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 
@@ -6292,8 +6312,8 @@ namespace windows_client.View
             //so that after reopening of ct , if pivot index are same we need to update pivot selection explicitly 
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
                 UpdateStickerPivot();
-
-            pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
+            else
+                pivotStickers.SelectedIndex = stickerPivot.PivotItemIndex;
 
             foreach (StickerCategory stCategory in listStickerCategories)
             {
@@ -6554,74 +6574,34 @@ namespace windows_client.View
         public void ShowDownloadOverlay(bool show)
         {
             EnableDisableUI(!show);
+            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
+            if (stickerCategory == null)
+                return;
+            gridDownloadStickers.DataContext = stickerCategory;
 
             if (show)
             {
-                switch (_selectedCategory)
+                if (_selectedCategory == StickerHelper.CATEGORY_HUMANOID || _selectedCategory == StickerHelper.CATEGORY_EXPRESSIONS)
                 {
-                    case StickerHelper.CATEGORY_HUMANOID:
-                        downloadDialogueImage.Source = UI_Utils.Instance.HumanoidOverlay;
-                        btnDownload.Content = AppResources.Installed_Txt;
-                        btnDownload.IsHitTestVisible = false;
-                        btnFree.IsHitTestVisible = false;
-                        break;
-                    case StickerHelper.CATEGORY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.ExpressionsOverlay;
-                        btnDownload.Content = AppResources.Installed_Txt;
-                        btnDownload.IsHitTestVisible = false;
-                        btnFree.IsHitTestVisible = false;
-                        break;
-                    case StickerHelper.CATEGORY_DOGGY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.DoggyOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_KITTY:
-                        downloadDialogueImage.Source = UI_Utils.Instance.KittyOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_BOLLYWOOD:
-                        downloadDialogueImage.Source = UI_Utils.Instance.BollywoodOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_TROLL:
-                        downloadDialogueImage.Source = UI_Utils.Instance.TrollOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_HUMANOID2:
-                        downloadDialogueImage.Source = UI_Utils.Instance.Humanoid2Overlay;
-                        break;
-                    case StickerHelper.CATEGORY_AVATARS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.AvatarsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_INDIANS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.IndiansOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_SPORTS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.SportsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
-                        downloadDialogueImage.Source = UI_Utils.Instance.SmileyExpressionsOverlay;
-                        break;
-                    case StickerHelper.CATEGORY_LOVE:
-                        downloadDialogueImage.Source = UI_Utils.Instance.LoveOverlay;
-                        break;
+                    btnDownload.Content = AppResources.Installed_Txt;
+                    btnDownload.IsHitTestVisible = false;
+                    btnFree.IsHitTestVisible = false;
                 }
-
                 overlayBorder.Tap += overlayBorder_Tapped;
-
                 overlayBorder.Visibility = Visibility.Visible;
                 gridDownloadStickers.Visibility = Visibility.Visible;
             }
             else
             {
                 overlayBorder.Tap -= overlayBorder_Tapped;
-
                 if (btnDownload.IsHitTestVisible == false)
                 {
                     btnDownload.IsHitTestVisible = true;
                     btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
-                    StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(_selectedCategory);
                     if (stickerCategory.ShowDownloadMessage)
                         stickerCategory.SetDownloadMessage(false);
                 }
-
                 overlayBorder.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
             }
@@ -6701,11 +6681,11 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6714,6 +6694,10 @@ namespace windows_client.View
                     listStickerCategories.Add(stickerCategory);
                 }
                 if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
+                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }

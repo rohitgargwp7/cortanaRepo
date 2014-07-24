@@ -111,6 +111,11 @@ namespace windows_client.Model
             CHAT_BACKGROUND
         }
 
+        /// <summary>
+        /// Get the participant info from Json Object
+        /// </summary>
+        /// <param name="obj">json object</param>
+        /// <returns>Participant info type for the conv message</returns>
         public static ParticipantInfoState fromJSON(JObject obj)
         {
             if (obj == null)
@@ -129,7 +134,7 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
-                if (obj.TryGetValue("st", out jt))
+                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
@@ -169,10 +174,15 @@ namespace windows_client.Model
                 return ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             else  // shows type == null
             {
-                JArray dndNumbers = (JArray)obj["dndnumbers"];
-                if (dndNumbers != null)
+                // maybe dead code - handling done for dndnumbers in MessageMetaData.cs
+                JToken jarray;
+                if (obj.TryGetValue(HikeConstants.DND_NUMBERS, out jarray))
                 {
-                    return ParticipantInfoState.DND_USER;
+                    JArray dndNumbers = (JArray)jarray; 
+                    if (dndNumbers != null)
+                    {
+                        return ParticipantInfoState.DND_USER;
+                    }
                 }
             }
             return ParticipantInfoState.NO_INFO;
@@ -1895,6 +1905,10 @@ namespace windows_client.Model
             return obj;
         }
 
+        /// <summary>
+        /// Create convmessage from json object. Called in case of message type
+        /// </summary>
+        /// <param name="obj">json obj which is to be parsed</param>
         public ConvMessage(JObject obj)
         {
             try
@@ -1959,7 +1973,7 @@ namespace windows_client.Model
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             locationFile[HikeConstants.LOCATION_TITLE] = fileObject[HikeConstants.LOCATION_TITLE];
 
-                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None);
+                            this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None); // store location data in metadata
                         }
                         else
                         {
@@ -1969,15 +1983,15 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
                         {
-                            this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None);
+                            this.MetaDataString = fileObject.ToString(Newtonsoft.Json.Formatting.None); // store file object for contact and audio
                         }
                     }
                     else
                     {
-                        metadataJsonString = metadataObject.ToString(Newtonsoft.Json.Formatting.None);
+                        metadataJsonString = metadataObject.ToString(Newtonsoft.Json.Formatting.None); // store only metadata
                     }
-
                 }
+
                 participantInfoState = fromJSON(metadataObject);
                 if (val != null) // represents group message
                 {
@@ -2028,13 +2042,13 @@ namespace windows_client.Model
                 }
                 if (data.TryGetValue("poke", out msg)) // if sms 
                 {
-                    metadataJsonString = "{poke: true}";
+                    metadataJsonString = "{poke: true}"; //metadata in case of nudge
                 }
                 JToken isSticker;
                 JToken stickerJson;
                 if (obj.TryGetValue(HikeConstants.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.METADATA, out stickerJson))
                 {
-                    metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None);
+                    metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None); // metadata for stickers
                     _message = AppResources.Sticker_Txt;
                 }
 
@@ -2042,9 +2056,7 @@ namespace windows_client.Model
 
                 long timedifference;
                 if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                {
                     _timestamp = serverTimeStamp - timedifference;
-                }
                 else
                     _timestamp = serverTimeStamp;
 
@@ -2070,14 +2082,31 @@ namespace windows_client.Model
         {
         }
 
+        /// <summary>
+        /// Create convMessage from json Object. Called for group chats
+        /// </summary>
+        /// <param name="obj">json object to be parsed</param>
+        /// <param name="isSelfGenerated">indicates that the object generated by client</param>
+        /// <param name="addedLater">indicates that the members will be added later on runtime</param>
         public ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater)
         {
             // If the message is a group message we get a TO field consisting of the Group ID
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
             this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
-            this.participantInfoState = fromJSON(obj);
-            this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
+
+            JObject metaDataObj = new JObject();
+
+            JToken type;
+            if (obj.TryGetValue(HikeConstants.TYPE, out type))
+                metaDataObj.Add(HikeConstants.TYPE, type); 
+            
+            JToken subType;
+            if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subType))
+                metaDataObj.Add(HikeConstants.SUB_TYPE, subType);
+
+            this.participantInfoState = fromJSON(metaDataObj);
+            this.metadataJsonString = metaDataObj.ToString(Newtonsoft.Json.Formatting.None);
 
             if (this.participantInfoState == ParticipantInfoState.MEMBERS_JOINED || this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
             {

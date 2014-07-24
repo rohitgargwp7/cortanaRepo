@@ -86,8 +86,8 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -119,8 +119,8 @@ namespace windows_client.View
 
             editGroupNameAppBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color
             };
 
             saveIconButton = new ApplicationBarIconButton();
@@ -898,13 +898,6 @@ namespace windows_client.View
 
             gp_obj = (sender as MenuItem).DataContext as GroupParticipant;
             if (gp_obj == null)
-                return;
-
-            if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
-                return;
-
-            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
-            if (ci != null)
                 return;
 
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));

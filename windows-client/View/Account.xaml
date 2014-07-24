@@ -14,17 +14,17 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="646"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="shellProgress" Grid.RowSpan="2" VerticalAlignment="Top" 
+        <ProgressBar x:Name="shellProgress" Grid.RowSpan="2" VerticalAlignment="Top" Background="Transparent"
                          IsIndeterminate="true" Foreground="White"/>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
         
