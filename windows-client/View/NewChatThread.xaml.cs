@@ -2217,7 +2217,7 @@ namespace windows_client.View
                     {
                         if (isGroupChat)
                         {
-                            var gp = GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
+                            var gp = GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber, true);
                             convMessage.GroupMemberName = gp.Name;
                             convMessage.IsInAddressBook = gp.IsInAddressBook;
                         }
@@ -2258,7 +2258,7 @@ namespace windows_client.View
                     {
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMessage.Msisdn, true);
                         string text = AppResources.USER_JOINED_GROUP_CHAT;
                         ConvMessage.MessageType type = ConvMessage.MessageType.HIKE_PARTICIPANT_JOINED;
                         if (vars[1] == "0" && !gp.IsOnHike)
@@ -2288,7 +2288,7 @@ namespace windows_client.View
                         string msisdn = vars[0];
                         string showIcon = vars[1];
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn, true);
 
                         string text = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                         ConvMessage.MessageType type = ConvMessage.MessageType.SMS_PARTICIPANT_OPTED_IN;

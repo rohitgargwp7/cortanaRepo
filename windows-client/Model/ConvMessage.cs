@@ -178,7 +178,7 @@ namespace windows_client.Model
                 JToken jarray;
                 if (obj.TryGetValue(HikeConstants.DND_NUMBERS, out jarray))
                 {
-                    JArray dndNumbers = (JArray)jarray; 
+                    JArray dndNumbers = (JArray)jarray;
                     if (dndNumbers != null)
                     {
                         return ParticipantInfoState.DND_USER;
@@ -864,8 +864,8 @@ namespace windows_client.Model
                 if (_fileAttachment != null && (_fileAttachment.FileState != Attachment.AttachmentState.COMPLETED || _fileAttachment.ContentType.Contains(HikeConstants.VIDEO) || _fileAttachment.ContentType.Contains(HikeConstants.AUDIO)))
                 {
                     if ((IsSent && _fileAttachment.FileState != Attachment.AttachmentState.COMPLETED && _fileAttachment.FileState != Attachment.AttachmentState.FAILED)
-                        || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED 
-                        || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED )
+                        || _fileAttachment.FileState == Attachment.AttachmentState.STARTED || _fileAttachment.FileState == Attachment.AttachmentState.PAUSED
+                        || _fileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
@@ -2099,8 +2099,8 @@ namespace windows_client.Model
 
             JToken type;
             if (obj.TryGetValue(HikeConstants.TYPE, out type))
-                metaDataObj.Add(HikeConstants.TYPE, type); 
-            
+                metaDataObj.Add(HikeConstants.TYPE, type);
+
             JToken subType;
             if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subType))
                 metaDataObj.Add(HikeConstants.SUB_TYPE, subType);
@@ -2137,7 +2137,7 @@ namespace windows_client.Model
                         Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
                     }
 
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn, true);
                     gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
@@ -2171,7 +2171,7 @@ namespace windows_client.Model
             else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn, true);
                 this._message = String.Format(AppResources.USER_LEFT, gp.FirstName);
                 gp.HasLeft = true;
                 gp.IsUsed = false;
@@ -2245,7 +2245,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("FileSizeVisibility");
             NotifyPropertyChanged("UnknownFileTypeIconImage");
 
-            SdrImageVisibility = attachmentState != Attachment.AttachmentState.NOT_STARTED 
+            SdrImageVisibility = attachmentState != Attachment.AttachmentState.NOT_STARTED
                 && attachmentState != Attachment.AttachmentState.STARTED
                 && attachmentState != Attachment.AttachmentState.PAUSED
                 && attachmentState != Attachment.AttachmentState.MANUAL_PAUSED
@@ -2302,7 +2302,7 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId, true);
                         this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
@@ -2312,7 +2312,7 @@ namespace windows_client.Model
                     from = (string)jsonObj[HikeConstants.FROM];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
-                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId, true);
                     this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
                     jsonObj.Remove(HikeConstants.DATA);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
@@ -2326,7 +2326,7 @@ namespace windows_client.Model
                         this.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
                     else
                     {
-                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId, true);
                         this.Message = string.Format(AppResources.ChatBg_Changed_Text, gp.Name);
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
@@ -2340,7 +2340,7 @@ namespace windows_client.Model
                         this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
                     else
                     {
-                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                        gp = GroupManager.Instance.getGroupParticipant(null, from, grpId, true);
                         this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, gp.Name);
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
