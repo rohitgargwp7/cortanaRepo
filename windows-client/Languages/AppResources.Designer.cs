@@ -1759,6 +1759,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to connect with facebook.
+        /// </summary>
+        public static string FB_Connect_Txt {
+            get {
+                return ResourceManager.GetString("FB_Connect_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feeling lazy? Pull in your profile....
         /// </summary>
         public static string FeelingLazy_Txt {
@@ -3843,15 +3852,6 @@ namespace windows_client.Languages {
         public static string RestartApp_Txt {
             get {
                 return ResourceManager.GetString("RestartApp_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to connect with facebook.
-        /// </summary>
-        public static string s {
-            get {
-                return ResourceManager.GetString("s", resourceCulture);
             }
         }
         

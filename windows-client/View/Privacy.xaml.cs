@@ -17,8 +17,6 @@ namespace windows_client.View
 {
     public partial class Privacy : PhoneApplicationPage
     {
-
-
         public Privacy()
         {
             InitializeComponent();

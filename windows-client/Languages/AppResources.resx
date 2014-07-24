@@ -1044,7 +1044,7 @@ Download it like asap from http://hike.in!</value>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
     <value>group message</value>
   </data>
-  <data name="s" xml:space="preserve">
+  <data name="FB_Connect_Txt" xml:space="preserve">
     <value>connect with facebook</value>
   </data>
   <data name="FeelingLazy_Txt" xml:space="preserve">
