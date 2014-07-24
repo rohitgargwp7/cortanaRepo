@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -169,6 +169,9 @@
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
+    <Compile Include="Controls\ToolTipsUC.xaml.cs">
+      <DependentUpon>ToolTipsUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -376,6 +379,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ToolTipsUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
