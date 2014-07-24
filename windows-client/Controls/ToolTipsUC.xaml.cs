@@ -19,9 +19,6 @@ namespace windows_client.Controls
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
         }
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-        }
 
         #region dependency property region
 
@@ -55,14 +52,8 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             ImageSource tempSource = (ImageSource)e.NewValue;
             tempToolTip.leftIcon.Source = tempSource;
-            if (tempSource != null)
-            {
-                tempToolTip.leftIcon.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                tempToolTip.leftIcon.Visibility = Visibility.Collapsed;
-            }
+            tempToolTip.leftIcon.Visibility =((tempSource!=null)?( Visibility.Visible):(Visibility.Collapsed));
+  
         }
 
         public ImageSource LeftIconSource
@@ -85,14 +76,7 @@ namespace windows_client.Controls
             ToolTipsUC TempToolTip = obj as ToolTipsUC;
             ImageSource TempSource = (ImageSource)e.NewValue;
             TempToolTip.rightIcon.Source = TempSource;
-            if (TempSource != null)
-            {
-                TempToolTip.rightIcon.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                TempToolTip.rightIcon.Visibility = Visibility.Collapsed;
-            }
+            TempToolTip.rightIcon.Visibility = ((TempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
         }
 
         public ImageSource RightIconSource
