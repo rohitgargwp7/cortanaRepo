@@ -551,7 +551,7 @@
                                             <Border Tap="statusItem_Tap" Style="{StaticResource StatusUpdateContainerStyle}">
                                                 <toolkit:ContextMenuService.ContextMenu>
                                                     <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                        <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="Copy_Click" />
+                                                        <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Copy_Click" />
                                                     </toolkit:ContextMenu>
                                                 </toolkit:ContextMenuService.ContextMenu>
                                                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
