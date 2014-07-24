@@ -20,7 +20,7 @@ using windows_client.DbUtils;
 namespace windows_client.Model
 {
     [DataContract]
-    public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>, IBinarySerializable
+    public class ConversationListObject : INotifyPropertyChanged, IComparable<ConversationListObject>, IBinarySerializable
     {
         private object readWriteLock = new object();
         #region member variables
@@ -54,7 +54,6 @@ namespace windows_client.Model
             {
                 if (_contactName != value)
                 {
-                    NotifyPropertyChanging("ContactName");
                     _contactName = value;
                     NotifyPropertyChanged("ContactName");
                     NotifyPropertyChanged("NameToShow");
@@ -73,7 +72,6 @@ namespace windows_client.Model
             {
                 if (_lastMessage != value)
                 {
-                    NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
                     NotifyPropertyChanged("LastMessage");
                 }
@@ -102,7 +100,6 @@ namespace windows_client.Model
             {
                 if (_timeStamp != value)
                 {
-                    NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
                     NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
@@ -123,7 +120,6 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
-                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
                     NotifyPropertyChanged("Msisdn");
                 }
@@ -141,7 +137,6 @@ namespace windows_client.Model
             {
                 if (_isOnhike != value)
                 {
-                    NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     NotifyPropertyChanged("IsOnhike");
                     NotifyPropertyChanged("ShowOnHikeImage");
@@ -160,7 +155,6 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
-                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("LastMessageColor");
@@ -220,14 +214,24 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility GroupIconVisibility
+        String _groupMemberName;
+        [DataMember]
+        public String GroupMemberName
         {
             get
             {
-                if (IsGroupChat)
-                    return Visibility.Visible;
+                if (IsGroupChat && (_messageStatus == ConvMessage.State.RECEIVED_UNREAD || _messageStatus == ConvMessage.State.RECEIVED_READ))
+                    return _groupMemberName;
                 else
-                    return Visibility.Collapsed;
+                    return String.Empty;
+            }
+            set
+            {
+                if (value != _groupMemberName)
+                {
+                    _groupMemberName = value;
+                    NotifyPropertyChanged("GroupMemberName");
+                }
             }
         }
 
@@ -425,6 +429,9 @@ namespace windows_client.Model
         }
 
         bool _isSelected = false;
+        /// <summary>
+        /// For multi select mode
+        /// </summary>
         public bool IsSelected
         {
             get
@@ -442,6 +449,7 @@ namespace windows_client.Model
         }
 
         bool _isHidden = false;
+        [DataMember]
         public bool IsHidden
         {
             get
@@ -766,6 +774,7 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_lastMessage);
+                
                 writer.Write(_timeStamp);
                 writer.Write(_isOnhike);
                 writer.Write((int)_messageStatus);
@@ -773,10 +782,17 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
                 writer.Write(_unreadCounter);
+                
                 if (_draftMessage == null)
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_draftMessage);
+
+                if (_groupMemberName == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_groupMemberName);
+
                 writer.Write(_isHidden);
             }
             catch (Exception ex)
@@ -806,14 +822,17 @@ namespace windows_client.Model
                 _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_msisdn == "*@N@*")
                     _msisdn = null;
+                
                 count = reader.ReadInt32();
                 _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                     _contactName = null;
+                
                 count = reader.ReadInt32();
                 _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_lastMessage == "*@N@*")
                     _lastMessage = null;
+                
                 _timeStamp = reader.ReadInt64();
                 _isOnhike = reader.ReadBoolean();
                 _messageStatus = (ConvMessage.State)reader.ReadInt32();
@@ -835,14 +854,17 @@ namespace windows_client.Model
                 _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_msisdn == "*@N@*")
                     _msisdn = null;
+                
                 count = reader.ReadInt32();
                 _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                     _contactName = null;
+                
                 count = reader.ReadInt32();
                 _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_lastMessage == "*@N@*")
                     _lastMessage = null;
+                
                 _timeStamp = reader.ReadInt64();
                 _isOnhike = reader.ReadBoolean();
                 _messageStatus = (ConvMessage.State)reader.ReadInt32();
@@ -856,10 +878,7 @@ namespace windows_client.Model
                 }
                 catch
                 {
-                    if (_messageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                        _unreadCounter = 1;
-                    else
-                        _unreadCounter = 0;
+                    _unreadCounter = _messageStatus == ConvMessage.State.RECEIVED_UNREAD ? 1 : 0;
                 }
 
                 try
@@ -873,7 +892,19 @@ namespace windows_client.Model
                 {
                     _draftMessage = string.Empty;
                 }
-                
+
+                try
+                {
+                    count = reader.ReadInt32();
+                    _groupMemberName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (_groupMemberName == "*@N@*")
+                        _groupMemberName = string.Empty;//so that on comparing with unsent empty text it returns true 
+                }
+                catch
+                {
+                    _groupMemberName = string.Empty;
+                }
+
                 try
                 {
                     _isHidden = reader.ReadBoolean();
@@ -966,34 +997,5 @@ namespace windows_client.Model
             }
         }
         #endregion
-
-        #region INotifyPropertyChanging Members
-
-        public event PropertyChangingEventHandler PropertyChanging;
-        private string ms;
-        private string p1;
-        private bool p2;
-        private byte[] _av;
-
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    try
-                    {
-                        if (propertyName != null)
-                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                    }
-                    catch (Exception)
-                    { }
-                });
-            }
-        }
-        #endregion
-
-
     }
 }
