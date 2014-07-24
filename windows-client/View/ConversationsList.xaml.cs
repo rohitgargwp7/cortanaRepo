@@ -2002,12 +2002,12 @@ namespace windows_client.View
 
         private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
         {
-            BaseStatusUpdate selected = (sender as MenuItem).DataContext as BaseStatusUpdate;
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
 
-            if (selected == null)
+            if (selectedItem == null)
                 return;
 
-            Clipboard.SetText(selected.Text);
+            Clipboard.SetText(selectedItem.Text);
         }
         #endregion
 
@@ -3113,8 +3113,6 @@ namespace windows_client.View
         {
             launchPagePivot.SelectedIndex = 1;
         }
-
-        
     }
     
 }
