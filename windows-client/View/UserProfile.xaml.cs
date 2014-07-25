@@ -1487,6 +1487,16 @@ namespace windows_client.View
             }
         }
 
+        private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
+
+            if (selectedItem == null)
+                return;
+
+            Clipboard.SetText(selectedItem.Text);
+        }
+
         void Hyperlink_Clicked(object sender, EventArgs e)
         {
             App.ViewModel.Hyperlink_Clicked(sender as object[]);
