@@ -1786,7 +1786,7 @@ namespace windows_client.View
                 if (isAddUser)
                 {
                     addUserMenuItem = new ApplicationBarMenuItem();
-                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Text = AppResources.Save_Contact_Txt;
                     addUserMenuItem.Click += new EventHandler(addUser_Click);
                     appBar.MenuItems.Add(addUserMenuItem);
                 }

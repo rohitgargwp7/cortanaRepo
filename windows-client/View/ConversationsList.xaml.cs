@@ -2000,7 +2000,15 @@ namespace windows_client.View
             }
         }
 
+        private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
 
+            if (selectedItem == null)
+                return;
+
+            Clipboard.SetText(selectedItem.Text);
+        }
         #endregion
 
         private void disableAppBar()
@@ -3106,4 +3114,5 @@ namespace windows_client.View
             launchPagePivot.SelectedIndex = 1;
         }
     }
+    
 }
