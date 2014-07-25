@@ -246,9 +246,9 @@ namespace windows_client.View
             AccountUtils.postHideMessagePreview((string)App.appSettings[App.LATEST_PUSH_TOKEN], currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
         }
 
-        public void postHideMessagePreview_Callback(JObject obj,Object curr_status)
+        public void postHideMessagePreview_Callback(JObject obj,Object currentStatus)
         {
-            bool currently_checked = (bool)curr_status;
+            bool currentlyChecked = (bool)currentStatus;
             string stat = "";
             string message = "";
             
@@ -263,12 +263,12 @@ namespace windows_client.View
             if (stat != HikeConstants.OK)
             {
                 message = AppResources.Oops_Something_Wrong_Txt;
-                preventCheckedState(currently_checked);
+                preventCheckedState(currentlyChecked);
                 HideOverLay(message);
             }
             else
             {
-                if (!currently_checked)
+                if (!currentlyChecked)
                 {
                     App.WriteToIsoStorageSettings(App.HIDE_MESSAGE_PREVIEW_SETTING, false);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>

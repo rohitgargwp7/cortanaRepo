@@ -9,9 +9,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.Languages;
 using Newtonsoft.Json.Linq;
-using windows_client.Controls;
-using System.Net.NetworkInformation;
-using windows_client.utils;
 
 namespace windows_client.View
 {

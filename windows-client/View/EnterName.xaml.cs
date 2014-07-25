@@ -233,6 +233,7 @@ namespace windows_client
                     });
                 spFbConnect.MinWidth = 180;
                 spFbConnect.IsEnabled = false;
+                feelingLazyTxtBlk.Visibility = Visibility.Collapsed;
             }
 
             nextIconButton.IsEnabled = !string.IsNullOrWhiteSpace(txtBxEnterName.Text);
