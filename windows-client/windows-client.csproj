@@ -624,7 +624,6 @@
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
-    <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hiddenModeSheild.png" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
@@ -917,7 +916,6 @@
     <Content Include="View\images\ConversationPage\tutorial_arrow.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
-    <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\video_default.png" />

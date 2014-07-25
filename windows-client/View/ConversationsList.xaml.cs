@@ -2078,7 +2078,7 @@ namespace windows_client.View
             if (favourites.SelectedItem != null)
             {
                 ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-                if (obj == null || (!App.ViewModel.IsHiddenModeActive && obj.IsHidden))
+                if (obj == null || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(obj.Msisdn) && App.ViewModel.ConvMap[obj.Msisdn].IsHidden))
                     return;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 string uri = "/View/NewChatThread.xaml";

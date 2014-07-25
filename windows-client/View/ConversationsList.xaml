@@ -296,15 +296,13 @@
                                         </Grid.RowDefinitions>
                                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="{StaticResource GroupIndicator}" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
-                                            <Grid HorizontalAlignment="Stretch" Grid.Column="1" Background="Transparent">
+                                            <Grid HorizontalAlignment="Stretch" Background="Transparent">
                                                 <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}" Foreground="{Binding ChatHeaderForegroundColor}"/>
                                             </Grid>
-                                            <Grid Background="Transparent" Grid.Column="2" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding MuteIconTimeStampVisibility}">
+                                            <Grid Background="Transparent" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding MuteIconTimeStampVisibility}">
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Visibility="{Binding TimeStampVisibility}" Style="{StaticResource ConversationChatTimestampTextBlock}"/>
                                             </Grid>
                                         </Grid>

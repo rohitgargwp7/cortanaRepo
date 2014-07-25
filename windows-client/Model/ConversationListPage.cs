@@ -463,6 +463,7 @@ namespace windows_client.Model
                     _isHidden = value;
                     NotifyPropertyChanged("ChatVisibility");
                     NotifyPropertyChanged("HideUnhideChatText");
+                    NotifyPropertyChanged("ChatHeaderForegroundColor");
                 }
             }
         }
