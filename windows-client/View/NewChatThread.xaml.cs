@@ -7443,5 +7443,17 @@ namespace windows_client.View
             });
         }
         #endregion
+
+        private void MenuItem_Click_View(object sender, RoutedEventArgs e)
+        {
+            
+
+            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
+
+
+            FileAttachmentMessage_Tap(msg);
+            //ChatMessageSelected(msg);
+            Debug.WriteLine("Location tapped");
+        }
     }
 }
