@@ -75,11 +75,13 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
+                    _toastText = value;
                     NotifyPropertyChanged("LastMessage");
                 }
             }
         }
 
+        string _toastText;
         /// <summary>
         /// use where we dont need to show typing notification
         /// </summary>
@@ -87,7 +89,12 @@ namespace windows_client.Model
         {
             get
             {
-                return _lastMessage;
+                return _toastText;
+            }
+            set
+            {
+                if (value != _toastText)
+                    _toastText = value;
             }
         }
 

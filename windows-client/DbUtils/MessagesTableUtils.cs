@@ -298,10 +298,26 @@ namespace windows_client.DbUtils
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        var msg = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        obj.LastMessage = msg;
+
+                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        {
+                            string toastText = GetToastNotification(convMsg);
+                            msg = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
+                            obj.ToastText = msg;
+                        }
                     }
                     else
+                    {
                         obj.LastMessage = convMsg.Message;
+
+                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        {
+                            string toastText = GetToastNotification(convMsg);
+                            obj.ToastText = toastText;                           
+                        }
+                    }
                 }
                 #endregion
                 #region Chat Background Changed
@@ -351,6 +367,31 @@ namespace windows_client.DbUtils
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             return obj;
+        }
+
+        private static string GetToastNotification(ConvMessage convMsg)
+        {
+            string toastText = HikeConstants.TOAST_FOR_MESSAGE;
+
+            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                toastText = HikeConstants.TOAST_FOR_STICKER;
+            else if (convMsg.FileAttachment != null)
+            {
+                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    toastText = HikeConstants.TOAST_FOR_PHOTO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    toastText = HikeConstants.TOAST_FOR_AUDIO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                    toastText = HikeConstants.TOAST_FOR_VIDEO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    toastText = HikeConstants.TOAST_FOR_CONTACT;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    toastText = HikeConstants.TOAST_FOR_LOCATION;
+                else
+                    toastText = HikeConstants.TOAST_FOR_FILE;
+            }
+
+            return toastText;
         }
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
