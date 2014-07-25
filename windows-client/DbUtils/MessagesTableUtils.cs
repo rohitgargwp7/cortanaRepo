@@ -303,26 +303,7 @@ namespace windows_client.DbUtils
 
                         if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
-                            string toastText = "Sent you a message";
-
-                            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
-                                toastText = "Sent you a sticker";
-                            else if (convMsg.FileAttachment != null)
-                            {
-                                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                    toastText = "Sent you a photo";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                                    toastText = "Sent you an audio";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                                    toastText = "Sent you a video";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                                    toastText = "Sent you a contact";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                                    toastText = "Sent you a location";
-                                else
-                                    toastText = "Sent you a file";
-                            }
-
+                            string toastText = GetToastNotification(convMsg);
                             msg = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
                             obj.ToastText = msg;
                         }
@@ -333,26 +314,7 @@ namespace windows_client.DbUtils
 
                         if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
-                            string toastText = "Sent you a message";
-                            
-                            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
-                                toastText = "Sent you a sticker";
-                            else if (convMsg.FileAttachment != null)
-                            {     
-                                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                    toastText = "Sent you a photo";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                                    toastText = "Sent you an audio";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                                    toastText = "Sent you a video";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                                    toastText = "Sent you a contact";
-                                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                                    toastText = "Sent you a location";
-                                else
-                                    toastText = "Sent you a file";
-                            }
-
+                            string toastText = GetToastNotification(convMsg);
                             obj.ToastText = toastText;                           
                         }
                     }
@@ -405,6 +367,33 @@ namespace windows_client.DbUtils
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             return obj;
+        }
+
+        private static string GetToastNotification(ConvMessage convMsg)
+        {
+            string toastText = "Sent you a message";
+
+            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                toastText = "Sent you a sticker";
+            else if (convMsg.FileAttachment != null)
+            {
+                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    toastText = "Sent you a photo";
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    toastText = "Sent you an audio";
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                    toastText = "Sent you a video";
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    toastText = "Sent you a contact";
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    toastText = "Sent you a location";
+                else
+                    toastText = "Sent you a file";
+            }
+
+
+
+            return toastText;
         }
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
