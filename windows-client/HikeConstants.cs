@@ -410,8 +410,7 @@ namespace windows_client
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
-        
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";        
 
         #endregion
 
