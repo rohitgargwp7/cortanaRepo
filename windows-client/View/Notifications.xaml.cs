@@ -15,12 +15,16 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
     public partial class Notifications : PhoneApplicationPage
     {
         bool showStatusUpdatesSettings = false;
+        private bool _canGoBack = true;
+        private ProgressIndicatorControl _progressIndicator;
+
         public Notifications()
         {
             InitializeComponent();
@@ -95,6 +99,13 @@ namespace windows_client.View
                 showStatusUpdatesSettings = true;
                 listBoxStatusSettings.Visibility = Visibility.Visible;
             }
+
+            bool hideMessagePreview = true;
+            if (!App.appSettings.TryGetValue(App.HIDE_MESSAGE_PREVIEW_SETTING,out hideMessagePreview))
+                hideMessagePreview = true;
+
+            hideMessageToggle.IsChecked = hideMessagePreview;
+            this.hideMessageToggle.Content = hideMessagePreview ? AppResources.On : AppResources.Off;
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -197,5 +208,132 @@ namespace windows_client.View
             // Launch URI for the lock screen settings screen.
             var op = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-lock:"));
         }
+
+        private void hideMessageToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            hideMessageToggle.Loaded -= hideMessageToggle_Loaded;
+            hideMessageToggle.Click+=hideMessageToggle_Click;
+        }
+
+        private void hideMessageToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch hideMessageToggle = sender as ToggleSwitch;
+
+            bool currentStatus = (bool)hideMessageToggle.IsChecked;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                preventCheckedState(currentStatus);
+                return;
+            }
+
+            LayoutRoot.IsHitTestVisible = false;
+            
+            if (_progressIndicator == null)
+                _progressIndicator = new ProgressIndicatorControl();
+
+            if (currentStatus == true)
+            {
+                _progressIndicator.Show(LayoutRoot, AppResources.Turning_Message_Preview_On);
+            }
+            else
+            {
+                _progressIndicator.Show(LayoutRoot, AppResources.Turning_Message_Preview_Off);
+            }
+
+            _canGoBack = false;
+            AccountUtils.postHideMessagePreview((string)App.appSettings[App.LATEST_PUSH_TOKEN], currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
+        }
+
+        public void postHideMessagePreview_Callback(JObject obj,Object currentStatus)
+        {
+            bool currentlyChecked = (bool)currentStatus;
+            string stat = "";
+            string message = "";
+            
+            if (obj!=null)
+            {
+                JToken statusToken;
+                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                if (statusToken != null)
+                    stat = statusToken.ToString();
+            }
+
+            if (stat != HikeConstants.OK)
+            {
+                message = AppResources.Oops_Something_Wrong_Txt;
+                preventCheckedState(currentlyChecked);
+                HideOverLay(message);
+            }
+            else
+            {
+                if (!currentlyChecked)
+                {
+                    App.WriteToIsoStorageSettings(App.HIDE_MESSAGE_PREVIEW_SETTING, false);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hideMessageToggle.Content = AppResources.Off;
+                    });
+                }
+                else
+                {
+                    App.RemoveKeyFromAppSettings(App.HIDE_MESSAGE_PREVIEW_SETTING);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hideMessageToggle.Content = AppResources.On;
+                    });   
+                }
+
+                HideOverLay(String.Empty);
+            }
+        }
+
+        void preventCheckedState(bool currentlyChecked)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (currentlyChecked)
+                {
+                    hideMessageToggle.IsChecked = false;
+                    hideMessageToggle.Content = AppResources.Off;
+                }
+                else
+                {
+                    hideMessageToggle.IsChecked = true;
+                    hideMessageToggle.Content = AppResources.On;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        void HideOverLay(string message)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                LayoutRoot.IsHitTestVisible = true;
+                _progressIndicator.Hide(LayoutRoot);
+
+                if (!String.IsNullOrEmpty(message))
+                    MessageBox.Show(message,AppResources.Please_Try_Again_Txt,MessageBoxButton.OK);
+                
+                _canGoBack = true;
+            });
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (!_canGoBack)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnBackKeyPress(e);
+        }
     }
+    
 }

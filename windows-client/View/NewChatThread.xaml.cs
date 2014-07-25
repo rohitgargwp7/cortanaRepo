@@ -4039,7 +4039,7 @@ namespace windows_client.View
                         ToastPrompt toast = new ToastPrompt();
                         toast.Tag = cObj.Msisdn;
                         toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-                        toast.Message = cObj.ToastText;//cannot use convMesssage.Message because for gc it does not have group member name 
+                        toast.Message = cObj.ToastText;//cannot use convMesssage.Message because for gc it does not have group member name                  
                         toast.Foreground = UI_Utils.Instance.White;
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;

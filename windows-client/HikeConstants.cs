@@ -265,6 +265,8 @@ namespace windows_client
         public static readonly string CHAT_DISABLED = "di";
         public static readonly string HIDDEN_MODE_ENABLED = "enabled";
         public static readonly string HIDDEN_MODE_TYPE = "ts";
+       
+        public static readonly string PREVIEW = "preview";
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
@@ -388,6 +390,17 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
+        #region TOAST CONSTANTS
+        public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
+        public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
+        public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
+        public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
+        public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
+        public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
+        public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
+        public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        #endregion
+
         #region ANALYTICS EVENTS KEYS
 
         public static readonly string INVITE_FRIENDS_FROM_POPUP_FREE_SMS = "inviteFriendsFromPopupFreeSMS";
@@ -418,7 +431,7 @@ namespace windows_client
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";        
 
         #endregion
 
