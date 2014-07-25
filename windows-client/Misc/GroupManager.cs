@@ -56,9 +56,8 @@ namespace windows_client.Misc
         /// <param name="defaultName">default name for the participant, null if want to use db name</param>
         /// <param name="msisdn">msisdn of the participant</param>
         /// <param name="grpId">group id</param>
-        /// <param name="addIfNotExist">should add if not exist</param>
         /// <returns>group participant</returns>
-        public GroupParticipant getGroupParticipant(string defaultName, string msisdn, string grpId, bool addIfNotExist)
+        public GroupParticipant GetGroupParticipant(string defaultName, string msisdn, string grpId)
         {
             if (grpId == null)
                 return null;
@@ -93,29 +92,24 @@ namespace windows_client.Misc
                     isInAdressBook = true;
             }
 
-            if (addIfNotExist)
+            GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
+            gp.IsInAddressBook = isInAdressBook;
+
+            if (gp.Msisdn == App.MSISDN)
+                return gp;
+
+            if (groupCache.ContainsKey(grpId))
             {
-                GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
-                gp.IsInAddressBook = isInAdressBook;
-
-                if (gp.Msisdn == App.MSISDN)
-                    return gp;
-
-                if (groupCache.ContainsKey(grpId))
-                {
-                    groupCache[grpId].Add(gp);
-                    SaveGroupCache();
-                    return gp;
-                }
-
-                List<GroupParticipant> ll = new List<GroupParticipant>();
-                ll.Add(gp);
-                groupCache.Add(grpId, ll);
+                groupCache[grpId].Add(gp);
                 SaveGroupCache();
                 return gp;
             }
-            else
-                return null;
+
+            List<GroupParticipant> ll = new List<GroupParticipant>();
+            ll.Add(gp);
+            groupCache.Add(grpId, ll);
+            SaveGroupCache();
+            return gp;
         }
 
         public void SaveGroupCache(string grpId)

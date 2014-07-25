@@ -608,7 +608,7 @@ namespace windows_client.utils
 
             for (int i = 0; i < list.Count; i++)
             {
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, list[i], id, true);
+                GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, list[i], id);
                 readBy += gp.FirstName;
 
                 if (i == list.Count - 2)
