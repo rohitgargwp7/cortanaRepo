@@ -169,7 +169,7 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, id);
                 if (fromEnterName)
                 {
-                    string profilePictureUrl = string.Format("https://graph.facebook.com/{0}/picture?type=large&height=500&width=500", id);
+                    string profilePictureUrl = string.Format("https://graph.facebook.com/{0}/picture?height={1}&width={1}", id, HikeConstants.PROFILE_PICS_SIZE);
                     WebClient client = new WebClient();
                     client.OpenReadAsync(new Uri(profilePictureUrl));
                     client.OpenReadCompleted += (ss, ee) =>
