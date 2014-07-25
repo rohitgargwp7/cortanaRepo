@@ -15,7 +15,6 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
-using windows_client.Controls;
 using windows_client.Model;
 
 namespace windows_client.View

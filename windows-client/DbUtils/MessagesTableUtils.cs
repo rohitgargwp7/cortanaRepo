@@ -371,27 +371,25 @@ namespace windows_client.DbUtils
 
         private static string GetToastNotification(ConvMessage convMsg)
         {
-            string toastText = "Sent you a message";
+            string toastText = HikeConstants.TOAST_FOR_MESSAGE;
 
             if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
-                toastText = "Sent you a sticker";
+                toastText = HikeConstants.TOAST_FOR_STICKER;
             else if (convMsg.FileAttachment != null)
             {
                 if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                    toastText = "Sent you a photo";
+                    toastText = HikeConstants.TOAST_FOR_PHOTO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                    toastText = "Sent you an audio";
+                    toastText = HikeConstants.TOAST_FOR_AUDIO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                    toastText = "Sent you a video";
+                    toastText = HikeConstants.TOAST_FOR_VIDEO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                    toastText = "Sent you a contact";
+                    toastText = HikeConstants.TOAST_FOR_CONTACT;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    toastText = "Sent you a location";
+                    toastText = HikeConstants.TOAST_FOR_LOCATION;
                 else
-                    toastText = "Sent you a file";
+                    toastText = HikeConstants.TOAST_FOR_FILE;
             }
-
-
 
             return toastText;
         }

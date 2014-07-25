@@ -341,7 +341,7 @@ namespace windows_client.View
             }
 
             base.OnBackKeyPress(e);
-        }   
+        }
 
         private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
