@@ -310,7 +310,7 @@ namespace windows_client.DbUtils
                             else if (convMsg.FileAttachment != null)
                             {
                                 if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                    toastText = "Sent you an image";
+                                    toastText = "Sent you a photo";
                                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                                     toastText = "Sent you an audio";
                                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
@@ -340,7 +340,7 @@ namespace windows_client.DbUtils
                             else if (convMsg.FileAttachment != null)
                             {     
                                 if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                                    toastText = "Sent you an image";
+                                    toastText = "Sent you a photo";
                                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                                     toastText = "Sent you an audio";
                                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))

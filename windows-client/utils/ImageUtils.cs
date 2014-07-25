@@ -2106,7 +2106,7 @@ namespace windows_client.utils
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 using (var msLargeImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                    writeableBitmap.SaveJpeg(msLargeImage, 500, 500, 0, 90);
                     return msLargeImage.ToArray();
                 }
             }
