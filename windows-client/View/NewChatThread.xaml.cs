@@ -2937,6 +2937,12 @@ namespace windows_client.View
             }
 
             ConvMessage msg = (sender as Grid).DataContext as ConvMessage;
+            
+            if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO)  && msg.IsPlaying)
+            {
+                displayAttachment(msg);
+                return;
+            }
 
             ChatMessageSelected(msg);
         }
@@ -3294,6 +3300,12 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
         }
 
+
+        private void MenuItem_Click_View(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
+            displayAttachment(msg);
+        }
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -7444,16 +7456,6 @@ namespace windows_client.View
         }
         #endregion
 
-        private void MenuItem_Click_View(object sender, RoutedEventArgs e)
-        {
-            
-
-            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-
-
-            FileAttachmentMessage_Tap(msg);
-            //ChatMessageSelected(msg);
-            Debug.WriteLine("Location tapped");
-        }
+        
     }
 }
