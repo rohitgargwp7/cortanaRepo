@@ -63,5 +63,7 @@ namespace windows_client.View
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
+
     }
+    
 }

@@ -48,6 +48,9 @@ namespace windows_client
         public static readonly string USE_LOCATION_SETTING = "locationSet";
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
+
+        public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
+
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";

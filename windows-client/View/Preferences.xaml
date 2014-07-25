@@ -46,7 +46,7 @@
             <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="4" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="enterToSendToggle_Loaded"/>
             <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="5" x:Name="nudgeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>
+                                          Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>            
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

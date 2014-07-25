@@ -1021,7 +1021,7 @@ Download it like asap from http://hike.in!</value>
     <value>system health</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>Share Contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Send Audio</value>
@@ -1239,7 +1239,7 @@ Download it like asap from http://hike.in!</value>
     <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>turn on/off jingle, vibrate and more</value>
+    <value>turn on/off jingle, message preview and more</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>manage your hike account</value>
@@ -2002,6 +2002,10 @@ Download it like asap from http://hike.in!</value>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>hike up your life</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Message preview</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
   </data>
@@ -2113,5 +2117,17 @@ Download it like asap from http://hike.in!</value>
   <data name="Open_File" xml:space="preserve">
     <value>open</value>
     <comment>General Text</comment>
+ </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>OOPS! Something went wrong</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>Turning message preview OFF</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>Turning message preview ON</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>save contact</value>
   </data>
 </root>
