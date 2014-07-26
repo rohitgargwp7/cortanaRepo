@@ -2144,4 +2144,19 @@ Download it like asap from http://hike.in!</value>
   <data name="ResetHiddenMode_Txt" xml:space="preserve">
     <value>reset hidden mode</value>
   </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>Resetting chat in {0}. All hidden chats will be deleted.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Are you sure you want to reset hidden mode?</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>to complete setup, tap on the shield to hide your chats.</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>hide your chats with a password. tap on logo to get started.</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>tap and hold a chat to markit as ‘hidden’.</value>
+  </data>
 </root>

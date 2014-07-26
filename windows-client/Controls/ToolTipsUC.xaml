@@ -8,17 +8,15 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
-    
-    <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
-        <Grid x:Name="toolTipGrid" Background="{StaticResource PhoneChromeBrush}" Tap="toolTipGrid_Tap">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Image x:Name="leftIcon" Grid.Column="0" HorizontalAlignment="Left" Height="80" Width="80" VerticalAlignment="Center" Tap="leftIcon_Tap" Margin="12,0,12,0" Visibility="Collapsed"/>
-            <TextBlock x:Name="tipTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12,0,12,0"/>
-            <Image x:Name="rightIcon" Grid.Column="2" HorizontalAlignment="Right" Height="80" Width="80" VerticalAlignment="Center" Tap="rightIcon_Tap" Margin="12,0,12,0" Visibility="Collapsed"/>
-        </Grid>
+
+    <Grid x:Name="toolTipGrid" Tap="toolTipGrid_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="leftIcon" Grid.Column="0" HorizontalAlignment="Left" Height="55" Width="55" VerticalAlignment="Center" Tap="leftIcon_Tap" Margin="12,0,12,0" Visibility="Collapsed"/>
+        <TextBlock x:Name="tipTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12,0,12,0" Foreground="White"/>
+        <Image x:Name="rightIcon" Grid.Column="2" HorizontalAlignment="Right" Height="22" Width="22" VerticalAlignment="Center" Tap="rightIcon_Tap" Margin="12,0,12,0" Visibility="Collapsed"/>
     </Grid>
 </UserControl>

@@ -25,7 +25,8 @@ namespace windows_client.View
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+            // dont show reset and change password option if any tooltip is being shown on home screen
+            if (!App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS)) 
                 hiddenModeGrid.Visibility = Visibility.Visible;
         }
 

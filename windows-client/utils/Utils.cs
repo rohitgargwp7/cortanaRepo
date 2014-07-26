@@ -627,6 +627,13 @@ namespace windows_client.utils
             return readBy;
         }
 
+        static public string GetFormattedTimeFromSeconds(long seconds)
+        {
+            long minute = seconds / 60;
+            long secs = seconds % 60;
+            return minute.ToString("00") + ":" + secs.ToString("00");
+        }
+
         static public int GetMaxCharForBlock(string message, int maxLinesPerBlock = 35, int maxCharsPerLine = 30)
         {
             string trimmedMessage = message;

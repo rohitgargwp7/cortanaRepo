@@ -16,11 +16,33 @@ namespace windows_client.Controls
         public ToolTipsUC()
         {
             InitializeComponent();
+            this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region
+
+        public static readonly DependencyProperty IsShowProperty =
+            DependencyProperty.Register("IsShow", typeof(Boolean), typeof(ToolTipsUC), new PropertyMetadata(OnIsShowPropertyChanged));
+
+        public static void OnIsShowPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            ToolTipsUC TempToolTip = obj as ToolTipsUC;
+            TempToolTip.Visibility = (bool)e.NewValue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public Boolean IsShow
+        {
+            get
+            {
+                return (Boolean)GetValue(IsShowProperty);
+            }
+            set
+            {
+                SetValue(IsShowProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty ControlBackgroundColorProperty =
             DependencyProperty.Register("ControlBackgroundColor", typeof(Brush), typeof(ToolTipsUC), new PropertyMetadata(OnBackGroundColorChanged));
@@ -32,7 +54,7 @@ namespace windows_client.Controls
             TempToolTip.toolTipGrid.Background = TempBg;
         }
 
-        public Brush ControlBackGroundColor
+        public Brush ControlBackgroundColor
         {
             get
             {
@@ -53,7 +75,6 @@ namespace windows_client.Controls
             ImageSource tempSource = (ImageSource)e.NewValue;
             tempToolTip.leftIcon.Source = tempSource;
             tempToolTip.leftIcon.Visibility =((tempSource!=null)?( Visibility.Visible):(Visibility.Collapsed));
-  
         }
 
         public ImageSource LeftIconSource
@@ -122,6 +143,13 @@ namespace windows_client.Controls
         public event EventHandler<EventArgs> ControlClicked;
 
         #endregion
+
+        public void ResetClickEvents()
+        {
+            LeftIconClicked = null;
+            RightIconClicked = null;
+            ControlClicked = null;
+        }
 
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

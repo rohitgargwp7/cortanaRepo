@@ -2389,6 +2389,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to to complete setup, tap on the         ///shield to hide your chats..
+        /// </summary>
+        public static string HiddenMode_Completed_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_Completed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hide your chats with a password. tap on logo to get started..
+        /// </summary>
+        public static string HiddenMode_GetStarted_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_GetStarted_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tap and hold a chat to mark        ///it as ‘hidden’..
+        /// </summary>
+        public static string HiddenMode_Step2_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_Step2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to reset hidden mode?.
+        /// </summary>
+        public static string HiddenModeReset_Completed_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_Completed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hide chat.
         /// </summary>
         public static string Hide_Txt {
@@ -3906,6 +3942,15 @@ namespace windows_client.Languages {
         public static string ResetHiddenMode_Txt {
             get {
                 return ResourceManager.GetString("ResetHiddenMode_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resetting chat in {0}. All hidden chats will be deleted..
+        /// </summary>
+        public static string ResetTip_Txt {
+            get {
+                return ResourceManager.GetString("ResetTip_Txt", resourceCulture);
             }
         }
         

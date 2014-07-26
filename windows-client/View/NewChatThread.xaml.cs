@@ -6952,14 +6952,14 @@ namespace windows_client.View
             // Start recording
             _microphone.Start();
             timeBar.Opacity = 1;
-            maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
+            maxPlayingTime.Text = " / " + Utils.GetFormattedTimeFromSeconds(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
             sendIconButton.IsEnabled = false;
             _recorderState = RecorderState.RECORDING;
         }
 
         void showWalkieTalkieProgress(object sender, EventArgs e)
         {
-            runningTime.Text = formatTime(_runningSeconds + 1);
+            runningTime.Text = Utils.GetFormattedTimeFromSeconds(_runningSeconds + 1);
 
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
@@ -7005,7 +7005,7 @@ namespace windows_client.View
             if (_recorderState == RecorderState.RECORDING)
             {
                 _recordedDuration = _runningSeconds;
-                runningTime.Text = formatTime(0);
+                runningTime.Text = Utils.GetFormattedTimeFromSeconds(0);
             }
 
             _runningSeconds = 0;
@@ -7085,13 +7085,6 @@ namespace windows_client.View
             stream.Write(BitConverter.GetBytes((int)stream.Length - 44), 0, 4);
 
             stream.Seek(oldPos, SeekOrigin.Begin);
-        }
-
-        private string formatTime(int seconds)
-        {
-            int minute = seconds / 60;
-            int secs = seconds % 60;
-            return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
         private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2, 0x43, 0x4b, 0x5c));

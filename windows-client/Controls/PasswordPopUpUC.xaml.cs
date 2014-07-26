@@ -120,24 +120,48 @@ namespace windows_client.Controls
                     rec2.Fill = UI_Utils.Instance.Transparent;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
+
+                    rec1.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec2.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec3.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec4.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+
                     break;
                 case 1:
                     rec1.Fill = UI_Utils.Instance.White;
                     rec2.Fill = UI_Utils.Instance.Transparent;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
+                    
+                    rec1.Stroke = UI_Utils.Instance.White;
+                    rec2.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec3.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec4.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+
                     break;
                 case 2:
                     rec1.Fill = UI_Utils.Instance.White;
                     rec2.Fill = UI_Utils.Instance.White;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
+                    
+                    rec1.Stroke = UI_Utils.Instance.White;
+                    rec2.Stroke = UI_Utils.Instance.White;
+                    rec3.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+                    rec4.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+
                     break;
                 case 3:
                     rec1.Fill = UI_Utils.Instance.White;
                     rec2.Fill = UI_Utils.Instance.White;
                     rec3.Fill = UI_Utils.Instance.White;
                     rec4.Fill = UI_Utils.Instance.Transparent;
+
+                    rec1.Stroke = UI_Utils.Instance.White;
+                    rec2.Stroke = UI_Utils.Instance.White;
+                    rec3.Stroke = UI_Utils.Instance.White;
+                    rec4.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
+
                     break;
                 default:
                     break;

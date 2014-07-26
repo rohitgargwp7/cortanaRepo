@@ -100,7 +100,20 @@ namespace windows_client.utils
                 return _muteIconGray;
             }
         }
+
         #region Hidden Mode
+
+        private SolidColorBrush _passwordSquareBorderBrush;
+        public SolidColorBrush PasswordSquareBorderBrush
+        {
+            get
+            {
+                if (_passwordSquareBorderBrush == null)
+                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(66, 0xff, 0xff, 0xff));
+
+                return _passwordSquareBorderBrush;
+            }
+        }
 
         BitmapImage _hiddenModeHeaderIcon;
         public BitmapImage HiddenModeHeaderIcon
@@ -111,6 +124,54 @@ namespace windows_client.utils
                     _hiddenModeHeaderIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeHeaderIcon.png", UriKind.Relative));
 
                 return _hiddenModeHeaderIcon;
+            }
+        }
+
+        BitmapImage _sheildIcon;
+        public BitmapImage SheildIcon
+        {
+            get
+            {
+                if (_sheildIcon == null)
+                    _sheildIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeSheild.png", UriKind.Relative));
+
+                return _sheildIcon;
+            }
+        }
+
+        BitmapImage _toolTipCrossIcon;
+        public BitmapImage ToolTipCrossIcon
+        {
+            get
+            {
+                if (_toolTipCrossIcon == null)
+                    _toolTipCrossIcon = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Cross.png", UriKind.Relative));
+
+                return _toolTipCrossIcon;
+            }
+        }
+
+        BitmapImage _toolTipTickIcon;
+        public BitmapImage ToolTipTickIcon
+        {
+            get
+            {
+                if (_toolTipTickIcon == null)
+                    _toolTipTickIcon = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Cross.png", UriKind.Relative));
+
+                return _toolTipTickIcon;
+            }
+        }
+
+        BitmapImage _toolTipArrow;
+        public BitmapImage ToolTipArrow
+        {
+            get
+            {
+                if (_toolTipArrow == null)
+                    _toolTipArrow = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipArrow;
             }
         }
 
@@ -182,15 +243,15 @@ namespace windows_client.utils
 
         #region Standard Colors
 
-        private SolidColorBrush transparent;
+        private SolidColorBrush _transparent;
         public SolidColorBrush Transparent
         {
             get
             {
-                if (transparent == null)
-                    transparent = new SolidColorBrush(Colors.Transparent);
+                if (_transparent == null)
+                    _transparent = new SolidColorBrush(Colors.Transparent);
 
-                return transparent;
+                return _transparent;
             }
         }
 
@@ -202,39 +263,39 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush red;
+        private SolidColorBrush _red;
         public SolidColorBrush Red
         {
             get
             {
-                if (red == null)
-                    red = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0x54, 0x54));
+                if (_red == null)
+                    _red = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0x54, 0x54));
 
-                return red;
+                return _red;
             }
         }
 
-        private SolidColorBrush pink;
+        private SolidColorBrush _pink;
         public SolidColorBrush Pink
         {
             get
             {
-                if (pink == null)
-                    pink = new SolidColorBrush(Color.FromArgb(255, 0xf7, 0x52, 0x5a));
+                if (_pink == null)
+                    _pink = new SolidColorBrush(Color.FromArgb(255, 0xf7, 0x52, 0x5a));
 
-                return pink;
+                return _pink;
             }
         }
 
-        private SolidColorBrush black;
+        private SolidColorBrush _black;
         public SolidColorBrush Black
         {
             get
             {
-                if (black == null)
-                    black = new SolidColorBrush(Colors.Black);
+                if (_black == null)
+                    _black = new SolidColorBrush(Colors.Black);
 
-                return black;
+                return _black;
             }
         }
 
@@ -336,39 +397,39 @@ namespace windows_client.utils
 
         #endregion
 
-        private BitmapImage myLocationPin;
+        private BitmapImage _myLocationPin;
         public BitmapImage MyLocationPin
         {
             get
             {
-                if (myLocationPin == null)
-                    myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+                if (_myLocationPin == null)
+                    _myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
-                return myLocationPin;
+                return _myLocationPin;
             }
         }
 
-        private BitmapImage madeInIndiaWhite;
+        private BitmapImage _madeInIndiaWhite;
         public BitmapImage MadeInIndiaWhite
         {
             get
             {
-                if (madeInIndiaWhite == null)
-                    madeInIndiaWhite = new BitmapImage(new Uri("/View/images/settings/made_with_love.png", UriKind.Relative));
+                if (_madeInIndiaWhite == null)
+                    _madeInIndiaWhite = new BitmapImage(new Uri("/View/images/settings/made_with_love.png", UriKind.Relative));
 
-                return madeInIndiaWhite;
+                return _madeInIndiaWhite;
             }
         }
 
-        private BitmapImage madeInIndiaBlack;
+        private BitmapImage _madeInIndiaBlack;
         public BitmapImage MadeInIndiaBlack
         {
             get
             {
-                if (madeInIndiaBlack == null)
-                    madeInIndiaBlack = new BitmapImage(new Uri("/View/images/settings/made_with_love_Black.jpg", UriKind.Relative));
+                if (_madeInIndiaBlack == null)
+                    _madeInIndiaBlack = new BitmapImage(new Uri("/View/images/settings/made_with_love_Black.jpg", UriKind.Relative));
 
-                return madeInIndiaBlack;
+                return _madeInIndiaBlack;
             }
         }
 

@@ -1239,6 +1239,12 @@ namespace windows_client.ViewModel
             private set;
         }
 
+        public void ResetHiddenMode()
+        {
+            IsHiddenModeActive = false;
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE);
+        }
+
         public void SetHiddenMode()
         {
             IsHiddenModeActive = !IsHiddenModeActive;

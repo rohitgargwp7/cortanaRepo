@@ -222,6 +222,7 @@
     <Compile Include="Model\StatusUpdates\BaseStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\Sticker\StickerObj.cs" />
+    <Compile Include="Model\ToolTipMode.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -544,6 +545,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
@@ -635,8 +637,8 @@
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />
-    <Content Include="View\images\ConversationPage\tip_Arrow.png" />
-    <Content Include="View\images\ConversationPage\tip_Cross.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Arrow.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
