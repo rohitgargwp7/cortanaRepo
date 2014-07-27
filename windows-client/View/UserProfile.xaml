@@ -89,8 +89,9 @@
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusUpdateContainerStyle}">
                                     <toolkit:ContextMenuService.ContextMenu>
-                                        <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Visibility="{Binding DeleteOptionVisibility}">
-                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                        <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" >
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DeleteOptionVisibility}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Copy_Click"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
