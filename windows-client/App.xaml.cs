@@ -118,7 +118,6 @@ namespace windows_client
         private static PageState ps = PageState.WELCOME_SCREEN;
 
         private static object lockObj = new object();
-        //public static object AppGlobalLock = new object(); // this lock will be used across system to sync 2 diff threads example network manager and deleting all threads
 
         #endregion
 
@@ -302,9 +301,24 @@ namespace windows_client
 
         public enum LaunchState
         {
-            NORMAL_LAUNCH, // user clicks the app from menu
-            PUSH_NOTIFICATION_LAUNCH,   // app is alunched after push notification is clicked
-            SHARE_PICKER_LAUNCH,  // app is alunched after share is clicked
+            /// <summary>
+            /// user clicked the app from menu or tile
+            /// </summary>
+            NORMAL_LAUNCH,
+
+            /// <summary>
+            /// app is alunched after push notification is clicked
+            /// </summary>
+            PUSH_NOTIFICATION_LAUNCH,   // 
+
+            /// <summary>
+            /// app is alunched after share is clicked
+            /// </summary>
+            SHARE_PICKER_LAUNCH,
+
+            /// <summary>
+            /// app is resumed by launching app after suspension
+            /// </summary>
             FAST_RESUME
         }
 
@@ -330,7 +344,6 @@ namespace windows_client
             // Phone-specific initialization
             InitializePhoneApplication();
 
-            //CreateURIMapping();
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -373,8 +386,10 @@ namespace windows_client
             }
         }
 
-        // Code to execute when the application is launching (eg, from Start)
-        // This code will not execute when the application is reactivated
+        /// <summary>
+        /// Code to execute when the application is launching (eg, from Start)
+        /// This code will not execute when the application is reactivated
+        /// </summary>
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             if (ps != PageState.WELCOME_SCREEN)
@@ -388,12 +403,14 @@ namespace windows_client
                 Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
                 #endregion
             }
+
             _isAppLaunched = true;
-            //appInitialize();
         }
 
-        // Code to execute when the application is activated (brought to foreground)
-        // This code will not execute when the application is first launched
+        /// <summary>
+        /// Code to execute when the application is activated (brought to foreground)
+        /// This code will not execute when the application is first launched 
+        /// </summary>
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
@@ -428,8 +445,10 @@ namespace windows_client
             App.mMqttManager.IsAppStarted = false;
         }
 
-        // Code to execute when the application is deactivated (sent to background)
-        // This code will not execute when the application is closing
+        /// <summary>
+        /// Code to execute when the application is deactivated (sent to background)
+        /// This code will not execute when the application is closing
+        /// </summary>
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
@@ -448,12 +467,13 @@ namespace windows_client
             App.mMqttManager.disconnectFromBroker(false);
         }
 
-        // Code to execute when the application is closing (eg, user hit Back)
-        // This code will not execute when the application is deactivated
+        /// <summary>
+        /// Code to execute when the application is closing (eg, user hit Back)
+        /// This code will not execute when the application is deactivated
+        /// </summary>
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             sendAppBgStatusToServer();
-            //appDeinitialize();
         }
 
         public static void appInitialize()

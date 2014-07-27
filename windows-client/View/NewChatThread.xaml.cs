@@ -6310,7 +6310,13 @@ namespace windows_client.View
                 return;
             _selectedCategory = stickerCategory.Category;
 
-            StickerPivotItem stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
+            StickerPivotItem stickerPivot;
+
+            // 
+            if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
+                stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
+            else
+                stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
 
             //so that after reopening of ct , if pivot index are same we need to update pivot selection explicitly 
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
