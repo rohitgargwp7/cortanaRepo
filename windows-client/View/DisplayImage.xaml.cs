@@ -18,14 +18,7 @@ namespace windows_client.View
         private long messsageId;
         public DisplayImage()
         {
-            try
-            {
-                InitializeComponent();
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e.StackTrace);
-            }
+            InitializeComponent();
         }
 
         #region IMAGE ASSIGNMENT
