@@ -405,7 +405,10 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                bool value;
+                                if (!App.appSettings.TryGetValue(App.AUTO_SAVE_PHOTO, out value))
+                                    value = false;
+                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && value)
                                 {
                                     string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));

@@ -277,6 +277,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Save Photo.
+        /// </summary>
+        public static string autoSavePhotoSettings_Txt {
+            get {
+                return ResourceManager.GetString("autoSavePhotoSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {

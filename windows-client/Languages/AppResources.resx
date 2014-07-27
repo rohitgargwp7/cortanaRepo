@@ -2105,4 +2105,7 @@ Download it like asap from http://hike.in!</value>
   <data name="Save_Contact_Txt" xml:space="preserve">
     <value>save contact</value>
   </data>
+  <data name="autoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Auto Save Photo</value>
+  </data>
 </root>

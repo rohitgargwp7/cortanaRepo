@@ -30,7 +30,7 @@
                         TranslateX="0" TranslateY="0"/>
                 </Image.RenderTransform>
             </Image>
-
+            
             <ProgressBar x:Name="loadingProgress" Opacity="0" Background="Transparent" IsEnabled="True" IsIndeterminate="True"/>
         </Grid>
     </Grid>

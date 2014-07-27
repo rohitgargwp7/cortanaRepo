@@ -8,14 +8,24 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.IO.IsolatedStorage;
+using Microsoft.Xna.Framework.Media;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
         private string msisdn;
+        private long messsageId;
         public DisplayImage()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
 
         #region IMAGE ASSIGNMENT
@@ -34,12 +44,24 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 //TODO - use constants rather hard coded strings - MG
+                
                 if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
                 {
+                    ApplicationBar = new ApplicationBar();
+                    ApplicationBar.Mode = ApplicationBarMode.Default; 
+                    ApplicationBar.Opacity = 1.0;  
+                    ApplicationBar.IsVisible = true;
+                    ApplicationBar.IsMenuEnabled = false;
+                    ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton(); 
+                    picSaveButton.IconUri = new Uri("/Assets/AppBar/download.png", UriKind.Relative); 
+                    picSaveButton.Text = "save";
+                    picSaveButton.Click+=picSaveButton_Click;
+                    ApplicationBar.Buttons.Add(picSaveButton);
+
                     object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
-                    long messsageId = (long)fileTapped[0];
+                    this.messsageId = (long)fileTapped[0];
                     msisdn = (string)fileTapped[1];
-                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
+                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(this.messsageId);
                     byte[] filebytes;
                     MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
@@ -127,6 +149,7 @@ namespace windows_client.View
                 }
             }
         }
+
 
         public void getProTipPicFromHikeServer_Callback(byte[] fullBytes, object fName)
         {
@@ -360,6 +383,26 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void picSaveButton_Click(object sender, EventArgs e)
+        {
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(this.messsageId);
+            try
+            {
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    IsolatedStorageFileStream myFileStream = isoStore.OpenFile(filePath, FileMode.Open, FileAccess.Read);
+                    MediaLibrary library = new MediaLibrary();
+                    library.SavePicture(Convert.ToString(this.messsageId), myFileStream);
+                    myFileStream.Close();
+                    MessageBox.Show("picture saved");
+                }
+            }
+            catch (Exception e1)
+            {
+                Debug.WriteLine("DbConversationListener :: Error on Saving file : " + filePath + ", Exception : " + e1.StackTrace);
+            }
+        }
 
         #endregion
     }
