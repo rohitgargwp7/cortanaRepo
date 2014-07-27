@@ -309,7 +309,7 @@ namespace windows_client
             /// <summary>
             /// app is alunched after push notification is clicked
             /// </summary>
-            PUSH_NOTIFICATION_LAUNCH,   // 
+            PUSH_NOTIFICATION_LAUNCH,
 
             /// <summary>
             /// app is alunched after share is clicked
@@ -386,10 +386,8 @@ namespace windows_client
             }
         }
 
-        /// <summary>
-        /// Code to execute when the application is launching (eg, from Start)
-        /// This code will not execute when the application is reactivated
-        /// </summary>
+        // Code to execute when the application is launching (eg, from Start)
+        // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             if (ps != PageState.WELCOME_SCREEN)
@@ -407,10 +405,9 @@ namespace windows_client
             _isAppLaunched = true;
         }
 
-        /// <summary>
-        /// Code to execute when the application is activated (brought to foreground)
-        /// This code will not execute when the application is first launched 
-        /// </summary>
+        
+        // Code to execute when the application is activated (brought to foreground)
+        // This code will not execute when the application is first launched 
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
@@ -445,10 +442,8 @@ namespace windows_client
             App.mMqttManager.IsAppStarted = false;
         }
 
-        /// <summary>
-        /// Code to execute when the application is deactivated (sent to background)
-        /// This code will not execute when the application is closing
-        /// </summary>
+        // Code to execute when the application is deactivated (sent to background)
+        // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
@@ -467,10 +462,8 @@ namespace windows_client
             App.mMqttManager.disconnectFromBroker(false);
         }
 
-        /// <summary>
-        /// Code to execute when the application is closing (eg, user hit Back)
-        /// This code will not execute when the application is deactivated
-        /// </summary>
+        // Code to execute when the application is closing (eg, user hit Back)
+        // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             sendAppBgStatusToServer();

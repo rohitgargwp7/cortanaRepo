@@ -6312,13 +6312,13 @@ namespace windows_client.View
 
             StickerPivotItem stickerPivot;
 
-            // 
+            // Check if sticker category doesn't exist, show humanoid (default) category.
             if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
             else
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
 
-            //so that after reopening of ct , if pivot index are same we need to update pivot selection explicitly 
+            // So that after reopening of ct , if pivot index are same we need to update pivot selection explicitly.
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
                 UpdateStickerPivot();
             else
