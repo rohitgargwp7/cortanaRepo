@@ -18,7 +18,6 @@ using System.Text;
 using windows_client.FileTransfers;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
-using Microsoft.Xna.Framework.Media;
 using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.DbUtils
@@ -82,7 +81,6 @@ namespace windows_client.DbUtils
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
             }
         }
-
 
         public void onEventReceived(string type, object obj)
         {
@@ -405,28 +403,12 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                bool value;
-                                if (!App.appSettings.TryGetValue(App.AUTO_SAVE_PHOTO, out value))
-                                    value = false;
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && value)
+
+                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && !App.appSettings.Contains(App.AUTO_SAVE_PHOTO))
                                 {
                                     string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-
-                                    try
-                                    {
-                                        using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
-                                        {
-                                            IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
-                                            MediaLibrary library = new MediaLibrary();
-                                            library.SavePicture(convMessage.FileAttachment.FileName, myFileStream);
-                                            myFileStream.Close();
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Debug.WriteLine("DbConversationListener :: Error on Saving file : " + destinationPath + ", Exception : " + e.StackTrace);
-                                    }
+                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName,destinationPath);
                                 }
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);

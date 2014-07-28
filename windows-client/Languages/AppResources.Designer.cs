@@ -279,9 +279,9 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Auto Save Photo.
         /// </summary>
-        public static string autoSavePhotoSettings_Txt {
+        public static string AutoSavePhotoSettings_Txt {
             get {
-                return ResourceManager.GetString("autoSavePhotoSettings_Txt", resourceCulture);
+                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
             }
         }
         
@@ -3879,6 +3879,15 @@ namespace windows_client.Languages {
         public static string Save_Contact_Txt {
             get {
                 return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to saved successfully :).
+        /// </summary>
+        public static string SaveSuccess_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
             }
         }
         
