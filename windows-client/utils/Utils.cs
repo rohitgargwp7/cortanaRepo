@@ -13,6 +13,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
 using windows_client.Languages;
 using windows_client.Misc;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.utils
 {
@@ -672,5 +673,6 @@ namespace windows_client.utils
             }
             return charCount;
         }
+
     }
 }

@@ -3293,17 +3293,21 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
         }
 
-
         private void MenuItem_Click_View(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-
+            
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                playUndeliveredAudio(msg);
+            {
+                string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
+                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
+                playFileInMediaPlayer(fileLocation);
+            }
             else
                 displayAttachment(msg);
 
         }
+
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -5083,11 +5087,9 @@ namespace windows_client.View
             llsMessages.SelectedItem = null;
         }
 
-        void playUndeliveredAudio(ConvMessage audioMsg)
+        void playFileInMediaPlayer(string fileLocation)
         {
-            string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
             MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
-            string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(audioMsg.MessageId);
             mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
             mediaPlayerLauncher.Location = MediaLocationType.Data;
             mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
@@ -5118,21 +5120,8 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
-                mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
-                mediaPlayerLauncher.Location = MediaLocationType.Data;
-                mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
-                mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
-                try
-                {
-                    PauseBackgroundAudio();
-                    mediaPlayerLauncher.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
-                }
+                playFileInMediaPlayer(fileLocation);
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
