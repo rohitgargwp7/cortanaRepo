@@ -545,6 +545,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
@@ -650,6 +651,7 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
@@ -739,6 +741,7 @@
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
+    <Content Include="View\images\settings\reset_hidden_mode.png" />
     <Content Include="View\images\settings\settings_icon_dark.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />

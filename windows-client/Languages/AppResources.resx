@@ -2113,7 +2113,7 @@ Download it like asap from http://hike.in!</value>
     <value>unhide chat</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
-    <value>confirm your password</value>
+    <value>confirm your new password</value>
     <comment>max 25 char</comment>
   </data>
   <data name="EnterPassword_Txt" xml:space="preserve">
@@ -2158,5 +2158,8 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="HiddenMode_Step2_Txt" xml:space="preserve">
     <value>tap and hold a chat to markit as ‘hidden’.</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>enter your new password</value>
   </data>
 </root>

@@ -109,7 +109,7 @@ namespace windows_client.utils
             get
             {
                 if (_passwordSquareBorderBrush == null)
-                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(66, 0xff, 0xff, 0xff));
+                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0x99, 0xff, 0xff, 0xff));
 
                 return _passwordSquareBorderBrush;
             }

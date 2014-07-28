@@ -592,7 +592,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to confirm your password.
+        ///   Looks up a localized string similar to confirm your new password.
         /// </summary>
         public static string ConfirmPassword_Txt {
             get {
@@ -1575,6 +1575,15 @@ namespace windows_client.Languages {
         public static string EnterName_NameErrorTxt {
             get {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enter your new password.
+        /// </summary>
+        public static string EnterNewPassword_Txt {
+            get {
+                return ResourceManager.GetString("EnterNewPassword_Txt", resourceCulture);
             }
         }
         

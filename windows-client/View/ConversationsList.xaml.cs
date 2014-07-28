@@ -3331,7 +3331,9 @@ namespace windows_client.View
         {
             if (!App.ViewModel.IsHiddenModeActive)
             {
-                passwordOverlay.Text = AppResources.EnterPassword_Txt;
+                passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
+                    AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
+
                 passwordOverlay.IsShow = true;
             }
             else

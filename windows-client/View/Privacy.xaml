@@ -21,7 +21,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="popup_PasswordOverlayVisibilityChanged"/>
+        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False"/>
 
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_PrivacySettings_Txt, Source={StaticResource LocalizedStrings}}"/>
@@ -38,7 +38,7 @@
             <toolkit:ToggleSwitch Margin="-10,20,-10,-10" x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
 
-            <Grid Grid.Row="1" Margin="0,20,0,0" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Grid Grid.Row="1" Margin="0,-10,0,0" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -60,7 +60,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/block_list.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <Image Source="/view/images/settings/reset_hidden_mode.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
                         <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_Txt, Source={StaticResource LocalizedStrings}}"/>
                         <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_SubTxt, Source={StaticResource LocalizedStrings}}"/>
@@ -72,7 +72,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/block_list.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <Image Source="/view/images/settings/change_password.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
                         <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_Txt, Source={StaticResource LocalizedStrings}}"/>
                         <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_SubTxt, Source={StaticResource LocalizedStrings}}"/>

@@ -10,6 +10,7 @@ using Microsoft.Phone.Shell;
 using windows_client.Languages;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
@@ -26,7 +27,7 @@ namespace windows_client.View
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
-            if (!App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS)) 
+            if (!App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 hiddenModeGrid.Visibility = Visibility.Visible;
         }
 
@@ -86,17 +87,54 @@ namespace windows_client.View
 
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
-        }
-
-        private void popup_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
-        {
-
+            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password))
+            {
+                passwordOverlay.Text = AppResources.EnterPassword_Txt;
+                passwordOverlay.Password = String.Empty;
+                passwordOverlay.IsShow = true;
+                _isConfirmPassword = false;
+                _isChangePassword = true;
+            }
         }
 
         private void passwordOverlay_PasswordEntered(object sender, EventArgs e)
         {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                if (_isChangePassword)
+                {
+                    _isChangePassword = false;
+                    
+                    if (_password == popup.Password)
+                    {
+                        popup.Text = AppResources.EnterNewPassword_Txt;
+                        popup.Password = String.Empty;
+                    }
+                    else
+                        popup.IsShow = false;
+                }
+                else if (_isConfirmPassword)
+                {
+                    if (_tempPassword.Equals(popup.Password))
+                    {
+                        _password = popup.Password;
+                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                    }
 
+                    _isConfirmPassword = false;
+                    _isChangePassword = false;
+                    popup.IsShow = false;
+                }
+                else
+                {
+                    _isConfirmPassword = true;
+                    _isChangePassword = false;
+                    _tempPassword = popup.Password;
+                    popup.Text = AppResources.ConfirmPassword_Txt;
+                    popup.Password = String.Empty;
+                }
+            }
         }
     }
 }
