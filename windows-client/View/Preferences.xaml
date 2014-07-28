@@ -24,8 +24,8 @@
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
-        <ScrollViewer Grid.Row="1">
-            <Grid x:Name="ContentPanel" Grid.Row="1" Background="Transparent" Margin="17,20,17,0">
+        <ScrollViewer x:Name="ContentPanel" Grid.Row="1" Background="Transparent" Margin="0,20,0,0">
+            <Grid Margin="17,0,17,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
