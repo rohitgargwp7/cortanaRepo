@@ -39,15 +39,17 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 //TODO - use constants rather hard coded strings - MG
-                
+
                 if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
                 {
                     LoadApplicationBar();
+
                     object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
                     _messsageId = (long)fileTapped[0];
                     _msisdn = (string)fileTapped[1];
                     string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + Convert.ToString(_messsageId);
                     byte[] filebytes;
+
                     MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
                 }
@@ -67,6 +69,7 @@ namespace windows_client.View
 
                     if (_msisdn == App.MSISDN)
                         _msisdn = HikeConstants.MY_PROFILE_PIC;
+
                     string filePath = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                     //check if image is already stored
                     byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
@@ -372,8 +375,6 @@ namespace windows_client.View
         private void LoadApplicationBar()
         {
             ApplicationBar = new ApplicationBar();
-            ApplicationBar.IsVisible = true;
-            ApplicationBar.IsMenuEnabled = false;
             ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton();
             picSaveButton.IconUri = new Uri("/View/images/Appbar/icon_save.png", UriKind.Relative);
             picSaveButton.Text = AppResources.Save_AppBar_Btn;
@@ -385,8 +386,9 @@ namespace windows_client.View
 
         private void picSaveButton_Click(object sender, EventArgs e)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + Convert.ToString(_messsageId);
-            bool temp = Utils.SavePictureToLibrary(Convert.ToString(_messsageId),filePath);
+            string tempName = Convert.ToString(_messsageId);
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + tempName;
+            bool temp = Utils.SavePictureToLibrary(tempName, filePath);
 
             if (temp)
             {
@@ -396,7 +398,7 @@ namespace windows_client.View
             {
                 MessageBox.Show(AppResources.Something_Wrong_Txt);
             }
-          
+
         }
 
         #endregion

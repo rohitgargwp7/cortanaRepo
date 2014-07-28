@@ -2119,9 +2119,9 @@ Download it like asap from http://hike.in!</value>
     <value>save contact</value>
   </data>
   <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Auto Save Photo</value>
+    <value>Auto save photo</value>
   </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
-    <value>saved successfully :)</value>
+    <value>Saved successfully</value>
   </data>
 </root>

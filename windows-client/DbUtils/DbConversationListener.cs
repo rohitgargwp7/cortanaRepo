@@ -90,7 +90,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage;
                 bool isNewGroup;
                 byte[] imageBytes = null;
-               
+
                 if (obj is object[])
                 {
                     object[] vals = (object[])obj;
@@ -408,7 +408,7 @@ namespace windows_client.DbUtils
                                 {
                                     string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName,destinationPath);
+                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName, destinationPath);
                                 }
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);

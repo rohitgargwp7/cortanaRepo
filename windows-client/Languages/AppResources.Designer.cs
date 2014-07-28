@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Save Photo.
+        ///   Looks up a localized string similar to Auto save photo.
         /// </summary>
         public static string AutoSavePhotoSettings_Txt {
             get {
@@ -3883,7 +3883,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to saved successfully :).
+        ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SaveSuccess_Txt {
             get {
