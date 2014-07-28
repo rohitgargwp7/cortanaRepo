@@ -674,5 +674,22 @@ namespace windows_client.utils
             return charCount;
         }
 
+        public static void PlayFileInMediaPlayer(string fileLocation)
+        {
+            MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+            mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
+            mediaPlayerLauncher.Location = MediaLocationType.Data;
+            mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
+            mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
+            try
+            {
+                mediaPlayerLauncher.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Audio video , Exception : " + ex.StackTrace);
+            }
+            return;
+        }
     }
 }

@@ -3299,9 +3299,10 @@ namespace windows_client.View
             
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
+                PauseBackgroundAudio();
                 string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
-                playFileInMediaPlayer(fileLocation);
+                Utils.PlayFileInMediaPlayer(fileLocation);
             }
             else
                 displayAttachment(msg);
@@ -5087,25 +5088,6 @@ namespace windows_client.View
             llsMessages.SelectedItem = null;
         }
 
-        void playFileInMediaPlayer(string fileLocation)
-        {
-            MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
-            mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
-            mediaPlayerLauncher.Location = MediaLocationType.Data;
-            mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
-            mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
-            try
-            {
-                PauseBackgroundAudio();
-                mediaPlayerLauncher.Show();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
-            }
-            return;
-        }
-
         public void displayAttachment(ConvMessage convMessage)
         {
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
@@ -5120,8 +5102,9 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
+                PauseBackgroundAudio();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
-                playFileInMediaPlayer(fileLocation);
+                Utils.PlayFileInMediaPlayer(fileLocation);
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
