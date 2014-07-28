@@ -263,6 +263,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
+                    NotifyPropertyChanged("LongPressMediaPlayVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
                     NotifyPropertyChanged("FileFailedImageVisibility");
@@ -1585,6 +1586,17 @@ namespace windows_client.Model
             get
             {
                 if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility LongPressMediaPlayVisibility
+        {
+            get
+            {
+                if (MessageStatus <= State.SENT_CONFIRMED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
