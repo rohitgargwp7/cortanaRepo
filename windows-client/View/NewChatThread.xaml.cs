@@ -1786,7 +1786,7 @@ namespace windows_client.View
                 if (isAddUser)
                 {
                     addUserMenuItem = new ApplicationBarMenuItem();
-                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Text = AppResources.Save_Contact_Txt;
                     addUserMenuItem.Click += new EventHandler(addUser_Click);
                     appBar.MenuItems.Add(addUserMenuItem);
                 }
@@ -2937,13 +2937,6 @@ namespace windows_client.View
             }
 
             ConvMessage msg = (sender as Grid).DataContext as ConvMessage;
-            
-            if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO)  && msg.IsPlaying)
-            {
-                displayAttachment(msg);
-                return;
-            }
-
             ChatMessageSelected(msg);
         }
 
@@ -3304,7 +3297,12 @@ namespace windows_client.View
         private void MenuItem_Click_View(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            displayAttachment(msg);
+
+            if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                playUndeliveredAudio(msg);
+            else
+                displayAttachment(msg);
+
         }
         #endregion
 
@@ -5083,6 +5081,27 @@ namespace windows_client.View
             }
 
             llsMessages.SelectedItem = null;
+        }
+
+        void playUndeliveredAudio(ConvMessage audioMsg)
+        {
+            string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
+            MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+            string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(audioMsg.MessageId);
+            mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
+            mediaPlayerLauncher.Location = MediaLocationType.Data;
+            mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
+            mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
+            try
+            {
+                PauseBackgroundAudio();
+                mediaPlayerLauncher.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
+            }
+            return;
         }
 
         public void displayAttachment(ConvMessage convMessage)
@@ -7390,7 +7409,7 @@ namespace windows_client.View
         #region Read By
 
         ConvMessage _lastReceivedSentMessage = null, _readByMessage = null, _previouslastReceivedSentMessage = null;
-
+        
         void UpdateLastSentMessageStatusOnUI()
         {
             if (!isGroupChat || !isGroupAlive)
@@ -7455,7 +7474,5 @@ namespace windows_client.View
             });
         }
         #endregion
-
-        
     }
 }
