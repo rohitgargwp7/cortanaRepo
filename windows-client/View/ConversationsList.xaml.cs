@@ -346,6 +346,9 @@ namespace windows_client.View
                         _resetTimer.Stop();
                         _resetTimer = null;
                     }
+
+                    _isModeChanged = true;
+                    UpdateToolTip();
                     break;
             }
         }
