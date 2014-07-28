@@ -694,7 +694,7 @@ namespace windows_client.utils
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("DbConversationListener :: Error on Saving file : " + isolatedStorageFilePath + ", Exception : " + e.StackTrace);
+                    Debug.WriteLine("Utils :: SavePictureToLibrary - Error on Saving file : " + isolatedStorageFilePath + ", Exception : " + e.StackTrace);
                     result = false;
                 }
             }
