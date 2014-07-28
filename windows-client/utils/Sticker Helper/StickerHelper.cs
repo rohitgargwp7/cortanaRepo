@@ -74,7 +74,18 @@ namespace windows_client.utils
            "008_xoxo.png"
         };
         private bool _isInitialised;
+
         private Dictionary<string, StickerCategory> _dictStickersCategories;
+        public Dictionary<string, StickerCategory> DictStickersCategories
+        {
+            get
+            {
+                if (_dictStickersCategories == null)
+                    _dictStickersCategories = new Dictionary<string, StickerCategory>();
+
+                return _dictStickersCategories;
+            }
+        }
 
         //call from background
         public void InitialiseLowResStickers()
@@ -89,15 +100,13 @@ namespace windows_client.utils
                         recentStickerHelper.LoadSticker();
                     }
 
-                    _dictStickersCategories = new Dictionary<string, StickerCategory>();
-
                     StickerCategory stickerCategoryRecent = new StickerCategory(CATEGORY_RECENT);
                     stickerCategoryRecent.HasMoreStickers = false;
                     stickerCategoryRecent.HasNewStickers = false;
                     stickerCategoryRecent.ShowDownloadMessage = false;
                     //stickerCategoryRecent.ListStickers = recentStickerHelper.listRecentStickers;
 
-                    _dictStickersCategories[CATEGORY_RECENT] = stickerCategoryRecent;
+                    DictStickersCategories[CATEGORY_RECENT] = stickerCategoryRecent;
 
                     InitialiseDefaultStickers(CATEGORY_HUMANOID, arrayDefaultHumanoidStickers);
 
@@ -106,15 +115,15 @@ namespace windows_client.utils
                     List<StickerCategory> listStickerCategories = ReadAllStickerCategories();
                     foreach (StickerCategory sc in listStickerCategories)
                     {
-                        if (_dictStickersCategories.ContainsKey(sc.Category))
+                        if (DictStickersCategories.ContainsKey(sc.Category))
                         {
-                            StickerCategory stickerCategory = _dictStickersCategories[sc.Category];
+                            StickerCategory stickerCategory = DictStickersCategories[sc.Category];
                             foreach (StickerObj sticker in sc.ListStickers)
                             {
                                 stickerCategory.ListStickers.Add(sticker);
                             }
                             sc.ListStickers = stickerCategory.ListStickers;
-                        } _dictStickersCategories[sc.Category] = sc;
+                        } DictStickersCategories[sc.Category] = sc;
                     }
 
                     _isInitialised = true;
@@ -134,17 +143,17 @@ namespace windows_client.utils
                 StickerObj sticker = new StickerObj(category1Stickers.Category, arrayDefaultStickers[i], null, false);
                 category1Stickers.ListStickers.Add(sticker);
             }
-            if (_dictStickersCategories.ContainsKey(category1Stickers.Category))
+            if (DictStickersCategories.ContainsKey(category1Stickers.Category))
             {
-                StickerCategory stickerCategory = _dictStickersCategories[category1Stickers.Category];
+                StickerCategory stickerCategory = DictStickersCategories[category1Stickers.Category];
                 foreach (StickerObj sticker in category1Stickers.ListStickers)
                 {
                     stickerCategory.ListStickers.Add(sticker);
                 }
-                _dictStickersCategories[category1Stickers.Category] = stickerCategory;
+                DictStickersCategories[category1Stickers.Category] = stickerCategory;
             }
             else
-                _dictStickersCategories[category1Stickers.Category] = category1Stickers;
+                DictStickersCategories[category1Stickers.Category] = category1Stickers;
 
         }
 
@@ -153,22 +162,14 @@ namespace windows_client.utils
             if (String.IsNullOrEmpty(category))
                 return null;
 
-            if (_dictStickersCategories.ContainsKey(category))
+            if (DictStickersCategories.ContainsKey(category))
             {
-                return _dictStickersCategories[category];
+                return DictStickersCategories[category];
             }
 
             return null;
         }
-
-        public Dictionary<string, StickerCategory> DictStickersCategories
-        {
-            get
-            {
-                return _dictStickersCategories;
-            }
-        }
-
+        
         public static void CreateDefaultCategories()
         {
             StickerHelper.CreateCategory(CATEGORY_HUMANOID);
@@ -262,7 +263,7 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(stickerId) || string.IsNullOrEmpty(category))
                 return false;
 
-            BitmapImage bmp = HikeViewModel.stickerHelper.lruStickers.GetObject(category + "_" + stickerId);
+            BitmapImage bmp = HikeViewModel.StickerHelper.lruStickers.GetObject(category + "_" + stickerId);
             if (bmp != null)
                 return true;
             if ((category == StickerHelper.CATEGORY_EXPRESSIONS && StickerHelper.arrayDefaultExpressionStickers.Contains(stickerId))
@@ -545,7 +546,7 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(category) || string.IsNullOrEmpty(stickerId))
                 return;
 
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
             if (stickerCategory != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -589,7 +590,7 @@ namespace windows_client.utils
         {
             if (string.IsNullOrEmpty(category) || listStickerIds == null || listStickerIds.Count == 0)
                 return;
-            StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+            StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
             if (stickerCategory != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -682,9 +683,9 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(category))
                 return;
 
-            if (HikeViewModel.stickerHelper != null && HikeViewModel.stickerHelper.GetStickersByCategory(category) != null)
+            if (HikeViewModel.StickerHelper != null && HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
             {
-                StickerCategory stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(category);
+                StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
                 stickerCategory.HasMoreStickers = hasMoreStickers;
                 stickerCategory.HasNewStickers = hasNewMessages;
             }

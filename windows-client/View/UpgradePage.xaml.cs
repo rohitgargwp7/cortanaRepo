@@ -283,13 +283,13 @@ namespace windows_client.View
                         #region Remove Angry pack
 
                         RecentStickerHelper recentSticker;
-                        if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+                        if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.recentStickerHelper == null)
                         {
                             recentSticker = new RecentStickerHelper();
                             recentSticker.LoadSticker();
                         }
                         else
-                            recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+                            recentSticker = HikeViewModel.StickerHelper.recentStickerHelper;
 
                         List<string> listAngrySticker = new List<string>();
                         foreach (StickerObj sticker in recentSticker.listRecentStickers)

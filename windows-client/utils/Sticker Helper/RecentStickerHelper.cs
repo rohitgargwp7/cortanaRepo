@@ -135,13 +135,13 @@ namespace windows_client.utils.Sticker_Helper
         public static void DeleteSticker(string categoryId, List<string> listStickers)
         {
             RecentStickerHelper recentSticker;
-            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+            if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.recentStickerHelper == null)
             {
                 recentSticker = new RecentStickerHelper();
                 recentSticker.LoadSticker();
             }
             else
-                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+                recentSticker = HikeViewModel.StickerHelper.recentStickerHelper;
             bool isStickerInRecent = false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -158,13 +158,13 @@ namespace windows_client.utils.Sticker_Helper
         public static void DeleteCategory(string category)
         {
             RecentStickerHelper recentSticker;
-            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+            if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.recentStickerHelper == null)
             {
                 recentSticker = new RecentStickerHelper();
                 recentSticker.LoadSticker();
             }
             else
-                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+                recentSticker = HikeViewModel.StickerHelper.recentStickerHelper;
             bool isStickerInRecent = false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

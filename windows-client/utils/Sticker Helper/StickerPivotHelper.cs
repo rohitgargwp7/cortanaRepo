@@ -54,67 +54,67 @@ namespace windows_client.utils
                 //done thos way to maintain order of insertion
                 CreateStickerPivotItem(StickerHelper.CATEGORY_RECENT, pivotIndex);
                 pivotIndex++;
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                     pivotIndex++;
                 }
-                if ((stickerCategory = HikeViewModel.stickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null)
                 {
                     CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 }
