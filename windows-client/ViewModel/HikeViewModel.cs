@@ -1262,5 +1262,7 @@ namespace windows_client.ViewModel
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
         }
+
+        public event EventHandler<EventArgs> ResetHiddenModeClicked;
     }
 }
