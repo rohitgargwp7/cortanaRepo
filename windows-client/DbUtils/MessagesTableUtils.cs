@@ -294,29 +294,35 @@ namespace windows_client.DbUtils
                 #region NO_INFO
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    string toastText = String.Empty;
+ 
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        var msg = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
-                        obj.LastMessage = msg;
+                        toastText = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        obj.LastMessage = toastText;
 
-                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        if (obj.IsHidden)
+                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
-                            string toastText = GetToastNotification(convMsg);
-                            msg = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
-                            obj.ToastText = msg;
+                            toastText = GetToastNotification(convMsg);
+                            toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
                         }
+
+                        obj.ToastText = toastText;
                     }
                     else
                     {
                         obj.LastMessage = convMsg.Message;
 
-                        if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
-                        {
-                            string toastText = GetToastNotification(convMsg);
-                            obj.ToastText = toastText;                           
-                        }
+                        if (obj.IsHidden)
+                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                            toastText = GetToastNotification(convMsg);
+
+                        obj.ToastText = toastText;                           
                     }
                 }
                 #endregion

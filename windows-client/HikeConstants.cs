@@ -392,6 +392,8 @@ namespace windows_client
         public static readonly string SHOW_POPUP = "show_popup";
 
         #region TOAST CONSTANTS
+        public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
+
         public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
         public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
         public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";

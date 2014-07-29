@@ -1221,8 +1221,13 @@ namespace windows_client.ViewModel
             if (co == null)
                 return;
 
+            // Return if chat is hidden and hidden mode is not active
+            if (co.IsHidden && !IsHiddenModeActive)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
+
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
