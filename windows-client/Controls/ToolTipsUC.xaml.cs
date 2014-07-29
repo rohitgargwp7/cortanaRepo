@@ -140,7 +140,7 @@ namespace windows_client.Controls
 
         public event EventHandler<EventArgs> LeftIconClicked;
         public event EventHandler<EventArgs> RightIconClicked;
-        public event EventHandler<EventArgs> ControlClicked;
+        public event EventHandler<EventArgs> FullTipTapped;
 
         #endregion
 
@@ -148,7 +148,7 @@ namespace windows_client.Controls
         {
             LeftIconClicked = null;
             RightIconClicked = null;
-            ControlClicked = null;
+            FullTipTapped = null;
         }
 
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -165,8 +165,8 @@ namespace windows_client.Controls
 
         public void toolTipGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (ControlClicked != null)
-                ControlClicked(sender, e);
+            if (FullTipTapped != null)
+                FullTipTapped(sender, e);
         }
     }
 }

@@ -65,18 +65,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage _headerIcon;
-        public BitmapImage HeaderIcon
-        {
-            get
-            {
-                if (_headerIcon == null)
-                    _headerIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hike_header.png", UriKind.Relative));
-
-                return _headerIcon;
-            }
-        }
-
         BitmapImage _muteIconBlue;
         public BitmapImage MuteIconBlue
         {
@@ -115,18 +103,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage _hiddenModeHeaderIcon;
-        public BitmapImage HiddenModeHeaderIcon
-        {
-            get
-            {
-                if (_hiddenModeHeaderIcon == null)
-                    _hiddenModeHeaderIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeHeaderIcon.png", UriKind.Relative));
-
-                return _hiddenModeHeaderIcon;
-            }
-        }
-
         BitmapImage _sheildIcon;
         public BitmapImage SheildIcon
         {
@@ -148,18 +124,6 @@ namespace windows_client.utils
                     _toolTipCrossIcon = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Cross.png", UriKind.Relative));
 
                 return _toolTipCrossIcon;
-            }
-        }
-
-        BitmapImage _toolTipTickIcon;
-        public BitmapImage ToolTipTickIcon
-        {
-            get
-            {
-                if (_toolTipTickIcon == null)
-                    _toolTipTickIcon = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Cross.png", UriKind.Relative));
-
-                return _toolTipTickIcon;
             }
         }
 

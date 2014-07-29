@@ -43,7 +43,7 @@
 
         <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="3" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="3" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="popup_PasswordOverlayVisibilityChanged"/>
+        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="3" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="passwordOverlay_PasswordOverlayVisibilityChanged"/>
         
         <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
@@ -53,8 +53,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15" Tap="hikeLogo_Tapped">
-                    <Image x:Name="headerIcon" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="-12,-12,-12,0" Tap="hikeLogo_Tapped">
+                    <Image x:Name="headerIcon" Source="/view/images/ConversationPage/hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12"/>
                 </Grid>
                 <Grid Grid.Column="1" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Image x:Name="chatsTabImage" Stretch="Uniform" Height="26" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>

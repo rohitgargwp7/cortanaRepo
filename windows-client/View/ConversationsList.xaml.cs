@@ -118,9 +118,7 @@ namespace windows_client.View
 
             _firstName = Utils.GetFirstName(_userName);
 
-            headerIcon.Source = App.appSettings.Contains(HikeConstants.HIDDEN_MODE) ? UI_Utils.Instance.HiddenModeHeaderIcon : UI_Utils.Instance.HeaderIcon;
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password);
-
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
         }
 
@@ -257,116 +255,12 @@ namespace windows_client.View
 
             if (!conversationPageToolTip.IsShow) // dont show reset if its already being shown
             {
-                long resetTime;
-                if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
-                {
-                    _resetTimeSeconds = 10 - (TimeUtils.getCurrentTimeStamp() - resetTime);
-                    if (_resetTimeSeconds > 0)
-                    {
-                        var resetTimeTimeSpan = TimeSpan.FromSeconds(1);
-                        if (_resetTimer == null)
-                        {
-                            _resetTimer = new DispatcherTimer();
-                            _resetTimer.Interval = resetTimeTimeSpan;
-                            _resetTimer.Tick -= _resetTimer_Tick;
-                            _resetTimer.Tick += _resetTimer_Tick;
-                        }
-
-                        if (!_resetTimer.IsEnabled)
-                            _resetTimer.Start();
-                    }
-                    else
-                    {
-                        _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
-                        _isModeChanged = true;
-                        UpdateToolTip();
-                    }
-                }
+                ShowHiddenModeResetToolTip();
             }
 
             FrameworkDispatcher.Update();
         }
-
-        void _resetTimer_Tick(object sender, EventArgs e)
-        {
-            if (_resetTimeSeconds <= 0)
-            {
-                if (_resetTimer != null)
-                    _resetTimer.Stop();
-
-                _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
-                _isModeChanged = true;
-                UpdateToolTip();
-            }
-            else
-            {
-                _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
-                _isModeChanged = true;
-                UpdateToolTip();
-            }
-
-            _resetTimeSeconds--;
-        }
-
-        ToolTipMode _tipMode;
-
-        void conversationPageToolTip_RightIconClicked(object sender, EventArgs e)
-        {
-            switch (_tipMode)
-            {
-                case ToolTipMode.RESET_HIDDEN_MODE:
-                    conversationPageToolTip.IsShow = false;
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    _tipMode = ToolTipMode.DEFAULT;
-                    
-                    if (_resetTimer != null)
-                    {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
-                    }
-                    
-                    break;
-                case ToolTipMode.HIDDEN_MODE_GETSTARTED:
-                    conversationPageToolTip.IsShow = false;
-                    break;
-                case ToolTipMode.HIDDEN_MODE_STEP2:
-                    conversationPageToolTip.IsShow = false;
-                    break;
-                case ToolTipMode.HIDDEN_MODE_COMPLETE:
-                    conversationPageToolTip.IsShow = false;
-                    break;
-                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
-                    conversationPageToolTip.IsShow = false;
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    ResetHiddenMode();
-                    
-                    if (_resetTimer != null)
-                    {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
-                    }
-
-                    _isModeChanged = true;
-                    UpdateToolTip();
-                    break;
-            }
-        }
-
-        void ResetHiddenMode()
-        {
-            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
-            _confirmPassword = false;
-            _password = _tempPassword = null; 
-            App.ViewModel.ResetHiddenMode();
-            headerIcon.Source = UI_Utils.Instance.HeaderIcon;
-
-            _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
-
-            //to:do delete hidden chats and send server reset packet
-        }
-
+        
         private async void BindFriendsAsync()
         {
             contactGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
@@ -1904,10 +1798,10 @@ namespace windows_client.View
                     if (_isModeChanged)
                     {
                         conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
-                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipCrossIcon;
-                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipTickIcon;
-                        conversationPageToolTip.LeftIconClicked -= conversationPageToolTip_LeftIconClicked;
-                        conversationPageToolTip.LeftIconClicked += conversationPageToolTip_LeftIconClicked;
+                        conversationPageToolTip.LeftIconSource = null;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                        conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -1921,7 +1815,7 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
         }
 
-        void conversationPageToolTip_LeftIconClicked(object sender, EventArgs e)
+        void conversationPageToolTip_FullTipTapped(object sender, EventArgs e)
         {
             switch (_tipMode)
             {
@@ -1936,6 +1830,7 @@ namespace windows_client.View
                         _resetTimer.Stop();
                         _resetTimer = null;
                     }
+
                     break;
             }
         }
@@ -3323,10 +3218,20 @@ namespace windows_client.View
 
         #region Hidden Mode
 
+        // Hidden mode password
         string _password;
 
+        // Confirm hidden mode password
+        bool _isConfirmPassword;
+        
+        // Temporary password for confirmation
+        string _tempPassword;
+
+        // Tool tip mode
+        ToolTipMode _tipMode;
+
         /// <summary>
-        /// Function called when hike logo tapped
+        /// Function called when hike logo is tapped.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -3359,7 +3264,7 @@ namespace windows_client.View
         /// <summary>
         /// Initialize hidden mode.
         /// </summary>
-        private void InitHidddenMode()
+        void InitHidddenMode()
         {
             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 conversationPageToolTip.IsShow = false;
@@ -3374,6 +3279,14 @@ namespace windows_client.View
                     UpdateLayout();
                 });
 
+            SendHiddenModeToggledPacket();
+        }
+
+        /// <summary>
+        /// Send hidden mode packet toggled to server.
+        /// </summary>
+        void SendHiddenModeToggledPacket()
+        {
             //send qos 0 for toggling for stealth mode on server
             JObject hideObj = new JObject();
             hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
@@ -3381,15 +3294,9 @@ namespace windows_client.View
             JObject data = new JObject();
 
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
-            {
-                headerIcon.Source = UI_Utils.Instance.HiddenModeHeaderIcon;
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
-            }
             else
-            {
-                headerIcon.Source = UI_Utils.Instance.HeaderIcon;
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
-            }
 
             hideObj.Add(HikeConstants.DATA, data);
 
@@ -3400,7 +3307,7 @@ namespace windows_client.View
         }
 
         /// <summary>
-        /// Mark individual chat as hidden/unhidden
+        /// Mark individual chat as hidden/unhidden.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -3435,11 +3342,9 @@ namespace windows_client.View
             }
         }
 
-        bool _confirmPassword;
-        string _tempPassword;
 
         /// <summary>
-        /// password has been entered by the user
+        /// Password has been entered by the user.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -3450,7 +3355,7 @@ namespace windows_client.View
             {
                 if (String.IsNullOrWhiteSpace(_password))
                 {
-                    if (_confirmPassword)
+                    if (_isConfirmPassword)
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
@@ -3467,12 +3372,12 @@ namespace windows_client.View
                             } 
                         }
 
-                        _confirmPassword = false;
+                        _isConfirmPassword = false;
                         popup.IsShow = false;
                     }
                     else
                     {
-                        _confirmPassword = true;
+                        _isConfirmPassword = true;
                         _tempPassword = popup.Password;
                         popup.Text = AppResources.ConfirmPassword_Txt;
                         popup.Password = String.Empty;
@@ -3498,13 +3403,170 @@ namespace windows_client.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void popup_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
+        void passwordOverlay_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
         {
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
             }
+        }
+
+        /// <summary>
+        /// Show reset hidden mode tool tip.
+        /// </summary>
+        private void ShowHiddenModeResetToolTip()
+        {
+            long resetTime;
+            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            {
+                _resetTimeSeconds = 10 - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                if (_resetTimeSeconds > 0)
+                {
+                    var resetTimeTimeSpan = TimeSpan.FromSeconds(1);
+                    if (_resetTimer == null)
+                    {
+                        _resetTimer = new DispatcherTimer();
+                        _resetTimer.Interval = resetTimeTimeSpan;
+                        _resetTimer.Tick -= _resetTimer_Tick;
+                        _resetTimer.Tick += _resetTimer_Tick;
+                    }
+
+                    if (!_resetTimer.IsEnabled)
+                        _resetTimer.Start();
+                }
+                else
+                {
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    _isModeChanged = true;
+                    UpdateToolTip();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reset timer tick event. Update timer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _resetTimer_Tick(object sender, EventArgs e)
+        {
+            if (_resetTimeSeconds <= 0)
+            {
+                if (_resetTimer != null)
+                    _resetTimer.Stop();
+
+                _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                _isModeChanged = true;
+                UpdateToolTip();
+            }
+            else
+            {
+                _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
+                _isModeChanged = true;
+                UpdateToolTip();
+            }
+
+            _resetTimeSeconds--;
+        }
+
+        /// <summary>
+        /// Right icon clicked in tool tip.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void conversationPageToolTip_RightIconClicked(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.RESET_HIDDEN_MODE:
+                    conversationPageToolTip.IsShow = false;
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    _tipMode = ToolTipMode.DEFAULT;
+
+                    if (_resetTimer != null)
+                    {
+                        _resetTimer.Stop();
+                        _resetTimer = null;
+                    }
+
+                    break;
+                case ToolTipMode.HIDDEN_MODE_GETSTARTED:
+                    conversationPageToolTip.IsShow = false;
+                    break;
+                case ToolTipMode.HIDDEN_MODE_STEP2:
+                    conversationPageToolTip.IsShow = false;
+                    break;
+                case ToolTipMode.HIDDEN_MODE_COMPLETE:
+                    conversationPageToolTip.IsShow = false;
+                    break;
+                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+                    conversationPageToolTip.IsShow = false;
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    ResetHiddenMode();
+
+                    if (_resetTimer != null)
+                    {
+                        _resetTimer.Stop();
+                        _resetTimer = null;
+                    }
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Reset hidden mode, remove saved pasword, reset tooltip and delete chats.
+        /// </summary>
+        void ResetHiddenMode()
+        {
+            _isConfirmPassword = false;
+            _tempPassword = null;
+
+            ResetHiddenModePassword();
+
+            App.ViewModel.ResetHiddenMode();
+
+            ResetHiddenModeToolTip();
+
+            DeleteHiddenChats();
+
+            SendResetPacketToServer();
+        }
+
+        /// <summary>
+        /// Reset hidden mode password.
+        /// </summary>
+        private void ResetHiddenModePassword()
+        {
+            _password = null;
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
+        }
+
+        /// <summary>
+        /// Reset hidden mode tooltip.
+        /// </summary>
+        private void ResetHiddenModeToolTip()
+        {
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
+            _isModeChanged = true;
+            UpdateToolTip();
+        }
+
+        /// <summary>
+        /// Delete hidden chats.
+        /// </summary>
+        void DeleteHiddenChats()
+        {
+        }
+
+        /// <summary>
+        /// Send reset hidden mode packet to server
+        /// </summary>
+        void SendResetPacketToServer()
+        {
         }
 
         #endregion
