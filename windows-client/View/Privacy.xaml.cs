@@ -73,6 +73,7 @@ namespace windows_client.View
         private void ResetHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
+            App.ViewModel.ResetHiddenModeTapped();
 
             while (NavigationService.BackStack.Count() > 1)
                 NavigationService.RemoveBackEntry();

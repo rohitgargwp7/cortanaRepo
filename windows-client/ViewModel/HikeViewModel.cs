@@ -1263,6 +1263,12 @@ namespace windows_client.ViewModel
                 conv.HiddenModeToggled();
         }
 
-        public event EventHandler<EventArgs> ResetHiddenModeClicked;
+        public void ResetHiddenModeTapped()
+        {
+            if (App.ViewModel.StartResetHiddenModeTimer != null)
+                App.ViewModel.StartResetHiddenModeTimer(null, null);
+        }
+
+        public event EventHandler<EventArgs> StartResetHiddenModeTimer;
     }
 }

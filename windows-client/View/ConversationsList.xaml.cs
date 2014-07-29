@@ -121,7 +121,7 @@ namespace windows_client.View
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password);
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
-            App.ViewModel.ResetHiddenModeClicked += ViewModel_ResetHiddenModeClicked;
+            App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
         }
 
         string _firstName;
@@ -779,10 +779,13 @@ namespace windows_client.View
         /// </summary>
         /// <param name="convObj">Conversation object to be deleted</param>
         /// <param name="sendHiddenToggledPacket">send hidden mode toggled packet to server</param>
-        void DeleteConversation(ConversationListObject convObj, bool sendHiddenToggledPacket)
+        void DeleteConversation(ConversationListObject convObj, bool sendHiddenChatToogledPacket)
         {
-            App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            // Remove entry from map for UI.
+            App.ViewModel.ConvMap.Remove(convObj.Msisdn); 
+
+            // Removed from observable collection.
+            App.ViewModel.MessageListPageCollection.Remove(convObj);
 
             if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                 ShowFTUECards();
@@ -798,7 +801,7 @@ namespace windows_client.View
 
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
 
-            if (sendHiddenToggledPacket && convObj.IsHidden)
+            if (sendHiddenChatToogledPacket && convObj.IsHidden)
             {
                 JObject hideObj = new JObject();
                 hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
@@ -3125,27 +3128,35 @@ namespace windows_client.View
         /// <param name="e"></param>
         private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!App.ViewModel.IsHiddenModeActive)
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
-                    AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
-
-                passwordOverlay.IsShow = true;
+                //MessageBox.Show();
+                return;
             }
             else
             {
-                InitHidddenMode();
-
-                if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
+                if (!App.ViewModel.IsHiddenModeActive)
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
+                        AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
-                    if (conversationPageToolTip.IsShow)
-                        conversationPageToolTip.IsShow = false;
+                    passwordOverlay.IsShow = true;
                 }
+                else
+                {
+                    InitHidddenMode();
 
-                if (App.ViewModel.MessageListPageCollection.Count == 0 || App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0)
-                    ShowFTUECards();
+                    if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
+                    {
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+
+                        if (conversationPageToolTip.IsShow)
+                            conversationPageToolTip.IsShow = false;
+                    }
+
+                    if (App.ViewModel.MessageListPageCollection.Count == 0 || App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0)
+                        ShowFTUECards();
+                }
             }
         }
 
@@ -3464,9 +3475,12 @@ namespace windows_client.View
             {
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
+
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                     _tipMode = ToolTipMode.DEFAULT;
+
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    ResetHiddenMode();
 
                     if (_resetTimer != null)
                     {
@@ -3511,8 +3525,11 @@ namespace windows_client.View
                     break;
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
+                    
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    _tipMode = ToolTipMode.DEFAULT;
+                    
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    ResetHiddenMode();
 
                     if (_resetTimer != null)
                     {
@@ -3571,8 +3588,19 @@ namespace windows_client.View
 
             if (list != null && list.Count() > 0)
             {
-                foreach (var convObj in list)
-                    DeleteConversation(convObj, false);
+                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
+                {
+                    if (App.ViewModel.MessageListPageCollection[i].IsHidden)
+                    {
+                        var convObj = App.ViewModel.MessageListPageCollection[i];
+                        DeleteConversation(convObj, false);
+                    }
+                    else
+                        i++;
+                }
+
+                if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                    ShowFTUECards();
             }
         }
 
