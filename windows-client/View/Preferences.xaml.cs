@@ -15,6 +15,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -71,11 +72,16 @@ namespace windows_client.View
                 value = true;
             enterToSendToggle.IsChecked = value;
             this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
-            
+
             if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
                 value = true;
             nudgeSettingToggle.IsChecked = value;
             this.nudgeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
+
+            if (!App.appSettings.TryGetValue(HikeConstants.BLACK_THEME, out value))
+                value = false;
+            blackSettingToggle.IsChecked = value;
+            this.blackSettingToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -84,7 +90,7 @@ namespace windows_client.View
             locationToggle.Checked += locationToggle_Checked;
             locationToggle.Unchecked += locationToggle_Unchecked;
         }
-        
+
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.On;
@@ -145,7 +151,7 @@ namespace windows_client.View
             enterToSendToggle.Checked += enterToSendToggle_Checked;
             enterToSendToggle.Unchecked += enterToSendToggle_Unchecked;
         }
-        
+
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
@@ -179,6 +185,41 @@ namespace windows_client.View
         {
             this.nudgeSettingToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.SEND_NUDGE, false);
+        }
+
+        private void blackSettingToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            blackSettingToggle.Loaded -= blackSettingToggle_Loaded;
+            blackSettingToggle.Checked += blackSettingToggle_Checked;
+            blackSettingToggle.Unchecked += blackSettingToggle_UnChecked;
+        }
+
+        bool _isPopUpDisplayed;
+
+        private void blackSettingToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.blackSettingToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(HikeConstants.BLACK_THEME, true);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 1);
+
+            if (!_isPopUpDisplayed)
+            {
+                MessageBox.Show(AppResources.CloseApp_Txt, AppResources.RestartApp_Txt, MessageBoxButton.OK);
+                _isPopUpDisplayed = true;
+            }
+        }
+
+        private void blackSettingToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            this.blackSettingToggle.Content = AppResources.Off;
+            App.RemoveKeyFromAppSettings(HikeConstants.BLACK_THEME);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 0);
+
+            if (!_isPopUpDisplayed)
+            {
+                MessageBox.Show(AppResources.CloseApp_Txt, AppResources.RestartApp_Txt, MessageBoxButton.OK);
+                _isPopUpDisplayed = true;
+            }
         }
     }
 }

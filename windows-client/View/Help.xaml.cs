@@ -27,6 +27,12 @@ namespace windows_client.View
         public Help()
         {
             InitializeComponent();
+
+            if (App.ViewModel.IsDarkMode)
+                madeInIndia.Source = UI_Utils.Instance.MadeInIndiaBlack;
+            else
+                madeInIndia.Source = UI_Utils.Instance.MadeInIndiaWhite;
+
             applicationVersion.Text = string.Format(AppResources.Help_AppVersionTitle, utils.Utils.getAppVersion());
         }
 

@@ -82,6 +82,10 @@ namespace windows_client.Model
             }
         }
 
+        /// <summary>
+        /// Send click event analytics packet to server
+        /// </summary>
+        /// <param name="key">analytics key</param>
         public static void SendClickEvent(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -104,6 +108,11 @@ namespace windows_client.Model
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
 
+        /// <summary>
+        /// Send analytics packet to server
+        /// </summary>
+        /// <param name="eventType">type of event</param>
+        /// <param name="key">analytics key</param>
         public static void SendAnalyticsEvent(string eventType, string key)
         {
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(eventType))
@@ -125,6 +134,12 @@ namespace windows_client.Model
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
 
+        /// <summary>
+        /// Send analytics packet to server
+        /// </summary>
+        /// <param name="eventType">type of event</param>
+        /// <param name="key">analytics key</param>
+        /// <param name="value">value to be sent</param>
         public static void SendAnalyticsEvent(string eventType, string key, JToken value)
         {
             if (string.IsNullOrEmpty(key))

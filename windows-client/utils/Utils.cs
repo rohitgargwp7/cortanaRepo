@@ -408,6 +408,8 @@ namespace windows_client.utils
                     return "Games on hike";
                 case HikeConstants.FTUE_HIKE_DAILY_MSISDN:
                     return "hike daily";
+                case HikeConstants.FTUE_HIKE_SUPPORT_MSISDN:
+                    return "hike support";
                 default:
                     return string.Empty;
             }
@@ -561,7 +563,7 @@ namespace windows_client.utils
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
-            data.Add(HikeConstants.Extras.SEND_BOT, true);
+            data.Add(HikeConstants.Extras.SEND_BOT, false);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

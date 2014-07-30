@@ -33,7 +33,7 @@ namespace windows_client.View
     /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 100;
 
         private bool _canGoBack = true;
         private bool _showSmsContacts;
@@ -149,8 +149,8 @@ namespace windows_client.View
         {
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -926,7 +926,7 @@ namespace windows_client.View
                         ContactInfo cInfo = new ContactInfo();
                         cInfo.Name = conv.NameToShow;
                         cInfo.ContactListLabel = conv.Msisdn;
-                        cInfo.OnHike = true;
+                        cInfo.OnHike = conv.IsOnhike;
                         cInfo.Msisdn = conv.Msisdn;
                         cInfo.Avatar = conv.Avatar;
                         cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -971,7 +971,7 @@ namespace windows_client.View
                 ContactInfo cInfo = new ContactInfo();
                 cInfo.Name = friend.NameToShow;
                 cInfo.ContactListLabel = friend.Msisdn;//to show in tap msg
-                cInfo.OnHike = true;
+                cInfo.OnHike = friend.IsOnhike;
                 cInfo.Msisdn = friend.Msisdn;
                 cInfo.Avatar = friend.Avatar;
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;

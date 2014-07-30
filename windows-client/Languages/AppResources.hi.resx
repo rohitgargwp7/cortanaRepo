@@ -122,7 +122,7 @@
     <comment>(max 10 chars)</comment>
   </data>
   <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
-    <value>आप प्रोफ़ाइल की तस्वीर  को नहीं बदल सकते हैं| बाद में कोशिश करें!</value>
+    <value>प्रोफ़ाइल छवि नहीं बदली जा सकती। बाद में पुन: प्रयास करें।</value>
     <comment>General text used in different files</comment>
   </data>
   <data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
@@ -181,10 +181,6 @@
     <value>मेरे पसंदीदा से निकालें</value>
     <comment>fix char length(29)</comment>
   </data>
-  <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>आपका कोई पसंदीदा नहीं है</value>
-    <comment>Fav (xaml)</comment>
-  </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
     <value>दोस्तों को आमंत्रित करे !</value>
     <comment>Profile (xaml)</comment>
@@ -202,20 +198,12 @@
     <comment>General msg shown (CS)</comment>
   </data>
   <data name="EnterName_NameErrorTxt" xml:space="preserve">
-    <value>त्रुटि! नाम सेट नहीं! पुंन:प्रयास करें!</value>
+    <value>त्रुटि! नाम सेट नहीं किया गया। पुनः प्रयास करें!</value>
     <comment>error text (CS)</comment>
   </data>
   <data name="EnterName_Name_Hint" xml:space="preserve">
     <value>आपका नाम</value>
     <comment>Name Text in hint (CS)</comment>
-  </data>
-  <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
-    <value>संपर्क स्कैनिंग ...</value>
-    <comment>CS</comment>
-  </data>
-  <data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
-    <value>आप   पर स्थापित हैं!</value>
-    <comment>This is the text shown at top (xaml)</comment>
   </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
     <value>हाय! आपका नंबर क्या है?</value>
@@ -262,7 +250,7 @@
     <comment>Pin Text in hint (CS)</comment>
   </data>
   <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
-    <value>हमने आपको 4 अंकों का एसएमएस पिन भेजा है। इसे दर्ज करें।</value>
+    <value>हमने आपको 4 अंकों का एसएमएस पिन भेजा है। उसे दर्ज करें।</value>
     <comment>Page title msg (xaml file)</comment>
   </data>
   <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
@@ -494,7 +482,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
-    <value>उपयोगकर्ता पहले से ही जुड़ा हुआ है |</value>
+    <value>उपयोगकर्ता पहले ही जोड़ा जा चुका है</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
@@ -507,10 +495,6 @@
   </data>
   <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
     <value>यूजर को जोड़ नहीं सकते | </value>
-    <comment>cs</comment>
-  </data>
-  <data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
-    <value>{0}[{1}] को समूह से हटा दिया जाएगा |</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
@@ -557,16 +541,8 @@
     <value>Hike संपर्क और पता पुस्तिका ताज़ा कर रहा है। यह आपको पता चलने से पहले समाप्त हो जाएगा...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
-  <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
-    <value>संपर्क को हटाएं |</value>
-    <comment>cs</comment>
-  </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
     <value>पाठ संदेश</value>
-    <comment>cs</comment>
-  </data>
-  <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
-    <value>इस व्यक्ति को मैसेज हेतु यहाँ टैप करें</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
@@ -638,11 +614,11 @@
     <comment>ConvMessage (cs)</comment>
   </data>
   <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
-    <value>समूह की छवि को बदल नहीं सकते. बाद में कोशिश करें!</value>
+    <value>समूह छवि नहीं बदली जा सकती। बाद में प्रयास करें!!</value>
     <comment>General text</comment>
   </data>
   <data name="CannotChangeGrpName_Txt" xml:space="preserve">
-    <value>समूह का नाम नहीं बदल सकते. बाद में कोशिश करें! </value>
+    <value>समूह नाम नहीं बदला जा सकता। बाद में प्रयास करें!!</value>
     <comment>cs</comment>
   </data>
   <data name="Contact_Scanning_Failed_Txt" xml:space="preserve">
@@ -658,10 +634,6 @@
 
 इसे जल्द-से-जल्द http://hike.in से डाउनलोड करें!</value>
     <comment>Email Invite Text</comment>
-  </data>
-  <data name="EnterName_Failed_Txt" xml:space="preserve">
-    <value>विफल. अनुप्रयोग बंद करें और पुन: प्रयास करें!</value>
-    <comment>EnterName in ContactUtils (cs)</comment>
   </data>
   <data name="Error_Txt" xml:space="preserve">
     <value>त्रुटि!</value>
@@ -703,14 +675,6 @@
     <value>{0}समूह का नाम बदलकर  {1} किया गया है |</value>
     <comment>MessagesTableUtils</comment>
   </data>
-  <data name="GROUP_NAME_TXT" xml:space="preserve">
-    <value>समूह नाम</value>
-    <comment>General Text</comment>
-  </data>
-  <data name="GrpName_Txt" xml:space="preserve">
-    <value>समूह का नाम</value>
-    <comment>General Text</comment>
-  </data>
   <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
     <value>आमंत्रित मित्र</value>
     <comment>cs</comment>
@@ -727,36 +691,13 @@
     <value>{0}और  {1} अन्य </value>
     <comment>Used at many places like GroupManager</comment>
   </data>
-  <data name="Owner_Txt" xml:space="preserve">
-    <value>मालिक</value>
-  </data>
   <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
     <value>आपके डिवाइस में लोकेशन सेवा डिसेबल है। कृपया अपने फोन सेटिंग में लोकेशन को ऑन करें। </value>
-    <comment>cs</comment>
-  </data>
-  <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
-    <value>लोकेशन सेवा काम कर रहा है लेकिन यह लोकेशन डाटा प्राप्त नहीं कर सकता !</value>
-    <comment>cs</comment>
-  </data>
-  <data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
-    <value>अपनी लोकेशन निर्धारित होने तक प्रतीक्षा करें ....</value>
-    <comment>cs</comment>
-  </data>
-  <data name="ShareLocation_Txt" xml:space="preserve">
-    <value>अपना लोकेशन साझा करें |</value>
     <comment>cs</comment>
   </data>
   <data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
     <value>एसएमएस इस समय भारत के लिए ही काम करता है!</value>
     <comment>ConvMessage (cs)</comment>
-  </data>
-  <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
-    <value>अनुरोध टोकन प्राप्त करने में असमर्थ !</value>
-    <comment>cs</comment>
-  </data>
-  <data name="Social_Txt" xml:space="preserve">
-    <value>सामाजिक</value>
-    <comment>General Text</comment>
   </data>
   <data name="TimeUtils_An_hour_Ago_Txt" xml:space="preserve">
     <value>एक घंटे पहले</value>
@@ -885,14 +826,6 @@
     <value>क़ानूनी</value>
     <comment>xaml</comment>
   </data>
-  <data name="Help_WalkthroughText" xml:space="preserve">
-    <value>hike  पूर्वाभ्यास मीटिंग को देखें |</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="Help_WalkthroughTitle" xml:space="preserve">
-    <value>पूर्वाभ्यास</value>
-    <comment>xaml</comment>
-  </data>
   <data name="Help_RateAppText" xml:space="preserve">
     <value>hike का बाज़ार-स्थन में मूल्यांकन और समीक्षा करें</value>
     <comment>xaml</comment>
@@ -957,32 +890,9 @@
     <value>नए संदेश पर वाइब्रेट करें</value>
     <comment>xaml</comment>
   </data>
-  <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
-    <value>आगे बढने के लियें बाएँ तरफ घुमाएं |</value>
-  </data>
   <data name="ReRecord_Txt" xml:space="preserve">
     <value>फिर रिकॉर्ड करें |</value>
     <comment>app bar button</comment>
-  </data>
-  <data name="RecordAudio_Play" xml:space="preserve">
-    <value>बजाने के लिए टैप करें</value>
-    <comment>cs</comment>
-  </data>
-  <data name="RecordAudio_Playing" xml:space="preserve">
-    <value>बज रहा है</value>
-    <comment>cs</comment>
-  </data>
-  <data name="RecordAudio_Record" xml:space="preserve">
-    <value>रिकॉर्ड करने के लिए दबाएं </value>
-    <comment>cs + xaml</comment>
-  </data>
-  <data name="RecordAudio_Recording" xml:space="preserve">
-    <value>रिकॉर्डिंग </value>
-    <comment>cs</comment>
-  </data>
-  <data name="RecordMedia_Title" xml:space="preserve">
-    <value>ऑडियो रिकॉर्ड करें |</value>
-    <comment>xaml</comment>
   </data>
   <data name="Yesterday_Txt" xml:space="preserve">
     <value>बिता हुआ कल</value>
@@ -1003,18 +913,12 @@
   <data name="Invited" xml:space="preserve">
     <value>आमंत्रित</value>
   </data>
-  <data name="Invite_Small" xml:space="preserve">
-    <value>निमंत्रण</value>
-  </data>
   <data name="Nudge" xml:space="preserve">
     <value>नज</value>
   </data>
   <data name="Nudge_Tute" xml:space="preserve">
     <value>दोस्त को नज करने के लिए कहीं भी डबल टैप करें</value>
     <comment>xaml</comment>
-  </data>
-  <data name="OK" xml:space="preserve">
-    <value>ओके</value>
   </data>
   <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
     <value>क्या आप वाकई इस व्यक्ति को समूह से निकालना चाहते हैं?</value>
@@ -1066,10 +970,6 @@
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>ताज़ा संपर्क सूची</value>
   </data>
-  <data name="PicUpdate_StatusTxt" xml:space="preserve">
-    <value>प्रोफाइल चित्र बदला</value>
-    <comment>Text used in profile picture update</comment>
-  </data>
   <data name="StatusUpdate_Photo" xml:space="preserve">
     <value>प्रोफाइल चित्र बदला</value>
   </data>
@@ -1093,10 +993,10 @@
     <value>SMS पर</value>
   </data>
   <data name="ProfileToBeFriendBlk1" xml:space="preserve">
-    <value>अपने पिछली बार देखे गए और स्टेटस अपडेट केवल पसंदीदा संपर्कों के साथ साझा करें।</value>
+    <value>अपने पिछली बार देखे गए और स्थिति अद्यतन केवल पसंदीदा संपर्कों के साथ साझा करें।</value>
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
-    <value>add</value>
+    <value>जोड़ें</value>
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>नया स्टेटस</value>
@@ -1184,7 +1084,7 @@
     <value>क्या आप संपर्क स्कैनिंग बंद करना चाहते हैं?</value>
   </data>
   <data name="Profile_DoTheSame" xml:space="preserve">
-    <value>आपके साथ पिछली बार देखे गए और स्टेटस अपडेट साझा कर रहे हैं। क्या आप भी ऐसा करना चाहेंगे?</value>
+    <value>आपके साथ पिछली बार देखे गए और स्थिति अद्यतन साझा कर रहा है। क्या आप भी ऐसा ही करना चाहेंगे?</value>
   </data>
   <data name="Profile_RequestSent_Blk1" xml:space="preserve">
     <value>पसंदीदा में जोड़ा गया</value>
@@ -1208,12 +1108,6 @@
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>इस व्यक्ति {0} की दबाएं |</value>
     <comment>Used in add to block functionality, {0} will be replaced by block/unblock</comment>
-  </data>
-  <data name="Conversations_BtnUpdateStatus_Txt" xml:space="preserve">
-    <value>स्टेटस अपडेट करें</value>
-  </data>
-  <data name="Conversations_EmptyStatus_AskPostStatus_Txt" xml:space="preserve">
-    <value>लगता है, आपने अभी तक कोई स्टेटस पोस्ट नहीं किया है !</value>
   </data>
   <data name="Conversations_EmptyStatus_Hey_Txt" xml:space="preserve">
     <value>अरे {0}!</value>
@@ -1257,80 +1151,77 @@
   <data name="Me_Txt" xml:space="preserve">
     <value>मैं</value>
   </data>
-  <data name="Conversations_BtnCircleOfFriends_Txt" xml:space="preserve">
-    <value>पसंदीदा देखें</value>
-  </data>
   <data name="Conversations_EmptyStatus_UpdatesFromCircleOfFriends_Txt" xml:space="preserve">
-    <value>यहाँ आप अपने पसंदीदा संपर्कों से अपडेट देख सकते हैं</value>
+    <value>स्थिति अद्यतन पोस्ट करने के लिए यहाँ टैप करें। केवल आपके पसंदीदा उन्हें देख सकते हैं।</value>
   </data>
   <data name="Conversations_InviteFriendsHike_Txt" xml:space="preserve">
     <value>दोस्तों को hike में आमंत्रित करें</value>
   </data>
   <data name="Mood_Angry" xml:space="preserve">
-    <value>गुस्से में  </value>
+    <value>क्रोधित</value>
   </data>
   <data name="Mood_Boozing" xml:space="preserve">
-    <value>पीते हुए  </value>
+    <value>शराब पी रहा हूँ</value>
   </data>
   <data name="Mood_Busy" xml:space="preserve">
-    <value>व्यस्त  </value>
+    <value>व्यस्त हूँ</value>
   </data>
   <data name="Mood_Caffeinated" xml:space="preserve">
-    <value>कैफीन पीते हुए  </value>
+    <value>कैफ़ीन ले रहा हूँ</value>
   </data>
   <data name="Mood_Chilling" xml:space="preserve">
-    <value>मज़े करते हुए  </value>
+    <value>चिलिंग</value>
   </data>
   <data name="Mood_Coding" xml:space="preserve">
-    <value>कोडिंग करते हुए  </value>
+    <value>कोडिंग</value>
   </data>
   <data name="Mood_Confused" xml:space="preserve">
-    <value>भ्रमित </value>
+    <value>भ्रमित हूँ</value>
   </data>
   <data name="Mood_Driving" xml:space="preserve">
-    <value>वाहन चलाते हुए  </value>
+    <value>वाहन चलाते हुए </value>
   </data>
   <data name="Mood_Gaming" xml:space="preserve">
-    <value>खेलते हुए  </value>
+    <value>गेमिंग</value>
   </data>
   <data name="Mood_Happy" xml:space="preserve">
-    <value>खुश  </value>
+    <value>प्रसन्न</value>
   </data>
   <data name="Mood_Hungover" xml:space="preserve">
-    <value>ख़ुमारी में  </value>
+    <value>हैंगओवर</value>
   </data>
   <data name="Mood_Insomniac" xml:space="preserve">
-    <value>निद्राहीन  </value>
+    <value>अनिद्राग्रस्त</value>
   </data>
   <data name="Mood_In_a_movie" xml:space="preserve">
-    <value>मूवी में </value>
+    <value>मूवी में हूँ</value>
   </data>
   <data name="Mood_In_love" xml:space="preserve">
-    <value>प्यार में  </value>
+    <value>प्रेम में</value>
   </data>
   <data name="Mood_Love_it" xml:space="preserve">
-    <value>अच्छा लगा  </value>
+    <value>पसंद है</value>
   </data>
   <data name="Mood_Middle_finger" xml:space="preserve">
-    <value>मध्य ऊँगली  </value>
+    <value>मध्यमा  उँगली </value>
   </data>
   <data name="Mood_Running_late" xml:space="preserve">
-    <value>देरी से चलते हुए  </value>
+    <value>देर हो गई है</value>
   </data>
   <data name="Mood_Sad" xml:space="preserve">
-    <value>उदास  </value>
+    <value>उदास</value>
   </data>
   <data name="Mood_Shopping" xml:space="preserve">
-    <value>खरीददारी करते हुए </value>
+    <value>ख़रीदारी कर रहा हूँ</value>
   </data>
   <data name="Mood_Sleepy" xml:space="preserve">
-    <value>नींद में  </value>
+    <value>नींद में हूँ</value>
   </data>
   <data name="Mood_Stuck_in_traffic" xml:space="preserve">
-    <value>जाम में फंसे हुए </value>
+    <value>ट्रैफ़िक में फँसा हूँ</value>
   </data>
   <data name="Mood_Studying" xml:space="preserve">
-    <value>पढाई करते हुए </value>
+    <value>पढ़ रहा हूँ</value>
   </data>
   <data name="Mood_Surprised" xml:space="preserve">
     <value>हैरान होना!</value>
@@ -1415,7 +1306,7 @@
     <value>प्राथमिकताएं</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>स्वतः डाउनलोड, स्थान सेवा तथा और बहुत कुछ चालू/बंद करें</value>
+    <value>अंधियारा विषय, स्वतः डाउनलोड, स्थान सेवा तथा और बहुत कुछ</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>हटाने के लिए यहाँ खींचें</value>
@@ -1487,7 +1378,7 @@
     <value>स्टिकर लोड हो रहा है</value>
   </data>
   <data name="Download_txt" xml:space="preserve">
-    <value>डाउनलोड करें</value>
+    <value>डाउनलोड</value>
     <comment>length-8 fixed</comment>
   </data>
   <data name="Free_txt" xml:space="preserve">
@@ -1519,7 +1410,7 @@
     <value>पिछली बार कल {0} पर देखा गया</value>
   </data>
   <data name="Button_Retry_Txt" xml:space="preserve">
-    <value>फिर से कोशिश करें</value>
+    <value>पुनः प्रयास करें</value>
   </data>
   <data name="DownloadFailed_Txt" xml:space="preserve">
     <value>ओफ्फ! डाउनलोड विफल</value>
@@ -1611,7 +1502,7 @@
     <value>1 नया संदेश</value>
   </data>
   <data name="ChatThread_JumpToLatest" xml:space="preserve">
-    <value>नवीनतम पर जाएं</value>
+    <value>नवीनतम पर जाएँ</value>
   </data>
   <data name="ChatThread_More_NewMessages_txt" xml:space="preserve">
     <value>{0} नए संदेश</value>
@@ -1658,11 +1549,11 @@
     <value>लॉक स्क्रीन अधिसूचनाएँ सेट करें</value>
   </data>
   <data name="Camera_Back" xml:space="preserve">
-    <value>बैक</value>
+    <value>पिछला</value>
     <comment>Back Camera</comment>
   </data>
   <data name="Camera_Front" xml:space="preserve">
-    <value>फ्रंट</value>
+    <value>सामने का</value>
     <comment>Front Camera</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk" xml:space="preserve">
@@ -1732,13 +1623,13 @@
     <value>अब आप एंटर कुंजी का उपयोग करके संदेश भेज सकते हैं। इसे ऐप सेटिंग्स से किसी भी समय सक्षम किया जा सकता है।</value>
   </data>
   <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
-    <value>महत्वपूर्ण अपडेट!</value>
+    <value>अति महत्वपूर्ण अद्यतन!</value>
   </data>
   <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
     <value>hike का इस्तेमाल जारी रखने के लिए, अपडेट जरूरी है।</value>
   </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
-    <value>महत्वपूर्ण अपडेट!</value>
+    <value>महत्वपूर्ण अद्यतन!</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
     <value>hike के लिए महत्वपूर्ण अपडेट उपलब्ध है.</value>
@@ -1785,29 +1676,6 @@
   </data>
   <data name="ChatThemeMessage" xml:space="preserve">
     <value>चैट थीम आपके और आपके दोस्त दोनों के लिए बदल जाएगा </value>
-  </data>
-  <data name="Done_Txt" xml:space="preserve">
-    <value>संपन्न</value>
-  </data>
-  <data name="Chat_FTUE_chatThemes" xml:space="preserve">
-    <value>चैट थीम!</value>
-    <comment>max chars(20)</comment>
-  </data>
-  <data name="Chat_FTUE_giveSpin" xml:space="preserve">
-    <value>इसे आज़माएँ!</value>
-    <comment>max chars(30) -as in " give a try" </comment>
-  </data>
-  <data name="Chat_FTUE_HappyHiking" xml:space="preserve">
-    <value>हमारे पास आपके लिए एक उपहार है!</value>
-    <comment>max chars(80)</comment>
-  </data>
-  <data name="Chat_FTUE_OpenGift" xml:space="preserve">
-    <value>उपहार खोलें</value>
-    <comment>max chars(30)</comment>
-  </data>
-  <data name="Chat_FTUE_personalise" xml:space="preserve">
-    <value>ख़ूबसूरत थीम से अपनी चैट निजीकृत करें।</value>
-    <comment>max chars(80)</comment>
   </data>
   <data name="ChatThemeMessage_GrpMessage" xml:space="preserve">
     <value>चैट थीम समूह के लिए बदल जाएगा</value>
@@ -1904,7 +1772,7 @@
     <value>hike करना आरंभ करें</value>
   </data>
   <data name="Add_AppBar_Txt" xml:space="preserve">
-    <value>add</value>
+    <value>जोड़ें</value>
   </data>
   <data name="ChangePic_AppBar_Txt" xml:space="preserve">
     <value>चित्र बदलें</value>
@@ -1922,7 +1790,7 @@
     <value>कम मेमोरी के कारण डाउनलोड करने में असमर्थ। कृपया कुछ मेमोरी खाली करें और पुनः प्रयास करें।</value>
   </data>
   <data name="Memory_Limit_Reached_Header" xml:space="preserve">
-    <value>&gt;&gt;&gt;&gt;&gt;&gt;&gt; 3ffab6d9b64bd0f7bf56537fab73f5bb1ca3f6d8</value>
+    <value>मेमोरी सीमा पूरी हो गई है</value>
   </data>
   <data name="Chat_With_Txt" xml:space="preserve">
     <value>इसके साथ चैट करें</value>
@@ -1978,48 +1846,6 @@
   </data>
   <data name="Empty_Field_Error" xml:space="preserve">
     <value>फ़ील्ड खाली नहीं हो सकता</value>
-  </data>
-  <data name="EnterGenter_Boy_Txt" xml:space="preserve">
-    <value>मैं लड़का हूँ</value>
-  </data>
-  <data name="EnterGenter_Girl_Txt" xml:space="preserve">
-    <value>मैं लड़की हूँ</value>
-  </data>
-  <data name="EnterGenter_Header_Txt" xml:space="preserve">
-    <value>एक चुनें...</value>
-  </data>
-  <data name="RandomText_Boy1" xml:space="preserve">
-    <value>पिछले शुक्रवार से, मैं शुक्रवार के बारे में कभी इतना उत्सुक नहीं रहा हूँ</value>
-  </data>
-  <data name="RandomText_Boy2" xml:space="preserve">
-    <value>20 से पहले शादी करने का मतलब है 8 बजे से पहले पार्टी छोड़कर चले जाना!</value>
-  </data>
-  <data name="RandomText_Boy3" xml:space="preserve">
-    <value>सुनो, मुस्कराओ, मान जाओ और करो वही जो तुम करना चाहते हो!</value>
-  </data>
-  <data name="RandomText_Boy4" xml:space="preserve">
-    <value>लड़के प्रतिदिन लगभग 2000 शब्द बोलते हैं!</value>
-  </data>
-  <data name="RandomText_Boy5" xml:space="preserve">
-    <value>क्या कोई ऐसा तरीका है जिससे ज़िंदगी के फ़ैसले अपने-आप ठीक हो सकें?</value>
-  </data>
-  <data name="RandomText_DefaultTxt" xml:space="preserve">
-    <value>हमारे पास दोनों के लिए ख़ास तौर से तैयार किया गया अनुभव है</value>
-  </data>
-  <data name="RandomText_Girl1" xml:space="preserve">
-    <value>मेरे रास्ते चलो या अपना रास्ता नापो!</value>
-  </data>
-  <data name="RandomText_Girl2" xml:space="preserve">
-    <value>भली लड़कियाँ कभी इतिहास नहीं बना सकतीं</value>
-  </data>
-  <data name="RandomText_Girl3" xml:space="preserve">
-    <value>मेरा कद अद्भुत है</value>
-  </data>
-  <data name="RandomText_Girl4" xml:space="preserve">
-    <value>20 से पहले शादी करने का मतलब है 8 बजे से पहले पार्टी छोड़कर चले जाना!</value>
-  </data>
-  <data name="RandomText_Girl5" xml:space="preserve">
-    <value>लड़कियाँ प्रतिदिन लगभग 7,000 शब्द बोलती हैं!</value>
   </data>
   <data name="StatusTut_Text" xml:space="preserve">
     <value>शाम की ड्राइव के लिए अद्भुत मौसम! #दिल्ली</value>
@@ -2175,5 +2001,105 @@
   </data>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>अपना जीवन hike करें</value>
+  </data>
+  <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
+    <value>केवल पसंदीदा आपके पिछली बार देखे गए और स्थिति अद्यतन देख सकते हैं। उन्हें बुद्धिमानी से चुनें!</value>
+  </data>
+  <data name="Add_To_Favorites_Txt" xml:space="preserve">
+    <value>पसंदीदा जोड़ें</value>
+  </data>
+  <data name="Conversations_Empty_PeopleOnHike_Txt" xml:space="preserve">
+    <value>अरे {0}, {1} लोग जिन्हें आप जानते हैं, hike पर हैं, चैट शुरू करें।</value>
+  </data>
+  <data name="Express_Yourself_Txt" xml:space="preserve">
+    <value>खुद को अभिव्यक्त करें</value>
+  </data>
+  <data name="See_All_Txt" xml:space="preserve">
+    <value>सभी देखें</value>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt" xml:space="preserve">
+    <value>मित्रों को संदेश भेजें, तब भी जब वे ऑफ़लाइन हों</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_H2O_SubTxt2" xml:space="preserve">
+    <value>यह जादू की तरह काम करता है!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_H2O_Txt" xml:space="preserve">
+    <value>hike ऑफ़लाइन</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_Intro_Txt" xml:space="preserve">
+    <value>अद्भुत चीज़ें जिन्हें आप hike पर कर सकते हैं</value>
+    <comment>max length 40</comment>
+  </data>
+  <data name="Conversations_FTUE_InviteNow_Txt" xml:space="preserve">
+    <value>अभी आमंत्रित करने के लिए यहाँ टैप करें!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
+    <value>hike पर शामिल होने वाले प्रत्येक मित्र के लिए आप रु.20 का टॉक-टाइम अर्जित करेंगे :)</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
+    <value>दोस्तों को आमंत्रित करे !</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
+    <value>उन्हें बुद्धिमानी से चुनें!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
+    <value>केवल पसंदीदा आपके पिछली बार देखे गए &amp; स्थिति अद्यतन देख सकते हैं</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_LastSeen_Txt" xml:space="preserve">
+    <value>लास्ट सीन</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
+    <value>जब शब्द अभिव्यक्त न कर सकें, तो अपनी बात स्टिकर से कहें</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
+    <value>आप उन्हें पसंद करेंगे!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Sticker_Txt" xml:space="preserve">
+    <value>स्टिकर</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_GroupNow_Txt" xml:space="preserve">
+    <value>समूह बनाने के लिए यहाँ टैप करें!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Group_SubTxt" xml:space="preserve">
+    <value>{0} मित्रों तक के साथ चैट करें, यह अब तक की सबसे बड़ी संख्या है</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Group_Txt" xml:space="preserve">
+    <value>समूच चैट</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
+    <value>इसे सेट करने के लिए यहाँ टैप करें!</value>
+    <comment>max length 30</comment>
+  </data>
+  <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
+    <value>इससे आपके मित्रों को आपको hike पर आसानी से ढूँढ़ने में मदद मिलेगी</value>
+    <comment>max length 60</comment>
+  </data>
+  <data name="Conversations_FTUE_Profile_Txt" xml:space="preserve">
+    <value>प्रोफ़ाइल चित्र</value>
+    <comment>max length 20</comment>
+  </data>
+  <data name="BlackSettings_Txt" xml:space="preserve">
+    <value>अँधियारा विषय</value>
+  </data>
+  <data name="CloseApp_Txt" xml:space="preserve">
+    <value>विषय बदलने के लिए कृपया ऐप बंद कर दें और इसे पुनः प्रारंभ करें</value>
+  </data>
+  <data name="RestartApp_Txt" xml:space="preserve">
+    <value>पुनः प्रारंभ करें</value>
   </data>
 </root>

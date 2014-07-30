@@ -24,14 +24,24 @@ namespace windows_client.View
     public partial class ShowLocation : PhoneApplicationPage
     {
         GeoCoordinate _locationCoordinate;
-
+        ApplicationBarIconButton _directionsIconButton;
         public ShowLocation()
         {
             InitializeComponent();
 
-            MyMap.Loaded += MyMap_Loaded;
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
+            };
 
-            (ApplicationBar.Buttons[0] as ApplicationBarIconButton).Text = AppResources.Directions_Txt;
+            _directionsIconButton = new ApplicationBarIconButton();
+            _directionsIconButton.IconUri = new Uri("/View/images/AppBar/icon_direction.png", UriKind.Relative);
+            _directionsIconButton.Text = AppResources.Directions_Txt;
+            _directionsIconButton.Click += Direction_Click;
+            ApplicationBar.Buttons.Add(_directionsIconButton);
+
+            MyMap.Loaded += MyMap_Loaded;
         }
 
         void MyMap_Loaded(object sender, RoutedEventArgs e)

@@ -58,8 +58,8 @@ namespace windows_client.View
             // Set the page's ApplicationBar to a new instance of ApplicationBar.    
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
             };
 
             shareIconButton = new ApplicationBarIconButton();

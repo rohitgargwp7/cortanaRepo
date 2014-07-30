@@ -6,6 +6,7 @@ using System.IO;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace windows_client.utils
 {
@@ -146,7 +147,7 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
@@ -254,7 +255,7 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
@@ -293,6 +294,30 @@ namespace windows_client.utils
                     myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
                 return myLocationPin;
+            }
+        }
+
+        private BitmapImage madeInIndiaWhite;
+        public BitmapImage MadeInIndiaWhite
+        {
+            get
+            {
+                if (madeInIndiaWhite == null)
+                    madeInIndiaWhite = new BitmapImage(new Uri("/View/images/settings/made_with_love.png", UriKind.Relative));
+
+                return madeInIndiaWhite;
+            }
+        }
+
+        private BitmapImage madeInIndiaBlack;
+        public BitmapImage MadeInIndiaBlack
+        {
+            get
+            {
+                if (madeInIndiaBlack == null)
+                    madeInIndiaBlack = new BitmapImage(new Uri("/View/images/settings/made_with_love_Black.jpg", UriKind.Relative));
+
+                return madeInIndiaBlack;
             }
         }
 
@@ -569,54 +594,6 @@ namespace windows_client.utils
                     overlaySmsImage = new BitmapImage(new Uri("/View/images/icon_sms.png", UriKind.Relative));
 
                 return overlaySmsImage;
-            }
-        }
-
-        private BitmapImage girlSelectedImage;
-        public BitmapImage GirlSelectedImage
-        {
-            get
-            {
-                if (girlSelectedImage == null)
-                    girlSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_selected.png", UriKind.Relative));
-
-                return girlSelectedImage;
-            }
-        }
-
-        private BitmapImage girlUnSelectedImage;
-        public BitmapImage GirlUnSelectedImage
-        {
-            get
-            {
-                if (girlUnSelectedImage == null)
-                    girlUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_unselected.png", UriKind.Relative));
-
-                return girlUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boyUnSelectedImage;
-        public BitmapImage BoyUnSelectedImage
-        {
-            get
-            {
-                if (boyUnSelectedImage == null)
-                    boyUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_unselected.png", UriKind.Relative));
-
-                return boyUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boySelectedImage;
-        public BitmapImage BoySelectedImage
-        {
-            get
-            {
-                if (boySelectedImage == null)
-                    boySelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_selected.png", UriKind.Relative));
-
-                return boySelectedImage;
             }
         }
 
@@ -1884,7 +1861,7 @@ namespace windows_client.utils
             get
             {
                 if (statusTabImageNotSelected == null)
-                    statusTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/status_NotSelected.png", UriKind.Relative));
+                    statusTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["StatusTabImageNotSelected"], UriKind.Relative));
 
                 return statusTabImageNotSelected;
             }
@@ -1908,13 +1885,13 @@ namespace windows_client.utils
             get
             {
                 if (chatsTabImageNotSelected == null)
-                    chatsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/chat_NotSelected.png", UriKind.Relative));
+                    chatsTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["ChatsTabImageNotSelected"], UriKind.Relative));
 
                 return chatsTabImageNotSelected;
             }
         }
 
-        BitmapImage profileTabImageSelected;
+        BitmapImage friendsTabImageSelected;
         public BitmapImage FriendsTabImageSelected
         {
             get
@@ -1926,39 +1903,15 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage profileTabImageNotSelected;
+        BitmapImage friendsTabImageNotSelected;
         public BitmapImage FriendsTabImageNotSelected
         {
             get
             {
                 if (friendsTabImageNotSelected == null)
-                    friendsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/friend_NotSelected.png", UriKind.Relative));
+                    friendsTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["FriendsTabImageNotSelected"], UriKind.Relative));
 
                 return friendsTabImageNotSelected;
-            }
-        }
-
-        BitmapImage friendsTabImageSelected;
-        public BitmapImage ProfileTabImageSelected
-        {
-            get
-            {
-                if (profileTabImageSelected == null)
-                    profileTabImageSelected = new BitmapImage(new Uri("/View/images/profile_Selected.png", UriKind.Relative));
-
-                return profileTabImageSelected;
-            }
-        }
-
-        BitmapImage friendsTabImageNotSelected;
-        public BitmapImage ProfileTabImageNotSelected
-        {
-            get
-            {
-                if (profileTabImageNotSelected == null)
-                    profileTabImageNotSelected = new BitmapImage(new Uri("/View/images/profile_NotSelected.png", UriKind.Relative));
-
-                return profileTabImageNotSelected;
             }
         }
 

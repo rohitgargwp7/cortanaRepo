@@ -155,8 +155,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnHike");
                     _isOnHike = value;
                     NotifyPropertyChanged("IsOnHike");
-                    NotifyPropertyChanged("SquareColor");
-                    NotifyPropertyChanged("GroupInfoBlockText");
                 }
             }
         }
@@ -268,18 +266,6 @@ namespace windows_client.Model
             }
         }
 
-        public string GroupInfoBlockText
-        {
-            get
-            {
-                if (IsOwner)
-                    return AppResources.Owner_Txt;
-                else if (!_isOnHike)
-                    return _isDND ? AppResources.On_Dnd_Txt : AppResources.OnSms_Txt;
-                else return string.Empty;
-            }
-        }
-        
         public string FavMsg
         {
             get
@@ -343,18 +329,6 @@ namespace windows_client.Model
                 if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible || InviteToHikeVisibility == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public SolidColorBrush SquareColor
-        {
-            get
-            {
-                if (_isOnHike)
-                {
-                    return UI_Utils.Instance.HikeBlue;
-                }
-                return UI_Utils.Instance.SmsBackground;
             }
         }
 

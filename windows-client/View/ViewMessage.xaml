@@ -12,16 +12,15 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.ViewMessage_Title_txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
-        
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <ScrollViewer>
                 <StackPanel Name="stMessage" Margin="20,0"/>

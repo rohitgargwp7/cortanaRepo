@@ -324,6 +324,21 @@ namespace windows_client.View
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
                 {
                     InitSelfProfile();
+
+                    #region SET PROFILE PIC
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
+                    {
+                        try
+                        {
+                            photoChooserTask.Show();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
+                        }
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
+                    }
+                    #endregion
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
@@ -353,31 +368,31 @@ namespace windows_client.View
 
                 firstName = Utils.GetFirstName(nameToShow);
 
-                //if blocked user show block ui and return
-                if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
-                {
-                    isBlocked = true;
-                    ShowBlockedUser();
-                    if (appBar != null)
-                        appBar.IsVisible = false;
-                    return;
-                }
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
                     isInAddressBook = CheckUserInAddressBook();
                 };
-                bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += delegate
                 {
+                    //if blocked user show block ui and return
+                    if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
+                    {
+                        isBlocked = true;
+                        ShowBlockedUser();
+                        if (appBar != null)
+                            appBar.IsVisible = false;
+                        return;
+                    } 
+                    
                     LoadCallCopyOptions();
-                };
 
-                if (!isOnHike)//sms user
-                    ShowNonHikeUser();
-                else
-                    InitHikeUserProfile();
+                    if (!isOnHike)//sms user
+                        ShowNonHikeUser();
+                    else
+                        InitHikeUserProfile();
+                };
+                bw.RunWorkerAsync();
             }
 
             if (App.IS_TOMBSTONED)
@@ -426,8 +441,8 @@ namespace windows_client.View
                 {
                     appBar = new ApplicationBar()
                        {
-                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                           ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                           BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                            Opacity = 0.95
                        };
 
@@ -443,11 +458,12 @@ namespace windows_client.View
             }
 
             ContextMenu menu = new ContextMenu();
-            menu.Background = UI_Utils.Instance.Black;
-            menu.Foreground = UI_Utils.Instance.White;
+            menu.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
             menu.IsZoomEnabled = false;
 
             MenuItem menuItemCopy = new MenuItem() { Background = UI_Utils.Instance.Black, Foreground = UI_Utils.Instance.White };
+            menuItemCopy.Background = (SolidColorBrush)App.Current.Resources["HikeContextMenuBGBrush"];
+            menuItemCopy.Foreground = (SolidColorBrush)App.Current.Resources["HikeContextMenuFGBrush"];
             menuItemCopy.Header = AppResources.Copy_txt;
             menuItemCopy.Click += menuItemCopy_Click;
 
@@ -594,7 +610,7 @@ namespace windows_client.View
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
-                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.StatusUpdate_Photo, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
                         serverId, TimeUtils.getCurrentTimeStamp(), -1, true);
                     StatusMsgsTable.InsertStatusMsg(sm, false);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
@@ -902,8 +918,8 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -1067,8 +1083,8 @@ namespace windows_client.View
             {
                 ApplicationBar = new ApplicationBar()
                    {
-                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                       ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                       BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                    };
             }
 
@@ -1141,6 +1157,7 @@ namespace windows_client.View
             {
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
+                addToFavBtn.Style = (Style)App.Current.Resources["NoButtonStyle"];
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
@@ -1150,6 +1167,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            addToFavBtn.Style = (Style)App.Current.Resources["YesButtonStyle"];
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
@@ -1374,6 +1392,15 @@ namespace windows_client.View
                     contactInfo.OnHike = onhike;
                     count++;
                 }
+            }
+
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
             }
 
             UsersTableUtils.addContact(contactInfo);

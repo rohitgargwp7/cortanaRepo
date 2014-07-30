@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = false;
+        private static readonly bool IS_PRODUCTION = true;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -146,7 +146,7 @@ namespace windows_client.utils
         public static void AddToken(HttpWebRequest req)
         {
             if (App.appSettings.Contains(App.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + mToken + ";uid=" + (string)App.appSettings[App.UID_SETTING];
+                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)App.appSettings[App.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
@@ -996,8 +996,6 @@ namespace windows_client.utils
 
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                List<ContactInfo> msgToShow = null;
-                List<string> msisdns = null;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
                 
                 if (isRefresh)
@@ -1094,7 +1092,6 @@ namespace windows_client.utils
                 if (isPendingSaved)
                     MiscDBUtil.SavePendingRequests();
 
-                msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
 

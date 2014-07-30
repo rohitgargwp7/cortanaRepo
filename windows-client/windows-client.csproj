@@ -247,6 +247,7 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="Model\Sticker\StickerCategory.cs" />
     <Compile Include="utils\Sticker Helper\StickerHelper.cs" />
+    <Compile Include="utils\ThemeManager.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -354,9 +355,6 @@
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\TimeUtils.cs" />
-    <Compile Include="View\EnterGender.xaml.cs">
-      <DependentUpon>EnterGender.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -374,9 +372,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles.xaml">
+    <Resource Include="DarkTheme.xaml">
       <SubType>Designer</SubType>
-    </Page>
+    </Resource>
+    <Resource Include="LightTheme.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -506,10 +507,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\EnterGender.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.config">
@@ -608,11 +605,17 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
+    <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
+    <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
+    <Content Include="View\images\ConversationPage\groupCard.jpg" />
+    <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
-    <Content Include="View\images\ConversationPage\inviteCard.png" />
+    <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
+    <Content Include="View\images\ConversationPage\profileCard.jpg" />
+    <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />
@@ -627,6 +630,7 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
@@ -649,10 +653,6 @@
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
     <Content Include="View\images\ConversationPage\sticker.png" />
-    <Content Include="View\images\FTUE\boy_selected.png" />
-    <Content Include="View\images\FTUE\boy_unselected.png" />
-    <Content Include="View\images\FTUE\girl_selected.png" />
-    <Content Include="View\images\FTUE\girl_unselected.png" />
     <Content Include="View\images\FTUE\p1.png" />
     <Content Include="View\images\FTUE\p2.png" />
     <Content Include="View\images\FTUE\p3.png" />
