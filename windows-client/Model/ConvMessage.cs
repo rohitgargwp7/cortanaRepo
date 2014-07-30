@@ -1510,7 +1510,7 @@ namespace windows_client.Model
                 else
                 {
                     if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
-                        return App.ViewModel.SelectedBackground.HeaderBackground;
+                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.HeaderBackground : UI_Utils.Instance.White;
                     else if (IsSent)
                         return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
                     else
