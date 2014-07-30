@@ -2099,14 +2099,14 @@ namespace windows_client.utils
 
         #endregion
 
-        public byte[] BitmapImgToByteArray(BitmapImage image)
+        public byte[] BitmapImgToByteArray(BitmapImage image,int width,int height)
         {
             try
             {
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 using (var msLargeImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msLargeImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 90);
+                    writeableBitmap.SaveJpeg(msLargeImage, width, height, 0, 100);
                     return msLargeImage.ToArray();
                 }
             }
