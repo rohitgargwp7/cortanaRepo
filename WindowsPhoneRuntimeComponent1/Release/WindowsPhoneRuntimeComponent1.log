@@ -1,0 +1,20 @@
+﻿Build started 18-07-2014 14:19:22.
+     1>Project "C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\CL.exe /c /I"C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\WindowsPhoneRuntimeComponent1\\" /I"Generated Files\\" /IRelease\ /AI"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata" /Zi /ZW /ZW:nostdlib /nologo /W3 /WX- /sdl /MP /O2 /Oi /Oy- /GL /D _WINRT_DLL /D NDEBUG /D WINAPI_PARTITION_PHONE_RESTRICTED /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_PHONE_APP /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"pch.h" /Fp"Release\WindowsPhoneRuntimeComponent1.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /FU"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\lib\platform.winmd" /FU"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata\Windows.winmd" /analyze- /errorReport:prompt pch.cpp
+         pch.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\CL.exe /c /I"C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\WindowsPhoneRuntimeComponent1\\" /I"Generated Files\\" /IRelease\ /AI"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata" /Zi /ZW /ZW:nostdlib /nologo /W3 /WX- /sdl /MP /O2 /Oi /Oy- /GL /D _WINRT_DLL /D NDEBUG /D WINAPI_PARTITION_PHONE_RESTRICTED /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_PHONE_APP /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"pch.h" /Fp"Release\WindowsPhoneRuntimeComponent1.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /FU"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\lib\platform.winmd" /FU"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata\Windows.winmd" /analyze- /errorReport:prompt WindowsPhoneRuntimeComponent1.cpp
+         WindowsPhoneRuntimeComponent1.cpp
+     1>WindowsPhoneRuntimeComponent1.cpp(69): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.dll" /NOLOGO mincore.lib RuntimeObject.lib PhoneAppModelHost.lib zmedialib_client.lib /NODEFAULTLIB:ole32.lib /MANIFEST:NO /DEBUG /PDB:"C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /WINMD /WINMDFILE:"C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.winmd" /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\WindowsPhoneRuntimeComponent1.obj
+         Release\pch.obj
+            Creating library C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.lib and object C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.exp
+         Generating code
+         Finished generating code
+         WindowsPhoneRuntimeComponent1.vcxproj -> C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\Release\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.dll
+     1>Done Building Project "C:\Users\Rohit\Desktop\WindowsPhoneForked\windows-hike-client\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.68

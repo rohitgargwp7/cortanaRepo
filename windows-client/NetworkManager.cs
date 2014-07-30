@@ -452,7 +452,7 @@ namespace windows_client
             else if (ICON == type)
             {
                 // donot do anything if its a GC as it will be handled in DP packet
-                if (Utils.isGroupConversation(msisdn))
+           if (Utils.isGroupConversation(msisdn))
                     return;
 
                 JToken temp;

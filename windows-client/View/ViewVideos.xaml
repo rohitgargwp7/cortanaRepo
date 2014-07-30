@@ -14,32 +14,27 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
-            <TextBlock Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,12,0,12">
+            <TextBlock Text="SELECT VIDEO" Style="{StaticResource PhoneTextNormalStyle}" Foreground="White"/>
         </StackPanel>
 
-        
-        <StackPanel>
-        <Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,116,0,0" Grid.Row="1" Click="Button_Click"/>
-            <phone:LongListSelector Name="llsVideos" SelectionChanged="llsVideos_SelectionChanged">
-                <phone:LongListSelector.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <Image Margin="20,10,0,10" Source="{Binding ThumbnailImage}" MaxHeight="125" MaxWidth="125" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            </Image>
-                            <TextBlock Text="{Binding FileName}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </phone:LongListSelector.ItemTemplate>
-            </phone:LongListSelector>
-        </StackPanel>
+        <phone:LongListSelector Grid.Row="1" Name="llsVideos" SelectionChanged="llsVideos_SelectionChanged" LayoutMode="Grid" GridCellSize="160,160" >
+            <phone:LongListSelector.ItemTemplate>
+                <DataTemplate>
+                    <Grid Height="160" Width="160" >
+                        <Image Width="150" Height="150" Source="{Binding ThumbnailImage}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image MaxWidth="75" MaxHeight="75" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/play_icon.png"/>
+                     </Grid>
+                </DataTemplate>
+            </phone:LongListSelector.ItemTemplate>
+        </phone:LongListSelector>
     </Grid>
 
 </phone:PhoneApplicationPage>

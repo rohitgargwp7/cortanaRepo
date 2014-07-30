@@ -11,7 +11,7 @@ namespace WindowsPhoneRuntimeComponent1
 	{
 	public:
 		WindowsPhoneRuntimeComponent();
-		static void myfunc(uint8 position, Platform::WriteOnlyArray<uint8>^ intOutArray, Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename);
+		static Platform::Array<uint8>^ myfunc(uint8 position, Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,Platform::String^* strVideoAlbumname);
 		static uint16 GetVideoCount();
 	};
 }

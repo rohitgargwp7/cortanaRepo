@@ -24,23 +24,30 @@ namespace windows_client.View
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            {
+                BindVideos();
+            }
+        }
+
+        private void BindVideos()
         {
             ushort totalVideos = WindowsPhoneRuntimeComponent.GetVideoCount();
 
             List<VideoType> listVideos = new List<VideoType>();
             for (int i = 0; i < totalVideos; i++)
             {
-                Byte[] thumbBytes = new byte[30000];
                 string filePath = string.Empty;
                 string fileName = string.Empty;
-                WindowsPhoneRuntimeComponent.myfunc((byte)i, thumbBytes, out filePath, out fileName);
+                Byte[] thumbBytes = WindowsPhoneRuntimeComponent.myfunc((byte)i, out filePath, out fileName);
                 VideoType video = new VideoType(fileName, filePath, thumbBytes);
                 listVideos.Add(video);
             }
 
             llsVideos.ItemsSource = listVideos;
-
         }
 
         private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
