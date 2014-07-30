@@ -315,7 +315,7 @@ namespace windows_client.DbUtils
                     }
                     else
                     {
-                        obj.LastMessage = convMsg.Message;
+                        obj.LastMessage = toastText = convMsg.Message;
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;

@@ -4040,9 +4040,9 @@ namespace windows_client.View
                         toast.Tag = cObj.Msisdn;
 
                         if (cObj.IsHidden)
-                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-                        else
                             toast.Title = String.Empty;
+                        else
+                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
 
                         // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
                         toast.Message = cObj.ToastText;
