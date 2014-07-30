@@ -97,14 +97,14 @@ namespace windows_client.View
             await BrowserControl.ClearCookiesAsync();
 
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-                    App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
-                        if (NavigationService.CanGoBack)
-                            NavigationService.GoBack();
-                    });
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+            App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
+            });
         }
 
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
@@ -184,7 +184,7 @@ namespace windows_client.View
                                 {
                                     BitmapImage b = new BitmapImage();
                                     b.SetSource(s);
-                                    imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b,HikeConstants.PROFILE_PICS_SIZE,HikeConstants.PROFILE_PICS_SIZE);
+                                    imgBytes = UI_Utils.Instance.ConvertToBytes(b);
                                     MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, imgBytes);
                                 }
                                 catch (Exception ex)
