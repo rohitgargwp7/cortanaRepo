@@ -531,6 +531,8 @@ namespace windows_client
                         return;
                     }
 
+                    // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page
+
                     string msisdn = Utils.GetParamFromUri(targetPage);
                     if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
@@ -619,7 +621,11 @@ namespace windows_client
                     return;
                 }
 
+                // Extract msisdn from server url
                 string msisdn = Utils.GetParamFromUri(targetPage);
+
+                // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page
+
                 if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {

@@ -3130,6 +3130,7 @@ namespace windows_client.View
         {
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
+                // GaganTo:Do show prompt as chats are 0
                 //MessageBox.Show();
                 return;
             }
@@ -3192,7 +3193,7 @@ namespace windows_client.View
 
             JObject data = new JObject();
 
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
             else
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
@@ -3476,6 +3477,7 @@ namespace windows_client.View
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
 
+                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                     _tipMode = ToolTipMode.DEFAULT;
 
@@ -3503,6 +3505,9 @@ namespace windows_client.View
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
                     conversationPageToolTip.IsShow = false;
+                    
+                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
+                
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                     _tipMode = ToolTipMode.DEFAULT;

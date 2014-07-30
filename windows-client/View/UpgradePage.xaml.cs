@@ -327,8 +327,13 @@ namespace windows_client.View
                             NavigationService.Navigate(nUri);
                             return;
                         }
+
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+                        
                         string msisdn = Utils.GetParamFromUri(targetPage);
+
+                        // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page
+                        
                         if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                         {

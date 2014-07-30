@@ -180,7 +180,8 @@ namespace windows_client
 
         public static readonly string VERSION = "version";
         public static readonly string BLACK_THEME = "black_theme";
-        public static readonly string HIDDEN_MODE = "hidden_mode";
+
+        public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
 

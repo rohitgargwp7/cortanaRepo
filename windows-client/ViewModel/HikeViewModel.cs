@@ -241,7 +241,7 @@ namespace windows_client.ViewModel
             if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
                 IsDarkMode = true;
             
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE))
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
 
@@ -1238,6 +1238,9 @@ namespace windows_client.ViewModel
             private set;
         }
 
+        /// <summary>
+        /// Check if hidden mode is active. True means hidden chats are visible
+        /// </summary>
         public Boolean IsHiddenModeActive
         {
             get;
@@ -1247,7 +1250,7 @@ namespace windows_client.ViewModel
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
-            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE);
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         public void SetHiddenMode()
@@ -1255,9 +1258,9 @@ namespace windows_client.ViewModel
             IsHiddenModeActive = !IsHiddenModeActive;
 
             if (IsHiddenModeActive)
-                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE, true);
+                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
             else
-                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE);
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
 
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
