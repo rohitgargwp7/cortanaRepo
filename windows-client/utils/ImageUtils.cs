@@ -2203,7 +2203,7 @@ namespace windows_client.utils
             {
                 int toWidth = GetMaxToWidthForImage(bitmapImage.PixelHeight, bitmapImage.PixelWidth);
                 if (toWidth != 0)
-                    return getCompressedImage(imagebytes, toWidth);
+                    return GetCompressedImage(imagebytes, toWidth);
             }
             catch (Exception ex)
             {
@@ -2213,6 +2213,12 @@ namespace windows_client.utils
             return bitmapImage;
         }
 
+        /// <summary>
+        /// Get Image with compressed resolution based on 480x800
+        /// </summary>
+        /// <param name="height">height of curent image</param>
+        /// <param name="width">width of current image</param>
+        /// <returns>width of new image</returns>
         public int GetMaxToWidthForImage(double height, double width)
         {
             var aspectratio = height / width;
@@ -2224,10 +2230,17 @@ namespace windows_client.utils
                 toWidth = 480;
             else if (height > 800)
                 toWidth = Convert.ToInt32(800 / aspectratio);
+
             return toWidth;
         }
 
-        BitmapImage getCompressedImage(byte[] imagebytes, int toWidth)
+        /// <summary>
+        /// Get compressed image
+        /// </summary>
+        /// <param name="imagebytes">image to be compressed</param>
+        /// <param name="toWidth">new width to which image needs to be compressed</param>
+        /// <returns>Compressed image</returns>
+        BitmapImage GetCompressedImage(byte[] imagebytes, int toWidth)
         {
             if (imagebytes == null || imagebytes.Length == 0)
                 return null;
