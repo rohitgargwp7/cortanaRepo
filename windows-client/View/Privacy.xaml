@@ -31,10 +31,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+            <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_ProfilePictureToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="profilePictureToggle_Loaded"/>
 
-            <toolkit:ToggleSwitch Margin="-10,20,-10,-10" Grid.Row="1"  x:Name="lastSeenTimeStampToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+            <toolkit:ToggleSwitch Margin="-10,20,-10,-10" Grid.Row="1"  x:Name="lastSeenTimeStampToggle" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
             
             <Button Grid.Row="2" Margin="0,20,0,0" Width="435" HorizontalAlignment="Stretch" Height="50" Style="{StaticResource YesButtonStyle}" Content="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}" Tap="BlockList_Tap" />
