@@ -534,8 +534,9 @@ namespace windows_client
                     // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page
 
                     string msisdn = Utils.GetParamFromUri(targetPage);
-                    if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                    bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                    if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive)) && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE) && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                         PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
@@ -623,11 +624,11 @@ namespace windows_client
 
                 // Extract msisdn from server url
                 string msisdn = Utils.GetParamFromUri(targetPage);
+                bool IsStealth = Utils.IsUriStealth(targetPage);
 
-                // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page
+                // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page 
 
-                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive)) && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE) && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null) )
                 {
                     _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state

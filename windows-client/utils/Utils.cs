@@ -467,6 +467,13 @@ namespace windows_client.utils
             }
         }
 
+        public static bool IsUriStealth(string targetPage)
+        {
+            if (targetPage.Contains("sth"))
+                return true;
+            return false;
+        }
+
         public static string GetFirstName(string completeName)
         {
             string firstName = string.Empty;

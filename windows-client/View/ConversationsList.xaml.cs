@@ -1123,13 +1123,13 @@ namespace windows_client.View
                 {
                     bool isHikeJingleEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled)
+                    if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled)
+                    if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
@@ -3448,7 +3448,7 @@ namespace windows_client.View
                     if (isModeChanged)
                     {
                         conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
-                        conversationPageToolTip.LeftIconSource = null;
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
                         conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
@@ -3478,16 +3478,20 @@ namespace windows_client.View
                     conversationPageToolTip.IsShow = false;
 
                     // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    _tipMode = ToolTipMode.DEFAULT;
-
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    ResetHiddenMode();
-
-                    if (_resetTimer != null)
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
+                    if (mBox == MessageBoxResult.OK)
                     {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        ResetHiddenMode();
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
                     }
 
                     break;
@@ -3504,18 +3508,27 @@ namespace windows_client.View
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
-                    conversationPageToolTip.IsShow = false;
-                    
+                    _resetTimer.Stop();
                     // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
-                
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    _tipMode = ToolTipMode.DEFAULT;
-
-                    if (_resetTimer != null)
+                    
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt,AppResources.HiddenModeReset_CancelConf_Header_Txt,MessageBoxButton.OKCancel);
+                    
+                    if (mBox == MessageBoxResult.OK)
                     {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
+                        conversationPageToolTip.IsShow = false;
+                    }
+                    else
+                    {
+                        _resetTimer.Start();
                     }
 
                     break;
