@@ -1732,6 +1732,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everyone.
+        /// </summary>
+        public static string Everyone_Txt {
+            get {
+                return ResourceManager.GetString("Everyone_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to express yourself.
         /// </summary>
         public static string Express_Yourself_Txt {
@@ -1764,6 +1773,15 @@ namespace windows_client.Languages {
         public static string Facebook_Txt {
             get {
                 return ResourceManager.GetString("Facebook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites.
+        /// </summary>
+        public static string Favorites_Txt {
+            get {
+                return ResourceManager.GetString("Favorites_Txt", resourceCulture);
             }
         }
         
@@ -3334,6 +3352,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nobody.
+        /// </summary>
+        public static string Nobody_Txt {
+            get {
+                return ResourceManager.GetString("Nobody_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to no contacts to display.
         /// </summary>
         public static string NoContactsToDisplay_Txt {
@@ -4306,6 +4333,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show profile picture to.
+        /// </summary>
+        public static string Settings_ProfilePictureToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_ProfilePictureToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -4495,7 +4531,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show last seen.
+        ///   Looks up a localized string similar to Show last seen to.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {

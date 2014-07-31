@@ -22,7 +22,10 @@ namespace windows_client.View
             if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
                 showlastSeen = true;
             lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.On : AppResources.Off;
+            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
+            bool value = App.appSettings.TryGetValue(App.DISPLAYPIC_FAV_ONLY, out value);
+            profilePictureToggle.IsChecked = value;
+            this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
         }
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -39,7 +42,7 @@ namespace windows_client.View
 
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
-            this.lastSeenTimeStampToggle.Content = AppResources.On;
+            this.lastSeenTimeStampToggle.Content = AppResources.Favorites_Txt;
             App.appSettings.Remove(App.LAST_SEEN_SEETING);
             App.appSettings.Save();
 
@@ -53,7 +56,7 @@ namespace windows_client.View
 
         private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.lastSeenTimeStampToggle.Content = AppResources.Off;
+            this.lastSeenTimeStampToggle.Content = AppResources.Nobody_Txt;
             App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
 
             JObject obj = new JObject();
@@ -64,6 +67,39 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
+        private void profilePictureToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            profilePictureToggle.Loaded -= profilePictureToggle_Loaded;
+            profilePictureToggle.Checked += profilePictureToggle_Checked;
+            profilePictureToggle.Unchecked += profilePictureToggle_UnChecked;
+        }
+
+        private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.profilePictureToggle.Content = AppResources.Favorites_Txt;
+            App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.AVATAR, 2);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+        }
+
+        private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            this.profilePictureToggle.Content = AppResources.Everyone_Txt;
+            App.RemoveKeyFromAppSettings(App.DISPLAYPIC_FAV_ONLY);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.AVATAR, 1);
+            obj.Add(HikeConstants.DATA, data);
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
     }
     
 }
