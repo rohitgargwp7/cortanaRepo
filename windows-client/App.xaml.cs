@@ -611,7 +611,7 @@ namespace windows_client
 
             PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.1.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.2.1", _currentVersion) == 1)
             {
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
@@ -1010,7 +1010,7 @@ namespace windows_client
             #endregion
             #region POST APP INFO ON UPDATE
             // if app info is already sent to server , this function will automatically handle
-            UpdatePostHelper.Instance.postAppInfo();
+            UpdatePostHelper.Instance.PostAppInfo();
             #endregion
             #region Post App Locale
             PostLocaleInfo();

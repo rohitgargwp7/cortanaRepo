@@ -1493,29 +1493,34 @@ namespace windows_client.Model
         {
             get
             {
-                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                if (App.ViewModel.SelectedBackground != null)
                 {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
-                        return UI_Utils.Instance.LightGray;
-                    else if (IsSent)
+                    if (App.ViewModel.SelectedBackground.IsDefault)
                     {
-                        if (IsSms)
-                            return UI_Utils.Instance.SmsBackground;
+                        if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
+                            return UI_Utils.Instance.LightGray;
+                        else if (IsSent)
+                        {
+                            if (IsSms)
+                                return UI_Utils.Instance.SmsBackground;
+                            else
+                                return UI_Utils.Instance.HikeMsgBackground;
+                        }
                         else
-                            return UI_Utils.Instance.HikeMsgBackground;
+                            return UI_Utils.Instance.ReceivedChatBubbleColor;
                     }
                     else
-                        return UI_Utils.Instance.ReceivedChatBubbleColor;
+                    {
+                        if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
+                            return App.ViewModel.SelectedBackground.HeaderBackground;
+                        else if (IsSent)
+                            return App.ViewModel.SelectedBackground.SentBubbleBgColor;
+                        else
+                            return App.ViewModel.SelectedBackground.ReceivedBubbleBgColor;
+                    }
                 }
                 else
-                {
-                    if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
-                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.HeaderBackground : UI_Utils.Instance.White;
-                    else if (IsSent)
-                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.SentBubbleBgColor : UI_Utils.Instance.White;
-                    else
-                        return App.ViewModel.SelectedBackground != null ? App.ViewModel.SelectedBackground.ReceivedBubbleBgColor : UI_Utils.Instance.White;
-                }
+                    return UI_Utils.Instance.White;
             }
         }
 

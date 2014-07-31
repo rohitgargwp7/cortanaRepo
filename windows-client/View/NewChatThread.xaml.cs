@@ -3057,7 +3057,7 @@ namespace windows_client.View
                 StickerObj sticker = new StickerObj(convMessage.StickerObj.Category, convMessage.StickerObj.Id, null, false);
 
                 if (HikeViewModel.StickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
-                    HikeViewModel.StickerHelper.recentStickerHelper.AddSticker(sticker);
+                    HikeViewModel.StickerHelper.RecentStickerHelper.AddSticker(sticker);
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
@@ -3394,7 +3394,7 @@ namespace windows_client.View
                 {
                     if (category == StickerHelper.CATEGORY_RECENT)
                     {
-                        if (HikeViewModel.StickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                        if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count > 0)
                             StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
                         else
                             StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
@@ -3406,7 +3406,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (HikeViewModel.StickerHelper.recentStickerHelper.listRecentStickers.Count > 0)
+                    if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count > 0)
                         StickerCategoryTapped(StickerHelper.CATEGORY_RECENT);
                     else
                         StickerCategoryTapped(StickerHelper.CATEGORY_HUMANOID);
@@ -6225,7 +6225,7 @@ namespace windows_client.View
             conv.StickerObj = new StickerObj(sticker.Category, sticker.Id, null, true);
             conv.MetaDataString = string.Format("{{{0}:'{1}',{2}:'{3}'}}", HikeConstants.STICKER_ID, sticker.Id, HikeConstants.CATEGORY_ID, sticker.Category);
             AddNewMessageToUI(conv, false);
-            HikeViewModel.StickerHelper.recentStickerHelper.AddSticker(sticker);
+            HikeViewModel.StickerHelper.RecentStickerHelper.AddSticker(sticker);
 
             mPubSub.publish(HikePubSub.MESSAGE_SENT, conv);
         }
@@ -6310,10 +6310,10 @@ namespace windows_client.View
             StickerPivotItem stickerPivot;
 
             // Check if sticker category doesn't exist, show humanoid (default) category.
-            //if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
+            if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
-            //else
-            //    stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
+            else
+                stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
 
             // So that after reopening of ct , if pivot index are same we need to update pivot selection explicitly.
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
@@ -6335,8 +6335,8 @@ namespace windows_client.View
             }
             if (_selectedCategory == StickerHelper.CATEGORY_RECENT)
             {
-                stickerPivot.SetLlsSourceList(HikeViewModel.StickerHelper.recentStickerHelper.listRecentStickers);
-                if (HikeViewModel.StickerHelper.recentStickerHelper.listRecentStickers.Count == 0)
+                stickerPivot.SetLlsSourceList(HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers);
+                if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
                 else
                     stickerPivot.ShowStickers();
