@@ -3234,7 +3234,10 @@ namespace windows_client.View
                 if (obj.IsHidden)
                     data.Add(HikeConstants.CHAT_ENABLED, msisdn);
                 else
+                {
+                    data.Add(HikeConstants.CHAT_ENABLED, new JArray());
                     data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+                }
 
                 hideObj.Add(HikeConstants.DATA, data);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
@@ -3628,7 +3631,7 @@ namespace windows_client.View
         void SendResetPacketToServer()
         {
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
 
             JObject data = new JObject();
             data.Add(HikeConstants.RESET, true);
