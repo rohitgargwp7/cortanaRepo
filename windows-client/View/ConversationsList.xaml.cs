@@ -1101,7 +1101,7 @@ namespace windows_client.View
 
                 mObj.TypingNotificationText = null;
 
-                if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
+                if (!isDeleteAllChats && !mObj.IsHidden) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -3131,7 +3131,8 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 // GaganTo:Do show prompt as chats are 0
-                //MessageBox.Show();
+                MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt,AppResources.HiddenMode_ZeroChatConf_Header_Txt,MessageBoxButton.OK);
+                
                 return;
             }
             else
