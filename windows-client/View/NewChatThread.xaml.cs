@@ -1928,21 +1928,8 @@ namespace windows_client.View
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
 
-            #region Removing group from stealth
             if (cObj.IsHidden)
-            {
-                JObject hideObj = new JObject();
-                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
-                JObject data = new JObject();
-                JArray msisdn = new JArray();
-                msisdn.Add(cObj.Msisdn);
-                data.Add(HikeConstants.CHAT_ENABLED, new JArray());
-                data.Add(HikeConstants.CHAT_DISABLED, msisdn);
-                hideObj.Add(HikeConstants.DATA, data);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
-            }
-            #endregion
-
+                App.ViewModel.RemoveFromStealth(cObj);
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();

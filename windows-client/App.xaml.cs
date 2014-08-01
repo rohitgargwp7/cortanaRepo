@@ -628,7 +628,7 @@ namespace windows_client
 
                 // GaganTo:Check if hidden mode is active, if yes then go to chat else go to conv page 
 
-                if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive)) && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE) && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null) )
+                if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive)) && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE) && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
