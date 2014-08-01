@@ -470,9 +470,6 @@ namespace windows_client.ViewModel
             {
                 object[] vals = (object[])obj;
 
-                string from = (string)vals[0];
-                string to = (string)vals[1];
-
                 if (ShowTypingNotification != null)
                     ShowTypingNotification(null, vals);
 

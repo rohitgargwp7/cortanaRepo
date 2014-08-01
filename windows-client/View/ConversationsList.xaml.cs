@@ -3123,7 +3123,6 @@ namespace windows_client.View
             {
                 // GaganTo:Do show prompt as chats are 0
                 MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt, AppResources.HiddenMode_ZeroChatConf_Header_Txt, MessageBoxButton.OK);
-
                 return;
             }
             else
