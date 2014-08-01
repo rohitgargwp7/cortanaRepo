@@ -1058,7 +1058,7 @@ namespace windows_client.ViewModel
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
 
-        public void RemoveFromStealth(ConversationListObject cObj)
+        public void SendRemoveStealthPacket(ConversationListObject cObj)
         {
             HikePubSub mPubSub = App.HikePubSubInstance;
             JObject hideObj = new JObject();

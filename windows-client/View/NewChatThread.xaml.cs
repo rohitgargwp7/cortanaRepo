@@ -1929,7 +1929,7 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
 
             if (cObj.IsHidden)
-                App.ViewModel.RemoveFromStealth(cObj);
+                App.ViewModel.SendRemoveStealthPacket(cObj);
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();

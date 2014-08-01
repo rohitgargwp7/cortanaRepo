@@ -803,7 +803,7 @@ namespace windows_client.View
 
             if (sendHiddenChatToogledPacket && convObj.IsHidden)
             {
-                App.ViewModel.RemoveFromStealth(convObj);
+                App.ViewModel.SendRemoveStealthPacket(convObj);
             }
         }
 
@@ -1092,7 +1092,7 @@ namespace windows_client.View
 
                 mObj.TypingNotificationText = null;
 
-                if (!isDeleteAllChats && !mObj.IsHidden) // this is to avoid exception caused due to deleting all chats while receiving msgs
+                if (!isDeleteAllChats && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive))) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -3502,7 +3502,9 @@ namespace windows_client.View
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
-                    _resetTimer.Stop();
+                    
+                    if (_resetTimer !=null)
+                        _resetTimer.Stop();
                     // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
 
                     MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
@@ -3522,7 +3524,8 @@ namespace windows_client.View
                     }
                     else
                     {
-                        _resetTimer.Start();
+                        if (_resetTimer!=null)
+                            _resetTimer.Start();
                     }
 
                     break;
