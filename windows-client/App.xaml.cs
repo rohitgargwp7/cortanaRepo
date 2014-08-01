@@ -782,7 +782,7 @@ namespace windows_client
         private static void instantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.1") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
