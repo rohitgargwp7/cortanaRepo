@@ -3505,6 +3505,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to open.
+        /// </summary>
+        public static string Open_File {
+            get {
+                return ResourceManager.GetString("Open_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
         public static string Pause_Txt {
@@ -3528,6 +3537,15 @@ namespace windows_client.Languages {
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to play.
+        /// </summary>
+        public static string Play_File {
+            get {
+                return ResourceManager.GetString("Play_File", resourceCulture);
             }
         }
         
@@ -5112,6 +5130,15 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to view.
+        /// </summary>
+        public static string View_File {
+            get {
+                return ResourceManager.GetString("View_File", resourceCulture);
             }
         }
         
