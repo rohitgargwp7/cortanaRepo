@@ -214,9 +214,10 @@ namespace windows_client
                     Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
 
-                msisdn = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
+                var number = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
 
-                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden && !App.ViewModel.IsHiddenModeActive)
+                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(number)
+                    && App.ViewModel.ConvMap[number].IsHidden && !App.ViewModel.IsHiddenModeActive)
                     return;
 
                 object[] vals = new object[2];
