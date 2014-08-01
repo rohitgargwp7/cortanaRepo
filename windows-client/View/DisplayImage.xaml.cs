@@ -8,11 +8,16 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.IO.IsolatedStorage;
+using Microsoft.Xna.Framework.Media;
+using windows_client.Languages;
+
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
-        private string msisdn;
+        private string _msisdn;
+        private long _messsageId;
         public DisplayImage()
         {
             InitializeComponent();
@@ -34,13 +39,17 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 //TODO - use constants rather hard coded strings - MG
+
                 if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
                 {
+                    LoadApplicationBar();
+
                     object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
-                    long messsageId = (long)fileTapped[0];
-                    msisdn = (string)fileTapped[1];
-                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
+                    _messsageId = (long)fileTapped[0];
+                    _msisdn = (string)fileTapped[1];
+                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + Convert.ToString(_messsageId);
                     byte[] filebytes;
+
                     MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
                 }
@@ -48,45 +57,46 @@ namespace windows_client.View
                 {
                     string fileName;
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
-                    msisdn = (string)profilePicTapped[0];
+                    _msisdn = (string)profilePicTapped[0];
 
-                    if (!App.IS_TOMBSTONED && Utils.isGroupConversation(msisdn))
-                        FileImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
+                    if (!App.IS_TOMBSTONED && Utils.isGroupConversation(_msisdn))
+                        FileImage.Source = App.ViewModel.ConvMap[_msisdn].AvatarImage;
                     else
                     {
-                        string grpId = msisdn.Replace(":", "_");
+                        string grpId = _msisdn.Replace(":", "_");
                         FileImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
                     }
 
-                    if (msisdn == App.MSISDN)
-                        msisdn = HikeConstants.MY_PROFILE_PIC;
-                    string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+                    if (_msisdn == App.MSISDN)
+                        _msisdn = HikeConstants.MY_PROFILE_PIC;
+
+                    string filePath = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                     //check if image is already stored
                     byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                     if (fullViewBytes != null && fullViewBytes.Length > 0)
                     {
                         this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                     }
-                    else if (MiscDBUtil.hasCustomProfileImage(msisdn))
+                    else if (MiscDBUtil.hasCustomProfileImage(_msisdn))
                     {
-                        fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+                        fileName = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
-                        if (!Utils.isGroupConversation(msisdn))
+                        if (!Utils.isGroupConversation(_msisdn))
                         {
-                            if (msisdn == HikeConstants.MY_PROFILE_PIC)
+                            if (_msisdn == HikeConstants.MY_PROFILE_PIC)
                                 AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + App.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
                             else
-                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + _msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
                         }
                         else
-                            AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
+                            AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + _msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
-                        if (!Utils.isGroupConversation(msisdn))
-                            this.FileImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn, true);
+                        if (!Utils.isGroupConversation(_msisdn))
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultAvatar(_msisdn, true);
                         else
-                            this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(msisdn, true);
+                            this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(_msisdn, true);
                     }
                 }
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
@@ -128,6 +138,7 @@ namespace windows_client.View
             }
         }
 
+
         public void getProTipPicFromHikeServer_Callback(byte[] fullBytes, object fName)
         {
             try
@@ -159,7 +170,7 @@ namespace windows_client.View
                 if (fullBytes != null && fullBytes.Length > 0)
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
                 else
-                    this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
+                    this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(_msisdn);
             });
 
             PhoneApplicationService.Current.State[HikeConstants.IS_PIC_DOWNLOADED] = true;
@@ -359,7 +370,36 @@ namespace windows_client.View
             return true;
         }
 
+
+        //Loads Application bar
+        private void LoadApplicationBar()
+        {
+            ApplicationBar = new ApplicationBar();
+            ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton();
+            picSaveButton.IconUri = new Uri("/View/images/Appbar/icon_save.png", UriKind.Relative);
+            picSaveButton.Text = AppResources.Save_AppBar_Btn;
+            picSaveButton.Click += picSaveButton_Click;
+            ApplicationBar.Buttons.Add(picSaveButton);
+        }
+
         #endregion
+
+        private void picSaveButton_Click(object sender, EventArgs e)
+        {
+            string tempName = Convert.ToString(_messsageId);
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + tempName;
+            bool temp = Utils.SavePictureToLibrary(tempName, filePath);
+
+            if (temp)
+            {
+                MessageBox.Show(AppResources.SaveSuccess_Txt);
+            }
+            else
+            {
+                MessageBox.Show(AppResources.Something_Wrong_Txt);
+            }
+
+        }
 
         #endregion
     }

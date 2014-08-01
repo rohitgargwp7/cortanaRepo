@@ -277,6 +277,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto save photo.
+        /// </summary>
+        public static string AutoSavePhotoSettings_Txt {
+            get {
+                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {
@@ -1768,6 +1777,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everyone.
+        /// </summary>
+        public static string Everyone_Txt {
+            get {
+                return ResourceManager.GetString("Everyone_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to express yourself.
         /// </summary>
         public static string Express_Yourself_Txt {
@@ -1800,6 +1818,15 @@ namespace windows_client.Languages {
         public static string Facebook_Txt {
             get {
                 return ResourceManager.GetString("Facebook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites.
+        /// </summary>
+        public static string Favorites_Txt {
+            get {
+                return ResourceManager.GetString("Favorites_Txt", resourceCulture);
             }
         }
         
@@ -3469,6 +3496,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nobody.
+        /// </summary>
+        public static string Nobody_Txt {
+            get {
+                return ResourceManager.GetString("Nobody_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to no contacts to display.
         /// </summary>
         public static string NoContactsToDisplay_Txt {
@@ -3640,6 +3676,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to open.
+        /// </summary>
+        public static string Open_File {
+            get {
+                return ResourceManager.GetString("Open_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
         public static string Pause_Txt {
@@ -3663,6 +3708,15 @@ namespace windows_client.Languages {
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to play.
+        /// </summary>
+        public static string Play_File {
+            get {
+                return ResourceManager.GetString("Play_File", resourceCulture);
             }
         }
         
@@ -4041,6 +4095,15 @@ namespace windows_client.Languages {
         public static string Save_Contact_Txt {
             get {
                 return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved successfully.
+        /// </summary>
+        public static string SaveSuccess_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
             }
         }
         
@@ -4459,6 +4522,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show profile picture to.
+        /// </summary>
+        public static string Settings_ProfilePictureToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_ProfilePictureToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -4648,7 +4720,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show last seen.
+        ///   Looks up a localized string similar to Show last seen to.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {
@@ -5274,6 +5346,15 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to view.
+        /// </summary>
+        public static string View_File {
+            get {
+                return ResourceManager.GetString("View_File", resourceCulture);
             }
         }
         

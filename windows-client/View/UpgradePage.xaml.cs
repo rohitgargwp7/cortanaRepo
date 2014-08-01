@@ -59,7 +59,6 @@ namespace windows_client.View
                         #endregion
                     }
 
-
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
 

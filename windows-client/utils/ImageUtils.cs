@@ -1082,7 +1082,7 @@ namespace windows_client.utils
                 return video_Default;
             }
         }
-        
+
         #endregion
 
 
@@ -2022,7 +2022,7 @@ namespace windows_client.utils
             }
         }
 
-        Thickness _newCategoryThickness= new Thickness(0, 2, 0, 0);
+        Thickness _newCategoryThickness = new Thickness(0, 2, 0, 0);
         public Thickness NewCategoryThickness
         {
             get
@@ -2174,24 +2174,6 @@ namespace windows_client.utils
         }
 
         #endregion
-
-        public byte[] BitmapImgToByteArray(BitmapImage image)
-        {
-            try
-            {
-                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-                using (var msLargeImage = new MemoryStream())
-                {
-                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                    return msLargeImage.ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
-                return null;
-            }
-        }
 
         public byte[] PngImgToJpegByteArray(BitmapImage image)
         {

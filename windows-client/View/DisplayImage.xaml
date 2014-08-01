@@ -29,8 +29,7 @@
                         ScaleX="1" ScaleY="1"
                         TranslateX="0" TranslateY="0"/>
                 </Image.RenderTransform>
-            </Image>
-
+            </Image>     
             <ProgressBar x:Name="loadingProgress" Opacity="0" Background="Transparent" IsEnabled="True" IsIndeterminate="True"/>
         </Grid>
     </Grid>

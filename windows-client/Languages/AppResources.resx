@@ -1294,7 +1294,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show last seen</value>
+    <value>Show last seen to</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>last seen {0}</value>
@@ -2009,6 +2009,9 @@ Download it like asap from http://hike.in!</value>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
   </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Show profile picture to</value>
+  </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>add favorites</value>
   </data>
@@ -2120,6 +2123,18 @@ Download it like asap from http://hike.in!</value>
     <value>enter password</value>
     <comment>max 25 char</comment>
   </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>play</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>view</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>open</value>
+    <comment>General Text</comment>
+ </data>
   <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
     <value>OOPS! Something went wrong</value>
   </data>
@@ -2182,5 +2197,23 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
     <value>Hide your chats with a password.</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Auto save photo</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Saved successfully</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Everyone</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Favorites</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Nobody</value>
+    <comment>Toggle Switch Text</comment>
   </data>
 </root>

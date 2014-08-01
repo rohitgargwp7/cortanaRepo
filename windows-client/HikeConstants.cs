@@ -366,6 +366,7 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+        public static readonly string AVATAR = "avatar";
         public static readonly string PUSH_CBG = "pushcbg";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";

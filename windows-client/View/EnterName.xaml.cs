@@ -243,16 +243,7 @@ namespace windows_client
                 if (PhoneApplicationService.Current.State.ContainsKey("img"))
                 {
                     fullViewImageBytes = (byte[])PhoneApplicationService.Current.State["img"];
-
-                    MemoryStream memStream = new MemoryStream(fullViewImageBytes);
-                    memStream.Seek(0, SeekOrigin.Begin);
-
-                    if (profileImage == null)
-                        profileImage = new BitmapImage();
-
-                    profileImage.SetSource(memStream);
-                    avatarImage.Source = profileImage;
-
+                    avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
                     reloadImage = false;
                 }
                 else

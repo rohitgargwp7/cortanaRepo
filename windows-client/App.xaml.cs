@@ -53,6 +53,7 @@ namespace windows_client
 
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
+        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -62,6 +63,7 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
+        public static readonly string AUTO_SAVE_PHOTO = "autoSavePhoto";
 
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";

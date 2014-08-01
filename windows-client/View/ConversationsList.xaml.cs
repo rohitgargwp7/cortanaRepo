@@ -1229,7 +1229,7 @@ namespace windows_client.View
                     //if its image update and status are laoded, update each status userImage async
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
                     {
-                        UpdateUserImageInStatus(sm.Msisdn);
+                        App.ViewModel.UpdateUserImageInStatus(sm.Msisdn);
                     }
 
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
@@ -1517,7 +1517,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (isStatusMessagesLoaded)
-                            UpdateUserImageInStatus(c.Msisdn);
+                            App.ViewModel.UpdateUserImageInStatus(c.Msisdn);
                     });
                     #endregion
                 }
@@ -1735,17 +1735,6 @@ namespace windows_client.View
                 txtContactsOnHike.Text = AppResources.Conversations_1Contact_on_hike;
             else
                 txtContactsOnHike.Text = string.Format(AppResources.Conversations_NContacts_on_hike, hikeContactList.Count);
-        }
-
-        private async void UpdateUserImageInStatus(string msisdn)
-        {
-            await Task.Delay(1);
-
-            foreach (var status in App.ViewModel.StatusList)
-            {
-                if (status.Msisdn == msisdn)
-                    status.UpdateImage();
-            }
         }
 
         #endregion
