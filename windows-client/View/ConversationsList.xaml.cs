@@ -262,7 +262,7 @@ namespace windows_client.View
 
             FrameworkDispatcher.Update();
         }
-        
+
         private async void BindFriendsAsync()
         {
             contactGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
@@ -782,7 +782,7 @@ namespace windows_client.View
         void DeleteConversation(ConversationListObject convObj, bool sendHiddenChatToogledPacket)
         {
             // Remove entry from map for UI.
-            App.ViewModel.ConvMap.Remove(convObj.Msisdn); 
+            App.ViewModel.ConvMap.Remove(convObj.Msisdn);
 
             // Removed from observable collection.
             App.ViewModel.MessageListPageCollection.Remove(convObj);
@@ -791,7 +791,7 @@ namespace windows_client.View
                 ShowFTUECards();
 
             // If group conversation, send group leave packet too.
-            if (Utils.isGroupConversation(convObj.Msisdn)) 
+            if (Utils.isGroupConversation(convObj.Msisdn))
             {
                 JObject jObj = new JObject();
                 jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
@@ -803,16 +803,7 @@ namespace windows_client.View
 
             if (sendHiddenChatToogledPacket && convObj.IsHidden)
             {
-                JObject hideObj = new JObject();
-                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
-
-                JObject data = new JObject();
-                JArray msisdn = new JArray();
-                msisdn.Add(convObj.Msisdn);
-                data.Add(HikeConstants.CHAT_DISABLED, msisdn);
-
-                hideObj.Add(HikeConstants.DATA, data);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+                App.ViewModel.SendRemoveStealthPacket(convObj);
             }
         }
 
@@ -1101,7 +1092,7 @@ namespace windows_client.View
 
                 mObj.TypingNotificationText = null;
 
-                if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
+                if (!isDeleteAllChats && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive))) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -1123,13 +1114,13 @@ namespace windows_client.View
                 {
                     bool isHikeJingleEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled)
+                    if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled)
+                    if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
@@ -3114,7 +3105,7 @@ namespace windows_client.View
 
         // Confirm hidden mode password
         bool _isConfirmPassword;
-        
+
         // Temporary password for confirmation
         string _tempPassword;
 
@@ -3130,8 +3121,7 @@ namespace windows_client.View
         {
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                // GaganTo:Do show prompt as chats are 0
-                //MessageBox.Show();
+                MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt, AppResources.HiddenMode_ZeroChatConf_Header_Txt, MessageBoxButton.OK);
                 return;
             }
             else
@@ -3267,7 +3257,7 @@ namespace windows_client.View
                             {
                                 _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
                                 UpdateToolTip(true);
-                            } 
+                            }
                         }
 
                         _isConfirmPassword = false;
@@ -3448,7 +3438,7 @@ namespace windows_client.View
                     if (isModeChanged)
                     {
                         conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
-                        conversationPageToolTip.LeftIconSource = null;
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
                         conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
@@ -3477,17 +3467,21 @@ namespace windows_client.View
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
 
-                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    _tipMode = ToolTipMode.DEFAULT;
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
 
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    ResetHiddenMode();
-
-                    if (_resetTimer != null)
+                    if (mBox == MessageBoxResult.OK)
                     {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        ResetHiddenMode();
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
                     }
 
                     break;
@@ -3504,18 +3498,29 @@ namespace windows_client.View
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
-                    conversationPageToolTip.IsShow = false;
-                    
-                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
-                
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                    _tipMode = ToolTipMode.DEFAULT;
 
                     if (_resetTimer != null)
-                    {
                         _resetTimer.Stop();
-                        _resetTimer = null;
+
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
+
+                    if (mBox == MessageBoxResult.OK)
+                    {
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
+                        conversationPageToolTip.IsShow = false;
+                    }
+                    else
+                    {
+                        if (_resetTimer != null)
+                            _resetTimer.Start();
                     }
 
                     break;
@@ -3530,10 +3535,10 @@ namespace windows_client.View
                     break;
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
-                    
+
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                     _tipMode = ToolTipMode.DEFAULT;
-                    
+
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
                     if (_resetTimer != null)
@@ -3593,7 +3598,7 @@ namespace windows_client.View
 
             if (list != null && list.Count() > 0)
             {
-                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
+                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; )
                 {
                     if (App.ViewModel.MessageListPageCollection[i].IsHidden)
                     {
@@ -3615,11 +3620,11 @@ namespace windows_client.View
         void SendResetPacketToServer()
         {
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
 
             JObject data = new JObject();
             data.Add(HikeConstants.RESET, true);
-            
+
             hideObj.Add(HikeConstants.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }

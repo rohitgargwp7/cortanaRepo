@@ -240,7 +240,7 @@ namespace windows_client.ViewModel
 
             if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
                 IsDarkMode = true;
-            
+
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
@@ -469,6 +469,7 @@ namespace windows_client.ViewModel
             else if (type == HikePubSub.TYPING_CONVERSATION)
             {
                 object[] vals = (object[])obj;
+
                 if (ShowTypingNotification != null)
                     ShowTypingNotification(null, vals);
 
@@ -1055,6 +1056,19 @@ namespace windows_client.ViewModel
             PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
+        }
+
+        public void SendRemoveStealthPacket(ConversationListObject cObj)
+        {
+            HikePubSub mPubSub = App.HikePubSubInstance;
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+            JObject data = new JObject();
+            JArray msisdn = new JArray();
+            msisdn.Add(cObj.Msisdn);
+            data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+            hideObj.Add(HikeConstants.DATA, data);
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
 
         #region MULTIPLE IMAGE

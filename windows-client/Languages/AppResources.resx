@@ -2113,11 +2113,11 @@ Download it like asap from http://hike.in!</value>
     <value>unhide chat</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
-    <value>confirm your new password</value>
+    <value>Confirm your password</value>
     <comment>max 25 char</comment>
   </data>
   <data name="EnterPassword_Txt" xml:space="preserve">
-    <value>enter your password</value>
+    <value>enter password</value>
     <comment>max 25 char</comment>
   </data>
   <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
@@ -2145,21 +2145,42 @@ Download it like asap from http://hike.in!</value>
     <value>reset hidden mode</value>
   </data>
   <data name="ResetTip_Txt" xml:space="preserve">
-    <value>Resetting chat in {0}. All hidden chats will be deleted.</value>
+    <value>All chats will be deleted after {0} minutes.</value>
   </data>
   <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
-    <value>Are you sure you want to reset hidden mode?</value>
+    <value>Tap here to reset Hidden Mode now!</value>
   </data>
   <data name="HiddenMode_Completed_Txt" xml:space="preserve">
-    <value>to complete setup, tap on the shield to hide your chats.</value>
+    <value>To complete setup, tap on 'hi' to hide your chats.</value>
   </data>
   <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
-    <value>hide your chats with a password. tap on logo to get started.</value>
+    <value>Hide your chats with a password. Tap on 'hi' to get started.</value>
   </data>
   <data name="HiddenMode_Step2_Txt" xml:space="preserve">
-    <value>tap and hold a chat to markit as ‘hidden’.</value>
+    <value>Tap and hold a chat to mark it ‘hidden’.</value>
   </data>
   <data name="EnterNewPassword_Txt" xml:space="preserve">
-    <value>enter your new password</value>
+    <value>Create password to hide your chats</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>All your hidden chats will be deleted. Are you sure?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>Confirm Reset?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>Cancel Reset?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>This will stop hidden mode reset. Are you sure?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>This will stop hidden mode reset. Are you sure?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Start a chat and tap on 'hi'</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Hide your chats with a password.</value>
   </data>
 </root>

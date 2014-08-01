@@ -1912,13 +1912,14 @@ namespace windows_client.View
             /*
             * 1. Delete from DB (pubsub)
             * 2. Remove from ConvList page
-            * 3. GoBack
+            * 3. Remove from stealth list 
+            * 4. GoBack
             */
             JObject jObj = new JObject();
             jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
             jObj[HikeConstants.TO] = mContactNumber;
-
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
 
             App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
@@ -1926,6 +1927,10 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
+
+            if (cObj.IsHidden)
+                App.ViewModel.SendRemoveStealthPacket(cObj);
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
             else // case when this page is opened through push notification or share picker
@@ -4040,9 +4045,9 @@ namespace windows_client.View
                         toast.Tag = cObj.Msisdn;
 
                         if (cObj.IsHidden)
-                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-                        else
                             toast.Title = String.Empty;
+                        else
+                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
 
                         // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
                         toast.Message = cObj.ToastText;

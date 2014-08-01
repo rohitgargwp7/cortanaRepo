@@ -782,7 +782,7 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_lastMessage);
-                
+
                 writer.Write(_timeStamp);
                 writer.Write(_isOnhike);
                 writer.Write((int)_messageStatus);
@@ -790,7 +790,7 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
                 writer.Write(_unreadCounter);
-                
+
                 if (_draftMessage == null)
                     writer.WriteStringBytes("*@N@*");
                 else
@@ -830,17 +830,17 @@ namespace windows_client.Model
                 _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_msisdn == "*@N@*")
                     _msisdn = null;
-                
+
                 count = reader.ReadInt32();
                 _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                     _contactName = null;
-                
+
                 count = reader.ReadInt32();
                 _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_lastMessage == "*@N@*")
                     _lastMessage = null;
-                
+
                 _timeStamp = reader.ReadInt64();
                 _isOnhike = reader.ReadBoolean();
                 _messageStatus = (ConvMessage.State)reader.ReadInt32();
@@ -862,17 +862,17 @@ namespace windows_client.Model
                 _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_msisdn == "*@N@*")
                     _msisdn = null;
-                
+
                 count = reader.ReadInt32();
                 _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                     _contactName = null;
-                
+
                 count = reader.ReadInt32();
                 _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_lastMessage == "*@N@*")
                     _lastMessage = null;
-                
+
                 _timeStamp = reader.ReadInt64();
                 _isOnhike = reader.ReadBoolean();
                 _messageStatus = (ConvMessage.State)reader.ReadInt32();

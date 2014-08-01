@@ -206,12 +206,20 @@ namespace windows_client
                 string sentTo = "";
                 try
                 {
+                    // If not null then this is group id
                     sentTo = (string)jsonObj[HikeConstants.TO];
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
+
+                var number = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
+
+                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(number)
+                    && App.ViewModel.ConvMap[number].IsHidden && !App.ViewModel.IsHiddenModeActive)
+                    return;
+
                 object[] vals = new object[2];
                 vals[0] = msisdn;
                 vals[1] = sentTo;
