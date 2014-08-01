@@ -687,7 +687,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Audio video , Exception : " + ex.StackTrace);
+                Debug.WriteLine("Utils.cs ::  PlayFileInMediaPlayer ,Audio video , Exception : " + ex.StackTrace);
             }
             return;
         }
