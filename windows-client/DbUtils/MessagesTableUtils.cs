@@ -198,7 +198,7 @@ namespace windows_client.DbUtils
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
                         if (vars[1] == "0") // DND USER and not OPTED IN
                         {
                             if (waitingParticipants == null)
@@ -229,7 +229,7 @@ namespace windows_client.DbUtils
                     else
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
-                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
                         obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                 }
@@ -239,7 +239,7 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                     else
@@ -268,7 +268,7 @@ namespace windows_client.DbUtils
                     string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = string.Format(msgtext, gp.FirstName);
                     }
                     else // 1-1 chat
@@ -294,14 +294,37 @@ namespace windows_client.DbUtils
                 #region NO_INFO
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    string toastText = String.Empty;
+ 
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                        toastText = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        obj.LastMessage = convMsg.Message;
+                        obj.GroupMemberName = gp != null ? gp.FirstName : string.Empty;
+
+                        if (obj.IsHidden)
+                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        {
+                            toastText = GetToastNotification(convMsg);
+                            toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
+                        }
+
+                        obj.ToastText = toastText;
                     }
                     else
+                    {
                         obj.LastMessage = convMsg.Message;
+
+                        if (obj.IsHidden)
+                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                            toastText = GetToastNotification(convMsg);
+
+                        obj.ToastText = toastText;                           
+                    }
                 }
                 #endregion
                 #region Chat Background Changed
@@ -351,6 +374,31 @@ namespace windows_client.DbUtils
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             return obj;
+        }
+
+        private static string GetToastNotification(ConvMessage convMsg)
+        {
+            string toastText = HikeConstants.TOAST_FOR_MESSAGE;
+
+            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+                toastText = HikeConstants.TOAST_FOR_STICKER;
+            else if (convMsg.FileAttachment != null)
+            {
+                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    toastText = HikeConstants.TOAST_FOR_PHOTO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    toastText = HikeConstants.TOAST_FOR_AUDIO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                    toastText = HikeConstants.TOAST_FOR_VIDEO;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    toastText = HikeConstants.TOAST_FOR_CONTACT;
+                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    toastText = HikeConstants.TOAST_FOR_LOCATION;
+                else
+                    toastText = HikeConstants.TOAST_FOR_FILE;
+            }
+
+            return toastText;
         }
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
@@ -558,7 +606,7 @@ namespace windows_client.DbUtils
 
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
-
+                        
                         using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))

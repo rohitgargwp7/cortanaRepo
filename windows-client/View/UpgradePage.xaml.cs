@@ -55,7 +55,7 @@ namespace windows_client.View
                     ManageNavigation();
                 }
                 else
-                    throw new UpgradeNotCompletedException(ee.Error.ToString());
+                    throw new UpgradeNotCompletedException(ee.Error);
             };
 
             _backgroundWorker.RunWorkerAsync();
@@ -529,12 +529,9 @@ namespace windows_client.View
 
     class UpgradeNotCompletedException : Exception
     {
-        public override string Message
+        public UpgradeNotCompletedException(Exception ex)
+            : base(ex.ToString())
         {
-            get
-            {
-                return base.Message;
-            }
         }
 
         public UpgradeNotCompletedException(string msg)
