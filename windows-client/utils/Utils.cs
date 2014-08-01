@@ -13,8 +13,8 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
 using windows_client.Languages;
 using windows_client.Misc;
+using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
-
 
 namespace windows_client.utils
 {
@@ -699,6 +699,23 @@ namespace windows_client.utils
                 }
             }
             return result;
+        }
+        public static void PlayFileInMediaPlayer(string fileLocation)
+        {
+            MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+            mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
+            mediaPlayerLauncher.Location = MediaLocationType.Data;
+            mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
+            mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
+            try
+            {
+                mediaPlayerLauncher.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Utils.xaml ::  PlayFileInMediaPlayer ,Audio video , Exception : " + ex.StackTrace);
+            }
+            return;
         }
     }
 }
