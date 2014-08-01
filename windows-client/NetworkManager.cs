@@ -93,10 +93,12 @@ namespace windows_client
         {
             if (string.IsNullOrEmpty(msg))
                 return;
+
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);
             }
+
             JObject jsonObj = null;
             try
             {
@@ -1537,7 +1539,7 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                     tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
                             }
                         }
