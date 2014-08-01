@@ -3224,10 +3224,7 @@ namespace windows_client.View
                 if (obj.IsHidden)
                     data.Add(HikeConstants.CHAT_ENABLED, msisdn);
                 else
-                {
-                    data.Add(HikeConstants.CHAT_ENABLED, new JArray());
                     data.Add(HikeConstants.CHAT_DISABLED, msisdn);
-                }
 
                 hideObj.Add(HikeConstants.DATA, data);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);

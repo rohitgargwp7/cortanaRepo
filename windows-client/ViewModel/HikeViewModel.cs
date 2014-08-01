@@ -1066,7 +1066,6 @@ namespace windows_client.ViewModel
             JObject data = new JObject();
             JArray msisdn = new JArray();
             msisdn.Add(cObj.Msisdn);
-            data.Add(HikeConstants.CHAT_ENABLED, new JArray());
             data.Add(HikeConstants.CHAT_DISABLED, msisdn);
             hideObj.Add(HikeConstants.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
