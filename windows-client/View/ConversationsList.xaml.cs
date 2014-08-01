@@ -3515,12 +3515,18 @@ namespace windows_client.View
                     break;
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_STEP2:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_COMPLETE:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
