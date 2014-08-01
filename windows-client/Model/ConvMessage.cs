@@ -263,7 +263,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
-                    NotifyPropertyChanged("LongPressMediaPlayVisibility");
+                    NotifyPropertyChanged("MediaActionVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
                     NotifyPropertyChanged("FileFailedImageVisibility");
@@ -1592,7 +1592,7 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility LongPressMediaPlayVisibility
+        public Visibility MediaActionVisibility
         {
             get
             {
