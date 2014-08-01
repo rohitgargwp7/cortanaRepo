@@ -691,6 +691,7 @@ namespace windows_client.utils
             }
             return;
         }
+
         private static object _savePictureLock = new Object();
         public static bool SavePictureToLibrary(string newName, string isolatedStorageFilePath)
         {
