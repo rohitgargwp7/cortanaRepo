@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using windows_client.Languages;
 using windows_client.Misc;
 using Microsoft.Phone.Tasks;
+using Microsoft.Xna.Framework.Media;
 
 namespace windows_client.utils
 {
@@ -673,7 +674,6 @@ namespace windows_client.utils
             }
             return charCount;
         }
-
         public static void PlayFileInMediaPlayer(string fileLocation)
         {
             MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
@@ -690,6 +690,31 @@ namespace windows_client.utils
                 Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Audio video , Exception : " + ex.StackTrace);
             }
             return;
+        }
+        private static object _savePictureLock = new Object();
+        public static bool SavePictureToLibrary(string newName, string isolatedStorageFilePath)
+        {
+            bool result;
+            lock (_savePictureLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        IsolatedStorageFileStream myFileStream = isoStore.OpenFile(isolatedStorageFilePath, FileMode.Open, FileAccess.Read);
+                        MediaLibrary library = new MediaLibrary();
+                        object temp = library.SavePicture(newName, myFileStream);
+                        myFileStream.Close();
+                        result = (temp != null) ? true : false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Utils :: SavePictureToLibrary - Error on Saving file : " + isolatedStorageFilePath + ", Exception : " + e.StackTrace);
+                    result = false;
+                }
+            }
+            return result;
         }
     }
 }

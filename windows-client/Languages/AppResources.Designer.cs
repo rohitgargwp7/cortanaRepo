@@ -277,6 +277,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto save photo.
+        /// </summary>
+        public static string AutoSavePhotoSettings_Txt {
+            get {
+                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {
@@ -3888,6 +3897,15 @@ namespace windows_client.Languages {
         public static string Save_Contact_Txt {
             get {
                 return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved successfully.
+        /// </summary>
+        public static string SaveSuccess_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
             }
         }
         
