@@ -809,6 +809,7 @@ namespace windows_client.View
                 JObject data = new JObject();
                 JArray msisdn = new JArray();
                 msisdn.Add(convObj.Msisdn);
+                data.Add(HikeConstants.CHAT_ENABLED, new JArray());
                 data.Add(HikeConstants.CHAT_DISABLED, msisdn);
 
                 hideObj.Add(HikeConstants.DATA, data);

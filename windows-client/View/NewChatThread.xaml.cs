@@ -1912,13 +1912,14 @@ namespace windows_client.View
             /*
             * 1. Delete from DB (pubsub)
             * 2. Remove from ConvList page
-            * 3. GoBack
+            * 3. Remove from stealth list 
+            * 4. GoBack
             */
             JObject jObj = new JObject();
             jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
             jObj[HikeConstants.TO] = mContactNumber;
-
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
 
             App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
@@ -1926,6 +1927,23 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
+
+            #region Removing group from stealth
+            if (cObj.IsHidden)
+            {
+                JObject hideObj = new JObject();
+                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+                JObject data = new JObject();
+                JArray msisdn = new JArray();
+                msisdn.Add(cObj.Msisdn);
+                data.Add(HikeConstants.CHAT_ENABLED, new JArray());
+                data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+                hideObj.Add(HikeConstants.DATA, data);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+            }
+            #endregion
+
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
             else // case when this page is opened through push notification or share picker
