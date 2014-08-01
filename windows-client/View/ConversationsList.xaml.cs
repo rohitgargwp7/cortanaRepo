@@ -230,7 +230,7 @@ namespace windows_client.View
             else
             {
                 emptyScreenGrid.Visibility = Visibility.Collapsed;
-                
+
                 if (llsConversations.Visibility == Visibility.Collapsed)
                     llsConversations.Visibility = Visibility.Visible;
 
@@ -341,7 +341,7 @@ namespace windows_client.View
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             emptyScreenGrid.Visibility = App.ViewModel.MessageListPageCollection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            
+
             if (App.ViewModel.MessageListPageCollection.Count == 0)
                 ShowFTUECards();
 
@@ -364,9 +364,9 @@ namespace windows_client.View
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 NetworkManager.turnOffNetworkManager = false;
-            
+
             App.MqttManagerInstance.connect();
-            
+
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
@@ -437,7 +437,7 @@ namespace windows_client.View
             {
                 _usersOnHike = UsersTableUtils.getHikeContactCount();
                 _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
-                
+
                 if (_usersOnHike != 0)
                 {
                     peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
@@ -1267,7 +1267,7 @@ namespace windows_client.View
                     //if its image update and status are laoded, update each status userImage async
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
                     {
-                        UpdateUserImageInStatus(sm.Msisdn);
+                        App.ViewModel.UpdateUserImageInStatus(sm.Msisdn);
                     }
 
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
@@ -1555,7 +1555,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (isStatusMessagesLoaded)
-                            UpdateUserImageInStatus(c.Msisdn);
+                            App.ViewModel.UpdateUserImageInStatus(c.Msisdn);
                     });
                     #endregion
                 }
@@ -1764,17 +1764,6 @@ namespace windows_client.View
                 txtContactsOnHike.Text = AppResources.Conversations_1Contact_on_hike;
             else
                 txtContactsOnHike.Text = string.Format(AppResources.Conversations_NContacts_on_hike, hikeContactList.Count);
-        }
-
-        private async void UpdateUserImageInStatus(string msisdn)
-        {
-            await Task.Delay(1);
-
-            foreach (var status in App.ViewModel.StatusList)
-            {
-                if (status.Msisdn == msisdn)
-                    status.UpdateImage();
-            }
         }
 
         #endregion
@@ -2875,7 +2864,7 @@ namespace windows_client.View
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
                     button.IsEnabled = true;
-                
+
                 ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
@@ -2884,7 +2873,7 @@ namespace windows_client.View
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
                     button.IsEnabled = false;
-                
+
                 ApplicationBar.IsMenuEnabled = false;
                 launchPagePivot.IsHitTestVisible = false;
             }
@@ -2925,7 +2914,7 @@ namespace windows_client.View
         {
             var listBox = sender as ListBox;
             ContactInfo c = listBox.SelectedItem as ContactInfo;
-            
+
             if (c == null)
                 return;
 
