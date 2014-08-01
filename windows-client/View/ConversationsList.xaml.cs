@@ -3121,7 +3121,6 @@ namespace windows_client.View
         {
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                // GaganTo:Do show prompt as chats are 0
                 MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt, AppResources.HiddenMode_ZeroChatConf_Header_Txt, MessageBoxButton.OK);
                 return;
             }
@@ -3471,8 +3470,8 @@ namespace windows_client.View
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
 
-                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
                     MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
+
                     if (mBox == MessageBoxResult.OK)
                     {
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
@@ -3502,10 +3501,9 @@ namespace windows_client.View
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
-                    
-                    if (_resetTimer !=null)
+
+                    if (_resetTimer != null)
                         _resetTimer.Stop();
-                    // GaganTo:Do show prompt for confirmation. Below code should be run if user confirms
 
                     MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
 
@@ -3524,7 +3522,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        if (_resetTimer!=null)
+                        if (_resetTimer != null)
                             _resetTimer.Start();
                     }
 

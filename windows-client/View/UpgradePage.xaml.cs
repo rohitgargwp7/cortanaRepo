@@ -329,10 +329,13 @@ namespace windows_client.View
                         }
 
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                        
+
                         string msisdn = Utils.GetParamFromUri(targetPage);
                         bool IsStealth = Utils.IsUriStealth(targetPage);
-                        if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive)) && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE) && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+
+                        if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                            && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                            && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                         {
                             App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
                             PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
