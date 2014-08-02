@@ -73,14 +73,11 @@ namespace windows_client.Model
                 if (_lastMessage != value)
                 {
                     _lastMessage = value;
-                    _toastText = value;
-                    GroupMemberName = null;
                     NotifyPropertyChanged("LastMessage");
                 }
             }
         }
 
-        string _toastText;
         /// <summary>
         /// use where we dont need to show typing notification
         /// </summary>
@@ -88,12 +85,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _toastText;
-            }
-            set
-            {
-                if (value != _toastText)
-                    _toastText = value;
+                return _lastMessage;
             }
         }
 
@@ -218,34 +210,7 @@ namespace windows_client.Model
 
                 NotifyPropertyChanged("MuteIconVisibility");
                 NotifyPropertyChanged("UnreadCircleVisibility");
-                NotifyPropertyChanged("MuteIconImage");
             }
-        }
-
-        String _groupMemberName;
-        [DataMember]
-        public String GroupMemberName
-        {
-            get
-            {
-                if (IsGroupChat && (_messageStatus == ConvMessage.State.RECEIVED_UNREAD || _messageStatus == ConvMessage.State.RECEIVED_READ))
-                    return _groupMemberName;
-                else
-                    return String.Empty;
-            }
-            set
-            {
-                if (value != _groupMemberName)
-                {
-                    _groupMemberName = value;
-                    NotifyPropertyChanged("GroupMemberName");
-                }
-            }
-        }
-
-        public BitmapImage MuteIconImage
-        {
-            get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
         public Visibility MuteIconVisibility
@@ -334,7 +299,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
+                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -456,59 +421,6 @@ namespace windows_client.Model
             }
         }
 
-        bool _isHidden = false;
-        [DataMember]
-        public bool IsHidden
-        {
-            get
-            {
-                return _isHidden;
-            }
-            set
-            {
-                if (_isHidden != value)
-                {
-                    _isHidden = value;
-                    NotifyPropertyChanged("ChatVisibility");
-                    NotifyPropertyChanged("HideUnhideChatText");
-                    NotifyPropertyChanged("ChatHeaderForegroundColor");
-                }
-            }
-        }
-
-        public string HideUnhideChatText
-        {
-            get
-            {
-                if (IsHidden)
-                    return AppResources.Unhide_Txt;
-                else
-                    return AppResources.Hide_Txt;
-            }
-        }
-
-        public Visibility HideUnhideChatVisibility
-        {
-            get
-            {
-                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        public Visibility ChatVisibility
-        {
-            get
-            {
-                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : IsHidden ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        public void HiddenModeToggled()
-        {
-            NotifyPropertyChanged("ChatVisibility");
-            NotifyPropertyChanged("HideUnhideChatVisibility");
-        }
-
         public BitmapImage ConvImage
         {
             get
@@ -553,21 +465,10 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrEmpty(_typingNotificationText))
+                if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
                     return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
                     return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
-            }
-        }
-
-        public SolidColorBrush ChatHeaderForegroundColor
-        {
-            get
-            {
-                if (IsHidden)
-                    return (SolidColorBrush)Application.Current.Resources["StealthRed"];
-                else
-                    return (SolidColorBrush)Application.Current.Resources["HikeFGBrush"];
             }
         }
 
@@ -796,13 +697,6 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_draftMessage);
-
-                if (_groupMemberName == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(_groupMemberName);
-
-                writer.Write(_isHidden);
             }
             catch (Exception ex)
             {
@@ -900,27 +794,6 @@ namespace windows_client.Model
                 catch
                 {
                     _draftMessage = string.Empty;
-                }
-
-                try
-                {
-                    count = reader.ReadInt32();
-                    _groupMemberName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_groupMemberName == "*@N@*")
-                        _groupMemberName = string.Empty;//so that on comparing with unsent empty text it returns true 
-                }
-                catch
-                {
-                    _groupMemberName = string.Empty;
-                }
-
-                try
-                {
-                    _isHidden = reader.ReadBoolean();
-                }
-                catch
-                {
-                    _isHidden = false;
                 }
             }
             catch (Exception ex)
