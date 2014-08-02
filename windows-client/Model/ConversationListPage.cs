@@ -213,6 +213,18 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility GroupIconVisibility
+        {
+            get
+            {
+                if (IsGroupChat)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+
         public Visibility MuteIconVisibility
         {
             get
