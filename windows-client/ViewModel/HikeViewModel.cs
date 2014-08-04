@@ -1297,5 +1297,7 @@ namespace windows_client.ViewModel
         }
 
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
+
+        public string password;
     }
 }

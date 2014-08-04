@@ -1543,6 +1543,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to enter current password .
+        /// </summary>
+        public static string Enter_current_pwd_txt {
+            get {
+                return ResourceManager.GetString("Enter_current_pwd_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm your number.
         /// </summary>
         public static string EnterMsisdn_ConfirmNumber_Txt {
@@ -1588,7 +1597,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create password to hide your chats.
+        ///   Looks up a localized string similar to Create password.
         /// </summary>
         public static string EnterNewPassword_Txt {
             get {
@@ -4063,7 +4072,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All chats will be deleted after {0} minutes..
+        ///   Looks up a localized string similar to All hidden chats will be deleted after {0} minutes..
         /// </summary>
         public static string ResetTip_Txt {
             get {

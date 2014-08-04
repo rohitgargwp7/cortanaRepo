@@ -45,7 +45,7 @@
 
         <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="3" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="passwordOverlay_PasswordOverlayVisibilityChanged"/>
         
-        <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
+        <Grid x:Name="headerGrid" Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -71,7 +71,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="tipControl" Grid.Row="1">
             <local:ToolTipsUC x:Name="conversationPageToolTip" ControlBackgroundColor="{StaticResource StealthRed}"/>
         </Grid>
         

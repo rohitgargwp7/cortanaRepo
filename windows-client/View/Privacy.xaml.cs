@@ -29,7 +29,7 @@ namespace windows_client.View
             // dont show reset and change password option if any tooltip is being shown on home screen
             if (!App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 hiddenModeGrid.Visibility = Visibility.Visible;
-            
+
             bool value = App.appSettings.TryGetValue(App.DISPLAYPIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
@@ -92,11 +92,20 @@ namespace windows_client.View
         string _password;
         string _tempPassword;
 
+        private void passwordOverlay_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
+        {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                privacySettings.IsHitTestVisible = popup.IsShow ? false : true;
+            }
+        }
+
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password))
+            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out App.ViewModel.password))
             {
-                passwordOverlay.Text = AppResources.EnterPassword_Txt;
+                passwordOverlay.Text = AppResources.Enter_current_pwd_txt;
                 passwordOverlay.Password = String.Empty;
                 passwordOverlay.IsShow = true;
                 _isConfirmPassword = false;
@@ -112,8 +121,8 @@ namespace windows_client.View
                 if (_isChangePassword)
                 {
                     _isChangePassword = false;
-                    
-                    if (_password == popup.Password)
+
+                    if (App.ViewModel.password == popup.Password)
                     {
                         popup.Text = AppResources.EnterNewPassword_Txt;
                         popup.Password = String.Empty;
@@ -125,8 +134,9 @@ namespace windows_client.View
                 {
                     if (_tempPassword.Equals(popup.Password))
                     {
-                        _password = popup.Password;
-                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                        App.ViewModel.password = popup.Password;
+                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.password);
+
                     }
 
                     _isConfirmPassword = false;

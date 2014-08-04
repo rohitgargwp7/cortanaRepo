@@ -16,73 +16,77 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="2" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False"/>
+        <local:PasswordPopUpUC x:Name="passwordOverlay" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="passwordOverlay_PasswordOverlayVisibilityChanged"/>
 
-        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
-            <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_PrivacySettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-        </Grid>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,0">
+        <Grid x:Name="privacySettings">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.Settings_ProfilePictureToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="profilePictureToggle_Loaded"/>
 
-            <toolkit:ToggleSwitch Margin="-10,20,-10,-10" Grid.Row="1"  x:Name="lastSeenTimeStampToggle" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
-                                          Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
 
-            <Grid Grid.Row="2" Margin="0,-10,0,0" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image Source="/view/images/settings/block_list.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
-                    <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-                </StackPanel>
+            <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
+                <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_PrivacySettings_Txt, Source={StaticResource LocalizedStrings}}"/>
             </Grid>
 
-            <Grid Grid.Row="3" x:Name="hiddenModeGrid" Visibility="Collapsed">
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid Margin="0,20,0,0" Tap="ResetHiddenMode_Tapped" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.Settings_ProfilePictureToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="profilePictureToggle_Loaded"/>
+
+                <toolkit:ToggleSwitch Margin="-10,20,-10,-10" Grid.Row="1"  x:Name="lastSeenTimeStampToggle" IsChecked="True"  Loaded="lastSeenTimeStampToggle_Loaded"
+                                          Header="{Binding Path= LocalizedResources.Show_LastSeen_TimeStamp, Source={StaticResource LocalizedStrings}}" />
+
+                <Grid Grid.Row="2" Margin="0,-10,0,0" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/reset_hidden_mode.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <Image Source="/view/images/settings/block_list.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_SubTxt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.BlockList_Text, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_BlocklistSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ChangePassword_Tapped" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/change_password.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_SubTxt, Source={StaticResource LocalizedStrings}}"/>
-                    </StackPanel>
+                <Grid Grid.Row="3" x:Name="hiddenModeGrid" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,20,0,0" Tap="ResetHiddenMode_Tapped" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="/view/images/settings/reset_hidden_mode.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                        <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                            <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ResetHiddenMode_SubTxt, Source={StaticResource LocalizedStrings}}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0,20,0,0" Tap="ChangePassword_Tapped" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="/view/images/settings/change_password.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                        <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                            <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.ChangePassword_SubTxt, Source={StaticResource LocalizedStrings}}"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
     </Grid>
-
+    
 </phone:PhoneApplicationPage>
