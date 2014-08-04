@@ -27,7 +27,7 @@ namespace windows_client.View
             this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
-            if (!App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
             bool value = App.appSettings.TryGetValue(App.DISPLAYPIC_FAV_ONLY, out value);

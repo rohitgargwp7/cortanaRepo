@@ -857,7 +857,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show contact if its hidden
-                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
+                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
                         && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     continue;
 
@@ -933,7 +933,7 @@ namespace windows_client.View
                         continue;
 
                     // Dont show recent chats which are hidden
-                    if (!App.ViewModel.IsHiddenModeActive && conv.IsHidden)
+                    if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && conv.IsHidden)
                         continue;
 
                     if (!conv.IsGroupChat)
@@ -974,7 +974,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show friend if its hidden.
-                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
+                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
                         && App.ViewModel.ConvMap[friend.Msisdn].IsHidden)
                     continue;
 
