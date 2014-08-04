@@ -117,8 +117,9 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-
-            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out App.ViewModel.password);
+            string password = App.ViewModel.Password;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            App.ViewModel.Password = password;
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
             App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
@@ -3114,6 +3115,9 @@ namespace windows_client.View
             {
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
+                    if (launchPagePivot.SelectedIndex != 0)
+                        launchPagePivot.SelectedIndex = 0;
+
                     passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
                         AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
@@ -3228,14 +3232,14 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
-                if (String.IsNullOrWhiteSpace(App.ViewModel.password))
+                if (String.IsNullOrWhiteSpace(App.ViewModel.Password))
                 {
                     if (_isConfirmPassword)
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
-                            App.ViewModel.password = popup.Password;
-                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.password);
+                            App.ViewModel.Password = popup.Password;
+                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
 
                             InitHidddenMode();
 
@@ -3257,7 +3261,7 @@ namespace windows_client.View
                         popup.Password = String.Empty;
                     }
                 }
-                else if (App.ViewModel.password == popup.Password)
+                else if (App.ViewModel.Password == popup.Password)
                 {
                     InitHidddenMode();
                     popup.IsShow = false;
@@ -3570,7 +3574,7 @@ namespace windows_client.View
         /// </summary>
         private void RemoveHiddenModePassword()
         {
-            App.ViewModel.password = null;
+            App.ViewModel.Password = null;
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
         }
 

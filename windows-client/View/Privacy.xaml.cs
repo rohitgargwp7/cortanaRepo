@@ -89,7 +89,6 @@ namespace windows_client.View
 
         bool _isChangePassword;
         bool _isConfirmPassword;
-        string _password;
         string _tempPassword;
 
         private void passwordOverlay_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
@@ -103,8 +102,10 @@ namespace windows_client.View
 
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out App.ViewModel.password))
+            string password;
+            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
             {
+                App.ViewModel.Password = password;
                 passwordOverlay.Text = AppResources.Enter_current_pwd_txt;
                 passwordOverlay.Password = String.Empty;
                 passwordOverlay.IsShow = true;
@@ -118,11 +119,12 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
+                // Enter old passowrd
                 if (_isChangePassword)
                 {
                     _isChangePassword = false;
 
-                    if (App.ViewModel.password == popup.Password)
+                    if (App.ViewModel.Password == popup.Password)
                     {
                         popup.Text = AppResources.EnterNewPassword_Txt;
                         popup.Password = String.Empty;
@@ -130,20 +132,20 @@ namespace windows_client.View
                     else
                         popup.IsShow = false;
                 }
-                else if (_isConfirmPassword)
+                else if (_isConfirmPassword) // Confirm new password
                 {
                     if (_tempPassword.Equals(popup.Password))
                     {
-                        App.ViewModel.password = popup.Password;
-                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.password);
-
+                        _tempPassword = null;
+                        App.ViewModel.Password = popup.Password;
+                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
                     }
 
                     _isConfirmPassword = false;
                     _isChangePassword = false;
                     popup.IsShow = false;
                 }
-                else
+                else // Enter new password.
                 {
                     _isConfirmPassword = true;
                     _isChangePassword = false;
