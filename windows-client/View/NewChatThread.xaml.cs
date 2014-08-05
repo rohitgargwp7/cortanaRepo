@@ -758,6 +758,7 @@ namespace windows_client.View
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
 
                 stickerPallet.Children.Remove(pivotStickers);
+                StickerPivotHelper.Instance.ClearData();
                 ClearPageResources();
                 if (App.newChatThreadPage == this)
                     App.newChatThreadPage = null;

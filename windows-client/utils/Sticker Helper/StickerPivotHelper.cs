@@ -127,6 +127,7 @@ namespace windows_client.utils
         public void ClearData()
         {
             dictStickersPivot.Clear();
+            _stickerPivot = null;
         }
     }
 }
