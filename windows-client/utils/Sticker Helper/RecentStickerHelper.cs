@@ -18,13 +18,15 @@ namespace windows_client.utils.Sticker_Helper
         public const string RECENTS_FILE = "recents";
         private const int maxStickersCount = 30;
         private static object readWriteLock = new object();
-        public List<StickerObj> listRecentStickers;
+
+        public List<StickerObj> RecentStickers;
+
         public RecentStickerHelper()
         {
-            listRecentStickers = new List<StickerObj>();
+            RecentStickers = new List<StickerObj>();
         }
 
-        public void LoadSticker()
+        public void LoadRecentStickers()
         {
             lock (readWriteLock)
             {
@@ -38,13 +40,14 @@ namespace windows_client.utils.Sticker_Helper
                             using (var reader = new BinaryReader(file))
                             {
                                 int total = reader.ReadInt32();
+
                                 for (int i = 0; i < total; i++)
                                 {
                                     int count = reader.ReadInt32();
                                     string stickerId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                                     count = reader.ReadInt32();
                                     string category = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                                    listRecentStickers.Add(new StickerObj(category, stickerId, null, false));
+                                    RecentStickers.Add(new StickerObj(category, stickerId, null, false));
                                 }
 
                             }
@@ -59,11 +62,14 @@ namespace windows_client.utils.Sticker_Helper
         {
             if (currentSticker == null)
                 return;
+
             lock (readWriteLock)
             {
-                if (!listRecentStickers.Remove(currentSticker))
+                if (!RecentStickers.Remove(currentSticker))
                     ShrinkToSize();
-                listRecentStickers.Insert(0, currentSticker);
+
+                RecentStickers.Insert(0, currentSticker);
+                
                 UpdateRecentsFile();
             }
         }
@@ -77,9 +83,8 @@ namespace windows_client.utils.Sticker_Helper
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(StickerHelper.STICKERS_DIR))
-                    {
                         store.CreateDirectory(StickerHelper.STICKERS_DIR);
-                    }
+
                     string fileName = StickerHelper.STICKERS_DIR + "\\" + RECENTS_FILE;
 
                     try
@@ -91,6 +96,7 @@ namespace windows_client.utils.Sticker_Helper
                     {
                         Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile : DeletingFile , Exception : " + ex.StackTrace);
                     }
+
                     try
                     {
                         using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -98,15 +104,18 @@ namespace windows_client.utils.Sticker_Helper
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
                                 writer.Seek(0, SeekOrigin.Begin);
-                                writer.Write(listRecentStickers.Count);
-                                foreach (StickerObj sticker in listRecentStickers)
+                                writer.Write(RecentStickers.Count);
+                            
+                                foreach (StickerObj sticker in RecentStickers)
                                 {
                                     writer.WriteStringBytes(sticker.Id);
                                     writer.WriteStringBytes(sticker.Category);
                                 }
+                                
                                 writer.Flush();
                                 writer.Close();
                             }
+
                             file.Close();
                             file.Dispose();
                         }
@@ -123,33 +132,35 @@ namespace windows_client.utils.Sticker_Helper
                 Debug.WriteLine("RecentStickerHelper :: UpdateRecentsFile , Exception : " + ex.StackTrace);
             }
         }
+
         private void ShrinkToSize()
         {
-            if (this.listRecentStickers.Count > (maxStickersCount - 1))
-            {
-                listRecentStickers.RemoveAt(listRecentStickers.Count - 1);
-            }
+            if (this.RecentStickers.Count > (maxStickersCount - 1))
+                RecentStickers.RemoveAt(RecentStickers.Count - 1);
         }
-
 
         public static void DeleteSticker(string categoryId, List<string> listStickers)
         {
             RecentStickerHelper recentSticker;
-            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+
+            if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.RecentStickerHelper == null)
             {
                 recentSticker = new RecentStickerHelper();
-                recentSticker.LoadSticker();
+                recentSticker.LoadRecentStickers();
             }
             else
-                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+                recentSticker = HikeViewModel.StickerHelper.RecentStickerHelper;
+            
             bool isStickerInRecent = false;
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 foreach (string stickerId in listStickers)
                 {
-                    if (recentSticker.listRecentStickers.Remove(new StickerObj(categoryId, stickerId, null, false)))
+                    if (recentSticker.RecentStickers.Remove(new StickerObj(categoryId, stickerId, null, false)))
                         isStickerInRecent = true;
                 }
+
                 if (isStickerInRecent)
                     recentSticker.UpdateRecentsFile();
             });
@@ -158,24 +169,28 @@ namespace windows_client.utils.Sticker_Helper
         public static void DeleteCategory(string category)
         {
             RecentStickerHelper recentSticker;
-            if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
+
+            if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.RecentStickerHelper == null)
             {
                 recentSticker = new RecentStickerHelper();
-                recentSticker.LoadSticker();
+                recentSticker.LoadRecentStickers();
             }
             else
-                recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
+                recentSticker = HikeViewModel.StickerHelper.RecentStickerHelper;
+
             bool isStickerInRecent = false;
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                for (int i = recentSticker.listRecentStickers.Count - 1; i >= 0; i--)
+                for (int i = recentSticker.RecentStickers.Count - 1; i >= 0; i--)
                 {
-                    if (recentSticker.listRecentStickers[i].Category == category)
+                    if (recentSticker.RecentStickers[i].Category == category)
                     {
-                        recentSticker.listRecentStickers.RemoveAt(i);
+                        recentSticker.RecentStickers.RemoveAt(i);
                         isStickerInRecent = true;
                     }
                 }
+                
                 if (isStickerInRecent)
                     recentSticker.UpdateRecentsFile();
             });

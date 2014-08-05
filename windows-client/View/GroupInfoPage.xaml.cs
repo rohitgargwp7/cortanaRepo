@@ -429,8 +429,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
-            mPubSub.addListener(HikePubSub.USER_JOINED, this);
-            mPubSub.addListener(HikePubSub.USER_LEFT, this);
         }
 
         private void removeListeners()
@@ -441,8 +439,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
-                mPubSub.removeListener(HikePubSub.USER_JOINED, this);
-                mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             }
             catch (Exception ex)
             {
@@ -477,12 +473,12 @@ namespace windows_client.View
                 if (eventGroupId != groupId)
                     return;
                 string leaveMsisdn = cm.GroupParticipant;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, leaveMsisdn, groupId);
+                GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, leaveMsisdn, groupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (gp.IsOnHike && _participantList[0].Contains(gp))
                         _participantList[0].Remove(gp);
-                    else if(_participantList[1].Contains(gp))
+                    else if (_participantList[1].Contains(gp))
                     {
                         _participantList[1].Remove(gp);
                         smsUsers--;
@@ -538,50 +534,6 @@ namespace windows_client.View
                     });
                 }
             }
-            #endregion
-            #region USER JOINED HIKE
-            else if (HikePubSub.USER_JOINED == type)
-            {
-                string ms = (string)obj;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (_participantList[1].Contains(gp))
-                        _participantList[1].Remove(gp);
-
-                    if (!_participantList[0].Contains(gp))
-                    {
-                        _participantList[0].Add(gp);
-                        smsUsers--;
-
-                        if (smsUsers == 0)
-                            appBar.IsMenuEnabled = false;
-                    }
-                });
-            }
-            #endregion
-            #region USER LEFT HIKE
-            else if (HikePubSub.USER_LEFT == type)
-            {
-                string ms = (string)obj;
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, ms, groupId);
-                gp.IsOnHike = false;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (_participantList[0].Contains(gp))
-                        _participantList[0].Remove(gp);
-
-                    if (!_participantList[1].Contains(gp))
-                    {
-                        _participantList[1].Add(gp);
-                        smsUsers++;
-
-                        appBar.IsMenuEnabled = true;
-                    }
-                });
-            }
-
             #endregion
         }
         #endregion
@@ -1032,7 +984,7 @@ namespace windows_client.View
                             App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, gp.Msisdn);
                         }
                     }
-                 
+
                     FriendsTableUtils.SetFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                 }
             }
