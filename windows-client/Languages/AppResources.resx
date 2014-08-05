@@ -2160,7 +2160,7 @@ Download it like asap from http://hike.in!</value>
     <value>reset hidden mode</value>
   </data>
   <data name="ResetTip_Txt" xml:space="preserve">
-    <value>All chats will be deleted after {0} minutes.</value>
+    <value>All hidden chats will be deleted after {0} minutes.</value>
   </data>
   <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
     <value>Tap here to reset Hidden Mode now!</value>
@@ -2175,7 +2175,7 @@ Download it like asap from http://hike.in!</value>
     <value>Tap and hold a chat to mark it ‘hidden’.</value>
   </data>
   <data name="EnterNewPassword_Txt" xml:space="preserve">
-    <value>Create password to hide your chats</value>
+    <value>Create password</value>
   </data>
   <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
     <value>All your hidden chats will be deleted. Are you sure?</value>
@@ -2189,14 +2189,14 @@ Download it like asap from http://hike.in!</value>
   <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
     <value>This will stop hidden mode reset. Are you sure?</value>
   </data>
-  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
-    <value>This will stop hidden mode reset. Are you sure?</value>
-  </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
     <value>Start a chat and tap on 'hi'</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
     <value>Hide your chats with a password.</value>
+  </data>
+  <data name="Enter_current_pwd_txt" xml:space="preserve">
+    <value>enter current password</value>
   </data>
   <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
     <value>Auto save photo</value>

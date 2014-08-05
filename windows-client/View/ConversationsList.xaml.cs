@@ -117,8 +117,9 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-
-            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password);
+            string password = App.ViewModel.Password;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            App.ViewModel.Password = password;
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
             App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
@@ -1996,6 +1997,8 @@ namespace windows_client.View
         {
             if (passwordOverlay.IsShow)
             {
+                _isConfirmPassword = false;
+                _tempPassword = null;
                 passwordOverlay.IsShow = false;
                 e.Cancel = true;
                 return;
@@ -3089,9 +3092,6 @@ namespace windows_client.View
 
         #region Hidden Mode
 
-        // Hidden mode password
-        string _password;
-
         // Confirm hidden mode password
         bool _isConfirmPassword;
 
@@ -3117,6 +3117,9 @@ namespace windows_client.View
             {
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
+                    if (launchPagePivot.SelectedIndex != 0)
+                        launchPagePivot.SelectedIndex = 0;
+
                     passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
                         AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
@@ -3152,10 +3155,9 @@ namespace windows_client.View
                 ShowChats();
 
             App.ViewModel.SetHiddenMode();
-
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    UpdateLayout();
+                    llsConversations.UpdateLayout();
                 });
 
             SendHiddenModeToggledPacket();
@@ -3231,14 +3233,14 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
-                if (String.IsNullOrWhiteSpace(_password))
+                if (String.IsNullOrWhiteSpace(App.ViewModel.Password))
                 {
                     if (_isConfirmPassword)
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
-                            _password = popup.Password;
-                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                            App.ViewModel.Password = popup.Password;
+                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
 
                             InitHidddenMode();
 
@@ -3260,7 +3262,7 @@ namespace windows_client.View
                         popup.Password = String.Empty;
                     }
                 }
-                else if (_password == popup.Password)
+                else if (App.ViewModel.Password == popup.Password)
                 {
                     InitHidddenMode();
                     popup.IsShow = false;
@@ -3286,6 +3288,9 @@ namespace windows_client.View
             if (popup != null)
             {
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
+                headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
+                tipControl.IsHitTestVisible = popup.IsShow ? false : true;
+                launchPagePivot.IsHitTestVisible = popup.IsShow ? false : true;
             }
         }
 
@@ -3354,6 +3359,9 @@ namespace windows_client.View
 
             switch (_tipMode)
             {
+                case ToolTipMode.DEFAULT:
+                    break;
+
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
 
                     if (isModeChanged)
@@ -3515,12 +3523,18 @@ namespace windows_client.View
                     break;
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_STEP2:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_COMPLETE:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
@@ -3564,7 +3578,7 @@ namespace windows_client.View
         /// </summary>
         private void RemoveHiddenModePassword()
         {
-            _password = null;
+            App.ViewModel.Password = null;
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
         }
 

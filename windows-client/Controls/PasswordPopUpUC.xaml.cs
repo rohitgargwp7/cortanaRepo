@@ -74,7 +74,7 @@ namespace windows_client.Controls
             }
             set
             {
-                if(value!=_password)
+                if (value != _password)
                 {
                     _password = value;
 
@@ -132,7 +132,7 @@ namespace windows_client.Controls
                     rec2.Fill = UI_Utils.Instance.Transparent;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
-                    
+
                     rec1.Stroke = UI_Utils.Instance.White;
                     rec2.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
                     rec3.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
@@ -144,7 +144,7 @@ namespace windows_client.Controls
                     rec2.Fill = UI_Utils.Instance.White;
                     rec3.Fill = UI_Utils.Instance.Transparent;
                     rec4.Fill = UI_Utils.Instance.Transparent;
-                    
+
                     rec1.Stroke = UI_Utils.Instance.White;
                     rec2.Stroke = UI_Utils.Instance.White;
                     rec3.Stroke = UI_Utils.Instance.PasswordSquareBorderBrush;
