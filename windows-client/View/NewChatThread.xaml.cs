@@ -702,7 +702,7 @@ namespace windows_client.View
             if (_dt != null)
                 _dt.Stop();
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].DraftMessage != sendMsgTxtbox.Text.Trim())
+            if (!string.IsNullOrEmpty(mContactNumber) && App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].DraftMessage != sendMsgTxtbox.Text.Trim())
             {
                 App.ViewModel.ConvMap[mContactNumber].DraftMessage = sendMsgTxtbox.Text.Trim();
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
