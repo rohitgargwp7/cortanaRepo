@@ -407,7 +407,7 @@ namespace windows_client.ViewModel
                         }
                         else if (index > 0)
                         {
-                            if (!mObj.IsGroupChat || mObj.MuteVal == 0) // dont move muted gc
+                            if (!mObj.IsGroupChat || mObj.IsMute) // dont move muted gc
                             {
                                 App.ViewModel.MessageListPageCollection.RemoveAt(index);
                                 App.ViewModel.MessageListPageCollection.Insert(0, mObj);
