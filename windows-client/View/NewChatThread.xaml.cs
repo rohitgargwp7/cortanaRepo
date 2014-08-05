@@ -6655,8 +6655,7 @@ namespace windows_client.View
 
         private void CreateStickerPivot()
         {
-            StickerPivotHelper.Instance.InitialiseStickerPivot();
-            pivotStickers = StickerPivotHelper.Instance.StickerPivot;
+            pivotStickers = StickerPivotHelper.Instance.InitialiseStickerPivot();
             if (!stickerPallet.Children.Contains(pivotStickers))
             {
                 pivotStickers.SelectionChanged += PivotStickers_SelectionChanged;
