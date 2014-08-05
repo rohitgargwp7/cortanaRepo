@@ -133,6 +133,7 @@ namespace windows_client
             #region MESSAGE
             if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
+                //Debug.WriteLine("Message got is : " + msg);
                 try
                 {
                     bool isPush = true;

@@ -174,7 +174,6 @@ namespace windows_client.FileTransfers
             }
             else
                 return ResumeTask(messageId, false);
-
             return true;
         }
 

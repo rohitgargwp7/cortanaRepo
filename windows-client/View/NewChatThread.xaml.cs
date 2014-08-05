@@ -3084,7 +3084,6 @@ namespace windows_client.View
                 attachmentForwardMessage[3] = convMessage.MetaDataString;
                 attachmentForwardMessage[4] = convMessage.FileAttachment.Thumbnail;
                 attachmentForwardMessage[5] = convMessage.FileAttachment.FileName;
-
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));

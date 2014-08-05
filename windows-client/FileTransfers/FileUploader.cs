@@ -61,7 +61,7 @@ namespace windows_client.FileTransfers
             else
                 writer.WriteStringBytes(SuccessObj.ToString(Newtonsoft.Json.Formatting.None));
 
-            if (FileName == null)
+            if (FileName == null || String.IsNullOrWhiteSpace(FileName))
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(FileName);
