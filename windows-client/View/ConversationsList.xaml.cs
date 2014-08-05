@@ -1997,6 +1997,8 @@ namespace windows_client.View
         {
             if (passwordOverlay.IsShow)
             {
+                _isConfirmPassword = false;
+                _tempPassword = null;
                 passwordOverlay.IsShow = false;
                 e.Cancel = true;
                 return;
@@ -3153,10 +3155,9 @@ namespace windows_client.View
                 ShowChats();
 
             App.ViewModel.SetHiddenMode();
-
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    UpdateLayout();
+                    llsConversations.UpdateLayout();
                 });
 
             SendHiddenModeToggledPacket();
@@ -3358,6 +3359,9 @@ namespace windows_client.View
 
             switch (_tipMode)
             {
+                case ToolTipMode.DEFAULT:
+                    break;
+
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
 
                     if (isModeChanged)

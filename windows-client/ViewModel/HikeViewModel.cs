@@ -1285,7 +1285,7 @@ namespace windows_client.ViewModel
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
             else
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
-
+            
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
         }

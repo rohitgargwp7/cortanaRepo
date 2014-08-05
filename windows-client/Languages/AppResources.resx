@@ -2196,7 +2196,7 @@ Download it like asap from http://hike.in!</value>
     <value>Hide your chats with a password.</value>
   </data>
   <data name="Enter_current_pwd_txt" xml:space="preserve">
-    <value>enter current password </value>
+    <value>enter current password</value>
   </data>
   <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
     <value>Auto save photo</value>

@@ -1543,7 +1543,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to enter current password .
+        ///   Looks up a localized string similar to enter current password.
         /// </summary>
         public static string Enter_current_pwd_txt {
             get {

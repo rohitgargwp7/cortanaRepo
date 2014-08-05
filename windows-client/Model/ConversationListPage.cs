@@ -221,26 +221,7 @@ namespace windows_client.Model
             }
         }
 
-        String _groupMemberName;
-        [DataMember]
-        public String GroupMemberName
-        {
-            get
-            {
-                if (IsGroupChat && (_messageStatus == ConvMessage.State.RECEIVED_UNREAD || _messageStatus == ConvMessage.State.RECEIVED_READ))
-                    return _groupMemberName;
-                else
-                    return String.Empty;
-            }
-            set
-            {
-                if (value != _groupMemberName)
-                {
-                    _groupMemberName = value;
-                    NotifyPropertyChanged("GroupMemberName");
-                }
-            }
-        }
+        
 
         public BitmapImage MuteIconImage
         {
@@ -796,11 +777,6 @@ namespace windows_client.Model
                 else
                     writer.WriteStringBytes(_draftMessage);
 
-                if (_groupMemberName == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(_groupMemberName);
-
                 writer.Write(_isHidden);
             }
             catch (Exception ex)
@@ -899,18 +875,6 @@ namespace windows_client.Model
                 catch
                 {
                     _draftMessage = string.Empty;
-                }
-
-                try
-                {
-                    count = reader.ReadInt32();
-                    _groupMemberName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_groupMemberName == "*@N@*")
-                        _groupMemberName = string.Empty;//so that on comparing with unsent empty text it returns true 
-                }
-                catch
-                {
-                    _groupMemberName = string.Empty;
                 }
 
                 try
