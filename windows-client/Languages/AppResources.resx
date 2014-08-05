@@ -2109,6 +2109,18 @@ Download it like asap from http://hike.in!</value>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>play</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>view</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>open</value>
+    <comment>General Text</comment>
+ </data>
   <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
     <value>OOPS! Something went wrong</value>
   </data>
