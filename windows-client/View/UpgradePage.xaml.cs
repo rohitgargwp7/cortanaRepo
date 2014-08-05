@@ -26,7 +26,6 @@ namespace windows_client.View
 {
     public partial class UpgradePage : PhoneApplicationPage
     {
-        ManualResetEvent _upgradeInProgress = new ManualResetEvent(false);
         ManualResetEvent _contactSyncInProgress = new ManualResetEvent(false);
         BackgroundWorker _backgroundWorker = new BackgroundWorker();
 
@@ -59,8 +58,6 @@ namespace windows_client.View
             };
 
             _backgroundWorker.RunWorkerAsync();
-
-            _upgradeInProgress.WaitOne(2000);
         }
 
         private void ManageNavigation()
@@ -213,8 +210,6 @@ namespace windows_client.View
             }
 
             Thread.Sleep(2000);
-
-            _upgradeInProgress.Set();
         }
 
         /// <summary>
