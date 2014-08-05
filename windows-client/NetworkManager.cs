@@ -1257,7 +1257,7 @@ namespace windows_client
 
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
                     if (gp == null || gp.HasLeft)
                         return;
 

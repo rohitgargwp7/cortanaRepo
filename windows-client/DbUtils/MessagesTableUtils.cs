@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿﻿using System.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
 using System;
@@ -198,7 +198,7 @@ namespace windows_client.DbUtils
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, vars[0], convMsg.Msisdn);
                         if (vars[1] == "0") // DND USER and not OPTED IN
                         {
                             if (waitingParticipants == null)
@@ -229,7 +229,7 @@ namespace windows_client.DbUtils
                     else
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, vars[0], convMsg.Msisdn);
                         obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                 }
@@ -239,7 +239,7 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
                     }
                     else
@@ -268,7 +268,7 @@ namespace windows_client.DbUtils
                     string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = string.Format(msgtext, gp.FirstName);
                     }
                     else // 1-1 chat
@@ -297,7 +297,7 @@ namespace windows_client.DbUtils
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
                         obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
                     }
                     else
@@ -565,7 +565,7 @@ namespace windows_client.DbUtils
 
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
-                        
+
                         using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))

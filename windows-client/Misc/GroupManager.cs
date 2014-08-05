@@ -50,7 +50,14 @@ namespace windows_client.Misc
             }
         }
 
-        public GroupParticipant getGroupParticipant(string defaultName, string msisdn, string grpId)
+        /// <summary>
+        /// Get group participant
+        /// </summary>
+        /// <param name="defaultName">default name for the participant, null if want to use db name</param>
+        /// <param name="msisdn">msisdn of the participant</param>
+        /// <param name="grpId">group id</param>
+        /// <returns>group participant</returns>
+        public GroupParticipant GetGroupParticipant(string defaultName, string msisdn, string grpId)
         {
             if (grpId == null)
                 return null;
@@ -66,7 +73,7 @@ namespace windows_client.Misc
                     }
                 }
             }
-            
+
             var isInAdressBook = false;
             ContactInfo cInfo = null;
 
@@ -80,7 +87,7 @@ namespace windows_client.Misc
             else
             {
                 cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            
+
                 if (cInfo != null)
                     isInAdressBook = true;
             }

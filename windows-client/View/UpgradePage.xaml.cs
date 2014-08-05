@@ -26,10 +26,123 @@ namespace windows_client.View
 {
     public partial class UpgradePage : PhoneApplicationPage
     {
-        Boolean _isContactsSyncComplete = false;
+        ManualResetEvent _contactSyncInProgress = new ManualResetEvent(false);
+        BackgroundWorker _backgroundWorker = new BackgroundWorker();
+
         public UpgradePage()
         {
             InitializeComponent();
+            Loaded += UpgradePage_Loaded;
+        }
+
+        void UpgradePage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= UpgradePage_Loaded;
+
+            _backgroundWorker.DoWork -= _backgroundWorker_DoWork;
+            _backgroundWorker.DoWork += _backgroundWorker_DoWork;
+
+            _backgroundWorker.RunWorkerCompleted += (ss, ee) =>
+            {
+                if (ee.Error == null)
+                {
+                    App.appInitialize();
+
+                    // Upgrade complete, write the current version
+                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
+
+                    ManageNavigation();
+                }
+                else
+                    throw new UpgradeNotCompletedException(ee.Error);
+            };
+
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        private void ManageNavigation()
+        {
+            string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
+
+            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            {
+                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                {
+                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    NavigationService.Navigate(nUri);
+                    return;
+                }
+
+                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+                string msisdn = Utils.GetParamFromUri(targetPage);
+
+                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                {
+                    App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
+
+                    PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
+                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+
+                    NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+                }
+                else
+                {
+                    App page = (App)Application.Current;
+                    ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+
+                    page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                }
+            }
+            else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
+            {
+                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                {
+                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    NavigationService.Navigate(nUri);
+                    return;
+                }
+
+                PhoneApplicationService.Current.State["IsStatusPush"] = true;
+
+                App page = (App)Application.Current;
+                ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+
+                page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+            }
+            else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            {
+                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                {
+                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    NavigationService.Navigate(nUri);
+                    return;
+                }
+
+                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+                App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
+
+                int idx = targetPage.IndexOf("?") + 1;
+                string param = targetPage.Substring(idx);
+
+                NavigationService.Navigate(new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative));
+            }
+            else
+            {
+                if (App.PageStateVal == App.PageState.CONVLIST_SCREEN)
+                {
+                    App page = (App)Application.Current;
+                    ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+
+                    // Hardcoded id=1 to make this url different from default url so that it navigate to page
+                    page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
+                }
+                else
+                {
+                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    NavigationService.Navigate(nUri);
+                }
+            }
         }
 
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
@@ -37,139 +150,215 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+
+        /// <summary>
+        /// Upgrade db and files in background.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+            if (Utils.compareVersion(App.LATEST_VERSION, App.CURRENT_VERSION) == 1) // shows this is update
             {
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (a, b) =>
+                App.appSettings[App.APP_UPDATE_POSTPENDING] = true;
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
+
+                #region POST APP INFO ON UPDATE
+                // If app info is already sent to server , this function will automatically handle.
+                UpdatePostHelper.Instance.PostAppInfo();
+                #endregion
+
+                #region Post App Locale
+                App.PostLocaleInfo();
+                #endregion
+            }
+
+            // If current version is less than equal to 1.5.0.0 then upgrade DB.
+            if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1)
+                MqttDBUtils.MqttDbUpdateToLatestVersion();
+
+            if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
+            {
+                UpgradeContactsDBForPhoneKind();
+
+                UpgradeConvMessageDBForReadBy();
+
+                FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
+
+                // This folder should be created for launching file async(unknown file type).
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (Utils.compareVersion(App.LATEST_VERSION, App.CURRENT_VERSION) == 1) // shows this is update
+                    if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
                     {
-                        App.appSettings[App.APP_UPDATE_POSTPENDING] = true;
-                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
-                        #region POST APP INFO ON UPDATE
-                        // if app info is already sent to server , this function will automatically handle
-                        UpdatePostHelper.Instance.postAppInfo();
-                        #endregion
-                        #region Post App Locale
-                        App.PostLocaleInfo();
-                        #endregion
+                        store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
                     }
+                }
+            }
 
+            if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
+            {
+                HandleEmptyGroupName();
+            }
 
-                    if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
-                        MqttDBUtils.MqttDbUpdateToLatestVersion();
+            if (Utils.compareVersion("2.6.2.1", App.CURRENT_VERSION) == 1)
+            {
+                ReShuffleStickerCategories();
 
-                    bool dbUdated = false;
-                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
+                HandleContactNamesOnUpgrade();
+
+                DeleteAngryStickerCategory();
+            }
+
+            Thread.Sleep(2000);
+        }
+
+        /// <summary>
+        /// Delete angry category stickers from IS
+        /// </summary>
+        private void DeleteAngryStickerCategory()
+        {
+            RecentStickerHelper recentSticker;
+            if (HikeViewModel.StickerHelper == null || HikeViewModel.StickerHelper.RecentStickerHelper == null)
+            {
+                recentSticker = new RecentStickerHelper();
+                recentSticker.LoadRecentStickers();
+            }
+            else
+                recentSticker = HikeViewModel.StickerHelper.RecentStickerHelper;
+
+            List<string> listAngrySticker = new List<string>();
+
+            foreach (StickerObj sticker in recentSticker.RecentStickers)
+            {
+                if (sticker.Category == StickerHelper.CATEGORY_ANGRY)
+                {
+                    listAngrySticker.Add(sticker.Id);
+                }
+            }
+
+            // Dont delete angry stickers present in recent
+            StickerHelper.DeleteLowResCategory(StickerHelper.CATEGORY_ANGRY, listAngrySticker);
+
+            // Change last selected category to recent
+            String category;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
+        }
+
+        /// <summary>
+        /// Handle group member names based on address book
+        /// </summary>
+        private void HandleContactNamesOnUpgrade()
+        {
+            GroupManager.Instance.LoadGroupCache();
+
+            Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+
+            if (hike_contacts_by_id != null)
+            {
+                bool isFavUpdated = false, isPendingUpdated = false;
+
+                foreach (var id in hike_contacts_by_id.Keys)
+                {
+                    var list = hike_contacts_by_id[id];
+                    foreach (var contactInfo in list)
                     {
-                        StatusMsgsTable.MessagesDbUpdateToLatestVersion();
-
-                        using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+                        if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
                         {
-                            if (db.DatabaseExists())
+                            try
                             {
-                                DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
-                                int version = dbUpdater.DatabaseSchemaVersion;
-                                if (version < 2)
+                                var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                                if (cObj.ContactName != contactInfo.Name)
                                 {
-                                    dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
-                                    dbUpdater.DatabaseSchemaVersion = 2;
+                                    cObj.ContactName = contactInfo.Name;
+                                    ConversationTableUtils.updateConversation(cObj);
 
-                                    try
+                                    if (cObj.IsFav)
                                     {
-                                        dbUpdater.Execute();
-                                        dbUdated = true;
+                                        MiscDBUtil.SaveFavourites(cObj);
+                                        isFavUpdated = true;
                                     }
-                                    catch { }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
+                            }
+                        }
+                        else // fav and pending case
+                        {
+                            ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+
+                            if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
+                            {
+                                c.ContactName = contactInfo.Name;
+                                MiscDBUtil.SaveFavourites(c);
+                                isFavUpdated = true;
+                            }
+                            else
+                            {
+                                c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                                if (c != null && c.ContactName != contactInfo.Name)
+                                {
+                                    c.ContactName = contactInfo.Name;
+                                    isPendingUpdated = true;
                                 }
                             }
                         }
 
-                        if (dbUdated)
+                        if (GroupManager.Instance.GroupCache != null)
                         {
-                            ContactUtils.getContacts(new ContactUtils.contacts_Callback(updatePhoneKind_Callback));
-                            _isContactsSyncComplete = true;
-
-                            while (_isContactsSyncComplete)
+                            foreach (string key in GroupManager.Instance.GroupCache.Keys)
                             {
-                                Thread.Sleep(100);
-                            }
-                        }
-
-                        FriendsTableUtils.UpdateOldFilesWithCorrectLastSeen();
-                    }
-
-                    if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
-                    {
-                        using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
-                        {
-                            if (db.DatabaseExists())
-                            {
-                                DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
-                                int version = dbUpdater.DatabaseSchemaVersion;
-
-                                // db was updated on upgrade from 1.8 hence we need to bump db version number
-                                // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
-                                if (version < 3)
+                                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                for (int i = 0; i < l.Count; i++)
                                 {
-                                    dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
-                                    dbUpdater.DatabaseSchemaVersion = 3;
-
-                                    try
+                                    if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
                                     {
-                                        dbUpdater.Execute();
-                                    }
-                                    catch
-                                    {
-                                        Debug.WriteLine("db not upgrade in v 2.5.3.0");
+                                        l[i].Name = contactInfo.Name;
                                     }
                                 }
                             }
                         }
-
-                        //this folder should be created for launching file async(unknown file type)
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                        {
-                            if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
-                            {
-                                store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
-                            }
-                        }
                     }
+                }
 
-                    if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
-                    {
-                        bool groupEmptyNameFound = false;
-                        //conv map is initialised in app.xaml.cs
-                        if (App.ViewModel.ConvMap.Count > 0)
-                        {
-                            foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
-                            {
-                                if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
-                                {
-                                    GroupManager.Instance.LoadGroupParticipants(convObj.Msisdn);
-                                    convObj.ContactName = GroupManager.Instance.defaultGroupName(convObj.Msisdn);
-                                    ConversationTableUtils.updateGroupName(convObj.Msisdn, convObj.ContactName);
-                                    groupEmptyNameFound = true;
-                                }
-                            }
+                if (isFavUpdated)
+                    MiscDBUtil.SaveFavourites();
 
-                            if (groupEmptyNameFound) //update whole file as well
-                                ConversationTableUtils.saveConvObjectList();
-                        }
+                if (isPendingUpdated)
+                    MiscDBUtil.SavePendingRequests();
+            }
 
-                        #region changing hardcoded stickers
-                        //to download default stickers remopved from snuggles
-                        StickerHelper.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
-                        //remove expressions stickers if already downloaded to remove duplicacy
-                        StickerHelper.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.arrayDefaultExpressionStickers.ToList());
+            var contactList = UsersTableUtils.getAllContacts();
 
-                        //if default doggy stickers were in recents, then remove those
-                        List<string> listPreviousHardcodedDoggy = new List<string>
+            foreach (var id in GroupManager.Instance.GroupCache.Keys)
+            {
+                var grp = GroupManager.Instance.GroupCache[id];
+                foreach (var participant in grp)
+                {
+                    participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
+                }
+            }
+
+            GroupManager.Instance.SaveGroupCache();
+        }
+
+        /// <summary>
+        /// Delete default doggy stickers and new default expression stickers
+        /// </summary>
+        private void ReShuffleStickerCategories()
+        {
+            #region changing hardcoded stickers
+
+            // To download default stickers removed from snuggles.
+            StickerHelper.UpdateHasMoreMessages(StickerHelper.CATEGORY_DOGGY, true, true);
+
+            // Remove expressions stickers if already downloaded to remove duplicacy.
+            StickerHelper.DeleteSticker(StickerHelper.CATEGORY_EXPRESSIONS, StickerHelper.ArrayDefaultExpressionStickers.ToList());
+
+            // If default doggy stickers were in recents, then remove those.
+            List<string> listPreviousHardcodedDoggy = new List<string>
                                      {
                                       "001_hi.png",
                                       "002_thumbsup.png",
@@ -180,218 +369,109 @@ namespace windows_client.View
                                       "007_confused.png",
                                       "008_dreaming.png"
                                      };
-                        RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
 
-                        #endregion
-                    }
+            RecentStickerHelper.DeleteSticker(StickerHelper.CATEGORY_DOGGY, listPreviousHardcodedDoggy);
 
-                    if (Utils.compareVersion("2.6.1.0", App.CURRENT_VERSION) == 1)
-                    {
-                        GroupManager.Instance.LoadGroupCache();
+            #endregion
+        }
 
-                        Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+        private void HandleEmptyGroupName()
+        {
+            bool groupEmptyNameFound = false;
 
-                        if (hike_contacts_by_id != null)
-                        {
-                            bool isFavUpdated = false, isPendingUpdated = false;
-
-                            foreach (var id in hike_contacts_by_id.Keys)
-                            {
-                                var list = hike_contacts_by_id[id];
-                                foreach (var contactInfo in list)
-                                {
-                                    if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
-                                    {
-                                        try
-                                        {
-                                            var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
-                                            if (cObj.ContactName != contactInfo.Name)
-                                            {
-                                                cObj.ContactName = contactInfo.Name;
-                                                ConversationTableUtils.updateConversation(cObj);
-
-                                                if (cObj.IsFav)
-                                                {
-                                                    MiscDBUtil.SaveFavourites(cObj);
-                                                    isFavUpdated = true;
-                                                }
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Debug.WriteLine("REFRESH CONTACTS : UPGRADE PAGE :: Update contact name exception " + ex.StackTrace);
-                                        }
-                                    }
-                                    else // fav and pending case
-                                    {
-                                        ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
-
-                                        if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
-                                        {
-                                            c.ContactName = contactInfo.Name;
-                                            MiscDBUtil.SaveFavourites(c);
-                                            isFavUpdated = true;
-                                        }
-                                        else
-                                        {
-                                            c = App.ViewModel.GetPending(contactInfo.Msisdn);
-                                            if (c != null && c.ContactName != contactInfo.Name)
-                                            {
-                                                c.ContactName = contactInfo.Name;
-                                                isPendingUpdated = true;
-                                            }
-                                        }
-                                    }
-
-                                    if (GroupManager.Instance.GroupCache != null)
-                                    {
-                                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                                        {
-                                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                                            for (int i = 0; i < l.Count; i++)
-                                            {
-                                                if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
-                                                {
-                                                    l[i].Name = contactInfo.Name;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (isFavUpdated)
-                                MiscDBUtil.SaveFavourites();
-
-                            if (isPendingUpdated)
-                                MiscDBUtil.SavePendingRequests();
-                        }
-
-                        var contactList = UsersTableUtils.getAllContacts();
-
-                        foreach (var id in GroupManager.Instance.GroupCache.Keys)
-                        {
-                            var grp = GroupManager.Instance.GroupCache[id];
-                            foreach (var participant in grp)
-                            {
-                                participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
-                            }
-                        }
-
-                        GroupManager.Instance.SaveGroupCache();
-
-                        #region Remove Angry pack
-
-                        RecentStickerHelper recentSticker;
-                        if (HikeViewModel.stickerHelper == null || HikeViewModel.stickerHelper.recentStickerHelper == null)
-                        {
-                            recentSticker = new RecentStickerHelper();
-                            recentSticker.LoadSticker();
-                        }
-                        else
-                            recentSticker = HikeViewModel.stickerHelper.recentStickerHelper;
-
-                        List<string> listAngrySticker = new List<string>();
-                        foreach (StickerObj sticker in recentSticker.listRecentStickers)
-                        {
-                            if (sticker.Category == StickerHelper.CATEGORY_ANGRY)
-                            {
-                                listAngrySticker.Add(sticker.Id);
-                            }
-                        }
-
-                        StickerHelper.DeleteLowResCategory(StickerHelper.CATEGORY_ANGRY, listAngrySticker);
-
-                        String category;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
-                            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
-
-                        #endregion
-                    }
-
-                    Thread.Sleep(2000);//added so that this shows at least for 2 sec
-                };
-                bw.RunWorkerAsync();
-                bw.RunWorkerCompleted += (a, b) =>
+            // Conv map is initialised in app.xaml.cs
+            if (App.ViewModel.ConvMap.Count > 0)
+            {
+                foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
                 {
-                    App.appInitialize();
-                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
-
-                    string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
-
-                    if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+                    if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
                     {
-                        if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
-                        {
-                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
-                            NavigationService.Navigate(nUri);
-                            return;
-                        }
-                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                        string msisdn = Utils.GetParamFromUri(targetPage);
-                        if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
-                        {
-                            App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                            PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
-                            PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
-                            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+                        GroupManager.Instance.LoadGroupParticipants(convObj.Msisdn);
+                        convObj.ContactName = GroupManager.Instance.defaultGroupName(convObj.Msisdn);
+                        ConversationTableUtils.updateGroupName(convObj.Msisdn, convObj.ContactName);
+                        groupEmptyNameFound = true;
+                    }
+                }
 
-                        }
-                        else
-                        {
-                            App page = (App)Application.Current;
-                            ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
-                        }
-                    }
-                    else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
-                    {
-                        if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
-                        {
-                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
-                            NavigationService.Navigate(nUri);
-                            return;
-                        }
-                        PhoneApplicationService.Current.State["IsStatusPush"] = true;
-
-                        App page = (App)Application.Current;
-                        ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                        page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
-                    }
-                    else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
-                    {
-                        if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
-                        {
-                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
-                            NavigationService.Navigate(nUri);
-                            return;
-                        }
-                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                        App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
-                        int idx = targetPage.IndexOf("?") + 1;
-                        string param = targetPage.Substring(idx);
-                        NavigationService.Navigate(new Uri("/View/ForwardTo.xaml?" + param, UriKind.Relative));
-                    }
-                    else
-                    {
-                        if (App.PageStateVal == App.PageState.CONVLIST_SCREEN)
-                        {
-                            App page = (App)Application.Current;
-                            ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                            page.RootFrame.Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));//hardcoded id=1 to make this url different from default url so that it navigate to page
-                        }
-                        else
-                        {
-                            Uri nUri = Utils.LoadPageUri(App.PageStateVal);
-                            NavigationService.Navigate(nUri);
-                        }
-                    }
-                };
+                if (groupEmptyNameFound) //update whole file as well
+                    ConversationTableUtils.saveConvObjectList();
             }
         }
 
-        /* This callback is on background thread started by getContacts function */
+        /// <summary>
+        /// Update DB for read by. Add column to ConvMessage
+        /// </summary>
+        private void UpgradeConvMessageDBForReadBy()
+        {
+            using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                {
+                    DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                    int version = dbUpdater.DatabaseSchemaVersion;
+
+                    // db was updated on upgrade from 1.8 hence we need to bump db version number
+                    // This bug was left out in 2.5.2.0 which led to chat msg issues for 720 lumia users
+                    if (version < 3)
+                    {
+                        dbUpdater.AddColumn<ConvMessage>("ReadByInfo");
+                        dbUpdater.DatabaseSchemaVersion = 3;
+
+                        try
+                        {
+                            dbUpdater.Execute();
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("db not upgrade in v 2.5.3.0");
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update Db. Add PhoneKind to ContactInfo
+        /// </summary>
+        private void UpgradeContactsDBForPhoneKind()
+        {
+            bool dbUdated = false;
+
+            StatusMsgsTable.MessagesDbUpdateToLatestVersion();
+
+            using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                {
+                    DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                    int version = dbUpdater.DatabaseSchemaVersion;
+                    if (version < 2)
+                    {
+                        dbUpdater.AddColumn<ContactInfo>("PhoneNoKind");
+                        dbUpdater.DatabaseSchemaVersion = 2;
+
+                        try
+                        {
+                            dbUpdater.Execute();
+                            dbUdated = true;
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            if (dbUdated)
+            {
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(updatePhoneKind_Callback));
+                _contactSyncInProgress.WaitOne();
+            }
+        }
+
+        /// <summary>
+        /// This callback is on background thread started by getContacts function. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void updatePhoneKind_Callback(object sender, ContactsSearchEventArgs e)
         {
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
@@ -402,7 +482,7 @@ namespace windows_client.View
             /* If no contacts in Phone as well as App , simply return */
             if ((new_contacts_by_id == null || new_contacts_by_id.Count == 0) && hike_contacts_by_id == null)
             {
-                _isContactsSyncComplete = false;
+                _contactSyncInProgress.Set();
                 return;
             }
 
@@ -438,7 +518,20 @@ namespace windows_client.View
                 ConversationTableUtils.updateConversation(contactsToBeUpdated);
             }
 
-            _isContactsSyncComplete = false;
+            _contactSyncInProgress.Set();
+        }
+    }
+
+    class UpgradeNotCompletedException : Exception
+    {
+        public UpgradeNotCompletedException(Exception ex)
+            : base(ex.ToString())
+        {
+        }
+
+        public UpgradeNotCompletedException(string msg)
+            : base(msg)
+        {
         }
     }
 }
