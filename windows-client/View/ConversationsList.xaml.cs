@@ -3157,7 +3157,8 @@ namespace windows_client.View
             App.ViewModel.SetHiddenMode();
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    llsConversations.UpdateLayout();
+                    if (llsConversations.ItemsSource.Count>0)
+                        llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
                 });
 
             SendHiddenModeToggledPacket();
