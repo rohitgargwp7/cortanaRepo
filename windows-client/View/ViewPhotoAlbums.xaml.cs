@@ -62,9 +62,9 @@ namespace windows_client.View
                 });
         }
 
-        public List<AlbumClass> GetAlbums(out List<PhotoClass> listPicture)
+        public List<PhotoAlbumClass> GetAlbums(out List<PhotoClass> listPicture)
         {
-            Dictionary<string, AlbumClass> albumList = new Dictionary<string, AlbumClass>();
+            Dictionary<string, PhotoAlbumClass> albumList = new Dictionary<string, PhotoAlbumClass>();
             listPicture = new List<PhotoClass>();
 
             try
@@ -78,10 +78,10 @@ namespace windows_client.View
                         Title = pic.Name,
                         TimeStamp = pic.Date
                     };
-                    AlbumClass albumObj;
+                    PhotoAlbumClass albumObj;
                     if (!albumList.TryGetValue(pic.Album.Name, out albumObj))
                     {
-                        albumObj = new AlbumClass(pic.Album.Name);
+                        albumObj = new PhotoAlbumClass(pic.Album.Name);
                         albumList.Add(pic.Album.Name, albumObj);
                     }
                     albumObj.Add(imageData);
@@ -99,7 +99,7 @@ namespace windows_client.View
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AlbumClass album = llsAlbums.SelectedItem as AlbumClass;
+            PhotoAlbumClass album = llsAlbums.SelectedItem as PhotoAlbumClass;
             if (album == null)
                 return;
             albumNameTxt.Text = album.AlbumName.ToLower();
@@ -110,7 +110,7 @@ namespace windows_client.View
             BindAlbumPhotos(album);
         }
 
-        private async Task BindAlbumPhotos(AlbumClass album)
+        private async Task BindAlbumPhotos(PhotoAlbumClass album)
         {
             await Task.Delay(1);
             llsPhotos.ItemsSource = GroupedPhotos(album);
@@ -266,6 +266,7 @@ namespace windows_client.View
             if (pivotAlbums.SelectedIndex == 1 && !isAllPicturesLaoded)
             {
                 shellProgressAllPhotos.Visibility = Visibility.Visible;
+                //todo:do not bind again n again
                 BindPhotos();
                 isAllPicturesLaoded = true;
             }

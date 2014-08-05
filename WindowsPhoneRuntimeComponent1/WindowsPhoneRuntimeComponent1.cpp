@@ -75,7 +75,11 @@ Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::myfunc(uint8 position,  Pl
 	str = new WCHAR[cch]; 
 	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
 	*strVideoFilePath = ref new String(str);
-
+	delete str;
+	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, NULL, NULL, &cch);
+	str = new WCHAR[cch]; 
+	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, str, cch, &cch);
+	*strVideoAlbumName = ref new String(str);
 
 	return intOutArray;
 }
