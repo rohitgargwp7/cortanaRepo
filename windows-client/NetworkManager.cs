@@ -1539,8 +1539,16 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
-                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                try
+                                {
+                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                }
+                                catch (Exception ex)
+                                {
+                                    tod = 0;
+                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                                }
                             }
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
