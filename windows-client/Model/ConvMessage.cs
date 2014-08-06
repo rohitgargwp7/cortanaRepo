@@ -1994,8 +1994,6 @@ namespace windows_client.Model
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
 
-                        
-
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
