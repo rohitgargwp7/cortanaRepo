@@ -2163,6 +2163,10 @@ namespace windows_client.View
 
         private void StartNewChatWithSelectContact(ContactInfo c)
         {
+            if (!App.ViewModel.IsHiddenModeActive 
+                && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+                return;
+
             object objToSend;
             if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
                 objToSend = App.ViewModel.ConvMap[c.Msisdn];
@@ -3157,7 +3161,7 @@ namespace windows_client.View
             App.ViewModel.SetHiddenMode();
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (llsConversations.ItemsSource.Count>0)
+                    if (llsConversations.ItemsSource.Count > 0)
                         llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
                 });
 
