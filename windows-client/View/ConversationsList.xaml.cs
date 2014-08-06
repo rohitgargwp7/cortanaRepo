@@ -3366,9 +3366,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_GetStarted_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_GetStarted_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3385,9 +3385,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_Step2_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Step2_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3401,9 +3401,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_Completed_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Completed_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3415,8 +3415,6 @@ namespace windows_client.View
 
                 case ToolTipMode.RESET_HIDDEN_MODE:
 
-                    conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
-
                     if (isModeChanged)
                     {
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
@@ -3425,6 +3423,8 @@ namespace windows_client.View
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
 
+                    conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
+                    
                     if (!conversationPageToolTip.IsShow)
                         conversationPageToolTip.IsShow = true;
 
@@ -3434,9 +3434,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
                         conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;

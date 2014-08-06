@@ -120,6 +120,8 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
             tempToolTip.tipTextbox.Text = tempText;
+            tempToolTip.tipTextbox.Margin = tempToolTip.leftIcon.Source == null && tempToolTip.rightIcon.Source == null ? new Thickness(24, 12, 24, 12) :
+                tempToolTip.rightIcon.Source == null ? new Thickness(0, 12, 24, 12) : tempToolTip.leftIcon.Source == null? new Thickness(24, 12, 0, 12) : new Thickness(0, 12, 0, 12);
         }
 
         public String TipText
