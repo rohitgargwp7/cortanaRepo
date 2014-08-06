@@ -1962,21 +1962,22 @@ namespace windows_client.Model
                         fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
 
+                        // These two conditions check for empty filename received on json packet. This bug was mainly occured on packets received from Android devices
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            if( fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                             {
                                 fileName = AppResources.Location_Txt;
                             }
                         }
                         else if (contentType.ToString().Contains(HikeConstants.CONTACT))
                         {
-                            if (String.IsNullOrWhiteSpace(fileName.ToString()))
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                             {
                                 fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                 {
-                                    fileName = "contact";
+                                    fileName = AppResources.ContactTransfer_Text;
                                 }
                             }
                         }
