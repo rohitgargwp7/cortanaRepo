@@ -256,6 +256,8 @@ namespace windows_client
         public static readonly string BACKGROUND_ID = "bg_id";
         public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
 
+        public static readonly string PREVIEW = "preview";
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string REQUEST_DISPLAY_PIC = "rdp";
@@ -352,6 +354,7 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+        public static readonly string AVATAR = "avatar";
         public static readonly string PUSH_CBG = "pushcbg";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
@@ -377,6 +380,17 @@ namespace windows_client
         public static readonly string SHOW_FREE_INVITES = "show_free_invites";
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
+
+        #region TOAST CONSTANTS
+        public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
+        public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
+        public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
+        public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
+        public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
+        public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
+        public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
+        public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        #endregion
 
         #region ANALYTICS EVENTS KEYS
 
@@ -408,7 +422,7 @@ namespace windows_client
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";        
 
         #endregion
 

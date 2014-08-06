@@ -196,7 +196,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contact Info.
+        ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string Attachement_Contact_Txt {
             get {
@@ -273,6 +273,15 @@ namespace windows_client.Languages {
         public static string Auto_Upload_Settings_Header {
             get {
                 return ResourceManager.GetString("Auto_Upload_Settings_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto save photo.
+        /// </summary>
+        public static string AutoSavePhotoSettings_Txt {
+            get {
+                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
             }
         }
         
@@ -1723,6 +1732,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everyone.
+        /// </summary>
+        public static string Everyone_Txt {
+            get {
+                return ResourceManager.GetString("Everyone_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to express yourself.
         /// </summary>
         public static string Express_Yourself_Txt {
@@ -1755,6 +1773,15 @@ namespace windows_client.Languages {
         public static string Facebook_Txt {
             get {
                 return ResourceManager.GetString("Facebook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites.
+        /// </summary>
+        public static string Favorites_Txt {
+            get {
+                return ResourceManager.GetString("Favorites_Txt", resourceCulture);
             }
         }
         
@@ -2749,6 +2776,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message preview.
+        /// </summary>
+        public static string Message_Preview {
+            get {
+                return ResourceManager.GetString("Message_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to message too short.
         /// </summary>
         public static string Message_Too_Short {
@@ -3316,6 +3352,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nobody.
+        /// </summary>
+        public static string Nobody_Txt {
+            get {
+                return ResourceManager.GetString("Nobody_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to no contacts to display.
         /// </summary>
         public static string NoContactsToDisplay_Txt {
@@ -3478,6 +3523,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OOPS! Something went wrong.
+        /// </summary>
+        public static string Oops_Something_Wrong_Txt {
+            get {
+                return ResourceManager.GetString("Oops_Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to open.
+        /// </summary>
+        public static string Open_File {
+            get {
+                return ResourceManager.GetString("Open_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
         public static string Pause_Txt {
@@ -3501,6 +3564,15 @@ namespace windows_client.Languages {
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to play.
+        /// </summary>
+        public static string Play_File {
+            get {
+                return ResourceManager.GetString("Play_File", resourceCulture);
             }
         }
         
@@ -3843,6 +3915,24 @@ namespace windows_client.Languages {
         public static string Save_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save contact.
+        /// </summary>
+        public static string Save_Contact_Txt {
+            get {
+                return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved successfully.
+        /// </summary>
+        public static string SaveSuccess_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
             }
         }
         
@@ -4261,6 +4351,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show profile picture to.
+        /// </summary>
+        public static string Settings_ProfilePictureToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_ProfilePictureToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
         public static string Settings_PushToggleSwitchHeader {
@@ -4369,7 +4468,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to turn on/off jingle, vibrate and more.
+        ///   Looks up a localized string similar to turn on/off jingle, message preview and more.
         /// </summary>
         public static string SettingsSubtitle_Notification_Txt {
             get {
@@ -4450,7 +4549,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show last seen.
+        ///   Looks up a localized string similar to Show last seen to.
         /// </summary>
         public static string Show_LastSeen_TimeStamp {
             get {
@@ -4783,6 +4882,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Turning message preview OFF.
+        /// </summary>
+        public static string Turning_Message_Preview_Off {
+            get {
+                return ResourceManager.GetString("Turning_Message_Preview_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turning message preview ON.
+        /// </summary>
+        public static string Turning_Message_Preview_On {
+            get {
+                return ResourceManager.GetString("Turning_Message_Preview_On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twitter.
         /// </summary>
         public static string Twitter_Caps {
@@ -5049,6 +5166,15 @@ namespace windows_client.Languages {
         public static string Video_Txt {
             get {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to view.
+        /// </summary>
+        public static string View_File {
+            get {
+                return ResourceManager.GetString("View_File", resourceCulture);
             }
         }
         

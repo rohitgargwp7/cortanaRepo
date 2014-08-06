@@ -1221,6 +1221,16 @@ namespace windows_client.ViewModel
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
 
+        public async void UpdateUserImageInStatus(string msisdn)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in StatusList)
+            {
+                if (status.Msisdn == msisdn)
+                    status.UpdateImage();
+            }
+        }
         public Boolean IsDarkMode
         {
             get;

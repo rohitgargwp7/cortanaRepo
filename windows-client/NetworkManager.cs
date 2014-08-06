@@ -54,6 +54,8 @@ namespace windows_client
 
         public static readonly string ACTION = "action";
 
+        public static readonly string ICON_REMOVE = "icr";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -91,10 +93,12 @@ namespace windows_client
         {
             if (string.IsNullOrEmpty(msg))
                 return;
+
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);
             }
+
             JObject jsonObj = null;
             try
             {
@@ -467,48 +471,39 @@ namespace windows_client
                 st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    try
                     {
-                        try
-                        {
-                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
-                        }
-                    });
+                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
+                    }
                 }
                 else // update fav and contact section
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    if (msisdn == null)
+                        return;
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
                     {
-                        if (msisdn == null)
-                            return;
-                        bool isPendingOrFav = false;
-                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                        if (c != null) // for favourites
-                        {
-                            c.Avatar = imageBytes;
-                            isPendingOrFav = true;
-                        }
+                        c.Avatar = imageBytes;
+                    }
+                    else
+                    {
                         c = App.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
-                            isPendingOrFav = true;
                         }
-
-                        if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        {
-                            // if bitmap is not already updated by fav or pending , simply remove the old image
-                            if (!isPendingOrFav)
-                                UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                            // this is done to notify that image is changed so load new one.
-                            App.ViewModel.ContactsCache[msisdn].Avatar = null;
-                        }
-                    });
+                    }
+                }
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                {
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    // this is done to notify that image is changed so load new one.
+                    App.ViewModel.ContactsCache[msisdn].Avatar = null;
                 }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
@@ -811,6 +806,17 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region DP PRIVACY SETTING
+                                        else if (kkvv.Key == HikeConstants.AVATAR)
+                                        {
+                                            int value = (int)kkvv.Value;
+                                            if (value == 2)
+                                            {
+                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                            }
+                                        }
+                                        #endregion
+
                                     }
                                     catch (Exception ex)
                                     {
@@ -1533,8 +1539,16 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
-                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                try
+                                {
+                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                }
+                                catch (Exception ex)
+                                {
+                                    tod = 0;
+                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                                }
                             }
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
@@ -1926,6 +1940,45 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: ACTION, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
 
+            }
+            #endregion
+            #region IC REMOVE
+            else if (type == ICON_REMOVE)
+            {
+                try
+                {
+                    MiscDBUtil.DeleteImageForMsisdn(msisdn);
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = null;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
+                    {
+                        c.Avatar = null;
+                    }
+                    else
+                    {
+                        c = App.ViewModel.GetPending(msisdn);
+                        if (c != null) // for pending requests
+                        {
+                            c.Avatar = null;
+                        }
+                    }
+
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    {
+                        // this is done to notify that image is changed so load new one.
+                        App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                    }
+                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+                }
+                catch (JsonReaderException ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
             }
             #endregion
             #region OTHER
