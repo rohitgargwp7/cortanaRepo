@@ -74,7 +74,11 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             ImageSource tempSource = (ImageSource)e.NewValue;
             tempToolTip.leftIcon.Source = tempSource;
-            tempToolTip.leftIcon.Visibility =((tempSource!=null)?( Visibility.Visible):(Visibility.Collapsed));
+            tempToolTip.leftIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+
+            var margin = tempToolTip.tipTextbox.Margin;
+            margin.Left = tempSource == null ? 24 : 0;
+            tempToolTip.tipTextbox.Margin = margin;
         }
 
         public ImageSource LeftIconSource
@@ -94,10 +98,14 @@ namespace windows_client.Controls
 
         public static void OnRightIconSourceChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            ToolTipsUC TempToolTip = obj as ToolTipsUC;
-            ImageSource TempSource = (ImageSource)e.NewValue;
-            TempToolTip.rightIcon.Source = TempSource;
-            TempToolTip.rightIcon.Visibility = ((TempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+            ToolTipsUC tempToolTip = obj as ToolTipsUC;
+            ImageSource tempSource = (ImageSource)e.NewValue;
+            tempToolTip.rightIcon.Source = tempSource;
+            tempToolTip.rightIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+
+            var margin = tempToolTip.tipTextbox.Margin;
+            margin.Right = tempSource == null ? 24 : 0;
+            tempToolTip.tipTextbox.Margin = margin;
         }
 
         public ImageSource RightIconSource
@@ -120,8 +128,6 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
             tempToolTip.tipTextbox.Text = tempText;
-            tempToolTip.tipTextbox.Margin = tempToolTip.leftIcon.Source == null && tempToolTip.rightIcon.Source == null ? new Thickness(24, 12, 24, 12) :
-                tempToolTip.rightIcon.Source == null ? new Thickness(0, 12, 24, 12) : tempToolTip.leftIcon.Source == null? new Thickness(24, 12, 0, 12) : new Thickness(0, 12, 0, 12);
         }
 
         public String TipText
