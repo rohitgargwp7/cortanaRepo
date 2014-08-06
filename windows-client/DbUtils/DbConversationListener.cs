@@ -146,7 +146,7 @@ namespace windows_client.DbUtils
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    
+
                     if (FileTransferManager.Instance.IsTransferPossible())
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
                     else
