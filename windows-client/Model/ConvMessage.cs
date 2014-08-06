@@ -1966,19 +1966,17 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
-                            {
                                 fileName = AppResources.Location_Txt;
-                            }
                         }
                         else if (contentType.ToString().Contains(HikeConstants.CONTACT))
                         {
                             if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                             {
                                 fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
+                                
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
-                                {
                                     fileName = AppResources.ContactTransfer_Text;
-                                }
+                            
                             }
                         }
 
