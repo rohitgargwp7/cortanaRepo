@@ -1539,6 +1539,7 @@ namespace windows_client.View
                     if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                         nudgeTut.Visibility = Visibility.Visible;
 
+                    clearChatItem.IsEnabled = false;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1884,6 +1885,8 @@ namespace windows_client.View
 
                 if (!isGroupChat && isNudgeOn)
                     nudgeTut.Visibility = Visibility.Visible;
+                
+                clearChatItem.IsEnabled = false;
 
                 ClearChat();
 
@@ -2138,6 +2141,8 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
+
+            clearChatItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3130,6 +3135,9 @@ namespace windows_client.View
 
             bool delConv = false;
             ocMessages.Remove(msg);
+
+            if (!isGroupChat && ocMessages.Count == 0)
+                clearChatItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
