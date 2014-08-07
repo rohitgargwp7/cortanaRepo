@@ -439,6 +439,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to change your hidden mode password.
+        /// </summary>
+        public static string ChangePassword_SubTxt {
+            get {
+                return ResourceManager.GetString("ChangePassword_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to change password.
+        /// </summary>
+        public static string ChangePassword_Txt {
+            get {
+                return ResourceManager.GetString("ChangePassword_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to change pic.
         /// </summary>
         public static string ChangePic_AppBar_Txt {
@@ -579,6 +597,15 @@ namespace windows_client.Languages {
         public static string Confirmation_HeaderTxt {
             get {
                 return ResourceManager.GetString("Confirmation_HeaderTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm your password.
+        /// </summary>
+        public static string ConfirmPassword_Txt {
+            get {
+                return ResourceManager.GetString("ConfirmPassword_Txt", resourceCulture);
             }
         }
         
@@ -1516,6 +1543,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to enter current password.
+        /// </summary>
+        public static string Enter_current_pwd_txt {
+            get {
+                return ResourceManager.GetString("Enter_current_pwd_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm your number.
         /// </summary>
         public static string EnterMsisdn_ConfirmNumber_Txt {
@@ -1557,6 +1593,15 @@ namespace windows_client.Languages {
         public static string EnterName_NameErrorTxt {
             get {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create password.
+        /// </summary>
+        public static string EnterNewPassword_Txt {
+            get {
+                return ResourceManager.GetString("EnterNewPassword_Txt", resourceCulture);
             }
         }
         
@@ -1611,6 +1656,15 @@ namespace windows_client.Languages {
         public static string EnterNumber_VerifyNumberMsg_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterNumber_VerifyNumberMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enter password.
+        /// </summary>
+        public static string EnterPassword_Txt {
+            get {
+                return ResourceManager.GetString("EnterPassword_Txt", resourceCulture);
             }
         }
         
@@ -2376,6 +2430,105 @@ namespace windows_client.Languages {
         public static string Help_System_Health_Title {
             get {
                 return ResourceManager.GetString("Help_System_Health_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To complete setup, tap on &apos;hi&apos; to hide your chats..
+        /// </summary>
+        public static string HiddenMode_Completed_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_Completed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide your chats with a password. Tap on &apos;hi&apos; to get started..
+        /// </summary>
+        public static string HiddenMode_GetStarted_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_GetStarted_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap and hold a chat to mark it ‘hidden’..
+        /// </summary>
+        public static string HiddenMode_Step2_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_Step2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a chat and tap on &apos;hi&apos;.
+        /// </summary>
+        public static string HiddenMode_ZeroChatConf_Body_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_ZeroChatConf_Body_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide your chats with a password..
+        /// </summary>
+        public static string HiddenMode_ZeroChatConf_Header_Txt {
+            get {
+                return ResourceManager.GetString("HiddenMode_ZeroChatConf_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will stop hidden mode reset. Are you sure?.
+        /// </summary>
+        public static string HiddenModeReset_CancelConf_Body_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_CancelConf_Body_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Reset?.
+        /// </summary>
+        public static string HiddenModeReset_CancelConf_Header_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_CancelConf_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to reset Hidden Mode now!.
+        /// </summary>
+        public static string HiddenModeReset_Completed_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_Completed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All your hidden chats will be deleted. Are you sure?.
+        /// </summary>
+        public static string HiddenModeReset_FinalConf_Body_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_FinalConf_Body_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Reset?.
+        /// </summary>
+        public static string HiddenModeReset_FinalConf_Header_Txt {
+            get {
+                return ResourceManager.GetString("HiddenModeReset_FinalConf_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hide chat.
+        /// </summary>
+        public static string Hide_Txt {
+            get {
+                return ResourceManager.GetString("Hide_Txt", resourceCulture);
             }
         }
         
@@ -3901,6 +4054,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to forgot your password? reset hidden mode. All hidden chats will be deleted..
+        /// </summary>
+        public static string ResetHiddenMode_SubTxt {
+            get {
+                return ResourceManager.GetString("ResetHiddenMode_SubTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to reset hidden mode.
+        /// </summary>
+        public static string ResetHiddenMode_Txt {
+            get {
+                return ResourceManager.GetString("ResetHiddenMode_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All hidden chats will be deleted after {0} minutes..
+        /// </summary>
+        public static string ResetTip_Txt {
+            get {
+                return ResourceManager.GetString("ResetTip_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
         public static string RestartApp_Txt {
@@ -4932,6 +5112,15 @@ namespace windows_client.Languages {
         public static string UnBlock_Txt {
             get {
                 return ResourceManager.GetString("UnBlock_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unhide chat.
+        /// </summary>
+        public static string Unhide_Txt {
+            get {
+                return ResourceManager.GetString("Unhide_Txt", resourceCulture);
             }
         }
         

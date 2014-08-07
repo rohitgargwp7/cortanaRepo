@@ -16,11 +16,33 @@ namespace windows_client.Controls
         public ToolTipsUC()
         {
             InitializeComponent();
+            this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region
+
+        public static readonly DependencyProperty IsShowProperty =
+            DependencyProperty.Register("IsShow", typeof(Boolean), typeof(ToolTipsUC), new PropertyMetadata(OnIsShowPropertyChanged));
+
+        public static void OnIsShowPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            ToolTipsUC TempToolTip = obj as ToolTipsUC;
+            TempToolTip.Visibility = (bool)e.NewValue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public Boolean IsShow
+        {
+            get
+            {
+                return (Boolean)GetValue(IsShowProperty);
+            }
+            set
+            {
+                SetValue(IsShowProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty ControlBackgroundColorProperty =
             DependencyProperty.Register("ControlBackgroundColor", typeof(Brush), typeof(ToolTipsUC), new PropertyMetadata(OnBackGroundColorChanged));
@@ -32,7 +54,7 @@ namespace windows_client.Controls
             TempToolTip.toolTipGrid.Background = TempBg;
         }
 
-        public Brush ControlBackGroundColor
+        public Brush ControlBackgroundColor
         {
             get
             {
@@ -52,8 +74,11 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             ImageSource tempSource = (ImageSource)e.NewValue;
             tempToolTip.leftIcon.Source = tempSource;
-            tempToolTip.leftIcon.Visibility =((tempSource!=null)?( Visibility.Visible):(Visibility.Collapsed));
-  
+            tempToolTip.leftIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+
+            var margin = tempToolTip.tipTextbox.Margin;
+            margin.Left = tempSource == null ? 24 : 0;
+            tempToolTip.tipTextbox.Margin = margin;
         }
 
         public ImageSource LeftIconSource
@@ -73,10 +98,14 @@ namespace windows_client.Controls
 
         public static void OnRightIconSourceChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            ToolTipsUC TempToolTip = obj as ToolTipsUC;
-            ImageSource TempSource = (ImageSource)e.NewValue;
-            TempToolTip.rightIcon.Source = TempSource;
-            TempToolTip.rightIcon.Visibility = ((TempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+            ToolTipsUC tempToolTip = obj as ToolTipsUC;
+            ImageSource tempSource = (ImageSource)e.NewValue;
+            tempToolTip.rightIcon.Source = tempSource;
+            tempToolTip.rightIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
+
+            var margin = tempToolTip.tipTextbox.Margin;
+            margin.Right = tempSource == null ? 24 : 0;
+            tempToolTip.tipTextbox.Margin = margin;
         }
 
         public ImageSource RightIconSource
@@ -119,9 +148,16 @@ namespace windows_client.Controls
 
         public event EventHandler<EventArgs> LeftIconClicked;
         public event EventHandler<EventArgs> RightIconClicked;
-        public event EventHandler<EventArgs> ControlClicked;
+        public event EventHandler<EventArgs> FullTipTapped;
 
         #endregion
+
+        public void ResetClickEvents()
+        {
+            LeftIconClicked = null;
+            RightIconClicked = null;
+            FullTipTapped = null;
+        }
 
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -137,8 +173,8 @@ namespace windows_client.Controls
 
         public void toolTipGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (ControlClicked != null)
-                ControlClicked(sender, e);
+            if (FullTipTapped != null)
+                FullTipTapped(sender, e);
         }
     }
 }

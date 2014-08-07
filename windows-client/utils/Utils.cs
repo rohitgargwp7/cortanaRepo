@@ -469,6 +469,13 @@ namespace windows_client.utils
             }
         }
 
+        public static bool IsUriStealth(string targetPage)
+        {
+            if (targetPage.Contains("sth"))
+                return true;
+            return false;
+        }
+
         public static string GetFirstName(string completeName)
         {
             string firstName = string.Empty;
@@ -627,6 +634,13 @@ namespace windows_client.utils
                 readBy = string.Format(AppResources.MessageStatus_ReadByMoreThanThree, readBy, count);
 
             return readBy;
+        }
+
+        static public string GetFormattedTimeFromSeconds(long seconds)
+        {
+            long minute = seconds / 60;
+            long secs = seconds % 60;
+            return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
         static public int GetMaxCharForBlock(string message, int maxLinesPerBlock = 35, int maxCharsPerLine = 30)

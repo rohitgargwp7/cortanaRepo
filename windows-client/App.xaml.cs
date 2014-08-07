@@ -534,7 +534,10 @@ namespace windows_client
                     }
 
                     string msisdn = Utils.GetParamFromUri(targetPage);
-                    if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                    bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                    if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                        && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -621,9 +624,13 @@ namespace windows_client
                     return;
                 }
 
+                // Extract msisdn from server url
                 string msisdn = Utils.GetParamFromUri(targetPage);
-                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                    && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                    && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -774,6 +781,10 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Hidden Mode
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.1") < 0)
+                WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            #endregion
             #region Upgrade Pref Contacts Fix
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);

@@ -59,7 +59,6 @@ namespace windows_client.View
                         #endregion
                     }
 
-
                     if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.MqttDbUpdateToLatestVersion();
 
@@ -327,16 +326,20 @@ namespace windows_client.View
                             NavigationService.Navigate(nUri);
                             return;
                         }
+
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
+
                         string msisdn = Utils.GetParamFromUri(targetPage);
-                        if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                        bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                        if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                            && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                            && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                         {
                             App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
                             PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
                             PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
-
                         }
                         else
                         {

@@ -35,14 +35,17 @@
     <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top" Background="Transparent"/>
 
-        <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="2" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
+        <local:Overlay x:Name="customOverlay" IsEnabled="True" Grid.RowSpan="3" IsVisible="False" Canvas.ZIndex="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" EnableAnimation="False" Visibility="Collapsed"/>
 
-        <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
+        <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="3" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="passwordOverlay_PasswordOverlayVisibilityChanged"/>
+        
+        <Grid x:Name="headerGrid" Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -50,8 +53,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,0,15">
-                    <Image Source="images\ConversationPage\hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="-12,-12,-12,0" Tap="hikeLogo_Tapped">
+                    <Image x:Name="headerIcon" Source="/view/images/ConversationPage/hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12"/>
                 </Grid>
                 <Grid Grid.Column="1" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Image x:Name="chatsTabImage" Stretch="Uniform" Height="26" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -68,7 +71,11 @@
             </Grid>
         </Grid>
 
-        <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeBGBrush}">
+        <Grid x:Name="tipControl" Grid.Row="1">
+            <local:ToolTipsUC x:Name="conversationPageToolTip" ControlBackgroundColor="{StaticResource StealthRed}"/>
+        </Grid>
+        
+        <controls:Pivot x:Name="launchPagePivot" Grid.Row="2" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeBGBrush}">
             <controls:PivotItem Margin="0,-10,0,0" Background="{StaticResource HikeBGBrush}">
                 <Grid x:Name="ConversationList">
                     <ListBox Name="emptyScreenGrid" Visibility="Collapsed">
@@ -271,9 +278,10 @@
                                             HorizontalAlignment="Stretch">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold">
+                                <Grid Margin="25,25,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Hold="Grid_Hold" Visibility="{Binding ChatVisibility}">
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding HideUnhideChatText}" Visibility="{Binding HideUnhideChatVisibility}" Click="MenuItem_Click_HideChat"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
@@ -293,15 +301,13 @@
                                         </Grid.RowDefinitions>
                                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="{StaticResource GroupIndicator}" Visibility="{Binding GroupIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Left" Height="23" Width="23" Margin="0,0,5,5"/>
-                                            <Grid HorizontalAlignment="Stretch" Grid.Column="1" Background="Transparent">
-                                                <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}"/>
+                                            <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                                                <TextBlock Text="{Binding NameToShow}" Style="{StaticResource ConversationChatHeaderTextBlock}" Foreground="{Binding ChatHeaderForegroundColor}"/>
                                             </Grid>
-                                            <Grid Background="Transparent" Grid.Column="2" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding MuteIconTimeStampVisibility}">
+                                            <Grid Background="Transparent" Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding MuteIconTimeStampVisibility}">
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Visibility="{Binding TimeStampVisibility}" Style="{StaticResource ConversationChatTimestampTextBlock}"/>
                                             </Grid>
                                         </Grid>
@@ -314,7 +320,7 @@
                                             <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,9,0"/>
                                             <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
                                                                  MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
-                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="/View/images/ConversationPage/mute_icon_main_b.png" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
+                                            <Image Grid.Column="2" Margin="12,0,0,0" Source="{Binding MuteIconImage}" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
                                             <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
                                                 <TextBlock Text="{Binding UnreadCounterString}" Style="{StaticResource UnreadCounterTextBlock}"/>
                                             </Border>
@@ -549,11 +555,6 @@
                                     <templateSelector:StatusTemplateSelector.DTTextStatus>
                                         <DataTemplate>
                                             <Border Tap="statusItem_Tap" Style="{StaticResource StatusUpdateContainerStyle}">
-                                                <toolkit:ContextMenuService.ContextMenu>
-                                                    <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                        <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Copy_txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Copy_Click" />
-                                                    </toolkit:ContextMenu>
-                                                </toolkit:ContextMenuService.ContextMenu>
                                                 <Grid Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>

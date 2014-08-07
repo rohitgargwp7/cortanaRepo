@@ -210,12 +210,20 @@ namespace windows_client
                 string sentTo = "";
                 try
                 {
+                    // If not null then this is group id
                     sentTo = (string)jsonObj[HikeConstants.TO];
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
+
+                var number = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
+
+                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(number)
+                    && App.ViewModel.ConvMap[number].IsHidden && !App.ViewModel.IsHiddenModeActive)
+                    return;
+
                 object[] vals = new object[2];
                 vals[0] = msisdn;
                 vals[1] = sentTo;
@@ -1949,12 +1957,15 @@ namespace windows_client
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
                         this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
+
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    
                     if (c != null) // for favourites
                     {
                         c.Avatar = null;
@@ -1973,7 +1984,11 @@ namespace windows_client
                         // this is done to notify that image is changed so load new one.
                         App.ViewModel.ContactsCache[msisdn].Avatar = null;
                     }
-                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            App.ViewModel.UpdateUserImageInStatus(msisdn);
+                        });
                 }
                 catch (JsonReaderException ex)
                 {

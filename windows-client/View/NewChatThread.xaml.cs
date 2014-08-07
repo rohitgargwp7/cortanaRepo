@@ -1912,13 +1912,14 @@ namespace windows_client.View
             /*
             * 1. Delete from DB (pubsub)
             * 2. Remove from ConvList page
-            * 3. GoBack
+            * 3. Remove from stealth list 
+            * 4. GoBack
             */
             JObject jObj = new JObject();
             jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
             jObj[HikeConstants.TO] = mContactNumber;
-
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
 
             App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
@@ -1926,6 +1927,10 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
+
+            if (cObj.IsHidden)
+                App.ViewModel.SendRemoveStealthPacket(cObj);
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
             else // case when this page is opened through push notification or share picker
@@ -3016,6 +3021,9 @@ namespace windows_client.View
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             var msisdn = convMessage.GroupParticipant;
 
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
+
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
 
             if (co != null)
@@ -4053,8 +4061,14 @@ namespace windows_client.View
                     {
                         ToastPrompt toast = new ToastPrompt();
                         toast.Tag = cObj.Msisdn;
-                        toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-                        toast.Message = cObj.ToastText;//cannot use convMesssage.Message because for gc it does not have group member name 
+
+                        if (cObj.IsHidden)
+                            toast.Title = String.Empty;
+                        else
+                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
+
+                        // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
+                        toast.Message = cObj.ToastText;
                         toast.Foreground = UI_Utils.Instance.White;
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
@@ -6955,14 +6969,14 @@ namespace windows_client.View
             // Start recording
             _microphone.Start();
             timeBar.Opacity = 1;
-            maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
+            maxPlayingTime.Text = " / " + Utils.GetFormattedTimeFromSeconds(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
             sendIconButton.IsEnabled = false;
             _recorderState = RecorderState.RECORDING;
         }
 
         void showWalkieTalkieProgress(object sender, EventArgs e)
         {
-            runningTime.Text = formatTime(_runningSeconds + 1);
+            runningTime.Text = Utils.GetFormattedTimeFromSeconds(_runningSeconds + 1);
 
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
@@ -7008,7 +7022,7 @@ namespace windows_client.View
             if (_recorderState == RecorderState.RECORDING)
             {
                 _recordedDuration = _runningSeconds;
-                runningTime.Text = formatTime(0);
+                runningTime.Text = Utils.GetFormattedTimeFromSeconds(0);
             }
 
             _runningSeconds = 0;
@@ -7088,13 +7102,6 @@ namespace windows_client.View
             stream.Write(BitConverter.GetBytes((int)stream.Length - 44), 0, 4);
 
             stream.Seek(oldPos, SeekOrigin.Begin);
-        }
-
-        private string formatTime(int seconds)
-        {
-            int minute = seconds / 60;
-            int secs = seconds % 60;
-            return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
         private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2, 0x43, 0x4b, 0x5c));
