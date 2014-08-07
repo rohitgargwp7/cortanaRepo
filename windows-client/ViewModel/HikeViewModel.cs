@@ -1277,7 +1277,7 @@ namespace windows_client.ViewModel
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
-        public void SetHiddenMode()
+        public void ToggleHiddenMode()
         {
             IsHiddenModeActive = !IsHiddenModeActive;
 

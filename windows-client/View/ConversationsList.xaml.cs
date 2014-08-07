@@ -3154,7 +3154,7 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == true).Count() > 0)
                 ShowChats();
 
-            App.ViewModel.SetHiddenMode();
+            App.ViewModel.ToggleHiddenMode();
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     llsConversations.UpdateLayout();
