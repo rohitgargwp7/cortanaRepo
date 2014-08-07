@@ -1539,7 +1539,9 @@ namespace windows_client.View
                     if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                         nudgeTut.Visibility = Visibility.Visible;
 
-                    clearChatItem.IsEnabled = false;
+                    if (clearChatItem != null && clearChatItem.IsEnabled)
+                        clearChatItem.IsEnabled = false;
+
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1885,8 +1887,9 @@ namespace windows_client.View
 
                 if (!isGroupChat && isNudgeOn)
                     nudgeTut.Visibility = Visibility.Visible;
-                
-                clearChatItem.IsEnabled = false;
+
+                if (clearChatItem != null && clearChatItem.IsEnabled)
+                    clearChatItem.IsEnabled = false;
 
                 ClearChat();
 
@@ -2141,8 +2144,8 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
-            
-            if (clearChatItem!= null && !clearChatItem.IsEnabled)
+
+            if (clearChatItem != null && !clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
@@ -3137,7 +3140,7 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
-            if (ocMessages.Count == 0 && clearChatItem!=null && clearChatItem.IsEnabled)
+            if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
@@ -3313,7 +3316,7 @@ namespace windows_client.View
         private void MenuItem_Click_View(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            
+
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
                 PauseBackgroundAudio();
@@ -7397,7 +7400,7 @@ namespace windows_client.View
         #region Read By
 
         ConvMessage _lastReceivedSentMessage = null, _readByMessage = null, _previouslastReceivedSentMessage = null;
-        
+
         void UpdateLastSentMessageStatusOnUI()
         {
             if (!isGroupChat || !isGroupAlive)
