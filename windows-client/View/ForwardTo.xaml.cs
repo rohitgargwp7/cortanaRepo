@@ -933,7 +933,7 @@ namespace windows_client.View
                         continue;
 
                     // Dont show recent chats which are hidden
-                    if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && conv.IsHidden)
+                    if (!App.ViewModel.IsHiddenModeActive && conv.IsHidden)
                         continue;
 
                     if (!conv.IsGroupChat)

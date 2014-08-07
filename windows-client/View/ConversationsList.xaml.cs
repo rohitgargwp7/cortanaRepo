@@ -260,6 +260,8 @@ namespace windows_client.View
             {
                 ShowHiddenModeResetToolTip();
             }
+            else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
+                UpdateResetHiddenModeTimer();
 
             FrameworkDispatcher.Update();
         }
@@ -2160,7 +2162,7 @@ namespace windows_client.View
 
         private void StartNewChatWithSelectContact(ContactInfo c)
         {
-            if (!App.ViewModel.IsHiddenModeActive 
+            if (!App.ViewModel.IsHiddenModeActive
                 && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
                 return;
 
@@ -3328,6 +3330,31 @@ namespace windows_client.View
         }
 
         /// <summary>
+        /// Update reset timer after resuming app on home page.
+        /// </summary>
+        private void UpdateResetHiddenModeTimer()
+        {
+            long resetTime;
+            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            {
+                _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                if (_resetTimeSeconds <= 0)
+                {
+                    if (_resetTimer != null)
+                        _resetTimer.Stop();
+
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    UpdateToolTip(true);
+                }
+                else
+                {
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
+                    UpdateToolTip(true);
+                }
+            }
+        }
+
+        /// <summary>
         /// Reset timer tick event. Update timer.
         /// </summary>
         /// <param name="sender"></param>
@@ -3426,7 +3453,7 @@ namespace windows_client.View
                     }
 
                     conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
-                    
+
                     if (!conversationPageToolTip.IsShow)
                         conversationPageToolTip.IsShow = true;
 
@@ -3633,7 +3660,6 @@ namespace windows_client.View
             hideObj.Add(HikeConstants.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
-
 
         void ViewModel_ResetHiddenModeClicked(object sender, EventArgs e)
         {
