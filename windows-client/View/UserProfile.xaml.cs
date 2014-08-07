@@ -905,7 +905,7 @@ namespace windows_client.View
                 ShowNonHikeUser();
             else
             {
-                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
+                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yyyy"));//todo:change date
                 InitHikeUserProfile();
             }
 
