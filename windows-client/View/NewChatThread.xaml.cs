@@ -2141,8 +2141,9 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
-
-            clearChatItem.IsEnabled = true;
+            
+            if (clearChatItem!= null && !clearChatItem.IsEnabled)
+                clearChatItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3136,7 +3137,7 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
-            if (!isGroupChat && ocMessages.Count == 0)
+            if (ocMessages.Count == 0 && clearChatItem!=null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
