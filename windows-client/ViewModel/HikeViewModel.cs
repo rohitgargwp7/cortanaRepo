@@ -1256,6 +1256,10 @@ namespace windows_client.ViewModel
                     status.UpdateImage();
             }
         }
+
+        /// <summary>
+        /// Is dark theme set for the app.
+        /// </summary>
         public Boolean IsDarkMode
         {
             get;
@@ -1263,7 +1267,7 @@ namespace windows_client.ViewModel
         }
 
         /// <summary>
-        /// Check if hidden mode is active. True means hidden chats are visible
+        /// Check if hidden mode is active. True means hidden chats are visible.
         /// </summary>
         public Boolean IsHiddenModeActive
         {
@@ -1271,12 +1275,18 @@ namespace windows_client.ViewModel
             private set;
         }
 
+        /// <summary>
+        /// Reset hidden mode.
+        /// </summary>
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
+        /// <summary>
+        /// Toggle hidden mode. Save state in app settings.
+        /// </summary>
         public void ToggleHiddenMode()
         {
             IsHiddenModeActive = !IsHiddenModeActive;
@@ -1290,6 +1300,9 @@ namespace windows_client.ViewModel
                 conv.HiddenModeToggled();
         }
 
+        /// <summary>
+        /// Start reset hidden mode timer on home screen.
+        /// </summary>
         public void ResetHiddenModeTapped()
         {
             if (App.ViewModel.StartResetHiddenModeTimer != null)
