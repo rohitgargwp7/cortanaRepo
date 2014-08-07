@@ -2155,9 +2155,6 @@ namespace windows_client.View
             if (c == null)
                 return;
 
-            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
-                return;
-
             StartNewChatWithSelectContact(c);
         }
 
