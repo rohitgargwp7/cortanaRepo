@@ -14,31 +14,16 @@ using namespace std;
 
 WindowsPhoneRuntimeComponent::WindowsPhoneRuntimeComponent()
 {
+	rgItemsRoot =NULL;
 }
 
-Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::myfunc(uint8 position,  Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,Platform::String^* strVideoAlbumName) {
-	int i = 0;
+Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,double* videoTime) {
+
 	auto_ZMediaLibRequirement myLib;
 
 	myLib.Require();
-	
+
 	HRESULT hr = 0;
-
-	HZMEDIALIST hRootList = NULL;
-	//hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_FOLDER_FOLDERS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
-	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
-
-	size_t cItemsRoot = 0;
-	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
-
-	ZMEDIAITEM *rgItemsRoot = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM) * cItemsRoot);
-
-
-	hr = ZMediaList_GetItems(hRootList, 0, rgItemsRoot, cItemsRoot, &cItemsRoot);
-
-	// Find the folder with a name matching c_wszRootPictureFolder
-
-
 	size_t cch = 0;
 
 	//Get the thumbnail
@@ -46,19 +31,7 @@ Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::myfunc(uint8 position,  Pl
 	byte* myThumbData = (byte*) malloc(cch);// *sizeof(WCHAR));
 	hr = ZMediaLib_GetItemThumbnail(rgItemsRoot[position], ZMEDIAITEM_THUMBTYPE_NORMAL, (void*)myThumbData, cch, NULL);
 
-	//Now get the original asset
-	ZMEDIAITEM *pItem = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM));
-	hr = ZMediaList_GetItem(hRootList, 0, pItem);
-
-	ZMEDIAITEMSTREAM *pStream = (ZMEDIAITEMSTREAM*)malloc(sizeof(ZMEDIAITEMSTREAM));
-	hr = ZMediaLib_GetItemStreamOnProperty(*pItem, ZMEDIAITEM_ATTRIBUTE_FILEPATH, pStream);
-
-	ULARGE_INTEGER *pSize = (ULARGE_INTEGER *)malloc(sizeof(ULARGE_INTEGER));
-	hr = ZMediaLib_GetSizeItemStream(*pStream, pSize);
-
-
-
-	Platform::Array<uint8>^ intOutArray=ref new Platform::Array<uint8>(cch);;
+	Platform::Array<uint8>^ intOutArray=ref new Platform::Array<uint8>(cch);
 
 	for (int iter = 0; iter < cch; iter++)
 	{
@@ -76,10 +49,17 @@ Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::myfunc(uint8 position,  Pl
 	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
 	*strVideoFilePath = ref new String(str);
 	delete str;
-	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, NULL, NULL, &cch);
+
+	/*hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_ALBUM, NULL, NULL, &cch);
 	str = new WCHAR[cch]; 
-	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, str, cch, &cch);
-	*strVideoAlbumName = ref new String(str);
+	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_ALBUM, str, cch, &cch);
+	*strVideoAlbum = ref new String(str);
+	delete str;*/
+
+	FILETIME ft;
+	hr=ZMediaLib_GetItemDateTimeAttribute(rgItemsRoot[position],ZMEDIAITEM_ATTRIBUTE_DATE,&ft);
+
+	*videoTime= (((ULONGLONG) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
 
 	return intOutArray;
 }
@@ -89,12 +69,8 @@ uint16 WindowsPhoneRuntimeComponent::GetVideoCount()
 	auto_ZMediaLibRequirement myLib;
 
 	myLib.Require();
-	HZMEDIALIST* phList = NULL;
-	ULONGLONG listSize = 0;
-	ULONG pullCount = 0;
 
 	HRESULT hr = 0;
-
 	HZMEDIALIST hRootList = NULL;
 	//hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_FOLDER_FOLDERS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
 	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
@@ -102,6 +78,15 @@ uint16 WindowsPhoneRuntimeComponent::GetVideoCount()
 	size_t cItemsRoot = 0;
 	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
 
+	rgItemsRoot = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM) * cItemsRoot);
+
+	hr = ZMediaList_GetItems(hRootList, 0, rgItemsRoot, cItemsRoot, &cItemsRoot);
+
 	return (uint16)cItemsRoot;
+}
+
+void WindowsPhoneRuntimeComponent::ClearData()
+{
+	rgItemsRoot =NULL;
 }
 

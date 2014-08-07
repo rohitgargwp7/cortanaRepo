@@ -295,6 +295,9 @@
     <Compile Include="View\PreviewImages.xaml.cs">
       <DependentUpon>PreviewImages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PreviewVideo.xaml.cs">
+      <DependentUpon>PreviewVideo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
@@ -435,6 +438,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PreviewImages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PreviewVideo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -643,6 +650,7 @@
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
     <Content Include="View\images\retry_icon.png" />
+    <Content Include="View\images\send video.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />

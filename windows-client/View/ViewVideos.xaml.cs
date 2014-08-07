@@ -16,12 +16,14 @@ using System.Windows.Resources;
 using windows_client.utils;
 using System.Threading.Tasks;
 using windows_client.Model;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
     public partial class ViewVideos : PhoneApplicationPage
     {
         List<VideoClass> listAllVideos = null;
+
         public ViewVideos()
         {
             InitializeComponent();
@@ -30,25 +32,24 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_THUMB_SHARED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 BindAlbums();
             }
         }
 
-        private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            VideoClass selectedVideo = llsVideos.SelectedItem as VideoClass;
-            if (selectedVideo == null)
-                return;
-            llsVideos.SelectedItem = null;
-
-            StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(selectedVideo.FilePath, UriKind.Relative));
-            byte[] videoBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = videoBytes;
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED] = selectedVideo.Thumbnail;
-            NavigationService.GoBack();
-
+            if (gridVideos.Visibility == Visibility.Visible)
+            {
+                ToggleView(true);
+                e.Cancel = true;
+            }
+            base.OnBackKeyPress(e);
         }
 
         #region Albums
@@ -70,29 +71,34 @@ namespace windows_client.View
 
             try
             {
-                ushort totalVideos = WindowsPhoneRuntimeComponent.GetVideoCount();
-
-                for (int i = 0; i < totalVideos; i++)
+                WindowsPhoneRuntimeComponent wrt = new WindowsPhoneRuntimeComponent();
+                ushort totalVideos = wrt.GetVideoCount();
+                if (totalVideos > 0)
                 {
-                    string filePath = string.Empty;
-                    string fileName = string.Empty;
-                    string albumName = string.Empty;//todo:Fetch;
-                    Byte[] thumbBytes = WindowsPhoneRuntimeComponent.myfunc((byte)i, out filePath, out fileName,out albumName);
-                    albumName = "test";
-                    VideoClass video = new VideoClass(fileName, filePath, thumbBytes)
+                    for (int i = 0; i < totalVideos; i++)
                     {
-                        TimeStamp = DateTime.Now//todo:Change
-                    };
-                    VideoAlbumClass albumObj;
-                    if (!videoAlbumList.TryGetValue(albumName, out albumObj))
-                    {
-                        albumObj = new VideoAlbumClass(albumName, thumbBytes);
-                        videoAlbumList.Add(albumName, albumObj);
-                    }
-                    albumObj.Add(video);
-                    listAllVideos.Add(video);
-                }
+                        string filePath = string.Empty;
+                        string fileName = string.Empty;
+                        string albumName = string.Empty;
+                        double date;
+                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out date);
+                        albumName = filePath.Substring(0, filePath.Length - filePath.LastIndexOf("\\"));
+                        albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
 
+                        VideoClass video = new VideoClass(fileName, filePath, thumbBytes);
+                        DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+                        video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
+                        VideoAlbumClass albumObj;
+                        if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                        {
+                            albumObj = new VideoAlbumClass(albumName, thumbBytes);
+                            videoAlbumList.Add(albumName, albumObj);
+                        }
+                        albumObj.Add(video);
+                        listAllVideos.Add(video);
+                    }
+                }
+                wrt.ClearData();
             }
             catch (Exception ex)
             {
@@ -103,26 +109,26 @@ namespace windows_client.View
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PhotoAlbumClass album = llsAlbums.SelectedItem as PhotoAlbumClass;
+            VideoAlbumClass album = llsAlbums.SelectedItem as VideoAlbumClass;
             if (album == null)
                 return;
-            //albumNameTxt.Text = album.AlbumName.ToLower();
-            //llsAlbums.SelectedItem = null;
-            //ToggleView(false);
-            //llsPhotos.ItemsSource = null;
-            //shellProgressPhotos.Visibility = Visibility.Visible;
-            //BindAlbumPhotos(album);
+            albumNameTxt.Text = album.AlbumName.ToLower();
+            llsAlbums.SelectedItem = null;
+            ToggleView(false);
+            llsVideos.ItemsSource = null;
+            shellProgressPhotos.Visibility = Visibility.Visible;
+            BindAlbumPhotos(album);
         }
 
-        private async Task BindAlbumPhotos(PhotoAlbumClass album)
+        private async Task BindAlbumPhotos(VideoAlbumClass album)
         {
             await Task.Delay(1);
-            //llsVideos.ItemsSource = GroupedPhotos(album);
-            ////create a delay so that it doesnot pause abruptly
-            //Dispatcher.BeginInvoke(() =>
-            //{
-            //    shellProgressPhotos.Visibility = Visibility.Collapsed;
-            //});
+            llsVideos.ItemsSource = GroupedPhotos(album);
+            //create a delay so that it doesnot pause abruptly
+            Dispatcher.BeginInvoke(() =>
+            {
+                shellProgressPhotos.Visibility = Visibility.Collapsed;
+            });
         }
         #endregion ALBUMS
 
@@ -131,7 +137,7 @@ namespace windows_client.View
         public async Task BindVideos()
         {
             await Task.Delay(1);
-            llsVideos.ItemsSource = GroupedPhotos(listAllVideos);
+            llsAllVideos.ItemsSource = GroupedPhotos(listAllVideos);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
@@ -169,6 +175,39 @@ namespace windows_client.View
             }
         }
         #endregion
+
+        #region helper functions
+        public void ToggleView(bool showAlbum)
+        {
+            if (showAlbum)
+            {
+                gridAlbums.Visibility = Visibility.Visible;
+                gridVideos.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                gridAlbums.Visibility = Visibility.Collapsed;
+                gridVideos.Visibility = Visibility.Visible;
+            }
+        }
+
+        #endregion
+
+        private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LongListSelector lls = sender as LongListSelector;
+            VideoClass selectedVideo = lls.SelectedItem as VideoClass;
+            if (selectedVideo == null)
+                return;
+            lls.SelectedItem = null;
+
+            //StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(selectedVideo.FilePath, UriKind.Relative));
+            //byte[] videoBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo.FilePath;
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED] = selectedVideo.Thumbnail;
+
+            NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
+        }
 
         private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

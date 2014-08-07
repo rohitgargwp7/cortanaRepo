@@ -14,6 +14,31 @@
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
+        <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
+        <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
+
+        <Style x:Key="JumpListStyle" TargetType="phone:LongListSelector">
+            <Setter Property="LayoutMode" Value="List" />
+            <Setter Property="Margin" Value="12,12,0,0"/>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="{Binding Converter={StaticResource BackgroundConverter}}" 
+                                Width="470" 
+                                Height="70" 
+                                Margin="6">
+                            <TextBlock Text="{Binding Key}"
+                                       Foreground="{Binding Converter={StaticResource ForegroundConverter}}"                                       
+                                       FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                                       FontSize="28"  
+                                       Padding="2"
+                                       VerticalAlignment="Bottom"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate x:Key="GroupHeader">
             <Border Background="Transparent" >
                 <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="1"	
@@ -79,9 +104,10 @@
                         </controls:PivotItem.Header>
                         <Grid>
                             <ProgressBar x:Name="shellProgressAllPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent"/>
-                            <phone:LongListSelector Name="llsVideos" SelectionChanged="llsVideos_SelectionChanged"  ItemTemplate="{StaticResource ItemTemplate}"                     
+                            <phone:LongListSelector Name="llsAllVideos" SelectionChanged="llsVideos_SelectionChanged"  ItemTemplate="{StaticResource ItemTemplate}"                     
                                         GroupHeaderTemplate="{StaticResource GroupHeader}"
                                         ListFooterTemplate="{StaticResource ListFooter}"
+                                        JumpListStyle="{StaticResource JumpListStyle}" 
                                         IsGroupingEnabled="True"
                                         LayoutMode="Grid" 
                                         GridCellSize="106,106" Margin="24 0 0 0">
@@ -90,7 +116,23 @@
                     </controls:PivotItem>
                 </controls:Pivot>
             </Grid>
+            <Grid Name="gridVideos" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Name="albumNameTxt" Style="{StaticResource PhoneTextTitle1Style}" Margin="24 -5 0 0" Foreground="White"/>
+                <ProgressBar x:Name="shellProgressPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent" Grid.Row="1"/>
 
+                <phone:LongListSelector  Grid.Row="1" Name="llsVideos" Margin="24,-5,0,0"
+                                        ItemTemplate="{StaticResource ItemTemplate}"                     
+                                        GroupHeaderTemplate="{StaticResource GroupHeader}"
+                                        JumpListStyle="{StaticResource JumpListStyle}" 
+                                        ListFooterTemplate="{StaticResource ListFooter}"
+                                        IsGroupingEnabled="True"
+                                        LayoutMode="Grid" 
+                                        GridCellSize="106,106" SelectionChanged="llsVideos_SelectionChanged"/>
+            </Grid>
         </Grid>
     </Grid>
 
