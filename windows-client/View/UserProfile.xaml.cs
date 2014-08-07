@@ -854,6 +854,10 @@ namespace windows_client.View
         private void GoToChat_Tap(object sender, EventArgs e)
         {
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
+
             if (co != null)
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
             else

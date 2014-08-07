@@ -3021,6 +3021,9 @@ namespace windows_client.View
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             var msisdn = convMessage.GroupParticipant;
 
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
+
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
 
             if (co != null)
