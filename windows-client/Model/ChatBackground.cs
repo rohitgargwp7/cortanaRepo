@@ -118,14 +118,6 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility DefaultImageVisibility
-        {
-            get
-            {
-                return IsDefault ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
         Boolean _isSelected;
         public Boolean IsSelected
         {

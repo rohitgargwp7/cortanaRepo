@@ -263,7 +263,7 @@ namespace windows_client.utils
                     Position = 0,
                     IsDefault = true,
                     IsLightTheme = true,
-                    ThumbnailPath = String.Empty,
+                    ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbDefaultDark.jpg",
                     ImagePath = String.Empty
                 });
             }
@@ -282,7 +282,7 @@ namespace windows_client.utils
                     Position = 0,
                     IsDefault = true,
                     IsLightTheme = true,
-                    ThumbnailPath = String.Empty,
+                    ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbDefaultLight.jpg",
                     ImagePath = String.Empty
                 });
             }
