@@ -908,10 +908,7 @@ namespace windows_client.View
             if (!isOnHike)
                 ShowNonHikeUser();
             else
-            {
-                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 InitHikeUserProfile();
-            }
 
             LoadCallCopyOptions();
         }
