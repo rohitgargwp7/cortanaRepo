@@ -537,7 +537,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
+                return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsDarkerTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
             }
         }
 
