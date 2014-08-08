@@ -5802,7 +5802,7 @@ namespace windows_client.View
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
                 chatPaint.Opacity = 0.5;
 
-            if (App.ViewModel.SelectedBackground.IsDefault)
+            if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
             {
                 progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
