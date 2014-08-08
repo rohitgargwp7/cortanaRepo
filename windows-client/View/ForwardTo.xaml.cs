@@ -1076,8 +1076,7 @@ namespace windows_client.View
             if (cInfo != null)
             {
                 if (!App.ViewModel.IsHiddenModeActive
-                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden
-                    )
+                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                 {
                     cInfo.IsSelected = false;
                     return;
@@ -1212,8 +1211,8 @@ namespace windows_client.View
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-
             var checkBox = sender as CheckBox;
+            
             if (checkBox!=null && cInfo != null && !cInfo.IsSelected)
                 checkBox.IsChecked = false;
 

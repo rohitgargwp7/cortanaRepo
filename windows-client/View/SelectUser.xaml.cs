@@ -877,6 +877,7 @@ namespace windows_client.View
             if (cInfo != null && !App.ViewModel.IsHiddenModeActive
                     && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                 return;
+
             enterNameTxt.Text = String.Empty;
 
             if (cInfo != null)
@@ -909,9 +910,9 @@ namespace windows_client.View
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-
             var checkBox = sender as CheckBox;
-            if (!cInfo.IsSelected)
+
+            if (checkBox != null && cInfo != null && !cInfo.IsSelected)
                 checkBox.IsChecked = false;
 
             if (cInfo.IsSelected) return;
