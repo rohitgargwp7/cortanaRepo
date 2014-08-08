@@ -1961,6 +1961,25 @@ namespace windows_client.Model
 
                         fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+
+                        // These two conditions check for empty filename received on json packet. This bug was mainly occured on packets received from Android devices
+                        if (contentType.ToString().Contains(HikeConstants.LOCATION))
+                        {
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                                fileName = AppResources.Location_Txt;
+                        }
+                        else if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        {
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                            {
+                                fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
+                                
+                                if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                                    fileName = AppResources.ContactTransfer_Text;
+                            
+                            }
+                        }
+
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
 
@@ -1975,7 +1994,7 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                         contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
@@ -1989,7 +2008,7 @@ namespace windows_client.Model
                         }
                         else
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 
