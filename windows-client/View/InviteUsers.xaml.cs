@@ -488,15 +488,16 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            if (!App.ViewModel.IsHiddenModeActive
-                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
-                return;
-            
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 cInfo.IsSelected = !cInfo.IsSelected;
+
+                if (!App.ViewModel.IsHiddenModeActive
+                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                {
+                    cInfo.IsSelected = false;
+                    return;
+                }
 
                 if (cInfo.IsSelected) // this will be true when checkbox is not checked initially and u clicked it
                 {
@@ -526,15 +527,13 @@ namespace windows_client.View
                     PageTitle.Text = _pageTitle;
                 }
             }
+
+            enterNameTxt.Text = String.Empty;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-            var checkBox = sender as CheckBox;
-
-            if (checkBox != null && cInfo != null && !cInfo.IsSelected)
-                checkBox.IsChecked = false;
 
             if (cInfo.IsSelected) return;
 
