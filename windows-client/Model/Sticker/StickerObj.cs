@@ -70,18 +70,18 @@ namespace windows_client.Model.Sticker
                     if (stickerImage == null)
                     {
                         stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, true);
+                        HikeViewModel.StickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, true);
                     }
 
                     return stickerImage;
                 }
                 else
                 {
-                    BitmapImage stickerImage = HikeViewModel.stickerHelper.lruStickers.GetObject(_category + "_" + Id);
+                    BitmapImage stickerImage = HikeViewModel.StickerHelper.lruStickers.GetObject(_category + "_" + Id);
                     if (stickerImage == null)
                     {
                         stickerImage = new BitmapImage();
-                        HikeViewModel.stickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, false);
+                        HikeViewModel.StickerHelper.GetSticker(stickerImage, _category, _id, _stickerImageBytes, false);
                     }
 
                     return stickerImage;

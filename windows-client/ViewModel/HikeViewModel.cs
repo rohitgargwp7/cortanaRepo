@@ -40,7 +40,21 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        public static StickerHelper stickerHelper;
+        static StickerHelper _stickerHelper;
+        public static StickerHelper StickerHelper
+        {
+            get
+            {
+                if (_stickerHelper == null)
+                    _stickerHelper = new StickerHelper();
+
+                return _stickerHelper;
+            }
+            private set
+            {
+                _stickerHelper = value;
+            }
+        }
 
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
@@ -514,7 +528,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
-            stickerHelper = null;
+            StickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
@@ -1309,5 +1323,10 @@ namespace windows_client.ViewModel
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
 
         public string Password { get; set; }
+       
+        public static void ClearStickerHelperInstance()
+        {
+            StickerHelper = null;
+        }
     }
 }

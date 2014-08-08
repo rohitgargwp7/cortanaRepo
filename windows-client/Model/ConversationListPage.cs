@@ -228,6 +228,7 @@ namespace windows_client.Model
             get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
+
         public Visibility MuteIconVisibility
         {
             get
