@@ -857,7 +857,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show contact if its hidden
-                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
                         && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     continue;
 
@@ -892,7 +892,7 @@ namespace windows_client.View
                 foreach (var grp in gi)
                 {
                     // Dont show group if its hidden
-                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId) 
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId)
                         && App.ViewModel.ConvMap[grp.GroupId].IsHidden)
                         continue;
 
@@ -974,7 +974,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show friend if its hidden.
-                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
                         && App.ViewModel.ConvMap[friend.Msisdn].IsHidden)
                     continue;
 
@@ -1086,6 +1086,13 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
+                            if (!App.ViewModel.IsHiddenModeActive
+                                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                            {
+                                cInfo.IsSelected = false;
+                                return;
+                            }
+
                             if (IsUserBlocked(cInfo)
                                 || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
