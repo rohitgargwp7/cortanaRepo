@@ -892,7 +892,7 @@ namespace windows_client.View
                 foreach (var grp in gi)
                 {
                     // Dont show group if its hidden
-                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId) 
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId)
                         && App.ViewModel.ConvMap[grp.GroupId].IsHidden)
                         continue;
 
@@ -1075,13 +1075,6 @@ namespace windows_client.View
         {
             if (cInfo != null)
             {
-                if (!App.ViewModel.IsHiddenModeActive
-                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
-                {
-                    cInfo.IsSelected = false;
-                    return;
-                }
-
                 if (_isForward || _isGroupChat)
                 {
                     int oldSmsCount = _smsUserCount;
@@ -1093,6 +1086,13 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
+                            if (!App.ViewModel.IsHiddenModeActive
+                                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                            {
+                                cInfo.IsSelected = false;
+                                return;
+                            }
+
                             if (IsUserBlocked(cInfo)
                                 || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
@@ -1211,10 +1211,6 @@ namespace windows_client.View
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var cInfo = (sender as FrameworkElement).DataContext as ContactInfo;
-            var checkBox = sender as CheckBox;
-            
-            if (checkBox!=null && cInfo != null && !cInfo.IsSelected)
-                checkBox.IsChecked = false;
 
             if (cInfo.IsSelected) return;
 
