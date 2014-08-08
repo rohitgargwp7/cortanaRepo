@@ -490,9 +490,8 @@ namespace windows_client.View
         {
             if (!App.ViewModel.IsHiddenModeActive
                 && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
-            {
                 return;
-            }
+            
             enterNameTxt.Text = String.Empty;
 
             if (cInfo != null)
