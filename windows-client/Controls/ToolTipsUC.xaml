@@ -19,7 +19,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Image x:Name="leftIcon" Grid.Column="0" HorizontalAlignment="Left" Height="93" Width="93" VerticalAlignment="Center" Tap="leftIcon_Tap" Visibility="Collapsed"/>
-        <TextBlock x:Name="tipTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="24,12" Foreground="White"/>
+        <TextBlock x:Name="tipTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,12" Foreground="White"/>
         <Image x:Name="rightIcon" Grid.Column="2" HorizontalAlignment="Right" Height="93" Width="93" VerticalAlignment="Center" Tap="rightIcon_Tap" Visibility="Collapsed"/>
     </Grid>
 </UserControl>
