@@ -838,7 +838,7 @@ namespace windows_client.View
             {
                 _isExistingGroup = true;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
-                _existingGroupUsers = activeExistingGroupMembers.Count + 1;
+                _existingGroupUsers = activeExistingGroupMembers.Count + 1; // Adding +1 is for owner of the group
             }
 
             ObservableCollection<ContactGroup<ContactInfo>> glist = CreateGroups();
