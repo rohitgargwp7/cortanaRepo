@@ -1728,8 +1728,8 @@ Download it like asap from http://hike.in!</value>
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>albums</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>date</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>videos</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>select</value>
@@ -2101,5 +2101,11 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
+  </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Camcorder</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>photos</value>
   </data>
 </root>

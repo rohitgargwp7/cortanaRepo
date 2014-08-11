@@ -13,7 +13,7 @@ namespace WindowsPhoneRuntimeComponent1
 		ZMEDIAITEM *rgItemsRoot;
 	public:
 		WindowsPhoneRuntimeComponent();
-		Platform::Array<uint8>^ GetVideoInfo(uint8 position, Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,float64* videoDate);
+		Platform::Array<uint8>^ GetVideoInfo(uint8 position, Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,Platform::String^* albumName,float64* videoDate,int* videoDuration,int *videoSize);
 		uint16 GetVideoCount();
 		void ClearData();
 	};

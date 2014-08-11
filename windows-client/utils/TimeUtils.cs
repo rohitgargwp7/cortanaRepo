@@ -23,6 +23,27 @@ namespace windows_client.utils
             return dateStr;
         }
 
+        //Used on video sending
+        public static string GetProperTimeFromMilliseconds(int ms)
+        {
+            TimeSpan t = TimeSpan.FromMilliseconds(ms);
+            string answer;
+            if (t.Hours > 0)
+            {
+                answer = string.Format("{0:D2}:{1:D2}:{2:D2}",
+                                    t.Hours,
+                                    t.Minutes,
+                                    t.Seconds);
+            }
+            else
+            {
+                answer = string.Format("{0:D2}:{1:D2}",
+                                        t.Minutes,
+                                        t.Seconds);
+            }
+            return answer;
+        }
+
         //used on conversation list
         public static string getTimeString(long timestamp)
         {

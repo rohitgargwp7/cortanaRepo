@@ -300,6 +300,8 @@ namespace windows_client
         public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";
         public static string VIDEO_SHARED = "videoShared";
+        public static string VIDEO_SHARED_SIZE = "videoSize";
+        public static string VIDEO_SHARED_DURATION = "videoDuration";
         public static string VIDEO_THUMB_SHARED = "videoThumbShared";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";

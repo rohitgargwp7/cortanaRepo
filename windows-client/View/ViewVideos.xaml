@@ -100,7 +100,7 @@
                     </controls:PivotItem>
                     <controls:PivotItem Margin="0" Padding="0">
                         <controls:PivotItem.Header>
-                            <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Date_txt,Source={StaticResource LocalizedStrings}}" Foreground="White"/>
+                            <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Video_txt,Source={StaticResource LocalizedStrings}}" Foreground="White"/>
                         </controls:PivotItem.Header>
                         <Grid>
                             <ProgressBar x:Name="shellProgressAllPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent"/>

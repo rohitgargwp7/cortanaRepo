@@ -12,6 +12,8 @@ namespace windows_client.Model.Video
     {
         string _filePath;
         string _fileName;
+        int _duration;
+        int _size;
         byte[] _thumbnail;
 
         public string FilePath
@@ -26,6 +28,32 @@ namespace windows_client.Model.Video
                     _filePath = value;
             }
         }
+        public int Duration
+        {
+            get
+            {
+                return _duration;
+            }
+            set
+            {
+                if (value != _duration)
+                    _duration = value;
+            }
+        }
+
+        public int Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                if (value != _size)
+                    _size = value;
+            }
+        }
+
         public string FileName
         {
             get
@@ -53,11 +81,13 @@ namespace windows_client.Model.Video
 
         public DateTime TimeStamp { get; set; }
 
-        public VideoClass(string fileName, string filePath, byte[] thumbnail)
+        public VideoClass(string fileName, string filePath, byte[] thumbnail,int videoDuration,int videoSize)
         {
             _fileName = fileName;
             _filePath = filePath;
             _thumbnail = thumbnail;
+            _duration = videoDuration;
+            _size = videoSize;
         }
 
 

@@ -916,7 +916,7 @@
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\menu_camera_icon.png" />
-    <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\video_default.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\menu_audio_icon.png" />

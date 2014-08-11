@@ -17,7 +17,7 @@ WindowsPhoneRuntimeComponent::WindowsPhoneRuntimeComponent()
 	rgItemsRoot =NULL;
 }
 
-Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,Platform::String^* strVideoFilename,double* videoTime) {
+Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,  Platform::String^* strVideoFilename, Platform::String^* albumName, double* videoTime,int* videoDuration,int *videoSize) {
 
 	auto_ZMediaLibRequirement myLib;
 
@@ -50,6 +50,17 @@ Platform::Array<uint8>^ WindowsPhoneRuntimeComponent::GetVideoInfo(uint8 positio
 	*strVideoFilePath = ref new String(str);
 	delete str;
 
+
+	/*ZMEDIAITEM * zMedia = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM));
+	hr = ZMediaLib_GetRelatedItem(rgItemsRoot[position], ZMEDIAITEM_RELATION_FOLDER,zMedia);*/
+	//str = new WCHAR[cch]; 
+	//hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_SOURCE, str, cch, &cch);
+	//*albumName = ref new String(str);
+	//delete str;
+	
+	hr = ZMediaLib_GetItemIntAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_DURATION, videoDuration);
+
+	hr = ZMediaLib_GetItemIntAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILESIZE, videoSize);
 	/*hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_ALBUM, NULL, NULL, &cch);
 	str = new WCHAR[cch]; 
 	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_ALBUM, str, cch, &cch);

@@ -214,6 +214,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camcorder.
+        /// </summary>
+        public static string Attachment_Camcorder_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Camcorder_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera.
         /// </summary>
         public static string Attachment_Camera_Txt {
@@ -5089,11 +5098,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to date.
+        ///   Looks up a localized string similar to photos.
         /// </summary>
-        public static string ViewAlbums_Pivot_Date_txt {
+        public static string ViewAlbums_Pivot_Photo_txt {
             get {
-                return ResourceManager.GetString("ViewAlbums_Pivot_Date_txt", resourceCulture);
+                return ResourceManager.GetString("ViewAlbums_Pivot_Photo_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to videos.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Video_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Video_txt", resourceCulture);
             }
         }
         

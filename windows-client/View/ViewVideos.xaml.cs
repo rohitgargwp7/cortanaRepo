@@ -35,6 +35,8 @@ namespace windows_client.View
 
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_THUMB_SHARED);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_DURATION);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_SIZE);
 
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
@@ -80,15 +82,22 @@ namespace windows_client.View
                         string filePath = string.Empty;
                         string fileName = string.Empty;
                         string albumName = string.Empty;
+                        int videoSize;
+                        int videoDuration;
                         double date;
-                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out date);
+                        
+
+                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out albumName,out date,out videoDuration,out videoSize);
                         albumName = filePath.Substring(0, filePath.Length - filePath.LastIndexOf("\\"));
                         albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
 
-                        VideoClass video = new VideoClass(fileName, filePath, thumbBytes);
+                        VideoClass video = new VideoClass(fileName, filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbumClass albumObj;
+                        Debug.WriteLine("Video Size is: " + (videoSize/(1024*1024)).ToString());
+                        Debug.WriteLine("Video Duration is: " + videoDuration / 1000);
+                        Debug.WriteLine("Album Name is: " + albumName);
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                         {
                             albumObj = new VideoAlbumClass(albumName, thumbBytes);
@@ -117,13 +126,13 @@ namespace windows_client.View
             ToggleView(false);
             llsVideos.ItemsSource = null;
             shellProgressPhotos.Visibility = Visibility.Visible;
-            BindAlbumPhotos(album);
+            BindAlbumVideos(album);
         }
 
-        private async Task BindAlbumPhotos(VideoAlbumClass album)
+        private async Task BindAlbumVideos(VideoAlbumClass album)
         {
             await Task.Delay(1);
-            llsVideos.ItemsSource = GroupedPhotos(album);
+            llsVideos.ItemsSource = GroupedVideos(album);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
@@ -137,7 +146,7 @@ namespace windows_client.View
         public async Task BindVideos()
         {
             await Task.Delay(1);
-            llsAllVideos.ItemsSource = GroupedPhotos(listAllVideos);
+            llsAllVideos.ItemsSource = GroupedVideos(listAllVideos);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
@@ -146,15 +155,15 @@ namespace windows_client.View
         }
 
 
-        public List<KeyedList<string, VideoClass>> GroupedPhotos(List<VideoClass> listVideos)
+        public List<KeyedList<string, VideoClass>> GroupedVideos(List<VideoClass> listVideos)
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
             var groupedPhotos =
-                from photo in listVideos
-                orderby photo.TimeStamp descending
-                group photo by photo.TimeStamp.ToString("y") into photosByMonth
-                select new KeyedList<string, VideoClass>(photosByMonth);
+                from video in listVideos
+                orderby video.TimeStamp descending
+                group video by video.TimeStamp.ToString("y") into videosByMonth
+                select new KeyedList<string, VideoClass>(videosByMonth);
             return new List<KeyedList<string, VideoClass>>(groupedPhotos);
         }
 
@@ -205,6 +214,8 @@ namespace windows_client.View
             //byte[] videoBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
             PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo.FilePath;
             PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED] = selectedVideo.Thumbnail;
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED_SIZE] = selectedVideo.Size;
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED_DURATION] = selectedVideo.Duration;
 
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }

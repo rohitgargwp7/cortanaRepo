@@ -44,6 +44,7 @@ using System.Windows.Documents;
 using Windows.System;
 using Windows.Storage;
 using windows_client.Model.Sticker;
+using System.Windows.Resources;
 
 namespace windows_client.View
 {
@@ -3492,6 +3493,12 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
+        private void sendCamcorder_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
         private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/ViewVideos.xaml", UriKind.Relative));
@@ -4836,9 +4843,24 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED];
-                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                try
+                {
+                    //Stopwatch st = Stopwatch.StartNew();
+                    StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri((string)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED], UriKind.Relative));
+                    //st.Stop();
+                    //long msec = st.ElapsedMilliseconds;
+                    //Debug.WriteLine("Time to load video bytes" + msec);
+                    fileBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                //fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_THUMB_SHARED);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_DURATION);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_SIZE);
 
                 if (fileBytes == null)
                 {
