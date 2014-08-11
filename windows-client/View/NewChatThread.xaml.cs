@@ -3335,6 +3335,7 @@ namespace windows_client.View
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
+            ScrollToBottom();
 
             if (appButton != null)
             {
