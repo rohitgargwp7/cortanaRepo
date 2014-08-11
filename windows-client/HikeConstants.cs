@@ -266,7 +266,7 @@ namespace windows_client
         public static readonly string CHAT_DISABLED = "di";
         public static readonly string HIDDEN_MODE_ENABLED = "enabled";
         public static readonly string HIDDEN_MODE_TYPE = "ts";
-       
+
         public static readonly string PREVIEW = "preview";
 
         public static string MOOD_TOD_SEPARATOR = ":";
@@ -393,6 +393,20 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
+        //For server tips
+        public static readonly string CHAT_SCREEN_TIP = "cht_scr_tip";
+        public static readonly string MAIN_PAGE_TIP = "mn_pg_tip";
+        public static readonly string NEXT_CHAT_SCREEN_TIP = "nx_cht_scr_tip";
+        public static readonly string NEXT_MAIN_PAGE_TIP = "nx_mn_pg_tip";
+        public static const string STICKER_TIPS = "stk";
+        public static const string PROFILE_TIPS = "pp";
+        public static const string ATTACHMENT_TIPS = "ft";
+        public static const string INFORMATIONAL_TIPS = "info";
+        public static const string FAVOURITE_TIPS = "fav";
+        public static const string THEME_TIPS = "theme";
+        public static const string INVITATION_TIPS = "inv";
+        public static const string STATUS_UPDATE_TIPS = "stts";
+
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
 
@@ -436,7 +450,7 @@ namespace windows_client
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";        
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
         #endregion
 

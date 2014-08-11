@@ -14,6 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
+using windows_client.ServerTips;
 
 namespace windows_client
 {
@@ -35,6 +36,8 @@ namespace windows_client
         public static readonly string USER_LEFT = "ul";
 
         public static readonly string START_TYPING = "st";
+
+        public static readonly string TIPS = "popup";
 
         public static readonly string END_TYPING = "et";
 
@@ -1947,7 +1950,7 @@ namespace windows_client
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                    
+
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
@@ -1955,7 +1958,7 @@ namespace windows_client
                     }
 
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    
+
                     if (c != null) // for favourites
                     {
                         c.Avatar = null;
@@ -1983,6 +1986,21 @@ namespace windows_client
                 catch (JsonReaderException ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
+            }
+            #endregion
+            #region Tips
+            else if (TIPS == type)
+            {
+                try
+                {
+                    JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    TipManager.Instance.InitializeTip((string)subtype, data);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NetworkManager :: OnMessage : TipsException " + e.StackTrace);
                 }
             }
             #endregion
