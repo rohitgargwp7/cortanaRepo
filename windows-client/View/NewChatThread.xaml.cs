@@ -783,18 +783,21 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;                 // So that Sticker and emoji's panel doesn't collapse
             }
+
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
             }
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
                 CancelBackgroundChange();
                 e.Cancel = true;
                 return;
             }
+
             if (attachmentMenu.Visibility == Visibility.Visible)
             {
                 attachmentMenu.Visibility = Visibility.Collapsed;
