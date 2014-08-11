@@ -106,7 +106,7 @@ namespace windows_client.View
             if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
             {
                 App.ViewModel.Password = password;
-                passwordOverlay.Text = AppResources.Enter_current_pwd_txt;
+                passwordOverlay.Text = AppResources.Enter_Current_Pwd_Txt;
                 passwordOverlay.Password = String.Empty;
                 passwordOverlay.IsShow = true;
                 _isConfirmPassword = false;
