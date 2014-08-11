@@ -1,4 +1,4 @@
-﻿Build started 11-08-2014 15:15:44.
+﻿Build started 11-08-2014 16:13:02.
      1>Project "C:\Users\Abhishek\Desktop\video-share\windows-hike-client\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj" on node 2 (Build target(s)).
      1>Link:
          WindowsPhoneRuntimeComponent1.vcxproj -> C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.dll
@@ -6,4 +6,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.03
+Time Elapsed 00:00:00.07

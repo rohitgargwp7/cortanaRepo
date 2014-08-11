@@ -33,7 +33,7 @@ namespace windows_client.View
     /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 100;
 
         private bool _canGoBack = true;
         private bool _showSmsContacts;
@@ -720,7 +720,7 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(cinfo.Msisdn);
-                        
+
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
@@ -856,6 +856,12 @@ namespace windows_client.View
                 || cInfo.Msisdn == App.MSISDN || ExistingContacts.ContainsKey(cInfo.Msisdn) || Utils.IsHikeBotMsg(cInfo.Msisdn))
                     continue;
 
+                // Dont show contact if its hidden
+                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
+                        && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                    continue;
+
+
                 //Added IsSelected because if user resyncs contacts, the new contacts should be pre selected if they ere already selected
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
                 cInfo.CheckBoxVisibility = (_isForward || _isGroupChat) ? Visibility.Visible : Visibility.Collapsed;
@@ -885,6 +891,11 @@ namespace windows_client.View
 
                 foreach (var grp in gi)
                 {
+                    // Dont show group if its hidden
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId) 
+                        && App.ViewModel.ConvMap[grp.GroupId].IsHidden)
+                        continue;
+
                     ContactInfo cInfo = new ContactInfo();
                     cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
                     cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
@@ -921,12 +932,16 @@ namespace windows_client.View
                     if (!_showSmsContacts && !conv.IsOnhike)
                         continue;
 
+                    // Dont show recent chats which are hidden
+                    if (!App.ViewModel.IsHiddenModeActive && conv.IsHidden)
+                        continue;
+
                     if (!conv.IsGroupChat)
                     {
                         ContactInfo cInfo = new ContactInfo();
                         cInfo.Name = conv.NameToShow;
                         cInfo.ContactListLabel = conv.Msisdn;
-                        cInfo.OnHike = true;
+                        cInfo.OnHike = conv.IsOnhike;
                         cInfo.Msisdn = conv.Msisdn;
                         cInfo.Avatar = conv.Avatar;
                         cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -958,6 +973,11 @@ namespace windows_client.View
                 if (!_showSmsContacts && !friend.IsOnhike)
                     continue;
 
+                // Dont show friend if its hidden.
+                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
+                        && App.ViewModel.ConvMap[friend.Msisdn].IsHidden)
+                    continue;
+
                 if (friend.Avatar == null)
                 {
                     if (App.ViewModel.ConvMap.ContainsKey(friend.Msisdn))
@@ -971,7 +991,7 @@ namespace windows_client.View
                 ContactInfo cInfo = new ContactInfo();
                 cInfo.Name = friend.NameToShow;
                 cInfo.ContactListLabel = friend.Msisdn;//to show in tap msg
-                cInfo.OnHike = true;
+                cInfo.OnHike = friend.IsOnhike;
                 cInfo.Msisdn = friend.Msisdn;
                 cInfo.Avatar = friend.Avatar;
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -995,7 +1015,7 @@ namespace windows_client.View
                 AppResources.NewComposeGroup_RecentContacts,
                 AppResources.NewComposeGroup_1RecentContact,
                 AppResources.NewComposeGroup_GroupChats,
-                 AppResources.NewComposeGroup_1GroupChat,
+                AppResources.NewComposeGroup_1GroupChat,
                 AppResources.NewComposeGroup_Friends,
                 AppResources.NewComposeGroup_1Friend,
                 AppResources.NewComposeGroup_HikeContacts,
@@ -1066,7 +1086,7 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
-                            if (IsUserBlocked(cInfo) 
+                            if (IsUserBlocked(cInfo)
                                 || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
                                 cInfo.IsSelected = false;
@@ -1169,6 +1189,9 @@ namespace windows_client.View
                         return;
 
                     if (IsUserBlocked(cInfo))
+                        return;
+
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                         return;
 
                     PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cInfo;

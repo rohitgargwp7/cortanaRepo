@@ -21,7 +21,6 @@ private copy.
     <system:String x:Key="ChatsTabImageNotSelected">/View/images/ConversationPage/chat_NotSelectedBlack.png</system:String>
     <system:String x:Key="FriendsTabImageNotSelected">/View/images/ConversationPage/friend_NotSelectedBlack.png</system:String>
     <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelectedBlack.png</system:String>
-    <system:String x:Key="GroupIndicator">/View/images/ConversationPage/groupIndicatorBlack.png</system:String>
     
     <Color x:Key="PhoneSubtleColor">#99ffffff</Color>
 
@@ -55,6 +54,7 @@ private copy.
     <SolidColorBrush x:Key="HikeDarkGrey" Color="#666666"/>
     <SolidColorBrush x:Key="HikeLightGrey" Color="#e3e3e3"/>
     <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
+    <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
 
     <SolidColorBrush x:Key="HikeBGBrush" Color="#1b1b1b"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="#ffffff"/>
@@ -240,6 +240,44 @@ private copy.
         </Setter>
     </Style>
 
+    <Style x:Key="HyperlinkButtonUnderlineStyle" TargetType="HyperlinkButton">
+        <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMedium}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="HyperlinkButton">
+                    <Border Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver"/>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="TextElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="TextElement">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border Background="{TemplateBinding Background}" Margin="{StaticResource PhoneHorizontalMargin}" Padding="{TemplateBinding Padding}">
+                            <TextBlock TextDecorations="Underline" x:Name="TextElement" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Text="{TemplateBinding Content}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style TargetType="HyperlinkButton">
         <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -1532,16 +1570,7 @@ private copy.
     <!-- Item templates-->
     <DataTemplate x:Key="chatThemeBackgroundItemTemplate93x93">
         <Grid Margin="0" Width="93" Height="93">
-            <Border Background="{Binding BackgroundColor}" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
             <Image Source="{Binding ThumbnailPattern}" Stretch="Uniform" Height="83" Width="83" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Grid Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultImageVisibility}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Border Height="23" Background="#0f8fe1" Width="83" Grid.Row="0"/>
-                <Border Height="60" Background="#dbdbdb" Width="83" Grid.Row="1"/>
-            </Grid>
             <Border Background="Transparent" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding BorderColor}" BorderThickness="5" Canvas.ZIndex="2"/>
         </Grid>
     </DataTemplate>

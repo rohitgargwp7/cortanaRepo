@@ -13,6 +13,8 @@ using Microsoft.Phone.Net.NetworkInformation;
 using System.Security.Cryptography;
 using windows_client.Languages;
 using windows_client.Misc;
+using Microsoft.Phone.Tasks;
+using Microsoft.Xna.Framework.Media;
 
 namespace windows_client.utils
 {
@@ -467,6 +469,13 @@ namespace windows_client.utils
             }
         }
 
+        public static bool IsUriStealth(string targetPage)
+        {
+            if (targetPage.Contains("sth"))
+                return true;
+            return false;
+        }
+
         public static string GetFirstName(string completeName)
         {
             string firstName = string.Empty;
@@ -608,7 +617,7 @@ namespace windows_client.utils
 
             for (int i = 0; i < list.Count; i++)
             {
-                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, list[i], id);
+                GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, list[i], id);
                 readBy += gp.FirstName;
 
                 if (i == list.Count - 2)
@@ -625,6 +634,13 @@ namespace windows_client.utils
                 readBy = string.Format(AppResources.MessageStatus_ReadByMoreThanThree, readBy, count);
 
             return readBy;
+        }
+
+        static public string GetFormattedTimeFromSeconds(long seconds)
+        {
+            long minute = seconds / 60;
+            long secs = seconds % 60;
+            return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
         static public int GetMaxCharForBlock(string message, int maxLinesPerBlock = 35, int maxCharsPerLine = 30)
@@ -671,6 +687,49 @@ namespace windows_client.utils
                 }
             }
             return charCount;
+        }
+        public static void PlayFileInMediaPlayer(string fileLocation)
+        {
+            MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+            mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
+            mediaPlayerLauncher.Location = MediaLocationType.Data;
+            mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
+            mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
+            try
+            {
+                mediaPlayerLauncher.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Utils.cs ::  PlayFileInMediaPlayer ,Audio video , Exception : " + ex.StackTrace);
+            }
+            return;
+        }
+
+        private static object _savePictureLock = new Object();
+        public static bool SavePictureToLibrary(string newName, string isolatedStorageFilePath)
+        {
+            bool result;
+            lock (_savePictureLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        IsolatedStorageFileStream myFileStream = isoStore.OpenFile(isolatedStorageFilePath, FileMode.Open, FileAccess.Read);
+                        MediaLibrary library = new MediaLibrary();
+                        object temp = library.SavePicture(newName, myFileStream);
+                        myFileStream.Close();
+                        result = (temp != null) ? true : false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Utils :: SavePictureToLibrary - Error on Saving file : " + isolatedStorageFilePath + ", Exception : " + e.StackTrace);
+                    result = false;
+                }
+            }
+            return result;
         }
     }
 }

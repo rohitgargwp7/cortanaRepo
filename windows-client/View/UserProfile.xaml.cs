@@ -368,31 +368,31 @@ namespace windows_client.View
 
                 firstName = Utils.GetFirstName(nameToShow);
 
-                //if blocked user show block ui and return
-                if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
-                {
-                    isBlocked = true;
-                    ShowBlockedUser();
-                    if (appBar != null)
-                        appBar.IsVisible = false;
-                    return;
-                }
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
                     isInAddressBook = CheckUserInAddressBook();
                 };
-                bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += delegate
                 {
+                    //if blocked user show block ui and return
+                    if (msisdn != App.MSISDN && App.ViewModel.BlockedHashset.Contains(msisdn))
+                    {
+                        isBlocked = true;
+                        ShowBlockedUser();
+                        if (appBar != null)
+                            appBar.IsVisible = false;
+                        return;
+                    } 
+                    
                     LoadCallCopyOptions();
-                };
 
-                if (!isOnHike)//sms user
-                    ShowNonHikeUser();
-                else
-                    InitHikeUserProfile();
+                    if (!isOnHike)//sms user
+                        ShowNonHikeUser();
+                    else
+                        InitHikeUserProfile();
+                };
+                bw.RunWorkerAsync();
             }
 
             if (App.IS_TOMBSTONED)
@@ -854,6 +854,10 @@ namespace windows_client.View
         private void GoToChat_Tap(object sender, EventArgs e)
         {
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
+
             if (co != null)
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
             else
@@ -904,10 +908,7 @@ namespace windows_client.View
             if (!isOnHike)
                 ShowNonHikeUser();
             else
-            {
-                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 InitHikeUserProfile();
-            }
 
             LoadCallCopyOptions();
         }
@@ -1157,6 +1158,7 @@ namespace windows_client.View
             {
                 addToFavBtn.Visibility = Visibility.Visible;
                 addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
+                addToFavBtn.Style = (Style)App.Current.Resources["NoButtonStyle"];
                 addToFavBtn.Tap += AddAsFriend_Tap;
             }
         }
@@ -1166,6 +1168,7 @@ namespace windows_client.View
             imgInviteLock.Source = UI_Utils.Instance.UserProfileLockImage;
             txtSmsUserNameBlk.Text = String.Format(AppResources.Profile_BlockedUser_Blk1, firstName);
             txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            addToFavBtn.Style = (Style)App.Current.Resources["YesButtonStyle"];
             addToFavBtn.Content = AppResources.UnBlock_Txt;
             addToFavBtn.Visibility = Visibility.Visible;
             addToFavBtn.Tap += UnblockUser_Tap;
@@ -1392,6 +1395,15 @@ namespace windows_client.View
                 }
             }
 
+            if (contactInfo == null || contactInfo.Msisdn == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER); // change string to "unable to save contact or invaldie contact"
+                });
+                return;
+            }
+
             UsersTableUtils.addContact(contactInfo);
             App.HikePubSubInstance.publish(HikePubSub.CONTACT_ADDED, contactInfo);
 
@@ -1474,6 +1486,16 @@ namespace windows_client.View
             {
                 StatusUpdateHelper.Instance.DeleteMyStatus(update);
             }
+        }
+
+        private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
+
+            if (selectedItem == null)
+                return;
+
+            Clipboard.SetText(selectedItem.Text);
         }
 
         void Hyperlink_Clicked(object sender, EventArgs e)

@@ -92,7 +92,7 @@ namespace windows_client.View
 
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            Utils.PlayFileInMediaPlayer((string)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED]);
                 //MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 //mediaPlayerLauncher.Media = new Uri((string)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED], UriKind.Relative);
                 //mediaPlayerLauncher.Location = MediaLocationType.Data;

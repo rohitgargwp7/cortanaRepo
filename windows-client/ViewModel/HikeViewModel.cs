@@ -40,7 +40,21 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        public static StickerHelper stickerHelper;
+        static StickerHelper _stickerHelper;
+        public static StickerHelper StickerHelper
+        {
+            get
+            {
+                if (_stickerHelper == null)
+                    _stickerHelper = new StickerHelper();
+
+                return _stickerHelper;
+            }
+            private set
+            {
+                _stickerHelper = value;
+            }
+        }
 
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
@@ -210,9 +224,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
 
-            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
-                IsDarkMode = true;
-
             LoadViewModelObjects();
         }
 
@@ -240,6 +251,12 @@ namespace windows_client.ViewModel
 
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+                IsHiddenModeActive = true;
         }
 
         /// <summary>
@@ -463,6 +480,7 @@ namespace windows_client.ViewModel
             else if (type == HikePubSub.TYPING_CONVERSATION)
             {
                 object[] vals = (object[])obj;
+
                 if (ShowTypingNotification != null)
                     ShowTypingNotification(null, vals);
 
@@ -510,7 +528,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
-            stickerHelper = null;
+            StickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
@@ -1051,6 +1069,19 @@ namespace windows_client.ViewModel
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
 
+        public void SendRemoveStealthPacket(ConversationListObject cObj)
+        {
+            HikePubSub mPubSub = App.HikePubSubInstance;
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+            JObject data = new JObject();
+            JArray msisdn = new JArray();
+            msisdn.Add(cObj.Msisdn);
+            data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+            hideObj.Add(HikeConstants.DATA, data);
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+        }
+
         #region MULTIPLE IMAGE
 
         public LruCache<long, BitmapImage> lruMultipleImageCache;
@@ -1094,7 +1125,7 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 10)
             {
-                DeleteGroupImage(id);
+                DeleteImageForMsisdn(id);
                 return;
             }
 
@@ -1146,13 +1177,13 @@ namespace windows_client.ViewModel
 
         private void DeleteGroupImageFromList(GroupPic group)
         {
-            DeleteGroupImage(group.GroupId);
+            DeleteImageForMsisdn(group.GroupId);
 
             if (PicUploadList.Contains(group))
                 PicUploadList.Remove(group);
         }
 
-        private static void DeleteGroupImage(string id)
+        public void DeleteImageForMsisdn(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -1215,17 +1246,87 @@ namespace windows_client.ViewModel
             if (co == null)
                 return;
 
+            // Return if chat is hidden and hidden mode is not active
+            if (co.IsHidden && !IsHiddenModeActive)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
+
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
         }
 
+        public async void UpdateUserImageInStatus(string msisdn)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in StatusList)
+            {
+                if (status.Msisdn == msisdn)
+                    status.UpdateImage();
+            }
+        }
+
+        /// <summary>
+        /// Is dark theme set for the app.
+        /// </summary>
         public Boolean IsDarkMode
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Check if hidden mode is active. True means hidden chats are visible.
+        /// </summary>
+        public Boolean IsHiddenModeActive
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Reset hidden mode.
+        /// </summary>
+        public void ResetHiddenMode()
+        {
+            IsHiddenModeActive = false;
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+        }
+
+        /// <summary>
+        /// Toggle hidden mode. Save state in app settings.
+        /// </summary>
+        public void ToggleHiddenMode()
+        {
+            IsHiddenModeActive = !IsHiddenModeActive;
+
+            if (IsHiddenModeActive)
+                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
+            else
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+            
+            foreach (var conv in MessageListPageCollection)
+                conv.HiddenModeToggled();
+        }
+
+        /// <summary>
+        /// Start reset hidden mode timer on home screen.
+        /// </summary>
+        public void ResetHiddenModeTapped()
+        {
+            if (App.ViewModel.StartResetHiddenModeTimer != null)
+                App.ViewModel.StartResetHiddenModeTimer(null, null);
+        }
+
+        public event EventHandler<EventArgs> StartResetHiddenModeTimer;
+
+        public string Password { get; set; }
+       
+        public static void ClearStickerHelperInstance()
+        {
+            StickerHelper = null;
+        }
     }
 }
