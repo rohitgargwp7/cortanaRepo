@@ -140,6 +140,8 @@ namespace windows_client.View
                         App.ViewModel.Password = popup.Password;
                         App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
                     }
+                    else
+                        MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
 
                     _isConfirmPassword = false;
                     _isChangePassword = false;
