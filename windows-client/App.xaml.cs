@@ -123,7 +123,6 @@ namespace windows_client
         private static PageState ps = PageState.WELCOME_SCREEN;
 
         private static object lockObj = new object();
-        //public static object AppGlobalLock = new object(); // this lock will be used across system to sync 2 diff threads example network manager and deleting all threads
 
         #endregion
 
@@ -307,9 +306,24 @@ namespace windows_client
 
         public enum LaunchState
         {
-            NORMAL_LAUNCH, // user clicks the app from menu
-            PUSH_NOTIFICATION_LAUNCH,   // app is alunched after push notification is clicked
-            SHARE_PICKER_LAUNCH,  // app is alunched after share is clicked
+            /// <summary>
+            /// user clicked the app from menu or tile
+            /// </summary>
+            NORMAL_LAUNCH,
+
+            /// <summary>
+            /// app is alunched after push notification is clicked
+            /// </summary>
+            PUSH_NOTIFICATION_LAUNCH,
+
+            /// <summary>
+            /// app is alunched after share is clicked
+            /// </summary>
+            SHARE_PICKER_LAUNCH,
+
+            /// <summary>
+            /// app is resumed by launching app after suspension
+            /// </summary>
             FAST_RESUME
         }
 
@@ -335,7 +349,6 @@ namespace windows_client
             // Phone-specific initialization
             InitializePhoneApplication();
 
-            //CreateURIMapping();
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -393,12 +406,12 @@ namespace windows_client
                 Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
                 #endregion
             }
+
             _isAppLaunched = true;
-            //appInitialize();
         }
 
         // Code to execute when the application is activated (brought to foreground)
-        // This code will not execute when the application is first launched
+        // This code will not execute when the application is first launched 
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
@@ -450,6 +463,7 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
+
             App.mMqttManager.disconnectFromBroker(false);
         }
 
@@ -458,7 +472,6 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             sendAppBgStatusToServer();
-            //appDeinitialize();
         }
 
         public static void appInitialize()
@@ -604,17 +617,14 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
-
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.1.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.2.2", _currentVersion) == 1)
             {
+                PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
-
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -644,7 +654,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
@@ -661,7 +670,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
 
@@ -680,7 +688,6 @@ namespace windows_client
             }
             else
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
                 _appLaunchState = LaunchState.NORMAL_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
 
@@ -782,7 +789,7 @@ namespace windows_client
         private static void instantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.2") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
@@ -1013,7 +1020,7 @@ namespace windows_client
             #endregion
             #region POST APP INFO ON UPDATE
             // if app info is already sent to server , this function will automatically handle
-            UpdatePostHelper.Instance.postAppInfo();
+            UpdatePostHelper.Instance.PostAppInfo();
             #endregion
             #region Post App Locale
             PostLocaleInfo();

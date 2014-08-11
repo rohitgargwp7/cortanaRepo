@@ -42,7 +42,7 @@ namespace windows_client.utils
         {
         }
 
-        public void postAppInfo()
+        public void PostAppInfo()
         {
             bool isAppUpdatePostPending = true;
             App.appSettings.TryGetValue<bool>(App.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
@@ -66,7 +66,7 @@ namespace windows_client.utils
                 {
                     scheduler = Scheduler.NewThread;
                 }
-                httpPostScheduled = scheduler.Schedule(postAppInfo, TimeSpan.FromSeconds(pollingTime));
+                httpPostScheduled = scheduler.Schedule(PostAppInfo, TimeSpan.FromSeconds(pollingTime));
                 pollingTime *= 2;
                 if (pollingTime > maxPollingTime)
                     pollingTime = minPollingTime;

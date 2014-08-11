@@ -96,10 +96,12 @@ namespace windows_client
         {
             if (string.IsNullOrEmpty(msg))
                 return;
+
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);
             }
+
             JObject jsonObj = null;
             try
             {
@@ -1265,7 +1267,7 @@ namespace windows_client
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
                     if (gp == null || gp.HasLeft)
                         return;
 
@@ -1548,8 +1550,16 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
-                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                try
+                                {
+                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                }
+                                catch (Exception ex)
+                                {
+                                    tod = 0;
+                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                                }
                             }
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,

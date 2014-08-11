@@ -117,8 +117,9 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-
-            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out _password);
+            string password = App.ViewModel.Password;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            App.ViewModel.Password = password;
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
             App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
@@ -259,6 +260,8 @@ namespace windows_client.View
             {
                 ShowHiddenModeResetToolTip();
             }
+            else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
+                UpdateResetHiddenModeTimer();
 
             FrameworkDispatcher.Update();
         }
@@ -1996,6 +1999,8 @@ namespace windows_client.View
         {
             if (passwordOverlay.IsShow)
             {
+                _isConfirmPassword = false;
+                _tempPassword = null;
                 passwordOverlay.IsShow = false;
                 e.Cancel = true;
                 return;
@@ -2152,14 +2157,15 @@ namespace windows_client.View
             if (c == null)
                 return;
 
-            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
-                return;
-
             StartNewChatWithSelectContact(c);
         }
 
         private void StartNewChatWithSelectContact(ContactInfo c)
         {
+            if (!App.ViewModel.IsHiddenModeActive
+                && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+                return;
+
             object objToSend;
             if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
                 objToSend = App.ViewModel.ConvMap[c.Msisdn];
@@ -3089,9 +3095,6 @@ namespace windows_client.View
 
         #region Hidden Mode
 
-        // Hidden mode password
-        string _password;
-
         // Confirm hidden mode password
         bool _isConfirmPassword;
 
@@ -3117,6 +3120,9 @@ namespace windows_client.View
             {
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
+                    if (launchPagePivot.SelectedIndex != 0)
+                        launchPagePivot.SelectedIndex = 0;
+
                     passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
                         AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
@@ -3124,7 +3130,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    InitHidddenMode();
+                    ToggleHidddenMode();
 
                     if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
                     {
@@ -3133,29 +3139,29 @@ namespace windows_client.View
                         if (conversationPageToolTip.IsShow)
                             conversationPageToolTip.IsShow = false;
                     }
-
-                    if (App.ViewModel.MessageListPageCollection.Count == 0 || App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0)
-                        ShowFTUECards();
                 }
             }
         }
 
         /// <summary>
-        /// Initialize hidden mode.
+        /// Toggle hidden mode.
         /// </summary>
-        void InitHidddenMode()
+        void ToggleHidddenMode()
         {
             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 conversationPageToolTip.IsShow = false;
 
-            if (App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == true).Count() > 0)
-                ShowChats();
-
-            App.ViewModel.SetHiddenMode();
+            App.ViewModel.ToggleHiddenMode();
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    UpdateLayout();
+                    if (llsConversations.ItemsSource.Count > 0)
+                        llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+
+                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                        ShowFTUECards();
+                    else
+                        ShowChats();
                 });
 
             SendHiddenModeToggledPacket();
@@ -3231,16 +3237,16 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
-                if (String.IsNullOrWhiteSpace(_password))
+                if (String.IsNullOrWhiteSpace(App.ViewModel.Password))
                 {
                     if (_isConfirmPassword)
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
-                            _password = popup.Password;
-                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, _password);
+                            App.ViewModel.Password = popup.Password;
+                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
 
-                            InitHidddenMode();
+                            ToggleHidddenMode();
 
                             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                             {
@@ -3260,9 +3266,9 @@ namespace windows_client.View
                         popup.Password = String.Empty;
                     }
                 }
-                else if (_password == popup.Password)
+                else if (App.ViewModel.Password == popup.Password)
                 {
-                    InitHidddenMode();
+                    ToggleHidddenMode();
                     popup.IsShow = false;
 
                     if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
@@ -3286,6 +3292,9 @@ namespace windows_client.View
             if (popup != null)
             {
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
+                headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
+                tipControl.IsHitTestVisible = popup.IsShow ? false : true;
+                launchPagePivot.IsHitTestVisible = popup.IsShow ? false : true;
             }
         }
 
@@ -3297,7 +3306,7 @@ namespace windows_client.View
             long resetTime;
             if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
             {
-                _resetTimeSeconds = 10 - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
                 if (_resetTimeSeconds > 0)
                 {
                     var resetTimeTimeSpan = TimeSpan.FromSeconds(1);
@@ -3315,6 +3324,31 @@ namespace windows_client.View
                 else
                 {
                     _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    UpdateToolTip(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update reset timer after resuming app on home page.
+        /// </summary>
+        private void UpdateResetHiddenModeTimer()
+        {
+            long resetTime;
+            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            {
+                _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                if (_resetTimeSeconds <= 0)
+                {
+                    if (_resetTimer != null)
+                        _resetTimer.Stop();
+
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    UpdateToolTip(true);
+                }
+                else
+                {
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
                     UpdateToolTip(true);
                 }
             }
@@ -3354,13 +3388,16 @@ namespace windows_client.View
 
             switch (_tipMode)
             {
+                case ToolTipMode.DEFAULT:
+                    break;
+
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_GetStarted_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_GetStarted_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3377,9 +3414,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_Step2_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Step2_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3393,9 +3430,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenMode_Completed_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Completed_Txt;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
@@ -3407,8 +3444,6 @@ namespace windows_client.View
 
                 case ToolTipMode.RESET_HIDDEN_MODE:
 
-                    conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
-
                     if (isModeChanged)
                     {
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
@@ -3416,6 +3451,8 @@ namespace windows_client.View
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
                         conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
                     }
+
+                    conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
 
                     if (!conversationPageToolTip.IsShow)
                         conversationPageToolTip.IsShow = true;
@@ -3426,9 +3463,9 @@ namespace windows_client.View
 
                     if (isModeChanged)
                     {
-                        conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
                         conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
                         conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
                         conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
                         conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
@@ -3515,12 +3552,18 @@ namespace windows_client.View
                     break;
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_STEP2:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.HIDDEN_MODE_COMPLETE:
                     conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
                     break;
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
                     conversationPageToolTip.IsShow = false;
@@ -3564,7 +3607,7 @@ namespace windows_client.View
         /// </summary>
         private void RemoveHiddenModePassword()
         {
-            _password = null;
+            App.ViewModel.Password = null;
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
         }
 
@@ -3617,7 +3660,6 @@ namespace windows_client.View
             hideObj.Add(HikeConstants.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
-
 
         void ViewModel_ResetHiddenModeClicked(object sender, EventArgs e)
         {

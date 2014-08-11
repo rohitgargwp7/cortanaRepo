@@ -854,6 +854,10 @@ namespace windows_client.View
         private void GoToChat_Tap(object sender, EventArgs e)
         {
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
+
             if (co != null)
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
             else
@@ -904,10 +908,7 @@ namespace windows_client.View
             if (!isOnHike)
                 ShowNonHikeUser();
             else
-            {
-                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 InitHikeUserProfile();
-            }
 
             LoadCallCopyOptions();
         }

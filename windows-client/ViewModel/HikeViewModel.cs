@@ -40,7 +40,21 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        public static StickerHelper stickerHelper;
+        static StickerHelper _stickerHelper;
+        public static StickerHelper StickerHelper
+        {
+            get
+            {
+                if (_stickerHelper == null)
+                    _stickerHelper = new StickerHelper();
+
+                return _stickerHelper;
+            }
+            private set
+            {
+                _stickerHelper = value;
+            }
+        }
 
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
@@ -407,11 +421,8 @@ namespace windows_client.ViewModel
                         }
                         else if (index > 0)
                         {
-                            if (!mObj.IsGroupChat || mObj.MuteVal == 0) // dont move muted gc
-                            {
-                                App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                                App.ViewModel.MessageListPageCollection.Insert(0, mObj);
-                            }
+                            App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                         }//if already at zero, do nothing
                     });
             }
@@ -517,7 +528,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
-            stickerHelper = null;
+            StickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
@@ -1256,6 +1267,10 @@ namespace windows_client.ViewModel
                     status.UpdateImage();
             }
         }
+
+        /// <summary>
+        /// Is dark theme set for the app.
+        /// </summary>
         public Boolean IsDarkMode
         {
             get;
@@ -1263,7 +1278,7 @@ namespace windows_client.ViewModel
         }
 
         /// <summary>
-        /// Check if hidden mode is active. True means hidden chats are visible
+        /// Check if hidden mode is active. True means hidden chats are visible.
         /// </summary>
         public Boolean IsHiddenModeActive
         {
@@ -1271,13 +1286,19 @@ namespace windows_client.ViewModel
             private set;
         }
 
+        /// <summary>
+        /// Reset hidden mode.
+        /// </summary>
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
             App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
-        public void SetHiddenMode()
+        /// <summary>
+        /// Toggle hidden mode. Save state in app settings.
+        /// </summary>
+        public void ToggleHiddenMode()
         {
             IsHiddenModeActive = !IsHiddenModeActive;
 
@@ -1285,11 +1306,14 @@ namespace windows_client.ViewModel
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
             else
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
-
+            
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
         }
 
+        /// <summary>
+        /// Start reset hidden mode timer on home screen.
+        /// </summary>
         public void ResetHiddenModeTapped()
         {
             if (App.ViewModel.StartResetHiddenModeTimer != null)
@@ -1297,5 +1321,12 @@ namespace windows_client.ViewModel
         }
 
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
+
+        public string Password { get; set; }
+       
+        public static void ClearStickerHelperInstance()
+        {
+            StickerHelper = null;
+        }
     }
 }

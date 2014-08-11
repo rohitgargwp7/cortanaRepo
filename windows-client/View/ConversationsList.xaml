@@ -45,7 +45,7 @@
 
         <local:PasswordPopUpUC x:Name="passwordOverlay" Grid.RowSpan="3" PasswordEntered="passwordOverlay_PasswordEntered" Canvas.ZIndex="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsShow="False" PasswordOverlayVisibilityChanged="passwordOverlay_PasswordOverlayVisibilityChanged"/>
         
-        <Grid Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
+        <Grid x:Name="headerGrid" Background="{StaticResource HikeHeaderBrush}" HorizontalAlignment="Stretch" Height="90">
             <Grid Margin="25,25,7,0" Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -71,7 +71,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="tipControl" Grid.Row="1">
             <local:ToolTipsUC x:Name="conversationPageToolTip" ControlBackgroundColor="{StaticResource StealthRed}"/>
         </Grid>
         
@@ -318,7 +318,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,9,0"/>
-                                            <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" GroupMemberName="{Binding GroupMemberName}" 
+                                            <local:MyRichTextBox Grid.Column="1" Text="{Binding LastMessage}" Foreground="{Binding LastMessageColor}" FontSize="20" HorizontalAlignment="Left" 
                                                                  MaxCharsPerLine="30" TextWrapping="NoWrap" VerticalAlignment="Center" TextAlignment="Left" Margin="-12,0,0,0" FontWeight="Light"/>
                                             <Image Grid.Column="2" Margin="12,0,0,0" Source="{Binding MuteIconImage}" Visibility="{Binding MuteIconVisibility}" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24" Width="24"/>
                                             <Border Grid.Column="2" Margin="12,3,0,0" Visibility="{Binding UnreadCircleVisibility}" Style="{StaticResource UnreadNotificationCounterContainerStyle}" HorizontalAlignment="Right" VerticalAlignment="Top">
