@@ -778,7 +778,11 @@ namespace windows_client.View
             }
 
             if (gridDownloadStickers.Visibility == Visibility.Visible)
+            {
                 ShowDownloadOverlay(false);
+                e.Cancel = true;
+                return;                 // So that Sticker and emoji's panel doesn't collapse
+            }
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
