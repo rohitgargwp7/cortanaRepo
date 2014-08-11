@@ -3694,6 +3694,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwords don&apos;t match..
+        /// </summary>
+        public static string Password_Mismatch_Txt {
+            get {
+                return ResourceManager.GetString("Password_Mismatch_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
         public static string Pause_Txt {
