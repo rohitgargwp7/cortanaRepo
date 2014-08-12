@@ -453,6 +453,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("ChatVisibility");
                     NotifyPropertyChanged("HideUnhideChatText");
                     NotifyPropertyChanged("ChatHeaderForegroundColor");
+                    NotifyPropertyChanged("UnreadNotificationCounterBackgroundColor");
                 }
             }
         }
@@ -549,6 +550,17 @@ namespace windows_client.Model
                     return (SolidColorBrush)Application.Current.Resources["StealthRed"];
                 else
                     return (SolidColorBrush)Application.Current.Resources["HikeFGBrush"];
+            }
+        }
+
+        public SolidColorBrush UnreadNotificationCounterBackgroundColor
+        {
+            get
+            {
+                if (IsHidden)
+                    return (SolidColorBrush)Application.Current.Resources["StealthRed"];
+                else
+                    return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
