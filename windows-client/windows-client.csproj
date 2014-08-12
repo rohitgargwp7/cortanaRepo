@@ -228,6 +228,7 @@
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="ServerTips\TipInfo.cs" />
+    <Compile Include="ServerTips\TipManager1.cs" />
     <Compile Include="ServerTips\TipState.cs" />
     <Compile Include="ServerTips\TipInfoBase.cs" />
     <Compile Include="ServerTips\TipManager.cs" />

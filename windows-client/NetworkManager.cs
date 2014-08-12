@@ -59,6 +59,10 @@ namespace windows_client
 
         public static readonly string ICON_REMOVE = "icr";
 
+        private static readonly string TIPHEADER = "h";
+        private static readonly string TIPBODY = "b";
+        private static readonly string TIPID = "i";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -2006,7 +2010,7 @@ namespace windows_client
                 {
                     JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
-                    TipManager.Instance.InitializeTip((string)subtype, data);
+                    TipManager1.Instance.AddTip((string)subtype, (string)data[TIPHEADER], (string)data[TIPBODY], (string)data[TIPID]);
                 }
                 catch (Exception e)
                 {

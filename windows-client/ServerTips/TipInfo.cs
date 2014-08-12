@@ -106,6 +106,7 @@ namespace windows_client.ServerTips
                         break;
                     }
             };
+            State = TipState.NOT_SHOWN;
         }
 
         private void IntializeStealthTip()
@@ -127,8 +128,15 @@ namespace windows_client.ServerTips
         void OpenFavourites(object sender, EventArgs e)
         {
             State = TipState.COMPLETED;
-            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/View/ConversationsList.xaml?id=1", UriKind.Relative));
         }
+
+        void OpenInviteFriends(object sender, EventArgs e)
+        {
+            State = TipState.COMPLETED;
+            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+
         private void IntializeStickersTip()
         {
             Location = CHATPAGE;
@@ -225,6 +233,12 @@ namespace windows_client.ServerTips
 
         private void InitializeThemeTip()
         {
+            Location = CHATPAGE;
+            Position = TOP;
+            TipControl.TipText = "This is Theme Tip";
+            TipControl.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+            TipControl.RightIconClicked -= CloseTip;
+            TipControl.RightIconClicked += CloseTip;
             /*
                 Tip on the top of the chat screen. 
                 Image: Arrow to the “chat themes” icon.
@@ -237,6 +251,11 @@ namespace windows_client.ServerTips
 
         private void IntitializeInviteFriendsTip()
         {
+            Location = MAINPAGE;
+            Position = TOP;
+            TipControl.TipText = "This is Invite Friend Tip";
+            TipControl.FullTipTapped -= OpenInviteFriends;
+            TipControl.FullTipTapped += OpenInviteFriends;
             /*
                 Tip on the top of the main screen. 
                 Image: Invite icon.
@@ -249,6 +268,11 @@ namespace windows_client.ServerTips
 
         private void IntializeStatusUpdateTip()
         {
+            Location = MAINPAGE;
+            Position = TOP;
+            TipControl.TipText = "This is Status update Tip";
+            TipControl.FullTipTapped -= OpenProfile;
+            TipControl.FullTipTapped += OpenProfile;
             /*
 
                 Tip on the top of the main screen. 
