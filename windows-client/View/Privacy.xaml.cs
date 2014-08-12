@@ -11,6 +11,7 @@ using windows_client.Languages;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using windows_client.Controls;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -78,6 +79,8 @@ namespace windows_client.View
 
         private void ResetHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.ANALYTICS_INIT_RESET_HIDDEN_MODE);
+
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
             App.ViewModel.ResetHiddenModeTapped();
 
@@ -136,6 +139,8 @@ namespace windows_client.View
                 {
                     if (_tempPassword.Equals(popup.Password))
                     {
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_PWD_CHANGE_HIDDEN_MODE);
+
                         _tempPassword = null;
                         App.ViewModel.Password = popup.Password;
                         App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
