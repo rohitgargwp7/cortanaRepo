@@ -3335,7 +3335,9 @@ namespace windows_client.View
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
-            ScrollToBottom(); // So that most recent chat is shown when pressing stickers or emojis
+            
+            if (JumpToBottomGrid!=null && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                ScrollToBottom(); // So that most recent chat is shown when pressing stickers or emojis
 
             if (appButton != null)
             {
