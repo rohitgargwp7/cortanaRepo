@@ -184,7 +184,7 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
-        public static readonly int HIDDEN_MODE_RESET_TIMER = 1800;
+        public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
         public static string FAQS_LINK
         {
@@ -452,6 +452,13 @@ namespace windows_client
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
         public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
+
+
+        public static readonly string ANALYTICS_TAP_HI_WHILE_TIP = "quickSetupClick";
+        public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
+        public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
+        public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
+        public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
 
         #endregion
 
