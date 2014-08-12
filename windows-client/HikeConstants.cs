@@ -437,8 +437,14 @@ namespace windows_client
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
         public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";        
+        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
+        public static readonly string ANALYTICS_TAP_HI_WHILE_TIP = "quickSetupClick";
+        public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
+        public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
+        public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
+        public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
+        
         #endregion
 
         public static class Extras

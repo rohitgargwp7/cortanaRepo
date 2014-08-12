@@ -2216,4 +2216,7 @@ Download it like asap from http://hike.in!</value>
     <value>Nobody</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>Passwords don’t match.</value>
+  </data>
 </root>

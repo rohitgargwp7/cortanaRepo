@@ -3124,6 +3124,14 @@ namespace windows_client.View
             }
             else
             {
+                if (!App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                {
+                    if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                    else
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                }
+
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
                     if (launchPagePivot.SelectedIndex != 0)
@@ -3249,9 +3257,10 @@ namespace windows_client.View
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
+                            Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
+
                             App.ViewModel.Password = popup.Password;
                             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
-
                             ToggleHidddenMode();
 
                             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
@@ -3260,6 +3269,8 @@ namespace windows_client.View
                                 UpdateToolTip(true);
                             }
                         }
+                        else
+                            MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
 
                         _isConfirmPassword = false;
                         popup.IsShow = false;
