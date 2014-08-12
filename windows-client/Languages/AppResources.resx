@@ -2166,13 +2166,13 @@ Download it like asap from http://hike.in!</value>
     <value>Tap here to reset Hidden Mode now!</value>
   </data>
   <data name="HiddenMode_Completed_Txt" xml:space="preserve">
-    <value>To complete setup, tap on 'hi' to hide your chats.</value>
+    <value>Tap on 'hi' to get in and out of 'Hidden' mode</value>
   </data>
   <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
     <value>Hide your chats with a password. Tap on 'hi' to get started.</value>
   </data>
   <data name="HiddenMode_Step2_Txt" xml:space="preserve">
-    <value>Tap and hold a chat to mark it ‘hidden’.</value>
+    <value>Tap and hold chats to mark them 'hidden'</value>
   </data>
   <data name="EnterNewPassword_Txt" xml:space="preserve">
     <value>Create new password to hide your chats</value>
