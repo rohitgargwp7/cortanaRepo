@@ -8,6 +8,8 @@ windows-client.sln
 # *~
 windows-client/Bin/
 windows-client/obj/
+windows-client/windows-client.csproj
+windows-client/windows-client.csproj.user
 finalmqtt/finalmqtt/Bin/
 finalmqtt/finalmqtt/obj/
 Phone.Controls/Bin/
