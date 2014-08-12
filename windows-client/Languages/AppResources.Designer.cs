@@ -2434,7 +2434,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To complete setup, tap on &apos;hi&apos; to hide your chats..
+        ///   Looks up a localized string similar to Tap on &apos;hi&apos; to get in and out of &apos;Hidden&apos; mode.
         /// </summary>
         public static string HiddenMode_Completed_Txt {
             get {
@@ -2452,7 +2452,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap and hold a chat to mark it ‘hidden’..
+        ///   Looks up a localized string similar to Tap and hold chats to mark them &apos;hidden&apos;.
         /// </summary>
         public static string HiddenMode_Step2_Txt {
             get {
