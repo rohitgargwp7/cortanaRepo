@@ -3118,6 +3118,11 @@ namespace windows_client.View
             }
             else
             {
+                if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
+                    Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                else
+                    Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
                     if (launchPagePivot.SelectedIndex != 0)
@@ -3243,9 +3248,10 @@ namespace windows_client.View
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
+                            Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
+
                             App.ViewModel.Password = popup.Password;
                             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
-
                             ToggleHidddenMode();
 
                             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
@@ -3254,6 +3260,8 @@ namespace windows_client.View
                                 UpdateToolTip(true);
                             }
                         }
+                        else
+                            MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
 
                         _isConfirmPassword = false;
                         popup.IsShow = false;
@@ -3509,6 +3517,8 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                     }
+                    else
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_CANCEL_RESET_HIDDEN_MODE);
 
                     break;
             }
@@ -3532,6 +3542,8 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_CANCEL_RESET_HIDDEN_MODE);
+
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                         _tipMode = ToolTipMode.DEFAULT;
