@@ -3118,10 +3118,13 @@ namespace windows_client.View
             }
             else
             {
-                if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
-                    Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
-                else
-                    Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                if (!App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                {
+                    if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                    else
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                }
 
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
