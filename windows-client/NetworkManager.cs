@@ -1171,6 +1171,7 @@ namespace windows_client
                     else
                         return;//group doesn't exists
 
+                    GroupManager.Instance.LoadGroupParticipants(groupId);
                     ConversationTableUtils.updateGroupName(groupId, groupName);
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1210,8 +1211,8 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
+                
                 //check if same image is set
-
                 if (cObj.Avatar != null)
                 {
                     string previousImage = System.Convert.ToBase64String(cObj.Avatar);
@@ -1222,6 +1223,9 @@ namespace windows_client
                         return;
                     }
                 }
+
+                GroupManager.Instance.LoadGroupParticipants(groupId);
+
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
