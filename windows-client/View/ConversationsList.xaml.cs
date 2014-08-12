@@ -3520,8 +3520,6 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                     }
-                    else
-                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_CANCEL_RESET_HIDDEN_MODE);
 
                     break;
             }
@@ -3545,8 +3543,6 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
-                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_CANCEL_RESET_HIDDEN_MODE);
-
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                         _tipMode = ToolTipMode.DEFAULT;
