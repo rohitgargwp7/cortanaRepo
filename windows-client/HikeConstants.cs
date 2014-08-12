@@ -443,7 +443,6 @@ namespace windows_client
         public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
-        public static readonly string ANALYTICS_CANCEL_RESET_HIDDEN_MODE = "resetStlthCancel";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
         
         #endregion
