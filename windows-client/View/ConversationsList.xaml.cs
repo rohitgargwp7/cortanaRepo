@@ -2458,8 +2458,14 @@ namespace windows_client.View
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
                 MiscDBUtil.SavePendingRequests();
+
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                {
+                    if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                        App.ViewModel.StatusList.Add(DefaultStatus);
+                    
                     return;
+                }
 
                 ConversationListObject cObj = null;
                 ContactInfo cn = null;
