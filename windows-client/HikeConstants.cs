@@ -184,7 +184,7 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
-        public static readonly int HIDDEN_MODE_RESET_TIMER = 1800;
+        public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
         public static string FAQS_LINK
         {
