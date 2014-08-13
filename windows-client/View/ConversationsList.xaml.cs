@@ -3308,6 +3308,7 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
+                SystemTray.IsVisible = popup.IsShow ? false : true;
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
                 headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
                 tipControl.IsHitTestVisible = popup.IsShow ? false : true;

@@ -1555,6 +1555,7 @@ namespace windows_client
                                 {
                                     if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                         tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                
                                 }
                                 catch (Exception ex)
                                 {
