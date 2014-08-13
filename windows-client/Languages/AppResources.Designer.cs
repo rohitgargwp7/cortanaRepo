@@ -4144,6 +4144,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select video.
+        /// </summary>
+        public static string Select_Video_txt {
+            get {
+                return ResourceManager.GetString("Select_Video_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to mark all.
         /// </summary>
         public static string SelectAll_Txt {

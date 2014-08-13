@@ -86,8 +86,7 @@
         </DataTemplate>
         <DataTemplate x:Key="ItemTemplate">
             <StackPanel Height="108" Width="108" Margin="6,6" Tap="StackPanel_Tap">
-                <Image Name="thumbnailImage" Width="108" Height="108" Stretch="UniformToFill" Source="{Binding ThumbnailImage}" />
-                <Image MaxWidth="60" MaxHeight="60" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/play_icon.png"/>
+                <Image Name="thumbnailImage" Width="108" Height="108" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
             </StackPanel>
         </DataTemplate>
         <Style x:Key="LongListSelectorStyle" TargetType="phone:LongListSelector">
@@ -158,7 +157,7 @@
                     </controls:PivotItem>
                     <controls:PivotItem Margin="0" Padding="0">
                         <controls:PivotItem.Header>
-                            <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Photo_txt,Source={StaticResource LocalizedStrings}}" Foreground="White"/>
+                            <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Date_txt,Source={StaticResource LocalizedStrings}}" Foreground="White"/>
                         </controls:PivotItem.Header>
                         <Grid>
                             <ProgressBar x:Name="shellProgressAllPhotos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent"/>

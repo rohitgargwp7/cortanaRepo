@@ -57,9 +57,9 @@ namespace windows_client.View
             llsAlbums.ItemsSource = GetAlbums(out listPic);
             //create a delay so that it hides after ui render
             Dispatcher.BeginInvoke(() =>
-                {
-                    shellProgressAlbums.Visibility = Visibility.Collapsed;
-                });
+            {
+                shellProgressAlbums.Visibility = Visibility.Collapsed;
+            });
         }
 
         public List<PhotoAlbumClass> GetAlbums(out List<PhotoClass> listPicture)
@@ -130,9 +130,9 @@ namespace windows_client.View
             llsAllPhotos.ItemsSource = GroupedPhotos(listPic);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
-                {
-                    shellProgressAllPhotos.Visibility = Visibility.Collapsed;
-                });
+            {
+                shellProgressAllPhotos.Visibility = Visibility.Collapsed;
+            });
         }
 
         void OnPicturesUploadClick(object sender, EventArgs e)
@@ -266,7 +266,6 @@ namespace windows_client.View
             if (pivotAlbums.SelectedIndex == 1 && !isAllPicturesLaoded)
             {
                 shellProgressAllPhotos.Visibility = Visibility.Visible;
-                //todo:do not bind again n again
                 BindPhotos();
                 isAllPicturesLaoded = true;
             }

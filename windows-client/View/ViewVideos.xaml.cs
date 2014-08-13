@@ -88,8 +88,10 @@ namespace windows_client.View
                         
 
                         Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out albumName,out date,out videoDuration,out videoSize);
-                        albumName = filePath.Substring(0, filePath.Length - filePath.LastIndexOf("\\"));
+                        albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                         albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
+
+                       
 
                         VideoClass video = new VideoClass(fileName, filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
@@ -125,7 +127,7 @@ namespace windows_client.View
             llsAlbums.SelectedItem = null;
             ToggleView(false);
             llsVideos.ItemsSource = null;
-            shellProgressPhotos.Visibility = Visibility.Visible;
+            shellProgressVideos.Visibility = Visibility.Visible;
             BindAlbumVideos(album);
         }
 
@@ -136,7 +138,7 @@ namespace windows_client.View
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressPhotos.Visibility = Visibility.Collapsed;
+                shellProgressVideos.Visibility = Visibility.Collapsed;
             });
         }
         #endregion ALBUMS
@@ -150,7 +152,7 @@ namespace windows_client.View
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressAllPhotos.Visibility = Visibility.Collapsed;
+                shellProgressAllVideos.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -225,7 +227,7 @@ namespace windows_client.View
             //this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
             if (pivotAlbums.SelectedIndex == 1)
             {
-                shellProgressAllPhotos.Visibility = Visibility.Visible;
+                shellProgressAllVideos.Visibility = Visibility.Visible;
                 BindVideos();
             }
         }

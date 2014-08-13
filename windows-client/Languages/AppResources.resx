@@ -2140,7 +2140,7 @@ Download it like asap from http://hike.in!</value>
   <data name="Open_File" xml:space="preserve">
     <value>open</value>
     <comment>General Text</comment>
- </data>
+  </data>
   <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
     <value>OOPS! Something went wrong</value>
   </data>
@@ -2221,5 +2221,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Nobody_Txt" xml:space="preserve">
     <value>Nobody</value>
     <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>select video</value>
   </data>
 </root>
