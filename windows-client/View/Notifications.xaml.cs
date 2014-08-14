@@ -240,7 +240,6 @@ namespace windows_client.View
 
             _canGoBack = false;
 
-            
             if (App.appSettings.Contains(App.LATEST_PUSH_TOKEN))  // added check if there is no push token
                 pushToken = (string)App.appSettings[App.LATEST_PUSH_TOKEN];
 
