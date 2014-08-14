@@ -218,7 +218,7 @@ namespace windows_client.View
         private void hideMessageToggle_Click(object sender, RoutedEventArgs e)
         {
             ToggleSwitch hideMessageToggle = sender as ToggleSwitch;
-
+            string pushToken = String.Empty;
             bool currentStatus = (bool)hideMessageToggle.IsChecked;
 
             if (!NetworkInterface.GetIsNetworkAvailable())
@@ -234,15 +234,16 @@ namespace windows_client.View
                 _progressIndicator = new ProgressIndicatorControl();
 
             if (currentStatus == true)
-            {
                 _progressIndicator.Show(LayoutRoot, AppResources.Turning_Message_Preview_On);
-            }
             else
-            {
                 _progressIndicator.Show(LayoutRoot, AppResources.Turning_Message_Preview_Off);
-            }
 
             _canGoBack = false;
+
+            
+            if (App.appSettings.Contains(App.LATEST_PUSH_TOKEN))  // added check if there is no push token
+                pushToken = (string)App.appSettings[App.LATEST_PUSH_TOKEN];
+
             AccountUtils.postHideMessagePreview((string)App.appSettings[App.LATEST_PUSH_TOKEN], currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
         }
 
