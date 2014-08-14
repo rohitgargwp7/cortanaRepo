@@ -9,7 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using System.IO;
-using WindowsPhoneRuntimeComponent1;
+using RPALApiComponent;
 using windows_client.Model.Video;
 using System.Diagnostics;
 using System.Windows.Resources;
@@ -32,12 +32,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_THUMB_SHARED);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_DURATION);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED_SIZE);
-
+          
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 BindAlbums();
@@ -73,8 +69,9 @@ namespace windows_client.View
 
             try
             {
-                WindowsPhoneRuntimeComponent wrt = new WindowsPhoneRuntimeComponent();
+                FetchPreRecordedVideos wrt = new FetchPreRecordedVideos();
                 ushort totalVideos = wrt.GetVideoCount();
+                
                 if (totalVideos > 0)
                 {
                     for (int i = 0; i < totalVideos; i++)
@@ -85,21 +82,16 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-                        
 
                         Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out albumName,out date,out videoDuration,out videoSize);
                         albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                         albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
-
-                       
-
+                        
                         VideoClass video = new VideoClass(fileName, filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbumClass albumObj;
-                        Debug.WriteLine("Video Size is: " + (videoSize/(1024*1024)).ToString());
-                        Debug.WriteLine("Video Duration is: " + videoDuration / 1000);
-                        Debug.WriteLine("Album Name is: " + albumName);
+                        
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                         {
                             albumObj = new VideoAlbumClass(albumName, thumbBytes);
@@ -212,12 +204,7 @@ namespace windows_client.View
                 return;
             lls.SelectedItem = null;
 
-            //StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(selectedVideo.FilePath, UriKind.Relative));
-            //byte[] videoBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo.FilePath;
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_THUMB_SHARED] = selectedVideo.Thumbnail;
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED_SIZE] = selectedVideo.Size;
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED_DURATION] = selectedVideo.Duration;
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo;
 
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }

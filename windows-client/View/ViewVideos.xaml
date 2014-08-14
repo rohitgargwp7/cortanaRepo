@@ -60,9 +60,9 @@
             <Grid Height="72" Background="Transparent"/>
         </DataTemplate>
         <DataTemplate x:Key="ItemTemplate">
-            <Grid Height="108" Width="108" Margin="6,6" >
-                <Image Name="thumbnailImage" Width="108" Height="108" Stretch="UniformToFill" Source="{Binding ThumbnailImage}" />
-                <Image MaxWidth="60" MaxHeight="60" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/play_icon2.png"/>
+            <Grid Height="108" Width="108" Margin="6" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Image Name="thumbnailImage" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Source="{Binding ThumbnailImage}" />
+                <Image Height="60" Width="60" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/play_icon_small.png"/>
             </Grid>
         </DataTemplate>
 
@@ -97,7 +97,7 @@
             </Setter>
         </Style>
     </phone:PhoneApplicationPage.Resources>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Black">
         <Grid.RowDefinitions>
@@ -110,7 +110,7 @@
             <TextBlock FontSize="35" Text="{Binding Path=LocalizedResources.Select_Video_txt,Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}" Foreground="White"/>
         </StackPanel>
 
-            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,-30,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,-30,12,0">
             <Grid Name="gridAlbums">
                 <controls:Pivot Name="pivotAlbums" SelectionChanged="pivotAlbums_SelectionChanged" Margin="0 -20 0 0">
                     <controls:PivotItem Name="pvtItemAlbums">
@@ -156,7 +156,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Name="albumNameTxt" Style="{StaticResource PhoneTextTitle1Style}" Margin="24 -5 0 0" Foreground="White"/>
+                <TextBlock Name="albumNameTxt" FontSize="50" Style="{StaticResource PhoneTextTitle1Style}" Margin="24 -5 0 0" Foreground="White"/>
                 <ProgressBar x:Name="shellProgressVideos" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent" Grid.Row="1"/>
 
                 <phone:LongListSelector  Grid.Row="1" Name="llsVideos" Margin="24,-5,0,0"

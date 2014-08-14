@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -8,14 +9,16 @@ using windows_client.utils;
 
 namespace windows_client.Model.Video
 {
+    [DataContract]
     public class VideoClass
     {
         string _filePath;
         string _fileName;
         int _duration;
         int _size;
-        byte[] _thumbnail;
+        byte[] _thumbnailBytes;
 
+        [DataMember]
         public string FilePath
         {
             get
@@ -28,6 +31,8 @@ namespace windows_client.Model.Video
                     _filePath = value;
             }
         }
+
+        [DataMember]
         public int Duration
         {
             get
@@ -41,6 +46,7 @@ namespace windows_client.Model.Video
             }
         }
 
+        [DataMember]
         public int Size
         {
             get
@@ -54,6 +60,7 @@ namespace windows_client.Model.Video
             }
         }
 
+        [DataMember]
         public string FileName
         {
             get
@@ -66,36 +73,42 @@ namespace windows_client.Model.Video
                     _fileName = value;
             }
         }
-        public byte[] Thumbnail
+
+        [DataMember]
+        public byte[] ThumbnailBytes
         {
             get
             {
-                return _thumbnail;
+                return _thumbnailBytes;
             }
             set
             {
-                if (value != _thumbnail)
-                    _thumbnail = value;
+                if (value != _thumbnailBytes)
+                    _thumbnailBytes = value;
             }
         }
 
+        [DataMember]
         public DateTime TimeStamp { get; set; }
 
         public VideoClass(string fileName, string filePath, byte[] thumbnail,int videoDuration,int videoSize)
         {
             _fileName = fileName;
             _filePath = filePath;
-            _thumbnail = thumbnail;
+            _thumbnailBytes = thumbnail;
             _duration = videoDuration;
             _size = videoSize;
         }
 
 
+        BitmapImage _thumbnailImage;
         public BitmapImage ThumbnailImage
         {
             get
             {
-                return UI_Utils.Instance.createImageFromBytes(_thumbnail);
+                if (_thumbnailImage == null)
+                    _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
+                return _thumbnailImage;
             }
         }
     }

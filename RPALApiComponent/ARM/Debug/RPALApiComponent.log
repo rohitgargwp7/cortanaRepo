@@ -1,0 +1,12 @@
+﻿Build started 14-08-2014 20:14:14.
+     1>Project "C:\Users\Abhishek\Desktop\video-share\windows-hike-client\WindowsPhoneRuntimeComponent1\RPALApiComponent.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\x86_arm\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.dll" /INCREMENTAL /NOLOGO mincore.lib RuntimeObject.lib PhoneAppModelHost.lib zmedialib_client.lib /NODEFAULTLIB:ole32.lib /MANIFEST:NO /DEBUG /PDB:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /WINMD /WINMDFILE:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.winmd" /DYNAMICBASE /NXCOMPAT /MACHINE:ARM /DLL ARM\Debug\RPALApiComponent.obj
+         ARM\Debug\pch.obj
+            Creating library C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.lib and object C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.exp
+         RPALApiComponent.vcxproj -> C:\Users\Abhishek\Desktop\video-share\windows-hike-client\ARM\Debug\RPALApiComponent\RPALApiComponent.dll
+     1>Done Building Project "C:\Users\Abhishek\Desktop\video-share\windows-hike-client\WindowsPhoneRuntimeComponent1\RPALApiComponent.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.36

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "windows-client", "windows-client\windows-client.csproj", "{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsPhoneRuntimeComponent1", "WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj", "{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RPALApiComponent", "WindowsPhoneRuntimeComponent1\RPALApiComponent.vcxproj", "{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

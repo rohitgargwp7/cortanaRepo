@@ -676,6 +676,8 @@
     <Content Include="View\images\image_default.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\play_icon2.png" />
+    <Content Include="View\images\play_icon_big.png" />
+    <Content Include="View\images\play_icon_small.png" />
     <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
@@ -1163,9 +1165,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WindowsPhoneRuntimeComponent1\WindowsPhoneRuntimeComponent1.vcxproj">
+    <ProjectReference Include="..\WindowsPhoneRuntimeComponent1\RPALApiComponent.vcxproj">
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
-      <Name>WindowsPhoneRuntimeComponent1</Name>
+      <Name>RPALApiComponent</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
