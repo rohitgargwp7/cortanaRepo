@@ -72,6 +72,8 @@ namespace windows_client.View
         {
             InitializeComponent();
 
+            enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
+
             App.appSettings.TryGetValue(App.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
@@ -97,7 +99,9 @@ namespace windows_client.View
                 _allContactsList = UsersTableUtils.getAllContactsByGroup();
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
             };
+
             bw.RunWorkerAsync();
+            
             bw.RunWorkerCompleted += (s, e) =>
             {
                 if (!_showSmsContacts)
@@ -995,42 +999,6 @@ namespace windows_client.View
         #endregion
 
         #region Page State Functions
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
-            {
-                // Get a dictionary of query string keys and values.
-                IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
-
-                // Ensure that there is at least one key in the query string, and check 
-                // whether the "FileId" key is present.
-                if (queryStrings.ContainsKey("FileId"))
-                {
-                    PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
-                    queryStrings.Clear();
-                    PageTitle.Text = AppResources.Share_Txt;
-                }
-
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                {
-                    while (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
-                }
-
-                enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
-            }
-
-            //remove if push came directly from upgrade page
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-            {
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
-            }
-        }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
