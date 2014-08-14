@@ -675,7 +675,6 @@
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
     <Content Include="View\images\menu_video_icon.png" />
-    <Content Include="View\images\play_icon2.png" />
     <Content Include="View\images\play_icon_big.png" />
     <Content Include="View\images\play_icon_small.png" />
     <Content Include="View\images\settings\change_password.png" />

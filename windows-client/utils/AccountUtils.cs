@@ -747,31 +747,6 @@ namespace windows_client.utils
             return ms.ToArray();
         }
 
-        public static byte[] InitialBytesStreamToByteArray(Stream input, int BytesToRead)
-        {
-            try
-            {
-                byte[] buffer = new byte[BytesToRead];
-                MemoryStream ms = new MemoryStream();
-                input.Read(buffer, 0, buffer.Length);
-                ms.Write(buffer, 0, BytesToRead);
-                return ms.ToArray();
-            }
-            catch (Exception Ex)
-            {
-                Debug.WriteLine("AccountUtils::InitialBytesStreamToByteArray Exception : " + Ex.Message);
-                byte[] buffer = new byte[16 * 1024];
-                MemoryStream ms = new MemoryStream();
-                int read;
-
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                    ms.Write(buffer, 0, read);
-
-                return ms.ToArray();
-                //throw new System.IO.EndOfStreamException();
-            }
-        }
-
         public static byte[] Compress(string text)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(text);
