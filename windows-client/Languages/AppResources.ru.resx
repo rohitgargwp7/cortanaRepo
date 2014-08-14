@@ -1015,7 +1015,7 @@
     <value>работоспособность системы</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Контактные данные</value>
+    <value>Отправить контакт</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Отправить аудиофайл</value>
@@ -1233,7 +1233,7 @@
     <value>добавить контакт</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>вкл./выкл. мелодию звонка, вибрацию и т. д.</value>
+    <value>вкл./выкл. мелодию звонка, просмотр сообщений и т. д.</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>управление аккаунтом hike</value>
@@ -1288,7 +1288,7 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Показывать, когда был(а) в последний раз в сети</value>
+    <value>Показывать последнее появление:</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>в последний раз {0}</value>
@@ -1996,8 +1996,15 @@
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>Обогати свою жизнь с hike</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Просмотр сообщения</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Только избранные контакты могут видеть ваши обновления. Учтите это при их выборе!</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Показывать аватар:</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>добавить избранные</value>
@@ -2032,7 +2039,7 @@
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>Вы получите бесплатно разговор стоимостью 20 рупий за каждого друга, прибывшего в hike :)</value>
+    <value>Вы получите по 20 рупий на разговоры за каждого друга, присоединившегося к hike :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
@@ -2040,7 +2047,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>Учтите это при их выборе!</value>
+    <value>Выбирайте их внимательно!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2052,7 +2059,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
-    <value>Когда всего не передать словами, используйте стикеры</value>
+    <value>Когда не хватает слов, используйте стикеры</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
@@ -2095,5 +2102,115 @@
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Перезапустить</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>скрыть чат</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>показать чат</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>Введите пароль</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>воспроизвести</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>просмотреть</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>открыть</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>Ошибка! Что-то пошло не так</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>Выкл. просмотр сообщений</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>Вкл. просмотр сообщений</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>сохранить контакт</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>сменить пароль скрытого режима</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>сменить пароль</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>Забыли пароль? Сбросьте скрытый режим. Все скрытые чаты будут удалены.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>сбросить скрытый режим</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>Все скрытые чаты будут удалены через {0} мин.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Коснитесь, чтобы сбросить скрытый режим!</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>Нажмите \"hi\", чтобы войти в скрытый режим или выйти из него</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>Скройте свои чаты с помощью пароля. Чтобы начать, нажмите \"hi\".</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>Нажмите и удерживайте чат, чтобы пометить его как скрытый</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>Создайте новый пароль, чтобы скрыть свои чаты</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>Все ваши скрытые чаты будут удалены. Продолжить?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>Подтвердить сброс?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>Отменить сброс?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>Сброс скрытого режима будет отменен. Продолжить?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Начните чат и нажмите \"hi\".</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Скройте свои чаты с помощью пароля.</value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>Введите текущий пароль</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Автосохр. фото</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Сохранено</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Всем</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Избранным</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Никому</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>Пароли не совпадают.</value>
   </data>
 </root>

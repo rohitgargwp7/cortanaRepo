@@ -1015,7 +1015,7 @@
     <value>état du système</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Infos contact</value>
+    <value>Partager contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Envoyer audio</value>
@@ -1233,7 +1233,7 @@
     <value>ajouter contact</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>activer/désactive les sons, les vibrations, etc.</value>
+    <value>active/désactive les alertes, l'aperçu des messages, etc.</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>gérer ton compte hike</value>
@@ -1288,7 +1288,7 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Afficher dernière connexion</value>
+    <value>Montrer dernière connexion à</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>dernière connexion {0}</value>
@@ -1996,8 +1996,15 @@
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>hike va te changer la vie</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Aperçu message</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Seuls tes favoris peuvent voir ta dernière connexion et tes mises à jour du statut. Choisis-les bien !</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Montrer la photo de profil à</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>ajouter des favoris</value>
@@ -2040,7 +2047,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>Choisis-les bien !</value>
+    <value>choisis-les bien !</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2076,7 +2083,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
-    <value>touche ici pour définir!</value>
+    <value>touche ici pour le définir !</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
@@ -2095,5 +2102,115 @@
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Redémarrer</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>cacher tchat</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>montrer tchat</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>Confirme ton mot de passe</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>Saisir mot de passe</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>lecture</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>voir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>ouvrir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>OUPS ! Il y a eu un problème</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>SANS aperçu message </value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>AVEC aperçu message</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>enregistrer contact</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>changer le mot de passe du mode caché</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>changer le mot de passe</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>mot de passe oublié ? réinitialise le mode caché. Tous les tchats cachés seront supprimés.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>réinitialiser le mode caché</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>Tous les tchats cachés seront supprimés au bout de {0} minutes.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Touche ici pour réinitialiser le mode caché maintenant !</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>Touche "salut" pour entrer et sortir du mode caché</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>Cache tes tchats à l'aide d'un mot de passe. Touche "salut" pour commencer.</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>Maintiens ton doigt sur tes tchats pour les marquer comme "cachés"</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>Crée un mot de passe pour cacher tes tchats</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>Tous tes tchats cachés seront supprimés. Tu confirmes ?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>Confirmer réinitialisation ?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>Annuler réinitialisation ?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>Ceci va interrompre la réinitialisation du mode. Tu confirmes ?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Lance un tchat et touche "salut"</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Masque tes chats avec un mot de passe.</value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>Saisir mot de passe actuel</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Enregistrement photo automatique</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Enregistrement réussi</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Tout le monde</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Favoris</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Personne</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>Les mots de passe sont différents.</value>
   </data>
 </root>
