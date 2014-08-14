@@ -18,7 +18,7 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="12,0,12,0" Tap="ContentPanel_Tap">
             <Image Name="thumbnailImage" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" />
-            <Grid Opacity="0.5" Height="100" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+            <Grid Opacity="0.5" Height="93" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
             </Grid>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" >
                 <TextBlock Name="VideoDurationText" Margin="15,0,0,0" Foreground="White" FontSize="80" FontWeight="Light" VerticalAlignment="Center" HorizontalAlignment="Center"/>
