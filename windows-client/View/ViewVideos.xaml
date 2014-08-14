@@ -125,7 +125,7 @@
                                     <DataTemplate>
                                         <Grid Height="210" Width="210" >
                                             <Image Width="200" Height="200" Source="{Binding Image}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding AlbumName}" FontSize="16" FontWeight="Bold" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10 0 0 10"/>
+                                            <TextBlock Text="{Binding AlbumName}" FontSize="22" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10 0 0 10"/>
                                         </Grid>
                                     </DataTemplate>
                                 </phone:LongListSelector.ItemTemplate>
