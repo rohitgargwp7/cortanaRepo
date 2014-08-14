@@ -1165,7 +1165,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WindowsPhoneRuntimeComponent1\RPALApiComponent.vcxproj">
+    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
       <Name>RPALApiComponent</Name>
     </ProjectReference>

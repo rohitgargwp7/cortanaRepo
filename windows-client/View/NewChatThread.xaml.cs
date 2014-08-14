@@ -781,19 +781,26 @@ namespace windows_client.View
             }
 
             if (gridDownloadStickers.Visibility == Visibility.Visible)
+            {
                 ShowDownloadOverlay(false);
+                e.Cancel = true;
+                return;                 // So that Sticker and emoji's panel doesn't collapse
+            }
+
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
             }
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
                 CancelBackgroundChange();
                 e.Cancel = true;
                 return;
             }
+
             if (attachmentMenu.Visibility == Visibility.Visible)
             {
                 attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3305,7 +3312,7 @@ namespace windows_client.View
         private void MenuItem_Click_View(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            
+
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
                 App.ViewModel.PauseBackgroundAudio();
@@ -3331,6 +3338,9 @@ namespace windows_client.View
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
+
+            if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                ScrollToBottom(); // So that most recent chat is shown when pressing stickers or emojis
 
             if (appButton != null)
             {
@@ -7406,7 +7416,7 @@ namespace windows_client.View
         #region Read By
 
         ConvMessage _lastReceivedSentMessage = null, _readByMessage = null, _previouslastReceivedSentMessage = null;
-        
+
         void UpdateLastSentMessageStatusOnUI()
         {
             if (!isGroupChat || !isGroupAlive)

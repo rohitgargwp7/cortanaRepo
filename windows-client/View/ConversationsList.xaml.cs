@@ -2458,8 +2458,14 @@ namespace windows_client.View
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
                 MiscDBUtil.SavePendingRequests();
+
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                {
+                    if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                        App.ViewModel.StatusList.Add(DefaultStatus);
+                    
                     return;
+                }
 
                 ConversationListObject cObj = null;
                 ContactInfo cn = null;
@@ -3118,6 +3124,14 @@ namespace windows_client.View
             }
             else
             {
+                if (!App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                {
+                    if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                    else
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                }
+
                 if (!App.ViewModel.IsHiddenModeActive)
                 {
                     if (launchPagePivot.SelectedIndex != 0)
@@ -3243,9 +3257,10 @@ namespace windows_client.View
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
+                            Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
+
                             App.ViewModel.Password = popup.Password;
                             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
-
                             ToggleHidddenMode();
 
                             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
@@ -3254,6 +3269,8 @@ namespace windows_client.View
                                 UpdateToolTip(true);
                             }
                         }
+                        else
+                            MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
 
                         _isConfirmPassword = false;
                         popup.IsShow = false;
@@ -3291,6 +3308,7 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
+                SystemTray.IsVisible = popup.IsShow ? false : true;
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
                 headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
                 tipControl.IsHitTestVisible = popup.IsShow ? false : true;

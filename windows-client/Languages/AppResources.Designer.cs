@@ -1552,11 +1552,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to enter current password.
+        ///   Looks up a localized string similar to Enter current password.
         /// </summary>
-        public static string Enter_current_pwd_txt {
+        public static string Enter_Current_Pwd_Txt {
             get {
-                return ResourceManager.GetString("Enter_current_pwd_txt", resourceCulture);
+                return ResourceManager.GetString("Enter_Current_Pwd_Txt", resourceCulture);
             }
         }
         
@@ -1606,7 +1606,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create password.
+        ///   Looks up a localized string similar to Create new password to hide your chats.
         /// </summary>
         public static string EnterNewPassword_Txt {
             get {
@@ -1669,7 +1669,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to enter password.
+        ///   Looks up a localized string similar to Enter password.
         /// </summary>
         public static string EnterPassword_Txt {
             get {
@@ -2443,7 +2443,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To complete setup, tap on &apos;hi&apos; to hide your chats..
+        ///   Looks up a localized string similar to Tap on &apos;hi&apos; to get in and out of &apos;Hidden&apos; mode.
         /// </summary>
         public static string HiddenMode_Completed_Txt {
             get {
@@ -2461,7 +2461,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap and hold a chat to mark it ‘hidden’..
+        ///   Looks up a localized string similar to Tap and hold chats to mark them &apos;hidden&apos;.
         /// </summary>
         public static string HiddenMode_Step2_Txt {
             get {
@@ -3699,6 +3699,15 @@ namespace windows_client.Languages {
         public static string Open_File {
             get {
                 return ResourceManager.GetString("Open_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords don’t match..
+        /// </summary>
+        public static string Password_Mismatch_Txt {
+            get {
+                return ResourceManager.GetString("Password_Mismatch_Txt", resourceCulture);
             }
         }
         
