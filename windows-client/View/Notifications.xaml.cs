@@ -243,7 +243,7 @@ namespace windows_client.View
             if (App.appSettings.Contains(App.LATEST_PUSH_TOKEN))  // added check if there is no push token
                 pushToken = (string)App.appSettings[App.LATEST_PUSH_TOKEN];
 
-            AccountUtils.postHideMessagePreview((string)App.appSettings[App.LATEST_PUSH_TOKEN], currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
+            AccountUtils.postHideMessagePreview(pushToken, currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
         }
 
         public void postHideMessagePreview_Callback(JObject obj,Object currentStatus)
