@@ -1103,7 +1103,7 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>share</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Tap to {0} this person</value>
@@ -2227,5 +2227,8 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Phone</value>
   </data>
 </root>

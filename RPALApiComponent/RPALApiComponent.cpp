@@ -1,16 +1,9 @@
-﻿// RPALApiComponent.cpp
-#include "pch.h"
+﻿#include "pch.h"
 #include "RPALApiComponent.h"
 #include "zmedialib.h"
-#include <vector>
-#include <utility>
-#include <collection.h> 
 using namespace RPALApiComponent;
 using namespace Platform;
-using namespace std;
-using namespace Platform::Collections; 
 using namespace Windows::Foundation::Collections; 
-using namespace std;
 
 FetchPreRecordedVideos::FetchPreRecordedVideos()
 {
@@ -18,17 +11,35 @@ FetchPreRecordedVideos::FetchPreRecordedVideos()
 	rgItemsRoot =NULL;
 }
 
-FetchPreRecordedVideos::~FetchPreRecordedVideos()
+void FetchPreRecordedVideos::ClearData()
 {
 	myLib.Release();
 	delete rgItemsRoot;
 }
-Platform::Array<uint8>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,  Platform::String^* strVideoFilename, Platform::String^* albumName, double* videoTime,int* videoDuration,int *videoSize) {
 
-	auto_ZMediaLibRequirement myLib;
 
-	myLib.Require();
+// Function to get video count and store the video list in rgItemsRoot
+uint16 FetchPreRecordedVideos::GetVideoCount()
+{
+	HRESULT hr = 0;
+	HZMEDIALIST hRootList = NULL;
+	//hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_FOLDER_FOLDERS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
+	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
 
+	size_t cItemsRoot = 0;
+	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
+
+	rgItemsRoot = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM) * cItemsRoot);
+
+	hr = ZMediaList_GetItems(hRootList, 0, rgItemsRoot, cItemsRoot, &cItemsRoot);
+
+	return (uint16)cItemsRoot;
+}
+
+
+// Function to get a video file info using its position in the rgItemsRoot
+Platform::Array<uint8>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,  Platform::String^* strVideoFilename, Platform::String^* albumName, double* videoTime,int* videoDuration,int *videoSize) 
+{
 	HRESULT hr = 0;
 	size_t cch = 0;
 
@@ -71,31 +82,4 @@ Platform::Array<uint8>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Pl
 	return intOutArray;
 }
 
-uint16 FetchPreRecordedVideos::GetVideoCount()
-{
-	auto_ZMediaLibRequirement myLib;
-
-	myLib.Require();
-
-	HRESULT hr = 0;
-	HZMEDIALIST hRootList = NULL;
-	//hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_FOLDER_FOLDERS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
-	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
-
-	size_t cItemsRoot = 0;
-	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
-
-	rgItemsRoot = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM) * cItemsRoot);
-
-	hr = ZMediaList_GetItems(hRootList, 0, rgItemsRoot, cItemsRoot, &cItemsRoot);
-
-	myLib.Release();
-	return (uint16)cItemsRoot;
-}
-
-void FetchPreRecordedVideos::ClearData()
-{
-	myLib.Release();
-	delete rgItemsRoot;
-}
 

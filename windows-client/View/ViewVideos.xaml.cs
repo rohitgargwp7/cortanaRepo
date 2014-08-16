@@ -17,6 +17,7 @@ using windows_client.utils;
 using System.Threading.Tasks;
 using windows_client.Model;
 using Microsoft.Phone.Tasks;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -84,9 +85,15 @@ namespace windows_client.View
                         double date;
 
                         Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out albumName,out date,out videoDuration,out videoSize);
-                        albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
-                        albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
-                        
+                        try
+                        {
+                            albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
+                            albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
+                        }
+                        catch
+                        {
+                            albumName = AppResources.Default_Video_Album_Txt;
+                        }
                         VideoClass video = new VideoClass(fileName, filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years

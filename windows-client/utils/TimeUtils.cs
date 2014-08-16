@@ -23,24 +23,12 @@ namespace windows_client.utils
             return dateStr;
         }
 
-        //Used on video sending
-        public static string GetProperTimeFromMilliseconds(int ms)
+        //Used on video preview: Function to get duration in Human Readable form from Milliseconds
+        public static string GetDurationInHourMinFromMilliseconds(int ms)
         {
             TimeSpan t = TimeSpan.FromMilliseconds(ms);
-            string answer;
-            if (t.Hours > 0)
-            {
-                answer = string.Format("{0:D2}:{1:D2}:{2:D2}",
-                                    t.Hours,
-                                    t.Minutes,
-                                    t.Seconds);
-            }
-            else
-            {
-                answer = string.Format("{0:D2}:{1:D2}",
-                                        t.Minutes,
-                                        t.Seconds);
-            }
+            string answer = t.Hours > 0 ? string.Format("{0:D2}:{1:D2}:{2:D2}",t.Hours,t.Minutes,t.Seconds) 
+                                        : string.Format("{0:D2}:{1:D2}",t.Minutes,t.Seconds);
             return answer;
         }
 

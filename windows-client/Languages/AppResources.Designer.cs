@@ -1267,6 +1267,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string Default_Video_Album_Txt {
+            get {
+                return ResourceManager.GetString("Default_Video_Album_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike couldn&apos;t delete your account. Please try again..
         /// </summary>
         public static string Delete_Account_Failed {

@@ -29,14 +29,14 @@ namespace windows_client.View
             this.ApplicationBar = new ApplicationBar();
 
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
-            shareVideo.Text = "share";
+            shareVideo.Text = AppResources.Share_Txt;
             shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute); ;
             shareVideo.Click += shareVideo_Click;
             this.ApplicationBar.Buttons.Add(shareVideo);
 
             VideoClass videoShared = (VideoClass)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = videoShared.ThumbnailImage;
-            VideoDurationText.Text = TimeUtils.GetProperTimeFromMilliseconds(videoShared.Duration);
+            VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(videoShared.Duration);
         }
 
         void shareVideo_Click(object sender, EventArgs e)
