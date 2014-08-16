@@ -1278,12 +1278,13 @@ namespace windows_client.View
                     queryStrings.Clear();
                     _pageTitle = AppResources.Share_With_Txt;
                     PageTitle.Text = _pageTitle;
-                }
 
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                {
-                    while (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
+
+                    if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
+                    {
+                        while (NavigationService.CanGoBack)
+                            NavigationService.RemoveBackEntry();
+                    }
                 }
 
                 enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;

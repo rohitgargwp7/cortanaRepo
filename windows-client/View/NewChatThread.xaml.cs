@@ -519,7 +519,6 @@ namespace windows_client.View
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
-                //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     string id = msisdn.Replace(":", "_");
@@ -538,6 +537,7 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
                     if (contact == null)
                     {
                         contact = new ContactInfo();
@@ -545,8 +545,10 @@ namespace windows_client.View
                         contact.Name = Utils.IsHikeBotMsg(msisdn) ? Utils.GetHikeBotName(msisdn) : null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
+
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
+
                 ManagePage();
 
                 //remove if user came directly from upgrade page
@@ -554,8 +556,10 @@ namespace windows_client.View
                 {
                     if (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
+
                     PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -597,6 +601,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                     processGroupJoin(false);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -615,15 +620,15 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     this.UpdateLayout();
                 }
-                /* This is called only when you add more participants to group */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                    processGroupJoin(false);
-                }
+            }
 
+            /* This is called only when you add more participants to group */
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                processGroupJoin(false);
             }
 
             #endregion

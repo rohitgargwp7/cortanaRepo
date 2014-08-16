@@ -1021,7 +1021,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>estado del sistema</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Información de contacto</value>
+    <value>Compartir contacto</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Enviar audio</value>
@@ -1239,7 +1239,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>añadir contacto</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>activar/desactivar tono, vibración y más</value>
+    <value>activar/desactivar tono, vista previa de mensajes y otras opciones.</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>gestiona tu cuenta de hike</value>
@@ -1294,7 +1294,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Mostrar última conexión</value>
+    <value>Mostrar última conexión a</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>última conexión: {0}</value>
@@ -2002,8 +2002,15 @@ No esperes más y descárgalo ya en http://hike.in</value>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>pon a hike en tu vida</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Vista previa del mensaje</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Solo tus favoritos pueden ver tus actualizaciones de estado y tu última conexión. ¡Elígelos bien!</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Mostrar foto de perfil a</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>añadir favoritos</value>
@@ -2038,7 +2045,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>20 Rs en llamadas por cada amigo que se una a hike :)</value>
+    <value>Gana recompensas por cada amigo que se una a hike :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
@@ -2058,7 +2065,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt" xml:space="preserve">
-    <value>Si no lo puedes expresar con palabras, dilo con una pegatina</value>
+    <value>Cuando no puedas expresarlo con palabras, usa una pegatina.</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Sticker_SubTxt2" xml:space="preserve">
@@ -2082,7 +2089,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
-    <value>toca aquí para verlo!</value>
+    <value>toca aquí para ajustarlo.</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
@@ -2101,5 +2108,115 @@ No esperes más y descárgalo ya en http://hike.in</value>
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Reiniciar</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>ocultar chat</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>mostrar chat</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>Confirmar contraseña</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>Escribir contraseña</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>reproducir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>ver</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>abrir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>¡Vaya! Se ha producido un error.</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>Desactivando la vista previa de mensajes</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>Activando la vista previa de mensajes</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>guardar contacto</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>cambiar la contraseña del modo oculto</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>cambiar contraseña</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>¿Has olvidado la contraseña? Restablece el modo oculto. Todos los chats ocultos se eliminarán.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>restablecer modo oculto</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>Todos los chats ocultos se eliminarán al cabo de {0} minutos.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Toca aquí para restablecer el modo oculto.</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>Toca "hola" para entrar y salir del modo "Oculto".</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>Oculta tus chats con una contraseña. Toca "hola" para empezar.</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>Mantén pulsados los chats para marcarlos como "ocultos".</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>Crear una nueva contraseña para ocultar tus chats.</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>Todos los chats ocultos se eliminarán. ¿Estás seguro?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>¿Confirmar restablecimiento?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>¿Cancelar restablecimiento?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>Se detendrá el restablecimiento del modo oculto. ¿Estás seguro?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Inicia un chat y toca "hola".</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Oculta tus chats con una contraseña.</value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>Escribir contraseña actual</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Guardar foto automáticamente</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Se ha guardado correctamente</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Todos</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Favoritos</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Nadie</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>Las contraseñas no coinciden</value>
   </data>
 </root>
