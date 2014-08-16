@@ -20,6 +20,7 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using windows_client.utils.ServerTips;
 
 namespace windows_client
 {
@@ -408,6 +409,7 @@ namespace windows_client
             }
 
             _isAppLaunched = true;
+
         }
 
         // Code to execute when the application is activated (brought to foreground)

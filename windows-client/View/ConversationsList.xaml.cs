@@ -34,6 +34,7 @@ using Microsoft.Xna.Framework;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using windows_client.utils.ServerTips;
 
 namespace windows_client.View
 {
@@ -101,6 +102,9 @@ namespace windows_client.View
             ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
             ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
 
+            TipManager.Instance.ConversationPageTipChanged -= Instance_ShowServerTip;
+            TipManager.Instance.ConversationPageTipChanged += Instance_ShowServerTip;
+
             App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
             App.ViewModel.StatusNotificationsStatusChanged += ViewModel_statusNotificationsStatusChanged;
 
@@ -145,6 +149,14 @@ namespace windows_client.View
                 {
                     showProTip();
                 });
+        }
+
+        void Instance_ShowServerTip(object sender, EventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ShowServerTips();
+            });
         }
 
         private void ConversationsList_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -262,6 +274,11 @@ namespace windows_client.View
             }
             else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
                 UpdateResetHiddenModeTimer();
+
+            if (((TipManager.ConversationPageTip != null && _tipMode == TipManager.ConversationPageTip.TipType) || _tipMode == ToolTipMode.DEFAULT) && !conversationPageToolTip.IsShow)
+            {
+                ShowServerTips();
+            }
 
             FrameworkDispatcher.Update();
         }
@@ -1718,6 +1735,7 @@ namespace windows_client.View
 
             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 UpdateToolTip(true);
+
         }
 
         private void UpdateFriendsCounter()
@@ -3400,6 +3418,10 @@ namespace windows_client.View
             switch (_tipMode)
             {
                 case ToolTipMode.DEFAULT:
+
+                    if (TipManager.ConversationPageTip != null)
+                        ShowServerTips();
+
                     break;
 
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
@@ -3464,6 +3486,7 @@ namespace windows_client.View
                     }
 
                     conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
+                    conversationPageToolTip.TipHeadText = "Reset Hidden Mode";
 
                     if (!conversationPageToolTip.IsShow)
                         conversationPageToolTip.IsShow = true;
@@ -3487,6 +3510,80 @@ namespace windows_client.View
                         conversationPageToolTip.IsShow = true;
 
                     break;
+
+                case ToolTipMode.PROFILE:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.STICKERS:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.STATUS_UPDATE:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.INFORMATIONAL:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.INVITE_FRIENDS:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.CHAT_THEMES:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.ATTACHMENTS:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+                case ToolTipMode.FAVOURITES:
+                    conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                    conversationPageToolTip.TipHeadText = TipManager.ConversationPageTip.HeadText;
+                    conversationPageToolTip.TipText = TipManager.ConversationPageTip.BodyText;
+                    conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                    conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                    conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    break;
+
             }
 
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
@@ -3521,6 +3618,43 @@ namespace windows_client.View
                         }
                     }
 
+                    break;
+                case ToolTipMode.PROFILE:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.STICKERS:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.STATUS_UPDATE:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.INFORMATIONAL:
+                    break;
+                case ToolTipMode.INVITE_FRIENDS:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.CHAT_THEMES:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.ATTACHMENTS:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
+                case ToolTipMode.FAVOURITES:
+                    HideServerTips();
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    launchPagePivot.SelectedIndex = 1;
                     break;
             }
         }
@@ -3591,9 +3725,55 @@ namespace windows_client.View
                     }
 
                     break;
+                case ToolTipMode.PROFILE:
+                    HideServerTips();
+                    break;
+                case ToolTipMode.STICKERS:
+                    break;
+                case ToolTipMode.STATUS_UPDATE:
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    HideServerTips();
+                    break;
+                case ToolTipMode.INFORMATIONAL:
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    HideServerTips();
+                    break;
+                case ToolTipMode.INVITE_FRIENDS:
+                    HideServerTips();
+                    break;
+                case ToolTipMode.CHAT_THEMES:
+                    break;
+                case ToolTipMode.ATTACHMENTS:
+                    break;
+                case ToolTipMode.FAVOURITES:
+                    TipManager.Instance.RemoveCurrentTip(TipManager.ConversationPageTip.TipId);
+                    HideServerTips();
+                    break;
             }
         }
 
+        void conversationPageToolTip_LeftIconClicked(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.PROFILE:
+                    break;
+                case ToolTipMode.STICKERS:
+                    break;
+                case ToolTipMode.STATUS_UPDATE:
+                    break;
+                case ToolTipMode.INFORMATIONAL:
+                    break;
+                case ToolTipMode.INVITE_FRIENDS:
+                    break;
+                case ToolTipMode.CHAT_THEMES:
+                    break;
+                case ToolTipMode.ATTACHMENTS:
+                    break;
+                case ToolTipMode.FAVOURITES:
+                    break;
+            }
+        }
         /// <summary>
         /// Reset hidden mode, remove saved pasword, reset tooltip and delete chats.
         /// </summary>
@@ -3678,6 +3858,36 @@ namespace windows_client.View
         }
 
         #endregion
+
+        #region SERVER TIPS
+
+        void ShowServerTips()
+        {
+
+            if (_tipMode != ToolTipMode.HIDDEN_MODE_GETSTARTED && _tipMode != ToolTipMode.HIDDEN_MODE_STEP2 && _tipMode != ToolTipMode.HIDDEN_MODE_COMPLETE
+                && _tipMode != ToolTipMode.RESET_HIDDEN_MODE && _tipMode != ToolTipMode.RESET_HIDDEN_MODE_COMPLETED && TipManager.ConversationPageTip != null)
+            {
+                _tipMode = TipManager.ConversationPageTip.TipType;
+                UpdateToolTip(true);
+                conversationPageToolTip.IsShow = true;
+            }
+
+        }
+
+        void HideServerTips()
+        {
+
+            if (TipManager.ConversationPageTip != null && _tipMode == TipManager.ConversationPageTip.TipType)
+            {
+                conversationPageToolTip.IsShow = false;
+                _tipMode = ToolTipMode.DEFAULT;
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

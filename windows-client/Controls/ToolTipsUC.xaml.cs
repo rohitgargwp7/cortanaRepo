@@ -13,6 +13,7 @@ namespace windows_client.Controls
 {
     public partial class ToolTipsUC : UserControl
     {
+
         public ToolTipsUC()
         {
             InitializeComponent();
@@ -78,7 +79,7 @@ namespace windows_client.Controls
 
             var margin = tempToolTip.tipTextbox.Margin;
             margin.Left = tempSource == null ? 24 : 0;
-            tempToolTip.tipTextbox.Margin = margin;
+            tempToolTip.TextGrid.Margin = margin;
         }
 
         public ImageSource LeftIconSource
@@ -105,7 +106,7 @@ namespace windows_client.Controls
 
             var margin = tempToolTip.tipTextbox.Margin;
             margin.Right = tempSource == null ? 24 : 0;
-            tempToolTip.tipTextbox.Margin = margin;
+            tempToolTip.TextGrid.Margin = margin;
         }
 
         public ImageSource RightIconSource
@@ -139,6 +140,29 @@ namespace windows_client.Controls
             set
             {
                 SetValue(TipTextProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TipHeadTextProperty =
+    DependencyProperty.Register("TipHeadText", typeof(String), typeof(ToolTipsUC), new PropertyMetadata(OnTipHeadTextChanged));
+
+        public static void OnTipHeadTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            ToolTipsUC tempToolTip = obj as ToolTipsUC;
+            String tempText = (String)e.NewValue;
+            tempToolTip.tipHeadText.Text = tempText;
+            tempToolTip.tipHeadText.Visibility = String.IsNullOrEmpty(tempText) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public String TipHeadText
+        {
+            get
+            {
+                return (String)GetValue(TipHeadTextProperty);
+            }
+            set
+            {
+                SetValue(TipHeadTextProperty, value);
             }
         }
 

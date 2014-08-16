@@ -394,20 +394,6 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
-        //For server tips
-        public static readonly string CHAT_SCREEN_TIP = "cht_scr_tip";
-        public static readonly string MAIN_PAGE_TIP = "mn_pg_tip";
-        public static readonly string NEXT_CHAT_SCREEN_TIP = "nx_cht_scr_tip";
-        public static readonly string NEXT_MAIN_PAGE_TIP = "nx_mn_pg_tip";
-        public static const string STICKER_TIPS = "stk";
-        public static const string PROFILE_TIPS = "pp";
-        public static const string ATTACHMENT_TIPS = "ft";
-        public static const string INFORMATIONAL_TIPS = "info";
-        public static const string FAVOURITE_TIPS = "fav";
-        public static const string THEME_TIPS = "theme";
-        public static const string INVITATION_TIPS = "inv";
-        public static const string STATUS_UPDATE_TIPS = "stts";
-
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
 
@@ -556,5 +542,22 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
+
+        #region SERVER TIPS
+        public static class ServerTips
+        {
+            public static readonly string CHAT_SCREEN_TIP = "cht_scr_tip";
+            public static readonly string CONV_PAGE_TIP = "cn_pg_tip";
+            public static readonly string CHAT_TOOL_TIP_STATUS = "chat_tool_tip_st";
+            public const string STICKER_TIPS = "stk";
+            public const string PROFILE_TIPS = "pp";
+            public const string ATTACHMENT_TIPS = "ft";
+            public const string INFORMATIONAL_TIPS = "info";
+            public const string FAVOURITE_TIPS = "fav";
+            public const string THEME_TIPS = "theme";
+            public const string INVITATION_TIPS = "inv";
+            public const string STATUS_UPDATE_TIPS = "stts";
+        }
+        #endregion
     }
 }

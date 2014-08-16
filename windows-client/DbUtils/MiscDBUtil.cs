@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
-using windows_client.ServerTips;
+using windows_client.utils.ServerTips;
 
 namespace windows_client.DbUtils
 {
@@ -155,7 +155,7 @@ namespace windows_client.DbUtils
             ChatBackgroundHelper.Instance.Clear();
             #endregion
             #region DELETE TIPS
-            TipManager1.Instance.ClearTips();
+            TipManager.Instance.ClearTips();
             #endregion
         }
 

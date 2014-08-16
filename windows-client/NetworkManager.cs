@@ -14,7 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
-using windows_client.ServerTips;
+using windows_client.utils.ServerTips;
 
 namespace windows_client
 {
@@ -2010,7 +2010,8 @@ namespace windows_client
                 {
                     JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
-                    TipManager1.Instance.AddTip((string)subtype, (string)data[TIPHEADER], (string)data[TIPBODY], (string)data[TIPID]);
+                    TipManager.Instance.AddTip((string)subtype, (string)data[TIPHEADER], (string)data[TIPBODY], (string)data[TIPID]);
+
                 }
                 catch (Exception e)
                 {

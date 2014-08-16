@@ -161,6 +161,9 @@
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PasswordPopUpUC.xaml.cs">
+      <DependentUpon>PasswordPopUpUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
@@ -219,6 +222,7 @@
     <Compile Include="Model\StatusUpdates\BaseStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\Sticker\StickerObj.cs" />
+    <Compile Include="Model\ToolTipMode.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -227,12 +231,8 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
-    <Compile Include="ServerTips\TipInfo.cs" />
-    <Compile Include="ServerTips\TipManager1.cs" />
-    <Compile Include="ServerTips\TipState.cs" />
-    <Compile Include="ServerTips\TipInfoBase.cs" />
-    <Compile Include="ServerTips\TipManager.cs" />
-    <Compile Include="ServerTips\TipTypes.cs" />
+    <Compile Include="utils\ServerTips\TipInfo.cs" />
+    <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
     <Compile Include="TemplateSelectors\ChatThreadTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\StatusTemplateSelector.cs" />
@@ -375,6 +375,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Overlay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PasswordPopUpUC.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
@@ -626,20 +629,26 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
+    <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
-    <Content Include="View\images\ConversationPage\groupIndicatorBlack.png" />
     <Content Include="View\images\ConversationPage\H2OCard.jpg" />
+    <Content Include="View\images\ConversationPage\hiddenModeSheild.png" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
     <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
+    <Content Include="View\images\ConversationPage\mute_icon_blue.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_gray.png" />
+    <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\ConversationPage\profileCard.jpg" />
     <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
     <Content Include="View\images\ConversationPage\timeline.jpg" />
     <Content Include="View\images\ConversationPage\timelineQuote.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Arrow.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
@@ -669,7 +678,6 @@
     <Content Include="View\images\ConversationPage\friend_Notselected.png" />
     <Content Include="View\images\ConversationPage\friend_selected.png" />
     <Content Include="View\images\ConversationPage\hike_header.png" />
-    <Content Include="View\images\ConversationPage\mute_icon_main_b.png" />
     <Content Include="View\images\ConversationPage\refresh_bar_arrow.png" />
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
@@ -919,7 +927,6 @@
     <Content Include="View\images\ConversationPage\tutorial_arrow.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
-    <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\video_default.png" />

@@ -1,0 +1,165 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using windows_client.Controls;
+using System.Windows;
+using System.ComponentModel;
+using System.Windows.Media;
+using windows_client.utils;
+using System.Windows.Navigation;
+using Microsoft.Phone.Controls;
+using windows_client.Model;
+using System.IO;
+using windows_client.Misc;
+
+namespace windows_client.utils.ServerTips
+{
+    class TipInfo
+    {
+
+        public string HeadText { get; set; }
+        public string BodyText { get; set; }
+        public string TipId { get; set; }
+        public ToolTipMode TipType;
+
+        public TipInfo()
+        {
+            TipType = ToolTipMode.DEFAULT;
+            HeadText = null;
+            BodyText = null;
+            TipId = null;
+        }
+
+        public TipInfo(string type, string header, string body, string id)
+        {
+            HeadText = header;
+            BodyText = body;
+            TipId = id;
+            switch (type)
+            {
+
+                case HikeConstants.ServerTips.STICKER_TIPS:
+                    {
+                        TipType = ToolTipMode.STICKERS;
+                        break;
+                    }
+                case HikeConstants.ServerTips.PROFILE_TIPS:
+                    {
+                        TipType = ToolTipMode.PROFILE;
+                        break;
+                    }
+                case HikeConstants.ServerTips.ATTACHMENT_TIPS:
+                    {
+                        TipType = ToolTipMode.ATTACHMENTS;
+                        break;
+                    }
+                case HikeConstants.ServerTips.INFORMATIONAL_TIPS:
+                    {
+                        TipType = ToolTipMode.INFORMATIONAL;
+                        break;
+                    }
+                case HikeConstants.ServerTips.FAVOURITE_TIPS:
+                    {
+                        TipType = ToolTipMode.FAVOURITES;
+                        break;
+                    }
+                case HikeConstants.ServerTips.THEME_TIPS:
+                    {
+                        TipType = ToolTipMode.CHAT_THEMES;
+                        break;
+                    }
+                case HikeConstants.ServerTips.INVITATION_TIPS:
+                    {
+                        TipType = ToolTipMode.INVITE_FRIENDS;
+                        break;
+                    }
+                case HikeConstants.ServerTips.STATUS_UPDATE_TIPS:
+                    {
+                        TipType = ToolTipMode.STATUS_UPDATE;
+                        break;
+                    }
+                default:
+                    {
+                        TipType = ToolTipMode.DEFAULT;
+                        break;
+                    }
+            };
+
+        }
+
+        public string GetLocation()
+        {
+            if (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS)
+                return HikeConstants.ServerTips.CHAT_SCREEN_TIP;
+            else
+                return HikeConstants.ServerTips.CONV_PAGE_TIP;
+        }
+
+
+        #region FILE READ WRITE
+        public void Read(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                TipId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                count = reader.ReadInt32();
+                HeadText = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                if (HeadText == "*@N@*")
+                    HeadText = null;
+
+                count = reader.ReadInt32();
+                BodyText = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                if (BodyText == "*@N@*")
+                    BodyText = null;
+
+                count = reader.ReadInt32();
+                string type = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (type == "*@N@*")
+                    TipType = ToolTipMode.DEFAULT;
+                else
+                {
+                    if (!Enum.TryParse<ToolTipMode>(type, out TipType))
+                        TipType = ToolTipMode.DEFAULT;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ProTip :: Read : Read, Exception : " + ex.StackTrace);
+            }
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            try
+            {
+                writer.WriteStringBytes(TipId);
+
+                if (HeadText == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(HeadText);
+
+                if (BodyText == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(BodyText);
+
+                if (TipType == ToolTipMode.DEFAULT)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(TipType.ToString());
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("TipInfoBase :: Write: Write Tip To File, Exception : " + ex.StackTrace);
+            }
+        }
+        #endregion
+    }
+}

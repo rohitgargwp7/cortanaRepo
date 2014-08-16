@@ -16,26 +16,38 @@ namespace windows_client.Model
         /// <summary>
         /// Resetting chat in {0}. All hidden chats will be deleted.
         /// </summary>
-        RESET_HIDDEN_MODE, 
+        RESET_HIDDEN_MODE,
 
         /// <summary>
         /// Are you sure you want to reset hidden mode? All hidden chats will be deleted.
         /// </summary>
-        RESET_HIDDEN_MODE_COMPLETED, 
+        RESET_HIDDEN_MODE_COMPLETED,
 
         /// <summary>
         /// hide your chats with a password. tap on logo to get started.
         /// </summary>
-        HIDDEN_MODE_GETSTARTED, 
+        HIDDEN_MODE_GETSTARTED,
 
         /// <summary>
         /// tap and hold a chat to mark it as ‘hidden’.
         /// </summary>
-        HIDDEN_MODE_STEP2, 
+        HIDDEN_MODE_STEP2,
 
         /// <summary>
         /// to complete setup, tap on the shield to hide your chats.
         /// </summary>
-        HIDDEN_MODE_COMPLETE
+        HIDDEN_MODE_COMPLETE,
+
+        //Server Tips
+
+        STICKERS,
+        PROFILE,
+        ATTACHMENTS,
+        INFORMATIONAL,
+        FAVOURITES,
+        INVITE_FRIENDS,
+        CHAT_THEMES,
+        STATUS_UPDATE
+
     }
 }
