@@ -1021,7 +1021,7 @@ Download it like asap from http://hike.in!</value>
     <value>system health</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Contact Info</value>
+    <value>Share Contact</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Send Audio</value>
@@ -1239,7 +1239,7 @@ Download it like asap from http://hike.in!</value>
     <value>add contact</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>turn on/off jingle, vibrate and more</value>
+    <value>turn on/off jingle, message preview and more</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>manage your hike account</value>
@@ -1294,7 +1294,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Show last seen</value>
+    <value>Show last seen to</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>last seen {0}</value>
@@ -2002,8 +2002,15 @@ Download it like asap from http://hike.in!</value>
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>hike up your life</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Message preview</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Only favorites can see your last seen and status updates. Choose them wisely!</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Show profile picture to</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>add favorites</value>
@@ -2101,5 +2108,115 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>hide chat</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>unhide chat</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>Confirm your password</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>Enter password</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>play</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>view</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>open</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>OOPS! Something went wrong</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>Turning message preview OFF</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>Turning message preview ON</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>save contact</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>change your hidden mode password</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>change password</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>forgot your password? reset hidden mode. All hidden chats will be deleted.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>reset hidden mode</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>All hidden chats will be deleted after {0} minutes.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Tap here to reset Hidden Mode now!</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>Tap on 'hi' to get in and out of 'Hidden' mode</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>Hide your chats with a password. Tap on 'hi' to get started.</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>Tap and hold chats to mark them 'hidden'</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>Create new password to hide your chats</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>All your hidden chats will be deleted. Are you sure?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>Confirm Reset?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>Cancel Reset?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>This will stop hidden mode reset. Are you sure?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Start a chat and tap on 'hi'</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Hide your chats with a password.</value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>Enter current password</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Auto save photo</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Saved successfully</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Everyone</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Favorites</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Nobody</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>Passwords don’t match.</value>
   </data>
 </root>

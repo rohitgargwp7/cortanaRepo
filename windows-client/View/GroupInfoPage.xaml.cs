@@ -834,7 +834,8 @@ namespace windows_client.View
         {
             GroupParticipant gp = (sender as Grid).DataContext as GroupParticipant;
 
-            if (gp == null)
+            if (gp == null || (!App.ViewModel.IsHiddenModeActive 
+                && App.ViewModel.ConvMap.ContainsKey(gp.Msisdn) && App.ViewModel.ConvMap[gp.Msisdn].IsHidden))
                 return;
 
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;

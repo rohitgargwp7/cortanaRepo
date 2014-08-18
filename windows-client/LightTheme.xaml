@@ -21,7 +21,6 @@ private copy.
     <system:String x:Key="ChatsTabImageNotSelected">/View/images/ConversationPage/chat_NotSelected.png</system:String>
     <system:String x:Key="FriendsTabImageNotSelected">/View/images/ConversationPage/friend_NotSelected.png</system:String>
     <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelected.png</system:String>
-    <system:String x:Key="GroupIndicator">/View/images/ConversationPage/groupIndicator.png</system:String>
 
     <Color x:Key="PhoneSubtleColor">#66000000</Color>
     
@@ -53,6 +52,7 @@ private copy.
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
 
+    <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
     <SolidColorBrush x:Key="HikeWhite" Color="{StaticResource HikeWhiteColor}"/>
     <SolidColorBrush x:Key="HikeBlue" Color="{StaticResource HikeBlueColor}"/>
     <SolidColorBrush x:Key="HikeGrey" Color="{StaticResource HikeGreyColor}"/>
@@ -1574,16 +1574,7 @@ private copy.
     <!-- Item templates-->
     <DataTemplate x:Key="chatThemeBackgroundItemTemplate93x93">
         <Grid Margin="0" Width="93" Height="93">
-            <Border Background="{Binding BackgroundColor}" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Canvas.ZIndex="-2" Visibility="{Binding BackgroundVisibility}"/>
             <Image Source="{Binding ThumbnailPattern}" Stretch="Uniform" Height="83" Width="83" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Grid Canvas.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DefaultImageVisibility}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Border Height="23" Background="#0f8fe1" Width="83" Grid.Row="0"/>
-                <Border Height="60" Background="#dbdbdb" Width="83" Grid.Row="1"/>
-            </Grid>
             <Border Background="Transparent" Width="83" Height="83" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding BorderColor}" BorderThickness="5" Canvas.ZIndex="2"/>
         </Grid>
     </DataTemplate>

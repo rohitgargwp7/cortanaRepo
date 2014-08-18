@@ -778,19 +778,26 @@ namespace windows_client.View
             }
 
             if (gridDownloadStickers.Visibility == Visibility.Visible)
+            {
                 ShowDownloadOverlay(false);
+                e.Cancel = true;
+                return;                 // So that Sticker and emoji's panel doesn't collapse
+            }
+
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
             }
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
                 CancelBackgroundChange();
                 e.Cancel = true;
                 return;
             }
+
             if (attachmentMenu.Visibility == Visibility.Visible)
             {
                 attachmentMenu.Visibility = Visibility.Collapsed;
@@ -1787,7 +1794,7 @@ namespace windows_client.View
                 if (isAddUser)
                 {
                     addUserMenuItem = new ApplicationBarMenuItem();
-                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Text = AppResources.Save_Contact_Txt;
                     addUserMenuItem.Click += new EventHandler(addUser_Click);
                     appBar.MenuItems.Add(addUserMenuItem);
                 }
@@ -1913,13 +1920,14 @@ namespace windows_client.View
             /*
             * 1. Delete from DB (pubsub)
             * 2. Remove from ConvList page
-            * 3. GoBack
+            * 3. Remove from stealth list 
+            * 4. GoBack
             */
             JObject jObj = new JObject();
             jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
             jObj[HikeConstants.TO] = mContactNumber;
-
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
 
             App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
@@ -1928,6 +1936,10 @@ namespace windows_client.View
             Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:user left group,msisdn:{0}, name:{1}", cObj.Msisdn, cObj.ContactName));
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
+
+            if (cObj.IsHidden)
+                App.ViewModel.SendRemoveStealthPacket(cObj);
+
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
             else // case when this page is opened through push notification or share picker
@@ -2939,7 +2951,6 @@ namespace windows_client.View
             }
 
             ConvMessage msg = (sender as Grid).DataContext as ConvMessage;
-
             ChatMessageSelected(msg);
         }
 
@@ -3018,6 +3029,9 @@ namespace windows_client.View
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             var msisdn = convMessage.GroupParticipant;
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                return;
 
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
 
@@ -3298,6 +3312,22 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.H2HOfline_0SMS_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OK);
         }
 
+        private void MenuItem_Click_View(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
+
+            if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+            {
+                PauseBackgroundAudio();
+                string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
+                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
+                Utils.PlayFileInMediaPlayer(fileLocation);
+            }
+            else
+                displayAttachment(msg);
+
+        }
+
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -3311,6 +3341,9 @@ namespace windows_client.View
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
+
+            if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                ScrollToBottom(); // So that most recent chat is shown when pressing stickers or emojis
 
             if (appButton != null)
             {
@@ -4042,8 +4075,14 @@ namespace windows_client.View
                     {
                         ToastPrompt toast = new ToastPrompt();
                         toast.Tag = cObj.Msisdn;
-                        toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-                        toast.Message = cObj.ToastText;//cannot use convMesssage.Message because for gc it does not have group member name 
+
+                        if (cObj.IsHidden)
+                            toast.Title = String.Empty;
+                        else
+                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
+
+                        // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
+                        toast.Message = cObj.ToastText;
                         toast.Foreground = UI_Utils.Instance.White;
                         toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
                         toast.ImageSource = UI_Utils.Instance.HikeToastImage;
@@ -5094,21 +5133,9 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+                PauseBackgroundAudio();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
-                mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
-                mediaPlayerLauncher.Location = MediaLocationType.Data;
-                mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
-                mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
-                try
-                {
-                    PauseBackgroundAudio();
-                    mediaPlayerLauncher.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
-                }
+                Utils.PlayFileInMediaPlayer(fileLocation);
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
@@ -5808,7 +5835,7 @@ namespace windows_client.View
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
                 chatPaint.Opacity = 0.5;
 
-            if (App.ViewModel.SelectedBackground.IsDefault)
+            if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
             {
                 progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
@@ -6964,14 +6991,14 @@ namespace windows_client.View
             // Start recording
             _microphone.Start();
             timeBar.Opacity = 1;
-            maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
+            maxPlayingTime.Text = " / " + Utils.GetFormattedTimeFromSeconds(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
             sendIconButton.IsEnabled = false;
             _recorderState = RecorderState.RECORDING;
         }
 
         void showWalkieTalkieProgress(object sender, EventArgs e)
         {
-            runningTime.Text = formatTime(_runningSeconds + 1);
+            runningTime.Text = Utils.GetFormattedTimeFromSeconds(_runningSeconds + 1);
 
             if (_runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
             {
@@ -7017,7 +7044,7 @@ namespace windows_client.View
             if (_recorderState == RecorderState.RECORDING)
             {
                 _recordedDuration = _runningSeconds;
-                runningTime.Text = formatTime(0);
+                runningTime.Text = Utils.GetFormattedTimeFromSeconds(0);
             }
 
             _runningSeconds = 0;
@@ -7097,13 +7124,6 @@ namespace windows_client.View
             stream.Write(BitConverter.GetBytes((int)stream.Length - 44), 0, 4);
 
             stream.Seek(oldPos, SeekOrigin.Begin);
-        }
-
-        private string formatTime(int seconds)
-        {
-            int minute = seconds / 60;
-            int secs = seconds % 60;
-            return minute.ToString("00") + ":" + secs.ToString("00");
         }
 
         private readonly SolidColorBrush gridBackgroundBeforeRecording = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xf2, 0x43, 0x4b, 0x5c));

@@ -73,11 +73,13 @@ namespace windows_client.Model
                 if (_lastMessage != value)
                 {
                     _lastMessage = value;
+                    _toastText = value;
                     NotifyPropertyChanged("LastMessage");
                 }
             }
         }
 
+        string _toastText;
         /// <summary>
         /// use where we dont need to show typing notification
         /// </summary>
@@ -85,7 +87,12 @@ namespace windows_client.Model
         {
             get
             {
-                return _lastMessage;
+                return _toastText;
+            }
+            set
+            {
+                if (value != _toastText)
+                    _toastText = value;
             }
         }
 
@@ -210,18 +217,15 @@ namespace windows_client.Model
 
                 NotifyPropertyChanged("MuteIconVisibility");
                 NotifyPropertyChanged("UnreadCircleVisibility");
+                NotifyPropertyChanged("MuteIconImage");
             }
         }
 
-        public Visibility GroupIconVisibility
+        
+
+        public BitmapImage MuteIconImage
         {
-            get
-            {
-                if (IsGroupChat)
-                    return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
-            }
+            get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
 
@@ -311,7 +315,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText) && !IsLastMsgStatusUpdate)
+                if (MuteIconVisibility == Visibility.Collapsed && _messageStatus == ConvMessage.State.RECEIVED_UNREAD && string.IsNullOrEmpty(_typingNotificationText))
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -433,6 +437,59 @@ namespace windows_client.Model
             }
         }
 
+        bool _isHidden = false;
+        [DataMember]
+        public bool IsHidden
+        {
+            get
+            {
+                return _isHidden;
+            }
+            set
+            {
+                if (_isHidden != value)
+                {
+                    _isHidden = value;
+                    NotifyPropertyChanged("ChatVisibility");
+                    NotifyPropertyChanged("HideUnhideChatText");
+                    NotifyPropertyChanged("ChatHeaderForegroundColor");
+                }
+            }
+        }
+
+        public string HideUnhideChatText
+        {
+            get
+            {
+                if (IsHidden)
+                    return AppResources.Unhide_Txt;
+                else
+                    return AppResources.Hide_Txt;
+            }
+        }
+
+        public Visibility HideUnhideChatVisibility
+        {
+            get
+            {
+                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ChatVisibility
+        {
+            get
+            {
+                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : IsHidden ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public void HiddenModeToggled()
+        {
+            NotifyPropertyChanged("ChatVisibility");
+            NotifyPropertyChanged("HideUnhideChatVisibility");
+        }
+
         public BitmapImage ConvImage
         {
             get
@@ -477,10 +534,21 @@ namespace windows_client.Model
         {
             get
             {
-                if (!string.IsNullOrEmpty(_typingNotificationText) || _messageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                if (!string.IsNullOrEmpty(_typingNotificationText))
                     return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
                 else
                     return (SolidColorBrush)Application.Current.Resources["HikeSubTextForegroundBrush"];
+            }
+        }
+
+        public SolidColorBrush ChatHeaderForegroundColor
+        {
+            get
+            {
+                if (IsHidden)
+                    return (SolidColorBrush)Application.Current.Resources["StealthRed"];
+                else
+                    return (SolidColorBrush)Application.Current.Resources["HikeFGBrush"];
             }
         }
 
@@ -709,6 +777,8 @@ namespace windows_client.Model
                     writer.WriteStringBytes("*@N@*");
                 else
                     writer.WriteStringBytes(_draftMessage);
+
+                writer.Write(_isHidden);
             }
             catch (Exception ex)
             {
@@ -806,6 +876,15 @@ namespace windows_client.Model
                 catch
                 {
                     _draftMessage = string.Empty;
+                }
+
+                try
+                {
+                    _isHidden = reader.ReadBoolean();
+                }
+                catch
+                {
+                    _isHidden = false;
                 }
             }
             catch (Exception ex)

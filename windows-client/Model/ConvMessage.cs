@@ -263,6 +263,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SdrImage");
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("SendAsSMSVisibility");
+                    NotifyPropertyChanged("MediaActionVisibility");
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
                     NotifyPropertyChanged("FileFailedImageVisibility");
@@ -646,14 +647,14 @@ namespace windows_client.Model
             {
                 if (FileAttachment.FileState == Attachment.AttachmentState.PAUSED || FileAttachment.FileState == Attachment.AttachmentState.MANUAL_PAUSED)
                 {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.ResumeFTRBlack;
                     else
                         return UI_Utils.Instance.ResumeFTRWhite;
                 }
                 else
                 {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.PausedFTRBlack;
                     else
                         return UI_Utils.Instance.PausedFTRWhite;
@@ -678,14 +679,14 @@ namespace windows_client.Model
             {
                 if (IsSent)
                 {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.BlueSentNudgeImage;
                     else
                         return UI_Utils.Instance.WhiteSentNudgeImage;
                 }
                 else
                 {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.BlueReceivedNudgeImage;
                     else
                         return UI_Utils.Instance.WhiteReceivedNudgeImage;
@@ -701,7 +702,7 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Sent_ChatTheme;
                         else
                         {
@@ -712,7 +713,7 @@ namespace windows_client.Model
                         }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Delivered_ChatTheme;
                         else
                         {
@@ -723,7 +724,7 @@ namespace windows_client.Model
                         }
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                     case ConvMessage.State.SENT_DELIVERED_READ:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Read_ChatTheme;
                         else
                         {
@@ -733,7 +734,7 @@ namespace windows_client.Model
                                 return UI_Utils.Instance.Read_ChatTheme;
                         }
                     case ConvMessage.State.SENT_UNCONFIRMED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Trying_ChatTheme;
                         else
                         {
@@ -743,7 +744,7 @@ namespace windows_client.Model
                                 return UI_Utils.Instance.Trying_ChatTheme;
                         }
                     default:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Trying_ChatTheme;
                         else
                         {
@@ -777,7 +778,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                     return UI_Utils.Instance.HttpFailed;
                 else
                     return UI_Utils.Instance.HttpFailed_ChatTheme;
@@ -1117,86 +1118,86 @@ namespace windows_client.Model
                 switch (_notificationType)
                 {
                     case MessageType.HIKE_PARTICIPANT_JOINED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.OnHikeImage;
                         else
                             return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_INVITED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.NotOnHikeImage;
                         else
                             return UI_Utils.Instance.NotOnHikeImage_ChatTheme;
 
                     case MessageType.SMS_PARTICIPANT_OPTED_IN:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.ChatAcceptedImage;
                         else
                             return UI_Utils.Instance.ChatAcceptedImage_ChatTheme;
 
                     case MessageType.USER_JOINED_HIKE:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.OnHikeImage;
                         else
                             return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.PARTICIPANT_LEFT:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.ParticipantLeft;
                         else
                             return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.GROUP_END:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.ParticipantLeft;
                         else
                             return UI_Utils.Instance.ParticipantLeft_ChatTheme;
 
                     case MessageType.WAITING:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Waiting;
                         else
                             return UI_Utils.Instance.Waiting_ChatTheme;
 
                     case MessageType.REWARD:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Reward;
                         else
                             return UI_Utils.Instance.Reward_ChatTheme;
 
                     case MessageType.INTERNATIONAL_USER_BLOCKED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.IntUserBlocked;
                         else
                             return UI_Utils.Instance.IntUserBlocked_ChatTheme;
 
                     case MessageType.PIC_UPDATE:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.OnHikeImage;
                         else
                             return UI_Utils.Instance.OnHikeImage_ChatTheme;
 
                     case MessageType.GROUP_NAME_CHANGED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.GrpNameChanged;
                         else
                             return UI_Utils.Instance.GrpNameChanged_ChatTheme;
 
                     case MessageType.GROUP_PIC_CHANGED:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.GrpPicChanged;
                         else
                             return UI_Utils.Instance.GrpPicChanged_ChatTheme;
 
                     case MessageType.CHAT_BACKGROUND:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.ChatBackgroundChanged;
                         else
                             return UI_Utils.Instance.ChatBackgroundChanged_ChatTheme;
 
                     case MessageType.TEXT_UPDATE:
                     default:
-                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                        if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.OnHikeImage;
                         else
                             return UI_Utils.Instance.OnHikeImage_ChatTheme;
@@ -1463,7 +1464,7 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null)
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.Transparent;
                     else
                         return App.ViewModel.SelectedBackground.HeaderBackground;
@@ -1479,7 +1480,7 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null)
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                         return UI_Utils.Instance.Black;
                     else
                         return UI_Utils.Instance.White;
@@ -1495,7 +1496,7 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null)
                 {
-                    if (App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                     {
                         if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE) || StickerObj != null)
                             return UI_Utils.Instance.LightGray;
@@ -1550,7 +1551,7 @@ namespace windows_client.Model
                     return ChatForegroundColor;
                 else
                 {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault)
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                     {
                         if (StickerObj != null || (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.POKE)))
                             return UI_Utils.Instance.Black;
@@ -1590,6 +1591,17 @@ namespace windows_client.Model
             get
             {
                 if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility MediaActionVisibility
+        {
+            get
+            {
+                if (MessageStatus <= State.SENT_CONFIRMED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1663,12 +1675,14 @@ namespace windows_client.Model
             JObject metadata;
             JArray filesData;
             JObject singleFileInfo;
-            if (isHikeMsg)
-                data[HikeConstants.HIKE_MESSAGE] = _message;
-            else
-                data[HikeConstants.SMS_MESSAGE] = _message;
+
+            data[isHikeMsg ? HikeConstants.HIKE_MESSAGE : HikeConstants.SMS_MESSAGE] = _message;
             data[HikeConstants.TIMESTAMP] = _timestamp;
             data[HikeConstants.MESSAGE_ID] = _messageId;
+
+            // Added stealth = true at data layer for convmessage for stealth chat
+            if (App.ViewModel != null && App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(Msisdn) && App.ViewModel.ConvMap[Msisdn].IsHidden)
+                data[HikeConstants.STEALTH] = true;
 
             if (HasAttachment)
             {
@@ -1676,12 +1690,14 @@ namespace windows_client.Model
                 {
                     metadata = new JObject();
                     filesData = new JArray();
+
                     if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                     {
                         if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
                             singleFileInfo = JObject.Parse(this.MetaDataString);
                         else
                             singleFileInfo = new JObject();
+
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
@@ -1701,6 +1717,7 @@ namespace windows_client.Model
                         //add thumbnail here
                         JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
                         JToken tempFileArrayToken;
+                        
                         //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
                         //Make it same for type of messages
                         if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
@@ -1712,13 +1729,16 @@ namespace windows_client.Model
                         {
                             singleFileInfo = JObject.Parse(this.MetaDataString);
                         }
+
                         singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+
                         if (FileAttachment.Thumbnail != null)
                             singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                     }
+
                     filesData.Add(singleFileInfo.ToObject<JToken>());
                     metadata[HikeConstants.FILES_DATA] = filesData;
                     data[HikeConstants.METADATA] = metadata;
@@ -1954,6 +1974,25 @@ namespace windows_client.Model
 
                         fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+
+                        // These two conditions check for empty filename received on json packet. This bug was mainly occured on packets received from Android devices
+                        if (contentType.ToString().Contains(HikeConstants.LOCATION))
+                        {
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                                fileName = AppResources.Location_Txt;
+                        }
+                        else if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        {
+                            if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                            {
+                                fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
+                                
+                                if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
+                                    fileName = AppResources.ContactTransfer_Text;
+                            
+                            }
+                        }
+
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
 
@@ -1968,7 +2007,7 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? AppResources.Location_Txt : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                         contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
@@ -1982,7 +2021,7 @@ namespace windows_client.Model
                         }
                         else
                         {
-                            this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 

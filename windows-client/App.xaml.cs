@@ -48,8 +48,12 @@ namespace windows_client
         public static readonly string USE_LOCATION_SETTING = "locationSet";
         public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
+
+        public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
+
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
+        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -61,6 +65,7 @@ namespace windows_client
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
         public static readonly string MQTT_DMQTT_SETTING = "mqttDmqtt";
         public static readonly string DNS_NODNS_SETTING = "dnsNoDns";
+        public static readonly string AUTO_SAVE_PHOTO = "autoSavePhoto";
 
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
@@ -554,7 +559,10 @@ namespace windows_client
                     }
 
                     string msisdn = Utils.GetParamFromUri(targetPage);
-                    if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                    bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                    if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                        && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -621,7 +629,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.2.1", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.2.3", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -638,9 +646,13 @@ namespace windows_client
                     return;
                 }
 
+                // Extract msisdn from server url
                 string msisdn = Utils.GetParamFromUri(targetPage);
-                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                bool IsStealth = Utils.IsUriStealth(targetPage);
+
+                if ((!IsStealth || (IsStealth && App.ViewModel.IsHiddenModeActive))
+                    && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                    && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -790,6 +802,10 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Hidden Mode
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.3") < 0)
+                WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            #endregion
             #region Upgrade Pref Contacts Fix
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);

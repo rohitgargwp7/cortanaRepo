@@ -93,7 +93,7 @@ namespace windows_client.Model
             get
             {
                 if (_headerBackground == null)
-                    _headerBackground = UI_Utils.Instance.ConvertStringToColor(HeaderColor);
+                    _headerBackground = UI_Utils.Instance.ConvertStringToColor(HeaderAndNotificationColor);
 
                 return _headerBackground;
             }
@@ -116,14 +116,6 @@ namespace windows_client.Model
             get
             {
                 return IsDefault ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        public Visibility DefaultImageVisibility
-        {
-            get
-            {
-                return IsDefault ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -171,7 +163,7 @@ namespace windows_client.Model
         public string SentBubbleBackground;
         public string ReceivedBubbleBackground;
         public string BubbleForeground;
-        public string HeaderColor;
+        public string HeaderAndNotificationColor;
         public string Foreground;
         public Int32 Position;
         public string ThumbnailPath;

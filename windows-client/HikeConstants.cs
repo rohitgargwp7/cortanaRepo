@@ -181,6 +181,11 @@ namespace windows_client
         public static readonly string VERSION = "version";
         public static readonly string BLACK_THEME = "black_theme";
 
+        public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
+        public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
+        public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
+        public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
+
         public static string FAQS_LINK
         {
             get
@@ -256,6 +261,15 @@ namespace windows_client
         public static readonly string BACKGROUND_ID = "bg_id";
         public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
 
+        public static readonly string STEALTH = "stlth";
+        public static readonly string RESET = "reset";
+        public static readonly string CHAT_ENABLED = "en";
+        public static readonly string CHAT_DISABLED = "di";
+        public static readonly string HIDDEN_MODE_ENABLED = "enabled";
+        public static readonly string HIDDEN_MODE_TYPE = "ts";
+       
+        public static readonly string PREVIEW = "preview";
+
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string REQUEST_DISPLAY_PIC = "rdp";
@@ -320,6 +334,7 @@ namespace windows_client
         public static string CHAT_BACKGROUND_ARRAY = "cbgs";
         public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
+        public static string HIDDEN_TOOLTIP_STATUS = "hiddenToolTipStatus";
         public static string GO_TO_CONV_VIEW = "goToConvView";
 
         public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
@@ -352,6 +367,7 @@ namespace windows_client
 
         public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
         public static readonly string PUSH_SU = "pushsu";
+        public static readonly string AVATAR = "avatar";
         public static readonly string PUSH_CBG = "pushcbg";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
@@ -377,6 +393,19 @@ namespace windows_client
         public static readonly string SHOW_FREE_INVITES = "show_free_invites";
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
+
+        #region TOAST CONSTANTS
+        public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
+
+        public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
+        public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
+        public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
+        public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
+        public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
+        public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
+        public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
+        public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        #endregion
 
         #region ANALYTICS EVENTS KEYS
 
@@ -410,6 +439,12 @@ namespace windows_client
         public static readonly string NULL_PUSH_TOKEN = "npt";
         public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
+        public static readonly string ANALYTICS_TAP_HI_WHILE_TIP = "quickSetupClick";
+        public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
+        public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
+        public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
+        public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
+        
         #endregion
 
         public static class Extras
