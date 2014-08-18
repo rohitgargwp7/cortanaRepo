@@ -519,7 +519,6 @@ namespace windows_client.View
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
-                //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     string id = msisdn.Replace(":", "_");
@@ -538,6 +537,7 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
                     if (contact == null)
                     {
                         contact = new ContactInfo();
@@ -545,8 +545,10 @@ namespace windows_client.View
                         contact.Name = Utils.IsHikeBotMsg(msisdn) ? Utils.GetHikeBotName(msisdn) : null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
+
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
+
                 ManagePage();
 
                 //remove if user came directly from upgrade page
@@ -554,8 +556,10 @@ namespace windows_client.View
                 {
                     if (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
+
                     PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -597,6 +601,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                     processGroupJoin(false);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -615,15 +620,15 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     this.UpdateLayout();
                 }
-                /* This is called only when you add more participants to group */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                    processGroupJoin(false);
-                }
+            }
 
+            /* This is called only when you add more participants to group */
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                processGroupJoin(false);
             }
 
             #endregion
@@ -778,19 +783,26 @@ namespace windows_client.View
             }
 
             if (gridDownloadStickers.Visibility == Visibility.Visible)
+            {
                 ShowDownloadOverlay(false);
+                e.Cancel = true;
+                return;                 // So that Sticker and emoji's panel doesn't collapse
+            }
+
             if (emoticonPanel.Visibility == Visibility.Visible)
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
                 return;
             }
+
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
                 CancelBackgroundChange();
                 e.Cancel = true;
                 return;
             }
+
             if (attachmentMenu.Visibility == Visibility.Visible)
             {
                 attachmentMenu.Visibility = Visibility.Collapsed;
@@ -1537,6 +1549,9 @@ namespace windows_client.View
                     if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                         nudgeTut.Visibility = Visibility.Visible;
 
+                    if (clearChatItem != null && clearChatItem.IsEnabled)
+                        clearChatItem.IsEnabled = false;
+
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1883,6 +1898,9 @@ namespace windows_client.View
                 if (!isGroupChat && isNudgeOn)
                     nudgeTut.Visibility = Visibility.Visible;
 
+                if (clearChatItem != null && clearChatItem.IsEnabled)
+                    clearChatItem.IsEnabled = false;
+
                 ClearChat();
 
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
@@ -2136,6 +2154,9 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
+
+            if (clearChatItem != null && !clearChatItem.IsEnabled)
+                clearChatItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3129,6 +3150,9 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
+            if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
+                clearChatItem.IsEnabled = false;
+
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
 
@@ -3302,7 +3326,7 @@ namespace windows_client.View
         private void MenuItem_Click_View(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            
+
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
                 PauseBackgroundAudio();
@@ -3328,6 +3352,9 @@ namespace windows_client.View
         private void emoticonButton_Click(object sender, EventArgs e)
         {
             var appButton = sender as ApplicationBarIconButton;
+
+            if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                ScrollToBottom(); // So that most recent chat is shown when pressing stickers or emojis
 
             if (appButton != null)
             {
@@ -7394,7 +7421,7 @@ namespace windows_client.View
         #region Read By
 
         ConvMessage _lastReceivedSentMessage = null, _readByMessage = null, _previouslastReceivedSentMessage = null;
-        
+
         void UpdateLastSentMessageStatusOnUI()
         {
             if (!isGroupChat || !isGroupAlive)

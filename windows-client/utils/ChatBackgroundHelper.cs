@@ -290,7 +290,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "39",
-                Background = "#fff4ecc5",
+                Background = "#ff988d7a",
                 HeaderAndNotificationColor = "#ffc23514",
                 SentBubbleBackground = "#fffff8be",
                 ReceivedBubbleBackground = "#ffffffff",
@@ -306,7 +306,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "40",
-                Background = "#ffda3347",
+                Background = "#ff93202a",
                 HeaderAndNotificationColor = "#ffb42d3c",
                 SentBubbleBackground = "#ffffebdd",
                 ReceivedBubbleBackground = "#ffffffff",
@@ -322,7 +322,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "41",
-                Background = "#ff8cd603",
+                Background = "#ff366411",
                 HeaderAndNotificationColor = "#ff5c9c00",
                 SentBubbleBackground = "#ffdcffa0",
                 ReceivedBubbleBackground = "#ffffffff",
@@ -338,7 +338,7 @@ namespace windows_client.utils
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "29",
-                Background = "#ffd5d5d5",
+                Background = "#ff737373",
                 HeaderAndNotificationColor = "#ff4b4b4b",
                 SentBubbleBackground = "#ffd9d9d9",
                 ReceivedBubbleBackground = "#ffffffff",

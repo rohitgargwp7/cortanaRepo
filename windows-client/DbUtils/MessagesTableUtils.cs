@@ -335,10 +335,16 @@ namespace windows_client.DbUtils
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
                         else
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
+
+                        if (obj.IsHidden)
+                            obj.ToastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
                     }
                     else
                     {
                         obj.LastMessage = convMsg.Message;
+                        
+                        if (obj.IsHidden)
+                            obj.ToastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
                     }
                 }
                 #endregion
