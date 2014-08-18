@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include "RPALApiComponent.h"
+﻿#include "RPALApiComponent.h"
 #include "zmedialib.h"
 using namespace RPALApiComponent;
 using namespace Platform;

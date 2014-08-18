@@ -674,16 +674,14 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\menu_video_icon.png" />
-    <Content Include="View\images\play_icon_big.png" />
-    <Content Include="View\images\play_icon_small.png" />
     <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
     <Content Include="View\images\retry_icon.png" />
-    <Content Include="View\images\send video.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
@@ -882,7 +880,6 @@
     <Content Include="View\images\emoticons\thulla4.png" />
     <Content Include="View\images\AppBar\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
-    <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\fb_icon.png" />

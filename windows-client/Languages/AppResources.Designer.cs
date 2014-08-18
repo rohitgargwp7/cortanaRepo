@@ -4162,7 +4162,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select video.
+        ///   Looks up a localized string similar to SELECT VIDEO.
         /// </summary>
         public static string Select_Video_txt {
             get {

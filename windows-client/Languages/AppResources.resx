@@ -2223,7 +2223,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Toggle Switch Text</comment>
   </data>
   <data name="Select_Video_txt" xml:space="preserve">
-    <value>select video</value>
+    <value>SELECT VIDEO</value>
   </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
