@@ -7493,7 +7493,7 @@ namespace windows_client.View
         ToolTipMode _tipMode;
         void UpdateToolTip(bool isModeChanged)
         {
-            chatScreenToolTip.ResetClickEvents();
+            chatScreenToolTip.ResetToolTip();
 
             switch (_tipMode)
             {

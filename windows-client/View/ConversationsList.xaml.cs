@@ -275,10 +275,11 @@ namespace windows_client.View
             else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
                 UpdateResetHiddenModeTimer();
 
-            if (((TipManager.ConversationPageTip != null && _tipMode == TipManager.ConversationPageTip.TipType) || _tipMode == ToolTipMode.DEFAULT) && !conversationPageToolTip.IsShow)
-            {
-                ShowServerTips();
-            }
+            #region server Tips
+
+            ShowServerTips();
+
+            #endregion
 
             FrameworkDispatcher.Update();
         }
@@ -3162,6 +3163,8 @@ namespace windows_client.View
                     {
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
 
+                        _tipMode = ToolTipMode.DEFAULT;
+
                         if (conversationPageToolTip.IsShow)
                             conversationPageToolTip.IsShow = false;
                     }
@@ -3413,14 +3416,11 @@ namespace windows_client.View
         /// <param name="isModeChanged">is the mode changed. If yes then reset tool tip values.</param>
         void UpdateToolTip(bool isModeChanged)
         {
-            conversationPageToolTip.ResetClickEvents();
+            conversationPageToolTip.ResetToolTip();
 
             switch (_tipMode)
             {
                 case ToolTipMode.DEFAULT:
-
-                    if (TipManager.ConversationPageTip != null)
-                        ShowServerTips();
 
                     break;
 
@@ -3881,7 +3881,7 @@ namespace windows_client.View
             {
                 conversationPageToolTip.IsShow = false;
                 _tipMode = ToolTipMode.DEFAULT;
-                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+
             }
 
         }

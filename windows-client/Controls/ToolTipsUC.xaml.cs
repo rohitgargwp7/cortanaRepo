@@ -176,11 +176,15 @@ namespace windows_client.Controls
 
         #endregion
 
-        public void ResetClickEvents()
+        public void ResetToolTip()
         {
             LeftIconClicked = null;
             RightIconClicked = null;
             FullTipTapped = null;
+            LeftIconSource = null;
+            RightIconSource = null;
+            TipHeadText = null;
+            TipText = null;
         }
 
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
