@@ -337,9 +337,10 @@ namespace windows_client.DbUtils
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
                     }
                     else
-                    {
                         obj.LastMessage = convMsg.Message;
-                    }
+
+                    if (obj.IsHidden)
+                        obj.ToastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
                 }
                 #endregion
                 #region OTHER MSGS

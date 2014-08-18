@@ -34,7 +34,7 @@ namespace windows_client.View
         {
             string uid = (string)App.appSettings[App.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
-            
+
             InitializeComponent();
 
             appBar = new ApplicationBar()
@@ -177,8 +177,8 @@ namespace windows_client.View
                     {
                         txtBxEnterName.Text = (string)obj;
                         txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
-                    } 
-                    
+                    }
+
                     if (State.TryGetValue("txtBxEnterName", out obj))
                     {
                         txtBxEnterName.Text = (string)obj;

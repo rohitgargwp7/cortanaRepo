@@ -476,6 +476,7 @@ namespace windows_client.Misc
         {
             if (!groupCache.ContainsKey(groupId) || groupCache[groupId] == null)
                 return null;
+
             List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(groupCache[groupId].Count);
             for (int i = 0; i < groupCache[groupId].Count; i++)
             {
