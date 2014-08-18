@@ -3515,10 +3515,6 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-                        _tipMode = ToolTipMode.DEFAULT;
-
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                         ResetHiddenMode();
 
                         if (_resetTimer != null)
@@ -3527,6 +3523,10 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                     }
+
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    _tipMode = ToolTipMode.DEFAULT;
 
                     break;
             }
