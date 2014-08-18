@@ -306,7 +306,14 @@ namespace windows_client.View
                     string num = Utils.NormalizeNumber(_charsEntered);
                     defaultContact.Msisdn = num;
                     defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
-                    defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
+                    if (!App.ViewModel.IsHiddenModeActive
+                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                        defaultContact.IsSelected = false;
+                    else
+                        defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
                     defaultContact.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
 
@@ -447,7 +454,14 @@ namespace windows_client.View
                     charsEntered = (isPlus ? "+" : "") + charsEntered;
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
-                    defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
+                    if (!App.ViewModel.IsHiddenModeActive
+                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                        defaultContact.IsSelected = false;
+                    else
+                        defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
                     defaultContact.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
@@ -771,6 +785,10 @@ namespace windows_client.View
                 if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
 
+                if (!App.ViewModel.IsHiddenModeActive &&
+                    App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                    continue;
+
                 cInfo.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 cInfo.IsSelected = _frmBlockedList && IsUserBlocked(cInfo);
 
@@ -859,11 +877,13 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 int oldSmsCount = _smsUserCount;
+
+                if (cInfo != null && !App.ViewModel.IsHiddenModeActive
+                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                    return;
 
                 if (_isContactShared)
                 {
@@ -886,6 +906,8 @@ namespace windows_client.View
                     BlockUnblockUser(cInfo);
                 }
             }
+
+            enterNameTxt.Text = String.Empty;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
