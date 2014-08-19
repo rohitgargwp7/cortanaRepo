@@ -1963,6 +1963,33 @@ namespace windows_client.View
             }
         }
 
+        private void MenuItem_Click_Mute(object sender, RoutedEventArgs e)
+        {
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (convObj == null)
+                return;
+
+            JObject obj = new JObject();
+            JObject o = new JObject();
+            o["id"] = convObj.Msisdn;
+            obj[HikeConstants.DATA] = o;
+
+            if (convObj.IsMute) // GC is muted , request to unmute
+            {
+                obj[HikeConstants.TYPE] = "unmute";
+                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+            else // GC is unmute , request to mute
+            {
+                obj[HikeConstants.TYPE] = "mute";
+                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = 0;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
+
         private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
         {
             BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
