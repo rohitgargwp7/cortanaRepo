@@ -200,7 +200,7 @@ namespace windows_client.View
                 HandleEmptyGroupName();
             }
 
-            if (Utils.compareVersion("2.6.2.4", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.6.5.0", App.CURRENT_VERSION) == 1)
             {
                 ReShuffleStickerCategories();
 
