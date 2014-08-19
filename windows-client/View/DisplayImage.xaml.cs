@@ -375,8 +375,8 @@ namespace windows_client.View
         {
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
-                BackgroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
             };
 
             ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton();
