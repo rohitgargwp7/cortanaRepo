@@ -12,6 +12,9 @@ using windows_client.Misc;
 
 namespace windows_client.utils.ServerTips
 {
+    /// <summary>
+    /// the class for managing server tips
+    /// </summary>
     class TipManager
     {
         private static volatile TipManager instance = null;
@@ -56,6 +59,13 @@ namespace windows_client.utils.ServerTips
             }
         }
 
+        /// <summary>
+        /// adding tip and writing to file
+        /// </summary>
+        /// <param name="type">type of tip</param>
+        /// <param name="header">header text</param>
+        /// <param name="body">body text</param>
+        /// <param name="id">id of the tip</param>
         public void AddTip(string type, string header, string body, string id)
         {
 
@@ -88,6 +98,11 @@ namespace windows_client.utils.ServerTips
             }
         }
 
+        /// <summary>
+        /// checking duplicate packet
+        /// </summary>
+        /// <param name="id">id of tip</param>
+        /// <returns></returns>
         private bool IsDuplicate(string id)
         {
 
@@ -126,6 +141,12 @@ namespace windows_client.utils.ServerTips
         #endregion
 
         #region Reading and writing to file
+
+        /// <summary>
+        /// reading tip from file
+        /// </summary>
+        /// <param name="id"> id of the tip (comes from appsetting)</param>
+        /// <returns></returns>
         static TipInfo ReadTipFromFile(String id)
         {
             TipInfo tempTip = new TipInfo();
@@ -263,6 +284,9 @@ namespace windows_client.utils.ServerTips
             App.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP);
         }
 
+        /// <summary>
+        /// deleting files in servertips directory
+        /// </summary>
         public void ClearOldTips()
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())

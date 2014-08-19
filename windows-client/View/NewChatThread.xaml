@@ -79,6 +79,7 @@
         </Border>
 
         <Grid x:Name="darkModeLayer" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" Background="#0a000000" Canvas.ZIndex="-2"/>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

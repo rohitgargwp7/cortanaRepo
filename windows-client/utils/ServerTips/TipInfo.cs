@@ -37,6 +37,7 @@ namespace windows_client.utils.ServerTips
             HeadText = header;
             BodyText = body;
             TipId = id;
+
             switch (type)
             {
 
