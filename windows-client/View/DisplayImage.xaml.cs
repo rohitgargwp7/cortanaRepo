@@ -370,11 +370,15 @@ namespace windows_client.View
             return true;
         }
 
-
         //Loads Application bar
         private void LoadApplicationBar()
         {
-            ApplicationBar = new ApplicationBar();
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+            };
+
             ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton();
             picSaveButton.IconUri = new Uri("/View/images/Appbar/icon_save.png", UriKind.Relative);
             picSaveButton.Text = AppResources.Save_AppBar_Btn;
