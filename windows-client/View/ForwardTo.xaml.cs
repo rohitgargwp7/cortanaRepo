@@ -838,7 +838,7 @@ namespace windows_client.View
             {
                 _isExistingGroup = true;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
-                _existingGroupUsers = activeExistingGroupMembers.Count;
+                _existingGroupUsers = activeExistingGroupMembers.Count + 1; // Adding +1 is for owner of the group
             }
 
             ObservableCollection<ContactGroup<ContactInfo>> glist = CreateGroups();
@@ -857,7 +857,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show contact if its hidden
-                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
                         && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     continue;
 
@@ -892,7 +892,7 @@ namespace windows_client.View
                 foreach (var grp in gi)
                 {
                     // Dont show group if its hidden
-                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId) 
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId)
                         && App.ViewModel.ConvMap[grp.GroupId].IsHidden)
                         continue;
 
@@ -974,7 +974,7 @@ namespace windows_client.View
                     continue;
 
                 // Dont show friend if its hidden.
-                if (!_isGroupChat && !App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
                         && App.ViewModel.ConvMap[friend.Msisdn].IsHidden)
                     continue;
 
@@ -1086,6 +1086,13 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
+                            if (!App.ViewModel.IsHiddenModeActive
+                                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                            {
+                                cInfo.IsSelected = false;
+                                return;
+                            }
+
                             if (IsUserBlocked(cInfo)
                                 || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
@@ -1278,12 +1285,13 @@ namespace windows_client.View
                     queryStrings.Clear();
                     _pageTitle = AppResources.Share_With_Txt;
                     PageTitle.Text = _pageTitle;
-                }
 
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                {
-                    while (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
+
+                    if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
+                    {
+                        while (NavigationService.CanGoBack)
+                            NavigationService.RemoveBackEntry();
+                    }
                 }
 
                 enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;

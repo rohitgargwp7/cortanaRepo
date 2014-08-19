@@ -2478,8 +2478,14 @@ namespace windows_client.View
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
                 MiscDBUtil.SavePendingRequests();
+
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                {
+                    if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                        App.ViewModel.StatusList.Add(DefaultStatus);
+
                     return;
+                }
 
                 ConversationListObject cObj = null;
                 ContactInfo cn = null;
@@ -3219,8 +3225,15 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (llsConversations.ItemsSource.Count > 0)
-                        llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+                    try
+                    {
+                        if (llsConversations.ItemsSource.Count > 0)
+                            llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+                    }
+                    catch (Exception)
+                    {
+                        //handled exception due to scroll to
+                    }
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                         ShowFTUECards();
@@ -3358,6 +3371,7 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
+                SystemTray.IsVisible = popup.IsShow ? false : true;
                 ApplicationBar.IsVisible = popup.IsShow ? false : true;
                 headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
                 tipControl.IsHitTestVisible = popup.IsShow ? false : true;
@@ -3526,7 +3540,10 @@ namespace windows_client.View
             if (_tipMode != ToolTipMode.DEFAULT && !conversationPageToolTip.IsShow)
                 conversationPageToolTip.IsShow = true;
 
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
+            if (_tipMode != ToolTipMode.DEFAULT)
+                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
+            else if(App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
         }
 
         /// <summary>
@@ -3545,7 +3562,6 @@ namespace windows_client.View
                     if (mBox == MessageBoxResult.OK)
                     {
 
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                         ResetHiddenMode();
 
                         if (_resetTimer != null)
@@ -3555,8 +3571,12 @@ namespace windows_client.View
                         }
                     }
 
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+
                     HideTips();
+
                     break;
+
                 case ToolTipMode.PROFILE:
 
                     HideTips();
@@ -3602,6 +3622,7 @@ namespace windows_client.View
                         TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
                     launchPagePivot.SelectedIndex = 1;
+
                     break;
 
             }

@@ -1021,7 +1021,7 @@
     <value>सिस्टम हेल्द</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>संपर्क जानकारी</value>
+    <value>संपर्क सांझा करें |</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>ऑडियो भेजें</value>
@@ -1239,7 +1239,7 @@
     <value>संपर्क जोड़ें</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>जिंगल, वाइब्रेट तथा और बहुत कुछ चालू/बंद करें</value>
+    <value>जिंगल, संदेश पूर्वालोकन आदि को चालू/बंद करें</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>अपने hike खाते का प्रबंध करें</value>
@@ -1294,7 +1294,7 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>लास्ट सीन दिखाएं</value>
+    <value>पिछली बार दिखे इन्हें दिखाएँ</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>पिछली बार {0} को देखा गया</value>
@@ -2002,8 +2002,15 @@
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>अपना जीवन hike करें</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>संदेश पूर्वावलोकन</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>केवल पसंदीदा आपके पिछली बार देखे गए और स्थिति अद्यतन देख सकते हैं। उन्हें बुद्धिमानी से चुनें!</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>प्रोफ़ाइल चित्र इन्हें दिखाएँ</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>पसंदीदा जोड़ें</value>
@@ -2038,7 +2045,7 @@
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>hike पर शामिल होने वाले प्रत्येक मित्र के लिए आप रु.20 का टॉक-टाइम अर्जित करेंगे :)</value>
+    <value>hike पर शामिल होने वाले प्रत्येक दोस्त पर आप रु.20 का टॉक-टाइम अर्जित करेंगे :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
@@ -2046,7 +2053,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>उन्हें बुद्धिमानी से चुनें!</value>
+    <value>उन्हें समझदारी से चुनें!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2082,7 +2089,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
-    <value>इसे सेट करने के लिए यहाँ टैप करें!</value>
+    <value>इसे सेट करने के लिए यहाँ टैप करें‍!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
@@ -2101,5 +2108,115 @@
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>पुनः प्रारंभ करें</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>चैट अदृश्य करें</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>चैट दृश्य करें</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>अपने पासवर्ड की पुष्टि करें</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>पासवर्ड दर्ज करें</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>चलाएं </value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>दृश्य</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>खोलें</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>ओह! कुछ गलत हो गया</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>संदेश पूर्वावलोकन बंद करना</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>संदेश पूर्वावलोकन चालू करना</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>संपर्क सहेजें</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>अपना अदृश्य मोड पासवर्ड बदलें</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>पासवर्ड बदलें</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>अपना पासवर्ड भूल गए? अदृश्य मोड को रीसेट करें। सभी अदृश्य चैट हटा दी जाएँगी।</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>अदृश्य मोड को रीसेट करें</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>सभी अदृश्य चैट {0} मिनट के बाद हटा दी जाएँगी।</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>अदृश्य मोड को अभी रीसेट करने के लिए यहाँ टैप करें! </value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>'अदृश्य' मोड में जाने और बाहर निकलने के लिए 'हाय' पर टैप करें</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>अपनी चैट पासवर्ड से छिपाएँ। आरंभ करने के लिए 'हाय' पर टैप करें।</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>चैट को 'अदृश्य' चिह्नित करने के लिए टैप करके होल्ड करें</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>अपनी चैट को अदृश्य करने के लिए नया पासवर्ड बनाएँ</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>आपकी सभी अदृश्य चैट हटा दी जाएँगी। क्या आप वाकई यह चाहते हैं?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>रीसेट करने की पुष्टि करें?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>रीसेट रद्द करें?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>इससे अदृश्य मोड रीसेट बंद हो जाएगा। क्या आप वाकई यह चाहते हैं?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>चैट शुरू करें और 'हाय' पर टैप करें</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>अपनी चैट पासवर्ड से छिपाएँ। </value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>वर्तमान पासवर्ड दर्ज करें</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>चित्र स्वतः सहेजें</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>सफलतापूर्वक सहेजा गया</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>हर कोई</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>पसंदीदा</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>कोई नहीं</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>पासवर्ड मेल नहीं खाते।</value>
   </data>
 </root>
