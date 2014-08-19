@@ -134,8 +134,9 @@
                     </Grid>
                 </StackPanel>
             </Grid>
-            <Grid x:Name="tipControl"  Grid.Row="1" >
-                <local:ToolTipsUC x:Name="chatScreenToolTip"  ControlBackgroundColor="Red"/>
+
+            <Grid x:Name="tipControl" Grid.Row="1">
+                <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="DarkSeaGreen"/>
             </Grid>
         </Grid>
 

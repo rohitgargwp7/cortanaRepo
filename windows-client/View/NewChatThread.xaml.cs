@@ -7490,6 +7490,29 @@ namespace windows_client.View
 
         #region SERVER TIPS
 
+        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headText, string bodyText,
+            bool isLeftIconClickEnabled, bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
+        {
+            chatScreenToolTip.LeftIconSource = leftIconSource;
+            chatScreenToolTip.RightIconSource = rightIconSource;
+            chatScreenToolTip.TipHeadText = headText;
+            chatScreenToolTip.TipText = bodyText;
+            chatScreenToolTip.LeftIconClicked -= chatScreenToolTip_LeftIconClicked;
+
+            if (isLeftIconClickEnabled)
+                chatScreenToolTip.LeftIconClicked += chatScreenToolTip_LeftIconClicked;
+
+            chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
+
+            if (isRightIconClickedEnabled)
+                chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+
+            chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
+
+            if (isFullTipTappedEnabled)
+                chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
+
+        }
         ToolTipMode _tipMode;
         void UpdateToolTip(bool isModeChanged)
         {
@@ -7499,44 +7522,26 @@ namespace windows_client.View
             {
                 case ToolTipMode.DEFAULT:
 
-                    if (TipManager.ChatScreenTip != null)
-                        ShowServerTips();
-
                     break;
 
                 case ToolTipMode.STICKERS:
 
-                    chatScreenToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
-                    chatScreenToolTip.TipHeadText = TipManager.ChatScreenTip.HeadText;
-                    chatScreenToolTip.TipText = TipManager.ChatScreenTip.BodyText;
-                    chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
-                    chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.CHAT_THEMES:
 
-                    chatScreenToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
-                    chatScreenToolTip.TipHeadText = TipManager.ChatScreenTip.HeadText;
-                    chatScreenToolTip.TipText = TipManager.ChatScreenTip.BodyText;
-                    chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
-                    chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
-                    chatScreenToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
-                    chatScreenToolTip.TipHeadText = TipManager.ChatScreenTip.HeadText;
-                    chatScreenToolTip.TipText = TipManager.ChatScreenTip.BodyText;
-                    chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
-                    chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
-                    chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
             }
+
+            if (_tipMode != ToolTipMode.DEFAULT && !chatScreenToolTip.IsShow)
+                chatScreenToolTip.IsShow = true;
 
         }
 
@@ -7576,21 +7581,30 @@ namespace windows_client.View
                 case ToolTipMode.CHAT_THEMES:
 
                     HideServerTips();
-                    TipManager.Instance.RemoveCurrentTip(TipManager.ChatScreenTip.TipId);
+
+                    if (TipManager.ChatScreenTip != null)
+                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
-                    TipManager.Instance.RemoveCurrentTip(TipManager.ChatScreenTip.TipId);
+
+                    if (TipManager.ChatScreenTip != null)
+                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
                 case ToolTipMode.STICKERS:
 
                     HideServerTips();
-                    TipManager.Instance.RemoveCurrentTip(TipManager.ChatScreenTip.TipId);
+
+                    if (TipManager.ChatScreenTip != null)
+                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
@@ -7627,7 +7641,6 @@ namespace windows_client.View
             {
                 _tipMode = TipManager.ChatScreenTip.TipType;
                 UpdateToolTip(true);
-                chatScreenToolTip.IsShow = true;
             }
 
         }
@@ -7639,6 +7652,7 @@ namespace windows_client.View
             {
                 chatScreenToolTip.IsShow = false;
                 _tipMode = ToolTipMode.DEFAULT;
+                UpdateToolTip(true);
             }
 
         }

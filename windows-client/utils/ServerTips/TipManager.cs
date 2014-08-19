@@ -67,13 +67,14 @@ namespace windows_client.utils.ServerTips
                 if (tempLocation == HikeConstants.ServerTips.CHAT_SCREEN_TIP)
                 {
                     if (ChatScreenTip != null)
-                        RemoveCurrentTip(ChatScreenTip.TipId);
+                        RemoveTip(ChatScreenTip.TipId);
+
                     ChatScreenTip = tempTip;
                 }
                 else
                 {
                     if (ConversationPageTip != null)
-                        RemoveCurrentTip(ConversationPageTip.TipId);
+                        RemoveTip(ConversationPageTip.TipId);
                     ConversationPageTip = tempTip;
                 }
 
@@ -101,18 +102,19 @@ namespace windows_client.utils.ServerTips
 
         #region Events
 
-        public event EventHandler ConversationPageTipChanged;
-        public event EventHandler ChatScreenTipChanged;
+        public event EventHandler ConversationPageTipChanged; //event conversation page tip changed
+        public event EventHandler ChatScreenTipChanged; //event chat screen tip changed
 
-        protected virtual void OnConversationPageTipChanged(EventArgs e)
+        void OnConversationPageTipChanged(EventArgs e)
         {
             EventHandler handler = ConversationPageTipChanged;
             if (handler != null)
             {
-                handler(this, e);
+                handler(null, null);
             }
         }
-        protected virtual void OnChatScreenTipChanged(EventArgs e)
+
+        void OnChatScreenTipChanged(EventArgs e)
         {
             EventHandler handler = ChatScreenTipChanged;
             if (handler != null)
@@ -153,12 +155,16 @@ namespace windows_client.utils.ServerTips
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Read ProTip From File, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("Utils:ServerTips:TipManager:ReadTipFromFile :: Read Tip From File, Exception : " + ex.StackTrace);
                 }
                 return tempTip;
             }
         }
 
+        /// <summary>
+        /// writing tip to file
+        /// </summary>
+        /// <param name="tempPos"></param>
         static void WriteTipToFile(string tempPos)
         {
             lock (readWriteLock)
@@ -193,12 +199,16 @@ namespace windows_client.utils.ServerTips
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: Write ProTip To File, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("Utils:ServerTips:TipManager:AddTip:: Write Tip To File, Exception : " + ex.StackTrace);
                 }
             }
         }
 
-        public void RemoveCurrentTip(string id)
+        /// <summary>
+        /// removing tip
+        /// </summary>
+        /// <param name="id">id of the tip to be removed</param>
+        public void RemoveTip(string id)
         {
             if (String.IsNullOrEmpty(id))
                 return;
@@ -217,7 +227,7 @@ namespace windows_client.utils.ServerTips
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete current ProTip File, Exception : " + ex.StackTrace);
+                        System.Diagnostics.Debug.WriteLine("Utils:ServerTips:TipManager:RemoveTip :: delete current Tip File, Exception : " + ex.StackTrace);
                     }
                 }
 
@@ -236,12 +246,16 @@ namespace windows_client.utils.ServerTips
             }
         }
 
+        /// <summary>
+        /// clearing tip reset and unlinking case
+        /// </summary>
         public void ClearTips()
         {
             if (ChatScreenTip != null)
-                RemoveCurrentTip(ChatScreenTip.TipId);
+                RemoveTip(ChatScreenTip.TipId);
+
             if (ConversationPageTip != null)
-                RemoveCurrentTip(ConversationPageTip.TipId);
+                RemoveTip(ConversationPageTip.TipId);
 
             ClearOldTips();
 
@@ -269,7 +283,7 @@ namespace windows_client.utils.ServerTips
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete ProTip Data on upgrade to 2.2.2.1, Exception : " + ex.StackTrace);
+                    System.Diagnostics.Debug.WriteLine("Utils:ServerTips:TipManager:ClearOldTips::, Exception : " + ex.StackTrace);
                 }
             }
         }

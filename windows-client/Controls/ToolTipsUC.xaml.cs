@@ -77,7 +77,7 @@ namespace windows_client.Controls
             tempToolTip.leftIcon.Source = tempSource;
             tempToolTip.leftIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
 
-            var margin = tempToolTip.tipTextbox.Margin;
+            var margin = tempToolTip.TextGrid.Margin;
             margin.Left = tempSource == null ? 24 : 0;
             tempToolTip.TextGrid.Margin = margin;
         }
@@ -104,7 +104,7 @@ namespace windows_client.Controls
             tempToolTip.rightIcon.Source = tempSource;
             tempToolTip.rightIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
 
-            var margin = tempToolTip.tipTextbox.Margin;
+            var margin = tempToolTip.TextGrid.Margin;
             margin.Right = tempSource == null ? 24 : 0;
             tempToolTip.TextGrid.Margin = margin;
         }
