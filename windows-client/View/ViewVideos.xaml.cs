@@ -78,13 +78,12 @@ namespace windows_client.View
                     for (int i = 0; i < totalVideos; i++)
                     {
                         string filePath = string.Empty;
-                        string fileName = string.Empty;
                         string albumName = string.Empty;
                         int videoSize;
                         int videoDuration;
                         double date;
 
-                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out fileName, out albumName,out date,out videoDuration,out videoSize);
+                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
                         try
                         {
                             albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
@@ -94,7 +93,7 @@ namespace windows_client.View
                         {
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
-                        VideoClass video = new VideoClass(fileName, filePath, thumbBytes, videoDuration, videoSize);
+                        VideoClass video = new VideoClass(filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbumClass albumObj;

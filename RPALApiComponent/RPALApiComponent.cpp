@@ -22,14 +22,12 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 {
 	HRESULT hr = 0;
 	HZMEDIALIST hRootList = NULL;
-	//hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_FOLDER_FOLDERS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
 	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
 
 	size_t cItemsRoot = 0;
 	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
 
-	rgItemsRoot = (ZMEDIAITEM*)malloc(sizeof(ZMEDIAITEM) * cItemsRoot);
-
+	rgItemsRoot = new ZMEDIAITEM[cItemsRoot];
 	hr = ZMediaList_GetItems(hRootList, 0, rgItemsRoot, cItemsRoot, &cItemsRoot);
 
 	return (uint16)cItemsRoot;
@@ -37,45 +35,32 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 
 
 // Function to get a video file info using its position in the rgItemsRoot
-Platform::Array<uint8>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath,  Platform::String^* strVideoFilename, Platform::String^* albumName, double* videoTime,int* videoDuration,int *videoSize) 
+Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath, double* videoTime,int* videoDuration,int *videoSize) 
 {
 	HRESULT hr = 0;
 	size_t cch = 0;
 
 	//Get the thumbnail
 	hr = ZMediaLib_GetItemThumbnail(rgItemsRoot[position], ZMEDIAITEM_THUMBTYPE_NORMAL, NULL, 0, &cch);//thumnail could be fetcehed tiny too
-	byte* myThumbData = (byte*) malloc(cch);// *sizeof(WCHAR));
+	byte* myThumbData = new byte[cch];// *sizeof(WCHAR));
 	hr = ZMediaLib_GetItemThumbnail(rgItemsRoot[position], ZMEDIAITEM_THUMBTYPE_NORMAL, (void*)myThumbData, cch, NULL);
+	Platform::Array<byte>^ intOutArray=ref new Platform::Array<byte>(myThumbData, cch);
+	delete myThumbData;
 
-	Platform::Array<uint8>^ intOutArray=ref new Platform::Array<uint8>(cch);
-
-	for (int iter = 0; iter < cch; iter++)
-	{
-		intOutArray[iter] = (uint8) myThumbData[iter];
-	}
-
-	// get filename
-	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, NULL, NULL, &cch);
-	WCHAR *str = new WCHAR[cch];
-	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILENAME, str, cch, &cch);
-	*strVideoFilename=ref new String(str);
-	delete str;
-
-
+	// get filepath
 	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, NULL, NULL, &cch);
-	str = new WCHAR[cch]; 
+	WCHAR *str = new WCHAR[cch]; 
 	hr = ZMediaLib_GetItemStringAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
 	*strVideoFilePath = ref new String(str);
 	delete str;
-
 	
+	//get file duration and size
 	hr = ZMediaLib_GetItemIntAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_DURATION, videoDuration);
-
 	hr = ZMediaLib_GetItemIntAttribute(rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILESIZE, videoSize);
 
+	//get file creation date
 	FILETIME ft;
 	hr=ZMediaLib_GetItemDateTimeAttribute(rgItemsRoot[position],ZMEDIAITEM_ATTRIBUTE_DATE,&ft);
-
 	*videoTime= (((ULONGLONG) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
 
 	return intOutArray;
