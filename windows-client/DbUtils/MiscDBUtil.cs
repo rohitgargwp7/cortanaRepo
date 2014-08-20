@@ -372,6 +372,10 @@ namespace windows_client.DbUtils
 
         public static bool hasCustomProfileImage(string msisdn)
         {
+            // Added null check.
+            if (string.IsNullOrEmpty(msisdn))
+                return false;
+
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
             
