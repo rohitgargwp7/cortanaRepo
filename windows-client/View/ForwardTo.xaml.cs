@@ -783,6 +783,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
@@ -803,6 +805,7 @@ namespace windows_client.View
 
                 scanningComplete();
             });
+
             _canGoBack = true;
         }
 
@@ -1187,7 +1190,7 @@ namespace windows_client.View
                         PageTitle.Text = _pageTitle;
                     }
 
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else

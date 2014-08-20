@@ -718,6 +718,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
