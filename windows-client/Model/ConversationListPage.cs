@@ -218,17 +218,37 @@ namespace windows_client.Model
                 NotifyPropertyChanged("MuteIconVisibility");
                 NotifyPropertyChanged("UnreadCircleVisibility");
                 NotifyPropertyChanged("MuteIconImage");
+                NotifyPropertyChanged("MuteMsg");
             }
         }
-
-        
 
         public BitmapImage MuteIconImage
         {
             get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
+        public string MuteMsg
+        {
+            get
+            {
+                if (IsMute) // if already favourite
+                    return AppResources.SelectUser_UnMuteGrp_Txt;
+                else
+                    return AppResources.SelectUser_MuteGrp_Txt;
+            }
+        }
 
+        public Visibility MuteOptionVisibility
+        {
+            get
+            {
+                if (IsGroupChat && IsGroupAlive)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+        
         public Visibility MuteIconVisibility
         {
             get

@@ -592,6 +592,52 @@ namespace windows_client.ViewModel
             ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
+        /// <summary>
+        /// Remove image for deleted contacts on resync.
+        /// </summary>
+        /// <param name="deletedContacts">deleted contacts</param>
+        /// <param name="updatedContacts">added or updated contacts</param>
+        public void DeleteImageForDeletedContacts(List<ContactInfo> deletedContacts, List<ContactInfo> updatedContacts)
+        {
+            if (deletedContacts == null)
+                return;
+
+            Dictionary<string, int> deletedContactMap = new Dictionary<string, int>();
+
+            foreach (var contact in deletedContacts)
+            {
+                if (!deletedContactMap.ContainsKey(contact.Msisdn))
+                    deletedContactMap.Add(contact.Msisdn, 0);
+            }
+
+            if (updatedContacts != null)
+            {
+                foreach (var contact in updatedContacts)
+                {
+                    if (deletedContactMap.ContainsKey(contact.Msisdn))
+                        deletedContactMap[contact.Msisdn]++;
+                }
+            }
+
+            foreach (var msisdn in deletedContactMap.Keys)
+            {
+                if (deletedContactMap[msisdn] == 0)
+                {
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        var fStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+                        if (fStatus <= FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                        {
+                            MiscDBUtil.DeleteImageForMsisdn(msisdn);
+
+                            App.ViewModel.ConvMap[msisdn].Avatar = null;
+                            App.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                        }
+                    }
+                }
+            }
+        }
+
         #region In Apptips
 
         List<HikeToolTip> _toolTipsList;
