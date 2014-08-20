@@ -370,7 +370,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static bool hasCustomProfileImage(string msisdn)
+        public static bool HasCustomProfileImage(string msisdn)
         {
             // Added null check.
             if (string.IsNullOrEmpty(msisdn))

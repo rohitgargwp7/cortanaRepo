@@ -77,7 +77,7 @@ namespace windows_client.View
                     {
                         this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                     }
-                    else if (MiscDBUtil.hasCustomProfileImage(_msisdn))
+                    else if (MiscDBUtil.HasCustomProfileImage(_msisdn))
                     {
                         fileName = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;

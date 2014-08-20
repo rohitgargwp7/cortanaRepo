@@ -398,7 +398,7 @@ namespace windows_client.View
             if (_tipMode != null)
                 conversationPageToolTip.Visibility = Visibility.Collapsed;
 
-            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.hasCustomProfileImage(App.MSISDN))
+            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.HasCustomProfileImage(App.MSISDN))
                 profileFTUECard.Visibility = Visibility.Collapsed;
 
             if (String.IsNullOrEmpty(groupCountCard.Text))
