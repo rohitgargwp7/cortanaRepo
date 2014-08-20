@@ -547,7 +547,7 @@
                                                     <Image Grid.Row="1" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 
                                                            Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                                                            MaxHeight="300" Tap="ProTipImage_Tapped"/>
-                                                    <Button Grid.Row="2" Margin="0,5,0,0" HorizontalAlignment="Left" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
+                                                    <Button Grid.Row="2" Margin="0,5,0,0" HorizontalAlignment="Center" Content="{Binding Path= LocalizedResources.Conversations_Dismiss_Tip, Source={StaticResource LocalizedStrings}}"
                                                             Style="{StaticResource NoButtonStyle}" Click="dismissProTip_Click"/>
                                                 </Grid>
                                             </Border>

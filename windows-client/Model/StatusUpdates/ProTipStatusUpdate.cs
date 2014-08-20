@@ -119,35 +119,11 @@ namespace windows_client.Model
             }
         }
 
-        public override bool IsUnread
-        {
-            get
-            {
-                return base.IsUnread;
-            }
-            set
-            {
-                if (value != base.IsUnread)
-                {
-                    base.IsUnread = value;
-                    NotifyPropertyChanged("StatusTextForeground");
-                }
-            }
-        }
-
         public SolidColorBrush StatusTextForeground
         {
             get
             {
-                if (IsShowOnTimeline)
-                {
-                    if (IsUnread != true) //read status
-                        return UI_Utils.Instance.StatusTextForeground;
-                    else
-                        return (SolidColorBrush)App.Current.Resources["HikeBlue"];
-                }
-                else
-                    return UI_Utils.Instance.StatusTextForeground;
+                return UI_Utils.Instance.StatusTextForeground;
             }
         }
     }
