@@ -6203,7 +6203,7 @@ namespace windows_client.View
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     _unreadMessageCounter = 0;
                 }
-                else if ((vScrollBar.Maximum - vScrollBar.Value) > 2000 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                else if ((vScrollBar.Maximum - vScrollBar.Value) > 500 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
                 {
                     ShowJumpToBottom(false);
                 }
