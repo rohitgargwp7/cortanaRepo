@@ -37,8 +37,6 @@ namespace windows_client
 
         public static readonly string START_TYPING = "st";
 
-        public static readonly string TIPS = "popup";
-
         public static readonly string END_TYPING = "et";
 
         public static readonly string INVITE_INFO = "ii";
@@ -59,6 +57,7 @@ namespace windows_client
 
         public static readonly string ICON_REMOVE = "icr";
 
+        public static readonly string TIPS = "popup";
         private static readonly string TIPHEADER = "h";
         private static readonly string TIPBODY = "b";
         private static readonly string TIPID = "i";
@@ -2016,7 +2015,6 @@ namespace windows_client
                     JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     TipManager.Instance.AddTip((string)subtype, (string)data[TIPHEADER], (string)data[TIPBODY], (string)data[TIPID]);
-
                 }
                 catch (Exception e)
                 {

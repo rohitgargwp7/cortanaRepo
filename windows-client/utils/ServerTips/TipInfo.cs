@@ -42,55 +42,54 @@ namespace windows_client.utils.ServerTips
             {
 
                 case HikeConstants.ServerTips.STICKER_TIPS:
-                    {
-                        TipType = ToolTipMode.STICKERS;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.STICKERS;
+                    break;
+
                 case HikeConstants.ServerTips.PROFILE_TIPS:
-                    {
-                        TipType = ToolTipMode.PROFILE;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.PROFILE;
+                    break;
+
                 case HikeConstants.ServerTips.ATTACHMENT_TIPS:
-                    {
-                        TipType = ToolTipMode.ATTACHMENTS;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.ATTACHMENTS;
+                    break;
+
                 case HikeConstants.ServerTips.INFORMATIONAL_TIPS:
-                    {
-                        TipType = ToolTipMode.INFORMATIONAL;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.INFORMATIONAL;
+                    break;
                 case HikeConstants.ServerTips.FAVOURITE_TIPS:
-                    {
-                        TipType = ToolTipMode.FAVOURITES;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.FAVOURITES;
+                    break;
+
                 case HikeConstants.ServerTips.THEME_TIPS:
-                    {
-                        TipType = ToolTipMode.CHAT_THEMES;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.CHAT_THEMES;
+                    break;
+
                 case HikeConstants.ServerTips.INVITATION_TIPS:
-                    {
-                        TipType = ToolTipMode.INVITE_FRIENDS;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.INVITE_FRIENDS;
+                    break;
+
                 case HikeConstants.ServerTips.STATUS_UPDATE_TIPS:
-                    {
-                        TipType = ToolTipMode.STATUS_UPDATE;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.STATUS_UPDATE;
+                    break;
+
                 default:
-                    {
-                        TipType = ToolTipMode.DEFAULT;
-                        break;
-                    }
+
+                    TipType = ToolTipMode.DEFAULT;
+                    break;
+
             };
 
         }
 
-        public string GetLocation()
+        public string GetTipLocation()
         {
             if (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS)
                 return HikeConstants.ServerTips.CHAT_SCREEN_TIP;
@@ -131,7 +130,7 @@ namespace windows_client.utils.ServerTips
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ProTip :: Read : Read, Exception : " + ex.StackTrace);
+                System.Diagnostics.Debug.WriteLine("utils:ServerTips:TipInfo :: Read : Read, Exception : " + ex.StackTrace);
             }
         }
 
@@ -158,7 +157,7 @@ namespace windows_client.utils.ServerTips
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("TipInfoBase :: Write: Write Tip To File, Exception : " + ex.StackTrace);
+                System.Diagnostics.Debug.WriteLine("utils:ServerTips:TipInfo  :: Write: Write Tip To File, Exception : " + ex.StackTrace);
             }
         }
         #endregion

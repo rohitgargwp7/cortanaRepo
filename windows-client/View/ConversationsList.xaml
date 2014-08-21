@@ -72,7 +72,7 @@
         </Grid>
 
         <Grid x:Name="tipControl" Grid.Row="1">
-            <local:ToolTipsUC x:Name="conversationPageToolTip" Grid.Row="0" ControlBackgroundColor="{StaticResource StealthRed}"/>
+            <local:ToolTipsUC x:Name="conversationPageToolTip" ControlBackgroundColor="{StaticResource StealthRed}"/>
         </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="2" Margin="0,0,0,0" SelectionChanged="Pivot_SelectionChanged" Background="{StaticResource HikeBGBrush}">

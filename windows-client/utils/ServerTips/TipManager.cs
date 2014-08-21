@@ -72,7 +72,7 @@ namespace windows_client.utils.ServerTips
             if (!IsDuplicate(id))
             {
                 TipInfo tempTip = new TipInfo(type, header, body, id);
-                string tempLocation = tempTip.GetLocation();
+                string tempLocation = tempTip.GetTipLocation();
 
                 if (tempLocation == HikeConstants.ServerTips.CHAT_SCREEN_TIP)
                 {

@@ -3152,7 +3152,6 @@ namespace windows_client.View
 
         }
 
-
         #region Hidden Mode
 
         // Confirm hidden mode password
@@ -3537,13 +3536,17 @@ namespace windows_client.View
 
             }
 
-            if (_tipMode != ToolTipMode.DEFAULT && !conversationPageToolTip.IsShow)
-                conversationPageToolTip.IsShow = true;
-
             if (_tipMode != ToolTipMode.DEFAULT)
+            {
+                
+                if (!conversationPageToolTip.IsShow)
+                    conversationPageToolTip.IsShow = true;
+                
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
-            else if(App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+            }
+            else if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+
         }
 
         /// <summary>
@@ -3697,10 +3700,6 @@ namespace windows_client.View
                     HideTips();
                     break;
 
-                case ToolTipMode.STICKERS:
-
-                    break;
-
                 case ToolTipMode.STATUS_UPDATE:
 
                     HideTips();
@@ -3722,10 +3721,6 @@ namespace windows_client.View
                 case ToolTipMode.INVITE_FRIENDS:
 
                     HideTips();
-                    break;
-
-                case ToolTipMode.CHAT_THEMES:
-
                     break;
 
                 case ToolTipMode.FAVOURITES:

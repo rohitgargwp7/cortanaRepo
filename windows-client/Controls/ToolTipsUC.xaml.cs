@@ -13,7 +13,6 @@ namespace windows_client.Controls
 {
     public partial class ToolTipsUC : UserControl
     {
-
         public ToolTipsUC()
         {
             InitializeComponent();
@@ -169,7 +168,7 @@ namespace windows_client.Controls
         #endregion
 
         #region events
-
+        
         public event EventHandler<EventArgs> LeftIconClicked;
         public event EventHandler<EventArgs> RightIconClicked;
         public event EventHandler<EventArgs> FullTipTapped;
