@@ -34,13 +34,13 @@ namespace windows_client.View
         {
             string uid = (string)App.appSettings[App.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
-            
+
             InitializeComponent();
 
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
             };
 
             cameraIconButton = new ApplicationBarIconButton();
@@ -177,8 +177,8 @@ namespace windows_client.View
                     {
                         txtBxEnterName.Text = (string)obj;
                         txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
-                    } 
-                    
+                    }
+
                     if (State.TryGetValue("txtBxEnterName", out obj))
                     {
                         txtBxEnterName.Text = (string)obj;

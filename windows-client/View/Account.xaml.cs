@@ -23,6 +23,7 @@ using windows_client.ViewModel;
 using System.Net.NetworkInformation;
 using windows_client.FileTransfers;
 using Microsoft.Phone.Shell;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -47,6 +48,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
         }
+
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             if (!canGoBack)
@@ -74,6 +76,7 @@ namespace windows_client.View
             if (progress == null)
                 progress = new ProgressIndicatorControl();
 
+            LayoutRoot.IsHitTestVisible = false;
             progress.Show(LayoutRoot, AppResources.Privacy_LogoutAccountProgress);
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
@@ -122,11 +125,12 @@ namespace windows_client.View
                     return;
 
                 if (progress == null)
-                {
                     progress = new ProgressIndicatorControl();
-                }
+                
+                LayoutRoot.IsHitTestVisible = false;
                 progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
                 canGoBack = false;
+
                 AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
             }
         }
@@ -156,13 +160,13 @@ namespace windows_client.View
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            HikeViewModel.stickerHelper = null;
+            HikeViewModel.ClearStickerHelperInstance();
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;
+            
             //so that on signing up again user can see these tutorials 
-            //App.appSettings[App.SHOW_STATUS_UPDATES_TUTORIAL] = true;
-            //App.appSettings[App.SHOW_BASIC_TUTORIAL] = true;
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
@@ -170,6 +174,7 @@ namespace windows_client.View
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                StickerPivotHelper.Instance.ClearData();
                 App.ViewModel.ClearViewModel();
                 try
                 {
@@ -193,16 +198,25 @@ namespace windows_client.View
 
         private void UnlinkFb_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return;
+
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
+            
             if (res != MessageBoxResult.OK)
                 return;
+            
             shellProgress.IsIndeterminate = true;
             LogoutFb(false);
         }
 
         private void UnlinkTwitter_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!canGoBack)
+                return;
+
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
+            
             if (res != MessageBoxResult.OK)
                 return;
             else

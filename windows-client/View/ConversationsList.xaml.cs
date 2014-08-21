@@ -48,7 +48,6 @@ namespace windows_client.View
         private ApplicationBar appBar;
         //private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
-        ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem muteStatusMenu;
         ApplicationBarMenuItem settingsMenu;
         ApplicationBarMenuItem profileMenu;
@@ -65,10 +64,22 @@ namespace windows_client.View
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
 
         DefaultStatus _defaultStatus;
+        DefaultStatus DefaultStatus
+        {
+            get
+            {
+                if (_defaultStatus == null)
+                    _defaultStatus = new DefaultStatus();
+                return _defaultStatus;
+            }
+        }
 
         #endregion
 
         #region Page Based Functions
+
+        DispatcherTimer _resetTimer;
+        long _resetTimeSeconds;
 
         public ConversationsList()
         {
@@ -85,9 +96,7 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-            {
                 this.Loaded += ConversationsList_Loaded;
-            }
 
             ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
             ProTipHelper.Instance.ShowProTip += Instance_ShowProTip;
@@ -108,7 +117,12 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-            _defaultStatus = new DefaultStatus(string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName));
+            string password = App.ViewModel.Password;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            App.ViewModel.Password = password;
+            App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
+
+            App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
         }
 
         string _firstName;
@@ -191,32 +205,47 @@ namespace windows_client.View
                 {
                     LoadMessages();
                 };
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+
+                bw.RunWorkerCompleted += (ss, ee) =>
+                    {
+                        loadingCompleted();
+
+                        if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
+                        {
+                            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                                ShowAppUpdateAvailableMessage();
+                            else
+                                ShowInvitePopups();
+                        }
+                    };
+
                 bw.RunWorkerAsync();
 
                 #endregion
+
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
-
-                if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
-                {
-
-                    if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                        ShowAppUpdateAvailableMessage();
-                    else
-                        ShowInvitePopups();
-                }
             }
             // this should be called only if its not first load as it will get called in first load section
-            else if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
+            else if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+            {
+                ShowFTUECards();
+                UpdateLayout();
+            }
             else
             {
-                emptyScreenGrid.Opacity = 0;
+                ShowChats();
 
-                if (App.ViewModel.IsConversationUpdated)
+                if (App.ViewModel.IsConversationUpdated && App.ViewModel.MessageListPageCollection[0] != null)
                 {
-                    llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    try
+                    {
+                        llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("llsConversations Scroll to null Exception :: OnNavigatedTo");
+                    }
                     App.ViewModel.IsConversationUpdated = false;
                 }
             }
@@ -226,6 +255,13 @@ namespace windows_client.View
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 2;
+
+            if (!conversationPageToolTip.IsShow) // dont show reset if its already being shown
+            {
+                ShowHiddenModeResetToolTip();
+            }
+            else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
+                UpdateResetHiddenModeTimer();
 
             FrameworkDispatcher.Update();
         }
@@ -308,24 +344,17 @@ namespace windows_client.View
         }
 
         /* This function will run on UI Thread */
-        private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loadingCompleted()
         {
-            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
-            {
-                ShowLaunchMessages();
-            }
             shellProgress.IsIndeterminate = false;
             llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
-                emptyScreenGrid.Opacity = 1;
+            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                ShowFTUECards();
             else
-                emptyScreenGrid.Opacity = 0;
+                ShowChats();
 
             appBar.IsMenuEnabled = true;
-
-            if (delConvsMenu != null)
-                delConvsMenu.IsEnabled = true;
 
             if (settingsMenu != null)
                 settingsMenu.IsEnabled = true;
@@ -340,10 +369,10 @@ namespace windows_client.View
                 rewardsMenu.IsEnabled = true;
 
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
-            {
                 NetworkManager.turnOffNetworkManager = false;
-            }
+
             App.MqttManagerInstance.connect();
+
             if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
@@ -356,63 +385,91 @@ namespace windows_client.View
             }
         }
 
-        private void ShowLaunchMessages()
+        int _usersOnHike;
+
+        private void ShowFTUECards()
         {
-            List<ContactInfo> cl = null;
-            App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out cl);
-            if (cl == null)
+            if (emptyScreenGrid.Visibility == Visibility.Collapsed)
+                emptyScreenGrid.Visibility = Visibility.Visible;
+
+            if (llsConversations.Visibility == Visibility.Visible)
+                llsConversations.Visibility = Visibility.Collapsed;
+
+            if (_tipMode != null)
+                conversationPageToolTip.Visibility = Visibility.Collapsed;
+
+            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.HasCustomProfileImage(App.MSISDN))
+                profileFTUECard.Visibility = Visibility.Collapsed;
+
+            if (String.IsNullOrEmpty(groupCountCard.Text))
+                groupCountCard.Text = String.Format(AppResources.Conversations_FTUE_Group_SubTxt, HikeConstants.MAX_GROUP_MEMBER_SIZE);
+
+            if (h2oFTUECard.Visibility == Visibility.Collapsed)
             {
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
-                return;
+                bool showFreeSMS = true;
+                App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+                if (showFreeSMS && App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+                    h2oFTUECard.Visibility = Visibility.Visible;
             }
-            Random rnd = new Random();
-            for (int i = 0; i < cl.Count; i++)
+
+            if (peopleOnHikeListBox.ItemsSource == null)
             {
-                ConvMessage c = null;
-                JObject j = new JObject();
-                if (cl[i].OnHike)
+                List<ContactInfo> cl = null;
+                List<string> contacts = null;
+                App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out contacts);
+
+                if (contacts == null)
+                    return;
+
+                cl = new List<ContactInfo>();
+                ContactInfo cn;
+                foreach (var msisdn in contacts)
                 {
-                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
-                    c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = string.Format(rnd.Next(1, 3) == 1 ? AppResources.Conversations_MessageOnHike_Txt : AppResources.Conversations_SayHI_Txt, cl[i].Name);
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        cn = App.ViewModel.ContactsCache[msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
+                        if (cn != null)
+                            App.ViewModel.ContactsCache[msisdn] = cn;
+                    }
+
+                    if (cn != null)
+                        cl.Add(cn);
+
+                    if (cl.Count >= 4)
+                        break;
+                }
+
+                peopleOnHikeListBox.ItemsSource = cl;
+            }
+
+            var list = peopleOnHikeListBox.ItemsSource as IEnumerable<ContactInfo>;
+            if (list != null)
+            {
+                _usersOnHike = UsersTableUtils.getHikeContactCount();
+                _usersOnHike = _usersOnHike < list.Count() ? list.Count() : _usersOnHike;
+
+                if (_usersOnHike != 0)
+                {
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
+                    peopleOnHikeBorder.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.SMS_USER;
-                    c = new ConvMessage(ConvMessage.ParticipantInfoState.SMS_USER, j);
-                    c.Message = string.Format(AppResources.Conversations_OnSMS_Txt, cl[i].Name);
-                }
-                c.Msisdn = cl[i].Msisdn;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(c, false);
-                if (convObj != null)
-                {
-                    //cannot use convMap here because object has pushed to map but not to ui
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                     {
-                         int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
-                         if (index < 0)//not present in oc
-                         {
-                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                         }
-                         else if (index > 0)
-                         {
-                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                             App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                         }//if already at zero, do nothing
-
-                         emptyScreenGrid.Opacity = 0;
-                     });
+                    peopleOnHikeBorder.Visibility = Visibility.Collapsed;
                 }
             }
-            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
+            else
+                peopleOnHikeBorder.Visibility = Visibility.Collapsed;
         }
 
         private void initAppBar()
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -439,12 +496,6 @@ namespace windows_client.View
             postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
             postStatusIconButton.IsEnabled = true;
             appBar.Buttons.Add(postStatusIconButton);
-
-            delConvsMenu = new ApplicationBarMenuItem();
-            delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
-            delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
-            delConvsMenu.IsEnabled = false;//it will be enabled after loading of all conversations
-            appBar.MenuItems.Add(delConvsMenu);
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
@@ -700,45 +751,6 @@ namespace windows_client.View
 
         #region AppBar Button Events
 
-        private void deleteAllConvs_Click(object sender, EventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
-            if (result != MessageBoxResult.OK)
-                return;
-            isDeleteAllChats = true;
-            shellProgress.IsIndeterminate = true;
-            disableAppBar();
-            NetworkManager.turnOffNetworkManager = true;
-            ClearAllDB();
-            App.ViewModel.ConvMap.Clear();
-            App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenGrid.Opacity = 1;
-            enableAppBar();
-            NetworkManager.turnOffNetworkManager = false;
-            shellProgress.IsIndeterminate = false;
-            isDeleteAllChats = false;
-        }
-
-        private void ClearAllDB()
-        {
-            MessagesTableUtils.deleteAllMessages();
-            ConversationTableUtils.deleteAllConversations();
-            MiscDBUtil.DeleteAllAttachmentData();
-            foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
-            {
-                if (Utils.isGroupConversation(convMsisdn))
-                {
-                    JObject jObj = new JObject();
-                    jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
-                    jObj[HikeConstants.TO] = convMsisdn;
-                    App.MqttManagerInstance.mqttPublishToServer(jObj);
-                }
-            }
-            GroupManager.Instance.GroupCache.Clear();
-            GroupManager.Instance.DeleteAllGroups();
-            GroupTableUtils.deleteAllGroups();
-        }
-
         private void createGroup_Click(object sender, EventArgs e)
         {
             //if (TutorialStatusUpdate.Visibility == Visibility.Visible)
@@ -760,27 +772,42 @@ namespace windows_client.View
             //    return;
             //}
 
+            Analytics.SendClickEvent(HikeConstants.NEW_CHAT_FROM_TOP_BAR);
+
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
-        private void deleteConversation(ConversationListObject convObj)
+        /// <summary>
+        /// Delete conversation
+        /// </summary>
+        /// <param name="convObj">Conversation object to be deleted</param>
+        /// <param name="sendHiddenToggledPacket">send hidden mode toggled packet to server</param>
+        void DeleteConversation(ConversationListObject convObj, bool sendHiddenChatToogledPacket)
         {
-            App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            // Remove entry from map for UI.
+            App.ViewModel.ConvMap.Remove(convObj.Msisdn);
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenGrid.Opacity = 1;
-            }
+            // Removed from observable collection.
+            App.ViewModel.MessageListPageCollection.Remove(convObj);
 
-            if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
+            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                ShowFTUECards();
+
+            // If group conversation, send group leave packet too.
+            if (Utils.isGroupConversation(convObj.Msisdn))
             {
                 JObject jObj = new JObject();
                 jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                 jObj[HikeConstants.TO] = convObj.Msisdn;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
+
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
+
+            if (sendHiddenChatToogledPacket && convObj.IsHidden)
+            {
+                App.ViewModel.SendRemoveStealthPacket(convObj);
+            }
         }
 
         bool isContactListLoaded = false;
@@ -798,17 +825,11 @@ namespace windows_client.View
 
             if (_newIndex == 0)
             {
-                if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(0, delConvsMenu);
-
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
             }
             else if (_newIndex == 1) // favourite
             {
-                if (appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Remove(delConvsMenu);
-
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
                 // there will be two background workers that will independently load three sections
@@ -873,10 +894,7 @@ namespace windows_client.View
                             favourites.Visibility = System.Windows.Visibility.Visible;
                         }
                         else
-                        {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
-                            addContactsTxtBlk.Text = AppResources.Conversations_TapYesToAdd_Txt;
-                        }
 
                         if (hikeContactList.Count == 0)
                         {
@@ -899,9 +917,6 @@ namespace windows_client.View
             else if (_newIndex == 2)
             {
                 ProTipCount = 0;
-
-                if (appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Remove(delConvsMenu);
 
                 if (!appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Insert(0, muteStatusMenu);
@@ -934,7 +949,7 @@ namespace windows_client.View
                         this.statusLLS.ItemsSource = App.ViewModel.StatusList;
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(_defaultStatus);
+                            App.ViewModel.StatusList.Add(DefaultStatus);
 
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
@@ -1075,21 +1090,20 @@ namespace windows_client.View
                     return;
 
                 bool showPush = true;
-                if(vals.Length == 3)
+                if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
 
                 mObj.TypingNotificationText = null;
 
-                if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
+                if (!isDeleteAllChats && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive))) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         try
                         {
-                            if (emptyScreenGrid.Opacity == 1)
-                                emptyScreenGrid.Opacity = 0;
+                            ShowChats();
 
-                            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                            if (App.ViewModel.MessageListPageCollection.Count > 0 && App.ViewModel.MessageListPageCollection[0] != null)
                                 llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
                         }
                         catch (Exception ex)
@@ -1103,13 +1117,13 @@ namespace windows_client.View
                 {
                     bool isHikeJingleEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled)
+                    if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
                     App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled)
+                    if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
@@ -1125,7 +1139,7 @@ namespace windows_client.View
                 {
                     _userName = (string)obj;
                     _firstName = Utils.GetFirstName(_userName);
-                    _defaultStatus.Text = string.Format(AppResources.Conversations_EmptyStatus_Hey_Txt, _firstName);
+                    peopleOnHikeText.Text = String.Format(AppResources.Conversations_Empty_PeopleOnHike_Txt, _firstName, _usersOnHike);
                 });
             }
             #endregion
@@ -1218,7 +1232,7 @@ namespace windows_client.View
                     //if its image update and status are laoded, update each status userImage async
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
                     {
-                        UpdateUserImageInStatus(sm);
+                        App.ViewModel.UpdateUserImageInStatus(sm.Msisdn);
                     }
 
                     if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
@@ -1297,7 +1311,7 @@ namespace windows_client.View
                         }
 
                         if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(_defaultStatus);
+                            App.ViewModel.StatusList.Add(DefaultStatus);
                     }
                 });
             }
@@ -1460,7 +1474,7 @@ namespace windows_client.View
                                                 App.ViewModel.StatusList.Remove(f);
 
                                                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                                                    App.ViewModel.StatusList.Add(_defaultStatus);
+                                                    App.ViewModel.StatusList.Add(DefaultStatus);
                                             }
                                             catch (Exception e)
                                             {
@@ -1500,6 +1514,14 @@ namespace windows_client.View
                            favourites.Visibility = System.Windows.Visibility.Collapsed;
                        }
                    });
+                    #endregion
+
+                    #region remove pic
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (isStatusMessagesLoaded)
+                            App.ViewModel.UpdateUserImageInStatus(c.Msisdn);
+                    });
                     #endregion
                 }
                 Dispatcher.BeginInvoke(() =>
@@ -1554,8 +1576,8 @@ namespace windows_client.View
                     ConversationListObject co = obj as ConversationListObject;
                     App.ViewModel.MessageListPageCollection.Remove(co);
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0)
-                        emptyScreenGrid.Opacity = 1;
+                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                        ShowFTUECards();
                 });
             }
             #endregion
@@ -1668,7 +1690,7 @@ namespace windows_client.View
                                 appBar.MenuItems.Insert(1, rewardsMenu);
                             else
                                 appBar.MenuItems.Insert(2, rewardsMenu);
-                        } 
+                        }
                         rewardsMenu.IsEnabled = true;
                     });
                 }
@@ -1684,6 +1706,18 @@ namespace windows_client.View
                 }
             }
             #endregion
+        }
+
+        private void ShowChats()
+        {
+            if (emptyScreenGrid.Visibility == Visibility.Visible)
+                emptyScreenGrid.Visibility = Visibility.Collapsed;
+
+            if (llsConversations.Visibility == Visibility.Collapsed)
+                llsConversations.Visibility = Visibility.Visible;
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+                UpdateToolTip(true);
         }
 
         private void UpdateFriendsCounter()
@@ -1704,17 +1738,6 @@ namespace windows_client.View
                 txtContactsOnHike.Text = AppResources.Conversations_1Contact_on_hike;
             else
                 txtContactsOnHike.Text = string.Format(AppResources.Conversations_NContacts_on_hike, hikeContactList.Count);
-        }
-
-        private async void UpdateUserImageInStatus(StatusMessage sm)
-        {
-            await Task.Delay(1);
-
-            foreach (var status in App.ViewModel.StatusList)
-            {
-                if (status.Msisdn == sm.Msisdn)
-                    status.UpdateImage();
-            }
         }
 
         #endregion
@@ -1792,10 +1815,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 LayoutRoot.IsHitTestVisible = false;
-                appBar.IsMenuEnabled = false;
-                composeIconButton.IsEnabled = false;
-                postStatusIconButton.IsEnabled = false;
-                groupChatIconButton.IsEnabled = false;
+                disableAppBar();
             });
         }
 
@@ -1832,7 +1852,7 @@ namespace windows_client.View
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
-                deleteConversation(convObj);
+                DeleteConversation(convObj, true);
         }
 
         private void MenuItem_Click_AddRemoveFav(object sender, RoutedEventArgs e)
@@ -1943,19 +1963,58 @@ namespace windows_client.View
             }
         }
 
+        private void MenuItem_Click_Mute(object sender, RoutedEventArgs e)
+        {
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (convObj == null)
+                return;
 
+            JObject obj = new JObject();
+            JObject o = new JObject();
+            o["id"] = convObj.Msisdn;
+            obj[HikeConstants.DATA] = o;
+
+            if (convObj.IsMute) // GC is muted , request to unmute
+            {
+                obj[HikeConstants.TYPE] = "unmute";
+                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+            else // GC is unmute , request to mute
+            {
+                obj[HikeConstants.TYPE] = "mute";
+                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = 0;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+        }
+
+        private void MenuItem_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            BaseStatusUpdate selectedItem = (sender as MenuItem).DataContext as BaseStatusUpdate;
+
+            if (selectedItem == null)
+                return;
+
+            Clipboard.SetText(selectedItem.Text);
+        }
         #endregion
 
         private void disableAppBar()
         {
             composeIconButton.IsEnabled = false;
-            appBar.IsMenuEnabled = false;
+            postStatusIconButton.IsEnabled = false;
+            groupChatIconButton.IsEnabled = false;
+            ApplicationBar.IsMenuEnabled = false;
         }
 
         private void enableAppBar()
         {
             composeIconButton.IsEnabled = true;
-            appBar.IsMenuEnabled = true;
+            postStatusIconButton.IsEnabled = true;
+            groupChatIconButton.IsEnabled = true;
+            ApplicationBar.IsMenuEnabled = true;
         }
 
         private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1965,6 +2024,15 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (passwordOverlay.IsShow)
+            {
+                _isConfirmPassword = false;
+                _tempPassword = null;
+                passwordOverlay.IsShow = false;
+                e.Cancel = true;
+                return;
+            }
+
             if (App.IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
@@ -2043,7 +2111,7 @@ namespace windows_client.View
             if (favourites.SelectedItem != null)
             {
                 ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-                if (obj == null)
+                if (obj == null || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(obj.Msisdn) && App.ViewModel.ConvMap[obj.Msisdn].IsHidden))
                     return;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 string uri = "/View/NewChatThread.xaml";
@@ -2114,6 +2182,15 @@ namespace windows_client.View
         {
             ContactInfo c = hikeContactListBox.SelectedItem as ContactInfo;
             if (c == null)
+                return;
+
+            StartNewChatWithSelectContact(c);
+        }
+
+        private void StartNewChatWithSelectContact(ContactInfo c)
+        {
+            if (!App.ViewModel.IsHiddenModeActive
+                && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
                 return;
 
             object objToSend;
@@ -2235,7 +2312,8 @@ namespace windows_client.View
                     {
                         if (_refreshBarCount == 0 && value > 0)
                         {
-                            refreshBarButton.Visibility = System.Windows.Visibility.Visible;
+                            if (isStatusMessagesLoaded && launchPagePivot.SelectedIndex == 2)
+                                refreshBarButton.Visibility = System.Windows.Visibility.Visible;
                         }
                         else if (_refreshBarCount > 0 && value == 0)
                         {
@@ -2407,8 +2485,14 @@ namespace windows_client.View
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
                 MiscDBUtil.SavePendingRequests();
+
                 if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                {
+                    if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                        App.ViewModel.StatusList.Add(DefaultStatus);
+                    
                     return;
+                }
 
                 ConversationListObject cObj = null;
                 ContactInfo cn = null;
@@ -2478,7 +2562,7 @@ namespace windows_client.View
                 App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
 
                 if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                    App.ViewModel.StatusList.Add(_defaultStatus);
+                    App.ViewModel.StatusList.Add(DefaultStatus);
 
                 MiscDBUtil.SavePendingRequests();
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -2559,6 +2643,9 @@ namespace windows_client.View
                 _hyperlinkedInsideStatusUpdateClicked = false;
                 return;
             }
+
+            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(status.Msisdn) && App.ViewModel.ConvMap[status.Msisdn].IsHidden)
+                return;
 
             if (status.Msisdn == App.MSISDN)
             {
@@ -2765,7 +2852,8 @@ namespace windows_client.View
         #region Overlay
         void ShowInvitePopups()
         {
-            Object[] obj;
+            Object[] obj = null;
+
             if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
             {
                 showFreeMessageOverlay = obj == null;
@@ -2791,26 +2879,25 @@ namespace windows_client.View
                 customOverlay.SetVisibility(true);
             }
         }
+
         void customOverlay_VisibilityChanged(object sender, EventArgs e)
         {
             Overlay overlay = sender as Overlay;
             if (overlay.Visibility == Visibility.Collapsed)
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = true;
-                }
-                appBar.IsMenuEnabled = true;
+
+                ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
                 App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
             }
             else
             {
                 foreach (ApplicationBarIconButton button in appBar.Buttons)
-                {
                     button.IsEnabled = false;
-                }
-                appBar.IsMenuEnabled = false;
+
+                ApplicationBar.IsMenuEnabled = false;
                 launchPagePivot.IsHitTestVisible = false;
             }
         }
@@ -2831,6 +2918,34 @@ namespace windows_client.View
         }
         #endregion
 
+        #region FTUE
+
+        private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_POST_STATUS_CLICKED);
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
+        private void SeeAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_SEE_ALL_CLICKED);
+            NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
+        }
+
+        private void DefaultChat_Selected(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            ContactInfo c = listBox.SelectedItem as ContactInfo;
+
+            if (c == null)
+                return;
+
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_START_CHAT_CLICKED);
+
+            StartNewChatWithSelectContact(c);
+        }
+
         private void MenuItem_Click_GoToUserInfo(object sender, RoutedEventArgs e)
         {
             var obj = (sender as MenuItem).DataContext as ConversationListObject;
@@ -2838,6 +2953,7 @@ namespace windows_client.View
             {
                 if (obj.IsGroupChat)
                 {
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
                     NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
                 }
@@ -2848,6 +2964,29 @@ namespace windows_client.View
                 }
             }
         }
+
+        private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_INVITE_CLICKED);
+            NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+        }
+
+        private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_GROUP_CHAT_CLICKED);
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
+        }
+
+        private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_PROFILE_PIC_CLICKED);
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+            PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
+        #endregion
 
         #region Typing Notification
 
@@ -2986,5 +3125,600 @@ namespace windows_client.View
         {
             launchPagePivot.SelectedIndex = 1;
         }
+
+        #region Hidden Mode
+
+        // Confirm hidden mode password
+        bool _isConfirmPassword;
+
+        // Temporary password for confirmation
+        string _tempPassword;
+
+        // Tool tip mode
+        ToolTipMode _tipMode;
+
+        /// <summary>
+        /// Function called when hike logo is tapped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt, AppResources.HiddenMode_ZeroChatConf_Header_Txt, MessageBoxButton.OK);
+                return;
+            }
+            else
+            {
+                if (!App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                {
+                    if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                    else
+                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                }
+
+                if (!App.ViewModel.IsHiddenModeActive)
+                {
+                    if (launchPagePivot.SelectedIndex != 0)
+                        launchPagePivot.SelectedIndex = 0;
+
+                    passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
+                        AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
+
+                    passwordOverlay.IsShow = true;
+                }
+                else
+                {
+                    ToggleHidddenMode();
+
+                    if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
+                    {
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+
+                        if (conversationPageToolTip.IsShow)
+                            conversationPageToolTip.IsShow = false;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Toggle hidden mode.
+        /// </summary>
+        void ToggleHidddenMode()
+        {
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                conversationPageToolTip.IsShow = false;
+
+            App.ViewModel.ToggleHiddenMode();
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        if (llsConversations.ItemsSource.Count > 0)
+                            llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+                    }
+                    catch (Exception)
+                    {
+                        //handled exception due to scroll to
+                    }
+
+                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                        ShowFTUECards();
+                    else
+                        ShowChats();
+                });
+
+            SendHiddenModeToggledPacket();
+        }
+
+        /// <summary>
+        /// Send hidden mode packet toggled to server.
+        /// </summary>
+        void SendHiddenModeToggledPacket()
+        {
+            //send qos 0 for toggling for stealth mode on server
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
+
+            JObject data = new JObject();
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+                data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
+            else
+                data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
+
+            hideObj.Add(HikeConstants.DATA, data);
+
+            Object[] objArr = new object[2];
+            objArr[0] = hideObj;
+            objArr[1] = 0;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, objArr);
+        }
+
+        /// <summary>
+        /// Mark individual chat as hidden/unhidden.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_Click_HideChat(object sender, RoutedEventArgs e)
+        {
+            var obj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (obj != null)
+            {
+                obj.IsHidden = !obj.IsHidden;
+
+                if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                {
+                    _tipMode = ToolTipMode.HIDDEN_MODE_COMPLETE;
+                    UpdateToolTip(true);
+                }
+
+                JObject hideObj = new JObject();
+                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+
+                JObject data = new JObject();
+                JArray msisdn = new JArray();
+                msisdn.Add(obj.Msisdn);
+
+                if (obj.IsHidden)
+                    data.Add(HikeConstants.CHAT_ENABLED, msisdn);
+                else
+                    data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+
+                hideObj.Add(HikeConstants.DATA, data);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+            }
+        }
+
+
+        /// <summary>
+        /// Password has been entered by the user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void passwordOverlay_PasswordEntered(object sender, EventArgs e)
+        {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                if (String.IsNullOrWhiteSpace(App.ViewModel.Password))
+                {
+                    if (_isConfirmPassword)
+                    {
+                        if (_tempPassword.Equals(popup.Password))
+                        {
+                            Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
+
+                            App.ViewModel.Password = popup.Password;
+                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
+                            ToggleHidddenMode();
+
+                            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+                            {
+                                _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
+                                UpdateToolTip(true);
+                            }
+                        }
+                        else
+                            MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
+
+                        _isConfirmPassword = false;
+                        popup.IsShow = false;
+                    }
+                    else
+                    {
+                        _isConfirmPassword = true;
+                        _tempPassword = popup.Password;
+                        popup.Text = AppResources.ConfirmPassword_Txt;
+                        popup.Password = String.Empty;
+                    }
+                }
+                else if (App.ViewModel.Password == popup.Password)
+                {
+                    ToggleHidddenMode();
+                    popup.IsShow = false;
+
+                    if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                        UpdateToolTip(false);
+                }
+                else
+                {
+                    popup.IsShow = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle password visibility changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void passwordOverlay_PasswordOverlayVisibilityChanged(object sender, EventArgs e)
+        {
+            var popup = sender as PasswordPopUpUC;
+            if (popup != null)
+            {
+                SystemTray.IsVisible = popup.IsShow ? false : true;
+                ApplicationBar.IsVisible = popup.IsShow ? false : true;
+                headerGrid.IsHitTestVisible = popup.IsShow ? false : true;
+                tipControl.IsHitTestVisible = popup.IsShow ? false : true;
+                launchPagePivot.IsHitTestVisible = popup.IsShow ? false : true;
+            }
+        }
+
+        /// <summary>
+        /// Show reset hidden mode tool tip.
+        /// </summary>
+        private void ShowHiddenModeResetToolTip()
+        {
+            long resetTime;
+            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            {
+                _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                if (_resetTimeSeconds > 0)
+                {
+                    var resetTimeTimeSpan = TimeSpan.FromSeconds(1);
+                    if (_resetTimer == null)
+                    {
+                        _resetTimer = new DispatcherTimer();
+                        _resetTimer.Interval = resetTimeTimeSpan;
+                        _resetTimer.Tick -= _resetTimer_Tick;
+                        _resetTimer.Tick += _resetTimer_Tick;
+                    }
+
+                    if (!_resetTimer.IsEnabled)
+                        _resetTimer.Start();
+                }
+                else
+                {
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    UpdateToolTip(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update reset timer after resuming app on home page.
+        /// </summary>
+        private void UpdateResetHiddenModeTimer()
+        {
+            long resetTime;
+            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            {
+                _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
+                if (_resetTimeSeconds <= 0)
+                {
+                    if (_resetTimer != null)
+                        _resetTimer.Stop();
+
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                    UpdateToolTip(true);
+                }
+                else
+                {
+                    _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
+                    UpdateToolTip(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reset timer tick event. Update timer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _resetTimer_Tick(object sender, EventArgs e)
+        {
+            if (_resetTimeSeconds <= 0)
+            {
+                if (_resetTimer != null)
+                    _resetTimer.Stop();
+
+                _tipMode = ToolTipMode.RESET_HIDDEN_MODE_COMPLETED;
+                UpdateToolTip(true);
+            }
+            else
+            {
+                _tipMode = ToolTipMode.RESET_HIDDEN_MODE;
+                UpdateToolTip(true);
+            }
+
+            _resetTimeSeconds--;
+        }
+
+        /// <summary>
+        /// Update tool tip based on tip mode status.
+        /// </summary>
+        /// <param name="isModeChanged">is the mode changed. If yes then reset tool tip values.</param>
+        void UpdateToolTip(bool isModeChanged)
+        {
+            conversationPageToolTip.ResetClickEvents();
+
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+                    break;
+
+                case ToolTipMode.HIDDEN_MODE_GETSTARTED:
+
+                    if (isModeChanged)
+                    {
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_GetStarted_Txt;
+                        conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                        conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    }
+
+                    if (!conversationPageToolTip.IsShow)
+                        conversationPageToolTip.IsShow = true;
+
+                    break;
+
+                case ToolTipMode.HIDDEN_MODE_STEP2:
+
+                    if (!App.ViewModel.IsHiddenModeActive)
+                        return;
+
+                    if (isModeChanged)
+                    {
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Step2_Txt;
+                        conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                        conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    }
+
+                    if (!conversationPageToolTip.IsShow)
+                        conversationPageToolTip.IsShow = true;
+
+                    break;
+
+                case ToolTipMode.HIDDEN_MODE_COMPLETE:
+
+                    if (isModeChanged)
+                    {
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.ToolTipArrow;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenMode_Completed_Txt;
+                        conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                        conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    }
+
+                    if (!conversationPageToolTip.IsShow)
+                        conversationPageToolTip.IsShow = true;
+
+                    break;
+
+                case ToolTipMode.RESET_HIDDEN_MODE:
+
+                    if (isModeChanged)
+                    {
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                        conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    }
+
+                    conversationPageToolTip.TipText = String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds));
+
+                    if (!conversationPageToolTip.IsShow)
+                        conversationPageToolTip.IsShow = true;
+
+                    break;
+
+                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+
+                    if (isModeChanged)
+                    {
+                        conversationPageToolTip.LeftIconSource = UI_Utils.Instance.SheildIcon;
+                        conversationPageToolTip.RightIconSource = UI_Utils.Instance.ToolTipCrossIcon;
+                        conversationPageToolTip.TipText = AppResources.HiddenModeReset_Completed_Txt;
+                        conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
+                        conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
+                        conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
+                        conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
+                    }
+
+                    if (!conversationPageToolTip.IsShow)
+                        conversationPageToolTip.IsShow = true;
+
+                    break;
+            }
+
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
+        }
+
+        /// <summary>
+        /// Full tool tip tapped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void conversationPageToolTip_FullTipTapped(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+                    conversationPageToolTip.IsShow = false;
+
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
+
+                    if (mBox == MessageBoxResult.OK)
+                    {
+                        ResetHiddenMode();
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
+                    }
+
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    _tipMode = ToolTipMode.DEFAULT;
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Right icon clicked in tool tip.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void conversationPageToolTip_RightIconClicked(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.RESET_HIDDEN_MODE:
+
+                    if (_resetTimer != null)
+                        _resetTimer.Stop();
+
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
+
+                    if (mBox == MessageBoxResult.OK)
+                    {
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
+                        conversationPageToolTip.IsShow = false;
+                    }
+                    else
+                    {
+                        if (_resetTimer != null)
+                            _resetTimer.Start();
+                    }
+
+                    break;
+                case ToolTipMode.HIDDEN_MODE_GETSTARTED:
+                    conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
+                    break;
+                case ToolTipMode.HIDDEN_MODE_STEP2:
+                    conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
+                    break;
+                case ToolTipMode.HIDDEN_MODE_COMPLETE:
+                    conversationPageToolTip.IsShow = false;
+                    _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
+                    break;
+                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+                    conversationPageToolTip.IsShow = false;
+
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                    _tipMode = ToolTipMode.DEFAULT;
+
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+
+                    if (_resetTimer != null)
+                    {
+                        _resetTimer.Stop();
+                        _resetTimer = null;
+                    }
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Reset hidden mode, remove saved pasword, reset tooltip and delete chats.
+        /// </summary>
+        void ResetHiddenMode()
+        {
+            _isConfirmPassword = false;
+            _tempPassword = null;
+
+            RemoveHiddenModePassword();
+
+            App.ViewModel.ResetHiddenMode();
+
+            ResetHiddenModeToolTip();
+
+            DeleteHiddenChats();
+
+            SendResetPacketToServer();
+        }
+
+        /// <summary>
+        /// Reset hidden mode password.
+        /// </summary>
+        private void RemoveHiddenModePassword()
+        {
+            App.ViewModel.Password = null;
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
+        }
+
+        /// <summary>
+        /// Reset hidden mode tooltip.
+        /// </summary>
+        private void ResetHiddenModeToolTip()
+        {
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
+            UpdateToolTip(true);
+        }
+
+        /// <summary>
+        /// Delete hidden chats.
+        /// </summary>
+        void DeleteHiddenChats()
+        {
+            var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsHidden);
+
+            if (list != null && list.Count() > 0)
+            {
+                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; )
+                {
+                    if (App.ViewModel.MessageListPageCollection[i].IsHidden)
+                    {
+                        var convObj = App.ViewModel.MessageListPageCollection[i];
+                        DeleteConversation(convObj, false);
+                    }
+                    else
+                        i++;
+                }
+
+                if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                    ShowFTUECards();
+            }
+        }
+
+        /// <summary>
+        /// Send reset hidden mode packet to server
+        /// </summary>
+        void SendResetPacketToServer()
+        {
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.RESET, true);
+
+            hideObj.Add(HikeConstants.DATA, data);
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+        }
+
+        void ViewModel_ResetHiddenModeClicked(object sender, EventArgs e)
+        {
+            ShowHiddenModeResetToolTip();
+        }
+
+        #endregion
     }
+
 }

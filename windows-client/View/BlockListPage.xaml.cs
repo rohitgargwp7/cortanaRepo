@@ -31,8 +31,8 @@ namespace windows_client.View
         {
             ApplicationBar appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
             };
 
             this.ApplicationBar = appBar;
@@ -165,7 +165,11 @@ namespace windows_client.View
             for (int i = 0; i < (allContactsList != null?allContactsList.Count:0); i++)
             {
                 ContactInfo c = allContactsList[i];
-            
+
+                if (!App.ViewModel.IsHiddenModeActive &&
+                    App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+                    continue;
+                
                 if (hashBlocked.Contains(c.Msisdn))
                 {
                     blockedContacts.Add(c);
@@ -178,8 +182,14 @@ namespace windows_client.View
             
             if (hashBlocked.Count > 0)
             {
-                foreach (string msisdn in  hashBlocked)
+                foreach (string msisdn in hashBlocked)
+                {
+                    if (!App.ViewModel.IsHiddenModeActive &&
+                    App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                        continue;
+
                     blockedContacts.Add(new ContactInfo(msisdn, msisdn, false));
+                }
             }
             
             return blockedContacts;

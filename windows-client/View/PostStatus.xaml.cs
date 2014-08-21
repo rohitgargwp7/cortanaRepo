@@ -41,8 +41,8 @@ namespace windows_client.View
             this.Loaded += new RoutedEventHandler(PostStatusPage_Loaded);
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
             };
 
             postStatusIcon = new ApplicationBarIconButton();
@@ -136,6 +136,12 @@ namespace windows_client.View
                 return;
             }
 
+            this.Focus();
+
+            postStatusIcon.IsEnabled = false;
+            LayoutRoot.IsHitTestVisible = false;
+            shellProgress.IsIndeterminate = true;
+
             JObject statusJSON = new JObject();
             statusJSON["status-message"] = statusText;
             if (isFacebookPost)
@@ -148,10 +154,72 @@ namespace windows_client.View
                 statusJSON["timeofday"] = (int)TimeUtils.GetTimeIntervalDay();
             }
 
-            AccountUtils.postStatus(statusJSON, StatusUpdateHelper.Instance.postStatus_Callback);
+            AccountUtils.postStatus(statusJSON, postStatus_Callback);
+        }
 
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
+        public void postStatus_Callback(JObject obj)
+        {
+            string stat = "";
+            
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                stat = statusToken.ToString();
+            }
+
+            if (stat == HikeConstants.OK)
+            {
+                JToken statusData;
+                JObject moodData;
+                obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
+                try
+                {
+                    moodData = statusData.ToObject<JObject>();
+                    string statusId = statusData["statusid"].ToString();
+                    string message = statusData["msg"].ToString();
+                    int moodId = -1;
+                    int tod = 0;
+
+                    if (statusData[HikeConstants.MOOD] != null)
+                    {
+                        string moodId_String = statusData[HikeConstants.MOOD].ToString();
+                        if (!string.IsNullOrEmpty(moodId_String))
+                        {
+                            int.TryParse(moodId_String, out moodId);
+                            moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
+                            if (moodId > 0)
+                                tod = statusData[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                        }
+                    }
+
+                    // status should be in read state when posted yourself
+                    StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
+                        TimeUtils.getCurrentTimeStamp(), true, -1, moodId, tod, true);
+                    StatusMsgsTable.InsertStatusMsg(sm, false);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
+                }
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (NavigationService.CanGoBack)
+                        NavigationService.GoBack();
+                });
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Status_Not_Posted_Rename, MessageBoxButton.OK);
+                    postStatusIcon.IsEnabled = true;
+                    LayoutRoot.IsHitTestVisible = true;
+                    shellProgress.IsIndeterminate = false;
+                });
+            }
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)

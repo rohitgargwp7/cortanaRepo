@@ -320,7 +320,6 @@ namespace windows_client.Controls
                 yesClicked = false;
                 noClicked = false;
 
-
                 if (this.VisibilityChanged != null)
                     this.VisibilityChanged(this, null);
             }

@@ -8,10 +8,9 @@ namespace windows_client.Model
 {
     public class DefaultStatus : BaseStatusUpdate
     {
-        public DefaultStatus(string text)
+        public DefaultStatus()
             : base(string.Empty, null, string.Empty, string.Empty)
         {
-            Text = text; 
         }
     }
 }

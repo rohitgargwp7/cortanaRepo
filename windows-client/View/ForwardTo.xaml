@@ -15,15 +15,15 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="False" Visibility="Visible" Canvas.ZIndex="1" Foreground="White" VerticalAlignment="Top"/>
+
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Name="PageTitle" Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Chat_With_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
@@ -66,10 +66,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
+                                <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeFGBrush}"/>
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" />
-                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding ContactListLabel}" FontWeight="Light" Foreground="{StaticResource HikeSubTextForegroundBrush}" FontSize="18" />
+                                    <TextBlock Text="{Binding PhoneNoKindText}" FontWeight="Light" Foreground="{StaticResource HikeSubTextForegroundBrush}" FontSize="18" Margin="5,0,0,0" />
                                 </StackPanel>
                             </Grid>
                             <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Visibility="{Binding CheckBoxVisibility}"

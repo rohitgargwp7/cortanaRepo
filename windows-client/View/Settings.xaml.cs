@@ -273,8 +273,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
-
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
             if (_stopContactScanning)
             {
                 _stopContactScanning = false;
@@ -304,6 +303,8 @@ namespace windows_client.View
                 obj[1] = updatedContacts;
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
+
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
 
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;

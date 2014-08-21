@@ -39,7 +39,7 @@ namespace windows_client.View
                     RichTextBox rtb = new RichTextBox()
                     {
                         TextWrapping = TextWrapping.Wrap,
-                        Foreground = (SolidColorBrush)App.Current.Resources["HikeBlack"]
+                        Foreground = (SolidColorBrush)App.Current.Resources["HikeFGBrush"]
                     };
                     rtb.Blocks.Add(SmileyParser.Instance.LinkifyAll(null, currentString, phoneForeground, new SmileyParser.HyperLinkClickedDelegate(hyperlink_Click_CallBack)));
                     stMessage.Children.Add(rtb);
