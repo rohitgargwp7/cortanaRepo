@@ -724,11 +724,12 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
+            _completeGroupedContactList = GetGroupedList(_allContactsList);
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 _filteredGroupedContactList = null;
-                _completeGroupedContactList = GetGroupedList(_allContactsList);
-
+                
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
                 if (!_showSmsContacts)
                 {
@@ -755,10 +756,12 @@ namespace windows_client.View
                     else
                         emptyGrid.Visibility = Visibility.Collapsed;
                 }
+
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();
                 contactsListBox.IsHitTestVisible = true;
             });
+
             _canGoBack = true;
         }
 

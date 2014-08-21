@@ -129,7 +129,7 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
 
-                if (_completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
                 {
                     emptyGrid.Visibility = Visibility.Visible;
                     noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
