@@ -45,7 +45,7 @@ using Windows.System;
 using Windows.Storage;
 using windows_client.Model.Sticker;
 using System.Windows.Resources;
-using windows_client.Model.Video;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -4870,7 +4870,7 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
-                VideoClass videoShared = (VideoClass)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
                 try
                 {
@@ -4982,9 +4982,9 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
-                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+                List<PhotoItem> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoItem>;
 
-                foreach (PhotoClass pic in listPic)
+                foreach (PhotoItem pic in listPic)
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);

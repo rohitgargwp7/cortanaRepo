@@ -202,8 +202,8 @@
     <Compile Include="Model\ContactGroup.cs" />
     <Compile Include="Model\GroupPic.cs" />
     <Compile Include="Model\ItemGroup.cs" />
-    <Compile Include="Model\MediaShare\VideoAlbumClass.cs" />
-    <Compile Include="Model\MediaShare\PhotoAlbumClass.cs" />
+    <Compile Include="Model\MediaShare\VideoAlbum.cs" />
+    <Compile Include="Model\MediaShare\PhotoAlbum.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\ChatBackground.cs" />
@@ -213,7 +213,7 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
-    <Compile Include="Model\MediaShare\PhotoClass.cs" />
+    <Compile Include="Model\MediaShare\PhotoItem.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -225,7 +225,7 @@
     <Compile Include="Model\Sticker\StickerObj.cs" />
     <Compile Include="Model\ToolTipMode.cs" />
     <Compile Include="Model\TypingNotification.cs" />
-    <Compile Include="Model\MediaShare\VideoClass.cs" />
+    <Compile Include="Model\MediaShare\VideoItem.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
     <Compile Include="Mqtt\IpManager.cs" />

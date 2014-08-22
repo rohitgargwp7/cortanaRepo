@@ -17,7 +17,7 @@ using System.IO;
 using System.Windows.Media;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
-using windows_client.Model.Video;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -34,14 +34,14 @@ namespace windows_client.View
             shareVideo.Click += shareVideo_Click;
             this.ApplicationBar.Buttons.Add(shareVideo);
 
-            VideoClass videoShared = (VideoClass)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(videoShared.Duration);
         }
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-            VideoClass videoShared = (VideoClass)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             if (videoShared.Size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
@@ -62,7 +62,7 @@ namespace windows_client.View
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.ViewModel.PauseBackgroundAudio();
-            VideoClass videoShared = (VideoClass)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             Utils.PlayFileInMediaPlayer(videoShared.FilePath);
         }
     }

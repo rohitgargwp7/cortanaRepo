@@ -10,7 +10,7 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using System.IO;
 using RPALApiComponent;
-using windows_client.Model.Video;
+using windows_client.Model;
 using System.Diagnostics;
 using System.Windows.Resources;
 using windows_client.utils;
@@ -23,7 +23,7 @@ namespace windows_client.View
 {
     public partial class ViewVideos : PhoneApplicationPage
     {
-        List<VideoClass> listAllVideos = null;
+        List<VideoItem> listAllVideos = null;
 
         public ViewVideos()
         {
@@ -63,10 +63,10 @@ namespace windows_client.View
             });
         }
 
-        public List<VideoAlbumClass> GetAlbums()
+        public List<VideoAlbum> GetAlbums()
         {
-            Dictionary<string, VideoAlbumClass> videoAlbumList = new Dictionary<string, VideoAlbumClass>();
-            listAllVideos = new List<VideoClass>();
+            Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
+            listAllVideos = new List<VideoItem>();
 
             try
             {
@@ -93,14 +93,14 @@ namespace windows_client.View
                         {
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
-                        VideoClass video = new VideoClass(filePath, thumbBytes, videoDuration, videoSize);
+                        VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
-                        VideoAlbumClass albumObj;
+                        VideoAlbum albumObj;
                         
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                         {
-                            albumObj = new VideoAlbumClass(albumName, thumbBytes);
+                            albumObj = new VideoAlbum(albumName, thumbBytes);
                             videoAlbumList.Add(albumName, albumObj);
                         }
                         albumObj.Add(video);
@@ -118,7 +118,7 @@ namespace windows_client.View
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            VideoAlbumClass album = llsAlbums.SelectedItem as VideoAlbumClass;
+            VideoAlbum album = llsAlbums.SelectedItem as VideoAlbum;
             if (album == null)
                 return;
             albumNameTxt.Text = album.AlbumName.ToLower();
@@ -129,7 +129,7 @@ namespace windows_client.View
             BindAlbumVideos(album);
         }
 
-        private async Task BindAlbumVideos(VideoAlbumClass album)
+        private async Task BindAlbumVideos(VideoAlbum album)
         {
             await Task.Delay(1);
             llsVideos.ItemsSource = GroupedVideos(album);
@@ -155,7 +155,7 @@ namespace windows_client.View
         }
 
 
-        public List<KeyedList<string, VideoClass>> GroupedVideos(List<VideoClass> listVideos)
+        public List<KeyedList<string, VideoItem>> GroupedVideos(List<VideoItem> listVideos)
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
@@ -163,8 +163,8 @@ namespace windows_client.View
                 from video in listVideos
                 orderby video.TimeStamp descending
                 group video by video.TimeStamp.ToString("y") into videosByMonth
-                select new KeyedList<string, VideoClass>(videosByMonth);
-            return new List<KeyedList<string, VideoClass>>(groupedPhotos);
+                select new KeyedList<string, VideoItem>(videosByMonth);
+            return new List<KeyedList<string, VideoItem>>(groupedPhotos);
         }
 
         public class KeyedList<TKey, TItem> : List<TItem>
@@ -205,7 +205,7 @@ namespace windows_client.View
         private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LongListSelector lls = sender as LongListSelector;
-            VideoClass selectedVideo = lls.SelectedItem as VideoClass;
+            VideoItem selectedVideo = lls.SelectedItem as VideoItem;
             if (selectedVideo == null)
                 return;
             lls.SelectedItem = null;

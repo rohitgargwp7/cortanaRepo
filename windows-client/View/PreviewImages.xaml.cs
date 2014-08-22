@@ -19,7 +19,7 @@ namespace windows_client.View
 {
     public partial class PreviewImages : PhoneApplicationPage
     {
-        ObservableCollection<PhotoClass> listPic;
+        ObservableCollection<PhotoItem> listPic;
         ApplicationBarIconButton picturesUpload;
         ApplicationBarIconButton deleteIcon;
         
@@ -33,7 +33,7 @@ namespace windows_client.View
             InitializeComponent();
             InitialiseAppBar();
            
-            listPic = new ObservableCollection<PhotoClass>();
+            listPic = new ObservableCollection<PhotoItem>();
             shellProgressPhotos.Visibility = Visibility.Visible;
            
             BindPivotPhotos();
@@ -80,8 +80,8 @@ namespace windows_client.View
             Object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
             {
-                List<PhotoClass> listSelectedPic = (List<PhotoClass>)obj;
-                foreach (PhotoClass photo in listSelectedPic)
+                List<PhotoItem> listSelectedPic = (List<PhotoItem>)obj;
+                foreach (PhotoItem photo in listSelectedPic)
                 {
                     listPic.Add(photo);
                     PivotItem pvt = GetPivotItem(photo);
@@ -99,7 +99,7 @@ namespace windows_client.View
                 totalCount = listPic.Count;
                 if (listPic.Count < HikeConstants.MAX_IMAGES_SHARE)
                 {
-                    PhotoClass photo = new PhotoClass(null);//to show add new image
+                    PhotoItem photo = new PhotoItem(null);//to show add new image
                     photo.AddMoreImage = true;
                     listPic.Add(photo);
                 }
@@ -117,7 +117,7 @@ namespace windows_client.View
 
         }
 
-        public PivotItem GetPivotItem(PhotoClass photo)
+        public PivotItem GetPivotItem(PhotoItem photo)
         {
             PivotItem pvtItem = new PivotItem();
 
@@ -152,7 +152,7 @@ namespace windows_client.View
             {
                 //update counter so that header text can be updated
                 totalCount--;
-                List<PhotoClass> listSelectedPic = (List<PhotoClass>)obj;
+                List<PhotoItem> listSelectedPic = (List<PhotoItem>)obj;
                 int index = lbThumbnails.SelectedIndex;
                 listSelectedPic.RemoveAt(index);
                 pivotPhotos.Items.RemoveAt(index);
@@ -168,7 +168,7 @@ namespace windows_client.View
                 //if add more doesnot exist previously then add it to list
                 if (!listPic[listPic.Count - 1].AddMoreImage)
                 {
-                    PhotoClass photo = new PhotoClass(null);//to show add new image
+                    PhotoItem photo = new PhotoItem(null);//to show add new image
                     photo.AddMoreImage = true;
                     listPic.Add(photo);
                 }
@@ -205,7 +205,7 @@ namespace windows_client.View
                 headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, lbThumbnails.SelectedIndex + 1, totalCount);
 
                 listPic[pivotPhotos.SelectedIndex].IsSelected = false;
-                PhotoClass photo = listPic[lbThumbnails.SelectedIndex];
+                PhotoItem photo = listPic[lbThumbnails.SelectedIndex];
                 photo.IsSelected = true;
                 lbThumbnails.ScrollIntoView(photo);
                 pivotPhotos.SelectedIndex = lbThumbnails.SelectedIndex;
@@ -221,7 +221,7 @@ namespace windows_client.View
                 headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, pivotPhotos.SelectedIndex + 1, totalCount);
 
                 listPic[lbThumbnails.SelectedIndex].IsSelected = false;
-                PhotoClass photo = listPic[pivotPhotos.SelectedIndex];
+                PhotoItem photo = listPic[pivotPhotos.SelectedIndex];
                 photo.IsSelected = true;
                 lbThumbnails.ScrollIntoView(photo);
                 lbThumbnails.SelectedIndex = pivotPhotos.SelectedIndex;
