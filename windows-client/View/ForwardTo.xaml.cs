@@ -1190,7 +1190,7 @@ namespace windows_client.View
                         PageTitle.Text = _pageTitle;
                     }
 
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else
