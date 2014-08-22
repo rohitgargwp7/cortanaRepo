@@ -214,9 +214,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
 
             LoadViewModelObjects();
-            LoadToolTipsDict();
-            LoadCurrentLocation();
-            ClearTempTransferData();
         }
 
         public HikeViewModel()
@@ -246,6 +243,7 @@ namespace windows_client.ViewModel
 
             LoadToolTipsDict();
             LoadCurrentLocation();
+            ClearTempTransferData();
 
             MiscDBUtil.LoadPendingUploadPicRequests();
 
