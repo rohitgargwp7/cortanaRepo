@@ -8,6 +8,9 @@ using System.Windows.Media.Imaging;
 
 namespace windows_client.Model
 {
+    /// <summary>
+    /// It inherits list PhotoItem.
+    /// </summary>
     public class PhotoAlbum : List<PhotoItem>
     {
         private string _albumName;

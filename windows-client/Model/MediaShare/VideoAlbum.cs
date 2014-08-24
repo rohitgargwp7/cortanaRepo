@@ -10,6 +10,9 @@ using windows_client.utils;
 
 namespace windows_client.Model
 {
+    /// <summary>
+    /// It inherits List VideoItem. It clubs videos into respective albums.
+    /// </summary>
     public class VideoAlbum : List<VideoItem>
     {
         private string _albumName;
