@@ -151,6 +151,7 @@ namespace windows_client.Mqtt
                             return;
                         }
                         mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
+                        mqttConnection.OnSocketWriteCompleted += mqttConnection_OnSocketWriteCompleted;
                     }
                 }
             }
@@ -167,6 +168,15 @@ namespace windows_client.Mqtt
                 Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
             }
 
+        }
+
+        void mqttConnection_OnSocketWriteCompleted(object sender, OnSocketWriteEventArgs e)
+        {
+            if (e.MessageId > 0)
+            {
+                this.pubSub.publish(HikePubSub.MSG_WRITTEN_SOCKET, e.MessageId);
+                MiscDBUtil.UpdateDBsMessageStatus(null, e.MessageId, (int)ConvMessage.State.SENT_SOCKET_WRITE);
+            }
         }
 
         public bool isConnected()
@@ -311,10 +321,11 @@ namespace windows_client.Mqtt
             PublishCB pbCB = null;
             if (qos > 0)
                 pbCB = new PublishCB(packet, this, qos, false);
+
             if (mqttConnection != null)
                 mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
-                    pbCB);
+                    pbCB, packet.MessageId > 0 ? (object)packet.MessageId : null);
         }
 
         //this is called to send unsent messages. They all are sent in a single thread
@@ -327,6 +338,7 @@ namespace windows_client.Mqtt
             }
             byte[][] messagesToSend = new byte[packets.Count][];
             PublishCB[] messageCallbacks = new PublishCB[packets.Count];
+            long[] msgIds = new long[packets.Count];
             for (int i = 0; i < packets.Count; i++)
             {
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
@@ -335,7 +347,7 @@ namespace windows_client.Mqtt
             if (mqttConnection != null)
                 mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     messagesToSend, QoS.AT_LEAST_ONCE,
-                    messageCallbacks);
+                    messageCallbacks, msgIds);
         }
 
         private Topic[] getTopics()

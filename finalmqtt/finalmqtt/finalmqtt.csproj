@@ -55,6 +55,7 @@
     <Compile Include="Client\Listener.cs" />
     <Compile Include="Client\MQTT.cs" />
     <Compile Include="Client\MqttConnection.cs" />
+    <Compile Include="Client\OnSocketWriteEventArgs.cs" />
     <Compile Include="Client\SocketEventArguemntsMessageId.cs" />
     <Compile Include="Msg\CallBackTimerTask.cs" />
     <Compile Include="Msg\ConnAckMessage.cs" />

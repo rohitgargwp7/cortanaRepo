@@ -164,6 +164,8 @@ namespace finalmqtt.Client
 
         public delegate Callback onAckFailedDelegate(short messageId);
 
+        public event EventHandler<OnSocketWriteEventArgs> OnSocketWriteCompleted;
+
         public MqttConnection(String id, String username, String password, Callback cb, Listener listener)
         {
             this.bufferForSocketReads = new byte[socketReadBufferSize];
@@ -306,18 +308,22 @@ namespace finalmqtt.Client
         {
             if (e.SocketError == SocketError.Success)
             {
-                if (e.MessageId > 0)
+                if (e.MessageData != null)
                 {
-                    ProcessAckForMessage(e.MessageId);
-                }
-                else
-                {
-                    List<short> listMessageId = e.MessageIdList;
-                    if (listMessageId != null && listMessageId.Count > 0)
+                    if (e.MessageData is long && (long)e.MessageData > 0)
                     {
-                        foreach (short messageId in listMessageId)
+                        CallOnSocketWrite((long)e.MessageData);
+                    }
+                    else if (e.MessageData is long[])
+                    {
+                        long[] listMessageId = (long[])e.MessageData;
+                        if (listMessageId != null && listMessageId.Length > 0)
                         {
-                            ProcessAckForMessage(messageId);
+                            foreach (long messageId in listMessageId)
+                            {
+                                if (messageId > 0)
+                                    CallOnSocketWrite(messageId);
+                            }
                         }
                     }
                 }
@@ -325,24 +331,12 @@ namespace finalmqtt.Client
             }
         }
 
-        private void ProcessAckForMessage(short messageId)
+        private void CallOnSocketWrite(long messageId)
         {
             if (messageId != 0)
             {
-                Callback cb;
-                IDisposable scheduledAction;
-                cb = MsgCallBacksMapGetValue(messageId);
-                if (cb != null)
-                {
-                    scheduledAction = ScheduledActionsMapGetValue(messageId);
-                    if (scheduledAction != null)
-                    {
-                        ScheduledActionsMapRemove(messageId);
-                        scheduledAction.Dispose();
-                    }
-                    MsgCallbacksMapRemove(messageId);
-                    cb.onSuccess();
-                }
+                if (OnSocketWriteCompleted != null)
+                    OnSocketWriteCompleted(null, new OnSocketWriteEventArgs(messageId));
             }
         }
 
@@ -350,7 +344,7 @@ namespace finalmqtt.Client
         /// sends raw bytes of data through socket
         /// </summary>
         /// <param name="data"></param>
-        public void sendMessage(byte[] data, short messageId)
+        public void sendMessage(byte[] data, object messageData)
         {
             try
             {
@@ -361,7 +355,7 @@ namespace finalmqtt.Client
                     socketEventArg.UserToken = null;
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
                     socketEventArg.SetBuffer(data, 0, data.Length);
-                    socketEventArg.MessageId = messageId;
+                    socketEventArg.MessageData = messageData;
                     if (!_socket.SendAsync(socketEventArg))
                         OnDataSentSuccess(socketEventArg);
                 }
@@ -372,31 +366,6 @@ namespace finalmqtt.Client
             }
         }
 
-        /// <summary>
-        /// sends raw bytes of data through socket
-        /// </summary>
-        /// <param name="data"></param>
-        public void sendMessage(byte[] data, List<short> messageIdList)
-        {
-            try
-            {
-                if (_socket != null && _socket.Connected)
-                {
-                    SocketEventArguemntsMessageId socketEventArg = new SocketEventArguemntsMessageId();
-                    socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-                    socketEventArg.UserToken = null;
-                    socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
-                    socketEventArg.SetBuffer(data, 0, data.Length);
-                    socketEventArg.MessageIdList = messageIdList;
-                    if (!_socket.SendAsync(socketEventArg))
-                        OnDataSentSuccess(socketEventArg);
-                }
-            }
-            catch
-            {
-                disconnect();
-            }
-        }
         /// <summary>
         /// reads message from messagestream buffer. It reads first byte of flags, which is passed further to restore buffer
         /// if buffer does not  contains complete message as of now. An exception is thrown which is ignored by caller
@@ -466,7 +435,7 @@ namespace finalmqtt.Client
         /// </summary>
         /// <param name="msg">Message to be written (or sent)</param>
         /// <param name="scheduledAction">Callback to be called in case of error</param>
-        public void sendCallbackMessage(Message msg, Callback cb)
+        public void sendCallbackMessage(Message msg, Callback cb, object messageData = null)
         {
             if (_socket == null || !_socket.Connected || !connackReceived || msg == null)
             {
@@ -476,16 +445,16 @@ namespace finalmqtt.Client
             }
             try
             {
-                msg.write();
+                msg.write(messageData);
                 if (msg is RetryableMessage && cb != null)
                 {
-                    short messageId = ((RetryableMessage)msg).getMessageId();
-                    if (messageId != 0)
+                    short mqttMessageId = ((RetryableMessage)msg).getMessageId();
+                    if (mqttMessageId != 0)
                     {
-                        MsgCallbacksMapAdd(messageId, cb);
-                        Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
+                        MsgCallbacksMapAdd(mqttMessageId, cb);
+                        Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), mqttMessageId, cb)).HandleTimerTask;
                         IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
-                        ScheduledActionsMapAdd(messageId, scheduledAction);
+                        ScheduledActionsMapAdd(mqttMessageId, scheduledAction);
                     }
                 }
             }
@@ -513,7 +482,7 @@ namespace finalmqtt.Client
             return cb;
         }
 
-        public void sendCallbackMessage(Message[] msg, Callback[] cb)
+        public void sendCallbackMessage(Message[] msg, Callback[] cb, object messageData)
         {
             if (_socket == null || !_socket.Connected || !connackReceived || msg == null || cb == null)
             {
@@ -529,14 +498,12 @@ namespace finalmqtt.Client
             }
             try
             {
-                List<short> listMessageIds = new List<short>();
                 for (int i = 0; i < msg.Length; i++)
                 {
                     Message messsage = msg[i];
-                    listMessageIds.Add((short)(messsage is RetryableMessage ? ((RetryableMessage)messsage).getMessageId() : 0));
                     combinedMessageBytes.AddRange(messsage.messageContent());
                 }
-                sendMessage(combinedMessageBytes.ToArray(), listMessageIds);
+                sendMessage(combinedMessageBytes.ToArray(), messageData);
                 combinedMessageBytes.Clear();
             }
             catch (ObjectDisposedException ode)
@@ -623,10 +590,24 @@ namespace finalmqtt.Client
         {
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
             msg.setMessageId(getNextMessageId());
-            sendCallbackMessage(msg, cb);
+            sendCallbackMessage(msg, cb, null);
+        }
+        /// <summary>
+        /// Use this only if messageId > 0
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        /// <param name="qos"></param>
+        /// <param name="cb"></param>
+        /// <param name="messageData">pass messageId for messages to be written on socket</param>
+        public void publish(String topic, byte[] message, QoS qos, Callback cb, object messageData) //throws IOException 
+        {
+            PublishMessage msg = new PublishMessage(topic, message, qos, this);
+            msg.setMessageId(getNextMessageId());
+            sendCallbackMessage(msg, cb, messageData);
         }
 
-        public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
+        public void publish(String topic, byte[][] message, QoS qos, Callback[] cb, object messageData) //throws IOException 
         {
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
             for (int i = 0; i < message.Length; i++)
@@ -634,7 +615,7 @@ namespace finalmqtt.Client
                 messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
                 messagesToPublish[i].setMessageId(getNextMessageId());
             }
-            sendCallbackMessage(messagesToPublish, cb);
+            sendCallbackMessage(messagesToPublish, cb, messageData);
         }
 
         public void subscribe(String topic, Callback cb) //throws IOException 
@@ -708,7 +689,20 @@ namespace finalmqtt.Client
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
-                ProcessAckForMessage(messageId);
+                Callback cb;
+                IDisposable scheduledAction;
+                cb = MsgCallBacksMapGetValue(messageId);
+                if (cb != null)
+                {
+                    scheduledAction = ScheduledActionsMapGetValue(messageId);
+                    if (scheduledAction != null)
+                    {
+                        ScheduledActionsMapRemove(messageId);
+                        scheduledAction.Dispose();
+                    }
+                    MsgCallbacksMapRemove(messageId);
+                    cb.onSuccess();
+                }
             }
 
             switch (msg.getType())

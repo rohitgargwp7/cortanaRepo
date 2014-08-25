@@ -68,7 +68,11 @@ namespace finalmqtt.Msg
             return messageData.ToArray();
         }
 
-        public void write()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="messageId">dont pass value if no message id is required</param>
+        public void write(object messageId = null)
         {
             messageData.Add(header.encode());
             writeMsgLength();
@@ -76,7 +80,6 @@ namespace finalmqtt.Msg
             byte[] data = messageData.ToArray();
             try
             {
-                short messageId = (short)(this is RetryableMessage ? ((RetryableMessage)this).getMessageId() : 0);
                 mqttConnection.sendMessage(data, messageId);
             }
             catch

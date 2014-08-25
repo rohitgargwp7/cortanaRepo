@@ -475,7 +475,7 @@ namespace windows_client.DbUtils
                             {
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
+                                MiscDBUtil.UpdateDBsMessageStatus(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
                         }
 
