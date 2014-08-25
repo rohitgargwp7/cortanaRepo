@@ -3558,9 +3558,9 @@ namespace windows_client.View
                         }
                     }
 
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
                     _tipMode = ToolTipMode.DEFAULT;
+                    UpdateToolTip(true);
 
                     break;
             }
