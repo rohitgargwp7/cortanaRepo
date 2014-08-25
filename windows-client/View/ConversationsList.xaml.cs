@@ -3557,10 +3557,13 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                     }
+                    else
+                    {
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        _tipMode = ToolTipMode.DEFAULT;
+                    }
 
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-                    _tipMode = ToolTipMode.DEFAULT;
-                    UpdateToolTip(true);
 
                     break;
             }
