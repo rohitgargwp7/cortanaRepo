@@ -177,9 +177,6 @@ namespace windows_client
             {
                 PushHelper.Instance.registerPushnotifications(false);
 
-                string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-                msisdn = msisdn.Substring(msisdn.Length - 10);
-
                 if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
                 {
                     if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
