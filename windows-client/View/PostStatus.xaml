@@ -47,7 +47,7 @@
                                           TextChanged="txtStatus_TextChanged" MaxLength="2000"/>
                 </Grid>
                 <TextBlock Name="txtCounter" Visibility="Collapsed" Foreground="{StaticResource HikeSubTextForegroundBrush}" TextAlignment="Right"
-                           Text="138" Grid.Row="1" Margin="0,-10,20,10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                           Text="140" Grid.Row="1" Margin="0,-10,20,10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
             </Grid>
             <Grid x:Name="buttonGrid" Grid.Row="2" Margin="25,0,25,25" VerticalAlignment="Bottom" Height="48">
                 <Grid.ColumnDefinitions>
