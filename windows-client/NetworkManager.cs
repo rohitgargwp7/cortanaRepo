@@ -22,6 +22,8 @@ namespace windows_client
         /* message read by recipient */
         public static readonly string MESSAGE_READ = "mr";
 
+        public static readonly string BULK_MESSAGES = "bm";
+
         public static readonly string MESSAGE = "m";
 
         public static readonly string SMS_CREDITS = "sc";
@@ -91,6 +93,8 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
+            //msg = "{\"d\":{\"msgs\":[{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071921,\"push\":false,\"i\":\"1409071921220\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071922,\"push\":false,\"i\":\"1409071921221\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071923,\"push\":false,\"i\":\"1409071921222\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071924,\"push\":false,\"i\":\"1409071921223\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071925,\"push\":false,\"i\":\"1409071921224\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071926,\"push\":false,\"i\":\"1409071921225\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071927,\"push\":false,\"i\":\"1409071921226\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071928,\"push\":false,\"i\":\"1409071921227\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071929,\"push\":false,\"i\":\"1409071921228\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071930,\"push\":false,\"i\":\"1409071921229\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071931,\"push\":false,\"i\":\"1409071921230\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071932,\"push\":false,\"i\":\"1409071921231\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071933,\"push\":false,\"i\":\"1409071921232\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071934,\"push\":false,\"i\":\"1409071921233\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071935,\"push\":false,\"i\":\"1409071921234\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071936,\"push\":false,\"i\":\"1409071921235\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071937,\"push\":false,\"i\":\"1409071921236\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071938,\"push\":false,\"i\":\"1409071921237\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071939,\"push\":false,\"i\":\"1409071921238\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409071940,\"push\":false,\"i\":\"1409071921239\",\"hm\":\"tester :20\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071941,\"push\":false,\"i\":\"1409071921220\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071942,\"push\":false,\"i\":\"1409071921221\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071943,\"push\":false,\"i\":\"1409071921222\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071944,\"push\":false,\"i\":\"1409071921223\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071945,\"push\":false,\"i\":\"1409071921224\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071946,\"push\":false,\"i\":\"1409071921225\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071947,\"push\":false,\"i\":\"1409071921226\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071948,\"push\":false,\"i\":\"1409071921227\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071949,\"push\":false,\"i\":\"1409071921228\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071950,\"push\":false,\"i\":\"1409071921229\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071951,\"push\":false,\"i\":\"1409071921230\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071952,\"push\":false,\"i\":\"1409071921231\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071953,\"push\":false,\"i\":\"1409071921232\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071954,\"push\":false,\"i\":\"1409071921233\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071955,\"push\":false,\"i\":\"1409071921234\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071956,\"push\":false,\"i\":\"1409071921235\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071957,\"push\":false,\"i\":\"1409071921236\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071958,\"push\":false,\"i\":\"1409071921237\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071959,\"push\":false,\"i\":\"1409071921238\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409071960,\"push\":false,\"i\":\"1409071921239\",\"hm\":\"tester :20\"},\"t\":\"m\"}]},\"t\":\"bm\",\"ts\":1409072018}";
+            //msg="{\"d\":{\"msgs\":[{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074901,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074902,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074903,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074904,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074905,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074906,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074907,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074908,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074909,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074910,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074911,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074912,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074913,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074914,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074915,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074916,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074917,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074918,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074919,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074920,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074921,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074922,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074923,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074924,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074925,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074926,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074927,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074928,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074929,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074930,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074931,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074932,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074933,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074934,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074936,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074937,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074938,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074939,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074940,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074941,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074942,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074943,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074944,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074945,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074946,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074947,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074948,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074949,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074950,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074951,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074952,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074953,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074954,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074955,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074956,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074957,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074958,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074959,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074960,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074961,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"}]},\"t\":\"bm\",\"ts\":1409075011}";
             if (string.IsNullOrEmpty(msg))
                 return;
 
@@ -129,9 +133,41 @@ namespace windows_client
                 Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
                 return;
             }
+            #region BULK MESSAGE
+            if (BULK_MESSAGES == type)
+            {
+                try
+                {
+                    var jData = (JObject)jsonObj[HikeConstants.DATA];
+                    JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+                    List<ConvMessage> listMessages = new List<ConvMessage>();
 
+                    for (int i = 0; i < msgs.Count; i++)
+                    {
+                        ConvMessage convMessage = ProcessBulkMessageData((JObject)msgs[i]);
+                        listMessages.Add(convMessage);
+                    }
+                    if (listMessages.Count > 0)
+                    {
+                        Stopwatch st = Stopwatch.StartNew();
+                        MessagesTableUtils.IsMessageDuplicate(listMessages);
+                        
+                        if (listMessages.Count > 0)
+                        {
+                            MessagesTableUtils.BulkInsertMessage(listMessages);
+                        }
+                        st.Stop();
+                        Debug.WriteLine("BULK TIME: for bulk insert of {0} messages,{1}", listMessages.Count, st.ElapsedMilliseconds);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+                }
+            }
+            #endregion
             #region MESSAGE
-            if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
+            else if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
                 try
                 {
@@ -1215,7 +1251,7 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
-                
+
                 //check if same image is set
                 if (cObj.Avatar != null)
                 {
@@ -1559,7 +1595,7 @@ namespace windows_client
                                 {
                                     if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                         tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-                                
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -1966,7 +2002,7 @@ namespace windows_client
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                    
+
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
@@ -1974,7 +2010,7 @@ namespace windows_client
                     }
 
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    
+
                     if (c != null) // for favourites
                     {
                         c.Avatar = null;
@@ -2011,6 +2047,44 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
+        }
+
+        private ConvMessage ProcessBulkMessageData(JObject jsonObj)
+        {
+            ConvMessage convMessage = null;
+
+            if (jsonObj == null)
+                return null;
+            try
+            {
+                string type = (string)jsonObj[HikeConstants.TYPE];
+                if (type == MESSAGE)
+                {
+                    try
+                    {
+                        convMessage = new ConvMessage(jsonObj);
+                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                            GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
+                        return null;
+                    }
+
+                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                }
+                else
+                {
+                    onMessage(jsonObj.ToString(Newtonsoft.Json.Formatting.None));
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.WriteLine("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
+                return convMessage;
+            }
+            return convMessage;
         }
 
         private void LoadFavAndPending(bool isFav, string msisdn)

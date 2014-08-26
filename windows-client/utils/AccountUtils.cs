@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -734,6 +734,33 @@ namespace windows_client.utils
             return sb.ToString();
         }
 
+        public static string Decompress(byte[] byteArray)
+        {
+            if (byteArray == null || byteArray.Length == 0)
+                return string.Empty;
+
+            //Prepare for decompress
+            MemoryStream ms = new MemoryStream(byteArray);
+            GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
+
+            //Decompress
+            byte[] buffer = StreamToByteArray(gzip);
+
+            //Transform byte[] unzip data to string
+            StringBuilder sb = new StringBuilder();
+
+            //Read the number of bytes GZipStream red and do not a for each bytes in resultByteArray;
+            for (int i = 0; i < buffer.Length; i++)
+                sb.Append((char)buffer[i]);
+
+            gzip.Close();
+            ms.Close();
+
+            gzip.Dispose();
+            ms.Dispose();
+
+            return sb.ToString();
+        }
         public static byte[] StreamToByteArray(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];

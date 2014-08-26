@@ -83,6 +83,56 @@ namespace windows_client.DbUtils
             return true;
         }
 
+        public static bool BulkInsertMessage(IEnumerable<ConvMessage> listMessages)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            {
+                context.messages.InsertAllOnSubmit(listMessages);
+                try
+                {
+                    context.SubmitChanges();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
+                    return false;
+                }
+            }
+            return true;
+        }
+        public static bool IsMessageDuplicate(ConvMessage convMessage)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            {
+                if (convMessage.MappedMessageId > 0)
+                {
+                    IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
+                    ConvMessage cm = qq.FirstOrDefault();
+                    return cm != null;
+                }
+            }
+            return true;
+        }
+
+        public static void IsMessageDuplicate(List<ConvMessage> listConvMessage)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            {
+                for (int i = 0; i < listConvMessage.Count; )
+                {
+                    ConvMessage convMessage = listConvMessage[i];
+                    if (convMessage.MappedMessageId > 0)
+                    {
+                        IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
+                        ConvMessage cm = qq.FirstOrDefault();
+                        if (cm != null)
+                            listConvMessage.RemoveAt(i);
+                        else
+                            i++;
+                    }
+                }
+            }
+        }
         private static void SaveLongMessage(ConvMessage convMessage)
         {
             if (convMessage.Message.Length > 4000)
@@ -295,7 +345,7 @@ namespace windows_client.DbUtils
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     string toastText = String.Empty;
- 
+
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
@@ -421,7 +471,7 @@ namespace windows_client.DbUtils
                         }
 
                         //hack to update db for sent socket write
-                        if ((int)message.MessageStatus < val||
+                        if ((int)message.MessageStatus < val ||
                             (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE && (int)ConvMessage.State.SENT_CONFIRMED <= val))
                         {
                             if (fromUser == null || fromUser == message.Msisdn)
