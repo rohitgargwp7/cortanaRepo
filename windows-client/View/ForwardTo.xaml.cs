@@ -129,7 +129,7 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
 
-                if (_completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
                 {
                     emptyGrid.Visibility = Visibility.Visible;
                     noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
@@ -783,6 +783,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
@@ -803,6 +805,7 @@ namespace windows_client.View
 
                 scanningComplete();
             });
+
             _canGoBack = true;
         }
 

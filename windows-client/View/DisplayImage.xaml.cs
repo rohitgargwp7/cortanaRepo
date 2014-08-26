@@ -77,7 +77,7 @@ namespace windows_client.View
                     {
                         this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                     }
-                    else if (MiscDBUtil.hasCustomProfileImage(_msisdn))
+                    else if (MiscDBUtil.HasCustomProfileImage(_msisdn))
                     {
                         fileName = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
@@ -370,11 +370,15 @@ namespace windows_client.View
             return true;
         }
 
-
         //Loads Application bar
         private void LoadApplicationBar()
         {
-            ApplicationBar = new ApplicationBar();
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
+            };
+
             ApplicationBarIconButton picSaveButton = new ApplicationBarIconButton();
             picSaveButton.IconUri = new Uri("/View/images/Appbar/icon_save.png", UriKind.Relative);
             picSaveButton.Text = AppResources.Save_AppBar_Btn;
