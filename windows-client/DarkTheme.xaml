@@ -70,6 +70,8 @@ private copy.
     <SolidColorBrush x:Key="HikeCheckBoxBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeFreeSMSCardBrush" Color="#232323"/>
     <SolidColorBrush x:Key="HikeEarnFreeSMSBrush" Color="White"/>
+    
+    <SolidColorBrush x:Key="InAppToastBgBrush" Color="#353535"/>
 
     <SolidColorBrush x:Key="AppBarBackground" Color="{StaticResource AppBarBlackBackgroundColor}"/>
     <SolidColorBrush x:Key="AppBarForeground" Color="{StaticResource AppBarBlackForegroundColor}"/>

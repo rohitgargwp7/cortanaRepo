@@ -44,20 +44,30 @@ namespace windows_client.View
 
             _backgroundWorker.RunWorkerCompleted += (ss, ee) =>
             {
-                if (ee.Error == null)
+                if (App.IS_MARKETPLACE)
                 {
-                    App.appInitialize();
-
-                    // Upgrade complete, write the current version
-                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
-
-                    ManageNavigation();
+                    UpgradeApp();
                 }
                 else
-                    throw new UpgradeNotCompletedException(ee.Error);
+                {
+                    if (ee.Error == null)
+                        UpgradeApp();
+                    else
+                        throw new UpgradeNotCompletedException(ee.Error);
+                }
             };
 
             _backgroundWorker.RunWorkerAsync();
+        }
+
+        private void UpgradeApp()
+        {
+            App.appInitialize();
+
+            // Upgrade complete, write the current version
+            App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
+
+            ManageNavigation();
         }
 
         private void ManageNavigation()
@@ -200,7 +210,7 @@ namespace windows_client.View
                 HandleEmptyGroupName();
             }
 
-            if (Utils.compareVersion("2.6.5.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.7.0.0", App.CURRENT_VERSION) == 1)
             {
                 ReShuffleStickerCategories();
 

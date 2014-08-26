@@ -4010,10 +4010,6 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
-                bool showPush = true;
-                if (vals.Length == 3 && vals[2] is bool)
-                    showPush = (Boolean)vals[2];
-
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -4043,8 +4039,10 @@ namespace windows_client.View
                     }
                     if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                         updateLastMsgColor(convMessage.Msisdn);
+                    
                     // Update UI
                     HideTypingNotification();
+                    
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -4076,35 +4074,6 @@ namespace windows_client.View
                             }
                             catch { }
                         }
-                    });
-                }
-                else if (showPush) // this is to show toast notification
-                {
-                    ConversationListObject val;
-                    if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg
-                        return;
-                    ConversationListObject cObj = vals[1] as ConversationListObject;
-                    if (cObj == null) // this will happen in status update msg
-                        return;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        ToastPrompt toast = new ToastPrompt();
-                        toast.Tag = cObj.Msisdn;
-
-                        if (cObj.IsHidden)
-                            toast.Title = String.Empty;
-                        else
-                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-
-                        // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
-                        toast.Message = cObj.ToastText;
-                        toast.Foreground = UI_Utils.Instance.White;
-                        toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
-                        toast.ImageSource = UI_Utils.Instance.HikeToastImage;
-                        toast.VerticalContentAlignment = VerticalAlignment.Center;
-                        toast.MaxHeight = 60;
-                        toast.Tap += App.ViewModel.Toast_Tap;
-                        toast.Show();
                     });
                 }
             }
