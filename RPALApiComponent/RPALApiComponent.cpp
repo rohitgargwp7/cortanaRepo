@@ -65,5 +65,3 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::Str
 
 	return intOutArray;
 }
-
-

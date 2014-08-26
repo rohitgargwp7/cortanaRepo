@@ -15,6 +15,8 @@ using windows_client.Languages;
 using windows_client.Misc;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace windows_client.utils
 {
@@ -730,6 +732,74 @@ namespace windows_client.utils
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// It creates a file in Hike directory under Pictures folder.
+        /// </summary>
+        /// <param name="sourceFile">absolute path of file which we want to copy to Hike directory</param>
+        /// <param name="targetFileName">name of the file in hike directory </param>
+        public static async void CreateFileInHikeDirectory(string sourceFile, string targetFileName)
+        {
+            string hikeDirectoryPath = @"C:/Data/Users/Public/Pictures/Hike";
+            string targetFile = "Hike\\" + targetFileName;
+            if (!Directory.Exists(hikeDirectoryPath))
+            {
+                Directory.CreateDirectory(hikeDirectoryPath);
+            }
+            StorageFile source = await StorageFile.GetFileFromPathAsync(sourceFile);
+            StorageFile target = await KnownFolders.PicturesLibrary.CreateFileAsync(targetFile, CreationCollisionOption.GenerateUniqueName);
+
+            using (IRandomAccessStream inStream = await target.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                using (IRandomAccessStream outStream = await source.OpenAsync(FileAccessMode.Read))
+                {
+                    Windows.Storage.Streams.Buffer buffer = new Windows.Storage.Streams.Buffer((uint)outStream.Size);
+                    await outStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.None);
+                    await inStream.WriteAsync(buffer);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns absolute path of a file in Isolated Storage
+        /// </summary>
+        /// <param name="filename">Path of the file in Isolated storage.</param>
+        /// <returns></returns>
+        public static string GetAbsolutePath(string filename)
+        {
+            IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
+
+            string absoulutePath = null;
+
+            if (isoStore.FileExists(filename))
+            {
+                IsolatedStorageFileStream output = new IsolatedStorageFileStream(filename, FileMode.Open, isoStore);
+                absoulutePath = output.Name;
+
+                output.Close();
+                output = null;
+            }
+            return absoulutePath;
+        }
+        /// <summary>
+        /// Returns a random Alphaneumaric string
+        /// </summary>
+        /// <param name="length">length desired</param>
+        /// <returns></returns>
+        public static string GenerateRandomString(int length)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+            var stringChars = new char[length];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var finalString = new String(stringChars);
+            return finalString;
         }
     }
 }
