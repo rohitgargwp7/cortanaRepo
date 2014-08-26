@@ -3325,11 +3325,8 @@ namespace windows_client.View
                             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
                             ToggleHidddenMode();
 
-                            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
-                            {
-                                _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
-                                UpdateToolTip(true);
-                            }
+                            _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
+                            UpdateToolTip(true);
                         }
                         else
                             MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
@@ -3737,29 +3734,6 @@ namespace windows_client.View
 
         void conversationPageToolTip_LeftIconClicked(object sender, EventArgs e)
         {
-            switch (_tipMode)
-            {
-                case ToolTipMode.PROFILE:
-
-                    break;
-
-                case ToolTipMode.STATUS_UPDATE:
-
-                    break;
-
-                case ToolTipMode.INFORMATIONAL:
-
-                    break;
-
-                case ToolTipMode.INVITE_FRIENDS:
-
-                    break;
-
-                case ToolTipMode.FAVOURITES:
-
-                    break;
-
-            }
         }
         /// <summary>
         /// Reset hidden mode, remove saved pasword, reset tooltip and delete chats.
@@ -3791,7 +3765,7 @@ namespace windows_client.View
 
         /// <summary>
         /// Reset hidden mode tooltip.
-        /// </summary/>
+        /// </summary>
         private void ResetHiddenModeToolTip()
         {
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);

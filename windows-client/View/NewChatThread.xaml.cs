@@ -880,6 +880,7 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+           
             GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
@@ -7577,7 +7578,7 @@ namespace windows_client.View
 
                 case ToolTipMode.ATTACHMENTS:
 
-                    HideServerTips(); ;
+                    HideServerTips();
                     break;
 
                 case ToolTipMode.STICKERS:
@@ -7630,25 +7631,6 @@ namespace windows_client.View
 
         private void chatScreenToolTip_LeftIconClicked(object sender, EventArgs e)
         {
-            switch (_tipMode)
-            {
-                case ToolTipMode.DEFAULT:
-
-                    break;
-
-                case ToolTipMode.CHAT_THEMES:
-
-                    break;
-
-                case ToolTipMode.ATTACHMENTS:
-
-                    break;
-
-                case ToolTipMode.STICKERS:
-
-                    break;
-
-            }
         }
 
         void ShowServerTips()

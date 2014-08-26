@@ -805,7 +805,13 @@ namespace windows_client.View
                     favObj.IsFav = true;
                 }
                 else
-                    favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
+                {
+                    if (isInAddressBook)
+                        favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
+                    else
+                        favObj = new ConversationListObject(msisdn, null, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
+
+                }
                 App.ViewModel.FavList.Insert(0, favObj);
                 if (App.ViewModel.IsPending(msisdn))
                 {
