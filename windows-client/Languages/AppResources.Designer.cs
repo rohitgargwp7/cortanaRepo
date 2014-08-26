@@ -2461,7 +2461,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start a chat and tap on &apos;hi&apos;.
+        ///   Looks up a localized string similar to Hide your chats with a password. Start a chat and tap on &apos;hi&apos;..
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Body_Txt {
             get {
@@ -2470,7 +2470,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide your chats with a password..
+        ///   Looks up a localized string similar to Hidden Mode!.
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Header_Txt {
             get {

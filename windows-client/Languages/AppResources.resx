@@ -2190,10 +2190,10 @@ Download it like asap from http://hike.in!</value>
     <value>This will stop hidden mode reset. Are you sure?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Start a chat and tap on 'hi'</value>
+    <value>Hide your chats with a password. Start a chat and tap on 'hi'.</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Hide your chats with a password.</value>
+    <value>Hidden Mode!</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Enter current password</value>

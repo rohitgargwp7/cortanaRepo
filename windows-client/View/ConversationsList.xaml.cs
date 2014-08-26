@@ -3170,7 +3170,16 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (llsConversations.ItemsSource.Count > 0)
-                        llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+                    {
+                        try
+                        {
+                            llsConversations.ScrollTo(llsConversations.ItemsSource[0]);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("llsConversations Scroll to null Exception :: HiddenToggleMode");
+                        }
+                    }
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                         ShowFTUECards();
