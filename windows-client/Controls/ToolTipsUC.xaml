@@ -22,9 +22,9 @@
         <Grid x:Name="TextGrid" Grid.Column="1" Margin="24,0,24,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="tipHeadText" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Visibility="Collapsed" Foreground="White" FontSize="24" Margin="0,6,0,0"/>
+            <TextBlock x:Name="tipHeaderText" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Visibility="Collapsed" Foreground="White" FontSize="24" Margin="0,6,0,0"/>
             <TextBlock x:Name="tipTextbox" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Foreground="White" Margin="0,6,0,0"/>
         </Grid>
         <Image x:Name="rightIcon" Grid.Column="2" HorizontalAlignment="Right" Height="93" Width="93" VerticalAlignment="Center" Tap="rightIcon_Tap" Visibility="Collapsed"/>

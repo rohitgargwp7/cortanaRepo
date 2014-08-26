@@ -19,7 +19,7 @@ namespace windows_client.utils.ServerTips
     class TipInfo
     {
 
-        public string HeadText { get; set; }
+        public string HeaderText { get; set; }
         public string BodyText { get; set; }
         public string TipId { get; set; }
         public ToolTipMode TipType;
@@ -27,14 +27,14 @@ namespace windows_client.utils.ServerTips
         public TipInfo()
         {
             TipType = ToolTipMode.DEFAULT;
-            HeadText = null;
+            HeaderText = null;
             BodyText = null;
             TipId = null;
         }
 
         public TipInfo(string type, string header, string body, string id)
         {
-            HeadText = header;
+            HeaderText = header;
             BodyText = body;
             TipId = id;
 
@@ -107,10 +107,10 @@ namespace windows_client.utils.ServerTips
                 TipId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
                 count = reader.ReadInt32();
-                HeadText = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                HeaderText = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
 
-                if (HeadText == "*@N@*")
-                    HeadText = null;
+                if (HeaderText == "*@N@*")
+                    HeaderText = null;
 
                 count = reader.ReadInt32();
                 BodyText = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
@@ -140,10 +140,10 @@ namespace windows_client.utils.ServerTips
             {
                 writer.WriteStringBytes(TipId);
 
-                if (HeadText == null)
+                if (HeaderText == null)
                     writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteStringBytes(HeadText);
+                    writer.WriteStringBytes(HeaderText);
 
                 if (BodyText == null)
                     writer.WriteStringBytes("*@N@*");

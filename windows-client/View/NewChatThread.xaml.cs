@@ -7507,12 +7507,12 @@ namespace windows_client.View
 
         #region SERVER TIPS
 
-        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headText, string bodyText,
+        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
             bool isLeftIconClickEnabled, bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
         {
             chatScreenToolTip.LeftIconSource = leftIconSource;
             chatScreenToolTip.RightIconSource = rightIconSource;
-            chatScreenToolTip.TipHeadText = headText;
+            chatScreenToolTip.TipHeaderText = headerText;
             chatScreenToolTip.TipText = bodyText;
             chatScreenToolTip.LeftIconClicked -= chatScreenToolTip_LeftIconClicked;
 
@@ -7543,17 +7543,17 @@ namespace windows_client.View
 
                 case ToolTipMode.STICKERS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.CHAT_THEMES:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeadText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
                     break;
             }
 

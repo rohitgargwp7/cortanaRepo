@@ -142,26 +142,26 @@ namespace windows_client.Controls
             }
         }
 
-        public static readonly DependencyProperty TipHeadTextProperty =
-    DependencyProperty.Register("TipHeadText", typeof(String), typeof(ToolTipsUC), new PropertyMetadata(OnTipHeadTextChanged));
+        public static readonly DependencyProperty TipHeaderTextProperty =
+    DependencyProperty.Register("TipHeaderText", typeof(String), typeof(ToolTipsUC), new PropertyMetadata(OnTipHeaderTextChanged));
 
-        public static void OnTipHeadTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        public static void OnTipHeaderTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
-            tempToolTip.tipHeadText.Text = tempText;
-            tempToolTip.tipHeadText.Visibility = String.IsNullOrEmpty(tempText) ? Visibility.Collapsed : Visibility.Visible;
+            tempToolTip.tipHeaderText.Text = tempText;
+            tempToolTip.tipHeaderText.Visibility = String.IsNullOrEmpty(tempText) ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        public String TipHeadText
+        public String TipHeaderText
         {
             get
             {
-                return (String)GetValue(TipHeadTextProperty);
+                return (String)GetValue(TipHeaderTextProperty);
             }
             set
             {
-                SetValue(TipHeadTextProperty, value);
+                SetValue(TipHeaderTextProperty, value);
             }
         }
 
@@ -182,7 +182,7 @@ namespace windows_client.Controls
             FullTipTapped = null;
             LeftIconSource = null;
             RightIconSource = null;
-            TipHeadText = null;
+            TipHeaderText = null;
             TipText = null;
         }
 

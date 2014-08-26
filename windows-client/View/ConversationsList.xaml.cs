@@ -3124,18 +3124,18 @@ namespace windows_client.View
         /// </summary>
         /// <param name="leftIconSource">left icon source of image </param>
         /// <param name="rightIconSource">right icon source of image</param>
-        /// <param name="headText">header of tool tip</param>
+        /// <param name="headerText">header of tool tip</param>
         /// <param name="bodyText">body of tool tip</param>
         /// <param name="isLeftIconClickEnabled">left icon click enabled ot not</param>
         /// <param name="isRightIconClickedEnabled">right icon click event enabled or not</param>
         /// <param name="isFullTipTappedEnabled">full tip tap event click event enabled or not</param>
-        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headText, string bodyText,
+        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
             bool isLeftIconClickEnabled, bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
         {
             conversationPageToolTip.ResetToolTip();
             conversationPageToolTip.LeftIconSource = leftIconSource;
             conversationPageToolTip.RightIconSource = rightIconSource;
-            conversationPageToolTip.TipHeadText = headText;
+            conversationPageToolTip.TipHeaderText = headerText;
             conversationPageToolTip.TipText = bodyText;
             conversationPageToolTip.LeftIconClicked -= conversationPageToolTip_LeftIconClicked;
             conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
@@ -3511,37 +3511,37 @@ namespace windows_client.View
 
                 case ToolTipMode.PROFILE:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeadText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.STATUS_UPDATE:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeadText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.INFORMATIONAL:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeadText, TipManager.ConversationPageTip.BodyText, false, true, false);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, false);
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeadText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
                     break;
 
                 case ToolTipMode.FAVOURITES:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeadText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
                     break;
 
             }
 
             if (_tipMode != ToolTipMode.DEFAULT)
             {
-                
+
                 if (!conversationPageToolTip.IsShow)
                     conversationPageToolTip.IsShow = true;
-                
+
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
             }
             else if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
@@ -3573,10 +3573,10 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                     }
+                    else
+                        HideTips();
 
                     App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-
-                    HideTips();
 
                     break;
 
@@ -3791,7 +3791,7 @@ namespace windows_client.View
 
         /// <summary>
         /// Reset hidden mode tooltip.
-        /// </summary>
+        /// </summary/>
         private void ResetHiddenModeToolTip()
         {
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
