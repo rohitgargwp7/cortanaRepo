@@ -30,7 +30,6 @@ namespace windows_client.View
 
             int creditsRemaining = 0;
             App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
-           // App.WriteToIsoStorageSettings(App.SMS_SETTING,10);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 

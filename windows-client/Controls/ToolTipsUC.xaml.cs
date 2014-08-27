@@ -19,6 +19,7 @@ namespace windows_client.Controls
             this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
+            tipHeaderText.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region

@@ -660,6 +660,8 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\ServerTips\stickers.png" />
+    <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />

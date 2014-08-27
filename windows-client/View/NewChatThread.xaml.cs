@@ -4056,10 +4056,10 @@ namespace windows_client.View
                     }
                     if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                         updateLastMsgColor(convMessage.Msisdn);
-                    
+
                     // Update UI
                     HideTypingNotification();
-                    
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -7500,7 +7500,7 @@ namespace windows_client.View
         }
 
         ToolTipMode _tipMode;
-        
+
         void UpdateToolTip(bool isModeChanged)
         {
             chatScreenToolTip.ResetToolTip();
@@ -7513,7 +7513,7 @@ namespace windows_client.View
 
                 case ToolTipMode.STICKERS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipStickers, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.CHAT_THEMES:
@@ -7569,37 +7569,28 @@ namespace windows_client.View
 
                     HideServerTips();
 
-                    if (TipManager.ChatScreenTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+                    chatBackgroundPopUp_Opened();
 
-                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
 
-                    if (TipManager.ChatScreenTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+                    fileTransferButton_Click(null, null);
 
-                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
                 case ToolTipMode.STICKERS:
 
                     HideServerTips();
 
-                    if (TipManager.ChatScreenTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+                    if (stickersIconButton != null)
+                        emoticonButton_Click(stickersIconButton, null);
 
-                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
             }
-        }
-
-        private void chatScreenToolTip_LeftIconClicked(object sender, EventArgs e)
-        {
         }
 
         void ShowServerTips()
@@ -7618,6 +7609,10 @@ namespace windows_client.View
 
             if (TipManager.ChatScreenTip != null && _tipMode == TipManager.ChatScreenTip.TipType)
             {
+
+                if (TipManager.ChatScreenTip != null)
+                    TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
                 chatScreenToolTip.IsShow = false;
                 _tipMode = ToolTipMode.DEFAULT;
                 UpdateToolTip(true);

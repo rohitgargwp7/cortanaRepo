@@ -63,6 +63,8 @@ private copy.
     <SolidColorBrush x:Key="HikeLightGrey" Color="{StaticResource HikeLightGreyColor}"/>
     <SolidColorBrush x:Key="HikeBlack" Color="{StaticResource HikeBlackColor}"/>
 
+    <SolidColorBrush x:Key="TipGreen" Color="#26bd86" />
+
     <SolidColorBrush x:Key="HikeBGBrush" Color="{StaticResource HikeWhiteColor}"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="{StaticResource HikeBlackColor}"/>
     <SolidColorBrush x:Key="HikeHeaderBrush" Color="{StaticResource HikeBlueColor}"/>

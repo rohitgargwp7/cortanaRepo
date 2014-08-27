@@ -3161,6 +3161,12 @@ namespace windows_client.View
         {
             conversationPageToolTip.ResetToolTip();
 
+            if (_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE || _tipMode == ToolTipMode.FAVOURITES
+                || _tipMode == ToolTipMode.STATUS_UPDATE)
+                conversationPageToolTip.ControlBackgroundColor = (SolidColorBrush)App.Current.Resources["TipGreen"];
+            else
+                conversationPageToolTip.ControlBackgroundColor = (SolidColorBrush)App.Current.Resources["StealthRed"];
+
             conversationPageToolTip.LeftIconSource = leftIconSource;
             conversationPageToolTip.RightIconSource = rightIconSource;
             conversationPageToolTip.TipHeaderText = headerText;
@@ -3606,10 +3612,7 @@ namespace windows_client.View
 
                     HideTips();
 
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
-
-                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE]= null;
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3617,9 +3620,6 @@ namespace windows_client.View
                 case ToolTipMode.STATUS_UPDATE:
 
                     HideTips();
-
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
@@ -3631,18 +3631,12 @@ namespace windows_client.View
 
                     HideTips();
 
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
-
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
                 case ToolTipMode.FAVOURITES:
 
                     HideTips();
-
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
                     launchPagePivot.SelectedIndex = 1;
 
@@ -3843,6 +3837,11 @@ namespace windows_client.View
         /// </summary>
         void HideTips()
         {
+
+            if ((_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE || _tipMode == ToolTipMode.FAVOURITES
+                || _tipMode == ToolTipMode.STATUS_UPDATE) && TipManager.ConversationPageTip != null)
+                TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
+
             conversationPageToolTip.IsShow = false;
             _tipMode = ToolTipMode.DEFAULT;
             UpdateToolTip(true);

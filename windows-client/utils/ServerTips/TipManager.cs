@@ -72,29 +72,29 @@ namespace windows_client.utils.ServerTips
             if (!IsDuplicate(id))
             {
                 TipInfo tempTip = new TipInfo(type, header, body, id);
-                
+
                 if (tempTip.TipLocation)
                 {
                     if (ChatScreenTip != null)
                         RemoveTip(ChatScreenTip.TipId);
 
                     ChatScreenTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP,id);
+                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP, id);
                 }
                 else
                 {
                     if (ConversationPageTip != null)
                         RemoveTip(ConversationPageTip.TipId);
                     ConversationPageTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP,id);
+                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP, id);
                 }
 
                 WriteTipToFile(tempTip.TipLocation);
 
                 if (tempTip.TipLocation)
-                    OnConversationPageTipChanged(EventArgs.Empty);
-                else
                     OnChatScreenTipChanged(EventArgs.Empty);
+                else
+                    OnConversationPageTipChanged(EventArgs.Empty);
             }
         }
 
@@ -199,7 +199,7 @@ namespace windows_client.utils.ServerTips
                             store.CreateDirectory(TIPS_DIRECTORY);
 
                         if (store.FileExists(fileName))
-                           store.DeleteFile(fileName);
+                            store.DeleteFile(fileName);
 
                         using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write))
                         {

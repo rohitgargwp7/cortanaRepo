@@ -149,7 +149,7 @@ namespace windows_client.utils
             get
             {
                 if (_toolTipStickers == null)
-                    _toolTipStickers = new BitmapImage(new Uri("/View/images/ServerTips/profilepic.png", UriKind.Relative));
+                    _toolTipStickers = new BitmapImage(new Uri("/View/images/ServerTips/stickers.png", UriKind.Relative));
 
                 return _toolTipStickers;
             }
