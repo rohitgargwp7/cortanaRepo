@@ -305,6 +305,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 

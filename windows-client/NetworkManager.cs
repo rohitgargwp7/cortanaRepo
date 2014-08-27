@@ -519,6 +519,10 @@ namespace windows_client
                     // this is done to notify that image is changed so load new one.
                     App.ViewModel.ContactsCache[msisdn].Avatar = null;
                 }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+                });
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
