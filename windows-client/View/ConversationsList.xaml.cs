@@ -3130,19 +3130,17 @@ namespace windows_client.View
         /// <param name="isRightIconClickedEnabled">right icon click event enabled or not</param>
         /// <param name="isFullTipTappedEnabled">full tip tap event click event enabled or not</param>
         void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
-            bool isLeftIconClickEnabled, bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
+            bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
         {
             conversationPageToolTip.ResetToolTip();
+
             conversationPageToolTip.LeftIconSource = leftIconSource;
             conversationPageToolTip.RightIconSource = rightIconSource;
             conversationPageToolTip.TipHeaderText = headerText;
             conversationPageToolTip.TipText = bodyText;
-            conversationPageToolTip.LeftIconClicked -= conversationPageToolTip_LeftIconClicked;
+
             conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
             conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;
-
-            if (isLeftIconClickEnabled)
-                conversationPageToolTip.LeftIconClicked += conversationPageToolTip_LeftIconClicked;
 
             if (isRightIconClickedEnabled)
                 conversationPageToolTip.RightIconClicked += conversationPageToolTip_RightIconClicked;
@@ -3471,7 +3469,7 @@ namespace windows_client.View
                 case ToolTipMode.HIDDEN_MODE_GETSTARTED:
 
                     if (isModeChanged)
-                        InitializeToolTipControl(UI_Utils.Instance.ToolTipArrow, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_GetStarted_Txt, false, true, false);
+                        InitializeToolTipControl(UI_Utils.Instance.ToolTipArrow, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_GetStarted_Txt, true, false);
 
                     break;
 
@@ -3481,54 +3479,54 @@ namespace windows_client.View
                         return;
 
                     if (isModeChanged)
-                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_Step2_Txt, false, true, false);
+                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_Step2_Txt, true, false);
 
                     break;
 
                 case ToolTipMode.HIDDEN_MODE_COMPLETE:
 
                     if (isModeChanged)
-                        InitializeToolTipControl(UI_Utils.Instance.ToolTipArrow, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_Completed_Txt, false, true, false);
+                        InitializeToolTipControl(UI_Utils.Instance.ToolTipArrow, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenMode_Completed_Txt, true, false);
 
                     break;
 
                 case ToolTipMode.RESET_HIDDEN_MODE:
 
                     if (isModeChanged)
-                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds)), false, true, false);
+                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, String.Format(AppResources.ResetTip_Txt, Utils.GetFormattedTimeFromSeconds(_resetTimeSeconds)), true, false);
 
                     break;
 
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
 
                     if (isModeChanged)
-                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenModeReset_Completed_Txt, false, true, true);
+                        InitializeToolTipControl(UI_Utils.Instance.SheildIcon, UI_Utils.Instance.ToolTipCrossIcon, null, AppResources.HiddenModeReset_Completed_Txt, true, true);
 
                     break;
 
                 case ToolTipMode.PROFILE:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipProfilePic, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.STATUS_UPDATE:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipStatusUpdate, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.INFORMATIONAL:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, false);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipInvite, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.FAVOURITES:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipFavourites, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
 
             }
@@ -3584,8 +3582,7 @@ namespace windows_client.View
                     if (TipManager.ConversationPageTip != null)
                         TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
-                    if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
-                        PhoneApplicationService.Current.State.Add(HikeConstants.USERINFO_FROM_PROFILE, null);
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE]= null;
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3597,8 +3594,7 @@ namespace windows_client.View
                     if (TipManager.ConversationPageTip != null)
                         TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
-                    if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
-                        PhoneApplicationService.Current.State.Add(HikeConstants.USERINFO_FROM_PROFILE, null);
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3732,9 +3728,6 @@ namespace windows_client.View
             }
         }
 
-        void conversationPageToolTip_LeftIconClicked(object sender, EventArgs e)
-        {
-        }
         /// <summary>
         /// Reset hidden mode, remove saved pasword, reset tooltip and delete chats.
         /// </summary>

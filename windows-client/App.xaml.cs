@@ -20,7 +20,6 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
-using windows_client.utils.ServerTips;
 
 namespace windows_client
 {

@@ -545,9 +545,9 @@ namespace windows_client
         #region SERVER TIPS
         public static class ServerTips
         {
-            public static string CHAT_SCREEN_TIP { get { return "chtscrtip"; } }
-            public static string CONV_PAGE_TIP { get { return "cnpgtip"; } }
-            public static string CHAT_TOOL_TIP_STATUS { get { return "chattooltipst"; } }
+            public static string CHAT_SCREEN_TIP = "chtscrtip";
+            public static string CONV_PAGE_TIP = "cnpgtip";
+            public static string CHAT_TOOL_TIP_STATUS = "chattooltipst";
             public const string STICKER_TIPS = "stk";
             public const string PROFILE_TIPS = "pp";
             public const string ATTACHMENT_TIPS = "ft";

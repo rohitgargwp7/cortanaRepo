@@ -1116,6 +1116,12 @@
     <Content Include="View\images\signup_logo.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\typing.png" />
+    <Content Include="View\images\ServerTips\attachments.png" />
+    <Content Include="View\images\ServerTips\favourites.png" />
+    <Content Include="View\images\ServerTips\h2o.png" />
+    <Content Include="View\images\ServerTips\profilepic.png" />
+    <Content Include="View\images\ServerTips\status.png" />
+    <Content Include="View\images\ServerTips\Themes.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">

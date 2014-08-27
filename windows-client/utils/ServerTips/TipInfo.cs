@@ -89,12 +89,15 @@ namespace windows_client.utils.ServerTips
 
         }
 
-        public string GetTipLocation()
+        public bool TipLocation
         {
-            if (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS)
-                return HikeConstants.ServerTips.CHAT_SCREEN_TIP;
-            else
-                return HikeConstants.ServerTips.CONV_PAGE_TIP;
+            get
+            {
+                if (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS)
+                    return true; //chat thread page
+                else
+                    return false; //conv page
+            }
         }
 
 

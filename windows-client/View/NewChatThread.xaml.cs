@@ -880,7 +880,7 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-           
+
             GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
@@ -7509,16 +7509,12 @@ namespace windows_client.View
         #region SERVER TIPS
 
         void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
-            bool isLeftIconClickEnabled, bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
+            bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
         {
             chatScreenToolTip.LeftIconSource = leftIconSource;
             chatScreenToolTip.RightIconSource = rightIconSource;
             chatScreenToolTip.TipHeaderText = headerText;
             chatScreenToolTip.TipText = bodyText;
-            chatScreenToolTip.LeftIconClicked -= chatScreenToolTip_LeftIconClicked;
-
-            if (isLeftIconClickEnabled)
-                chatScreenToolTip.LeftIconClicked += chatScreenToolTip_LeftIconClicked;
 
             chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
 
@@ -7531,7 +7527,9 @@ namespace windows_client.View
                 chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
 
         }
+
         ToolTipMode _tipMode;
+        
         void UpdateToolTip(bool isModeChanged)
         {
             chatScreenToolTip.ResetToolTip();
@@ -7544,17 +7542,17 @@ namespace windows_client.View
 
                 case ToolTipMode.STICKERS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.CHAT_THEMES:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipChatTheme, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, false, true, true);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipAttachment, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
                     break;
             }
 
