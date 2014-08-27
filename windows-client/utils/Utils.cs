@@ -17,6 +17,7 @@ using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using System.Threading.Tasks;
 
 namespace windows_client.utils
 {
@@ -734,31 +735,63 @@ namespace windows_client.utils
             return result;
         }
 
+
+
         /// <summary>
         /// It creates a file in Hike directory under Pictures folder.
         /// </summary>
         /// <param name="sourceFile">absolute path of file which we want to copy to Hike directory</param>
         /// <param name="targetFileName">name of the file in hike directory </param>
-        public static async void CreateFileInHikeDirectory(string sourceFile, string targetFileName)
+        public static async Task<bool> FileStoringInHikeDirectory(string sourceFile, string targetFileName)
         {
+            bool result = true;
             string hikeDirectoryPath = @"C:/Data/Users/Public/Pictures/Hike";
             string targetFile = "Hike\\" + targetFileName;
             if (!Directory.Exists(hikeDirectoryPath))
             {
                 Directory.CreateDirectory(hikeDirectoryPath);
             }
-            StorageFile source = await StorageFile.GetFileFromPathAsync(sourceFile);
-            StorageFile target = await KnownFolders.PicturesLibrary.CreateFileAsync(targetFile, CreationCollisionOption.GenerateUniqueName);
-
-            using (IRandomAccessStream inStream = await target.OpenAsync(FileAccessMode.ReadWrite))
+            try
             {
-                using (IRandomAccessStream outStream = await source.OpenAsync(FileAccessMode.Read))
+                StorageFile source = await StorageFile.GetFileFromPathAsync(sourceFile);
+                StorageFile target = await KnownFolders.PicturesLibrary.CreateFileAsync(targetFile, CreationCollisionOption.GenerateUniqueName);
+
+                using (IRandomAccessStream inStream = await target.OpenAsync(FileAccessMode.ReadWrite))
                 {
-                    Windows.Storage.Streams.Buffer buffer = new Windows.Storage.Streams.Buffer((uint)outStream.Size);
-                    await outStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.None);
-                    await inStream.WriteAsync(buffer);
+                    using (IRandomAccessStream outStream = await source.OpenAsync(FileAccessMode.Read))
+                    {
+                        Windows.Storage.Streams.Buffer buffer = new Windows.Storage.Streams.Buffer((uint)outStream.Size);
+                        await outStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.None);
+                        await inStream.WriteAsync(buffer);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception at Utils::SaveFileInHikeDirectory" + ex.StackTrace);
+                result = false;
+            }
+            return result;
+        }
+
+
+        private static object _saveFileInHikeDirectoryLock = new Object();
+
+        /// <summary>
+        /// Function with locking to call SaveHikeInHikeDirectory
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="targetFileName"></param>
+        /// <returns></returns>
+        public static bool StoreFileInHikeDirectory(string sourceFile, string targetFileName)
+        {
+            bool returnValue = false;
+            lock (_saveFileInHikeDirectoryLock)
+            {
+                var result = Utils.FileStoringInHikeDirectory(sourceFile, targetFileName);
+                returnValue = result.Result;
+            }
+            return returnValue;
         }
 
         /// <summary>

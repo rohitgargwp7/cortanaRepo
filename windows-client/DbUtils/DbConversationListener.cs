@@ -403,14 +403,21 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && !App.appSettings.Contains(App.AUTO_SAVE_PHOTO))
+                                // Here the code to save the file in Hike Directory
+                                // TODO: HANDLE FILESAVING
+                                if (!App.appSettings.Contains(App.AUTO_SAVE_PHOTO) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE) ))
                                 {
-                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
-                                    string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName, destinationPath);
-                                }
+                                    string randomFileName = Utils.GenerateRandomString(16);
+                                    if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
+                                        randomFileName = randomFileName + ".mp4";
+                                    else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                        randomFileName = randomFileName + ".jpg";
+                                    else return;
 
+                                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    string sourceFile = Utils.GetAbsolutePath(filePath);
+                                    Utils.StoreFileInHikeDirectory(sourceFile, randomFileName);
+                                }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
                             }

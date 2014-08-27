@@ -183,19 +183,6 @@ namespace windows_client.FileTransfers
                 FileState = FileTransferState.COMPLETED;
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 Save();
-                // Here the code to save the file in Hike Directory
-                // TODO: HANDLE FILESAVING
-                string randomFileName = Utils.GenerateRandomString(16);
-                if (ContentType.Contains(HikeConstants.VIDEO))
-                    randomFileName = randomFileName + ".mp4";
-                else if (ContentType.Contains(HikeConstants.AUDIO))
-                    randomFileName = randomFileName + ".mp3";
-                else if (ContentType.Contains(HikeConstants.IMAGE))
-                    randomFileName = randomFileName + ".jpg";
-
-                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-                string sourceFile = Utils.GetAbsolutePath(filePath);
-                Utils.CreateFileInHikeDirectory(sourceFile, randomFileName);
             }
             else
             {

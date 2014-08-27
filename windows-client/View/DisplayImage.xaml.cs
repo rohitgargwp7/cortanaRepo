@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
 using windows_client.Languages;
+using System.Threading.Tasks;
 
 namespace windows_client.View
 {
@@ -387,8 +388,10 @@ namespace windows_client.View
         private void picSaveButton_Click(object sender, EventArgs e)
         {
             string tempName = Convert.ToString(_messsageId);
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + tempName;
-            bool temp = Utils.SavePictureToLibrary(tempName, filePath);
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
+            string sourceFile = Utils.GetAbsolutePath(filePath);
+            string targetFileName = Utils.GenerateRandomString(16) + ".jpg";
+            bool temp = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
 
             if (temp)
             {
