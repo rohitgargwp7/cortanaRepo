@@ -85,6 +85,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("Name");
                     _name = value;
                     NotifyPropertyChanged("Name");
+                    NotifyPropertyChanged("NameToshow");
                 }
             }
         }
@@ -170,6 +171,14 @@ namespace windows_client.Model
             }
         }
 
+        public string NameToshow
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Name) ? Msisdn : Name;
+            }
+        }
+
         //used for block unblock also
         public bool IsFav
         {
@@ -244,7 +253,7 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
         public ContactInfo()
         {
             _name = null;
@@ -312,7 +321,7 @@ namespace windows_client.Model
                     return true;
                 else return false;
             }
-            
+
             if (string.IsNullOrWhiteSpace(Name))
             {
                 if (!string.IsNullOrWhiteSpace(other.Name))
@@ -445,6 +454,7 @@ namespace windows_client.Model
             set
             {
                 _avatar = value;
+                _avatarImage = null;//reset to refresh
                 NotifyPropertyChanged("AvatarImage");
             }
         }
@@ -464,8 +474,18 @@ namespace windows_client.Model
             {
                 try
                 {
-                    if (_avatarImage == null)
-                        _avatarImage = UI_Utils.Instance.GetBitmapImage(_msisdn);
+                    if (_avatarImage == null) // if image is already set return that
+                    {
+                        if (_avatar == null)
+                        {
+                            _avatarImage = UI_Utils.Instance.GetBitmapImage(_msisdn);
+                        }
+                        else
+                        {
+                            _avatarImage = UI_Utils.Instance.createImageFromBytes(_avatar);
+                            UI_Utils.Instance.BitmapImageCache[_msisdn] = _avatarImage; // update cache
+                        }
+                    }
 
                     return _avatarImage;
                 }

@@ -47,14 +47,14 @@ namespace windows_client.View
             initPage();
 
             shellProgress.IsIndeterminate = true;
-            
+
             BackgroundWorker bw = new BackgroundWorker();
-            
+
             bw.DoWork += (s, e) =>
             {
                 _allContactsList = UsersTableUtils.getAllContactsToInvite();
             };
-            
+
             bw.RunWorkerAsync();
 
             bw.RunWorkerCompleted += (s, e) =>
@@ -82,8 +82,8 @@ namespace windows_client.View
         {
             appBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -93,7 +93,7 @@ namespace windows_client.View
             _selectAllButton.Click += selectAllButton_Click;
             _selectAllButton.IsEnabled = false;
             appBar.Buttons.Add(_selectAllButton);
-           
+
             _doneIconButton = new ApplicationBarIconButton();
             _doneIconButton.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.Relative);
             _doneIconButton.Text = AppResources.AppBar_Done_Btn;
@@ -132,7 +132,7 @@ namespace windows_client.View
             }
             else
             {
-                for (int i = 0; i < SelectedContacts.Count;)
+                for (int i = 0; i < SelectedContacts.Count; )
                 {
                     SelectedContacts[i].IsSelected = false;
                     SelectedContacts.RemoveAt(i);
@@ -156,6 +156,9 @@ namespace windows_client.View
                 c.CheckBoxVisibility = Visibility.Visible;
 
                 if (c.Msisdn == App.MSISDN)
+                    continue;
+
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
                     continue;
 
                 string ch = GetCaptionGroup(c);
@@ -299,7 +302,7 @@ namespace windows_client.View
                 }
                 else
                     emptyGrid.Visibility = Visibility.Collapsed;
-                
+
                 return;
             }
 
@@ -312,7 +315,7 @@ namespace windows_client.View
                     _groupListDictionary.Remove(_charsEntered);
                     contactsListBox.ItemsSource = null;
                     emptyGrid.Visibility = Visibility.Visible;
-                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt; 
+                    noResultTextBlock.Text = AppResources.NoSearchToDisplay_Txt;
                     return;
                 }
 
@@ -347,12 +350,12 @@ namespace windows_client.View
             }
 
             BackgroundWorker bw = new BackgroundWorker();
-            
+
             bw.DoWork += (s, ev) =>
             {
                 _glistFiltered = GetFilteredContactsFromNameOrPhoneAsync(_charsEntered, 0, 26);
             };
-            
+
             bw.RunWorkerAsync();
 
             bw.RunWorkerCompleted += (s, ev) =>
@@ -485,11 +488,16 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 cInfo.IsSelected = !cInfo.IsSelected;
+
+                if (!App.ViewModel.IsHiddenModeActive
+                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                {
+                    cInfo.IsSelected = false;
+                    return;
+                }
 
                 if (cInfo.IsSelected) // this will be true when checkbox is not checked initially and u clicked it
                 {
@@ -519,6 +527,8 @@ namespace windows_client.View
                     PageTitle.Text = _pageTitle;
                 }
             }
+
+            enterNameTxt.Text = String.Empty;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)

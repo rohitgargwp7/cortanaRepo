@@ -50,7 +50,14 @@ namespace windows_client.Misc
             }
         }
 
-        public GroupParticipant getGroupParticipant(string defaultName, string msisdn, string grpId)
+        /// <summary>
+        /// Get group participant
+        /// </summary>
+        /// <param name="defaultName">default name for the participant, null if want to use db name</param>
+        /// <param name="msisdn">msisdn of the participant</param>
+        /// <param name="grpId">group id</param>
+        /// <returns>group participant</returns>
+        public GroupParticipant GetGroupParticipant(string defaultName, string msisdn, string grpId)
         {
             if (grpId == null)
                 return null;
@@ -66,7 +73,7 @@ namespace windows_client.Misc
                     }
                 }
             }
-            
+
             var isInAdressBook = false;
             ContactInfo cInfo = null;
 
@@ -80,14 +87,17 @@ namespace windows_client.Misc
             else
             {
                 cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            
+
                 if (cInfo != null)
                     isInAdressBook = true;
             }
 
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             gp.IsInAddressBook = isInAdressBook;
-            
+
+            if (gp.Msisdn == App.MSISDN)
+                return gp;
+
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
@@ -436,6 +446,7 @@ namespace windows_client.Misc
         {
             if (!groupCache.ContainsKey(groupId) || groupCache[groupId] == null)
                 return null;
+
             List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(groupCache[groupId].Count);
             for (int i = 0; i < groupCache[groupId].Count; i++)
             {

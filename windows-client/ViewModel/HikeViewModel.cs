@@ -30,6 +30,7 @@ using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Coding4Fun.Phone.Controls;
+using System.Windows.Media;
 
 namespace windows_client.ViewModel
 {
@@ -40,7 +41,21 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        public static StickerHelper stickerHelper;
+        static StickerHelper _stickerHelper;
+        public static StickerHelper StickerHelper
+        {
+            get
+            {
+                if (_stickerHelper == null)
+                    _stickerHelper = new StickerHelper();
+
+                return _stickerHelper;
+            }
+            private set
+            {
+                _stickerHelper = value;
+            }
+        }
 
         private Dictionary<string, ConversationListObject> _pendingReq = null;
 
@@ -200,9 +215,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
 
             LoadViewModelObjects();
-            LoadToolTipsDict();
-            LoadCurrentLocation();
-            ClearTempTransferData();
         }
 
         public HikeViewModel()
@@ -232,11 +244,18 @@ namespace windows_client.ViewModel
 
             LoadToolTipsDict();
             LoadCurrentLocation();
+            ClearTempTransferData();
 
             MiscDBUtil.LoadPendingUploadPicRequests();
 
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+
+            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+                IsDarkMode = true;
+
+            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+                IsHiddenModeActive = true;
         }
 
         /// <summary>
@@ -389,12 +408,18 @@ namespace windows_client.ViewModel
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         object[] vals = (object[])obj;
+
+                        bool showPush = true;
+                        if (vals.Length == 3 && vals[2] is bool)
+                            showPush = (Boolean)vals[2];
+
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
 
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+
                         if (index < 0)//not present in oc
                         {
                             App.ViewModel.MessageListPageCollection.Insert(0, mObj);
@@ -404,6 +429,32 @@ namespace windows_client.ViewModel
                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
                             App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                         }//if already at zero, do nothing
+
+                        if (showPush &&
+                            ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
+                            || (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber != mObj.Msisdn)))
+                        {
+                            if (mObj.IsMute) // of msg is for muted forwardedMessage, ignore msg
+                                return;
+
+                            ToastPrompt toast = new ToastPrompt();
+                            toast.Tag = mObj.Msisdn;
+
+                            if (mObj.IsHidden)
+                                toast.Title = String.Empty;
+                            else
+                                toast.Title = (mObj.ContactName != null ? mObj.ContactName : mObj.Msisdn) + (mObj.IsGroupChat ? " :" : " -");
+
+                            // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
+                            toast.Message = mObj.ToastText;
+                            toast.Foreground = UI_Utils.Instance.White;
+                            toast.Background = (SolidColorBrush)App.Current.Resources["InAppToastBgBrush"];
+                            toast.ImageSource = UI_Utils.Instance.HikeToastImage;
+                            toast.VerticalContentAlignment = VerticalAlignment.Center;
+                            toast.MaxHeight = 60;
+                            toast.Tap += App.ViewModel.Toast_Tap;
+                            toast.Show();
+                        }
                     });
             }
             #endregion
@@ -460,6 +511,7 @@ namespace windows_client.ViewModel
             else if (type == HikePubSub.TYPING_CONVERSATION)
             {
                 object[] vals = (object[])obj;
+
                 if (ShowTypingNotification != null)
                     ShowTypingNotification(null, vals);
 
@@ -507,6 +559,7 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
+            StickerHelper = null;
         }
 
         private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
@@ -568,6 +621,52 @@ namespace windows_client.ViewModel
             }
 
             ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+        }
+
+        /// <summary>
+        /// Remove image for deleted contacts on resync.
+        /// </summary>
+        /// <param name="deletedContacts">deleted contacts</param>
+        /// <param name="updatedContacts">added or updated contacts</param>
+        public void DeleteImageForDeletedContacts(List<ContactInfo> deletedContacts, List<ContactInfo> updatedContacts)
+        {
+            if (deletedContacts == null)
+                return;
+
+            Dictionary<string, int> deletedContactMap = new Dictionary<string, int>();
+
+            foreach (var contact in deletedContacts)
+            {
+                if (!deletedContactMap.ContainsKey(contact.Msisdn))
+                    deletedContactMap.Add(contact.Msisdn, 0);
+            }
+
+            if (updatedContacts != null)
+            {
+                foreach (var contact in updatedContacts)
+                {
+                    if (deletedContactMap.ContainsKey(contact.Msisdn))
+                        deletedContactMap[contact.Msisdn]++;
+                }
+            }
+
+            foreach (var msisdn in deletedContactMap.Keys)
+            {
+                if (deletedContactMap[msisdn] == 0)
+                {
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        var fStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+                        if (fStatus <= FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                        {
+                            MiscDBUtil.DeleteImageForMsisdn(msisdn);
+
+                            App.ViewModel.ConvMap[msisdn].Avatar = null;
+                            App.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                        }
+                    }
+                }
+            }
         }
 
         #region In Apptips
@@ -1047,6 +1146,19 @@ namespace windows_client.ViewModel
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
 
+        public void SendRemoveStealthPacket(ConversationListObject cObj)
+        {
+            HikePubSub mPubSub = App.HikePubSubInstance;
+            JObject hideObj = new JObject();
+            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+            JObject data = new JObject();
+            JArray msisdn = new JArray();
+            msisdn.Add(cObj.Msisdn);
+            data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+            hideObj.Add(HikeConstants.DATA, data);
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
+        }
+
         #region MULTIPLE IMAGE
 
         public LruCache<long, BitmapImage> lruMultipleImageCache;
@@ -1090,7 +1202,7 @@ namespace windows_client.ViewModel
         {
             if (PicUploadList.Count == 10)
             {
-                DeleteGroupImage(id);
+                DeleteImageForMsisdn(id);
                 return;
             }
 
@@ -1142,13 +1254,13 @@ namespace windows_client.ViewModel
 
         private void DeleteGroupImageFromList(GroupPic group)
         {
-            DeleteGroupImage(group.GroupId);
+            DeleteImageForMsisdn(group.GroupId);
 
             if (PicUploadList.Contains(group))
                 PicUploadList.Remove(group);
         }
 
-        private static void DeleteGroupImage(string id)
+        public void DeleteImageForMsisdn(string id)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -1202,7 +1314,6 @@ namespace windows_client.ViewModel
 
         #endregion Request Last Seen
 
-
         public void Toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ToastPrompt toast = sender as ToastPrompt;
@@ -1212,10 +1323,87 @@ namespace windows_client.ViewModel
             if (co == null)
                 return;
 
+            // Return if chat is hidden and hidden mode is not active
+            if (co.IsHidden && !IsHiddenModeActive)
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
+
             App page = (App)Application.Current;
             page.RootFrame.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        public async void UpdateUserImageInStatus(string msisdn)
+        {
+            await Task.Delay(1);
+
+            foreach (var status in StatusList)
+            {
+                if (status.Msisdn == msisdn)
+                    status.UpdateImage();
+            }
+        }
+
+        /// <summary>
+        /// Is dark theme set for the app.
+        /// </summary>
+        public Boolean IsDarkMode
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Check if hidden mode is active. True means hidden chats are visible.
+        /// </summary>
+        public Boolean IsHiddenModeActive
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Reset hidden mode.
+        /// </summary>
+        public void ResetHiddenMode()
+        {
+            IsHiddenModeActive = false;
+            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+        }
+
+        /// <summary>
+        /// Toggle hidden mode. Save state in app settings.
+        /// </summary>
+        public void ToggleHiddenMode()
+        {
+            IsHiddenModeActive = !IsHiddenModeActive;
+
+            if (IsHiddenModeActive)
+                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
+            else
+                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+            
+            foreach (var conv in MessageListPageCollection)
+                conv.HiddenModeToggled();
+        }
+
+        /// <summary>
+        /// Start reset hidden mode timer on home screen.
+        /// </summary>
+        public void ResetHiddenModeTapped()
+        {
+            if (App.ViewModel.StartResetHiddenModeTimer != null)
+                App.ViewModel.StartResetHiddenModeTimer(null, null);
+        }
+
+        public event EventHandler<EventArgs> StartResetHiddenModeTimer;
+
+        public string Password { get; set; }
+       
+        public static void ClearStickerHelperInstance()
+        {
+            StickerHelper = null;
         }
     }
 }

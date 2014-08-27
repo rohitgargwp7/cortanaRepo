@@ -6,6 +6,7 @@ using System.IO;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace windows_client.utils
 {
@@ -63,6 +64,82 @@ namespace windows_client.utils
                     _bitMapImageCache = value;
             }
         }
+
+        BitmapImage _muteIconBlue;
+        public BitmapImage MuteIconBlue
+        {
+            get
+            {
+                if (_muteIconBlue == null)
+                    _muteIconBlue = new BitmapImage(new Uri("/View/images/ConversationPage/mute_icon_blue.png", UriKind.Relative));
+
+                return _muteIconBlue;
+            }
+        }
+
+        BitmapImage _muteIconGray;
+        public BitmapImage MuteIconGray
+        {
+            get
+            {
+                if (_muteIconGray == null)
+                    _muteIconGray = new BitmapImage(new Uri("/View/images/ConversationPage/mute_icon_gray.png", UriKind.Relative));
+
+                return _muteIconGray;
+            }
+        }
+
+        #region Hidden Mode
+
+        private SolidColorBrush _passwordSquareBorderBrush;
+        public SolidColorBrush PasswordSquareBorderBrush
+        {
+            get
+            {
+                if (_passwordSquareBorderBrush == null)
+                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xf6, 0x9c, 0x98));
+
+                return _passwordSquareBorderBrush;
+            }
+        }
+
+        BitmapImage _sheildIcon;
+        public BitmapImage SheildIcon
+        {
+            get
+            {
+                if (_sheildIcon == null)
+                    _sheildIcon = new BitmapImage(new Uri("/view/images/ConversationPage/hiddenModeSheild.png", UriKind.Relative));
+
+                return _sheildIcon;
+            }
+        }
+
+        BitmapImage _toolTipCrossIcon;
+        public BitmapImage ToolTipCrossIcon
+        {
+            get
+            {
+                if (_toolTipCrossIcon == null)
+                    _toolTipCrossIcon = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Cross.png", UriKind.Relative));
+
+                return _toolTipCrossIcon;
+            }
+        }
+
+        BitmapImage _toolTipArrow;
+        public BitmapImage ToolTipArrow
+        {
+            get
+            {
+                if (_toolTipArrow == null)
+                    _toolTipArrow = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipArrow;
+            }
+        }
+
+        #endregion
 
         #region Chat Thread Colors
 
@@ -130,15 +207,15 @@ namespace windows_client.utils
 
         #region Standard Colors
 
-        private SolidColorBrush transparent;
+        private SolidColorBrush _transparent;
         public SolidColorBrush Transparent
         {
             get
             {
-                if (transparent == null)
-                    transparent = new SolidColorBrush(Colors.Transparent);
+                if (_transparent == null)
+                    _transparent = new SolidColorBrush(Colors.Transparent);
 
-                return transparent;
+                return _transparent;
             }
         }
 
@@ -146,43 +223,43 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
-        private SolidColorBrush red;
+        private SolidColorBrush _red;
         public SolidColorBrush Red
         {
             get
             {
-                if (red == null)
-                    red = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0x54, 0x54));
+                if (_red == null)
+                    _red = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0x54, 0x54));
 
-                return red;
+                return _red;
             }
         }
 
-        private SolidColorBrush pink;
+        private SolidColorBrush _pink;
         public SolidColorBrush Pink
         {
             get
             {
-                if (pink == null)
-                    pink = new SolidColorBrush(Color.FromArgb(255, 0xf7, 0x52, 0x5a));
+                if (_pink == null)
+                    _pink = new SolidColorBrush(Color.FromArgb(255, 0xf7, 0x52, 0x5a));
 
-                return pink;
+                return _pink;
             }
         }
 
-        private SolidColorBrush black;
+        private SolidColorBrush _black;
         public SolidColorBrush Black
         {
             get
             {
-                if (black == null)
-                    black = new SolidColorBrush(Colors.Black);
+                if (_black == null)
+                    _black = new SolidColorBrush(Colors.Black);
 
-                return black;
+                return _black;
             }
         }
 
@@ -254,7 +331,7 @@ namespace windows_client.utils
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["HikeBlueHeader"];
+                return (SolidColorBrush)Application.Current.Resources["HikeBlue"];
             }
         }
 
@@ -284,15 +361,39 @@ namespace windows_client.utils
 
         #endregion
 
-        private BitmapImage myLocationPin;
+        private BitmapImage _myLocationPin;
         public BitmapImage MyLocationPin
         {
             get
             {
-                if (myLocationPin == null)
-                    myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
+                if (_myLocationPin == null)
+                    _myLocationPin = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
-                return myLocationPin;
+                return _myLocationPin;
+            }
+        }
+
+        private BitmapImage _madeInIndiaWhite;
+        public BitmapImage MadeInIndiaWhite
+        {
+            get
+            {
+                if (_madeInIndiaWhite == null)
+                    _madeInIndiaWhite = new BitmapImage(new Uri("/View/images/settings/made_with_love.png", UriKind.Relative));
+
+                return _madeInIndiaWhite;
+            }
+        }
+
+        private BitmapImage _madeInIndiaBlack;
+        public BitmapImage MadeInIndiaBlack
+        {
+            get
+            {
+                if (_madeInIndiaBlack == null)
+                    _madeInIndiaBlack = new BitmapImage(new Uri("/View/images/settings/made_with_love_Black.jpg", UriKind.Relative));
+
+                return _madeInIndiaBlack;
             }
         }
 
@@ -569,54 +670,6 @@ namespace windows_client.utils
                     overlaySmsImage = new BitmapImage(new Uri("/View/images/icon_sms.png", UriKind.Relative));
 
                 return overlaySmsImage;
-            }
-        }
-
-        private BitmapImage girlSelectedImage;
-        public BitmapImage GirlSelectedImage
-        {
-            get
-            {
-                if (girlSelectedImage == null)
-                    girlSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_selected.png", UriKind.Relative));
-
-                return girlSelectedImage;
-            }
-        }
-
-        private BitmapImage girlUnSelectedImage;
-        public BitmapImage GirlUnSelectedImage
-        {
-            get
-            {
-                if (girlUnSelectedImage == null)
-                    girlUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/girl_unselected.png", UriKind.Relative));
-
-                return girlUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boyUnSelectedImage;
-        public BitmapImage BoyUnSelectedImage
-        {
-            get
-            {
-                if (boyUnSelectedImage == null)
-                    boyUnSelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_unselected.png", UriKind.Relative));
-
-                return boyUnSelectedImage;
-            }
-        }
-
-        private BitmapImage boySelectedImage;
-        public BitmapImage BoySelectedImage
-        {
-            get
-            {
-                if (boySelectedImage == null)
-                    boySelectedImage = new BitmapImage(new Uri("/View/images/FTUE/boy_selected.png", UriKind.Relative));
-
-                return boySelectedImage;
             }
         }
 
@@ -1029,7 +1082,7 @@ namespace windows_client.utils
                 return video_Default;
             }
         }
-        
+
         #endregion
 
 
@@ -1311,7 +1364,7 @@ namespace windows_client.utils
             get
             {
                 if (humanoidOverlay == null)
-                    humanoidOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid_overlay.png", UriKind.Relative));
+                    humanoidOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_hikin.png", UriKind.Relative));
 
                 return humanoidOverlay;
             }
@@ -1323,7 +1376,7 @@ namespace windows_client.utils
             get
             {
                 if (humanoid2Overlay == null)
-                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/humanoid2_overlay.png", UriKind.Relative));
+                    humanoid2Overlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_youi.png", UriKind.Relative));
 
                 return humanoid2Overlay;
             }
@@ -1335,7 +1388,7 @@ namespace windows_client.utils
             get
             {
                 if (doggyOverlay == null)
-                    doggyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/doggy_overlay.png", UriKind.Relative));
+                    doggyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_snuggles.png", UriKind.Relative));
 
                 return doggyOverlay;
             }
@@ -1348,7 +1401,7 @@ namespace windows_client.utils
             {
                 if (kittyOverlay == null)
                 {
-                    kittyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/kitty_overlay.png", UriKind.Relative));
+                    kittyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_miley.png", UriKind.Relative));
                 }
                 return kittyOverlay;
             }
@@ -1360,7 +1413,7 @@ namespace windows_client.utils
             get
             {
                 if (bollywoodOverlay == null)
-                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/bolly_overlay.png", UriKind.Relative));
+                    bollywoodOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_bollywood.png", UriKind.Relative));
 
                 return bollywoodOverlay;
             }
@@ -1372,7 +1425,7 @@ namespace windows_client.utils
             get
             {
                 if (trollOverlay == null)
-                    trollOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/rage_overlay.png", UriKind.Relative));
+                    trollOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_rageface.png", UriKind.Relative));
 
                 return trollOverlay;
             }
@@ -1384,7 +1437,7 @@ namespace windows_client.utils
             get
             {
                 if (avatarsOverlay == null)
-                    avatarsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/avatars_overlay.png", UriKind.Relative));
+                    avatarsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_avatar.png", UriKind.Relative));
 
                 return avatarsOverlay;
             }
@@ -1396,9 +1449,20 @@ namespace windows_client.utils
             get
             {
                 if (indiansOverlay == null)
-                    indiansOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_overlay.png", UriKind.Relative));
+                    indiansOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_indians.png", UriKind.Relative));
 
                 return indiansOverlay;
+            }
+        }
+        private BitmapImage jellyOverlay;
+        public BitmapImage JellyOverlay
+        {
+            get
+            {
+                if (jellyOverlay == null)
+                    jellyOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_jelly.png", UriKind.Relative));
+
+                return jellyOverlay;
             }
         }
         private BitmapImage sportsOverlay;
@@ -1407,7 +1471,7 @@ namespace windows_client.utils
             get
             {
                 if (sportsOverlay == null)
-                    sportsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/sports_overlay.png", UriKind.Relative));
+                    sportsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_sports.png", UriKind.Relative));
 
                 return sportsOverlay;
             }
@@ -1418,7 +1482,7 @@ namespace windows_client.utils
             get
             {
                 if (loveOverlay == null)
-                    loveOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_overlay.png", UriKind.Relative));
+                    loveOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_love.png", UriKind.Relative));
 
                 return loveOverlay;
             }
@@ -1430,7 +1494,7 @@ namespace windows_client.utils
             get
             {
                 if (expressionsOverlay == null)
-                    expressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/expressions_overlay.png", UriKind.Relative));
+                    expressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_expressions.png", UriKind.Relative));
 
                 return expressionsOverlay;
             }
@@ -1443,7 +1507,7 @@ namespace windows_client.utils
             {
                 if (smileyExpressionsOverlay == null)
                 {
-                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/goofy_overlay.png", UriKind.Relative));
+                    smileyExpressionsOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_goofy.png", UriKind.Relative));
                 }
                 return smileyExpressionsOverlay;
             }
@@ -1570,6 +1634,17 @@ namespace windows_client.utils
                     indianInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/indian_inactive.png", UriKind.Relative));
 
                 return indianInactive;
+            }
+        }
+        private BitmapImage jellyInactive;
+        public BitmapImage JellyInactive
+        {
+            get
+            {
+                if (jellyInactive == null)
+                    jellyInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/jelly_inactive.png", UriKind.Relative));
+
+                return jellyInactive;
             }
         }
         private BitmapImage sportsInactive;
@@ -1726,6 +1801,17 @@ namespace windows_client.utils
                 return indianActive;
             }
         }
+        private BitmapImage jellyActive;
+        public BitmapImage JellyActive
+        {
+            get
+            {
+                if (jellyActive == null)
+                    jellyActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/jelly_active.png", UriKind.Relative));
+
+                return jellyActive;
+            }
+        }
         private BitmapImage sportsActive;
         public BitmapImage SportsActive
         {
@@ -1851,7 +1937,7 @@ namespace windows_client.utils
             get
             {
                 if (statusTabImageNotSelected == null)
-                    statusTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/status_NotSelected.png", UriKind.Relative));
+                    statusTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["StatusTabImageNotSelected"], UriKind.Relative));
 
                 return statusTabImageNotSelected;
             }
@@ -1875,13 +1961,13 @@ namespace windows_client.utils
             get
             {
                 if (chatsTabImageNotSelected == null)
-                    chatsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/chat_NotSelected.png", UriKind.Relative));
+                    chatsTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["ChatsTabImageNotSelected"], UriKind.Relative));
 
                 return chatsTabImageNotSelected;
             }
         }
 
-        BitmapImage profileTabImageSelected;
+        BitmapImage friendsTabImageSelected;
         public BitmapImage FriendsTabImageSelected
         {
             get
@@ -1893,39 +1979,15 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage profileTabImageNotSelected;
+        BitmapImage friendsTabImageNotSelected;
         public BitmapImage FriendsTabImageNotSelected
         {
             get
             {
                 if (friendsTabImageNotSelected == null)
-                    friendsTabImageNotSelected = new BitmapImage(new Uri("/View/images/ConversationPage/friend_NotSelected.png", UriKind.Relative));
+                    friendsTabImageNotSelected = new BitmapImage(new Uri((String)App.Current.Resources["FriendsTabImageNotSelected"], UriKind.Relative));
 
                 return friendsTabImageNotSelected;
-            }
-        }
-
-        BitmapImage friendsTabImageSelected;
-        public BitmapImage ProfileTabImageSelected
-        {
-            get
-            {
-                if (profileTabImageSelected == null)
-                    profileTabImageSelected = new BitmapImage(new Uri("/View/images/profile_Selected.png", UriKind.Relative));
-
-                return profileTabImageSelected;
-            }
-        }
-
-        BitmapImage friendsTabImageNotSelected;
-        public BitmapImage ProfileTabImageNotSelected
-        {
-            get
-            {
-                if (profileTabImageNotSelected == null)
-                    profileTabImageNotSelected = new BitmapImage(new Uri("/View/images/profile_NotSelected.png", UriKind.Relative));
-
-                return profileTabImageNotSelected;
             }
         }
 
@@ -1960,7 +2022,7 @@ namespace windows_client.utils
             }
         }
 
-        Thickness _newCategoryThickness= new Thickness(0, 2, 0, 0);
+        Thickness _newCategoryThickness = new Thickness(0, 2, 0, 0);
         public Thickness NewCategoryThickness
         {
             get
@@ -2113,24 +2175,6 @@ namespace windows_client.utils
 
         #endregion
 
-        public byte[] BitmapImgToByteArray(BitmapImage image)
-        {
-            try
-            {
-                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-                using (var msLargeImage = new MemoryStream())
-                {
-                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                    return msLargeImage.ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
-                return null;
-            }
-        }
-
         public byte[] PngImgToJpegByteArray(BitmapImage image)
         {
             try
@@ -2217,7 +2261,7 @@ namespace windows_client.utils
             {
                 int toWidth = GetMaxToWidthForImage(bitmapImage.PixelHeight, bitmapImage.PixelWidth);
                 if (toWidth != 0)
-                    return getCompressedImage(imagebytes, toWidth);
+                    return GetCompressedImage(imagebytes, toWidth);
             }
             catch (Exception ex)
             {
@@ -2227,6 +2271,12 @@ namespace windows_client.utils
             return bitmapImage;
         }
 
+        /// <summary>
+        /// Get Image with compressed resolution based on 480x800
+        /// </summary>
+        /// <param name="height">height of curent image</param>
+        /// <param name="width">width of current image</param>
+        /// <returns>width of new image</returns>
         public int GetMaxToWidthForImage(double height, double width)
         {
             var aspectratio = height / width;
@@ -2238,10 +2288,17 @@ namespace windows_client.utils
                 toWidth = 480;
             else if (height > 800)
                 toWidth = Convert.ToInt32(800 / aspectratio);
+
             return toWidth;
         }
 
-        BitmapImage getCompressedImage(byte[] imagebytes, int toWidth)
+        /// <summary>
+        /// Get compressed image
+        /// </summary>
+        /// <param name="imagebytes">image to be compressed</param>
+        /// <param name="toWidth">new width to which image needs to be compressed</param>
+        /// <returns>Compressed image</returns>
+        BitmapImage GetCompressedImage(byte[] imagebytes, int toWidth)
         {
             if (imagebytes == null || imagebytes.Length == 0)
                 return null;

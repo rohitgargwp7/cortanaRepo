@@ -54,6 +54,8 @@ namespace windows_client
 
         public static readonly string ACTION = "action";
 
+        public static readonly string ICON_REMOVE = "icr";
+
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
@@ -91,10 +93,12 @@ namespace windows_client
         {
             if (string.IsNullOrEmpty(msg))
                 return;
+
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);
             }
+
             JObject jsonObj = null;
             try
             {
@@ -206,12 +210,20 @@ namespace windows_client
                 string sentTo = "";
                 try
                 {
+                    // If not null then this is group id
                     sentTo = (string)jsonObj[HikeConstants.TO];
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
+
+                var number = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
+
+                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(number)
+                    && App.ViewModel.ConvMap[number].IsHidden && !App.ViewModel.IsHiddenModeActive)
+                    return;
+
                 object[] vals = new object[2];
                 vals[0] = msisdn;
                 vals[1] = sentTo;
@@ -369,10 +381,12 @@ namespace windows_client
             {
                 JObject o = null;
                 string uMsisdn = null;
+                long serverTimestamp = 0;
                 try
                 {
                     o = (JObject)jsonObj[HikeConstants.DATA];
                     uMsisdn = (string)o[HikeConstants.MSISDN];
+                    serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
                 }
                 catch (Exception ex)
                 {
@@ -392,14 +406,15 @@ namespace windows_client
                 GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
+                    long lastTimeStamp;
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                        return;
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
                     // if user is in contact list then only show the joined msg
                     ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
-                    bool isUserInContactList = c != null ? true : false;
-                    if (isUserInContactList && c.OnHike) // if user exists and is already on hike , do nothing
-                        return;
 
                     // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, isUserInContactList, isRejoin);
+                    ProcessUoUjMsgs(jsonObj, false, c != null, isRejoin);
                 }
                 // if user has left, mark him as non hike user in group cache
                 else
@@ -413,7 +428,7 @@ namespace windows_client
                             this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
-                    
+
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
                     if (GroupManager.Instance.GroupCache != null)
@@ -464,49 +479,44 @@ namespace windows_client
                 st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    try
                     {
-                        try
-                        {
-                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
-                        }
-                    });
+                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
+                    }
                 }
                 else // update fav and contact section
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    if (msisdn == null)
+                        return;
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
                     {
-                        if (msisdn == null)
-                            return;
-                        bool isPendingOrFav = false;
-                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                        if (c != null) // for favourites
-                        {
-                            c.Avatar = imageBytes;
-                            isPendingOrFav = true;
-                        }
+                        c.Avatar = imageBytes;
+                    }
+                    else
+                    {
                         c = App.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
-                            isPendingOrFav = true;
                         }
-
-                        if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        {
-                            // if bitmap is not already updated by fav or pending , simply remove the old image
-                            if (!isPendingOrFav)
-                                UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                            // this is done to notify that image is changed so load new one.
-                            App.ViewModel.ContactsCache[msisdn].Avatar = null;
-                        }
-                    });
+                    }
                 }
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                {
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    // this is done to notify that image is changed so load new one.
+                    App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+                });
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -808,6 +818,17 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region DP PRIVACY SETTING
+                                        else if (kkvv.Key == HikeConstants.AVATAR)
+                                        {
+                                            int value = (int)kkvv.Value;
+                                            if (value == 2)
+                                            {
+                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                            }
+                                        }
+                                        #endregion
+
                                     }
                                     catch (Exception ex)
                                     {
@@ -1035,7 +1056,7 @@ namespace windows_client
                     JToken gName;
                     //pubsub for gcn is not raised
                     if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                        groupName = gName.ToString();
+                        groupName = gName.ToString().Trim();
 
                     #endregion
                 }
@@ -1141,6 +1162,7 @@ namespace windows_client
                 try
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
+                    groupName = groupName.Trim();
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
@@ -1153,6 +1175,7 @@ namespace windows_client
                     else
                         return;//group doesn't exists
 
+                    GroupManager.Instance.LoadGroupParticipants(groupId);
                     ConversationTableUtils.updateGroupName(groupId, groupName);
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1184,8 +1207,6 @@ namespace windows_client
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string from = (string)jsonObj[HikeConstants.FROM];
-                if (from == App.MSISDN) // if you changed the pic simply ignore
-                    return;
                 ConversationListObject cObj;
                 if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
@@ -1194,8 +1215,8 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
+                
                 //check if same image is set
-
                 if (cObj.Avatar != null)
                 {
                     string previousImage = System.Convert.ToBase64String(cObj.Avatar);
@@ -1206,6 +1227,9 @@ namespace windows_client
                         return;
                     }
                 }
+
+                GroupManager.Instance.LoadGroupParticipants(groupId);
+
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1248,7 +1272,7 @@ namespace windows_client
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
                     if (gp == null || gp.HasLeft)
                         return;
 
@@ -1531,8 +1555,17 @@ namespace windows_client
                             {
                                 int.TryParse(moodId_String, out moodId);
                                 moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null)
-                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                try
+                                {
+                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                
+                                }
+                                catch (Exception ex)
+                                {
+                                    tod = 0;
+                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                                }
                             }
                         }
                         sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
@@ -1829,9 +1862,9 @@ namespace windows_client
                         bool isPush = true;
                         JToken pushJToken;
                         if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
-                            isPush = (Boolean)pushJToken; 
-                        
-                            object[] vals;
+                            isPush = (Boolean)pushJToken;
+
+                        object[] vals;
                         vals = new object[3];
                         vals[0] = cm;
                         vals[1] = obj;
@@ -1924,6 +1957,52 @@ namespace windows_client
                     Debug.WriteLine("Network Manager:: ACTION, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                 }
 
+            }
+            #endregion
+            #region IC REMOVE
+            else if (type == ICON_REMOVE)
+            {
+                try
+                {
+                    MiscDBUtil.DeleteImageForMsisdn(msisdn);
+                    UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = null;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                    }
+
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    
+                    if (c != null) // for favourites
+                    {
+                        c.Avatar = null;
+                    }
+                    else
+                    {
+                        c = App.ViewModel.GetPending(msisdn);
+                        if (c != null) // for pending requests
+                        {
+                            c.Avatar = null;
+                        }
+                    }
+
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    {
+                        // this is done to notify that image is changed so load new one.
+                        App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                    }
+
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            App.ViewModel.UpdateUserImageInStatus(msisdn);
+                        });
+                }
+                catch (JsonReaderException ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
             }
             #endregion
             #region OTHER
@@ -2093,22 +2172,12 @@ namespace windows_client
             foreach (string key in GroupManager.Instance.GroupCache.Keys)
             {
                 List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                for (int i = 0; i < l.Count; i++)
+                GroupParticipant gp = l.Find(x => x.Msisdn == ms);
+                if (gp != null)
                 {
-                    if (l[i].Msisdn == ms) // if this msisdn exists in group
+                    if (isOptInMsg)
                     {
-                        ConvMessage convMsg = null;
-                        if (!isOptInMsg) // represents UJ event
-                        {
-                            if (l[i].IsOnHike)  // if this user is already on hike
-                                continue;
-                            l[i].IsOnHike = true;
-                            if (!GroupTableUtils.IsGroupAlive(key)) // if group is dead simply dont do anything
-                                continue;
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
-                        }
-                        else
-                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
 
                         object[] values = null;
                         convMsg.Msisdn = key;
@@ -2143,9 +2212,10 @@ namespace windows_client
                         values[1] = co;
 
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
-                        l[i].HasOptIn = true;
-                        break;
                     }
+                    else
+                        gp.IsOnHike = true;
+                    gp.HasOptIn = true;
                 }
             }
             GroupManager.Instance.SaveGroupCache();

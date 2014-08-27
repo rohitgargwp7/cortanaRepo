@@ -13,8 +13,8 @@
     shell:SystemTray.IsVisible="False">
     
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
-        <ProgressBar x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
+        <ProgressBar Background="Transparent" x:Name="shellProgress" IsIndeterminate="true" Visibility="Collapsed" VerticalAlignment="Top" Foreground="White" Canvas.ZIndex="1"/>
 
         <phone:LongListSelector x:Name="groupChatParticipants" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 GroupHeaderTemplate="{StaticResource GroupInfoGroupHeaderTemplate}" IsGroupingEnabled="True" HideEmptyGroups="True"
@@ -33,7 +33,7 @@
                                 <TextBlock x:Name="groupNameTextBlock" Foreground="White" FontSize="32" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
                             </Grid>
                             <toolkit:PhoneTextBox LineStackingStrategy="BaselineToBaseline" Hint="{Binding Path= LocalizedResources.Group_Name_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
-                                              FontSize="32" MaxLength="50" Margin="-13,-14.5" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
+                                              FontSize="32" MaxLength="50" Margin="-13,-14.5" Name="groupNameTxtBox" Height="72" 
                                               VerticalAlignment="Center" TextWrapping="NoWrap" TextChanged="groupNameTxtBox_TextChanged" GotFocus="groupNameTxtBox_GotFocus"
                                               InputScope="Text" Style="{StaticResource TextBoxWithTransparentBackground}" Visibility="Collapsed"/>
                             <TextBlock x:Name="groupData" Grid.Row="1" Foreground="White" FontSize="20"/>
@@ -45,11 +45,11 @@
                 <DataTemplate>
                     <Grid Margin="25,7,25,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="groupMember_Tap">
                         <toolkit:ContextMenuService.ContextMenu>
-                            <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" Visibility="{Binding ContextMenuVisibility}" Unloaded="ContextMenu_Unloaded">
-                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Click="MenuItem_Tap_AddUser"/>
-                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding InviteToHikeVisibility}" Click="MenuItem_InviteUser"/>
-                                <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Click="MenuItem_Tap_RemoveMember"/>
-                                <toolkit:MenuItem Foreground="White" Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Click="MenuItem_Tap_AddRemoveFav"/>
+                            <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" IsZoomEnabled="False" Visibility="{Binding ContextMenuVisibility}" Unloaded="ContextMenu_Unloaded">
+                                <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Save_Contact_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Click="MenuItem_Tap_AddUser"/>
+                                <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding InviteToHikeVisibility}" Click="MenuItem_InviteUser"/>
+                                <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Click="MenuItem_Tap_RemoveMember"/>
+                                <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding ShowAddTofav}" Click="MenuItem_Tap_AddRemoveFav"/>
                             </toolkit:ContextMenu>
                         </toolkit:ContextMenuService.ContextMenu>
                         <Grid.ColumnDefinitions>
@@ -64,8 +64,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeBlack}"/>
-                            <TextBlock Text="{Binding Msisdn}" Grid.Row="1" FontWeight="Light" Foreground="{StaticResource HikeLightGrey}" FontSize="18" />
+                            <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis" FontWeight="Light" FontSize="32" Foreground="{StaticResource HikeFGBrush}"/>
+                            <TextBlock Text="{Binding Msisdn}" Grid.Row="1" FontWeight="Light" Foreground="{StaticResource HikeSubTextForegroundBrush}" FontSize="18" />
                         </Grid>
                         <Image Grid.Column="2" Source="/view/images/owner.png" MaxHeight="40" Visibility="{Binding IsOwnerVisibility}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,0,0"/>
                     </Grid>

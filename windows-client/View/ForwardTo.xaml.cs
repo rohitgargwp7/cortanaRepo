@@ -33,7 +33,7 @@ namespace windows_client.View
     /// </summary>
     public partial class ForwardTo : PhoneApplicationPage, HikePubSub.Listener
     {
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 50;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 100;
 
         private bool _canGoBack = true;
         private bool _showSmsContacts;
@@ -129,7 +129,7 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = _completeGroupedContactList;
                 shellProgress.IsIndeterminate = false;
 
-                if (_completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
+                if (_completeGroupedContactList == null || _completeGroupedContactList.Where(c => c.Count > 0).Count() == 0)
                 {
                     emptyGrid.Visibility = Visibility.Visible;
                     noResultTextBlock.Text = AppResources.NoContactsToDisplay_Txt;
@@ -149,8 +149,8 @@ namespace windows_client.View
         {
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["ConversationAppBarBackground"]).Color,
+                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
+                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
                 Opacity = 0.95
             };
 
@@ -720,7 +720,7 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(cinfo.Msisdn);
-                        
+
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
                             obj = App.ViewModel.GetPending(cinfo.Msisdn);
@@ -752,7 +752,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
 
             if (_stopContactScanning)
             {
@@ -783,6 +783,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
@@ -803,6 +805,7 @@ namespace windows_client.View
 
                 scanningComplete();
             });
+
             _canGoBack = true;
         }
 
@@ -838,7 +841,7 @@ namespace windows_client.View
             {
                 _isExistingGroup = true;
                 activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
-                _existingGroupUsers = activeExistingGroupMembers.Count;
+                _existingGroupUsers = activeExistingGroupMembers.Count + 1; // Adding +1 is for owner of the group
             }
 
             ObservableCollection<ContactGroup<ContactInfo>> glist = CreateGroups();
@@ -855,6 +858,12 @@ namespace windows_client.View
                 if ((_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
                 || cInfo.Msisdn == App.MSISDN || ExistingContacts.ContainsKey(cInfo.Msisdn) || Utils.IsHikeBotMsg(cInfo.Msisdn))
                     continue;
+
+                // Dont show contact if its hidden
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn)
+                        && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                    continue;
+
 
                 //Added IsSelected because if user resyncs contacts, the new contacts should be pre selected if they ere already selected
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -885,6 +894,11 @@ namespace windows_client.View
 
                 foreach (var grp in gi)
                 {
+                    // Dont show group if its hidden
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(grp.GroupId)
+                        && App.ViewModel.ConvMap[grp.GroupId].IsHidden)
+                        continue;
+
                     ContactInfo cInfo = new ContactInfo();
                     cInfo.Name = grp.GroupName ?? App.ViewModel.ConvMap[grp.GroupId].NameToShow;
                     cInfo.ContactListLabel = AppResources.GrpChat_Txt;//to show in tap msg
@@ -921,12 +935,16 @@ namespace windows_client.View
                     if (!_showSmsContacts && !conv.IsOnhike)
                         continue;
 
+                    // Dont show recent chats which are hidden
+                    if (!App.ViewModel.IsHiddenModeActive && conv.IsHidden)
+                        continue;
+
                     if (!conv.IsGroupChat)
                     {
                         ContactInfo cInfo = new ContactInfo();
                         cInfo.Name = conv.NameToShow;
                         cInfo.ContactListLabel = conv.Msisdn;
-                        cInfo.OnHike = true;
+                        cInfo.OnHike = conv.IsOnhike;
                         cInfo.Msisdn = conv.Msisdn;
                         cInfo.Avatar = conv.Avatar;
                         cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -958,6 +976,11 @@ namespace windows_client.View
                 if (!_showSmsContacts && !friend.IsOnhike)
                     continue;
 
+                // Dont show friend if its hidden.
+                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(friend.Msisdn)
+                        && App.ViewModel.ConvMap[friend.Msisdn].IsHidden)
+                    continue;
+
                 if (friend.Avatar == null)
                 {
                     if (App.ViewModel.ConvMap.ContainsKey(friend.Msisdn))
@@ -971,7 +994,7 @@ namespace windows_client.View
                 ContactInfo cInfo = new ContactInfo();
                 cInfo.Name = friend.NameToShow;
                 cInfo.ContactListLabel = friend.Msisdn;//to show in tap msg
-                cInfo.OnHike = true;
+                cInfo.OnHike = friend.IsOnhike;
                 cInfo.Msisdn = friend.Msisdn;
                 cInfo.Avatar = friend.Avatar;
                 cInfo.IsSelected = SelectedContacts.Where(c => c.Msisdn == cInfo.Msisdn).Count() > 0;
@@ -995,7 +1018,7 @@ namespace windows_client.View
                 AppResources.NewComposeGroup_RecentContacts,
                 AppResources.NewComposeGroup_1RecentContact,
                 AppResources.NewComposeGroup_GroupChats,
-                 AppResources.NewComposeGroup_1GroupChat,
+                AppResources.NewComposeGroup_1GroupChat,
                 AppResources.NewComposeGroup_Friends,
                 AppResources.NewComposeGroup_1Friend,
                 AppResources.NewComposeGroup_HikeContacts,
@@ -1034,7 +1057,12 @@ namespace windows_client.View
             ApplicationBar.IsMenuEnabled = true;
 
             if (_doneIconButton != null)
-                _doneIconButton.IsEnabled = true;
+            {
+                if (_isGroupChat && !_isExistingGroup) // case if group is new
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 1;
+                else
+                    _doneIconButton.IsEnabled = SelectedContacts.Count > 0;
+            }
         }
 
         #region Contact Select Based Functions
@@ -1061,7 +1089,15 @@ namespace windows_client.View
                     {
                         if (!SelectedContacts.Contains(cInfo))
                         {
-                            if (IsUserBlocked(cInfo))
+                            if (!App.ViewModel.IsHiddenModeActive
+                                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                            {
+                                cInfo.IsSelected = false;
+                                return;
+                            }
+
+                            if (IsUserBlocked(cInfo)
+                                || (cInfo.Msisdn == App.MSISDN && _isGroupChat)) //return if user selects his own msisdn in gc
                             {
                                 cInfo.IsSelected = false;
                                 return;
@@ -1165,6 +1201,9 @@ namespace windows_client.View
                     if (IsUserBlocked(cInfo))
                         return;
 
+                    if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                        return;
+
                     PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cInfo;
                     string uri = "/View/NewChatThread.xaml";
                     NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -1249,12 +1288,13 @@ namespace windows_client.View
                     queryStrings.Clear();
                     _pageTitle = AppResources.Share_With_Txt;
                     PageTitle.Text = _pageTitle;
-                }
 
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                {
-                    while (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
+
+                    if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
+                    {
+                        while (NavigationService.CanGoBack)
+                            NavigationService.RemoveBackEntry();
+                    }
                 }
 
                 enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;

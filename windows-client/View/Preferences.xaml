@@ -15,35 +15,42 @@
     shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource HikeBlueHeader}" Height="90">
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
             <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Preferences_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
+        <ScrollViewer x:Name="ContentPanel" Grid.Row="1" Background="Transparent" Margin="0,20,0,0">
+            <Grid Margin="17,0,17,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <Grid x:Name="ContentPanel" Grid.Row="1" Background="Transparent" Margin="17,20,17,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <toolkit:ToggleSwitch Margin="0 0 0 -10" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
-                                          Header="{Binding Path= LocalizedResources.Auto_Download_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-            <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="1" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
-                                          Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-            <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="2" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="locationToggle_Loaded"/>
-            <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="3" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="enterToSendToggle_Loaded"/>
-            <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="4" x:Name="nudgeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>
-        </Grid>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="0" x:Name="blackSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                              Header="{Binding Path= LocalizedResources.BlackSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="blackSettingToggle_Loaded"/>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="1" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
+                                              Header="{Binding Path= LocalizedResources.Auto_Download_Settings_Header, Source={StaticResource LocalizedStrings}}" />
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="2" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
+                                              Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" />
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="3" x:Name="autoSavePhotoSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                              Header="{Binding Path= LocalizedResources.AutoSavePhotoSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="autoSavePhotoSettingsToggle_Loaded"/>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="4" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                              Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="locationToggle_Loaded"/>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="5" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                              Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="enterToSendToggle_Loaded"/>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="6" x:Name="nudgeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                              Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>
+            </Grid>
+       </ScrollViewer>
     </Grid>
 </phone:PhoneApplicationPage>

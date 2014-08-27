@@ -122,13 +122,13 @@ namespace windows_client
             switch (welcomePivot.SelectedIndex)
             {
                 case 0:
-                    p1.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    p1.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     break;
                 case 1: 
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
-                    p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
 
                     Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_STICKER_VIEWED);
@@ -136,7 +136,7 @@ namespace windows_client
                 case 2: 
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
-                    p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlueHeader"];
+                    p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
 
                     Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_CBG_VIEWED);
                     break;

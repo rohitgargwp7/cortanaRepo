@@ -161,11 +161,17 @@
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PasswordPopUpUC.xaml.cs">
+      <DependentUpon>PasswordPopUpUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TemplateSelector.cs" />
+    <Compile Include="Controls\ToolTipsUC.xaml.cs">
+      <DependentUpon>ToolTipsUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -216,6 +222,7 @@
     <Compile Include="Model\StatusUpdates\BaseStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\TextStatusUpdate.cs" />
     <Compile Include="Model\Sticker\StickerObj.cs" />
+    <Compile Include="Model\ToolTipMode.cs" />
     <Compile Include="Model\TypingNotification.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -247,6 +254,7 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="Model\Sticker\StickerCategory.cs" />
     <Compile Include="utils\Sticker Helper\StickerHelper.cs" />
+    <Compile Include="utils\ThemeManager.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -354,9 +362,6 @@
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\TimeUtils.cs" />
-    <Compile Include="View\EnterGender.xaml.cs">
-      <DependentUpon>EnterGender.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -370,13 +375,24 @@
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\PasswordPopUpUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles.xaml">
+    <Page Include="Controls\ToolTipsUC.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="DarkTheme.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="LightTheme.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="View\BlockListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -506,10 +522,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\EnterGender.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.config">
@@ -533,6 +545,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\ConversationPage\backspace.png" />
+    <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
@@ -566,10 +580,13 @@
     <Content Include="View\images\chatBackgrounds\Background\cbForest.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbGeometric1.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbGirly.jpg" />
+    <Content Include="View\images\chatBackgrounds\Background\cbIDay.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbILoveU.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbIPL.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbKisses.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbLove.jpg" />
+    <Content Include="View\images\chatBackgrounds\Background\cbLove_2.jpg" />
+    <Content Include="View\images\chatBackgrounds\Background\cbNature.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbNight.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbOwl.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbSmiley.jpg" />
@@ -584,6 +601,8 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbCelebration.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbChatty.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbCreepy.jpg" />
+    <Content Include="View\images\chatBackgrounds\Thumbnail\cbDefaultDark.jpg" />
+    <Content Include="View\images\chatBackgrounds\Thumbnail\cbDefaultLight.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbFifa.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbFloral.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbForest.jpg" />
@@ -591,13 +610,16 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbGeometric1.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbGirly.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbHikinCouple.jpg" />
+    <Content Include="View\images\chatBackgrounds\Thumbnail\cbIDay.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbILoveU.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbIPL.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbKisses.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbLove.jpg" />
+    <Content Include="View\images\chatBackgrounds\Thumbnail\cbLove_2.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbMountain.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbMrRight.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbMusic.jpg" />
+    <Content Include="View\images\chatBackgrounds\Thumbnail\cbNature.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbNight.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbOwl.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbRains.jpg" />
@@ -608,9 +630,23 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
-    <Content Include="View\images\ConversationPage\empty_screen_tip_top.png" />
+    <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_blue.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
+    <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
+    <Content Include="View\images\ConversationPage\groupCard.jpg" />
+    <Content Include="View\images\ConversationPage\H2OCard.jpg" />
+    <Content Include="View\images\ConversationPage\hiddenModeSheild.png" />
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
+    <Content Include="View\images\ConversationPage\inviteCard.jpg" />
+    <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
+    <Content Include="View\images\ConversationPage\profileCard.jpg" />
+    <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
+    <Content Include="View\images\ConversationPage\stickerCard.jpg" />
+    <Content Include="View\images\ConversationPage\timeline.jpg" />
+    <Content Include="View\images\ConversationPage\timelineQuote.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Arrow.png" />
+    <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
@@ -622,6 +658,8 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\settings\change_password.png" />
+    <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
@@ -636,20 +674,14 @@
     <Content Include="View\images\ConversationPage\add_friend.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelected.png" />
     <Content Include="View\images\ConversationPage\Chat_Selected.png" />
-    <Content Include="View\images\ConversationPage\empty_screen_logo_black.png" />
-    <Content Include="View\images\ConversationPage\empty_screen_tip_black.png" />
     <Content Include="View\images\ConversationPage\friend_Notselected.png" />
     <Content Include="View\images\ConversationPage\friend_selected.png" />
     <Content Include="View\images\ConversationPage\hike_header.png" />
-    <Content Include="View\images\ConversationPage\mute_icon_main_b.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_gray.png" />
     <Content Include="View\images\ConversationPage\refresh_bar_arrow.png" />
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
     <Content Include="View\images\ConversationPage\sticker.png" />
-    <Content Include="View\images\FTUE\boy_selected.png" />
-    <Content Include="View\images\FTUE\boy_unselected.png" />
-    <Content Include="View\images\FTUE\girl_selected.png" />
-    <Content Include="View\images\FTUE\girl_unselected.png" />
     <Content Include="View\images\FTUE\p1.png" />
     <Content Include="View\images\FTUE\p2.png" />
     <Content Include="View\images\FTUE\p3.png" />
@@ -710,13 +742,11 @@
     <Content Include="View\images\settings\hike_h2s_icon.png" />
     <Content Include="View\images\settings\hike_sms_icon.png" />
     <Content Include="View\images\settings\message.png" />
-    <Content Include="View\images\settings\new_icon.png" />
     <Content Include="View\images\settings\notifications.png" />
-    <Content Include="View\images\settings\notification_black.png" />
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
-    <Content Include="View\images\settings\settings_icon_dark.png" />
+    <Content Include="View\images\settings\reset_hidden_mode.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
@@ -727,25 +757,36 @@
     <Content Include="View\images\stickers\categorySets\avatars_inactive.png" />
     <Content Include="View\images\stickers\categorySets\bolly_active.png" />
     <Content Include="View\images\stickers\categorySets\bolly_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\bolly_overlay.png" />
     <Content Include="View\images\stickers\categorySets\doggy_active.png" />
     <Content Include="View\images\stickers\categorySets\doggy_inactive.png" />
     <Content Include="View\images\stickers\categorySets\expressions_active.png" />
     <Content Include="View\images\stickers\categorySets\expressions_inactive.png" />
     <Content Include="View\images\stickers\categorySets\goofy_active.png" />
     <Content Include="View\images\stickers\categorySets\goofy_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\goofy_overlay.png" />
     <Content Include="View\images\stickers\categorySets\humanoid2_active.png" />
     <Content Include="View\images\stickers\categorySets\humanoid2_inactive.png" />
     <Content Include="View\images\stickers\categorySets\humanoid_active.png" />
     <Content Include="View\images\stickers\categorySets\humanoid_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_active.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\jelly_overlay.png" />
     <Content Include="View\images\stickers\categorySets\kitty_active.png" />
     <Content Include="View\images\stickers\categorySets\kitty_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\love_overlay.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_avatar.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_bollywood.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_expressions.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_goofy.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_hikin.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_indians.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_jelly.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_love.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_miley.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_rageface.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_snuggles.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_sports.png" />
+    <Content Include="View\images\stickers\categorySets\overlay_youi.png" />
     <Content Include="View\images\stickers\categorySets\rage_active.png" />
     <Content Include="View\images\stickers\categorySets\rage_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\rage_overlay.png" />
-    <Content Include="View\images\stickers\categorySets\sports_overlay.png" />
     <Content Include="View\images\stickers\categorySets\sports_active.png" />
     <Content Include="View\images\stickers\categorySets\sports_inactive.png" />
     <Content Include="View\images\stickers\WVGA\expressions\001_gn.png" />
@@ -768,7 +809,6 @@
     <Content Include="View\images\stickers\WVGA\humanoid\010_yawning.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
-    <Content Include="View\images\stickers\categorySets\indian_overlay.png" />
     <Content Include="View\images\icon_sms.png" />
     <Content Include="View\images\pause_black_ftr.png" />
     <Content Include="View\images\pause_white_ftr.png" />
@@ -877,21 +917,14 @@
     <Content Include="View\images\resume_black_ftr.png" />
     <Content Include="View\images\resume_white_ftr.png" />
     <Content Include="View\images\search_icon.png" />
-    <Content Include="View\images\stickers\categorySets\avatars_overlay.png" />
-    <Content Include="View\images\stickers\categorySets\doggy_overlay.png" />
-    <Content Include="View\images\stickers\categorySets\expressions_overlay.png" />
-    <Content Include="View\images\stickers\categorySets\humanoid2_overlay.png" />
-    <Content Include="View\images\stickers\categorySets\humanoid_overlay.png" />
     <Content Include="View\images\stickers\categorySets\indian_active.png" />
     <Content Include="View\images\stickers\categorySets\indian_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\kitty_overlay.png" />
     <Content Include="View\images\stickers\categorySets\love_active.png" />
     <Content Include="View\images\stickers\categorySets\love_inactive.png" />
     <Content Include="View\images\timeline_photo.png" />
     <Content Include="View\images\ConversationPage\tutorial_arrow.png" />
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
-    <Content Include="View\images\ConversationPage\groupIndicator.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\video_default.png" />
