@@ -993,7 +993,9 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     mContactNumber = co.Msisdn;
                     if (co.ContactName != null)
+                    {
                         mContactName = co.ContactName;
+                    }
                     else
                     {
                         mContactName = co.Msisdn;
