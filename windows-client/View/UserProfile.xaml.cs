@@ -383,8 +383,8 @@ namespace windows_client.View
                         if (appBar != null)
                             appBar.IsVisible = false;
                         return;
-                    } 
-                    
+                    }
+
                     LoadCallCopyOptions();
 
                     if (!isOnHike)//sms user
@@ -806,12 +806,11 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (isInAddressBook)
-                        favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
-                    else
-                        favObj = new ConversationListObject(msisdn, null, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
 
+                    string tempContactName = isInAddressBook ? nameToShow : null;
+                    favObj = new ConversationListObject(msisdn, tempContactName, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
                 }
+
                 App.ViewModel.FavList.Insert(0, favObj);
                 if (App.ViewModel.IsPending(msisdn))
                 {
