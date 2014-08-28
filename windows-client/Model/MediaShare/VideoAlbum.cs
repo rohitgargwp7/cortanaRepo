@@ -25,7 +25,6 @@ namespace windows_client.Model
             _thumbBytes = thumbnail;
         }
 
-
         public string AlbumName
         {
             get
@@ -39,9 +38,8 @@ namespace windows_client.Model
             get
             {
                 if (_thumbImage == null)
-                {
                     _thumbImage = UI_Utils.Instance.createImageFromBytes(_thumbBytes);
-                }
+                
                 return _thumbImage;
             }
         }

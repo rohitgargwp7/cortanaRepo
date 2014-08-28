@@ -18,12 +18,10 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="12,0,12,0" Tap="ContentPanel_Tap">
             <Image Name="thumbnailImage" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" />
-            <Grid Opacity="0.5" Height="93" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-            </Grid>
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" >
+            <Border Height="93" Opacity="0.5" Background="{StaticResource HikeBlack}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Canvas.ZIndex="1"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Canvas.ZIndex="2">
                 <TextBlock Name="VideoDurationText" Margin="15,0,0,0" Foreground="White" FontSize="80" FontWeight="Light" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Image MaxWidth="60" MaxHeight="60" Margin="20,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/MediaPlayIconSmall.png"/>
-                <!--<TextBlock Name="VideoSizeText" Margin="20,0,0,0" Foreground="White" FontSize="60" FontWeight="Light" VerticalAlignment="Center" HorizontalAlignment="Center"/>-->
             </StackPanel>
         </Grid>
     </Grid>

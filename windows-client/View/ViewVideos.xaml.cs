@@ -15,7 +15,6 @@ using System.Diagnostics;
 using System.Windows.Resources;
 using windows_client.utils;
 using System.Threading.Tasks;
-using windows_client.Model;
 using Microsoft.Phone.Tasks;
 using windows_client.Languages;
 
@@ -23,7 +22,7 @@ namespace windows_client.View
 {
     public partial class ViewVideos : PhoneApplicationPage
     {
-        List<VideoItem> listAllVideos = null;
+        List<VideoItem> _listAllVideos = null;
 
         public ViewVideos()
         {
@@ -34,9 +33,10 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-          
+            
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
+                shellProgressAlbums.IsIndeterminate = true;
                 BindAlbums();
             }
         }
@@ -48,10 +48,12 @@ namespace windows_client.View
                 ToggleView(true);
                 e.Cancel = true;
             }
+            
             base.OnBackKeyPress(e);
         }
 
         #region Albums
+        
         public async Task BindAlbums()
         {
             await Task.Delay(1);
@@ -59,40 +61,42 @@ namespace windows_client.View
             //create a delay so that it hides after ui render
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressAlbums.Visibility = Visibility.Collapsed;
+                shellProgressAlbums.IsIndeterminate = false;
             });
         }
 
         public List<VideoAlbum> GetAlbums()
         {
             Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
-            listAllVideos = new List<VideoItem>();
+            _listAllVideos = new List<VideoItem>();
 
             try
             {
-                FetchPreRecordedVideos wrt = new FetchPreRecordedVideos();
-                ushort totalVideos = wrt.GetVideoCount();
+                FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
+                ushort totalVideos = preRecordedVideos.GetVideoCount();
                 
                 if (totalVideos > 0)
                 {
-                    for (int i = 0; i < totalVideos; i++)
+                    for (int index = 0; index < totalVideos; index++)
                     {
                         string filePath = string.Empty;
                         string albumName = string.Empty;
                         int videoSize;
                         int videoDuration;
                         double date;
-
-                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
+                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date,out videoDuration,out videoSize);
+                        
                         try
                         {
                             albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                             albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                         }
-                        catch
+                        catch(Exception ex)
                         {
+                            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
+
                         VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
@@ -103,29 +107,34 @@ namespace windows_client.View
                             albumObj = new VideoAlbum(albumName, thumbBytes);
                             videoAlbumList.Add(albumName, albumObj);
                         }
+
                         albumObj.Add(video);
-                        listAllVideos.Add(video);
+                        _listAllVideos.Add(video);
                     }
                 }
-                wrt.ClearData();
+
+                preRecordedVideos.ClearData();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Exception::ViewPhotoAlbums:GetAlbums," + ex.Message + "---" + ex.StackTrace);
+                Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
+
             return videoAlbumList.Values.ToList();
         }
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VideoAlbum album = llsAlbums.SelectedItem as VideoAlbum;
+            
             if (album == null)
                 return;
+            
             albumNameTxt.Text = album.AlbumName.ToLower();
             llsAlbums.SelectedItem = null;
             ToggleView(false);
             llsVideos.ItemsSource = null;
-            shellProgressVideos.Visibility = Visibility.Visible;
+            shellProgressVideos.IsIndeterminate = true;
             BindAlbumVideos(album);
         }
 
@@ -133,12 +142,14 @@ namespace windows_client.View
         {
             await Task.Delay(1);
             llsVideos.ItemsSource = GroupedVideos(album);
+
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressVideos.Visibility = Visibility.Collapsed;
+                shellProgressVideos.IsIndeterminate = false;
             });
         }
+
         #endregion ALBUMS
 
         #region Videos
@@ -146,24 +157,25 @@ namespace windows_client.View
         public async Task BindVideos()
         {
             await Task.Delay(1);
-            llsAllVideos.ItemsSource = GroupedVideos(listAllVideos);
+            llsAllVideos.ItemsSource = GroupedVideos(_listAllVideos);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressAllVideos.Visibility = Visibility.Collapsed;
+                shellProgressAllVideos.IsIndeterminate = false;
             });
         }
-
 
         public List<KeyedList<string, VideoItem>> GroupedVideos(List<VideoItem> listVideos)
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
+            
             var groupedPhotos =
                 from video in listVideos
                 orderby video.TimeStamp descending
                 group video by video.TimeStamp.ToString("y") into videosByMonth
                 select new KeyedList<string, VideoItem>(videosByMonth);
+            
             return new List<KeyedList<string, VideoItem>>(groupedPhotos);
         }
 
@@ -186,6 +198,7 @@ namespace windows_client.View
         #endregion
 
         #region helper functions
+
         public void ToggleView(bool showAlbum)
         {
             if (showAlbum)
@@ -206,8 +219,10 @@ namespace windows_client.View
         {
             LongListSelector lls = sender as LongListSelector;
             VideoItem selectedVideo = lls.SelectedItem as VideoItem;
+            
             if (selectedVideo == null)
                 return;
+            
             lls.SelectedItem = null;
 
             PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo;
@@ -217,10 +232,9 @@ namespace windows_client.View
 
         private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
             if (pivotAlbums.SelectedIndex == 1)
             {
-                shellProgressAllVideos.Visibility = Visibility.Visible;
+                shellProgressAllVideos.IsIndeterminate = true;
                 BindVideos();
             }
         }
