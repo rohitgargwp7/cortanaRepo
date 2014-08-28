@@ -63,7 +63,7 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
-        public static readonly string AUTO_SAVE_PHOTO = "autoSavePhoto";
+        public static readonly string AUTO_SAVE_MEDIA = "autoSaveMedia";
 
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";

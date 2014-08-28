@@ -3325,6 +3325,25 @@ namespace windows_client.View
 
         }
 
+        private async void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
+            string tempName = Convert.ToString(msg.MessageId);
+            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
+            Debug.WriteLine(filePath);
+            string sourceFile = Utils.GetAbsolutePath(filePath);
+            string targetFileName = Utils.GenerateRandomString(16) + ".mp4";
+            //bool isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            //if (isSaveSuccessful)
+            //{
+            //    MessageBox.Show(AppResources.SaveSuccess_Txt);
+            //}
+            //else
+            //{
+            //    MessageBox.Show(AppResources.Something_Wrong_Txt);
+            //}
+        }
         #endregion
 
         #region EMOTICONS RELATED STUFF

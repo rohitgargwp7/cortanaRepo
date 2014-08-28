@@ -745,14 +745,13 @@ namespace windows_client.utils
         public static async Task<bool> FileStoringInHikeDirectory(string sourceFile, string targetFileName)
         {
             bool result = true;
-            string hikeDirectoryPath = @"C:/Data/Users/Public/Pictures/Hike";
-            string targetFile = "Hike\\" + targetFileName;
-            if (!Directory.Exists(hikeDirectoryPath))
+            if (!Directory.Exists(HikeConstants.HikeDirectoryPath))
             {
-                Directory.CreateDirectory(hikeDirectoryPath);
+                Directory.CreateDirectory(HikeConstants.HikeDirectoryPath);
             }
             try
             {
+                string targetFile = HikeConstants.HikeDirectoryName + "\\" + targetFileName;
                 StorageFile source = await StorageFile.GetFileFromPathAsync(sourceFile);
                 StorageFile target = await KnownFolders.PicturesLibrary.CreateFileAsync(targetFile, CreationCollisionOption.GenerateUniqueName);
 

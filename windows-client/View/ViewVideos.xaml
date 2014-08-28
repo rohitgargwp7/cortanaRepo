@@ -25,7 +25,7 @@
                 <Setter.Value>
                     <DataTemplate>
                         <Border Background="{Binding Converter={StaticResource BackgroundConverter}}" 
-                                Width="470" 
+                                Width="468" 
                                 Height="70" 
                                 Margin="6">
                             <TextBlock Text="{Binding Key}"
@@ -62,7 +62,9 @@
         <DataTemplate x:Key="ItemTemplate">
             <Grid Height="108" Width="108" Margin="6" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image Name="thumbnailImage" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Source="{Binding ThumbnailImage}" />
-                <Image Height="50" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/MediaPlayIcon.png"/>
+                <Grid Opacity="0.5" Height="50" Width="50" Background="Black" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/MediaPlayIconSmall.png"/>
+                </Grid>
             </Grid>
         </DataTemplate>
 

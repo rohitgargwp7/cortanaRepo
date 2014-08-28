@@ -286,11 +286,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto save photo.
+        ///   Looks up a localized string similar to Auto save photo and video.
         /// </summary>
-        public static string AutoSavePhotoSettings_Txt {
+        public static string AutoSaveSettings_Txt {
             get {
-                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
+                return ResourceManager.GetString("AutoSaveSettings_Txt", resourceCulture);
             }
         }
         
@@ -4131,6 +4131,15 @@ namespace windows_client.Languages {
         public static string Save_Contact_Txt {
             get {
                 return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save in gallery.
+        /// </summary>
+        public static string SaveInGallery_Txt {
+            get {
+                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
             }
         }
         

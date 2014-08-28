@@ -39,6 +39,12 @@ namespace windows_client.View
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(videoShared.Duration);
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            base.OnNavigatedFrom(e);
+        }
+
         void shareVideo_Click(object sender, EventArgs e)
         {
             VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];

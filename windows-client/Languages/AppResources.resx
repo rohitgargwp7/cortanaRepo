@@ -2204,8 +2204,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Enter current password</value>
   </data>
-  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Auto save photo</value>
+  <data name="AutoSaveSettings_Txt" xml:space="preserve">
+    <value>Auto save photo and video</value>
   </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>Saved successfully</value>
@@ -2230,5 +2230,9 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
+  </data>
+  <data name="SaveInGallery_Txt" xml:space="preserve">
+    <value>save in gallery</value>
+    <comment>Menu Item text</comment>
   </data>
 </root>

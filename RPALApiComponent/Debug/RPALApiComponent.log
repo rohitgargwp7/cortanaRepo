@@ -1,0 +1,15 @@
+﻿Build started 28-08-2014 05:42:42.
+     1>Project "C:\Users\Abhishek\Desktop\video-share\windows-hike-client\RPALApiComponent\RPALApiComponent.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\CL.exe /c /I"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\RPALApiComponent\\" /I"Generated Files\\" /IDebug\ /AI"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata" /ZI /ZW /ZW:nostdlib /nologo /W3 /WX- /sdl /MP /Od /Oy- /D _WINRT_DLL /D WINAPI_PARTITION_PHONE_RESTRICTED /D _WINDLL /D _UNICODE /D UNICODE /D _DEBUG /D WINAPI_FAMILY=WINAPI_FAMILY_PHONE_APP /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /FU"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\lib\platform.winmd" /FU"C:\Program Files (x86)\Windows Phone Kits\8.0\Windows Metadata\Windows.winmd" /analyze- /errorReport:prompt RPALApiComponent.cpp
+         RPALApiComponent.cpp
+     1>c:\users\abhishek\desktop\video-share\windows-hike-client\rpalapicomponent\rpalapicomponent.cpp(64): warning C4244: '=' : conversion from 'ULONGLONG' to 'double', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\WPSDK\WP80\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.dll" /INCREMENTAL /NOLOGO mincore.lib RuntimeObject.lib PhoneAppModelHost.lib zmedialib_client.lib /NODEFAULTLIB:ole32.lib /MANIFEST:NO /DEBUG /PDB:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /WINMD /WINMDFILE:"C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.winmd" /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /DLL Debug\RPALApiComponent.obj
+            Creating library C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.lib and object C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.exp
+         RPALApiComponent.vcxproj -> C:\Users\Abhishek\Desktop\video-share\windows-hike-client\Debug\RPALApiComponent\RPALApiComponent.dll
+     1>Done Building Project "C:\Users\Abhishek\Desktop\video-share\windows-hike-client\RPALApiComponent\RPALApiComponent.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.80

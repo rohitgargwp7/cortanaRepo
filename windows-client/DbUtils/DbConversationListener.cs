@@ -405,7 +405,7 @@ namespace windows_client.DbUtils
                             {
                                 // Here the code to save the file in Hike Directory
                                 // TODO: HANDLE FILESAVING
-                                if (!App.appSettings.Contains(App.AUTO_SAVE_PHOTO) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE) ))
+                                if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE) ))
                                 {
                                     string randomFileName = Utils.GenerateRandomString(16);
                                     if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
@@ -415,6 +415,7 @@ namespace windows_client.DbUtils
                                     else return;
 
                                     string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    Debug.WriteLine(filePath);
                                     string sourceFile = Utils.GetAbsolutePath(filePath);
                                     Utils.StoreFileInHikeDirectory(sourceFile, randomFileName);
                                 }

@@ -391,9 +391,9 @@ namespace windows_client.View
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
             string sourceFile = Utils.GetAbsolutePath(filePath);
             string targetFileName = Utils.GenerateRandomString(16) + ".jpg";
-            bool temp = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            bool isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
 
-            if (temp)
+            if (isSaveSuccessful)
             {
                 MessageBox.Show(AppResources.SaveSuccess_Txt);
             }
