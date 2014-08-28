@@ -59,6 +59,16 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+
+            if (!NavigationService.CanGoBack)
+                e.Cancel = true; 
+
+            base.OnBackKeyPress(e);
+        }
+
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.ViewModel.PauseBackgroundAudio();

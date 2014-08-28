@@ -15,7 +15,6 @@ using System.Diagnostics;
 using System.Windows.Resources;
 using windows_client.utils;
 using System.Threading.Tasks;
-using windows_client.Model;
 using Microsoft.Phone.Tasks;
 using windows_client.Languages;
 
@@ -48,6 +47,7 @@ namespace windows_client.View
                 ToggleView(true);
                 e.Cancel = true;
             }
+            
             base.OnBackKeyPress(e);
         }
 
@@ -82,17 +82,19 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-
                         Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
+                        
                         try
                         {
                             albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                             albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                         }
-                        catch
+                        catch(Exception ex)
                         {
+                            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
+
                         VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
@@ -103,6 +105,7 @@ namespace windows_client.View
                             albumObj = new VideoAlbum(albumName, thumbBytes);
                             videoAlbumList.Add(albumName, albumObj);
                         }
+
                         albumObj.Add(video);
                         listAllVideos.Add(video);
                     }
@@ -111,16 +114,19 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Exception::ViewPhotoAlbums:GetAlbums," + ex.Message + "---" + ex.StackTrace);
+                Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
+
             return videoAlbumList.Values.ToList();
         }
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VideoAlbum album = llsAlbums.SelectedItem as VideoAlbum;
+            
             if (album == null)
                 return;
+            
             albumNameTxt.Text = album.AlbumName.ToLower();
             llsAlbums.SelectedItem = null;
             ToggleView(false);
@@ -159,11 +165,13 @@ namespace windows_client.View
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
+            
             var groupedPhotos =
                 from video in listVideos
                 orderby video.TimeStamp descending
                 group video by video.TimeStamp.ToString("y") into videosByMonth
                 select new KeyedList<string, VideoItem>(videosByMonth);
+            
             return new List<KeyedList<string, VideoItem>>(groupedPhotos);
         }
 
@@ -206,8 +214,10 @@ namespace windows_client.View
         {
             LongListSelector lls = sender as LongListSelector;
             VideoItem selectedVideo = lls.SelectedItem as VideoItem;
+            
             if (selectedVideo == null)
                 return;
+            
             lls.SelectedItem = null;
 
             PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo;
