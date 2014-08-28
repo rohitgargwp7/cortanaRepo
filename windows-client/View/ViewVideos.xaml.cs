@@ -33,9 +33,9 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-          
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
+                shellProgressAlbums.IsIndeterminate = true;
                 BindAlbums();
             }
         }
@@ -59,7 +59,7 @@ namespace windows_client.View
             //create a delay so that it hides after ui render
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressAlbums.Visibility = Visibility.Collapsed;
+                shellProgressAlbums.IsIndeterminate = false;
             });
         }
 
@@ -70,8 +70,8 @@ namespace windows_client.View
 
             try
             {
-                FetchPreRecordedVideos wrt = new FetchPreRecordedVideos();
-                ushort totalVideos = wrt.GetVideoCount();
+                FetchPreRecordedVideos PreRecordedVideos = new FetchPreRecordedVideos();
+                ushort totalVideos = PreRecordedVideos.GetVideoCount();
                 
                 if (totalVideos > 0)
                 {
@@ -82,7 +82,7 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-                        Byte[] thumbBytes = wrt.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
+                        Byte[] thumbBytes = PreRecordedVideos.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
                         
                         try
                         {
@@ -110,7 +110,7 @@ namespace windows_client.View
                         listAllVideos.Add(video);
                     }
                 }
-                wrt.ClearData();
+                PreRecordedVideos.ClearData();
             }
             catch (Exception ex)
             {
@@ -131,7 +131,7 @@ namespace windows_client.View
             llsAlbums.SelectedItem = null;
             ToggleView(false);
             llsVideos.ItemsSource = null;
-            shellProgressVideos.Visibility = Visibility.Visible;
+            shellProgressVideos.IsIndeterminate = true;
             BindAlbumVideos(album);
         }
 
@@ -142,7 +142,7 @@ namespace windows_client.View
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressVideos.Visibility = Visibility.Collapsed;
+                shellProgressVideos.IsIndeterminate = false;
             });
         }
         #endregion ALBUMS
@@ -156,7 +156,7 @@ namespace windows_client.View
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
-                shellProgressAllVideos.Visibility = Visibility.Collapsed;
+                shellProgressAllVideos.IsIndeterminate = false;
             });
         }
 
@@ -230,7 +230,7 @@ namespace windows_client.View
             //this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
             if (pivotAlbums.SelectedIndex == 1)
             {
-                shellProgressAllVideos.Visibility = Visibility.Visible;
+                shellProgressAllVideos.IsIndeterminate = true;
                 BindVideos();
             }
         }
