@@ -1328,8 +1328,11 @@ namespace windows_client.ViewModel
         {
             StickerHelper = null;
         }
+        
         #region Pause/Resume Background Audio
+
         public bool resumeMediaPlayerAfterDone = false;
+        
         public void PauseBackgroundAudio()
         {
             if (!MediaPlayer.GameHasControl)
@@ -1347,6 +1350,7 @@ namespace windows_client.ViewModel
                 resumeMediaPlayerAfterDone = false;
             }
         }
+        
         #endregion
     }
 }

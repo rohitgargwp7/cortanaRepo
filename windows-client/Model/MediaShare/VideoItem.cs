@@ -84,7 +84,6 @@ namespace windows_client.Model
             _size = videoSize;
         }
 
-
         BitmapImage _thumbnailImage;
         public BitmapImage ThumbnailImage
         {
@@ -92,6 +91,7 @@ namespace windows_client.Model
             {
                 if (_thumbnailImage == null)
                     _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
+                
                 return _thumbnailImage;
             }
         }

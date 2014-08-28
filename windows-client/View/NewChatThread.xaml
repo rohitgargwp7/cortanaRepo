@@ -331,8 +331,8 @@
                                                             <Run Text="{Binding GroupMemberMsisdn}"/>
                                                             <Run Text="- "/>
                                                         </TextBlock>
-                                                        <Grid Grid.Row="1" Height="160" Width="190" HorizontalAlignment="Center" Margin="0,12,0,0">
-                                                            <Image Stretch="UniformToFill" Margin="12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
+                                                        <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
+                                                            <Image MaxWidth="180" MaxHeight="180" Margin="12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
                                                             <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxHeight="75" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                         </Grid>
                                                     </Grid>
@@ -850,8 +850,8 @@
                                                         <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <Border Grid.RowSpan="2" BorderThickness="2" Background="{Binding BubbleBackGroundColor}" CornerRadius="4"/>
-                                                    <Grid HorizontalAlignment="Center" Height="160" Width="190">
-                                                        <Image Stretch="UniformToFill" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
+                                                    <Grid HorizontalAlignment="Center">
+                                                        <Image MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Left" Source="{Binding FileAttachment.ThumbnailImage}"/>
                                                         <Image Source="{Binding PlayIconImage}" Opacity="{Binding PauseResumeImageOpacity}" Visibility="{Binding PlayIconVisibility}" MaxHeight="75" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="2"/>
                                                     </Grid>
                                                     <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="12,5,0,6">

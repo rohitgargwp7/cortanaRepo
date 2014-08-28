@@ -27,8 +27,8 @@ namespace windows_client.utils
         public static string GetDurationInHourMinFromMilliseconds(int ms)
         {
             TimeSpan t = TimeSpan.FromMilliseconds(ms);
-            string answer = t.TotalHours >= 1 ? t.ToString(@"hh\:mm\:ss")
-                                             : t.ToString(@"mm\:ss");
+            string answer = t.TotalHours >= 1 ? t.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture)
+                                             : t.ToString("mm\\:ss", CultureInfo.InvariantCulture);
             return answer;
         }
 

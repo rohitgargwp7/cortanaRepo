@@ -4872,6 +4872,7 @@ namespace windows_client.View
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
+                
                 try
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
@@ -4881,6 +4882,7 @@ namespace windows_client.View
                 {
                     Debug.WriteLine(ex.Message);
                 }
+                
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
             
                 if (fileBytes == null)

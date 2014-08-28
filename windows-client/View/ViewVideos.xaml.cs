@@ -22,7 +22,7 @@ namespace windows_client.View
 {
     public partial class ViewVideos : PhoneApplicationPage
     {
-        List<VideoItem> listAllVideos = null;
+        List<VideoItem> _listAllVideos = null;
 
         public ViewVideos()
         {
@@ -33,6 +33,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 shellProgressAlbums.IsIndeterminate = true;
@@ -52,6 +53,7 @@ namespace windows_client.View
         }
 
         #region Albums
+        
         public async Task BindAlbums()
         {
             await Task.Delay(1);
@@ -66,23 +68,23 @@ namespace windows_client.View
         public List<VideoAlbum> GetAlbums()
         {
             Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
-            listAllVideos = new List<VideoItem>();
+            _listAllVideos = new List<VideoItem>();
 
             try
             {
-                FetchPreRecordedVideos PreRecordedVideos = new FetchPreRecordedVideos();
-                ushort totalVideos = PreRecordedVideos.GetVideoCount();
+                FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
+                ushort totalVideos = preRecordedVideos.GetVideoCount();
                 
                 if (totalVideos > 0)
                 {
-                    for (int i = 0; i < totalVideos; i++)
+                    for (int index = 0; index < totalVideos; index++)
                     {
                         string filePath = string.Empty;
                         string albumName = string.Empty;
                         int videoSize;
                         int videoDuration;
                         double date;
-                        Byte[] thumbBytes = PreRecordedVideos.GetVideoInfo((byte)i, out filePath, out date,out videoDuration,out videoSize);
+                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date,out videoDuration,out videoSize);
                         
                         try
                         {
@@ -107,10 +109,11 @@ namespace windows_client.View
                         }
 
                         albumObj.Add(video);
-                        listAllVideos.Add(video);
+                        _listAllVideos.Add(video);
                     }
                 }
-                PreRecordedVideos.ClearData();
+
+                preRecordedVideos.ClearData();
             }
             catch (Exception ex)
             {
@@ -139,12 +142,14 @@ namespace windows_client.View
         {
             await Task.Delay(1);
             llsVideos.ItemsSource = GroupedVideos(album);
+
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
                 shellProgressVideos.IsIndeterminate = false;
             });
         }
+
         #endregion ALBUMS
 
         #region Videos
@@ -152,14 +157,13 @@ namespace windows_client.View
         public async Task BindVideos()
         {
             await Task.Delay(1);
-            llsAllVideos.ItemsSource = GroupedVideos(listAllVideos);
+            llsAllVideos.ItemsSource = GroupedVideos(_listAllVideos);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
             {
                 shellProgressAllVideos.IsIndeterminate = false;
             });
         }
-
 
         public List<KeyedList<string, VideoItem>> GroupedVideos(List<VideoItem> listVideos)
         {
@@ -194,6 +198,7 @@ namespace windows_client.View
         #endregion
 
         #region helper functions
+
         public void ToggleView(bool showAlbum)
         {
             if (showAlbum)
@@ -227,7 +232,6 @@ namespace windows_client.View
 
         private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //this.ApplicationBar.IsVisible = pivotAlbums.SelectedIndex == 1;
             if (pivotAlbums.SelectedIndex == 1)
             {
                 shellProgressAllVideos.IsIndeterminate = true;

@@ -117,7 +117,7 @@
                             <TextBlock Text="{Binding Path=LocalizedResources.ViewAlbums_Pivot_Album_txt,Source={StaticResource LocalizedStrings}}"  Foreground="White"/>
                         </controls:PivotItem.Header>
                         <Grid>
-                            <ProgressBar x:Name="shellProgressAlbums" IsIndeterminate="true" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
+                            <ProgressBar x:Name="shellProgressAlbums" IsIndeterminate="False" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="4" Foreground="White" Background="Transparent"/>
 
                             <phone:LongListSelector Name="llsAlbums" Style="{StaticResource LongListSelectorStyle}" SelectionChanged="Albums_SelectionChanged" IsGroupingEnabled="False" LayoutMode="Grid" GridCellSize="210,210" Margin="12 0 0 0">
                                 <phone:LongListSelector.ItemTemplate>

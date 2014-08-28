@@ -23,26 +23,26 @@ namespace windows_client.View
 {
     public partial class PreviewVideo : PhoneApplicationPage
     {
+        public VideoItem _videoShared;
         public PreviewVideo()
         {
             InitializeComponent();
-            this.ApplicationBar = new ApplicationBar();
 
+            this.ApplicationBar = new ApplicationBar();
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
             shareVideo.Text = AppResources.Share_Txt;
             shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send_video.png", UriKind.RelativeOrAbsolute); ;
             shareVideo.Click += shareVideo_Click;
             this.ApplicationBar.Buttons.Add(shareVideo);
 
-            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
-            thumbnailImage.Source = videoShared.ThumbnailImage;
-            VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(videoShared.Duration);
+            _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+            thumbnailImage.Source = _videoShared.ThumbnailImage;
+            VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
         }
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
-            if (videoShared.Size > HikeConstants.FILE_MAX_SIZE)
+            if (_videoShared.Size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
@@ -72,8 +72,7 @@ namespace windows_client.View
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.ViewModel.PauseBackgroundAudio();
-            VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
-            Utils.PlayFileInMediaPlayer(videoShared.FilePath);
+            Utils.PlayFileInMediaPlayer(_videoShared.FilePath);
         }
     }
 }
