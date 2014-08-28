@@ -133,7 +133,7 @@
 
         <!-- Margin -1 to avoid 1 pixel gap due to zindex -->
         <Grid x:Name="tipControl" Grid.Row="1" Margin="0,-1,0,0" Canvas.ZIndex="1">
-            <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="{StaticResource TipGreen}" Height="100" VerticalAlignment="Top"/>
+            <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="{StaticResource TipGreen}" Height="Auto" VerticalAlignment="Top" />
         </Grid>
         
         <Grid x:Name="chatBackgroundPopUp" Canvas.ZIndex="1" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,-2,0,0">

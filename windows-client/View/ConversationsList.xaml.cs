@@ -3153,7 +3153,6 @@ namespace windows_client.View
         /// <param name="rightIconSource">right icon source of image</param>
         /// <param name="headerText">header of tool tip</param>
         /// <param name="bodyText">body of tool tip</param>
-        /// <param name="isLeftIconClickEnabled">left icon click enabled ot not</param>
         /// <param name="isRightIconClickedEnabled">right icon click event enabled or not</param>
         /// <param name="isFullTipTappedEnabled">full tip tap event click event enabled or not</param>
         void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,

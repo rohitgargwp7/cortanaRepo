@@ -3372,6 +3372,12 @@ namespace windows_client.View
         bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            
+            if (_tipMode == ToolTipMode.STICKERS)
+            {
+                HideServerTips();
+            }
+            
             var appButton = sender as ApplicationBarIconButton;
 
             if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
@@ -3495,6 +3501,11 @@ namespace windows_client.View
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
+            if (_tipMode == ToolTipMode.ATTACHMENTS)
+            {
+                HideServerTips();
+            }
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -5762,6 +5773,11 @@ namespace windows_client.View
 
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_tipMode == ToolTipMode.CHAT_THEMES)
+            {
+                HideServerTips();
+            }
+
             chatBackgroundPopUp_Opened();
         }
 
