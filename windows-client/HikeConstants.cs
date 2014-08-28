@@ -184,7 +184,7 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
-        public static readonly int HIDDEN_MODE_RESET_TIMER = 5;
+        public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
         public static string FAQS_LINK
         {
@@ -545,9 +545,8 @@ namespace windows_client
         #region SERVER TIPS
         public static class ServerTips
         {
-            public static readonly string CHAT_SCREEN_TIP = "chtscrtip";
-            public static readonly string CONV_PAGE_TIP = "cnpgtip";
-            public static readonly string CHAT_TOOL_TIP_STATUS = "chattooltipst";
+            public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
+            public static readonly string CONV_PAGE_TIP_ID = "cnvPgTipId";
             public const string STICKER_TIPS = "stk";
             public const string PROFILE_TIPS = "pp";
             public const string ATTACHMENT_TIPS = "ft";

@@ -57,10 +57,10 @@ namespace windows_client
 
         public static readonly string ICON_REMOVE = "icr";
 
-        public static readonly string TIPS = "popup";
-        private static readonly string TIPHEADER = "h";
-        private static readonly string TIPBODY = "b";
-        private static readonly string TIPID = "i";
+        public static readonly string TIPS_POPUP = "popup";
+        private static readonly string TIPS_HEADER = "h";
+        private static readonly string TIPS_BODY = "b";
+        private static readonly string TIPS_ID = "i";
 
         public static bool turnOffNetworkManager = true;
 
@@ -2011,14 +2011,14 @@ namespace windows_client
                 }
             }
             #endregion
-            #region Tips
-            else if (TIPS == type)
+            #region Server Tips
+            else if (TIPS_POPUP == type)
             {
                 try
                 {
                     JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
-                    TipManager.Instance.AddTip((string)subtype, (string)data[TIPHEADER], (string)data[TIPBODY], (string)data[TIPID]);
+                    TipManager.Instance.AddTip((string)subtype, (string)data[TIPS_HEADER], (string)data[TIPS_BODY], (string)data[TIPS_ID]);
                 }
                 catch (Exception e)
                 {

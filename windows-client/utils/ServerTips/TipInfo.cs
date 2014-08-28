@@ -48,7 +48,7 @@ namespace windows_client.utils.ServerTips
 
                 case HikeConstants.ServerTips.PROFILE_TIPS:
 
-                    TipType = ToolTipMode.PROFILE;
+                    TipType = ToolTipMode.PROFILE_PIC;
                     break;
 
                 case HikeConstants.ServerTips.ATTACHMENT_TIPS:
@@ -89,7 +89,7 @@ namespace windows_client.utils.ServerTips
 
         }
 
-        public bool TipLocation
+        public bool IsChatScreenTip
         {
             get
             {
@@ -122,14 +122,7 @@ namespace windows_client.utils.ServerTips
                     BodyText = null;
 
                 count = reader.ReadInt32();
-                string type = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (type == "*@N@*")
-                    TipType = ToolTipMode.DEFAULT;
-                else
-                {
-                    if (!Enum.TryParse<ToolTipMode>(type, out TipType))
-                        TipType = ToolTipMode.DEFAULT;
-                }
+                TipType = (ToolTipMode)count;
             }
             catch (Exception ex)
             {
@@ -153,10 +146,7 @@ namespace windows_client.utils.ServerTips
                 else
                     writer.WriteStringBytes(BodyText);
 
-                if (TipType == ToolTipMode.DEFAULT)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(TipType.ToString());
+                writer.Write((int)TipType);
             }
             catch (Exception ex)
             {

@@ -9,7 +9,6 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using windows_client.Misc;
 
-
 namespace windows_client.utils.ServerTips
 {
     /// <summary>
@@ -42,12 +41,12 @@ namespace windows_client.utils.ServerTips
                             string chatPageTipId = string.Empty;
                             string mainPageTipId = string.Empty;
 
-                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP, out mainPageTipId);
+                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, out mainPageTipId);
 
                             if (!String.IsNullOrEmpty(mainPageTipId))
                                 ConversationPageTip = ReadTipFromFile(mainPageTipId);
 
-                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP, out chatPageTipId);
+                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out chatPageTipId);
 
                             if (!String.IsNullOrEmpty(chatPageTipId))
                                 ChatScreenTip = ReadTipFromFile(chatPageTipId);
@@ -73,25 +72,25 @@ namespace windows_client.utils.ServerTips
             {
                 TipInfo tempTip = new TipInfo(type, header, body, id);
 
-                if (tempTip.TipLocation)
+                if (tempTip.IsChatScreenTip)
                 {
                     if (ChatScreenTip != null)
                         RemoveTip(ChatScreenTip.TipId);
 
                     ChatScreenTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP, id);
+                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, id);
                 }
                 else
                 {
                     if (ConversationPageTip != null)
                         RemoveTip(ConversationPageTip.TipId);
                     ConversationPageTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP, id);
+                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, id);
                 }
 
-                WriteTipToFile(tempTip.TipLocation);
+                WriteTipToFile(tempTip.IsChatScreenTip);
 
-                if (tempTip.TipLocation)
+                if (tempTip.IsChatScreenTip)
                     OnChatScreenTipChanged(EventArgs.Empty);
                 else
                     OnConversationPageTipChanged(EventArgs.Empty);
@@ -185,14 +184,14 @@ namespace windows_client.utils.ServerTips
         /// <summary>
         /// writing tip to file
         /// </summary>
-        /// <param name="tempPos"></param>
-        static void WriteTipToFile(bool tempPos)
+        /// <param name="isChatScreenTip"></param>
+        static void WriteTipToFile(bool isChatScreenTip)
         {
             lock (readWriteLock)
             {
                 try
                 {
-                    string fileName = TIPS_DIRECTORY + "\\" + (tempPos ? ChatScreenTip.TipId : ConversationPageTip.TipId);
+                    string fileName = TIPS_DIRECTORY + "\\" + (isChatScreenTip ? ChatScreenTip.TipId : ConversationPageTip.TipId);
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(TIPS_DIRECTORY))
@@ -206,7 +205,7 @@ namespace windows_client.utils.ServerTips
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
 
-                                if (tempPos)
+                                if (isChatScreenTip)
                                     ChatScreenTip.Write(writer);
                                 else
                                     ConversationPageTip.Write(writer);
@@ -252,15 +251,15 @@ namespace windows_client.utils.ServerTips
                 }
 
                 string tempId;
-                App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP, out tempId);
+                App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out tempId);
                 if (tempId == id)
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP);
+                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
                     ChatScreenTip = null;
                 }
                 else
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CONV_PAGE_TIP);
+                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
                     ConversationPageTip = null;
                 }
             }
@@ -279,8 +278,8 @@ namespace windows_client.utils.ServerTips
 
             ClearOldTips();
 
-            App.appSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP);
-            App.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP);
+            App.appSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
+            App.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
         }
 
         /// <summary>

@@ -2488,6 +2488,8 @@ namespace windows_client.View
             //{
             //    RemoveStatusUpdateTutorial();
             //}
+            if (_tipMode == ToolTipMode.STATUS_UPDATE)
+                HideTips();
 
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
@@ -3160,7 +3162,7 @@ namespace windows_client.View
         {
             conversationPageToolTip.ResetToolTip();
 
-            if (_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE || _tipMode == ToolTipMode.FAVOURITES
+            if (_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE_PIC || _tipMode == ToolTipMode.FAVOURITES
                 || _tipMode == ToolTipMode.STATUS_UPDATE)
                 conversationPageToolTip.ControlBackgroundColor = (SolidColorBrush)App.Current.Resources["TipGreen"];
             else
@@ -3179,7 +3181,6 @@ namespace windows_client.View
 
             if (isFullTipTappedEnabled)
                 conversationPageToolTip.FullTipTapped += conversationPageToolTip_FullTipTapped;
-
         }
 
         #region Hidden Mode
@@ -3536,7 +3537,7 @@ namespace windows_client.View
 
                     break;
 
-                case ToolTipMode.PROFILE:
+                case ToolTipMode.PROFILE_PIC:
 
                     InitializeToolTipControl(UI_Utils.Instance.ToolTipProfilePic, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
@@ -3560,12 +3561,10 @@ namespace windows_client.View
 
                     InitializeToolTipControl(UI_Utils.Instance.ToolTipFavourites, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     break;
-
             }
 
             if (_tipMode != ToolTipMode.DEFAULT)
             {
-
                 if (!conversationPageToolTip.IsShow)
                     conversationPageToolTip.IsShow = true;
 
@@ -3573,7 +3572,6 @@ namespace windows_client.View
             }
             else if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
-
         }
 
         /// <summary>
@@ -3591,7 +3589,6 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
-
                         ResetHiddenMode();
 
                         if (_resetTimer != null)
@@ -3607,11 +3604,12 @@ namespace windows_client.View
 
                     break;
 
-                case ToolTipMode.PROFILE:
+                case ToolTipMode.PROFILE_PIC:
 
                     HideTips();
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+                    PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3622,9 +3620,8 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
-                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
                     break;
-
 
                 case ToolTipMode.INVITE_FRIENDS:
 
@@ -3640,7 +3637,6 @@ namespace windows_client.View
                     launchPagePivot.SelectedIndex = 1;
 
                     break;
-
             }
         }
 
@@ -3708,7 +3704,7 @@ namespace windows_client.View
 
                     break;
 
-                case ToolTipMode.PROFILE:
+                case ToolTipMode.PROFILE_PIC:
 
                     HideTips();
                     break;
@@ -3716,19 +3712,11 @@ namespace windows_client.View
                 case ToolTipMode.STATUS_UPDATE:
 
                     HideTips();
-
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
-
                     break;
 
                 case ToolTipMode.INFORMATIONAL:
 
                     HideTips();
-
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
-
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:
@@ -3739,12 +3727,7 @@ namespace windows_client.View
                 case ToolTipMode.FAVOURITES:
 
                     HideTips();
-
-                    if (TipManager.ConversationPageTip != null)
-                        TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
-
                     break;
-
             }
         }
 
@@ -3836,8 +3819,7 @@ namespace windows_client.View
         /// </summary>
         void HideTips()
         {
-
-            if ((_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE || _tipMode == ToolTipMode.FAVOURITES
+            if ((_tipMode == ToolTipMode.INVITE_FRIENDS || _tipMode == ToolTipMode.INFORMATIONAL || _tipMode == ToolTipMode.PROFILE_PIC || _tipMode == ToolTipMode.FAVOURITES
                 || _tipMode == ToolTipMode.STATUS_UPDATE) && TipManager.ConversationPageTip != null)
                 TipManager.Instance.RemoveTip(TipManager.ConversationPageTip.TipId);
 
@@ -3861,7 +3843,6 @@ namespace windows_client.View
             {
                 _tipMode = TipManager.ConversationPageTip.TipType;
                 UpdateToolTip(true);
-
             }
 
         }

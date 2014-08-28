@@ -408,7 +408,6 @@ namespace windows_client
             }
 
             _isAppLaunched = true;
-
         }
 
         // Code to execute when the application is activated (brought to foreground)

@@ -38,16 +38,48 @@ namespace windows_client.Model
         /// </summary>
         HIDDEN_MODE_COMPLETE,
 
-        //Server Tips
-
+        #region Server Tips
+        
+        /// <summary>
+        /// Tap and check new stickers
+        /// </summary>
         STICKERS,
-        PROFILE,
+        
+        /// <summary>
+        /// Its Photo Time. Add your photo.
+        /// </summary>
+        PROFILE_PIC,
+
+        /// <summary>
+        /// tap and send files to friends
+        /// </summary>
         ATTACHMENTS,
+
+        /// <summary>
+        /// here is some information for you
+        /// </summary>
         INFORMATIONAL,
+
+        /// <summary>
+        /// your favourites can see your last seen
+        /// </summary>
         FAVOURITES,
+
+        /// <summary>
+        /// invite friends to hike and earn money
+        /// </summary>
         INVITE_FRIENDS,
+
+        /// <summary>
+        /// hey check out new chat themes
+        /// </summary>
         CHAT_THEMES,
+
+        /// <summary>
+        /// there is a status update
+        /// </summary>
         STATUS_UPDATE
 
+        #endregion
     }
 }

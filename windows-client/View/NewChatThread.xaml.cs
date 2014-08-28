@@ -3372,12 +3372,12 @@ namespace windows_client.View
         bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-            
+
             if (_tipMode == ToolTipMode.STICKERS)
             {
                 HideServerTips();
             }
-            
+
             var appButton = sender as ApplicationBarIconButton;
 
             if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
@@ -7512,7 +7512,6 @@ namespace windows_client.View
 
             if (isFullTipTappedEnabled)
                 chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
-
         }
 
         ToolTipMode _tipMode;
@@ -7584,17 +7583,13 @@ namespace windows_client.View
                 case ToolTipMode.CHAT_THEMES:
 
                     HideServerTips();
-
                     chatBackgroundPopUp_Opened();
-
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
-
                     fileTransferButton_Click(null, null);
-
                     break;
 
                 case ToolTipMode.STICKERS:
@@ -7605,13 +7600,11 @@ namespace windows_client.View
                         emoticonButton_Click(stickersIconButton, null);
 
                     break;
-
             }
         }
 
         void ShowServerTips()
         {
-
             if (TipManager.ChatScreenTip != null)
             {
                 _tipMode = TipManager.ChatScreenTip.TipType;
@@ -7622,10 +7615,8 @@ namespace windows_client.View
 
         void HideServerTips()
         {
-
             if (TipManager.ChatScreenTip != null && _tipMode == TipManager.ChatScreenTip.TipType)
             {
-
                 if (TipManager.ChatScreenTip != null)
                     TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
 
@@ -7633,7 +7624,6 @@ namespace windows_client.View
                 _tipMode = ToolTipMode.DEFAULT;
                 UpdateToolTip(true);
             }
-
         }
 
         #endregion
