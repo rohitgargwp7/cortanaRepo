@@ -459,7 +459,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSms || (MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED && MessageStatus < State.SENT_SOCKET_WRITE);
+                return _isSms || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
             }
             set
             {
@@ -526,7 +526,7 @@ namespace windows_client.Model
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                 {
-                    if (MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED && MessageStatus < State.SENT_SOCKET_WRITE)
+                    if (MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                         return String.Format(AppResources.Sent_As_SMS, TimeUtils.getTimeStringForChatThread(_timestamp));
                     else
                         return TimeUtils.getTimeStringForChatThread(_timestamp);
@@ -1603,7 +1603,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (MessageStatus <= State.SENT_CONFIRMED || MessageStatus == State.SENT_SOCKET_WRITE)
+                if (MessageStatus == State.SENT_UNCONFIRMED || MessageStatus == State.SENT_FAILED || MessageStatus == State.SENT_SOCKET_WRITE || MessageStatus == State.SENT_UNCONFIRMED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;

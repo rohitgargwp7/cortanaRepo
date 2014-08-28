@@ -412,7 +412,9 @@ namespace windows_client.DbUtils
                     {
                         var msgState = (ConvMessage.State)val;
 
-                        if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && message.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                         {
                             if (msgState == ConvMessage.State.SENT_DELIVERED)
                                 val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
@@ -422,7 +424,8 @@ namespace windows_client.DbUtils
 
                         //hack to update db for sent socket write
                         if ((int)message.MessageStatus < val||
-                            (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE && (int)ConvMessage.State.SENT_CONFIRMED <= val))
+                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE && 
+                                    (val==(int)ConvMessage.State.SENT_CONFIRMED || val==(int)ConvMessage.State.SENT_DELIVERED || val==(int)ConvMessage.State.SENT_DELIVERED_READ)))
                         {
                             if (fromUser == null || fromUser == message.Msisdn)
                             {
@@ -473,7 +476,9 @@ namespace windows_client.DbUtils
 
                     if (message != null)
                     {
-                        if (message.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && message.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                           || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                           || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                         {
                             var msgState = (ConvMessage.State)val;
 
@@ -484,8 +489,9 @@ namespace windows_client.DbUtils
                         }
 
                         //hack to update db for sent socket write
-                        if ((message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE && (int)ConvMessage.State.SENT_CONFIRMED <= val)
-                            || (int)message.MessageStatus < val)
+                        if ((int)message.MessageStatus < val ||
+                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
+                                    (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
                         {
                             if (fromUser == null || fromUser == message.Msisdn)
                             {

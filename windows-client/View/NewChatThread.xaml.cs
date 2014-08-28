@@ -4255,7 +4255,7 @@ namespace windows_client.View
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
                         {
-                            if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                            if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                 msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
@@ -4319,7 +4319,7 @@ namespace windows_client.View
 
                                     idsToUpdate.Add(kv.Key);
 
-                                    if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                                    if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                         msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                                     else
                                         msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
