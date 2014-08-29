@@ -992,10 +992,9 @@ namespace windows_client.View
                 {
                     ConversationListObject co = (ConversationListObject)obj;
                     mContactNumber = co.Msisdn;
+
                     if (co.ContactName != null)
-                    {
                         mContactName = co.ContactName;
-                    }
                     else
                     {
                         mContactName = co.Msisdn;
@@ -3372,11 +3371,8 @@ namespace windows_client.View
         bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-
             if (_tipMode == ToolTipMode.STICKERS)
-            {
                 HideServerTips();
-            }
 
             var appButton = sender as ApplicationBarIconButton;
 
@@ -3502,9 +3498,7 @@ namespace windows_client.View
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
             if (_tipMode == ToolTipMode.ATTACHMENTS)
-            {
                 HideServerTips();
-            }
 
             if (recordGrid.Visibility == Visibility.Visible)
             {
@@ -5774,9 +5768,7 @@ namespace windows_client.View
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (_tipMode == ToolTipMode.CHAT_THEMES)
-            {
                 HideServerTips();
-            }
 
             chatBackgroundPopUp_Opened();
         }
@@ -5787,7 +5779,6 @@ namespace windows_client.View
             chatThemeHeader.Visibility = Visibility.Collapsed;
             userHeader.Visibility = Visibility.Visible;
             openChatBackgroundButton.Opacity = 1;
-
         }
 
         void chatBackgroundPopUp_Opened()
