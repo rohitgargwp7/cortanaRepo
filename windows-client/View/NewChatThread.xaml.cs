@@ -880,7 +880,6 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-
             GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE

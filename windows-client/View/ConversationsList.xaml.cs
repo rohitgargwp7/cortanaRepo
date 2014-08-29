@@ -1737,7 +1737,6 @@ namespace windows_client.View
 
             if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 UpdateToolTip(true);
-
         }
 
         private void UpdateFriendsCounter()

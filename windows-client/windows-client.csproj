@@ -660,7 +660,6 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
-    <Content Include="View\images\ServerTips\Bolt.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
     <Content Include="View\images\ServerTips\stickers.png" />
