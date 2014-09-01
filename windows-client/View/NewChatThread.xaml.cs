@@ -4859,6 +4859,13 @@ namespace windows_client.View
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
                 
+                if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                {
+                    BitmapImage image = new BitmapImage();
+                    UI_Utils.Instance.createImageFromBytes(thumbnail, image);
+                    thumbnail = UI_Utils.DiminishThumbnailQuality(image);
+                }
+
                 try
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));

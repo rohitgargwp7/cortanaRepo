@@ -2427,5 +2427,29 @@ namespace windows_client.utils
                 return ms.ToArray();
             }
         }
+
+        public static Byte[] DiminishThumbnailQuality(BitmapImage image)
+        {
+            Byte[] imageBytes;
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            int imageWidth, imageHeight;
+            Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out imageWidth, out imageHeight);
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 50);
+                imageBytes = msSmallImage.ToArray();
+            }
+            if (imageBytes.Length > HikeConstants.MAX_THUMBNAILSIZE)
+            {
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 20);
+                    imageBytes = msSmallImage.ToArray();
+                }
+            }
+            return imageBytes;
+        }
     }
 }
