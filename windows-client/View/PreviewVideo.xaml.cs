@@ -24,6 +24,7 @@ namespace windows_client.View
     public partial class PreviewVideo : PhoneApplicationPage
     {
         public VideoItem _videoShared;
+        
         public PreviewVideo()
         {
             InitializeComponent();
@@ -49,12 +50,6 @@ namespace windows_client.View
             if(_videoShared.Size>0)
                 VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
         
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-            base.OnNavigatedFrom(e);
         }
 
         void shareVideo_Click(object sender, EventArgs e)

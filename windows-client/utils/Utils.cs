@@ -742,7 +742,7 @@ namespace windows_client.utils
         /// </summary>
         /// <param name="sourceFile">absolute path of file which we want to copy to Hike directory</param>
         /// <param name="targetFileName">name of the file in hike directory </param>
-        public static async Task<bool> FileStoringInHikeDirectory(string sourceFile, string targetFileName)
+        public static async Task<bool> StoreFileInHikeDirectory(string sourceFile, string targetFileName)
         {
             bool result = true;
             if (!Directory.Exists(HikeConstants.HikeDirectoryPath))

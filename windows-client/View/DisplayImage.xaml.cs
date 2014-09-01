@@ -393,16 +393,15 @@ namespace windows_client.View
         private void picSaveButton_Click(object sender, EventArgs e)
         {
             string tempName = Convert.ToString(_messsageId);
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
-            Debug.WriteLine(filePath);
-            string sourceFile = Utils.GetAbsolutePath(filePath);
+            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
+            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
             string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
             bool isSaveSuccessful = false;
 
             BackgroundWorker bgWorker = new BackgroundWorker();
             bgWorker.DoWork += (ss, ee) =>
             {
-                Task<bool> result = Utils.FileStoringInHikeDirectory(sourceFile, targetFileName);
+                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
                 isSaveSuccessful = result.Result;
             };
             bgWorker.RunWorkerAsync();

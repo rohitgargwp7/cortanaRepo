@@ -24,4 +24,5 @@ windows-client.sdf
 RPALApiComponent/Arm/
 RPALApiComponent/Generated Files/
 RPALApiComponent/Debug/
+HikeBackgroundAgent/
 *.suo

@@ -3350,16 +3350,20 @@ namespace windows_client.View
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
             string tempName = Convert.ToString(msg.MessageId);
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
-            Debug.WriteLine(filePath);
-            string sourceFile = Utils.GetAbsolutePath(filePath);
-            string targetFileName = tempName+ "_" + TimeUtils.getCurrentTimeStamp();
-            bool isSaveSuccessful = false;
+            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
+            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
             
+            if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                targetFileName = targetFileName + ".mp4";
+            else if(msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                targetFileName = targetFileName + ".jpg";
+
+            bool isSaveSuccessful = false;
             BackgroundWorker bgWorker = new BackgroundWorker();
             bgWorker.DoWork += (ss, ee) =>
             {
-                Task<bool> result = Utils.FileStoringInHikeDirectory(sourceFile, targetFileName);
+                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
                 isSaveSuccessful = result.Result;
             };
             bgWorker.RunWorkerAsync();

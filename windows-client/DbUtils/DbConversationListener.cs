@@ -403,21 +403,18 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                // Here the code to save the file in Hike Directory
-                                // TODO: HANDLE FILESAVING
-                                if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE) ))
+                                if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE)))
                                 {
                                     string randomFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
+
                                     if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                         randomFileName = randomFileName + ".mp4";
                                     else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                         randomFileName = randomFileName + ".jpg";
-                                    else return;
 
-                                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
-                                    //Debug.WriteLine(filePath);
-                                    string sourceFile = Utils.GetAbsolutePath(filePath);
-                                    Utils.FileStoringInHikeDirectory(sourceFile, randomFileName);
+                                    string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+                                    Utils.StoreFileInHikeDirectory(absoluteFilePath, randomFileName);
                                 }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();

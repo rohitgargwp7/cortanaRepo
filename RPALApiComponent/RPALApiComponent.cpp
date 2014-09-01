@@ -32,7 +32,6 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 	return (uint16)cItemsRoot;
 }
 
-
 // Function to get a video file info using its position in the _rgItemsRoot
 Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath, double* videoTime,int* videoDuration,int *videoSize) 
 {
