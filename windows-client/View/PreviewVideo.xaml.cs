@@ -45,7 +45,10 @@ namespace windows_client.View
             _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = _videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
-            VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
+            
+            if(_videoShared.Size>0)
+                VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
+        
         }
 
         void shareVideo_Click(object sender, EventArgs e)
