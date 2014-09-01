@@ -24,6 +24,7 @@ namespace windows_client.View
     public partial class PreviewVideo : PhoneApplicationPage
     {
         public VideoItem _videoShared;
+        
         public PreviewVideo()
         {
             InitializeComponent();
