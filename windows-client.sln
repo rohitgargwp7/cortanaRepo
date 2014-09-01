@@ -3,18 +3,58 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "windows-client", "windows-client\windows-client.csproj", "{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RPALApiComponent", "RPALApiComponent\RPALApiComponent.vcxproj", "{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
 		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|ARM.ActiveCfg = Debug|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|ARM.Build.0 = Debug|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|ARM.Deploy.0 = Debug|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Mixed Platforms.Deploy.0 = Debug|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Win32.ActiveCfg = Debug|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Win32.Build.0 = Debug|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Debug|Win32.Deploy.0 = Debug|x86
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|ARM.ActiveCfg = Release|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|ARM.Build.0 = Release|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|ARM.Deploy.0 = Release|ARM
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Mixed Platforms.Build.0 = Release|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Mixed Platforms.Deploy.0 = Release|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Win32.ActiveCfg = Release|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Win32.Build.0 = Release|x86
+		{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}.Release|Win32.Deploy.0 = Release|x86
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|ARM.Build.0 = Debug|ARM
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Debug|Win32.Build.0 = Debug|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|ARM.ActiveCfg = Release|ARM
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|ARM.Build.0 = Release|ARM
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Win32.ActiveCfg = Release|Win32
+		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

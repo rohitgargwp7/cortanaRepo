@@ -1103,7 +1103,7 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>share</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Tap to {0} this person</value>
@@ -1728,8 +1728,8 @@ Download it like asap from http://hike.in!</value>
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>albums</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>date</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>videos</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>select</value>
@@ -2109,6 +2109,12 @@ Download it like asap from http://hike.in!</value>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Restart</value>
   </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Camcorder</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>photos</value>
+  </data>
   <data name="Hide_Txt" xml:space="preserve">
     <value>hide chat</value>
   </data>
@@ -2216,7 +2222,13 @@ Download it like asap from http://hike.in!</value>
     <value>Nobody</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>SELECT VIDEO</value>
+  </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Phone</value>
   </data>
 </root>

@@ -202,7 +202,8 @@
     <Compile Include="Model\ContactGroup.cs" />
     <Compile Include="Model\GroupPic.cs" />
     <Compile Include="Model\ItemGroup.cs" />
-    <Compile Include="Model\MultiplePhoto\Album.cs" />
+    <Compile Include="Model\MediaShare\VideoAlbum.cs" />
+    <Compile Include="Model\MediaShare\PhotoAlbum.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\ChatBackground.cs" />
@@ -212,7 +213,7 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
-    <Compile Include="Model\MultiplePhoto\Photo.cs" />
+    <Compile Include="Model\MediaShare\PhotoItem.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Model\Sticker\StickerObj.cs" />
     <Compile Include="Model\ToolTipMode.cs" />
     <Compile Include="Model\TypingNotification.cs" />
+    <Compile Include="Model\MediaShare\VideoItem.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
     <Compile Include="Mqtt\IpManager.cs" />
@@ -300,6 +302,9 @@
     <Compile Include="View\PreviewImages.xaml.cs">
       <DependentUpon>PreviewImages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PreviewVideo.xaml.cs">
+      <DependentUpon>PreviewVideo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
@@ -353,6 +358,9 @@
     </Compile>
     <Compile Include="View\ViewPhotoAlbums.xaml.cs">
       <DependentUpon>ViewPhotoAlbums.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewVideos.xaml.cs">
+      <DependentUpon>ViewVideos.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
@@ -448,6 +456,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\PreviewVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Privacy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -518,6 +530,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ViewVideos.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -545,6 +561,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="RPALManifest.xml" />
+    <Content Include="View\images\AppBar\icon_send_video.png" />
     <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
@@ -658,6 +676,9 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\MediaPlayIconBig.png" />
+    <Content Include="View\images\MediaPlayIconSmall.png" />
+    <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
@@ -859,7 +880,6 @@
     <Content Include="View\images\emoticons\thulla4.png" />
     <Content Include="View\images\AppBar\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
-    <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\fb_icon.png" />
@@ -926,7 +946,7 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\menu_camera_icon.png" />
-    <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\video_default.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
     <Content Include="View\images\menu_audio_icon.png" />
@@ -1140,7 +1160,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
+      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
+      <Name>RPALApiComponent</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

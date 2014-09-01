@@ -44,6 +44,8 @@ using System.Windows.Documents;
 using Windows.System;
 using Windows.Storage;
 using windows_client.Model.Sticker;
+using System.Windows.Resources;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -471,7 +473,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ResumeBackgroundAudio();//in case of video playback
+            App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -634,7 +636,8 @@ namespace windows_client.View
             #endregion
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
             {
                 AudioFileTransfer();
             }
@@ -684,7 +687,7 @@ namespace windows_client.View
 
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
                     mediaElement.Source = null;
                 }
             }
@@ -696,7 +699,7 @@ namespace windows_client.View
                     {
                         PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
-                        ResumeBackgroundAudio();
+                        App.ViewModel.ResumeBackgroundAudio();
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
@@ -734,7 +737,7 @@ namespace windows_client.View
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
 
                     if (currentAudioMessage != null)
                     {
@@ -814,7 +817,7 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-                ResumeBackgroundAudio();
+                App.ViewModel.ResumeBackgroundAudio();
             }
 
             if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
@@ -3142,7 +3145,7 @@ namespace windows_client.View
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
-                ResumeBackgroundAudio();
+                App.ViewModel.ResumeBackgroundAudio();
             }
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
@@ -3333,7 +3336,7 @@ namespace windows_client.View
 
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                PauseBackgroundAudio();
+                App.ViewModel.PauseBackgroundAudio();
                 string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
@@ -3549,9 +3552,15 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
-        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void sendCamcorder_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/ViewVideos.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
@@ -4646,7 +4655,7 @@ namespace windows_client.View
         #region FileTransfer
 
         bool _uploadProgressBarIsTapped = false;
-        bool resumeMediaPlayerAfterDone = false;
+        
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
@@ -4768,23 +4777,7 @@ namespace windows_client.View
             }
         }
 
-        void PauseBackgroundAudio()
-        {
-            if (!MediaPlayer.GameHasControl)
-            {
-                MediaPlayer.Pause();
-                resumeMediaPlayerAfterDone = true;
-            }
-        }
-
-        void ResumeBackgroundAudio()
-        {
-            if (resumeMediaPlayerAfterDone)
-            {
-                MediaPlayer.Resume();
-                resumeMediaPlayerAfterDone = false;
-            }
-        }
+        
 
         private void PauseResume_Tapped(object sender, RoutedEventArgs e)
         {
@@ -4891,7 +4884,35 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
+            {
+                VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                thumbnail = videoShared.ThumbnailBytes;
+                
+                if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                {
+                    BitmapImage image = new BitmapImage();
+                    UI_Utils.Instance.createImageFromBytes(thumbnail, image);
+                    thumbnail = UI_Utils.DiminishThumbnailQuality(image);
+                }
 
+                try
+                {
+                    StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
+                    fileBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            
+                if (fileBytes == null)
+                    return;
+
+                isAudio = false;
+            }
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
@@ -4986,9 +5007,9 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
-                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+                List<PhotoItem> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoItem>;
 
-                foreach (PhotoClass pic in listPic)
+                foreach (PhotoItem pic in listPic)
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
@@ -5143,7 +5164,7 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                PauseBackgroundAudio();
+                App.ViewModel.PauseBackgroundAudio();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
@@ -5166,7 +5187,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
-                                    ResumeBackgroundAudio();
+                                    App.ViewModel.ResumeBackgroundAudio();
                                 }
                                 else
                                 {
@@ -5175,7 +5196,7 @@ namespace windows_client.View
 
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    PauseBackgroundAudio();
+                                    App.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5189,7 +5210,7 @@ namespace windows_client.View
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    PauseBackgroundAudio();
+                                    App.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5199,7 +5220,7 @@ namespace windows_client.View
                             try
                             {
                                 mediaElement.Source = null;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                                 {
                                     if (store.FileExists(fileLocation))
@@ -5260,7 +5281,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -5304,7 +5325,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
 
                                 if (currentAudioMessage != null)
@@ -5360,7 +5381,7 @@ namespace windows_client.View
                         CompositionTarget.Rendering -= CompositionTarget_Rendering;
                         CompositionTarget.Rendering += CompositionTarget_Rendering;
 
-                        PauseBackgroundAudio();
+                        App.ViewModel.PauseBackgroundAudio();
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -5457,7 +5478,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            ResumeBackgroundAudio();
+            App.ViewModel.ResumeBackgroundAudio();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -5472,7 +5493,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            ResumeBackgroundAudio();
+            App.ViewModel.ResumeBackgroundAudio();
         }
 
         private void forwardAttachmentMessage()
@@ -6851,7 +6872,7 @@ namespace windows_client.View
                 {
                     currentAudioMessage.IsPlaying = false;
                     mediaElement.Pause();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
                 }
             }
 
