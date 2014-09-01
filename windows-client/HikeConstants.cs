@@ -270,7 +270,7 @@ namespace windows_client
         public static readonly string CHAT_DISABLED = "di";
         public static readonly string HIDDEN_MODE_ENABLED = "enabled";
         public static readonly string HIDDEN_MODE_TYPE = "ts";
-       
+
         public static readonly string PREVIEW = "preview";
 
         public static string MOOD_TOD_SEPARATOR = ":";
@@ -448,7 +448,7 @@ namespace windows_client
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
-        
+
         #endregion
 
         public static class Extras
@@ -545,5 +545,21 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
+
+        #region SERVER TIPS
+        public static class ServerTips
+        {
+            public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
+            public static readonly string CONV_PAGE_TIP_ID = "cnvPgTipId";
+            public const string STICKER_TIPS = "stk";
+            public const string PROFILE_TIPS = "pp";
+            public const string ATTACHMENT_TIPS = "ft";
+            public const string INFORMATIONAL_TIPS = "info";
+            public const string FAVOURITE_TIPS = "fav";
+            public const string THEME_TIPS = "theme";
+            public const string INVITATION_TIPS = "inv";
+            public const string STATUS_UPDATE_TIPS = "stts";
+        }
+        #endregion
     }
 }

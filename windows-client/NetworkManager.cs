@@ -14,6 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
+using windows_client.utils.ServerTips;
 
 namespace windows_client
 {
@@ -55,6 +56,11 @@ namespace windows_client
         public static readonly string ACTION = "action";
 
         public static readonly string ICON_REMOVE = "icr";
+
+        public static readonly string TIPS_POPUP = "popup";
+        private static readonly string TIPS_HEADER = "h";
+        private static readonly string TIPS_BODY = "b";
+        private static readonly string TIPS_ID = "i";
 
         public static bool turnOffNetworkManager = true;
 
@@ -1966,7 +1972,7 @@ namespace windows_client
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                    
+
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
@@ -1974,7 +1980,7 @@ namespace windows_client
                     }
 
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    
+
                     if (c != null) // for favourites
                     {
                         c.Avatar = null;
@@ -2002,6 +2008,31 @@ namespace windows_client
                 catch (JsonReaderException ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
+            }
+            #endregion
+            #region Server Tips
+            else if (TIPS_POPUP == type)
+            {
+                try
+                {
+                    JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken headertext;
+
+                    if (!data.TryGetValue(TIPS_HEADER, out headertext))
+                        headertext = String.Empty;
+                    
+                    JToken bodyText;
+                    
+                    if (!data.TryGetValue(TIPS_BODY, out bodyText))
+                        bodyText = String.Empty;
+                    
+                    TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NetworkManager :: OnMessage : TipsException " + e.StackTrace);
                 }
             }
             #endregion

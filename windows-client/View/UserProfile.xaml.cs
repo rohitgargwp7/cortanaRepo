@@ -806,8 +806,9 @@ namespace windows_client.View
                 }
                 else
                 {
+
                     string tempContactName = isInAddressBook ? nameToShow : null;
-                    favObj = new ConversationListObject(msisdn, tempContactName, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
+                    favObj = new ConversationListObject(msisdn, tempContactName, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
                 }
 
                 App.ViewModel.FavList.Insert(0, favObj);

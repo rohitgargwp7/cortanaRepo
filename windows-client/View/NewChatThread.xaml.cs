@@ -44,6 +44,7 @@ using System.Windows.Documents;
 using Windows.System;
 using Windows.Storage;
 using windows_client.Model.Sticker;
+using windows_client.utils.ServerTips;
 using System.Windows.Resources;
 using windows_client.Model;
 
@@ -237,6 +238,17 @@ namespace windows_client.View
 
             if (App.ViewModel.IsDarkMode)
                 darkModeLayer.Visibility = Visibility.Visible;
+
+            TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
+            TipManager.Instance.ChatScreenTipChanged += Instance_ShowServerTip;
+        }
+
+        private void Instance_ShowServerTip(object sender, EventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ShowServerTips();
+            });
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -662,6 +674,12 @@ namespace windows_client.View
             }
             #endregion
 
+            #region Server Tips
+
+            ShowServerTips();
+
+            #endregion
+
             if (_patternNotLoaded)
                 CreateBackgroundImage();
         }
@@ -976,6 +994,7 @@ namespace windows_client.View
                 {
                     ConversationListObject co = (ConversationListObject)obj;
                     mContactNumber = co.Msisdn;
+
                     if (co.ContactName != null)
                         mContactName = co.ContactName;
                     else
@@ -3389,6 +3408,9 @@ namespace windows_client.View
         bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            if (_tipMode == ToolTipMode.STICKERS)
+                HideServerTips();
+
             var appButton = sender as ApplicationBarIconButton;
 
             if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
@@ -3512,6 +3534,9 @@ namespace windows_client.View
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
+            if (_tipMode == ToolTipMode.ATTACHMENTS)
+                HideServerTips();
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -4079,10 +4104,10 @@ namespace windows_client.View
                     }
                     if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                         updateLastMsgColor(convMessage.Msisdn);
-                    
+
                     // Update UI
                     HideTypingNotification();
-                    
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -5823,6 +5848,9 @@ namespace windows_client.View
 
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_tipMode == ToolTipMode.CHAT_THEMES)
+                HideServerTips();
+
             chatBackgroundPopUp_Opened();
         }
 
@@ -5832,7 +5860,6 @@ namespace windows_client.View
             chatThemeHeader.Visibility = Visibility.Collapsed;
             userHeader.Visibility = Visibility.Visible;
             openChatBackgroundButton.Opacity = 1;
-
         }
 
         void chatBackgroundPopUp_Opened()
@@ -7537,5 +7564,141 @@ namespace windows_client.View
             });
         }
         #endregion
+
+        #region SERVER TIPS
+
+        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
+            bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
+        {
+            chatScreenToolTip.LeftIconSource = leftIconSource;
+            chatScreenToolTip.RightIconSource = rightIconSource;
+            chatScreenToolTip.TipText = bodyText;
+            chatScreenToolTip.TipHeaderText = headerText;
+
+            chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
+
+            if (isRightIconClickedEnabled)
+                chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+
+            chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
+
+            if (isFullTipTappedEnabled)
+                chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
+        }
+
+        ToolTipMode _tipMode;
+
+        void UpdateToolTip(bool isModeChanged)
+        {
+            chatScreenToolTip.ResetToolTip();
+
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipStickers, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipChatTheme, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipAttachment, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+            }
+
+            if (_tipMode != ToolTipMode.DEFAULT && !chatScreenToolTip.IsShow)
+                chatScreenToolTip.IsShow = true;
+
+        }
+
+        private void chatScreenToolTip_RightIconClicked(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    HideServerTips();
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    HideServerTips();
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    HideServerTips();
+                    break;
+            }
+        }
+
+        private void chatScreenToolTip_FullTipTapped(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    HideServerTips();
+                    chatBackgroundPopUp_Opened();
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    HideServerTips();
+                    fileTransferButton_Click(null, null);
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    HideServerTips();
+
+                    if (stickersIconButton != null)
+                        emoticonButton_Click(stickersIconButton, null);
+
+                    break;
+            }
+        }
+
+        void ShowServerTips()
+        {
+            if (TipManager.ChatScreenTip != null)
+            {
+                _tipMode = TipManager.ChatScreenTip.TipType;
+                UpdateToolTip(true);
+            }
+
+        }
+
+        void HideServerTips()
+        {
+            if (TipManager.ChatScreenTip != null && _tipMode == TipManager.ChatScreenTip.TipType)
+            {
+                if (TipManager.ChatScreenTip != null)
+                    TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
+                chatScreenToolTip.IsShow = false;
+                _tipMode = ToolTipMode.DEFAULT;
+                UpdateToolTip(true);
+            }
+        }
+
+        #endregion
     }
+
 }
