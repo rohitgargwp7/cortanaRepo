@@ -27,12 +27,14 @@ namespace windows_client.View
         public PreviewVideo()
         {
             InitializeComponent();
-            
-            this.ApplicationBar = new ApplicationBar();
+
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
+            };
             ApplicationBar.IsVisible = true;
             ApplicationBar.Opacity = 0.5;
-            ApplicationBar.BackgroundColor = Colors.Black;
-            ApplicationBar.ForegroundColor = Colors.White;
             
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
             shareVideo.Text = AppResources.Share_Txt;
