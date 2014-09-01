@@ -19,7 +19,6 @@ namespace windows_client.Controls
             this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
-            tipHeaderText.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region
@@ -150,8 +149,9 @@ namespace windows_client.Controls
         {
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
+            if (!String.IsNullOrEmpty(tempText))
+                tempText += ": ";
             tempToolTip.tipHeaderText.Text = tempText;
-            tempToolTip.tipHeaderText.Visibility = String.IsNullOrEmpty(tempText) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public String TipHeaderText
