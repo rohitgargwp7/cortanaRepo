@@ -202,7 +202,10 @@
     <Compile Include="Model\ContactGroup.cs" />
     <Compile Include="Model\GroupPic.cs" />
     <Compile Include="Model\ItemGroup.cs" />
-    <Compile Include="Model\MultiplePhoto\Album.cs" />
+    <Compile Include="Model\MediaShare\PhotoAlbum.cs" />
+    <Compile Include="Model\MediaShare\PhotoItem.cs" />
+    <Compile Include="Model\MediaShare\VideoAlbum.cs" />
+    <Compile Include="Model\MediaShare\VideoItem.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\ChatBackground.cs" />
@@ -212,7 +215,6 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
-    <Compile Include="Model\MultiplePhoto\Photo.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -231,6 +233,7 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="utils\EmailConversation.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />
     <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
@@ -660,10 +663,12 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\ServerTips\attachments.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
+    <Content Include="View\images\ServerTips\status.png" />
     <Content Include="View\images\ServerTips\stickers.png" />
-    <Content Include="View\images\settings\change_password.png" />
+    <Content Include="View\images\ServerTips\Themes.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
@@ -750,7 +755,6 @@
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
-    <Content Include="View\images\settings\reset_hidden_mode.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
@@ -863,7 +867,6 @@
     <Content Include="View\images\emoticons\thulla4.png" />
     <Content Include="View\images\AppBar\icon_direction.png" />
     <Content Include="View\images\emoticons\tiranga4.png" />
-    <Content Include="View\images\MediaPlayIcon.png" />
     <Content Include="View\images\download_failed_bubble.png" />
     <Content Include="View\images\emoticon_back_key.png" />
     <Content Include="View\images\fb_icon.png" />
@@ -1118,9 +1121,6 @@
     <Content Include="View\images\signup_logo.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\typing.png" />
-    <Content Include="View\images\ServerTips\attachments.png" />
-    <Content Include="View\images\ServerTips\status.png" />
-    <Content Include="View\images\ServerTips\Themes.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
