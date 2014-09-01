@@ -2018,7 +2018,17 @@ namespace windows_client
                 {
                     JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
-                    TipManager.Instance.AddTip((string)subtype, (string)data[TIPS_HEADER], (string)data[TIPS_BODY], (string)data[TIPS_ID]);
+                    JToken headertext;
+
+                    if (!data.TryGetValue(TIPS_HEADER, out headertext))
+                        headertext = String.Empty;
+                    
+                    JToken bodyText;
+                    
+                    if (!data.TryGetValue(TIPS_BODY, out bodyText))
+                        bodyText = String.Empty;
+                    
+                    TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
                 }
                 catch (Exception e)
                 {

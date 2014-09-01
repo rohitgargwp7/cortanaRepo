@@ -3169,8 +3169,8 @@ namespace windows_client.View
 
             conversationPageToolTip.LeftIconSource = leftIconSource;
             conversationPageToolTip.RightIconSource = rightIconSource;
-            conversationPageToolTip.TipHeaderText = headerText;
             conversationPageToolTip.TipText = bodyText;
+            conversationPageToolTip.TipHeaderText = headerText;
 
             conversationPageToolTip.RightIconClicked -= conversationPageToolTip_RightIconClicked;
             conversationPageToolTip.FullTipTapped -= conversationPageToolTip_FullTipTapped;

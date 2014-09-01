@@ -32,60 +32,12 @@ namespace windows_client.utils.ServerTips
             TipId = null;
         }
 
-        public TipInfo(string type, string header, string body, string id)
+        public TipInfo(ToolTipMode type, string header, string body, string id)
         {
             HeaderText = header;
             BodyText = body;
             TipId = id;
-
-            switch (type)
-            {
-
-                case HikeConstants.ServerTips.STICKER_TIPS:
-
-                    TipType = ToolTipMode.STICKERS;
-                    break;
-
-                case HikeConstants.ServerTips.PROFILE_TIPS:
-
-                    TipType = ToolTipMode.PROFILE_PIC;
-                    break;
-
-                case HikeConstants.ServerTips.ATTACHMENT_TIPS:
-
-                    TipType = ToolTipMode.ATTACHMENTS;
-                    break;
-
-                case HikeConstants.ServerTips.INFORMATIONAL_TIPS:
-
-                    TipType = ToolTipMode.INFORMATIONAL;
-                    break;
-                case HikeConstants.ServerTips.FAVOURITE_TIPS:
-
-                    TipType = ToolTipMode.FAVOURITES;
-                    break;
-
-                case HikeConstants.ServerTips.THEME_TIPS:
-
-                    TipType = ToolTipMode.CHAT_THEMES;
-                    break;
-
-                case HikeConstants.ServerTips.INVITATION_TIPS:
-
-                    TipType = ToolTipMode.INVITE_FRIENDS;
-                    break;
-
-                case HikeConstants.ServerTips.STATUS_UPDATE_TIPS:
-
-                    TipType = ToolTipMode.STATUS_UPDATE;
-                    break;
-
-                default:
-
-                    TipType = ToolTipMode.DEFAULT;
-                    break;
-
-            };
+            TipType = type;
 
         }
 
@@ -93,10 +45,7 @@ namespace windows_client.utils.ServerTips
         {
             get
             {
-                if (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS)
-                    return true; //chat thread page
-                else
-                    return false; //conv page
+                return (TipType == ToolTipMode.CHAT_THEMES || TipType == ToolTipMode.ATTACHMENTS || TipType == ToolTipMode.STICKERS);
             }
         }
 

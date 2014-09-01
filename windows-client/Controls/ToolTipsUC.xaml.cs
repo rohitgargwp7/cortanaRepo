@@ -149,8 +149,10 @@ namespace windows_client.Controls
         {
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
-            if (!String.IsNullOrEmpty(tempText))
+
+            if (!String.IsNullOrEmpty(tempText) && !String.IsNullOrEmpty(tempToolTip.tipTextbox.Text)) //body must be set before setting header
                 tempText += ": ";
+            
             tempToolTip.tipHeaderText.Text = tempText;
         }
 

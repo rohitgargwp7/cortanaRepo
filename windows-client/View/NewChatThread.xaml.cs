@@ -7541,8 +7541,8 @@ namespace windows_client.View
         {
             chatScreenToolTip.LeftIconSource = leftIconSource;
             chatScreenToolTip.RightIconSource = rightIconSource;
-            chatScreenToolTip.TipHeaderText = headerText;
             chatScreenToolTip.TipText = bodyText;
+            chatScreenToolTip.TipHeaderText = headerText;
 
             chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
 
