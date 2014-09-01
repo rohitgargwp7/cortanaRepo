@@ -233,7 +233,6 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
-    <Compile Include="utils\EmailConversation.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />
     <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />

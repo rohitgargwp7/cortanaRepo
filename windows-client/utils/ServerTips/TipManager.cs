@@ -17,7 +17,7 @@ namespace windows_client.utils.ServerTips
     /// </summary>
     class TipManager
     {
-        private static volatile TipManager instance = null;
+        private static TipManager instance = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static object readWriteLock = new Object(); // this object for reading writing lock
