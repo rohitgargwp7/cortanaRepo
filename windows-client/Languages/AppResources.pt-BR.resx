@@ -1015,7 +1015,7 @@
     <value>integridade do sistema</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
-    <value>Informações de contato</value>
+    <value>Compartilhar contato</value>
   </data>
   <data name="Attachment_Audio_Txt" xml:space="preserve">
     <value>Enviar áudio</value>
@@ -1233,7 +1233,7 @@
     <value>adicionar contato</value>
   </data>
   <data name="SettingsSubtitle_Notification_Txt" xml:space="preserve">
-    <value>ligar/desligar jingle, vibrar e mais</value>
+    <value>ligar/desligar jingle, pré-visualizar mensagens e mais</value>
   </data>
   <data name="Settings_AccountSettings_Txt" xml:space="preserve">
     <value>gerenciar a conta do hike</value>
@@ -1288,7 +1288,7 @@
     <comment>Dismiss/Close the tip which is currently visible</comment>
   </data>
   <data name="Show_LastSeen_TimeStamp" xml:space="preserve">
-    <value>Mostrar Visto pela última vez</value>
+    <value>Mostrar quando você foi visto pela última vez para</value>
   </data>
   <data name="Last_Seen" xml:space="preserve">
     <value>Visto pela última vez às {0}</value>
@@ -1996,8 +1996,15 @@
   <data name="Invite_Email_Subject" xml:space="preserve">
     <value>O hike facilita sua vida</value>
   </data>
+  <data name="Message_Preview" xml:space="preserve">
+    <value>Pré-visualização da mensagem</value>
+    <comment>For Hiding Message in Notification feature</comment>
+  </data>
   <data name="Add_To_Favorites_SubTxt" xml:space="preserve">
     <value>Apenas os favoritos podem ver os "Vistos por último" e atualizações de status. Escolha-os com sabedoria!</value>
+  </data>
+  <data name="Settings_ProfilePictureToggleSwitchHeader" xml:space="preserve">
+    <value>Mostrar foto do perfil para</value>
   </data>
   <data name="Add_To_Favorites_Txt" xml:space="preserve">
     <value>adicionar favoritos</value>
@@ -2032,7 +2039,7 @@
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Invite_SubTxt" xml:space="preserve">
-    <value>Você ganhará Rs20 de tempo de conversa para cada amigo que entrar no hike :)</value>
+    <value>Você ganhará tempo de conversa por cada amigo que entrar no hike :)</value>
     <comment>max length 60</comment>
   </data>
   <data name="Conversations_FTUE_Invite_Txt" xml:space="preserve">
@@ -2040,7 +2047,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_LinkTxt" xml:space="preserve">
-    <value>Escolha-os com sabedoria!</value>
+    <value>escolha-os com sabedoria!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_LastSeen_SubTxt" xml:space="preserve">
@@ -2076,7 +2083,7 @@
     <comment>max length 20</comment>
   </data>
   <data name="Conversations_FTUE_ProfileNow_Txt" xml:space="preserve">
-    <value>toque aqui para definir!</value>
+    <value>toque aqui para configurar!</value>
     <comment>max length 30</comment>
   </data>
   <data name="Conversations_FTUE_Profile_SubTxt" xml:space="preserve">
@@ -2095,5 +2102,115 @@
   </data>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Reiniciar</value>
+  </data>
+  <data name="Hide_Txt" xml:space="preserve">
+    <value>ocultar conversa</value>
+  </data>
+  <data name="Unhide_Txt" xml:space="preserve">
+    <value>mostrar conversa</value>
+  </data>
+  <data name="ConfirmPassword_Txt" xml:space="preserve">
+    <value>Confirmar sua senha</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="EnterPassword_Txt" xml:space="preserve">
+    <value>Inserir senha</value>
+    <comment>max 25 char</comment>
+  </data>
+  <data name="Play_File" xml:space="preserve">
+    <value>reproduzir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="View_File" xml:space="preserve">
+    <value>visualizar</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>abrir</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Oops_Something_Wrong_Txt" xml:space="preserve">
+    <value>OPS! Algo deu errado</value>
+  </data>
+  <data name="Turning_Message_Preview_Off" xml:space="preserve">
+    <value>DESLIGANDO pré-visualização de mensagem</value>
+  </data>
+  <data name="Turning_Message_Preview_On" xml:space="preserve">
+    <value>LIGANDO pré-visualização de mensagem</value>
+  </data>
+  <data name="Save_Contact_Txt" xml:space="preserve">
+    <value>salvar contato</value>
+  </data>
+  <data name="ChangePassword_SubTxt" xml:space="preserve">
+    <value>alterar sua senha de modo oculto</value>
+  </data>
+  <data name="ChangePassword_Txt" xml:space="preserve">
+    <value>alterar senha</value>
+  </data>
+  <data name="ResetHiddenMode_SubTxt" xml:space="preserve">
+    <value>esqueceu sua senha? redefina o modo oculto. Todas as conversas ocultas serão excluídas.</value>
+  </data>
+  <data name="ResetHiddenMode_Txt" xml:space="preserve">
+    <value>redefinir modo oculto</value>
+  </data>
+  <data name="ResetTip_Txt" xml:space="preserve">
+    <value>Todas as conversas de modo oculto serão excluídas após {0} minutos.</value>
+  </data>
+  <data name="HiddenModeReset_Completed_Txt" xml:space="preserve">
+    <value>Toque aqui para redefinir o Modo Oculto agora!</value>
+  </data>
+  <data name="HiddenMode_Completed_Txt" xml:space="preserve">
+    <value>Toque em "oi" para entrar e sair do modo "Oculto"</value>
+  </data>
+  <data name="HiddenMode_GetStarted_Txt" xml:space="preserve">
+    <value>Esconda suas conversas com uma senha. Toque em "oi" para começar.</value>
+  </data>
+  <data name="HiddenMode_Step2_Txt" xml:space="preserve">
+    <value>Toque e segure as conversas para marcá-las como "ocultas"</value>
+  </data>
+  <data name="EnterNewPassword_Txt" xml:space="preserve">
+    <value>Crie uma nova senha para ocultar suas conversas</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Body_Txt" xml:space="preserve">
+    <value>Todas as suas conversas ocultas serão excluídas. Você tem certeza?</value>
+  </data>
+  <data name="HiddenModeReset_FinalConf_Header_Txt" xml:space="preserve">
+    <value>Confirmar redefinição?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Header_Txt" xml:space="preserve">
+    <value>Cancelar redefinição?</value>
+  </data>
+  <data name="HiddenModeReset_CancelConf_Body_Txt" xml:space="preserve">
+    <value>Isso irá parar a redefinição do modo oculto. Você tem certeza?</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
+    <value>Comece uma conversa e toque em "oi"</value>
+  </data>
+  <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
+    <value>Esconda suas conversas com uma senha.</value>
+  </data>
+  <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
+    <value>Inserir senha atual</value>
+  </data>
+  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
+    <value>Salvar foto automaticamente</value>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Salvo com sucesso</value>
+  </data>
+  <data name="Everyone_Txt" xml:space="preserve">
+    <value>Todo mundo</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Favorites_Txt" xml:space="preserve">
+    <value>Favoritos</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Nobody_Txt" xml:space="preserve">
+    <value>Ninguém</value>
+    <comment>Toggle Switch Text</comment>
+  </data>
+  <data name="Password_Mismatch_Txt" xml:space="preserve">
+    <value>A senha não corresponde.</value>
   </data>
 </root>

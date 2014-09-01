@@ -521,7 +521,6 @@ namespace windows_client.View
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
-                //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     string id = msisdn.Replace(":", "_");
@@ -540,6 +539,7 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
                     if (contact == null)
                     {
                         contact = new ContactInfo();
@@ -547,8 +547,10 @@ namespace windows_client.View
                         contact.Name = Utils.IsHikeBotMsg(msisdn) ? Utils.GetHikeBotName(msisdn) : null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
+
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
+
                 ManagePage();
 
                 //remove if user came directly from upgrade page
@@ -556,8 +558,10 @@ namespace windows_client.View
                 {
                     if (NavigationService.CanGoBack)
                         NavigationService.RemoveBackEntry();
+
                     PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -599,6 +603,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                     processGroupJoin(false);
                 }
+
                 isFirstLaunch = false;
             }
             #endregion
@@ -617,15 +622,15 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     this.UpdateLayout();
                 }
-                /* This is called only when you add more participants to group */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                    processGroupJoin(false);
-                }
+            }
 
+            /* This is called only when you add more participants to group */
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                processGroupJoin(false);
             }
 
             #endregion
@@ -1547,6 +1552,9 @@ namespace windows_client.View
                     if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                         nudgeTut.Visibility = Visibility.Visible;
 
+                    if (clearChatItem != null && clearChatItem.IsEnabled)
+                        clearChatItem.IsEnabled = false;
+
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1893,6 +1901,9 @@ namespace windows_client.View
                 if (!isGroupChat && isNudgeOn)
                     nudgeTut.Visibility = Visibility.Visible;
 
+                if (clearChatItem != null && clearChatItem.IsEnabled)
+                    clearChatItem.IsEnabled = false;
+
                 ClearChat();
 
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
@@ -2146,6 +2157,9 @@ namespace windows_client.View
         {
             if (ocMessages == null)
                 return;
+
+            if (clearChatItem != null && !clearChatItem.IsEnabled)
+                clearChatItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3139,6 +3153,9 @@ namespace windows_client.View
             bool delConv = false;
             ocMessages.Remove(msg);
 
+            if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
+                clearChatItem.IsEnabled = false;
+
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
 
@@ -3998,10 +4015,6 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
-                bool showPush = true;
-                if (vals.Length == 3 && vals[2] is bool)
-                    showPush = (Boolean)vals[2];
-
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
                     convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
@@ -4031,8 +4044,10 @@ namespace windows_client.View
                     }
                     if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                         updateLastMsgColor(convMessage.Msisdn);
+                    
                     // Update UI
                     HideTypingNotification();
+                    
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -4064,35 +4079,6 @@ namespace windows_client.View
                             }
                             catch { }
                         }
-                    });
-                }
-                else if (showPush) // this is to show toast notification
-                {
-                    ConversationListObject val;
-                    if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted forwardedMessage, ignore msg
-                        return;
-                    ConversationListObject cObj = vals[1] as ConversationListObject;
-                    if (cObj == null) // this will happen in status update msg
-                        return;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        ToastPrompt toast = new ToastPrompt();
-                        toast.Tag = cObj.Msisdn;
-
-                        if (cObj.IsHidden)
-                            toast.Title = String.Empty;
-                        else
-                            toast.Title = (cObj.ContactName != null ? cObj.ContactName : cObj.Msisdn) + (cObj.IsGroupChat ? " :" : " -");
-
-                        // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
-                        toast.Message = cObj.ToastText;
-                        toast.Foreground = UI_Utils.Instance.White;
-                        toast.Background = (SolidColorBrush)App.Current.Resources["PhoneAccentBrush"];
-                        toast.ImageSource = UI_Utils.Instance.HikeToastImage;
-                        toast.VerticalContentAlignment = VerticalAlignment.Center;
-                        toast.MaxHeight = 60;
-                        toast.Tap += App.ViewModel.Toast_Tap;
-                        toast.Show();
                     });
                 }
             }
@@ -6200,7 +6186,7 @@ namespace windows_client.View
                     JumpToBottomGrid.Visibility = Visibility.Collapsed;
                     _unreadMessageCounter = 0;
                 }
-                else if ((vScrollBar.Maximum - vScrollBar.Value) > 2000 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                else if ((vScrollBar.Maximum - vScrollBar.Value) > 500 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
                 {
                     ShowJumpToBottom(false);
                 }

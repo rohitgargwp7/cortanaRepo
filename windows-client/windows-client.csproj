@@ -763,14 +763,11 @@
     <Content Include="View\images\settings\hike_h2s_icon.png" />
     <Content Include="View\images\settings\hike_sms_icon.png" />
     <Content Include="View\images\settings\message.png" />
-    <Content Include="View\images\settings\new_icon.png" />
     <Content Include="View\images\settings\notifications.png" />
-    <Content Include="View\images\settings\notification_black.png" />
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
     <Content Include="View\images\settings\reset_hidden_mode.png" />
-    <Content Include="View\images\settings\settings_icon_dark.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
