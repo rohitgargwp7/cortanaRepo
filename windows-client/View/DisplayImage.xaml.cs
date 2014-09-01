@@ -395,7 +395,7 @@ namespace windows_client.View
             string tempName = Convert.ToString(_messsageId);
             string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
             string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
-            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
+            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp() + ".jpg";
             bool isSaveSuccessful = false;
 
             BackgroundWorker bgWorker = new BackgroundWorker();
