@@ -2232,7 +2232,7 @@ Download it like asap from http://hike.in!</value>
     <value>Phone</value>
   </data>
   <data name="SaveInGallery_Txt" xml:space="preserve">
-    <value>save in gallery</value>
+    <value>save to gallery</value>
     <comment>Menu Item text</comment>
   </data>
 </root>

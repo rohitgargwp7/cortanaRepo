@@ -4135,7 +4135,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to save in gallery.
+        ///   Looks up a localized string similar to save to gallery.
         /// </summary>
         public static string SaveInGallery_Txt {
             get {
