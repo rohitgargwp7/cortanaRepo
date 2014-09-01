@@ -1592,7 +1592,7 @@ namespace windows_client.View
                         isHandled = true;
                     }
 
-                    if (refState == ConvMessage.State.SENT_DELIVERED_READ && messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                    if (refState == ConvMessage.State.SENT_DELIVERED_READ && (messagesList[i].MessageStatus < ConvMessage.State.SENT_DELIVERED_READ || messagesList[i].MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE))
                     {
                         ConvMessage convMess = messagesList[i];
                         if (convMess.FileAttachment == null || (convMess.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED))
@@ -2195,9 +2195,10 @@ namespace windows_client.View
 
                         if (convMessage.FileAttachment.FileState != Attachment.AttachmentState.CANCELED && convMessage.FileAttachment.FileState != Attachment.AttachmentState.FAILED)
                         {
-                            if (!convMessage.IsSent ||
-                                (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ) ||
-                                (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED))))
+                            if ((!convMessage.IsSent && convMessage.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                                || (convMessage.MessageId > 0
+                                    && ((!convMessage.IsSms && (convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ || convMessage.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE))
+                                        || (convMessage.IsSms && (convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED || convMessage.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE)))))
                             {
                                 msgMap.Add(convMessage.MessageId, convMessage);
 
@@ -2233,8 +2234,9 @@ namespace windows_client.View
 
                     if (convMessage.IsSent)
                     {
-                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)) && !msgMap.ContainsKey(convMessage.MessageId))
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && (convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ || convMessage.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE))
+                            || (convMessage.IsSms && (convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED || convMessage.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || convMessage.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || convMessage.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE)))
+                            && !msgMap.ContainsKey(convMessage.MessageId))
                             msgMap.Add(convMessage.MessageId, convMessage);
                     }
                     else
@@ -2589,6 +2591,7 @@ namespace windows_client.View
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+            mPubSub.addListener(HikePubSub.MSG_WRITTEN_SOCKET, this);
             mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
             mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
@@ -2609,6 +2612,7 @@ namespace windows_client.View
             {
                 mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+                mPubSub.removeListener(HikePubSub.MSG_WRITTEN_SOCKET, this);
                 mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED, this);
                 mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
@@ -4126,6 +4130,32 @@ namespace windows_client.View
 
             #endregion
 
+            #region SOCKET_MESSAGE_WRITE
+
+            else if (HikePubSub.MSG_WRITTEN_SOCKET == type)
+            {
+                long msgId = (long)obj;
+                try
+                {
+                    ConvMessage msg = null;
+                    msgMap.TryGetValue(msgId, out msg);
+                    if (msg != null)
+                    {
+                        msg.MessageStatus = ConvMessage.State.SENT_SOCKET_WRITE;
+                        if (msg.FileAttachment != null && msg.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                        {
+                            msg.SetAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,SERVER_RECEIVED_MSG Exception : " + ex.StackTrace);
+                }
+            }
+
+            #endregion
+
             #region MESSAGE_DELIVERED
 
             else if (HikePubSub.MESSAGE_DELIVERED == type)
@@ -4141,7 +4171,7 @@ namespace windows_client.View
                     msgMap.TryGetValue(msgId, out msg);
                     if (msg != null)
                     {
-                        if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                        if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                             msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
                         else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
@@ -4194,7 +4224,7 @@ namespace windows_client.View
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
                         {
-                            if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                            if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                 msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
@@ -4258,7 +4288,7 @@ namespace windows_client.View
 
                                     idsToUpdate.Add(kv.Key);
 
-                                    if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                                    if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                         msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                                     else
                                         msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
