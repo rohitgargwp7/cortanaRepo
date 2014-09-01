@@ -99,7 +99,7 @@ namespace windows_client.View
 
                         VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-                        video.TimeStamp = dob.AddYears(1600);//file time is ticks starting from jan 1 1601 so adding 1600 years
+                        video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbum albumObj;
                         
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))

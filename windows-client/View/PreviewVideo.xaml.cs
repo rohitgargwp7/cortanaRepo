@@ -29,6 +29,11 @@ namespace windows_client.View
             InitializeComponent();
 
             this.ApplicationBar = new ApplicationBar();
+            ApplicationBar.IsVisible = true;
+            ApplicationBar.Opacity = 0.5;
+            ApplicationBar.BackgroundColor = Colors.Black;
+            ApplicationBar.ForegroundColor = Colors.White;
+
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
             shareVideo.Text = AppResources.Share_Txt;
             shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send_video.png", UriKind.RelativeOrAbsolute); ;

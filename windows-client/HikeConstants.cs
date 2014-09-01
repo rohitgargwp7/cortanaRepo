@@ -104,6 +104,7 @@ namespace windows_client
         public const byte MAX_IMAGES_SHARE = 15;
         public const int STATUS_INITIAL_FETCH_COUNT = 31;
         public const int STATUS_SUBSEQUENT_FETCH_COUNT = 21;
+        public const int STARTING_BASE_YEAR = 1600;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
