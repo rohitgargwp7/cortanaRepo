@@ -405,16 +405,16 @@ namespace windows_client.DbUtils
                             {
                                 if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE)))
                                 {
-                                    string randomFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
+                                    string targetFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
 
                                     if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
-                                        randomFileName = randomFileName + ".mp4";
+                                        targetFileName = targetFileName + ".mp4";
                                     else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
-                                        randomFileName = randomFileName + ".jpg";
+                                        targetFileName = targetFileName + ".jpg";
 
                                     string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
-                                    Utils.StoreFileInHikeDirectory(absoluteFilePath, randomFileName);
+                                    Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
                                 }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
