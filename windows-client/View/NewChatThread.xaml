@@ -305,6 +305,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.SaveInGallery_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_SaveInGallery" Visibility="{Binding SaveFileInDirectoryVisibility}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
@@ -820,6 +821,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.View_File, Source={StaticResource LocalizedStrings}}" Visibility="{Binding MediaActionVisibility}" Click="MenuItem_Click_View"/>
+                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.SaveInGallery_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_SaveInGallery" Visibility="{Binding SaveFileInDirectoryVisibility}"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">

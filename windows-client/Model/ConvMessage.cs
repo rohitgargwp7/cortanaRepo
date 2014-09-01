@@ -876,6 +876,17 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility SaveFileInDirectoryVisibility
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
         public BitmapImage PlayIconImage
         {
             get

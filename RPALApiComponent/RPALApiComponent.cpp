@@ -16,7 +16,6 @@ void FetchPreRecordedVideos::ClearData()
 	delete _rgItemsRoot;
 }
 
-
 // Function to get video count and store the video list in _rgItemsRoot
 uint16 FetchPreRecordedVideos::GetVideoCount()
 {
@@ -32,7 +31,6 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 
 	return (uint16)cItemsRoot;
 }
-
 
 // Function to get a video file info using its position in the _rgItemsRoot
 Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath, double* videoTime,int* videoDuration,int *videoSize) 
@@ -53,7 +51,7 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::Str
 	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
 	*strVideoFilePath = ref new String(str);
 	delete str;
-	
+
 	//get file duration and size
 	hr = ZMediaLib_GetItemIntAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_DURATION, videoDuration);
 	hr = ZMediaLib_GetItemIntAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILESIZE, videoSize);
@@ -65,5 +63,3 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::Str
 
 	return intOutArray;
 }
-
-
