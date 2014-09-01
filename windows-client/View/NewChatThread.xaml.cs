@@ -631,7 +631,7 @@ namespace windows_client.View
             #endregion
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
             {
                 AudioFileTransfer();
@@ -3325,7 +3325,7 @@ namespace windows_client.View
 
         }
 
-        private async void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
             string tempName = Convert.ToString(msg.MessageId);
@@ -3333,17 +3333,24 @@ namespace windows_client.View
             Debug.WriteLine(filePath);
             string sourceFile = Utils.GetAbsolutePath(filePath);
             string targetFileName = Utils.GenerateRandomString(16) + ".mp4";
-            //bool isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
-            Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
-            //if (isSaveSuccessful)
-            //{
-            //    MessageBox.Show(AppResources.SaveSuccess_Txt);
-            //}
-            //else
-            //{
-            //    MessageBox.Show(AppResources.Something_Wrong_Txt);
-            //}
+            bool isSaveSuccessful = false;
+            
+            BackgroundWorker bgWorker = new BackgroundWorker();
+            bgWorker.DoWork += (ss, ee) =>
+            {
+                isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            };
+            bgWorker.RunWorkerAsync();
+            bgWorker.RunWorkerCompleted += (sf, ef) =>
+            {
+                if (isSaveSuccessful)
+                    MessageBox.Show(AppResources.SaveSuccess_Txt);
+                else
+                    MessageBox.Show(AppResources.Something_Wrong_Txt);
+            };
+
         }
+
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -4658,7 +4665,7 @@ namespace windows_client.View
         #region FileTransfer
 
         bool _uploadProgressBarIsTapped = false;
-        
+
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
@@ -4780,7 +4787,7 @@ namespace windows_client.View
             }
         }
 
-        
+
 
         private void PauseResume_Tapped(object sender, RoutedEventArgs e)
         {
@@ -4891,7 +4898,7 @@ namespace windows_client.View
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
-                
+
                 try
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
@@ -4901,9 +4908,9 @@ namespace windows_client.View
                 {
                     Debug.WriteLine(ex.Message);
                 }
-                
+
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-            
+
                 if (fileBytes == null)
                     return;
 
