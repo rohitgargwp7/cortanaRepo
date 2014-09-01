@@ -28,12 +28,14 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            this.ApplicationBar = new ApplicationBar();
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
+            };
             ApplicationBar.IsVisible = true;
             ApplicationBar.Opacity = 0.5;
-            ApplicationBar.BackgroundColor = Colors.Black;
-            ApplicationBar.ForegroundColor = Colors.White;
-
+            
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
             shareVideo.Text = AppResources.Share_Txt;
             shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send_video.png", UriKind.RelativeOrAbsolute); ;
@@ -43,6 +45,10 @@ namespace windows_client.View
             _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = _videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
+            
+            if(_videoShared.Size>0)
+                VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
+        
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

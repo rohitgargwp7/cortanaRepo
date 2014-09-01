@@ -417,7 +417,7 @@ namespace windows_client.DbUtils
                                     string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
                                     //Debug.WriteLine(filePath);
                                     string sourceFile = Utils.GetAbsolutePath(filePath);
-                                    Utils.StoreFileInHikeDirectory(sourceFile, randomFileName);
+                                    Utils.FileStoringInHikeDirectory(sourceFile, randomFileName);
                                 }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
@@ -483,7 +483,7 @@ namespace windows_client.DbUtils
                             {
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
+                                MiscDBUtil.UpdateDBsMessageStatus(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
                         }
 

@@ -16,7 +16,7 @@ void FetchPreRecordedVideos::ClearData()
 	delete _rgItemsRoot;
 }
 
-// Function to get video count and store the video list in rgItemsRoot
+// Function to get video count and store the video list in _rgItemsRoot
 uint16 FetchPreRecordedVideos::GetVideoCount()
 {
 	HRESULT hr = 0;
@@ -33,7 +33,7 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 }
 
 
-// Function to get a video file info using its position in the rgItemsRoot
+// Function to get a video file info using its position in the _rgItemsRoot
 Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::String^* strVideoFilePath, double* videoTime,int* videoDuration,int *videoSize) 
 {
 	HRESULT hr = 0;

@@ -773,26 +773,6 @@ namespace windows_client.utils
             return result;
         }
 
-
-        private static object _saveFileInHikeDirectoryLock = new Object();
-
-        /// <summary>
-        /// Function with locking to call SaveHikeInHikeDirectory
-        /// </summary>
-        /// <param name="sourceFile"></param>
-        /// <param name="targetFileName"></param>
-        /// <returns></returns>
-        public static bool StoreFileInHikeDirectory(string sourceFile, string targetFileName)
-        {
-            bool returnValue = false;
-            lock (_saveFileInHikeDirectoryLock)
-            {
-                var result = Utils.FileStoringInHikeDirectory(sourceFile, targetFileName);
-                returnValue = result.Result;
-            }
-            return returnValue;
-        }
-
         /// <summary>
         /// Returns absolute path of a file in Isolated Storage
         /// </summary>
@@ -814,24 +794,6 @@ namespace windows_client.utils
             }
             return absoulutePath;
         }
-        /// <summary>
-        /// Returns a random Alphaneumaric string
-        /// </summary>
-        /// <param name="length">length desired</param>
-        /// <returns></returns>
-        public static string GenerateRandomString(int length)
-        {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
-            var stringChars = new char[length];
-            var random = new Random();
 
-            for (int i = 0; i < stringChars.Length; i++)
-            {
-                stringChars[i] = chars[random.Next(chars.Length)];
-            }
-
-            var finalString = new String(stringChars);
-            return finalString;
-        }
     }
 }

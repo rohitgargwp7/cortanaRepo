@@ -52,12 +52,13 @@ namespace windows_client.View
 
         private void InitialiseAppBar()
         {
-            ApplicationBar appbar = new ApplicationBar();
-            appbar.IsVisible = true;
-            appbar.Opacity = 0.5;
-            appbar.BackgroundColor = Colors.Black;
-            appbar.ForegroundColor = Colors.White;
-            this.ApplicationBar = appbar;
+            ApplicationBar = new ApplicationBar()
+            {
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
+            };
+            ApplicationBar.IsVisible = true;
+            ApplicationBar.Opacity = 0.5;
 
             picturesUpload = new ApplicationBarIconButton();
             picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);

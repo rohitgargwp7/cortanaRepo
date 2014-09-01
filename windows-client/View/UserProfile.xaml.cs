@@ -383,8 +383,8 @@ namespace windows_client.View
                         if (appBar != null)
                             appBar.IsVisible = false;
                         return;
-                    } 
-                    
+                    }
+
                     LoadCallCopyOptions();
 
                     if (!isOnHike)//sms user
@@ -416,7 +416,7 @@ namespace windows_client.View
         {
             await Task.Delay(1);
 
-            if (MiscDBUtil.hasCustomProfileImage(msisdn))
+            if (MiscDBUtil.HasCustomProfileImage(msisdn))
             {
                 var bytes = MiscDBUtil.getLargeImageForMsisdn(msisdn);
 
@@ -805,7 +805,11 @@ namespace windows_client.View
                     favObj.IsFav = true;
                 }
                 else
-                    favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
+                {
+                    string tempContactName = isInAddressBook ? nameToShow : null;
+                    favObj = new ConversationListObject(msisdn, tempContactName, isOnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));//todo:change
+                }
+
                 App.ViewModel.FavList.Insert(0, favObj);
                 if (App.ViewModel.IsPending(msisdn))
                 {

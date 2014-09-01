@@ -218,17 +218,37 @@ namespace windows_client.Model
                 NotifyPropertyChanged("MuteIconVisibility");
                 NotifyPropertyChanged("UnreadCircleVisibility");
                 NotifyPropertyChanged("MuteIconImage");
+                NotifyPropertyChanged("MuteMsg");
             }
         }
-
-        
 
         public BitmapImage MuteIconImage
         {
             get { return _unreadCounter > 0 ? UI_Utils.Instance.MuteIconBlue : UI_Utils.Instance.MuteIconGray; }
         }
 
+        public string MuteMsg
+        {
+            get
+            {
+                if (IsMute) // if already favourite
+                    return AppResources.SelectUser_UnMuteGrp_Txt;
+                else
+                    return AppResources.SelectUser_MuteGrp_Txt;
+            }
+        }
 
+        public Visibility MuteOptionVisibility
+        {
+            get
+            {
+                if (IsGroupChat && IsGroupAlive)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+        
         public Visibility MuteIconVisibility
         {
             get
@@ -270,6 +290,7 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
+                    case ConvMessage.State.SENT_SOCKET_WRITE:
                         return UI_Utils.Instance.Sent_Grey;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
@@ -298,6 +319,7 @@ namespace windows_client.Model
                         case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                         case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                         case ConvMessage.State.SENT_CONFIRMED:
+                        case ConvMessage.State.SENT_SOCKET_WRITE:
                         case ConvMessage.State.SENT_DELIVERED:
                         case ConvMessage.State.SENT_DELIVERED_READ:
                         case ConvMessage.State.SENT_UNCONFIRMED:

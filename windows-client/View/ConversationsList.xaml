@@ -285,6 +285,7 @@
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding MuteMsg}" Visibility="{Binding MuteOptionVisibility}" Click="MenuItem_Click_Mute"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>
@@ -532,15 +533,15 @@
                                                         </Grid.ColumnDefinitions>
                                                         <Image Stretch="Uniform" MaxHeight="52" Source="/View/images/ConversationPage/hike_logo.jpg" VerticalAlignment="Top"/>
                                                         <StackPanel Grid.Column="1" Margin="18,0,12,0">
-                                                            <TextBlock FontFamily="Segoe WP Semibold" FontSize="18" Foreground="Black" VerticalAlignment="Top"
-                                                                           Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
-                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Text}" Foreground="Black" FontWeight="Light" VerticalAlignment="Top"
-                                                                                     FontSize="22" Visibility="{Binding ProTipTextVisibility}" TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
-                                                                                     ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
-                                                        
-                                                            <local:MyRichTextBox Margin="-12,5,0,0" Text="{Binding Content}" Foreground="{StaticResource HikeSubTextForegroundBrush}" FontWeight="Light"
-                                                                             FontSize="22" Visibility="{Binding ProTipContentVisibility}" TextWrapping="Wrap" 
-                                                                             LinkifyAll="True" MaxWidth="460" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" HorizontalAlignment="Left"/>
+                                                            <TextBlock Style="{StaticResource StatusUpdateNameTextBlock}" Text="{Binding Path= LocalizedResources.Conversations_EmptyStatus_TeamHike_Txt, Source={StaticResource LocalizedStrings}}"/>
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Foreground="{StaticResource HikeFGBrush}" TextForeground="{StaticResource HikeBlue}"
+                                                                             HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" FontFamily="Segoe WP SemiLight"
+                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
+                                                                             ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                                            <local:MyRichTextBox Margin="-12,5,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="{StaticResource HikeBlue}"
+                                                                             HorizontalAlignment="Left" Text="{Binding Content}" FontSize="22" FontFamily="Segoe WP SemiLight"
+                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
+                                                                             ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                                         </StackPanel>
                                                     </Grid>
                                                     <Image Grid.Row="1" Margin="0,5" Source="{Binding ProTipImage}" Visibility="{Binding ProTipImageVisibility}" 

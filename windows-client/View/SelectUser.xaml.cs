@@ -72,6 +72,8 @@ namespace windows_client.View
         {
             InitializeComponent();
 
+            enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
+
             App.appSettings.TryGetValue(App.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
@@ -97,7 +99,9 @@ namespace windows_client.View
                 _allContactsList = UsersTableUtils.getAllContactsByGroup();
                 _completeGroupedContactList = GetGroupedList(_allContactsList);
             };
+
             bw.RunWorkerAsync();
+            
             bw.RunWorkerCompleted += (s, e) =>
             {
                 if (!_showSmsContacts)
@@ -302,7 +306,14 @@ namespace windows_client.View
                     string num = Utils.NormalizeNumber(_charsEntered);
                     defaultContact.Msisdn = num;
                     defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
-                    defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
+                    if (!App.ViewModel.IsHiddenModeActive
+                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                        defaultContact.IsSelected = false;
+                    else
+                        defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
                     defaultContact.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
 
@@ -443,7 +454,14 @@ namespace windows_client.View
                     charsEntered = (isPlus ? "+" : "") + charsEntered;
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
-                    defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
+                    if (!App.ViewModel.IsHiddenModeActive
+                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                        defaultContact.IsSelected = false;
+                    else
+                        defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
+
                     defaultContact.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
@@ -700,15 +718,18 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
+            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
+            _completeGroupedContactList = GetGroupedList(_allContactsList);
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 _filteredGroupedContactList = null;
-                _completeGroupedContactList = GetGroupedList(_allContactsList);
-
+                
                 // this logic handles the case where hide sms contacts is there and user refreshed the list 
                 if (!_showSmsContacts)
                 {
@@ -735,10 +756,12 @@ namespace windows_client.View
                     else
                         emptyGrid.Visibility = Visibility.Collapsed;
                 }
+
                 progressIndicator.Hide(LayoutRoot);
                 EnableApplicationBar();
                 contactsListBox.IsHitTestVisible = true;
             });
+
             _canGoBack = true;
         }
 
@@ -765,6 +788,10 @@ namespace windows_client.View
                 ContactInfo cInfo = allContactsList[i];
 
                 if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
+                    continue;
+
+                if (!App.ViewModel.IsHiddenModeActive &&
+                    App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     continue;
 
                 cInfo.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
@@ -855,11 +882,13 @@ namespace windows_client.View
 
         private void CheckUnCheckContact(ContactInfo cInfo)
         {
-            enterNameTxt.Text = String.Empty;
-
             if (cInfo != null)
             {
                 int oldSmsCount = _smsUserCount;
+
+                if (cInfo != null && !App.ViewModel.IsHiddenModeActive
+                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                    return;
 
                 if (_isContactShared)
                 {
@@ -882,6 +911,8 @@ namespace windows_client.View
                     BlockUnblockUser(cInfo);
                 }
             }
+
+            enterNameTxt.Text = String.Empty;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -995,42 +1026,6 @@ namespace windows_client.View
         #endregion
 
         #region Page State Functions
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
-            {
-                // Get a dictionary of query string keys and values.
-                IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
-
-                // Ensure that there is at least one key in the query string, and check 
-                // whether the "FileId" key is present.
-                if (queryStrings.ContainsKey("FileId"))
-                {
-                    PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
-                    queryStrings.Clear();
-                    PageTitle.Text = AppResources.Share_Txt;
-                }
-
-                if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                {
-                    while (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
-                }
-
-                enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
-            }
-
-            //remove if push came directly from upgrade page
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-            {
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
-            }
-        }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {

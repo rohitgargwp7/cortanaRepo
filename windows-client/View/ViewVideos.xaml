@@ -154,10 +154,10 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Name="albumNameTxt" FontSize="50" Style="{StaticResource PhoneTextTitle1Style}" Margin="24 -5 0 0" Foreground="White"/>
+                <TextBlock Name="albumNameTxt" Style="{StaticResource PhoneTextTitle1Style}" Margin="24 -5 0 0" Foreground="White"/>
                 <ProgressBar x:Name="shellProgressVideos" IsIndeterminate="false" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1" Foreground="White" Background="Transparent" Grid.Row="1"/>
 
-                <phone:LongListSelector  Grid.Row="1" Name="llsVideos" Margin="24,-5,0,0"
+                <phone:LongListSelector Grid.Row="1" Name="llsVideos" Margin="24,-5,0,0"
                                         ItemTemplate="{StaticResource ItemTemplate}"                     
                                         GroupHeaderTemplate="{StaticResource VideoByMonthHeader}"
                                         JumpListStyle="{StaticResource JumpListStyle}" 

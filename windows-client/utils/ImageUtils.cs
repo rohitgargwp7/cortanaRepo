@@ -97,7 +97,7 @@ namespace windows_client.utils
             get
             {
                 if (_passwordSquareBorderBrush == null)
-                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0x99, 0xff, 0xff, 0xff));
+                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xf6, 0x9c, 0x98));
 
                 return _passwordSquareBorderBrush;
             }
@@ -2426,6 +2426,30 @@ namespace windows_client.utils
 
                 return ms.ToArray();
             }
+        }
+
+        public static Byte[] DiminishThumbnailQuality(BitmapImage image)
+        {
+            Byte[] imageBytes;
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            int imageWidth, imageHeight;
+            Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out imageWidth, out imageHeight);
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 50);
+                imageBytes = msSmallImage.ToArray();
+            }
+            if (imageBytes.Length > HikeConstants.MAX_THUMBNAILSIZE)
+            {
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 20);
+                    imageBytes = msSmallImage.ToArray();
+                }
+            }
+            return imageBytes;
         }
     }
 }

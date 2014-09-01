@@ -71,6 +71,9 @@ namespace windows_client
         /* broadcast when the server receives the message and replies with a confirmation */
         public static readonly string SERVER_RECEIVED_MSG = "serverReceivedMsg";
 
+        /* broadcast when the server receives the message and replies with a confirmation */
+        public static readonly string MSG_WRITTEN_SOCKET = "msgWrittenSocket";
+
         /* broadcast when a message is received from the sender but before it's been written our DB*/
         public static readonly string MESSAGE_RECEIVED_FROM_SENDER = "messageReceivedFromSender";
 

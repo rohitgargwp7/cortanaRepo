@@ -68,7 +68,11 @@ namespace finalmqtt.Msg
             return messageData.ToArray();
         }
 
-        public void write()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="messageId">dont pass value if no message id is required</param>
+        public void write(object messageId = null)
         {
             messageData.Add(header.encode());
             writeMsgLength();
@@ -76,12 +80,12 @@ namespace finalmqtt.Msg
             byte[] data = messageData.ToArray();
             try
             {
-                mqttConnection.sendMessage(data);
+                mqttConnection.sendMessage(data, messageId);
             }
-            catch 
+            catch
             {
                 throw;
-            } 
+            }
         }
 
 

@@ -118,5 +118,13 @@ namespace windows_client.Model
                 }
             }
         }
+
+        public SolidColorBrush StatusTextForeground
+        {
+            get
+            {
+                return UI_Utils.Instance.StatusTextForeground;
+            }
+        }
     }
 }

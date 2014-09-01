@@ -303,7 +303,7 @@ namespace windows_client
                     return;
                 }
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
-                updateDB(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
+                MiscDBUtil.UpdateDBsMessageStatus(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
             #endregion
             #region DELIVERY_REPORT
@@ -333,7 +333,7 @@ namespace windows_client
                 vals[0] = msgID;
                 vals[1] = msisdnToCheck;
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
-                updateDB(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
+                MiscDBUtil.UpdateDBsMessageStatus(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
             #region MESSAGE_READ
@@ -464,7 +464,7 @@ namespace windows_client
             else if (ICON == type)
             {
                 // donot do anything if its a GC as it will be handled in DP packet
-           if (Utils.isGroupConversation(msisdn))
+                if (Utils.isGroupConversation(msisdn))
                     return;
 
                 JToken temp;
@@ -513,6 +513,10 @@ namespace windows_client
                     // this is done to notify that image is changed so load new one.
                     App.ViewModel.ContactsCache[msisdn].Avatar = null;
                 }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+                });
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -2343,22 +2347,6 @@ namespace windows_client
             for (int i = 0; i < groupParticipantList.Count; i++)
                 map[groupParticipantList[i].Msisdn] = groupParticipantList[i];
             return map;
-        }
-
-        /// <summary>
-        /// Mark single msg as Sent Confirmed and Sent Delivered
-        /// </summary>
-        /// <param name="fromUser"></param>
-        /// <param name="msgID"></param>
-        /// <param name="status"></param>
-        public static void updateDB(string fromUser, long msgID, int status)
-        {
-            Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
-            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
         /// <summary>
