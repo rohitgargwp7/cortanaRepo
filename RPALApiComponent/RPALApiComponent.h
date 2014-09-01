@@ -8,7 +8,7 @@ namespace RPALApiComponent
 
 	public ref class FetchPreRecordedVideos sealed
 	{
-		ZMEDIAITEM *rgItemsRoot;
+		ZMEDIAITEM *_rgItemsRoot;
 		auto_ZMediaLibRequirement myLib;
 	public:
 		FetchPreRecordedVideos();

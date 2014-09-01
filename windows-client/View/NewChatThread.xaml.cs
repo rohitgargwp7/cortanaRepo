@@ -3332,7 +3332,7 @@ namespace windows_client.View
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
             Debug.WriteLine(filePath);
             string sourceFile = Utils.GetAbsolutePath(filePath);
-            string targetFileName = Utils.GenerateRandomString(16) + ".mp4";
+            string targetFileName = tempName+ "_" + TimeUtils.getCurrentTimeStamp();
             bool isSaveSuccessful = false;
             
             BackgroundWorker bgWorker = new BackgroundWorker();

@@ -12,6 +12,7 @@ using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
 using windows_client.Languages;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
@@ -389,18 +390,24 @@ namespace windows_client.View
         {
             string tempName = Convert.ToString(_messsageId);
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
+            Debug.WriteLine(filePath);
             string sourceFile = Utils.GetAbsolutePath(filePath);
-            string targetFileName = Utils.GenerateRandomString(16) + ".jpg";
-            bool isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
+            bool isSaveSuccessful = false;
 
-            if (isSaveSuccessful)
+            BackgroundWorker bgWorker = new BackgroundWorker();
+            bgWorker.DoWork += (ss, ee) =>
             {
-                MessageBox.Show(AppResources.SaveSuccess_Txt);
-            }
-            else
+                isSaveSuccessful = Utils.StoreFileInHikeDirectory(sourceFile, targetFileName);
+            };
+            bgWorker.RunWorkerAsync();
+            bgWorker.RunWorkerCompleted += (sf, ef) =>
             {
-                MessageBox.Show(AppResources.Something_Wrong_Txt);
-            }
+                if (isSaveSuccessful)
+                    MessageBox.Show(AppResources.SaveSuccess_Txt);
+                else
+                    MessageBox.Show(AppResources.Something_Wrong_Txt);
+            };
 
         }
 

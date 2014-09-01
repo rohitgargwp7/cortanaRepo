@@ -407,7 +407,7 @@ namespace windows_client.DbUtils
                                 // TODO: HANDLE FILESAVING
                                 if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE) ))
                                 {
-                                    string randomFileName = Utils.GenerateRandomString(16);
+                                    string randomFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
                                     if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                         randomFileName = randomFileName + ".mp4";
                                     else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
@@ -415,7 +415,7 @@ namespace windows_client.DbUtils
                                     else return;
 
                                     string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
-                                    Debug.WriteLine(filePath);
+                                    //Debug.WriteLine(filePath);
                                     string sourceFile = Utils.GetAbsolutePath(filePath);
                                     Utils.StoreFileInHikeDirectory(sourceFile, randomFileName);
                                 }
