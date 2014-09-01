@@ -18,4 +18,7 @@ PageTransitions/Bin/
 PageTransitions/obj/
 HikeBackgroundAgent/Bin/
 HikeBackgroundAgent/obj/
+ARM/
+RPALApiComponent/Arm/
+RPALApiComponent/Generated Files/
 *.suo
