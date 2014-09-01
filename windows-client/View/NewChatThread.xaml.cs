@@ -4202,7 +4202,7 @@ namespace windows_client.View
                     msgMap.TryGetValue(msgId, out msg);
                     if (msg != null)
                     {
-                        if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                        if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                             msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
                         else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
