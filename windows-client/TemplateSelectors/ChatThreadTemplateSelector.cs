@@ -13,19 +13,7 @@ namespace windows_client.TemplateSelectors
     {
         #region Properties
 
-        public DataTemplate DtInAppTip
-        {
-            get;
-            set;
-        }
-
         public DataTemplate DtMessageStatus
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate DtH2HOfflineInAppTip
         {
             get;
             set;
@@ -196,12 +184,8 @@ namespace windows_client.TemplateSelectors
                             return DtRecievedBubbleText;
                     }
                 }
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.IN_APP_TIP)
-                    return DtInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS)
                     return DtMessageStatus;
-                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP)
-                    return DtH2HOfflineInAppTip;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION)
                     return DtForceSMSNotification;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)

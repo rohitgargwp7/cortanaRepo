@@ -147,7 +147,6 @@ namespace windows_client.DbUtils
             App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
             App.appSettings[App.TIP_MARKED_KEY] = 0;
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
-            App.ViewModel.LoadToolTipsDict();
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();

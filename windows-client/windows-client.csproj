@@ -154,9 +154,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\InAppTipUC.xaml.cs">
-      <DependentUpon>InAppTipUC.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
@@ -368,10 +365,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Controls\InAppTipUC.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
     </Page>

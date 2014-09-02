@@ -69,9 +69,6 @@ namespace windows_client.View
         private string hintText = string.Empty;
         private bool enableSendMsgButton = false;
         private long _lastUpdatedLastSeenTimeStamp = 0;
-
-        bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _toolTipMessage, _h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -128,7 +125,6 @@ namespace windows_client.View
         public ObservableCollection<ConvMessage> ocMessages;
 
         bool isMessageLoaded;
-        bool isInAppTipVisible = false;
         public bool IsSMSOptionValid = true;
 
         public int ResolutionId
@@ -267,20 +263,12 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
 
-                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                    ocMessages.Remove(_h2hofflineToolTip);
-                            });
-                        }
-
                         if (_isSendAllAsSMSVisible)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (ocMessages == null) return;
+                                if (ocMessages == null) 
+                                    return;
 
                                 if (_isSendAllAsSMSVisible)
                                 {
@@ -1056,11 +1044,7 @@ namespace windows_client.View
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
-
-                if (mCredits > 0)
-                    ShowInAppTips();
-                else
-                    this.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
 
                 if (!isGroupChat)
                 {
@@ -1191,83 +1175,6 @@ namespace windows_client.View
             }
         }
 
-        private void ShowInAppTips()
-        {
-            HikeToolTip tip;
-
-            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 8);
-                this.ApplicationBar = appBar;
-                isInAppTipVisible = true;
-            }
-            else if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 1);
-                this.ApplicationBar = appBar;
-                isInAppTipVisible = true;
-            }
-            else
-            {
-                int chatThreadCount;
-
-                var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
-                if (keyExist)
-                {
-                    if (App.ViewModel.DictInAppTip != null)
-                    {
-                        if (chatThreadCount == 0)
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 0);
-                                isInAppTipVisible = true;
-                            }
-                            else
-                                chatThreadCount++;
-
-                            this.ApplicationBar = appBar;
-                        }
-                        else if (chatThreadCount == 1)
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 2);
-                                isInAppTipVisible = true;
-                            }
-                            else
-                                chatThreadCount++;
-
-                            this.ApplicationBar = appBar;
-                        }
-                        else
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(7, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 7);
-                                isInAppTipVisible = true;
-                            }
-
-                            this.ApplicationBar = appBar;
-                        }
-
-                        this.ApplicationBar = appBar;
-                        App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
-                    }
-                    else
-                        this.ApplicationBar = appBar;
-                }
-                else
-                    this.ApplicationBar = appBar;
-            }
-        }
-
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
@@ -1342,7 +1249,7 @@ namespace windows_client.View
                 if (isOnHike)
                     chatThemeTip.Visibility = Visibility.Visible;
 
-                ShowInAppTips();
+                this.ApplicationBar = appBar;
             });
 
             ContactUtils.UpdateGroupCacheWithContactOnHike(mContactNumber, true);
@@ -1980,10 +1887,6 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
-
-            InAppTipUC tip = LayoutRoot.FindName("tip8") as InAppTipUC;
-            if (tip != null)
-                tip.Margin = IsMute ? new Thickness(0, 125, 20, 0) : new Thickness(0, 80, 20, 0);
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -2024,10 +1927,7 @@ namespace windows_client.View
                 // no need to call last seen as friend is removed on blocking
                 //GetUserLastSeen();
 
-                if (mCredits > 0)
-                    ShowInAppTips();
-                else if (ApplicationBar == null)
-                    this.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
             }
         }
 
@@ -2505,37 +2405,6 @@ namespace windows_client.View
                         }
                     }
                     #endregion
-
-                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
-                    {
-                        HikeToolTip tip;
-                        App.ViewModel.DictInAppTip.TryGetValue(4, out tip);
-
-                        if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                        {
-                            _toolTipMessage = new ConvMessage();
-                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
-                            _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                            ocMessages.Insert(insertPosition, _toolTipMessage);
-                            insertPosition++;
-                            _isStatusUpdateToolTipShown = true;
-
-                            tip.IsShown = true;
-                            tip.IsCurrentlyShown = true;
-
-                            int marked;
-                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (int)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
-
-                            int currentShown;
-                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (int)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-                            isInAppTipVisible = true;
-                        }
-                    }
                 }
                 #endregion
                 #region GROUP PIC CHANGED
@@ -2885,8 +2754,6 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
-
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 CancelBackgroundChange();
 
@@ -2972,14 +2839,6 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                        {
-                            ocMessages.Remove(_h2hofflineToolTip);
-                            App.ViewModel.HideToolTip(null, 6);
-                            _h2hofflineToolTip = null;
-                            ShowForceSMSOnUI();
-                        }
-
                         if (mCredits > 0)
                         {
                             var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
@@ -3156,14 +3015,6 @@ namespace windows_client.View
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
 
-            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-            {
-                ocMessages.Remove(_h2hofflineToolTip);
-                App.ViewModel.HideToolTip(null, 6);
-                _h2hofflineToolTip = null;
-                ShowForceSMSOnUI();
-            }
-
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3304,14 +3155,6 @@ namespace windows_client.View
                 SendForceSMS(convMessage);
                 UpdateLastSentMessageStatusOnUI();
 
-                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                {
-                    ocMessages.Remove(_h2hofflineToolTip);
-                    App.ViewModel.HideToolTip(null, 6);
-                    _h2hofflineToolTip = null;
-                    ShowForceSMSOnUI();
-                }
-
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3407,11 +3250,6 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
@@ -3479,11 +3317,6 @@ namespace windows_client.View
                 recordGrid.Visibility = Visibility.Collapsed;
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
-
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
@@ -3669,12 +3502,6 @@ namespace windows_client.View
                 {
                     lastSeenTxt.Text = lastSeenStatus;
                     lastSeenPannel.Visibility = Visibility.Visible;
-
-                    if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
-                    {
-                        App.ViewModel.DisplayTip(LayoutRoot, 5);
-                        isInAppTipVisible = true;
-                    }
                 }
             }), status, showTip);
         }
@@ -4097,9 +3924,6 @@ namespace windows_client.View
                         {
                             if (lastSeenTxt.Text != AppResources.Online)
                             {
-                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                    ocMessages.Remove(_h2hofflineToolTip);
-
                                 if (_isSendAllAsSMSVisible && ocMessages != null && msg.MessageId >= _lastUnDeliveredMessage.MessageId)
                                 {
                                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -4151,9 +3975,6 @@ namespace windows_client.View
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                            ocMessages.Remove(_h2hofflineToolTip);
-
                         if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
                         {
                             ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -4280,12 +4101,6 @@ namespace windows_client.View
                 }
 
                 #endregion
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                        ocMessages.Remove(_h2hofflineToolTip);
-                });
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
                 {
@@ -4444,14 +4259,6 @@ namespace windows_client.View
                                         ocMessages.Remove(_tap2SendAsSMSMessage);
                                         _isSendAllAsSMSVisible = false;
                                     }
-                                });
-                            }
-                            else if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                            {
-                                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                {
-                                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                        ocMessages.Remove(_h2hofflineToolTip);
                                 });
                             }
                         }
@@ -5775,9 +5582,6 @@ namespace windows_client.View
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 5);
-            App.ViewModel.HideToolTip(LayoutRoot, 8);
-
             openChatBackgroundButton.Opacity = 0;
 
             chatBackgroundPopUp.Visibility = Visibility.Visible;
@@ -5788,14 +5592,8 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
             if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
@@ -6142,18 +5940,17 @@ namespace windows_client.View
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
-            if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
+            if (e.Orientation == PageOrientation.Portrait 
+                || e.Orientation == PageOrientation.PortraitUp 
+                || e.Orientation == PageOrientation.PortraitDown)
             {
                 sendMsgTxtbox.MaxHeight = 130;
             }
-            else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
+            else if (e.Orientation == PageOrientation.Landscape 
+                || e.Orientation == PageOrientation.LandscapeLeft 
+                || e.Orientation == PageOrientation.LandscapeRight)
             {
                 sendMsgTxtbox.MaxHeight = 72;
-
-                App.ViewModel.HideToolTip(LayoutRoot, 0);
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-                App.ViewModel.HideToolTip(LayoutRoot, 5);
-                App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
         }
 
@@ -6767,31 +6564,6 @@ namespace windows_client.View
                 return;
             }
 
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (App.ViewModel.DictInAppTip != null)
-            {
-                HikeToolTip toolTip;
-                App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
-                if (toolTip != null)
-                {
-                    toolTip.IsShown = true;
-                    toolTip.IsCurrentlyShown = false;
-
-                    int index = 2;
-                    int shownByte;
-                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
-                    shownByte &= (int)~(1 << index);
-                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
-
-                    int currentShown;
-                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (int)~(1 << index);
-                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-                }
-            }
-
             if (attachmentMenu.Visibility == Visibility.Visible)
                 attachmentMenu.Visibility = Visibility.Collapsed;
 
@@ -7231,51 +7003,9 @@ namespace windows_client.View
                 {
                     var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                    if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
+                    if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert)
                         ocMessages.Remove(_readByMessage);
 
-                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
-                    {
-                        HikeToolTip tip;
-                        App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
-                        {
-                            _h2hofflineToolTip = new ConvMessage();
-                            _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
-                            _h2hofflineToolTip.Message = tip.Tip;
-                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-                            _isStatusUpdateToolTipShown = true;
-
-                            tip.IsShown = true;
-                            tip.IsCurrentlyShown = true;
-
-                            int marked;
-                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (int)(1 << 6);
-                            App.appSettings[App.TIP_MARKED_KEY] = marked;
-
-                            int currentShown;
-                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (int)(1 << 6);
-                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-                            if (indexToInsert == ocMessages.Count - 1)
-                                ScrollToBottom();
-
-                            isInAppTipVisible = true;
-
-                            return;
-                        }
-                    }
-
-                    if (_h2hofflineToolTip != null)
-                    {
-                        if (!ocMessages.Contains(_h2hofflineToolTip))
-                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-
-                        return;
-                    }
 
                     if (_tap2SendAsSMSMessage == null)
                     {
@@ -7364,25 +7094,6 @@ namespace windows_client.View
 
                 ConversationTableUtils.updateLastMsgStatus(convMsgList.Last().MessageId, convMsgList.Last().Msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
             }
-        }
-
-        private void H2hOfflineToolTip_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_h2hofflineToolTip != null)
-            {
-                ocMessages.Remove(_h2hofflineToolTip);
-                App.ViewModel.HideToolTip(null, 6);
-                _h2hofflineToolTip = null;
-                ShowForceSMSOnUI();
-            }
-        }
-
-        private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
-        {
-            if (_toolTipMessage != null)
-                ocMessages.Remove(_toolTipMessage);
-
-            App.ViewModel.HideToolTip(null, 4);
         }
 
         #endregion

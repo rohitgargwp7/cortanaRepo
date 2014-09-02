@@ -83,7 +83,6 @@ namespace windows_client.Model
             STATUS_UPDATE,
             IN_APP_TIP,
             FORCE_SMS_NOTIFICATION,
-            H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
             MESSAGE_STATUS,
