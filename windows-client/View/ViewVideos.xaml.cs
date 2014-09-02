@@ -101,13 +101,25 @@ namespace windows_client.View
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbum albumObj;
-                        
+
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                         {
                             albumObj = new VideoAlbum(albumName, thumbBytes);
                             videoAlbumList.Add(albumName, albumObj);
                         }
+                        else
+                        {
+                            if (albumObj.ThumbBytes == null && thumbBytes != null)
+                            {
+                                albumObj.ThumbBytes = thumbBytes;
+                            }
+                        }
 
+                        if (thumbBytes == null)
+                        {
+                            //video.ThumbnailBytes = Utils.DefaultThumbnailForVideoFile();
+                        }
+                        
                         albumObj.Add(video);
                         _listAllVideos.Add(video);
                     }
@@ -120,6 +132,15 @@ namespace windows_client.View
                 Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
 
+            var nullThumbnailAlbums =
+                from album in videoAlbumList
+                where (album.Value.ThumbBytes == null)
+                select album.Key;
+
+            foreach(var album in nullThumbnailAlbums)
+            {
+                //videoAlbumList[album].ThumbBytes = Utils.DefaultThumbnailForAlbumFile();
+            }
             return videoAlbumList.Values.ToList();
         }
 

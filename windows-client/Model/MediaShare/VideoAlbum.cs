@@ -25,6 +25,17 @@ namespace windows_client.Model
             _thumbBytes = thumbnail;
         }
 
+        public Byte[] ThumbBytes
+        {
+            get
+            {
+                return _thumbBytes;
+            }
+            set
+            {
+                _thumbBytes = value;
+            }
+        }
         public string AlbumName
         {
             get
