@@ -304,6 +304,9 @@
     <Compile Include="View\PreviewImages.xaml.cs">
       <DependentUpon>PreviewImages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PreviewVideo.xaml.cs">
+      <DependentUpon>PreviewVideo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
@@ -358,6 +361,9 @@
     <Compile Include="View\ViewPhotoAlbums.xaml.cs">
       <DependentUpon>ViewPhotoAlbums.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ViewVideos.xaml.cs">
+      <DependentUpon>ViewVideos.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -408,6 +414,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\NewGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PreviewVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ViewVideos.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -548,9 +562,11 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="RPALManifest.xml" />
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
+    <Content Include="View\images\AppBar\icon_send_video.png" />
     <Content Include="View\images\avatars\default_avatar_blue.jpg" />
     <Content Include="View\images\avatars\default_avatar_green.jpg" />
     <Content Include="View\images\avatars\default_avatar_group_blue.jpg" />
@@ -822,6 +838,9 @@
     <Content Include="View\images\rupee.png" />
     <Content Include="View\images\AppBar\icon_sticker.png" />
     <Content Include="View\images\recent_active.png" />
+    <Content Include="View\images\MediaPlayIconBig.png" />
+    <Content Include="View\images\MediaPlayIconSmall.png" />
+    <Content Include="View\images\menu_video_icon.png" />
     <Content Include="hike_small.png" />
     <Content Include="hike_medium.png" />
     <Content Include="hike_lock_bubble.png" />
@@ -932,6 +951,7 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\menu_camera_icon.png" />
+    <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\video_default.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
@@ -1145,6 +1165,12 @@
     <EmbeddedResource Include="Languages\AppResources.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
+      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
+      <Name>RPALApiComponent</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
