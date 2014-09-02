@@ -21,7 +21,16 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 {
 	HRESULT hr = 0;
 	HZMEDIALIST hRootList = NULL;
-	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
+	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAFOLDER_TYPE_ROOT, &hRootList);
+
+
+	HZMEDIALIST finalList = NULL;
+	const WCHAR *pictureLibrayPath = L"C:/Data/Users/Public/Pictures";
+	ZMEDIAITEM_STRINGATTRIBUTE * atbs = new ZMEDIAITEM_STRINGATTRIBUTE[1];
+	atbs[0] = ZMEDIAITEM_ATTRIBUTE_FILEPATH;
+	hr = ZMediaList_FilterList(hRootList,atbs,1,pictureLibrayPath,&finalList);
+
+
 
 	size_t cItemsRoot = 0;
 	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
@@ -62,4 +71,17 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position,  Platform::Str
 	*videoTime= (((ULONGLONG) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
 
 	return intOutArray;
+}
+
+void FetchPreRecordedVideos::GetFolderInfo(uint8 position,Platform::String^* strVideoFilePath)
+{
+	HRESULT hr = 0;
+	size_t cch = 0;
+
+	// get filepath
+	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, NULL, NULL, &cch);
+	WCHAR *str = new WCHAR[cch]; 
+	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
+	*strVideoFilePath = ref new String(str);
+	delete str;
 }

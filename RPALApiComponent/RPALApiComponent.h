@@ -14,6 +14,7 @@ namespace RPALApiComponent
 		FetchPreRecordedVideos();
 		Array<byte>^ GetVideoInfo(uint8 position, Platform::String^* strVideoFilePath,float64* videoDate,int* videoDuration,int *videoSize);
 		uint16 GetVideoCount();
+		void GetFolderInfo(uint8 position,Platform::String^* strVideoFilePath);
 		void ClearData();
 	};
 }
