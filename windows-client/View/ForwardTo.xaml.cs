@@ -253,6 +253,12 @@ namespace windows_client.View
                 _isTextSelected = true;
                 return;
             }
+            else if (enterNameTxt.Text.Length < stringBuilderForContactNames.Length || !enterNameTxt.Text.Contains(stringBuilderForContactNames.ToString()))
+            {
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                return;
+            }
+
 
             _contactToBeRemoved = null;
 
