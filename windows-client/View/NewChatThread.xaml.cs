@@ -6909,7 +6909,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked || isGroupChat)
                 return;
 
             if (ocMessages == null)
@@ -6973,7 +6973,7 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
-            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked || isGroupChat)
                 return;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>

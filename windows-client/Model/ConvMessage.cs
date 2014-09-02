@@ -1589,7 +1589,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && !IsGroup && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
