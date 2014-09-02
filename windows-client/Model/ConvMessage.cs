@@ -1614,7 +1614,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (MessageStatus == State.SENT_UNCONFIRMED || MessageStatus == State.SENT_FAILED || MessageStatus == State.SENT_SOCKET_WRITE || MessageStatus == State.SENT_UNCONFIRMED)
+                if (MessageStatus == State.SENT_UNCONFIRMED || MessageStatus == State.SENT_FAILED || MessageStatus == State.SENT_SOCKET_WRITE || MessageStatus == State.SENT_CONFIRMED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
