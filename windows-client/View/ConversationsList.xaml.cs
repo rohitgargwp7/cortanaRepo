@@ -275,8 +275,6 @@ namespace windows_client.View
             else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
                 UpdateResetHiddenModeTimer();
 
-            IsFullTipTappedDisabled = false;
-
             #region server Tips
 
             if (_tipMode == ToolTipMode.DEFAULT && TipManager.ConversationPageTip != null)
@@ -3589,69 +3587,63 @@ namespace windows_client.View
         /// <param name="e"></param>
         void conversationPageToolTip_FullTipTapped(object sender, EventArgs e)
         {
-
-            if (!IsFullTipTappedDisabled)
+            switch (_tipMode)
             {
-                switch (_tipMode)
-                {
-                    case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
 
-                        MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
 
-                        if (mBox == MessageBoxResult.OK)
+                    if (mBox == MessageBoxResult.OK)
+                    {
+                        ResetHiddenMode();
+
+                        if (_resetTimer != null)
                         {
-                            ResetHiddenMode();
-
-                            if (_resetTimer != null)
-                            {
-                                _resetTimer.Stop();
-                                _resetTimer = null;
-                            }
+                            _resetTimer.Stop();
+                            _resetTimer = null;
                         }
-                        else
-                            HideTips();
-
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
-
-                        break;
-
-                    case ToolTipMode.PROFILE_PIC:
-
+                    }
+                    else
                         HideTips();
 
-                        PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
-                        PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
-                        NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-                        break;
+                    break;
 
-                    case ToolTipMode.STATUS_UPDATE:
+                case ToolTipMode.PROFILE_PIC:
 
-                        HideTips();
+                    HideTips();
 
-                        PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+                    PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
 
-                        NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
-                        break;
+                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                    break;
 
-                    case ToolTipMode.INVITE_FRIENDS:
+                case ToolTipMode.STATUS_UPDATE:
 
-                        HideTips();
+                    HideTips();
 
-                        NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
-                        break;
+                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
-                    case ToolTipMode.FAVOURITES:
+                    NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
+                    break;
 
-                        HideTips();
+                case ToolTipMode.INVITE_FRIENDS:
 
-                        launchPagePivot.SelectedIndex = 1;
+                    HideTips();
 
-                        break;
-                }
+                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+                    break;
+
+                case ToolTipMode.FAVOURITES:
+
+                    HideTips();
+
+                    launchPagePivot.SelectedIndex = 1;
+
+                    break;
             }
-            else
-                IsFullTipTappedDisabled = false;
         }
 
         /// <summary>
@@ -3721,10 +3713,7 @@ namespace windows_client.View
                         }
                         HideTips();
                     }
-                    else
-                    {
-                        IsFullTipTappedDisabled = true;
-                    }
+
                     break;
 
                 case ToolTipMode.PROFILE_PIC:
