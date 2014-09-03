@@ -1236,18 +1236,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage closeButtonWhiteImage;
-        public BitmapImage CloseButtonWhiteImage
-        {
-            get
-            {
-                if (closeButtonWhiteImage == null)
-                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                return closeButtonWhiteImage;
-            }
-        }
-
         #endregion
 
         #region Chat Theme
