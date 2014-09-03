@@ -259,7 +259,6 @@ namespace windows_client.View
                 return;
             }
 
-
             _contactToBeRemoved = null;
 
             if (_isGroupChat || _isForward)
@@ -1196,7 +1195,7 @@ namespace windows_client.View
                         PageTitle.Text = _pageTitle;
                     }
 
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else
