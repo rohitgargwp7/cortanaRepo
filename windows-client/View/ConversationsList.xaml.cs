@@ -3579,7 +3579,6 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
         }
 
-        bool IsFullTipTappedDisabled = false;
         /// <summary>
         /// Full tool tip tapped.
         /// </summary>
@@ -3712,6 +3711,7 @@ namespace windows_client.View
                             _resetTimer = null;
                         }
                         HideTips();
+
                     }
 
                     break;
