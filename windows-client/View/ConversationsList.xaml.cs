@@ -275,6 +275,8 @@ namespace windows_client.View
             else if (_tipMode == ToolTipMode.RESET_HIDDEN_MODE)
                 UpdateResetHiddenModeTimer();
 
+            IsFullTipTappedDisabled = false;
+
             #region server Tips
 
             if (_tipMode == ToolTipMode.DEFAULT && TipManager.ConversationPageTip != null)
@@ -3579,6 +3581,7 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
         }
 
+        bool IsFullTipTappedDisabled = false;
         /// <summary>
         /// Full tool tip tapped.
         /// </summary>
@@ -3586,63 +3589,69 @@ namespace windows_client.View
         /// <param name="e"></param>
         void conversationPageToolTip_FullTipTapped(object sender, EventArgs e)
         {
-            switch (_tipMode)
+
+            if (!IsFullTipTappedDisabled)
             {
-                case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
+                switch (_tipMode)
+                {
+                    case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
 
-                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
+                        MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_FinalConf_Body_Txt, AppResources.HiddenModeReset_FinalConf_Header_Txt, MessageBoxButton.OKCancel);
 
-                    if (mBox == MessageBoxResult.OK)
-                    {
-                        ResetHiddenMode();
-
-                        if (_resetTimer != null)
+                        if (mBox == MessageBoxResult.OK)
                         {
-                            _resetTimer.Stop();
-                            _resetTimer = null;
+                            ResetHiddenMode();
+
+                            if (_resetTimer != null)
+                            {
+                                _resetTimer.Stop();
+                                _resetTimer = null;
+                            }
                         }
-                    }
-                    else
+                        else
+                            HideTips();
+
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+
+                        break;
+
+                    case ToolTipMode.PROFILE_PIC:
+
                         HideTips();
 
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+                        PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
 
-                    break;
+                        NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+                        break;
 
-                case ToolTipMode.PROFILE_PIC:
+                    case ToolTipMode.STATUS_UPDATE:
 
-                    HideTips();
+                        HideTips();
 
-                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
-                    PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+                        PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
-                    NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-                    break;
+                        NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
+                        break;
 
-                case ToolTipMode.STATUS_UPDATE:
+                    case ToolTipMode.INVITE_FRIENDS:
 
-                    HideTips();
+                        HideTips();
 
-                    PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
+                        NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+                        break;
 
-                    NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
-                    break;
+                    case ToolTipMode.FAVOURITES:
 
-                case ToolTipMode.INVITE_FRIENDS:
+                        HideTips();
 
-                    HideTips();
+                        launchPagePivot.SelectedIndex = 1;
 
-                    NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
-                    break;
-
-                case ToolTipMode.FAVOURITES:
-
-                    HideTips();
-
-                    launchPagePivot.SelectedIndex = 1;
-
-                    break;
+                        break;
+                }
             }
+            else
+                IsFullTipTappedDisabled = false;
         }
 
         /// <summary>
@@ -3652,6 +3661,7 @@ namespace windows_client.View
         /// <param name="e"></param>
         void conversationPageToolTip_RightIconClicked(object sender, EventArgs e)
         {
+            MessageBoxResult mBox;
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
@@ -3659,7 +3669,7 @@ namespace windows_client.View
                     if (_resetTimer != null)
                         _resetTimer.Stop();
 
-                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
+                    mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
 
                     if (mBox == MessageBoxResult.OK)
                     {
@@ -3697,16 +3707,24 @@ namespace windows_client.View
 
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
 
-                    HideTips();
 
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
 
-                    if (_resetTimer != null)
+                    if (mBox == MessageBoxResult.OK)
                     {
-                        _resetTimer.Stop();
-                        _resetTimer = null;
-                    }
+                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
+                        if (_resetTimer != null)
+                        {
+                            _resetTimer.Stop();
+                            _resetTimer = null;
+                        }
+                        HideTips();
+                    }
+                    else
+                    {
+                        IsFullTipTappedDisabled = true;
+                    }
                     break;
 
                 case ToolTipMode.PROFILE_PIC:
