@@ -13,6 +13,7 @@ namespace windows_client.Model
         public Table<GroupInfo> groupInfo;
 
         public Table<StatusMessage> statusMessage;
+        public Table<MessageHash> messageHash;
     }
 
     public class HikeUsersDb : DataContext

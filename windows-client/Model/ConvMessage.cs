@@ -1721,7 +1721,7 @@ namespace windows_client.Model
                         //add thumbnail here
                         JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
                         JToken tempFileArrayToken;
-                        
+
                         //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
                         //Make it same for type of messages
                         if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)

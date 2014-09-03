@@ -284,6 +284,7 @@ namespace windows_client.DbUtils
             }
         }
 
+       
         public static Func<HikeChatsDb, IQueryable<ConvMessage>> GetAllMessages
         {
             get
@@ -495,6 +496,7 @@ namespace windows_client.DbUtils
         }
 
         #endregion
+
 
     }
 }

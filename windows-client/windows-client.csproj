@@ -177,6 +177,7 @@
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\FriendsTableUtils.cs" />
     <Compile Include="DbUtils\GroupTableUtils.cs" />
+    <Compile Include="DbUtils\MessageHashUtils.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtil.cs" />
     <Compile Include="DbUtils\MqttDBUtils.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
+    <Compile Include="Model\MessageHash.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\StatusMessage.cs" />
