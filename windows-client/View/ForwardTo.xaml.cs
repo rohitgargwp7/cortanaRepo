@@ -253,6 +253,11 @@ namespace windows_client.View
                 _isTextSelected = true;
                 return;
             }
+            else if (enterNameTxt.Text.Length < stringBuilderForContactNames.Length || !enterNameTxt.Text.Contains(stringBuilderForContactNames.ToString()))
+            {
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                return;
+            }
 
             _contactToBeRemoved = null;
 
@@ -1190,7 +1195,7 @@ namespace windows_client.View
                         PageTitle.Text = _pageTitle;
                     }
 
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else
