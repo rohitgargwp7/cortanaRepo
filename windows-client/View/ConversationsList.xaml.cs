@@ -851,6 +851,9 @@ namespace windows_client.View
             {
                 if (appBar.MenuItems.Contains(muteStatusMenu))
                     appBar.MenuItems.Remove(muteStatusMenu);
+
+                if (_tipMode == ToolTipMode.FAVOURITES)
+                    HideTips();
                 // there will be two background workers that will independently load three sections
                 #region FAVOURITES
 
@@ -3538,7 +3541,10 @@ namespace windows_client.View
 
                 case ToolTipMode.PROFILE_PIC:
 
-                    InitializeToolTipControl(UI_Utils.Instance.ToolTipProfilePic, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
+                    if (!MiscDBUtil.HasCustomProfileImage(HikeConstants.MY_PROFILE_PIC))
+                        InitializeToolTipControl(UI_Utils.Instance.ToolTipProfilePic, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
+                    else
+                        HideTips();
                     break;
 
                 case ToolTipMode.STATUS_UPDATE:
