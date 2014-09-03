@@ -301,6 +301,9 @@
     <Compile Include="View\PreviewImages.xaml.cs">
       <DependentUpon>PreviewImages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PreviewVideo.xaml.cs">
+      <DependentUpon>PreviewVideo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
@@ -447,6 +450,9 @@
     <Page Include="View\PreviewImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PreviewVideo.xaml">
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Privacy.xaml">
       <SubType>Designer</SubType>
