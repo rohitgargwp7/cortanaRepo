@@ -97,7 +97,7 @@ namespace windows_client.utils
             get
             {
                 if (_passwordSquareBorderBrush == null)
-                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0x99, 0xff, 0xff, 0xff));
+                    _passwordSquareBorderBrush = new SolidColorBrush(Color.FromArgb(0xff, 0xf6, 0x9c, 0x98));
 
                 return _passwordSquareBorderBrush;
             }
@@ -136,6 +136,94 @@ namespace windows_client.utils
                     _toolTipArrow = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
 
                 return _toolTipArrow;
+            }
+        }
+
+        #endregion
+
+        #region SERVER TIPS
+        
+        BitmapImage _toolTipStickers; 
+        public BitmapImage ToolTipStickers
+        {
+            get
+            {
+                if (_toolTipStickers == null)
+                    _toolTipStickers = new BitmapImage(new Uri("/View/images/ServerTips/stickers.png", UriKind.Relative));
+
+                return _toolTipStickers;
+            }
+        }
+
+        BitmapImage _toolTipProfilePic;
+        public BitmapImage ToolTipProfilePic
+        {
+            get
+            {
+                if (_toolTipProfilePic == null)
+                    _toolTipProfilePic = new BitmapImage(new Uri("/View/images/ServerTips/profilepic.png", UriKind.Relative));
+
+                return _toolTipProfilePic;
+            }
+        }
+
+        BitmapImage _toolTipAttachment;
+        public BitmapImage ToolTipAttachment
+        {
+            get
+            {
+                if (_toolTipAttachment == null)
+                    _toolTipAttachment = new BitmapImage(new Uri("/view/images/ServerTips/attachments.png", UriKind.Relative));
+
+                return _toolTipAttachment;
+            }
+        }
+
+        BitmapImage _toolTipInvite;
+        public BitmapImage ToolTipInvite
+        {
+            get
+            {
+                if (_toolTipInvite == null)
+                    _toolTipInvite = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipInvite;
+            }
+        }
+
+        BitmapImage _toolTipChatTheme;
+        public BitmapImage ToolTipChatTheme
+        {
+            get
+            {
+                if (_toolTipChatTheme == null)
+                    _toolTipChatTheme = new BitmapImage(new Uri("/view/images/ServerTips/Themes.png", UriKind.Relative));
+
+                return _toolTipChatTheme;
+            }
+        }
+
+        BitmapImage _toolTipStatusUpdate;
+        public BitmapImage ToolTipStatusUpdate
+        {
+            get
+            {
+                if (_toolTipStatusUpdate == null)
+                    _toolTipStatusUpdate = new BitmapImage(new Uri("/view/images/ServerTips/status.png", UriKind.Relative));
+
+                return _toolTipStatusUpdate;
+            }
+        }
+
+        BitmapImage _toolTipFavourites;
+        public BitmapImage ToolTipFavourites
+        {
+            get
+            {
+                if (_toolTipFavourites == null)
+                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipFavourites;
             }
         }
 
@@ -2426,6 +2514,30 @@ namespace windows_client.utils
 
                 return ms.ToArray();
             }
+        }
+
+        public static Byte[] DiminishThumbnailQuality(BitmapImage image)
+        {
+            Byte[] imageBytes;
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            int imageWidth, imageHeight;
+            Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out imageWidth, out imageHeight);
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 50);
+                imageBytes = msSmallImage.ToArray();
+            }
+            if (imageBytes.Length > HikeConstants.MAX_THUMBNAILSIZE)
+            {
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 20);
+                    imageBytes = msSmallImage.ToArray();
+                }
+            }
+            return imageBytes;
         }
     }
 }

@@ -30,6 +30,7 @@ using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Coding4Fun.Phone.Controls;
+using System.Windows.Media;
 
 namespace windows_client.ViewModel
 {
@@ -214,9 +215,6 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
 
             LoadViewModelObjects();
-            LoadToolTipsDict();
-            LoadCurrentLocation();
-            ClearTempTransferData();
         }
 
         public HikeViewModel()
@@ -246,6 +244,7 @@ namespace windows_client.ViewModel
 
             LoadToolTipsDict();
             LoadCurrentLocation();
+            ClearTempTransferData();
 
             MiscDBUtil.LoadPendingUploadPicRequests();
 
@@ -409,12 +408,18 @@ namespace windows_client.ViewModel
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         object[] vals = (object[])obj;
+
+                        bool showPush = true;
+                        if (vals.Length == 3 && vals[2] is bool)
+                            showPush = (Boolean)vals[2];
+
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
 
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+
                         if (index < 0)//not present in oc
                         {
                             App.ViewModel.MessageListPageCollection.Insert(0, mObj);
@@ -424,6 +429,32 @@ namespace windows_client.ViewModel
                             App.ViewModel.MessageListPageCollection.RemoveAt(index);
                             App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                         }//if already at zero, do nothing
+
+                        if (showPush &&
+                            ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
+                            || (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber != mObj.Msisdn)))
+                        {
+                            if (mObj.IsMute) // of msg is for muted forwardedMessage, ignore msg
+                                return;
+
+                            ToastPrompt toast = new ToastPrompt();
+                            toast.Tag = mObj.Msisdn;
+
+                            if (mObj.IsHidden)
+                                toast.Title = String.Empty;
+                            else
+                                toast.Title = (mObj.ContactName != null ? mObj.ContactName : mObj.Msisdn) + (mObj.IsGroupChat ? " :" : " -");
+
+                            // Cannot use convMesssage.Message or CObj.LAstMessage because for gc it does not have group member name.
+                            toast.Message = mObj.ToastText;
+                            toast.Foreground = UI_Utils.Instance.White;
+                            toast.Background = (SolidColorBrush)App.Current.Resources["InAppToastBgBrush"];
+                            toast.ImageSource = UI_Utils.Instance.HikeToastImage;
+                            toast.VerticalContentAlignment = VerticalAlignment.Center;
+                            toast.MaxHeight = 60;
+                            toast.Tap += App.ViewModel.Toast_Tap;
+                            toast.Show();
+                        }
                     });
             }
             #endregion
@@ -590,6 +621,52 @@ namespace windows_client.ViewModel
             }
 
             ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+        }
+
+        /// <summary>
+        /// Remove image for deleted contacts on resync.
+        /// </summary>
+        /// <param name="deletedContacts">deleted contacts</param>
+        /// <param name="updatedContacts">added or updated contacts</param>
+        public void DeleteImageForDeletedContacts(List<ContactInfo> deletedContacts, List<ContactInfo> updatedContacts)
+        {
+            if (deletedContacts == null)
+                return;
+
+            Dictionary<string, int> deletedContactMap = new Dictionary<string, int>();
+
+            foreach (var contact in deletedContacts)
+            {
+                if (!deletedContactMap.ContainsKey(contact.Msisdn))
+                    deletedContactMap.Add(contact.Msisdn, 0);
+            }
+
+            if (updatedContacts != null)
+            {
+                foreach (var contact in updatedContacts)
+                {
+                    if (deletedContactMap.ContainsKey(contact.Msisdn))
+                        deletedContactMap[contact.Msisdn]++;
+                }
+            }
+
+            foreach (var msisdn in deletedContactMap.Keys)
+            {
+                if (deletedContactMap[msisdn] == 0)
+                {
+                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    {
+                        var fStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+                        if (fStatus <= FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
+                        {
+                            MiscDBUtil.DeleteImageForMsisdn(msisdn);
+
+                            App.ViewModel.ConvMap[msisdn].Avatar = null;
+                            App.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                        }
+                    }
+                }
+            }
         }
 
         #region In Apptips
@@ -1328,5 +1405,29 @@ namespace windows_client.ViewModel
         {
             StickerHelper = null;
         }
+        
+        #region Pause/Resume Background Audio
+
+        public bool resumeMediaPlayerAfterDone = false;
+        
+        public void PauseBackgroundAudio()
+        {
+            if (!MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Pause();
+                resumeMediaPlayerAfterDone = true;
+            }
+        }
+
+        public void ResumeBackgroundAudio()
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
+        }
+        
+        #endregion
     }
 }

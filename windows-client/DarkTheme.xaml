@@ -44,6 +44,9 @@ private copy.
     <Color x:Key="AppBarWhiteBackgroundColor">#eff2f6</Color>
     <Color x:Key="AppBarWhiteForegroundColor">#2c313d</Color>
 
+    <Color x:Key="AppBarBlackBackgroundColor">#232323</Color>
+    <Color x:Key="AppBarBlackForegroundColor">#ffffff</Color>
+    
     <Color x:Key="HikeBlackColor">#2c313d</Color>
 
     <SolidColorBrush x:Key="FriendBGColor" Color="#232323"/>
@@ -56,6 +59,8 @@ private copy.
     <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
     <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
 
+    <SolidColorBrush x:Key="TipGreen" Color="#23b27e" />
+
     <SolidColorBrush x:Key="HikeBGBrush" Color="#1b1b1b"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="#ffffff"/>
     <SolidColorBrush x:Key="HikeHeaderBrush" Color="#232323"/>
@@ -67,9 +72,11 @@ private copy.
     <SolidColorBrush x:Key="HikeCheckBoxBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeFreeSMSCardBrush" Color="#232323"/>
     <SolidColorBrush x:Key="HikeEarnFreeSMSBrush" Color="White"/>
+    
+    <SolidColorBrush x:Key="InAppToastBgBrush" Color="#353535"/>
 
-    <SolidColorBrush x:Key="AppBarBackground" Color="#232323"/>
-    <SolidColorBrush x:Key="AppBarForeground" Color="#ffffff"/>
+    <SolidColorBrush x:Key="AppBarBackground" Color="{StaticResource AppBarBlackBackgroundColor}"/>
+    <SolidColorBrush x:Key="AppBarForeground" Color="{StaticResource AppBarBlackForegroundColor}"/>
 
     <MediaElement x:Key="GlobalMedia" AutoPlay="False" />
 

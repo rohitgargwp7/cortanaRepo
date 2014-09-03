@@ -87,7 +87,7 @@ namespace windows_client.utils
                 {
                     string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (store.FileExists(FileName))
                             store.DeleteFile(FileName);
@@ -121,7 +121,7 @@ namespace windows_client.utils
                 {
                     string FileName = PROTIPS_DIRECTORY + "\\" + CURRENT_PROTIP_IMAGE;
 
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.FileExists(FileName))
                             return null;
@@ -153,7 +153,7 @@ namespace windows_client.utils
                 try
                 {
                     string fileName = PROTIPS_DIRECTORY + "\\" + CurrentProTip._id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
                             store.CreateDirectory(PROTIPS_DIRECTORY);
@@ -187,7 +187,7 @@ namespace windows_client.utils
                 try
                 {
                     string fileName = PROTIPS_DIRECTORY + "\\" + id;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) 
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
                         if (!store.DirectoryExists(PROTIPS_DIRECTORY))
                             return;
@@ -399,16 +399,19 @@ namespace windows_client.utils
 
                 count = reader.ReadInt32();
                 _header = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
                 if (_header == "*@N@*")
                     _header = null;
 
                 count = reader.ReadInt32();
                 _body = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
                 if (_body == "*@N@*")
                     _body = null;
 
                 count = reader.ReadInt32();
                 ImageUrl = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
                 if (ImageUrl == "*@N@*")
                     ImageUrl = null;
 

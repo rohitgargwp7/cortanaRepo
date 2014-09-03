@@ -345,7 +345,7 @@ namespace windows_client.View
         {
             await Task.Delay(1);
 
-            if (MiscDBUtil.hasCustomProfileImage(groupId))
+            if (MiscDBUtil.HasCustomProfileImage(groupId))
             {
                 var bytes = MiscDBUtil.getLargeImageForMsisdn(groupId);
 

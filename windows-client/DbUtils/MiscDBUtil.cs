@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
+using windows_client.utils.ServerTips;
 
 namespace windows_client.DbUtils
 {
@@ -26,8 +27,7 @@ namespace windows_client.DbUtils
         private static object pendingProfilePicReadWriteLock = new object();
         private static object profilePicLock = new object();
         private static object statusImageLock = new object();
-        private static object saveAttachmentLock = new object();
-        private static object updateAttachmentLock = new object();
+        private static object attachmentLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
@@ -152,6 +152,9 @@ namespace windows_client.DbUtils
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();
+            #endregion
+            #region DELETE TIPS
+            TipManager.Instance.ClearTips();
             #endregion
         }
 
@@ -370,8 +373,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static bool hasCustomProfileImage(string msisdn)
+        public static bool HasCustomProfileImage(string msisdn)
         {
+            // Added null check.
+            if (string.IsNullOrEmpty(msisdn))
+                return false;
+
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
             
@@ -494,7 +501,7 @@ namespace windows_client.DbUtils
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
-            lock (saveAttachmentLock)
+            lock (attachmentLock)
             {
                 try
                 {
@@ -594,7 +601,7 @@ namespace windows_client.DbUtils
             if (msisdn == null) // this is imp as explicit handling of null is required to check exception
                 return null;
 
-            lock (updateAttachmentLock)
+            lock (attachmentLock)
             {
                 msisdn = msisdn.Replace(":", "_");
                 string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
@@ -607,7 +614,7 @@ namespace windows_client.DbUtils
                         if (store.FileExists(fileName))
                         {
                             attachment = new Attachment();
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.ReadWrite))
                             {
                                 using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                 {
@@ -615,6 +622,7 @@ namespace windows_client.DbUtils
                                     attachment.Read(reader);
                                     attachment.FileState = fileState;
                                 }
+
                                 using (BinaryWriter writer = new BinaryWriter(file))
                                 {
                                     writer.Seek(0, SeekOrigin.Begin);
@@ -1249,6 +1257,24 @@ namespace windows_client.DbUtils
                 App.ViewModel.SendDisplayPic();
         }
 
+        #endregion
+
+        #region MESSAGE STATUS CHANGE
+        /// <summary>
+        /// Mark single msg as Sent Confirmed, Sent Socket Written and Sent Delivered
+        /// </summary>
+        /// <param name="fromUser"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static void UpdateDBsMessageStatus(string fromUser, long msgID, int status)
+        {
+            Stopwatch st = Stopwatch.StartNew();
+            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
+        }
         #endregion
     }
 }

@@ -6,23 +6,25 @@ using System.Text;
 
 namespace finalmqtt.Client
 {
+    /// <summary>
+    /// Used to pass data between socket events , Inherits SocketAsyncEventArgs
+    /// </summary>
     class SocketEventArguemntsMessageId : SocketAsyncEventArgs
     {
-        List<short> _messageId=new List<short>();
+        object _messageData;
 
 
-        public List<short> MessageId
+        public object MessageData
         {
             get
             {
-                return _messageId;
+                return _messageData;
             }
             set
             {
-                _messageId=value;
+                _messageData = value;
             }
         }
-
 
     }
 }

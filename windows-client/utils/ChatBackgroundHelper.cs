@@ -263,7 +263,7 @@ namespace windows_client.utils
                     IsTile = true,
                     Position = 0,
                     IsDefault = true,
-                    IsLightTheme = true,
+                    IsLightTheme = false,
                     ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbDefaultDark.jpg",
                     ImagePath = String.Empty
                 });
