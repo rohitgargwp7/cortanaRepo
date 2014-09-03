@@ -1240,6 +1240,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File is corrupted.
+        /// </summary>
+        public static string CT_FileCorrupted_Text {
+            get {
+                return ResourceManager.GetString("CT_FileCorrupted_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File cannot be played.
+        /// </summary>
+        public static string CT_FileNotPlayable_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotPlayable_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File cannot be sent.
+        /// </summary>
+        public static string CT_FileNotSupported_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotSupported_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not send file.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {

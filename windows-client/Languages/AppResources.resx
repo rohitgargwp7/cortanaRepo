@@ -2235,4 +2235,13 @@ Download it like asap from http://hike.in!</value>
     <value>save to gallery</value>
     <comment>Menu Item text</comment>
   </data>
+  <data name="CT_FileCorrupted_Text" xml:space="preserve">
+    <value>File is corrupted</value>
+  </data>
+  <data name="CT_FileNotPlayable_Caption_Text" xml:space="preserve">
+    <value>File cannot be played</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>File cannot be sent</value>
+  </data>
 </root>

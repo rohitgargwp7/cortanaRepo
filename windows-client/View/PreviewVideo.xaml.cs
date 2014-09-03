@@ -24,7 +24,8 @@ namespace windows_client.View
     public partial class PreviewVideo : PhoneApplicationPage
     {
         public VideoItem _videoShared;
-        
+        public int _size;
+
         public PreviewVideo()
         {
             InitializeComponent();
@@ -46,19 +47,48 @@ namespace windows_client.View
             _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = _videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
-            
-            if(_videoShared.Size>0)
-                VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
-        
+
+            if (_videoShared.Size > 0)
+                _size = _videoShared.Size;
+            else
+            {
+                Byte[] fileBytes = null;
+
+                try
+                {
+                    StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(_videoShared.FilePath, UriKind.Relative));
+                    fileBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+                    _size = fileBytes.Length;
+                }
+                catch(Exception ex)
+                {
+                    _size = 0;
+                    Debug.WriteLine("PreviewVideo :: PreviewVideo , Exception : " + ex.StackTrace);
+                }
+            }
+
+            if (_size > 0)
+                VideoSizeText.Text = Utils.ConvertToStorageSizeString(_size);
+
         }
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-            if (_videoShared.Size > HikeConstants.FILE_MAX_SIZE)
+
+            if (_size == 0)
+            {
+                MessageBox.Show(AppResources.CT_FileCorrupted_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
+
+            }
+            else if (_size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-                
+
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
             }
@@ -69,6 +99,7 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
             }
+
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -76,13 +107,24 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
             if (!NavigationService.CanGoBack)
-                e.Cancel = true; 
+                e.Cancel = true;
 
             base.OnBackKeyPress(e);
         }
 
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_size == 0)
+            {
+                MessageBox.Show(AppResources.CT_FileCorrupted_Text, AppResources.CT_FileNotPlayable_Caption_Text, MessageBoxButton.OK);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
+                
+                return;
+            }
+
             App.ViewModel.PauseBackgroundAudio();
             Utils.PlayFileInMediaPlayer(_videoShared.FilePath);
         }
