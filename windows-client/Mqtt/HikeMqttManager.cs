@@ -64,8 +64,6 @@ namespace windows_client.Mqtt
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
-        private int brokerPortNumber = AccountUtils.MQTT_PORT;
-
         //        private HikeMqttPersistence persistence = null;
 
         /*
@@ -160,7 +158,10 @@ namespace windows_client.Mqtt
             {
                 // try to connect
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                mqttConnection.connect(IpManager.Instance.GetIp(), brokerPortNumber);
+                string ip;
+                int port;
+                IpManager.Instance.GetIpAndPort(out ip, out port);
+                mqttConnection.connect(ip, port);
             }
             catch (Exception ex)
             {

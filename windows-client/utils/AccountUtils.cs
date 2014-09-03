@@ -31,6 +31,11 @@ namespace windows_client.utils
         private static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
 
         private static readonly int PRODUCTION_PORT = 80;
+       
+        /// <summary>
+        /// Port number 5222
+        /// </summary>
+        public static readonly int MQTT_PRODUCTION_XMPP_PORT = 5222;
 
         private static readonly int STAGING_PORT = 8080;
 
@@ -557,7 +562,7 @@ namespace windows_client.utils
                     bool on_off = (bool)vars[3];
                     finalCallbackFunction = vars[4] as parametrisedPostResponseFunction;
                     obj = vars[5];
-                    data.Add("dev_token",push_token);
+                    data.Add("dev_token", push_token);
                     data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
                     data.Add(HikeConstants.PREVIEW, on_off);
                     break;
@@ -1029,7 +1034,7 @@ namespace windows_client.utils
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();
-                                    
+
                                     prefContactList.Add(msisdn);
                                 }
                             }
@@ -1047,7 +1052,7 @@ namespace windows_client.utils
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
-                
+
                 if (isRefresh)
                 {
                     GroupManager.Instance.LoadGroupCache();

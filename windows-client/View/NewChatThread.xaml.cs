@@ -44,6 +44,9 @@ using System.Windows.Documents;
 using Windows.System;
 using Windows.Storage;
 using windows_client.Model.Sticker;
+using windows_client.utils.ServerTips;
+using System.Windows.Resources;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -235,6 +238,17 @@ namespace windows_client.View
 
             if (App.ViewModel.IsDarkMode)
                 darkModeLayer.Visibility = Visibility.Visible;
+
+            TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
+            TipManager.Instance.ChatScreenTipChanged += Instance_ShowServerTip;
+        }
+
+        private void Instance_ShowServerTip(object sender, EventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ShowServerTips();
+            });
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -471,7 +485,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ResumeBackgroundAudio();//in case of video playback
+            App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -634,7 +648,8 @@ namespace windows_client.View
             #endregion
             #region AUDIO FT
             if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
             {
                 AudioFileTransfer();
             }
@@ -657,6 +672,12 @@ namespace windows_client.View
             {
                 MultipleImagesTransfer();
             }
+            #endregion
+
+            #region Server Tips
+
+            ShowServerTips();
+
             #endregion
 
             if (_patternNotLoaded)
@@ -684,7 +705,7 @@ namespace windows_client.View
 
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
                     mediaElement.Source = null;
                 }
             }
@@ -696,7 +717,7 @@ namespace windows_client.View
                     {
                         PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
-                        ResumeBackgroundAudio();
+                        App.ViewModel.ResumeBackgroundAudio();
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
@@ -734,7 +755,7 @@ namespace windows_client.View
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
 
                     if (currentAudioMessage != null)
                     {
@@ -814,7 +835,7 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-                ResumeBackgroundAudio();
+                App.ViewModel.ResumeBackgroundAudio();
             }
 
             if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
@@ -973,6 +994,7 @@ namespace windows_client.View
                 {
                     ConversationListObject co = (ConversationListObject)obj;
                     mContactNumber = co.Msisdn;
+
                     if (co.ContactName != null)
                         mContactName = co.ContactName;
                     else
@@ -3142,7 +3164,7 @@ namespace windows_client.View
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
-                ResumeBackgroundAudio();
+                App.ViewModel.ResumeBackgroundAudio();
             }
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
@@ -3333,13 +3355,44 @@ namespace windows_client.View
 
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                PauseBackgroundAudio();
+                App.ViewModel.PauseBackgroundAudio();
                 string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
             else
                 displayAttachment(msg);
+
+        }
+
+        private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
+            string tempName = Convert.ToString(msg.MessageId);
+            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
+            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
+            
+            if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                targetFileName = targetFileName + ".mp4";
+            else if(msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                targetFileName = targetFileName + ".jpg";
+
+            bool isSaveSuccessful = false;
+            BackgroundWorker bgWorker = new BackgroundWorker();
+            bgWorker.DoWork += (ss, ee) =>
+            {
+                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
+                isSaveSuccessful = result.Result;
+            };
+            bgWorker.RunWorkerAsync();
+            bgWorker.RunWorkerCompleted += (sf, ef) =>
+            {
+                if (isSaveSuccessful)
+                    MessageBox.Show(AppResources.SaveSuccess_Txt);
+                else
+                    MessageBox.Show(AppResources.Something_Wrong_Txt);
+            };
 
         }
 
@@ -3355,6 +3408,9 @@ namespace windows_client.View
         bool isEmoticonLoaded = false;
         private void emoticonButton_Click(object sender, EventArgs e)
         {
+            if (_tipMode == ToolTipMode.STICKERS)
+                HideServerTips();
+
             var appButton = sender as ApplicationBarIconButton;
 
             if (JumpToBottomGrid.Visibility == Visibility.Collapsed)
@@ -3478,6 +3534,9 @@ namespace windows_client.View
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
+            if (_tipMode == ToolTipMode.ATTACHMENTS)
+                HideServerTips();
+
             if (recordGrid.Visibility == Visibility.Visible)
             {
                 recordGrid.Visibility = Visibility.Collapsed;
@@ -3549,9 +3608,15 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
-        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void sendCamcorder_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/ViewVideos.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
@@ -4039,10 +4104,10 @@ namespace windows_client.View
                     }
                     if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                         updateLastMsgColor(convMessage.Msisdn);
-                    
+
                     // Update UI
                     HideTypingNotification();
-                    
+
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -4171,7 +4236,7 @@ namespace windows_client.View
                     msgMap.TryGetValue(msgId, out msg);
                     if (msg != null)
                     {
-                        if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                        if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                             msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
                         else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
                             msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
@@ -4224,7 +4289,7 @@ namespace windows_client.View
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
                         {
-                            if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                            if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                 msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
@@ -4288,7 +4353,7 @@ namespace windows_client.View
 
                                     idsToUpdate.Add(kv.Key);
 
-                                    if (msg.MessageStatus >= ConvMessage.State.FORCE_SMS_SENT_CONFIRMED && msg.MessageStatus < ConvMessage.State.SENT_SOCKET_WRITE)
+                                    if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                                         msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                                     else
                                         msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
@@ -4646,7 +4711,7 @@ namespace windows_client.View
         #region FileTransfer
 
         bool _uploadProgressBarIsTapped = false;
-        bool resumeMediaPlayerAfterDone = false;
+
 
         void FileTransferStatusUpdated(object sender, FileTransferSatatusChangedEventArgs e)
         {
@@ -4768,23 +4833,7 @@ namespace windows_client.View
             }
         }
 
-        void PauseBackgroundAudio()
-        {
-            if (!MediaPlayer.GameHasControl)
-            {
-                MediaPlayer.Pause();
-                resumeMediaPlayerAfterDone = true;
-            }
-        }
 
-        void ResumeBackgroundAudio()
-        {
-            if (resumeMediaPlayerAfterDone)
-            {
-                MediaPlayer.Resume();
-                resumeMediaPlayerAfterDone = false;
-            }
-        }
 
         private void PauseResume_Tapped(object sender, RoutedEventArgs e)
         {
@@ -4891,7 +4940,35 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
+            {
+                VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                thumbnail = videoShared.ThumbnailBytes;
+                
+                if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                {
+                    BitmapImage image = new BitmapImage();
+                    UI_Utils.Instance.createImageFromBytes(thumbnail, image);
+                    thumbnail = UI_Utils.DiminishThumbnailQuality(image);
+                }
 
+                try
+                {
+                    StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
+                    fileBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+
+                if (fileBytes == null)
+                    return;
+
+                isAudio = false;
+            }
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
@@ -4986,9 +5063,9 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
-                List<PhotoClass> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoClass>;
+                List<PhotoItem> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoItem>;
 
-                foreach (PhotoClass pic in listPic)
+                foreach (PhotoItem pic in listPic)
                 {
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
@@ -5143,7 +5220,7 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                PauseBackgroundAudio();
+                App.ViewModel.PauseBackgroundAudio();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
@@ -5166,7 +5243,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
-                                    ResumeBackgroundAudio();
+                                    App.ViewModel.ResumeBackgroundAudio();
                                 }
                                 else
                                 {
@@ -5175,7 +5252,7 @@ namespace windows_client.View
 
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    PauseBackgroundAudio();
+                                    App.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5189,7 +5266,7 @@ namespace windows_client.View
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    PauseBackgroundAudio();
+                                    App.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5199,7 +5276,7 @@ namespace windows_client.View
                             try
                             {
                                 mediaElement.Source = null;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                                 {
                                     if (store.FileExists(fileLocation))
@@ -5260,7 +5337,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -5304,7 +5381,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                PauseBackgroundAudio();
+                                App.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
 
                                 if (currentAudioMessage != null)
@@ -5360,7 +5437,7 @@ namespace windows_client.View
                         CompositionTarget.Rendering -= CompositionTarget_Rendering;
                         CompositionTarget.Rendering += CompositionTarget_Rendering;
 
-                        PauseBackgroundAudio();
+                        App.ViewModel.PauseBackgroundAudio();
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -5457,7 +5534,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            ResumeBackgroundAudio();
+            App.ViewModel.ResumeBackgroundAudio();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -5472,7 +5549,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            ResumeBackgroundAudio();
+            App.ViewModel.ResumeBackgroundAudio();
         }
 
         private void forwardAttachmentMessage()
@@ -5771,6 +5848,9 @@ namespace windows_client.View
 
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (_tipMode == ToolTipMode.CHAT_THEMES)
+                HideServerTips();
+
             chatBackgroundPopUp_Opened();
         }
 
@@ -5780,7 +5860,6 @@ namespace windows_client.View
             chatThemeHeader.Visibility = Visibility.Collapsed;
             userHeader.Visibility = Visibility.Visible;
             openChatBackgroundButton.Opacity = 1;
-
         }
 
         void chatBackgroundPopUp_Opened()
@@ -6851,7 +6930,7 @@ namespace windows_client.View
                 {
                     currentAudioMessage.IsPlaying = false;
                     mediaElement.Pause();
-                    ResumeBackgroundAudio();
+                    App.ViewModel.ResumeBackgroundAudio();
                 }
             }
 
@@ -7485,5 +7564,141 @@ namespace windows_client.View
             });
         }
         #endregion
+
+        #region SERVER TIPS
+
+        void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
+            bool isRightIconClickedEnabled, bool isFullTipTappedEnabled)
+        {
+            chatScreenToolTip.LeftIconSource = leftIconSource;
+            chatScreenToolTip.RightIconSource = rightIconSource;
+            chatScreenToolTip.TipText = bodyText;
+            chatScreenToolTip.TipHeaderText = headerText;
+
+            chatScreenToolTip.RightIconClicked -= chatScreenToolTip_RightIconClicked;
+
+            if (isRightIconClickedEnabled)
+                chatScreenToolTip.RightIconClicked += chatScreenToolTip_RightIconClicked;
+
+            chatScreenToolTip.FullTipTapped -= chatScreenToolTip_FullTipTapped;
+
+            if (isFullTipTappedEnabled)
+                chatScreenToolTip.FullTipTapped += chatScreenToolTip_FullTipTapped;
+        }
+
+        ToolTipMode _tipMode;
+
+        void UpdateToolTip(bool isModeChanged)
+        {
+            chatScreenToolTip.ResetToolTip();
+
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipStickers, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipChatTheme, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipAttachment, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ChatScreenTip.HeaderText, TipManager.ChatScreenTip.BodyText, true, true);
+                    break;
+            }
+
+            if (_tipMode != ToolTipMode.DEFAULT && !chatScreenToolTip.IsShow)
+                chatScreenToolTip.IsShow = true;
+
+        }
+
+        private void chatScreenToolTip_RightIconClicked(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    HideServerTips();
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    HideServerTips();
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    HideServerTips();
+                    break;
+            }
+        }
+
+        private void chatScreenToolTip_FullTipTapped(object sender, EventArgs e)
+        {
+            switch (_tipMode)
+            {
+                case ToolTipMode.DEFAULT:
+
+                    break;
+
+                case ToolTipMode.CHAT_THEMES:
+
+                    HideServerTips();
+                    chatBackgroundPopUp_Opened();
+                    break;
+
+                case ToolTipMode.ATTACHMENTS:
+
+                    HideServerTips();
+                    fileTransferButton_Click(null, null);
+                    break;
+
+                case ToolTipMode.STICKERS:
+
+                    HideServerTips();
+
+                    if (stickersIconButton != null)
+                        emoticonButton_Click(stickersIconButton, null);
+
+                    break;
+            }
+        }
+
+        void ShowServerTips()
+        {
+            if (TipManager.ChatScreenTip != null)
+            {
+                _tipMode = TipManager.ChatScreenTip.TipType;
+                UpdateToolTip(true);
+            }
+
+        }
+
+        void HideServerTips()
+        {
+            if (TipManager.ChatScreenTip != null && _tipMode == TipManager.ChatScreenTip.TipType)
+            {
+                if (TipManager.ChatScreenTip != null)
+                    TipManager.Instance.RemoveTip(TipManager.ChatScreenTip.TipId);
+
+                chatScreenToolTip.IsShow = false;
+                _tipMode = ToolTipMode.DEFAULT;
+                UpdateToolTip(true);
+            }
+        }
+
+        #endregion
     }
+
 }

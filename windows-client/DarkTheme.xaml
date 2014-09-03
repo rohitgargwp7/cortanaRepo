@@ -59,6 +59,8 @@ private copy.
     <SolidColorBrush x:Key="HikeBlack" Color="#2c313d"/>
     <SolidColorBrush x:Key="StealthRed" Color="#ef554e"/>
 
+    <SolidColorBrush x:Key="TipGreen" Color="#23b27e" />
+
     <SolidColorBrush x:Key="HikeBGBrush" Color="#1b1b1b"/>
     <SolidColorBrush x:Key="HikeFGBrush" Color="#ffffff"/>
     <SolidColorBrush x:Key="HikeHeaderBrush" Color="#232323"/>

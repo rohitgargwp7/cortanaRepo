@@ -310,9 +310,11 @@ namespace finalmqtt.Client
             {
                 if (e.MessageData != null)
                 {
-                    if (e.MessageData is long && (long)e.MessageData > 0)
+                    if (e.MessageData is long)
                     {
-                        CallOnSocketWrite((long)e.MessageData);
+                        long messageId = (long)e.MessageData;
+                        if (messageId > 0)
+                            CallOnSocketWrite(messageId);
                     }
                     else if (e.MessageData is long[])
                     {
@@ -435,6 +437,7 @@ namespace finalmqtt.Client
         /// </summary>
         /// <param name="msg">Message to be written (or sent)</param>
         /// <param name="scheduledAction">Callback to be called in case of error</param>
+        /// <param name="messageData">Do not pass if not required</param>
         public void sendCallbackMessage(Message msg, Callback cb, object messageData = null)
         {
             if (_socket == null || !_socket.Connected || !connackReceived || msg == null)
@@ -471,18 +474,14 @@ namespace finalmqtt.Client
 
         }
 
-        public Callback onReceivingAck(short messageId)
-        {
-            Callback cb = MsgCallBacksMapGetValue(messageId);
-            if (cb != null)
-            {
-                MsgCallbacksMapRemove(messageId);
-            }
-            ScheduledActionsMapRemove(messageId);
-            return cb;
-        }
-
-        public void sendCallbackMessage(Message[] msg, Callback[] cb, object messageData)
+        /// <summary>
+        /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
+        /// If ack is not received in 5 seconds, then callback's onFailure is called
+        /// </summary>
+        /// <param name="msg">Array of Messages to be written (or sent)</param>
+        /// <param name="scheduledAction">Array of Callbacks to be called in case of error</param>
+        /// <param name="messageData">Do not pass if not required</param>
+        public void sendCallbackMessage(Message[] msg, Callback[] cb, object messageData = null)
         {
             if (_socket == null || !_socket.Connected || !connackReceived || msg == null || cb == null)
             {
@@ -536,6 +535,17 @@ namespace finalmqtt.Client
             }
         }
 
+        public Callback onReceivingAck(short mqttMessageId)
+        {
+            Callback cb = MsgCallBacksMapGetValue(mqttMessageId);
+            if (cb != null)
+            {
+                MsgCallbacksMapRemove(mqttMessageId);
+            }
+            ScheduledActionsMapRemove(mqttMessageId);
+            return cb;
+        }
+
         #region PING
 
         public void ping()// throws IOException
@@ -586,6 +596,13 @@ namespace finalmqtt.Client
 
         #endregion
 
+        /// <summary>
+        /// Publishes messages and set callback for single message
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        /// <param name="qos"></param>
+        /// <param name="cb">Callback for message published</param>
         public void publish(String topic, byte[] message, QoS qos, Callback cb) //throws IOException 
         {
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
@@ -607,6 +624,32 @@ namespace finalmqtt.Client
             sendCallbackMessage(msg, cb, messageData);
         }
 
+        /// <summary>
+        /// Publishes messages and set callback for multiple messages
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        /// <param name="qos"></param>
+        /// <param name="cb">Callback for message published</param>
+        public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
+        {
+            PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
+            for (int i = 0; i < message.Length; i++)
+            {
+                messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
+                messagesToPublish[i].setMessageId(getNextMessageId());
+            }
+            sendCallbackMessage(messagesToPublish, cb);
+        }
+
+        /// <summary>
+        /// Publishes messages and set callback for multiple messages, use this if messageId > 0
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        /// <param name="qos"></param>
+        /// <param name="cb">Callback for message published</param>
+        /// <param name="messageData"></param>
         public void publish(String topic, byte[][] message, QoS qos, Callback[] cb, object messageData) //throws IOException 
         {
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
@@ -689,19 +732,23 @@ namespace finalmqtt.Client
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
-                Callback cb;
-                IDisposable scheduledAction;
-                cb = MsgCallBacksMapGetValue(messageId);
-                if (cb != null)
+                if (messageId != 0)
                 {
-                    scheduledAction = ScheduledActionsMapGetValue(messageId);
-                    if (scheduledAction != null)
+                    Callback cb;
+                    IDisposable scheduledAction;
+                    cb = MsgCallBacksMapGetValue(messageId);
+                    if (cb != null)
                     {
-                        ScheduledActionsMapRemove(messageId);
-                        scheduledAction.Dispose();
+                        scheduledAction = ScheduledActionsMapGetValue(messageId);
+                        if (scheduledAction != null)
+                        {
+                            ScheduledActionsMapRemove(messageId);
+                            scheduledAction.Dispose();
+                        }
+                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
+                        MsgCallbacksMapRemove(messageId);
+                        cb.onSuccess();
                     }
-                    MsgCallbacksMapRemove(messageId);
-                    cb.onSuccess();
                 }
             }
 

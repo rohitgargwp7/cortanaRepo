@@ -14,7 +14,7 @@ namespace windows_client.utils
     {
         private readonly Dictionary<TKey, NodeInfo> cachedNodesDictionary = new Dictionary<TKey, NodeInfo>();
         private readonly LinkedList<NodeInfo> lruLinkedList = new LinkedList<NodeInfo>();
-        private readonly object _lockObj= new Object();
+        private readonly object _lockObj = new Object();
 
         private readonly int maxSize;
         //  private readonly TimeSpan timeOut;
@@ -73,7 +73,7 @@ namespace windows_client.utils
 
             try
             {
-                lock (key)
+                lock (_lockObj)
                 {
                     if (this.cachedNodesDictionary.TryGetValue(key, out node))
                     {
@@ -151,7 +151,7 @@ namespace windows_client.utils
             //rwl.EnterWriteLock();
             try
             {
-                lock (stateinfo)
+                lock (_lockObj)
                 {
                     TKey key = (TKey)stateinfo;
                     NodeInfo nodeInfo;

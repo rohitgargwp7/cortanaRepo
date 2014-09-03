@@ -80,6 +80,8 @@ namespace windows_client
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
+        public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
+        public static readonly string HikeDirectoryName = "hike";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -109,6 +111,7 @@ namespace windows_client
         public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 6; //seconds
         public static readonly int SEND_START_TYPING_TIMER = 4; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
+        public static readonly int STARTING_BASE_YEAR = 1600; //file time is ticks starting from jan 1 1601 so adding 1600 years
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
@@ -268,7 +271,7 @@ namespace windows_client
         public static readonly string CHAT_DISABLED = "di";
         public static readonly string HIDDEN_MODE_ENABLED = "enabled";
         public static readonly string HIDDEN_MODE_TYPE = "ts";
-       
+
         public static readonly string PREVIEW = "preview";
 
         public static string MOOD_TOD_SEPARATOR = ":";
@@ -314,6 +317,7 @@ namespace windows_client
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";
+        public static string VIDEO_SHARED = "videoShared";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
@@ -445,7 +449,7 @@ namespace windows_client
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
-        
+
         #endregion
 
         public static class Extras
@@ -542,5 +546,21 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
+
+        #region SERVER TIPS
+        public static class ServerTips
+        {
+            public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
+            public static readonly string CONV_PAGE_TIP_ID = "cnvPgTipId";
+            public const string STICKER_TIPS = "stk";
+            public const string PROFILE_TIPS = "pp";
+            public const string ATTACHMENT_TIPS = "ft";
+            public const string INFORMATIONAL_TIPS = "info";
+            public const string FAVOURITE_TIPS = "fav";
+            public const string THEME_TIPS = "theme";
+            public const string INVITATION_TIPS = "inv";
+            public const string STATUS_UPDATE_TIPS = "stts";
+        }
+        #endregion
     }
 }

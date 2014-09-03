@@ -10,16 +10,18 @@
     d:DesignHeight="480" d:DesignWidth="480">
 
     <Grid x:Name="toolTipGrid" Tap="toolTipGrid_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="100" RenderTransformOrigin="0.5,0">
-    	<Grid.RenderTransform>
-    		<CompositeTransform/>
-    	</Grid.RenderTransform>
+        <Grid.RenderTransform>
+            <CompositeTransform/>
+        </Grid.RenderTransform>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="leftIcon" Grid.Column="0" HorizontalAlignment="Left" Height="93" Width="93" VerticalAlignment="Center" Tap="leftIcon_Tap" Visibility="Collapsed"/>
-        <TextBlock x:Name="tipTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,12" Foreground="White"/>
+        <Image x:Name="leftIcon" HorizontalAlignment="Left" Height="93" Width="93" VerticalAlignment="Center" Tap="leftIcon_Tap" Visibility="Collapsed"/>
+        <TextBlock x:Name="TextGrid" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap" Foreground="White" Margin="24,0,24,0">
+            <Run x:Name="tipHeaderText"  FontWeight="Normal"/><Run x:Name="tipTextbox" FontWeight="Normal"/>
+        </TextBlock>
         <Image x:Name="rightIcon" Grid.Column="2" HorizontalAlignment="Right" Height="93" Width="93" VerticalAlignment="Center" Tap="rightIcon_Tap" Visibility="Collapsed"/>
     </Grid>
 </UserControl>

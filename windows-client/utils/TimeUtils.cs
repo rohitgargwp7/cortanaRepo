@@ -23,6 +23,15 @@ namespace windows_client.utils
             return dateStr;
         }
 
+        //Used on video preview: Function to get duration in Human Readable form from Milliseconds
+        public static string GetDurationInHourMinFromMilliseconds(int ms)
+        {
+            TimeSpan t = TimeSpan.FromMilliseconds(ms);
+            string answer = t.TotalHours >= 1 ? t.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture)
+                                             : t.ToString("mm\\:ss", CultureInfo.InvariantCulture);
+            return answer;
+        }
+
         //used on conversation list
         public static string getTimeString(long timestamp)
         {
