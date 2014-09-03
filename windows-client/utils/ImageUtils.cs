@@ -65,6 +65,18 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage _hikeLogo;
+        public BitmapImage HikeLogo
+        {
+            get
+            {
+                if (_hikeLogo == null)
+                    _hikeLogo = new BitmapImage(new Uri("/View/images/ConversationPage/hike_logo.jpg", UriKind.Relative));
+
+                return _hikeLogo;
+            }
+        }
+
         BitmapImage _muteIconBlue;
         public BitmapImage MuteIconBlue
         {
@@ -2060,6 +2072,9 @@ namespace windows_client.utils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
+
+            if (Utils.IsHikeBotMsg(msisdn))
+                return HikeLogo;
 
             int index = computeHash(msisdn);
             if (isHighRes)

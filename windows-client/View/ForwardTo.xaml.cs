@@ -255,7 +255,7 @@ namespace windows_client.View
             }
             else if (enterNameTxt.Text.Length < stringBuilderForContactNames.Length || !enterNameTxt.Text.Contains(stringBuilderForContactNames.ToString()))
             {
-                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
                 return;
             }
 

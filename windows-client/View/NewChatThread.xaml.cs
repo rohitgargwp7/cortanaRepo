@@ -2535,6 +2535,10 @@ namespace windows_client.View
             if (openChatBackgroundButton.Opacity == 0)
                 return;
 
+            // Don't open image for hike bot.
+            if (_isHikeBot)
+                return;
+
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
