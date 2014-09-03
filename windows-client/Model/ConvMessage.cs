@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Windows;
 using System.ComponentModel;
 using System.Data.Linq.Mapping;
@@ -33,7 +33,6 @@ namespace windows_client.Model
         private long _timestamp;
         private long _mappedMessageId; // this corresponds to msgID stored in receiver's DB
         private bool _isInvite;
-        private bool _isSent;
         private bool _isSms;
         private string _groupParticipant;
         private string metadataJsonString;
@@ -58,6 +57,7 @@ namespace windows_client.Model
             FORCE_SMS_SENT_CONFIRMED,
             FORCE_SMS_SENT_DELIVERED, /* message delivered to client device */
             FORCE_SMS_SENT_DELIVERED_READ, /* message viewed by recipient */
+            SENT_SOCKET_WRITE // mesage written on socket layer but not acked back
         }
 
         public enum ParticipantInfoState
@@ -266,12 +266,11 @@ namespace windows_client.Model
                     NotifyPropertyChanged("BubbleBackGroundColor");
                     NotifyPropertyChanged("MessageTextForeGround");
                     NotifyPropertyChanged("FileFailedImageVisibility");
-                    if (_messageStatus == State.SENT_CONFIRMED)
+                    if (_messageStatus == State.SENT_CONFIRMED || _messageStatus == State.SENT_SOCKET_WRITE)
                     {
                         SdrImageVisibility = Visibility.Visible;
                         NotifyPropertyChanged("SdrImageVisibility");
                     }
-
                     if (_messageStatus >= State.FORCE_SMS_SENT_CONFIRMED)
                         NotifyPropertyChanged("TimeStampStr");
                 }
@@ -445,6 +444,7 @@ namespace windows_client.Model
             {
                 return (_messageStatus == State.SENT_UNCONFIRMED ||
                         _messageStatus == State.SENT_CONFIRMED ||
+                        _messageStatus == State.SENT_SOCKET_WRITE ||
                         _messageStatus == State.SENT_DELIVERED ||
                         _messageStatus == State.SENT_DELIVERED_READ ||
                         _messageStatus == State.SENT_FAILED ||
@@ -458,7 +458,7 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSms || MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED;
+                return _isSms || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
             }
             set
             {
@@ -525,7 +525,7 @@ namespace windows_client.Model
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                 {
-                    if (MessageStatus >= State.FORCE_SMS_SENT_CONFIRMED)
+                    if (MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                         return String.Format(AppResources.Sent_As_SMS, TimeUtils.getTimeStringForChatThread(_timestamp));
                     else
                         return TimeUtils.getTimeStringForChatThread(_timestamp);
@@ -693,6 +693,7 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
+                    case ConvMessage.State.SENT_SOCKET_WRITE:
                         if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
                             return UI_Utils.Instance.Sent_ChatTheme;
                         else
@@ -861,6 +862,17 @@ namespace windows_client.Model
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility SaveFileInDirectoryVisibility
+        {
+            get
+            {
+                if (_fileAttachment != null && _fileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
+                    return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
             }
@@ -1581,7 +1593,8 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && !IsGroup && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
+                //not enabling send as sms on socket write
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && App.newChatThreadPage != null && App.newChatThreadPage.IsSMSOptionValid)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1592,7 +1605,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (MessageStatus <= State.SENT_CONFIRMED)
+                if (MessageStatus == State.SENT_UNCONFIRMED || MessageStatus == State.SENT_FAILED || MessageStatus == State.SENT_SOCKET_WRITE || MessageStatus == State.SENT_CONFIRMED)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -1629,14 +1642,6 @@ namespace windows_client.Model
             this._messageId = msgid;
             this._mappedMessageId = mappedMsgId;
             this._currentOrientation = currentOrientation;
-            _isSent = (msgState == State.SENT_UNCONFIRMED ||
-                        msgState == State.SENT_CONFIRMED ||
-                        msgState == State.SENT_DELIVERED ||
-                        msgState == State.SENT_DELIVERED_READ ||
-                        msgState == State.SENT_FAILED ||
-                        msgState == State.FORCE_SMS_SENT_CONFIRMED ||
-                        msgState == State.FORCE_SMS_SENT_DELIVERED ||
-                        msgState == State.FORCE_SMS_SENT_DELIVERED_READ);
             MessageStatus = msgState;
         }
 
@@ -1650,7 +1655,6 @@ namespace windows_client.Model
             _timestamp = convMessage.Timestamp;
             _mappedMessageId = convMessage.MappedMessageId;
             _isInvite = convMessage.IsInvite;
-            _isSent = convMessage.IsSent;
             _isSms = convMessage.IsSms;
             _groupParticipant = convMessage.GroupParticipant;
             metadataJsonString = convMessage.metadataJsonString;
@@ -1708,7 +1712,7 @@ namespace windows_client.Model
                         //add thumbnail here
                         JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
                         JToken tempFileArrayToken;
-                        
+
                         //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
                         //Make it same for type of messages
                         if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
@@ -1825,16 +1829,16 @@ namespace windows_client.Model
             if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
                     {
-                        try
-                        {
-                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
-                        }
-                    });
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                    }
+                });
             }
         }
 
@@ -1977,10 +1981,10 @@ namespace windows_client.Model
                             if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                             {
                                 fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
-                                
+
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                     fileName = AppResources.ContactTransfer_Text;
-                            
+
                             }
                         }
 
