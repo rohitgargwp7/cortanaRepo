@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Windows;
 using System.ComponentModel;
 using System.Data.Linq.Mapping;
@@ -83,7 +83,6 @@ namespace windows_client.Model
             STATUS_UPDATE,
             IN_APP_TIP,
             FORCE_SMS_NOTIFICATION,
-            H2H_OFFLINE_IN_APP_TIP,
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
             MESSAGE_STATUS,
@@ -539,14 +538,6 @@ namespace windows_client.Model
             get
             {
                 return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
-            }
-        }
-
-        public BitmapImage CloseImage
-        {
-            get
-            {
-                return UI_Utils.Instance.CloseButtonWhiteImage;
             }
         }
 
@@ -1721,7 +1712,7 @@ namespace windows_client.Model
                         //add thumbnail here
                         JObject metadataFromConvMessage = JObject.Parse(this.MetaDataString);
                         JToken tempFileArrayToken;
-                        
+
                         //TODO - Madhur Garg - Metadata of sent & received location are different that's why this if statement is used.
                         //Make it same for type of messages
                         if (metadataFromConvMessage.TryGetValue("files", out tempFileArrayToken) && tempFileArrayToken != null)
@@ -1838,16 +1829,16 @@ namespace windows_client.Model
             if (PropertyChanged != null && !string.IsNullOrEmpty(propertyName))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
                     {
-                        try
-                        {
-                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
-                        }
-                    });
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                    }
+                });
             }
         }
 
