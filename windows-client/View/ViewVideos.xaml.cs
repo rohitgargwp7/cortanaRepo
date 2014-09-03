@@ -80,54 +80,46 @@ namespace windows_client.View
                     for (int index = 0; index < totalVideos; index++)
                     {
                         string filePath = string.Empty;
-                        preRecordedVideos.GetFolderInfo((byte)index, out filePath);
-                        Debug.WriteLine(filePath);
+                        string albumName = string.Empty;
+                        int videoSize;
+                        int videoDuration;
+                        double date;
+                        
+                        preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+                        if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
+                            continue;
+
+                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration, out videoSize);
+
+                        try
+                        {
+                            albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
+                            albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
+                            albumName = AppResources.Default_Video_Album_Txt;
+                        }
+
+                        VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
+                        DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+                        video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+                        VideoAlbum albumObj;
+
+                        if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                        {
+                            albumObj = new VideoAlbum(albumName, thumbBytes);
+                            videoAlbumList.Add(albumName, albumObj);
+                        }
+
+                        albumObj.Add(video);
+                        _listAllVideos.Add(video);
                     }
                 }
-                //ushort totalVideos = preRecordedVideos.GetVideoCount();
 
-                //if (totalVideos > 0)
-                //{
-                //    for (int index = 0; index < totalVideos; index++)
-                //    {
-                //        string filePath = string.Empty;
-                //        string albumName = string.Empty;
-                //        int videoSize;
-                //        int videoDuration;
-                //        double date;
-                //        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date, out videoDuration, out videoSize);
-                        
-                //        if(!filePath.Contains("C:\\Data\\Users\\Public\\Pictures\\"))
-                //            continue;
-
-                //        try
-                //        {
-                //            albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
-                //            albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
-                //            albumName = AppResources.Default_Video_Album_Txt;
-                //        }
-
-                //        VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
-                //        DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-                //        video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
-                //        VideoAlbum albumObj;
-
-                //        if (!videoAlbumList.TryGetValue(albumName, out albumObj))
-                //        {
-                //            albumObj = new VideoAlbum(albumName, thumbBytes);
-                //            videoAlbumList.Add(albumName, albumObj);
-                //        }
-
-                //        albumObj.Add(video);
-                //        _listAllVideos.Add(video);
-                //    }
-                //}
-
-                //preRecordedVideos.ClearData();
+                preRecordedVideos.ClearData();
             }
             catch (Exception ex)
             {
