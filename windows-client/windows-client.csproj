@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -199,7 +199,10 @@
     <Compile Include="Model\ContactGroup.cs" />
     <Compile Include="Model\GroupPic.cs" />
     <Compile Include="Model\ItemGroup.cs" />
-    <Compile Include="Model\MultiplePhoto\Album.cs" />
+    <Compile Include="Model\MediaShare\PhotoAlbum.cs" />
+    <Compile Include="Model\MediaShare\PhotoItem.cs" />
+    <Compile Include="Model\MediaShare\VideoAlbum.cs" />
+    <Compile Include="Model\MediaShare\VideoItem.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\ChatBackground.cs" />
@@ -209,7 +212,6 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
-    <Compile Include="Model\MultiplePhoto\Photo.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -237,6 +239,8 @@
     <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\LruCache.cs" />
     <Compile Include="utils\MD5.cs" />
+    <Compile Include="utils\ServerTips\TipInfo.cs" />
+    <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="utils\Sticker Helper\RecentStickerHelper.cs" />
     <Compile Include="utils\Sticker Helper\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
@@ -350,6 +354,9 @@
     </Compile>
     <Compile Include="View\ViewPhotoAlbums.xaml.cs">
       <DependentUpon>ViewPhotoAlbums.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewVideos.xaml.cs">
+      <DependentUpon>ViewVideos.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
@@ -511,6 +518,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ViewVideos.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -538,6 +548,8 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="RPALManifest.xml" />
+    <Content Include="View\images\AppBar\icon_send_video.png" />
     <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
@@ -651,6 +663,15 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\MediaPlayIconBig.png" />
+    <Content Include="View\images\MediaPlayIconSmall.png" />
+    <Content Include="View\images\menu_camcorder_icon.png" />
+    <Content Include="View\images\ServerTips\attachments.png" />
+    <Content Include="View\images\ServerTips\favourites.png" />
+    <Content Include="View\images\ServerTips\profilepic.png" />
+    <Content Include="View\images\ServerTips\status.png" />
+    <Content Include="View\images\ServerTips\stickers.png" />
+    <Content Include="View\images\ServerTips\Themes.png" />
     <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
     <Content Include="View\images\play_icon.png" />
@@ -661,7 +682,6 @@
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
     <Content Include="View\images\chat_joined_blue_ct.png" />
-    <Content Include="View\images\close_white.png" />
     <Content Include="View\images\owner.png" />
     <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
@@ -1109,6 +1129,12 @@
     <Content Include="View\images\typing.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
+      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
+      <Name>RPALApiComponent</Name>
+    </ProjectReference>
+  </ItemGroup>
+<ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

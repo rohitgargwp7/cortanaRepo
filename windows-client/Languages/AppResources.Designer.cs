@@ -214,6 +214,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camcorder.
+        /// </summary>
+        public static string Attachment_Camcorder_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Camcorder_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera.
         /// </summary>
         public static string Attachment_Camera_Txt {
@@ -277,11 +286,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto save photo.
+        ///   Looks up a localized string similar to Auto save photo and video.
         /// </summary>
-        public static string AutoSavePhotoSettings_Txt {
+        public static string AutoSaveSettings_Txt {
             get {
-                return ResourceManager.GetString("AutoSavePhotoSettings_Txt", resourceCulture);
+                return ResourceManager.GetString("AutoSaveSettings_Txt", resourceCulture);
             }
         }
         
@@ -1254,6 +1263,15 @@ namespace windows_client.Languages {
         public static string CT_MessageCount_Sms_User {
             get {
                 return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string Default_Video_Album_Txt {
+            get {
+                return ResourceManager.GetString("Default_Video_Album_Txt", resourceCulture);
             }
         }
         
@@ -4117,6 +4135,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to save to gallery.
+        /// </summary>
+        public static string SaveInGallery_Txt {
+            get {
+                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SaveSuccess_Txt {
@@ -4140,6 +4167,15 @@ namespace windows_client.Languages {
         public static string See_All_Txt {
             get {
                 return ResourceManager.GetString("See_All_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT VIDEO.
+        /// </summary>
+        public static string Select_Video_txt {
+            get {
+                return ResourceManager.GetString("Select_Video_txt", resourceCulture);
             }
         }
         
@@ -5413,11 +5449,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to date.
+        ///   Looks up a localized string similar to photos.
         /// </summary>
-        public static string ViewAlbums_Pivot_Date_txt {
+        public static string ViewAlbums_Pivot_Photo_txt {
             get {
-                return ResourceManager.GetString("ViewAlbums_Pivot_Date_txt", resourceCulture);
+                return ResourceManager.GetString("ViewAlbums_Pivot_Photo_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to videos.
+        /// </summary>
+        public static string ViewAlbums_Pivot_Video_txt {
+            get {
+                return ResourceManager.GetString("ViewAlbums_Pivot_Video_txt", resourceCulture);
             }
         }
         

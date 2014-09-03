@@ -541,14 +541,6 @@ namespace windows_client.Model
             }
         }
 
-        public BitmapImage CloseImage
-        {
-            get
-            {
-                return UI_Utils.Instance.CloseButtonWhiteImage;
-            }
-        }
-
         public string DispMessage
         {
             get

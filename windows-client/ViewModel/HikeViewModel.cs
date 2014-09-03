@@ -1159,5 +1159,29 @@ namespace windows_client.ViewModel
         {
             StickerHelper = null;
         }
+        
+        #region Pause/Resume Background Audio
+
+        public bool resumeMediaPlayerAfterDone = false;
+        
+        public void PauseBackgroundAudio()
+        {
+            if (!MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Pause();
+                resumeMediaPlayerAfterDone = true;
+            }
+        }
+
+        public void ResumeBackgroundAudio()
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
+        }
+        
+        #endregion
     }
 }
