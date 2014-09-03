@@ -74,7 +74,7 @@ namespace windows_client.View
             {
                 FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
                 ushort totalVideos = preRecordedVideos.GetVideoCount();
-                
+
                 if (totalVideos > 0)
                 {
                     for (int index = 0; index < totalVideos; index++)
@@ -84,14 +84,20 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date,out videoDuration,out videoSize);
                         
+                        preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+                        if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
+                            continue;
+
+                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration, out videoSize);
+
                         try
                         {
                             albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                             albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
                             albumName = AppResources.Default_Video_Album_Txt;
