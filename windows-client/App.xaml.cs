@@ -843,8 +843,8 @@ namespace windows_client
             
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.1") < 0)
             {
-                App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
-                App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
+                App.appSettings.Remove(App.TIP_MARKED_KEY);
+                App.appSettings.Remove(App.TIP_SHOW_KEY);
                 App.RemoveKeyFromAppSettings(App.CHAT_THREAD_COUNT_KEY);
             }
             
