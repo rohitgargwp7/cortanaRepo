@@ -3545,6 +3545,7 @@ namespace windows_client.View
                         InitializeToolTipControl(UI_Utils.Instance.ToolTipProfilePic, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, true);
                     else
                         HideTips();
+
                     break;
 
                 case ToolTipMode.STATUS_UPDATE:
