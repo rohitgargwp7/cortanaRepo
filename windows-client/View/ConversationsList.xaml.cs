@@ -854,6 +854,7 @@ namespace windows_client.View
 
                 if (_tipMode == ToolTipMode.FAVOURITES)
                     HideTips();
+
                 // there will be two background workers that will independently load three sections
                 #region FAVOURITES
 
@@ -3653,7 +3654,6 @@ namespace windows_client.View
         /// <param name="e"></param>
         void conversationPageToolTip_RightIconClicked(object sender, EventArgs e)
         {
-            MessageBoxResult mBox;
             switch (_tipMode)
             {
                 case ToolTipMode.RESET_HIDDEN_MODE:
@@ -3661,7 +3661,7 @@ namespace windows_client.View
                     if (_resetTimer != null)
                         _resetTimer.Stop();
 
-                    mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
+                    MessageBoxResult mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
 
                     if (mBox == MessageBoxResult.OK)
                     {
@@ -3700,9 +3700,9 @@ namespace windows_client.View
                 case ToolTipMode.RESET_HIDDEN_MODE_COMPLETED:
 
 
-                    mBox = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
+                    MessageBoxResult mBox1 = MessageBox.Show(AppResources.HiddenModeReset_CancelConf_Body_Txt, AppResources.HiddenModeReset_CancelConf_Header_Txt, MessageBoxButton.OKCancel);
 
-                    if (mBox == MessageBoxResult.OK)
+                    if (mBox1 == MessageBoxResult.OK)
                     {
                         App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
