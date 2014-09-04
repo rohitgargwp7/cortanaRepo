@@ -113,6 +113,10 @@ namespace windows_client.DbUtils
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+            {
+                obj.LastMessage = convMessage.Message;
+            }
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
                 obj.LastMessage = convMessage.Message;
