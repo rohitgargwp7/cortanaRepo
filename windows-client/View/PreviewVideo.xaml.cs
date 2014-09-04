@@ -105,7 +105,6 @@ namespace windows_client.View
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-
             base.OnBackKeyPress(e);
         }
 

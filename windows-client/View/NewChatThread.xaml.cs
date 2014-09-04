@@ -473,6 +473,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
@@ -1701,7 +1702,7 @@ namespace windows_client.View
             {
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.GroupInfo_Txt;
-                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.Click += infoMenuItem_Click;
                 infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
                 appBar.MenuItems.Add(infoMenuItem);
 
@@ -1740,7 +1741,7 @@ namespace windows_client.View
 
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.User_Info_Txt;
-                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.Click += infoMenuItem_Click;
                 appBar.MenuItems.Add(infoMenuItem);
             }
 
@@ -1755,8 +1756,19 @@ namespace windows_client.View
             appBar.MenuItems.Add(blockMenuItem);
         }
 
+        void infoMenuItem_Click(object sender, EventArgs e)
+        {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
+            GoToProfileScreen();
+        }
+
         void blockMenuItem_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             ContactInfo cInfo = new ContactInfo(mContactNumber, mContactName, isOnHike);
             App.ViewModel.BlockedHashset.Add(mContactNumber);
 
@@ -1800,6 +1812,9 @@ namespace windows_client.View
 
         private void callUser_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             PhoneCallTask phoneCallTask = new PhoneCallTask();
             phoneCallTask.PhoneNumber = mContactNumber;
             phoneCallTask.DisplayName = mContactName;
@@ -1815,6 +1830,9 @@ namespace windows_client.View
 
         void clearChatItem_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
@@ -1843,11 +1861,17 @@ namespace windows_client.View
 
         private void addUser_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             ContactUtils.saveContact(mContactNumber, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
 
@@ -1887,6 +1911,9 @@ namespace windows_client.View
 
         private void muteUnmuteGroup_Click(object sender, EventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             JObject obj = new JObject();
             JObject o = new JObject();
             o["id"] = mContactNumber;
@@ -2535,11 +2562,13 @@ namespace windows_client.View
                 return;
 
             if (_isHikeBot)
-            {
-                userImage_Tap(null, null);
                 return;
-            }
 
+            GoToProfileScreen();
+        }
+
+        private void GoToProfileScreen()
+        {
             if (isGroupChat)
             {
                 if (mUserIsBlocked || !isGroupAlive)
@@ -2920,9 +2949,11 @@ namespace windows_client.View
 
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             _isContextMenuOpen = true;
         }
-
 
         private void MenuItem_Click_DirectMessage(object sender, RoutedEventArgs e)
         {
@@ -3209,7 +3240,6 @@ namespace windows_client.View
             }
             else
                 displayAttachment(msg);
-
         }
 
         private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
@@ -5019,6 +5049,9 @@ namespace windows_client.View
 
         public void displayAttachment(ConvMessage convMessage)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
 
             if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
