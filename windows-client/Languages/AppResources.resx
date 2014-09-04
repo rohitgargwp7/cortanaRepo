@@ -1265,7 +1265,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>Exceeds limit</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 25 MB.</value>
@@ -2207,7 +2207,7 @@ Download it like asap from http://hike.in!</value>
   <data name="AutoSaveSettings_Txt" xml:space="preserve">
     <value>Auto save photo and video</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Saved successfully</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2247,5 +2247,11 @@ Download it like asap from http://hike.in!</value>
   <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
     <value>Create new password</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>File has been added to the gallery</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Saving failed</value>
   </data>
 </root>
