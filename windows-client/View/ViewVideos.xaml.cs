@@ -116,14 +116,7 @@ namespace windows_client.View
                         else
                         {
                             if (albumObj.ThumbBytes == null && videoThumbBytes != null)
-                            {
                                 albumObj.ThumbBytes = videoThumbBytes;
-                            }
-                        }
-
-                        if (videoThumbBytes == null)
-                        {
-                            //video.ThumbnailBytes = Utils.DefaultThumbnailForVideoFile();
                         }
                         
                         albumObj.Add(video);
@@ -138,15 +131,6 @@ namespace windows_client.View
                 Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
 
-            var nullThumbnailAlbums =
-                from album in videoAlbumList
-                where (album.Value.ThumbBytes == null)
-                select album.Key;
-
-            foreach(var album in nullThumbnailAlbums)
-            {
-                //videoAlbumList[album].ThumbBytes = Utils.DefaultThumbnailForAlbumFile();
-            }
             return videoAlbumList.Values.ToList();
         }
 

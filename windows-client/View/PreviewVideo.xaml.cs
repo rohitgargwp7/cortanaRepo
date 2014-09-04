@@ -75,9 +75,9 @@ namespace windows_client.View
         void shareVideo_Click(object sender, EventArgs e)
         {
 
-            if (_size == 0)
+            if (_size <= 0)
             {
-                MessageBox.Show(AppResources.CT_FileCorrupted_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
                 if (NavigationService.CanGoBack)
@@ -106,17 +106,14 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
-            if (!NavigationService.CanGoBack)
-                e.Cancel = true;
-
             base.OnBackKeyPress(e);
         }
 
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (_size == 0)
+            if (_size <= 0)
             {
-                MessageBox.Show(AppResources.CT_FileCorrupted_Text, AppResources.CT_FileNotPlayable_Caption_Text, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.CT_FileNotPlayable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
                 
                 if (NavigationService.CanGoBack)

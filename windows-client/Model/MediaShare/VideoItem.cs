@@ -90,8 +90,12 @@ namespace windows_client.Model
             get
             {
                 if (_thumbnailImage == null)
-                    _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
-                
+                {
+                    if(_thumbnailBytes != null)
+                        _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
+                    else
+                        _thumbnailImage = new BitmapImage(new Uri("/View/images/video_default.png",UriKind.Relative));
+                }
                 return _thumbnailImage;
             }
         }
