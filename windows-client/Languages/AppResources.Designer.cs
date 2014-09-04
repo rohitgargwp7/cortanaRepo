@@ -4182,6 +4182,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
+        public static string SaveSuccess_Caption_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Caption_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File has been added to the gallery.
+        /// </summary>
         public static string SaveSuccess_Txt {
             get {
                 return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
@@ -4869,6 +4878,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving video failed.
+        /// </summary>
+        public static string Something_WrongCaption_Txt {
+            get {
+                return ResourceManager.GetString("Something_WrongCaption_Txt", resourceCulture);
             }
         }
         
