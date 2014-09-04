@@ -81,6 +81,7 @@ namespace windows_client
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
         public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
         public static readonly string HikeDirectoryName = "hike";
+        public static readonly string ValidVideoDirectoryPath = "C:\\Data\\Users\\Public\\Pictures\\";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";

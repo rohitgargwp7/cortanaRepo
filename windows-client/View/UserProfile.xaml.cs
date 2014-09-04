@@ -1078,7 +1078,7 @@ namespace windows_client.View
             {
                 addToContactsAppBarButton = new ApplicationBarIconButton()
                 {
-                    Text = AppResources.UserProfile_AddToContacts_Btn,
+                    Text = AppResources.Save_Contact_Txt,
                     IconUri = new Uri("/view/images/AppBar/appbar_addfriend.png", UriKind.Relative)
                 };
 

@@ -1240,6 +1240,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File is corrupted.
+        /// </summary>
+        public static string CT_FileCorrupted_Text {
+            get {
+                return ResourceManager.GetString("CT_FileCorrupted_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File cannot be played.
+        /// </summary>
+        public static string CT_FileNotPlayable_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotPlayable_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File cannot be sent.
+        /// </summary>
+        public static string CT_FileNotSupported_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotSupported_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not send file.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {
@@ -1611,6 +1638,15 @@ namespace windows_client.Languages {
         public static string EnterName_NameErrorTxt {
             get {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new password.
+        /// </summary>
+        public static string EnterNewPassword_PasswordChange_Txt {
+            get {
+                return ResourceManager.GetString("EnterNewPassword_PasswordChange_Txt", resourceCulture);
             }
         }
         
@@ -2479,7 +2515,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start a chat and tap on &apos;hi&apos;.
+        ///   Looks up a localized string similar to Hide your chats with a password. Start a chat and tap on &apos;hi&apos;..
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Body_Txt {
             get {
@@ -2488,7 +2524,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide your chats with a password..
+        ///   Looks up a localized string similar to Hidden Mode.
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Header_Txt {
             get {
