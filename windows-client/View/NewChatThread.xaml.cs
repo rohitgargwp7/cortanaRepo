@@ -2949,9 +2949,11 @@ namespace windows_client.View
 
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             _isContextMenuOpen = true;
         }
-
 
         private void MenuItem_Click_DirectMessage(object sender, RoutedEventArgs e)
         {
@@ -3238,7 +3240,6 @@ namespace windows_client.View
             }
             else
                 displayAttachment(msg);
-
         }
 
         private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
@@ -5048,6 +5049,9 @@ namespace windows_client.View
 
         public void displayAttachment(ConvMessage convMessage)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
 
             if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
