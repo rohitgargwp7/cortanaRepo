@@ -709,7 +709,7 @@ namespace windows_client.Model
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
-            this._lastMessage = lastMessage;
+            this.LastMessage = lastMessage; 
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;
