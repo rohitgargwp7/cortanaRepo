@@ -117,7 +117,7 @@ namespace windows_client.DbUtils
             {
                 obj.LastMessage = convMessage.Message;
             }
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
                 obj.LastMessage = convMessage.Message;
             }
