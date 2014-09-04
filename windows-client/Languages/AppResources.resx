@@ -1265,7 +1265,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>Exceeds limit</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 25 MB.</value>
@@ -2252,6 +2252,6 @@ Download it like asap from http://hike.in!</value>
     <value>File has been added to the gallery</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
-    <value>Saving video failed</value>
+    <value>Saving failed</value>
   </data>
 </root>

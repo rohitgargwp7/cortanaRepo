@@ -1258,7 +1258,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not send file.
+        ///   Looks up a localized string similar to Exceeds limit.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {
             get {
@@ -4882,7 +4882,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saving video failed.
+        ///   Looks up a localized string similar to Saving failed.
         /// </summary>
         public static string Something_WrongCaption_Txt {
             get {
