@@ -2235,14 +2235,14 @@ Download it like asap from http://hike.in!</value>
     <value>save to gallery</value>
     <comment>Menu Item text</comment>
   </data>
-  <data name="CT_FileCorrupted_Text" xml:space="preserve">
-    <value>File is corrupted</value>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>It looks like the video is corrupt and can't be sent.</value>
   </data>
-  <data name="CT_FileNotPlayable_Caption_Text" xml:space="preserve">
-    <value>File cannot be played</value>
+  <data name="CT_FileNotPlayable_Text" xml:space="preserve">
+    <value>Can't play video. It seems to be corrupt.</value>
   </data>
   <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
-    <value>File cannot be sent</value>
+    <value>Unsupported video</value>
   </data>
   <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
     <value>Create new password</value>

@@ -1240,25 +1240,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File is corrupted.
+        ///   Looks up a localized string similar to Can&apos;t play video. It seems to be corrupt..
         /// </summary>
-        public static string CT_FileCorrupted_Text {
+        public static string CT_FileNotPlayable_Text {
             get {
-                return ResourceManager.GetString("CT_FileCorrupted_Text", resourceCulture);
+                return ResourceManager.GetString("CT_FileNotPlayable_Text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File cannot be played.
-        /// </summary>
-        public static string CT_FileNotPlayable_Caption_Text {
-            get {
-                return ResourceManager.GetString("CT_FileNotPlayable_Caption_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File cannot be sent.
+        ///   Looks up a localized string similar to Unsupported video.
         /// </summary>
         public static string CT_FileNotSupported_Caption_Text {
             get {
@@ -1281,6 +1272,15 @@ namespace windows_client.Languages {
         public static string CT_FileSizeExceed_Text {
             get {
                 return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like the video is corrupt and can&apos;t be sent..
+        /// </summary>
+        public static string CT_FileUnableToSend_Text {
+            get {
+                return ResourceManager.GetString("CT_FileUnableToSend_Text", resourceCulture);
             }
         }
         

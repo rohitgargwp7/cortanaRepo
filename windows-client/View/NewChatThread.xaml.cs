@@ -4785,8 +4785,8 @@ namespace windows_client.View
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
-                
-                if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+
+                if (thumbnail!=null && thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
                 {
                     BitmapImage image = new BitmapImage();
                     UI_Utils.Instance.createImageFromBytes(thumbnail, image);

@@ -659,6 +659,7 @@
     <Content Include="View\images\ConversationPage\tooltip_Arrow.png" />
     <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
+    <Content Include="View\images\default_album_icon.png" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
     <Content Include="View\images\emoticons\emote_cat1_inactive.png" />
@@ -672,6 +673,8 @@
     <Content Include="View\images\MediaPlayIconBig.png" />
     <Content Include="View\images\MediaPlayIconSmall.png" />
     <Content Include="View\images\menu_camcorder_icon.png" />
+    <Content Include="View\images\play_icon.png" />
+    <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\ServerTips\attachments.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
@@ -680,10 +683,8 @@
     <Content Include="View\images\ServerTips\Themes.png" />
     <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
-    <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
-    <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
