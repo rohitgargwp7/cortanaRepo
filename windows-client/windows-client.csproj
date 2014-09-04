@@ -674,7 +674,7 @@
     <Content Include="View\images\MediaPlayIconSmall.png" />
     <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\play_icon.png" />
-    <Content Include="View\images\retry_icon .png" />
+    <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\ServerTips\attachments.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
