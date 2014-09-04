@@ -4755,7 +4755,13 @@ namespace windows_client.View
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
-                
+
+                //if (thumbnail == null)
+                //{
+                //    PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                //    return;
+                //}
+
                 if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
                 {
                     BitmapImage image = new BitmapImage();
