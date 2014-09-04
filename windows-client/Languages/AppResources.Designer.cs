@@ -4432,7 +4432,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unmute.
+        ///   Looks up a localized string similar to unmute group.
         /// </summary>
         public static string SelectUser_UnMuteGrp_Txt {
             get {
