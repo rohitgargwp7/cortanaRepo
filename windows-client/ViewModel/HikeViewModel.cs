@@ -794,7 +794,6 @@ namespace windows_client.ViewModel
                     long messageId = (long)attachmentData[2];
                     string metaDataString = (string)attachmentData[3];
                     string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
-                    string fileKey = (string)attachmentData[4];
 
                     foreach (var contact in contactsForForward)
                     {
@@ -805,7 +804,7 @@ namespace windows_client.ViewModel
                         convMessage.HasAttachment = true;
                         convMessage.FileAttachment = new Attachment();
                         convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.FileKey = fileKey;
+                        convMessage.FileAttachment.FileKey = (string)attachmentData[4];
                         convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
                         convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
@@ -837,10 +836,9 @@ namespace windows_client.ViewModel
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
-                        object[] vals = new object[3];
+                        object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
-                        vals[2] = fileKey;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                     }
                 }
