@@ -4396,7 +4396,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hike is refreshing contacts with address book. It will be over before you know it....
+        ///   Looks up a localized string similar to hike is refreshing contacts with address book. It will be over before you know it....
         /// </summary>
         public static string SelectUser_RefreshWaitMsg_Txt {
             get {

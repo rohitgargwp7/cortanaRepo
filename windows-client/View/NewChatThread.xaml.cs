@@ -1662,9 +1662,7 @@ namespace windows_client.View
         private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black };
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar.StateChanged += appBar_StateChanged;
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
@@ -1756,19 +1754,22 @@ namespace windows_client.View
             appBar.MenuItems.Add(blockMenuItem);
         }
 
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+            {
+                if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                    CancelBackgroundChange();
+            }
+        }
+
         void infoMenuItem_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             GoToProfileScreen();
         }
 
         void blockMenuItem_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             ContactInfo cInfo = new ContactInfo(mContactNumber, mContactName, isOnHike);
             App.ViewModel.BlockedHashset.Add(mContactNumber);
 
@@ -1812,9 +1813,6 @@ namespace windows_client.View
 
         private void callUser_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             PhoneCallTask phoneCallTask = new PhoneCallTask();
             phoneCallTask.PhoneNumber = mContactNumber;
             phoneCallTask.DisplayName = mContactName;
@@ -1830,9 +1828,6 @@ namespace windows_client.View
 
         void clearChatItem_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             var result = MessageBox.Show(AppResources.clear_Chat_Body, AppResources.Confirmation_HeaderTxt, MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
@@ -1861,17 +1856,11 @@ namespace windows_client.View
 
         private void addUser_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             ContactUtils.saveContact(mContactNumber, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
 
@@ -1911,9 +1900,6 @@ namespace windows_client.View
 
         private void muteUnmuteGroup_Click(object sender, EventArgs e)
         {
-            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
-                CancelBackgroundChange();
-
             JObject obj = new JObject();
             JObject o = new JObject();
             o["id"] = mContactNumber;
