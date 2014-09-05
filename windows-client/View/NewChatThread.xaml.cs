@@ -3242,37 +3242,6 @@ namespace windows_client.View
                 displayAttachment(msg);
         }
 
-        private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
-        {
-            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            string tempName = Convert.ToString(msg.MessageId);
-            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
-            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
-            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
-            
-            if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                targetFileName = targetFileName + ".mp4";
-            else if(msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                targetFileName = targetFileName + ".jpg";
-
-            bool isSaveSuccessful = false;
-            BackgroundWorker bgWorker = new BackgroundWorker();
-            bgWorker.DoWork += (ss, ee) =>
-            {
-                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
-                isSaveSuccessful = result.Result;
-            };
-            bgWorker.RunWorkerAsync();
-            bgWorker.RunWorkerCompleted += (sf, ef) =>
-            {
-                if (isSaveSuccessful)
-                    MessageBox.Show(AppResources.SaveSuccess_Txt,AppResources.SaveSuccess_Caption_Txt,MessageBoxButton.OK);
-                else
-                    MessageBox.Show(AppResources.Something_Wrong_Txt,AppResources.Something_WrongCaption_Txt,MessageBoxButton.OK);
-            };
-
-        }
-
         #endregion
 
         #region EMOTICONS RELATED STUFF
