@@ -2231,10 +2231,6 @@ Download it like asap from http://hike.in!</value>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
-  <data name="SaveInGallery_Txt" xml:space="preserve">
-    <value>save to gallery</value>
-    <comment>Menu Item text</comment>
-  </data>
   <data name="CT_FileUnableToSend_Text" xml:space="preserve">
     <value>It looks like the video is corrupt and can't be sent.</value>
   </data>
