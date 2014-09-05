@@ -794,18 +794,20 @@ namespace windows_client.ViewModel
                     long messageId = (long)attachmentData[2];
                     string metaDataString = (string)attachmentData[3];
                     string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
+                    string fileKey = (string)attachmentData[4];
 
                     foreach (var contact in contactsForForward)
                     {
                         var msisdn = contact.Msisdn;
-                        ConvMessage convMessage = new ConvMessage("", msisdn,
+                        ConvMessage convMessage = new ConvMessage(String.Empty, msisdn,
                           TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.HasAttachment = true;
                         convMessage.FileAttachment = new Attachment();
                         convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
-                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
+                        convMessage.FileAttachment.FileKey = fileKey;
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))
@@ -838,6 +840,7 @@ namespace windows_client.ViewModel
                         object[] vals = new object[3];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
+                        vals[2] = fileKey;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                     }
                 }

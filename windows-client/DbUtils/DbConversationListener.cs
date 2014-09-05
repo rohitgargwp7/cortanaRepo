@@ -125,6 +125,7 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 string sourceFilePath = (string)vals[1];
+                string fileKey = (string)vals[2];
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
@@ -148,7 +149,7 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, fileKey);
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
@@ -182,7 +183,7 @@ namespace windows_client.DbUtils
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, string.Empty);
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
@@ -424,16 +425,27 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED)
                             {
-                                JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                                var fileKey = data[HikeConstants.FILE_KEY].ToString();
-
-                                //send the content type which is sent by server
-                                fInfo.ContentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
-
+                                var fileUploader = fInfo as FileUploader;
                                 int fileSize = 0;
-                                JToken fs;
-                                if (data.TryGetValue(HikeConstants.FILE_SIZE, out fs))
-                                    fileSize = Convert.ToInt32(fs.ToString());
+                                string fileKey;
+
+                                if (fileUploader.IsFileExist)
+                                {
+                                    fileKey = fileUploader.FileKey;
+                                    fileSize = fInfo.TotalBytes;
+                                }
+                                else
+                                {
+                                    JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                                    fileKey = data[HikeConstants.FILE_KEY].ToString();
+
+                                    //send the content type which is sent by server
+                                    fInfo.ContentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
+
+                                    JToken fs;
+                                    if (data.TryGetValue(HikeConstants.FILE_SIZE, out fs))
+                                        fileSize = Convert.ToInt32(fs.ToString());
+                                }
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
