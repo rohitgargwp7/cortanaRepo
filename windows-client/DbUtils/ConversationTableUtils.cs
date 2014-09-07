@@ -78,7 +78,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, bool persistMessage, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -171,9 +171,12 @@ namespace windows_client.DbUtils
             }
 
             Stopwatch st1 = Stopwatch.StartNew();
-            bool success = MessagesTableUtils.addMessage(convMessage);
-            if (!success)
-                return null;
+            if (persistMessage)
+            {
+                bool success = MessagesTableUtils.addMessage(convMessage);
+                if (!success)
+                    return null;
+            }
             obj.LastMsgId = convMessage.MessageId;
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;

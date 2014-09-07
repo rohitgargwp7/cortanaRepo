@@ -83,8 +83,10 @@ namespace windows_client.DbUtils
             return true;
         }
 
-        public static bool BulkInsertMessage(IEnumerable<ConvMessage> listMessages)
+        public static bool BulkInsertMessage(IList<ConvMessage> listMessages)
         {
+            if (listMessages == null || listMessages.Count == 0)
+                return false;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 context.messages.InsertAllOnSubmit(listMessages);
@@ -114,8 +116,10 @@ namespace windows_client.DbUtils
             return true;
         }
 
-        public static void IsMessageDuplicate(List<ConvMessage> listConvMessage)
+        public static void FilterDuplicateMessage(List<ConvMessage> listConvMessage)
         {
+            if (listConvMessage == null || listConvMessage.Count == 0)
+                return;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 for (int i = 0; i < listConvMessage.Count; )
@@ -195,7 +199,7 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, byte[] imageBytes = null, string from = "")
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, bool persistMessage = true, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -208,7 +212,7 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
-                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, imageBytes, from);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, persistMessage, imageBytes, from);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
@@ -398,13 +402,17 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMsg.Message;
                 #endregion
 
-                Stopwatch st1 = Stopwatch.StartNew();
-                bool success = addMessage(convMsg);
-                if (!success)
-                    return null;
-                st1.Stop();
-                long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                if (persistMessage)
+                {
+                    Stopwatch st1 = Stopwatch.StartNew();
+                    bool success = addMessage(convMsg);
+                    if (!success)
+                        return null;
+                    st1.Stop();
+
+                    long msec1 = st1.ElapsedMilliseconds;
+                    Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                }
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {

@@ -600,7 +600,7 @@ namespace windows_client.View
                     JObject jo = new JObject();
                     jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
                     cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
-                    ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
+                    ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false,true);
                     if (cobj == null)
                         return;
 

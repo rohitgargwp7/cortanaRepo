@@ -3372,10 +3372,10 @@ namespace windows_client.View
             string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
             string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
             string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
-            
+
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                 targetFileName = targetFileName + ".mp4";
-            else if(msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+            else if (msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                 targetFileName = targetFileName + ".jpg";
 
             bool isSaveSuccessful = false;
@@ -4073,73 +4073,91 @@ namespace windows_client.View
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
-
-                //TODO handle vibration for user profile and GC.
-                if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
-                    convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
-                    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
+                List<ConvMessage> listConvMessage;
+                if (vals[0] is ConvMessage)
                 {
-                    bool isVibrateEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-
-                    if (isVibrateEnabled)
-                    {
-                        VibrateController vibrate = VibrateController.Default;
-                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    }
+                    listConvMessage = new List<ConvMessage>();
+                    listConvMessage.Add((ConvMessage)vals[0]);
+                }
+                else
+                {
+                    listConvMessage = (List<ConvMessage>)vals[0];
                 }
 
+                //todo:handle vibration
+
+                ////TODO handle vibration for user profile and GC.
+                //if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
+                //    convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
+                //    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
+                //{
+                //    bool isVibrateEnabled = true;
+                //    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+
+                //    if (isVibrateEnabled)
+                //    {
+                //        VibrateController vibrate = VibrateController.Default;
+                //        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                //    }
+                //}
                 /* Check if this is the same user for which this message is recieved*/
-                if (convMessage.Msisdn == mContactNumber)
+                if (listConvMessage.Count > 0 && listConvMessage[0].Msisdn == mContactNumber)
                 {
-                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    long[] msgids = new long[listConvMessage.Count];
 
-                    // Update status to received read in db.
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
-
-                    if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
+                    for (int i = 0; i < listConvMessage.Count; i++)
                     {
-                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
-                    }
-                    if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                        updateLastMsgColor(convMessage.Msisdn);
+                        ConvMessage convMessage = listConvMessage[i];
+                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
 
-                    // Update UI
-                    HideTypingNotification();
+                        msgids[i] = convMessage.MessageId;
 
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                        //todo:send once
+                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
                         {
-                            mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
-                            userName.Text = mContactName;
+                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                         }
-                        else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
-                            userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
+                        if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                            updateLastMsgColor(convMessage.Msisdn);
 
-                        AddNewMessageToUI(convMessage, false, true);
-                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                            ShowJumpToBottom(true);
+                        // Update UI
+                        HideTypingNotification();
 
-                        if (vals.Length == 3)
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            try
+                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                             {
-                                if (vals[2] is ConvMessage)
+                                mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
+                                userName.Text = mContactName;
+                            }
+                            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
+                                userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
+
+                            AddNewMessageToUI(convMessage, false, true);
+                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                                ShowJumpToBottom(true);
+
+                            if (vals.Length == 3)
+                            {
+                                try
                                 {
-                                    ConvMessage cm = (ConvMessage)vals[2];
-                                    if (cm != null)
+                                    if (vals[2] is ConvMessage)
                                     {
-                                        AddNewMessageToUI(cm, false, true);
-                                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                            ShowJumpToBottom(true);
+                                        ConvMessage cm = (ConvMessage)vals[2];
+                                        if (cm != null)
+                                        {
+                                            AddNewMessageToUI(cm, false, true);
+                                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                                                ShowJumpToBottom(true);
+                                        }
                                     }
                                 }
+                                catch { }
                             }
-                            catch { }
-                        }
-                    });
+                        });
+                    }
+                    // Update status to received read in db.
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, msgids);
                 }
             }
 
@@ -4944,7 +4962,7 @@ namespace windows_client.View
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
-                
+
                 if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
                 {
                     BitmapImage image = new BitmapImage();
@@ -5793,7 +5811,7 @@ namespace windows_client.View
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, App.MSISDN);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, true, null, App.MSISDN);
             if (cobj != null)
             {
                 JObject data = new JObject();

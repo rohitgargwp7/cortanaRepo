@@ -64,7 +64,7 @@ namespace windows_client.View
             }
             else
             {
-                string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging2.im.hike.in:8080/") + "rewards/wp7/" + (string)App.appSettings[HikeConstants.REWARDS_TOKEN];
+                string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)App.appSettings[HikeConstants.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }

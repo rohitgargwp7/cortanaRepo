@@ -24,7 +24,7 @@ namespace windows_client.utils
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
-        private static readonly string STAGING_HOST = "staging2.im.hike.in";
+        private static readonly string STAGING_HOST = "staging.im.hike.in";
 
         private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
 

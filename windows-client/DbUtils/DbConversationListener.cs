@@ -104,7 +104,7 @@ namespace windows_client.DbUtils
                     isNewGroup = false;
                 }
 
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup, imageBytes);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup,true, imageBytes);
                 if (convObj == null)
                     return;
 
@@ -127,7 +127,7 @@ namespace windows_client.DbUtils
                 string sourceFilePath = (string)vals[1];
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false,true);
                 convMessage.MessageId = convMessage.MessageId;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -162,7 +162,7 @@ namespace windows_client.DbUtils
                 byte[] fileBytes = (byte[])vals[1];
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false,true);
 
                 // in case of db failure convObj returned will be null
                 if (convObj == null)
