@@ -286,6 +286,7 @@
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding MuteMsg}" Visibility="{Binding MuteOptionVisibility}" Click="MenuItem_Click_Mute"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding EmailConversationTxt}" Click="MenuItem_EmailConversation_Clicked"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <Grid.ColumnDefinitions>

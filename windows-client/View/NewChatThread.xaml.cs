@@ -111,6 +111,7 @@ namespace windows_client.View
         ApplicationBarMenuItem clearChatItem;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
+        ApplicationBarMenuItem emailConversationMenuItem;
         ApplicationBarMenuItem blockMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -1698,6 +1699,11 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
 
+            emailConversationMenuItem = new ApplicationBarMenuItem();
+            emailConversationMenuItem.Text = "Email This Chat";
+            emailConversationMenuItem.Click += emailConversationMenuItem_Click;
+            appBar.MenuItems.Add(emailConversationMenuItem);
+
             if (isGroupChat)
             {
                 infoMenuItem = new ApplicationBarMenuItem();
@@ -1754,6 +1760,11 @@ namespace windows_client.View
             blockMenuItem.Text = AppResources.Block_Txt;
             blockMenuItem.Click += blockMenuItem_Click;
             appBar.MenuItems.Add(blockMenuItem);
+        }
+
+        private void emailConversationMenuItem_Click(object sender, EventArgs e)
+        {
+            EmailHelper.FetchAndEmail(mContactNumber);
         }
 
         void blockMenuItem_Click(object sender, EventArgs e)

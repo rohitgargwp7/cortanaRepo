@@ -271,6 +271,14 @@ namespace windows_client.Model
             }
         }
 
+        public string EmailConversationTxt
+        {
+            get
+            {
+                return "Email This Chat";
+            }
+        }
+
         public Visibility AddToFriendVisibility
         {
             get
