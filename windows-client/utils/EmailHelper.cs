@@ -38,32 +38,6 @@ namespace windows_client.utils
             }
         }
 
-        private static string ReverseStringLineByLine(string str)
-        {
-            StringBuilder sb = new StringBuilder();
-            int current = str.Length - 1;
-
-            while (current > -1)
-            {
-                int cnt = 0;
-
-                while (current > -1 && str[current] != '\n')
-                {
-                    cnt++;
-                    current--;
-                }
-
-                for (int i = 1; i <= cnt; i++)
-                    sb.Append(str[current + i]);
-
-                if (current != -1)
-                    sb.Append(str[current]);
-
-                current--;
-            }
-
-            return sb.ToString();
-        }
 
         private static string GetEmailString(Stack<String> messagesStack)
         {
@@ -77,8 +51,7 @@ namespace windows_client.utils
 
         public static void FetchAndEmail(string msisdn)
         {
-
-            Dictionary<string, string> GroupChatParticipantInfo = null;
+            Dictionary<string, string> groupChatParticipantInfo = null;
             int bytes_consumed = 0;
             List<ConvMessage> convList = MessagesTableUtils.getMessagesForMsisdn(msisdn, long.MaxValue, 500);
             StringBuilder emailText = new StringBuilder();
@@ -104,7 +77,7 @@ namespace windows_client.utils
 
             if (isGroupConversation)
             {
-                GroupChatParticipantInfo = new Dictionary<string, string>();
+                groupChatParticipantInfo = new Dictionary<string, string>();
                 List<GroupParticipant> grpParticipantList = GroupManager.Instance.GetParticipantList(msisdn);
 
                 foreach (GroupParticipant grpParticipant in grpParticipantList)
@@ -119,7 +92,7 @@ namespace windows_client.utils
                         cname = cinfo.NameToshow;
 
                     nameToShow = String.Format(_displayNameFormat, cname);
-                    GroupChatParticipantInfo.Add(grpParticipant.Msisdn, cname);
+                    groupChatParticipantInfo.Add(grpParticipant.Msisdn, cname);
                 }
             }
 
@@ -143,7 +116,7 @@ namespace windows_client.utils
                             {
                                 if (convMsg.GroupParticipant == App.MSISDN)
                                     nameToShow = AppResources.You_Txt;
-                                else if (!GroupChatParticipantInfo.TryGetValue(convMsg.GroupParticipant, out nameToShow))
+                                else if (!groupChatParticipantInfo.TryGetValue(convMsg.GroupParticipant, out nameToShow))
                                     nameToShow = convMsg.GroupParticipant;
 
                                 nameToShow = String.Format(_displayNameFormat, nameToShow);
