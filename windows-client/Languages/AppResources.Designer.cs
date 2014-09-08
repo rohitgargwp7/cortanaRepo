@@ -4171,15 +4171,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to save to gallery.
-        /// </summary>
-        public static string SaveInGallery_Txt {
-            get {
-                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SaveSuccess_Caption_Txt {
