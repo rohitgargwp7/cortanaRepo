@@ -636,9 +636,9 @@ namespace windows_client.View
 
             #endregion
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
                 AudioFileTransfer();
             }
@@ -4742,6 +4742,7 @@ namespace windows_client.View
             bool isAudio = true;
             byte[] fileBytes = null;
             byte[] thumbnail = null;
+            
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -4796,6 +4797,7 @@ namespace windows_client.View
 
                 isAudio = false;
             }
+
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
@@ -4807,6 +4809,7 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 return;
             }
+
             if (!isGroupChat || isGroupAlive)
             {
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
