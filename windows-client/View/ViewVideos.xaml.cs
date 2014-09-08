@@ -74,7 +74,7 @@ namespace windows_client.View
             {
                 FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
                 ushort totalVideos = preRecordedVideos.GetVideoCount();
-                
+
                 if (totalVideos > 0)
                 {
                     for (int index = 0; index < totalVideos; index++)
@@ -84,30 +84,41 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-                        Byte[] thumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date,out videoDuration,out videoSize);
                         
+                        preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+                        if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
+                            continue;
+
+                        Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration, out videoSize);
+
                         try
                         {
                             albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
                             albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
 
-                        VideoItem video = new VideoItem(filePath, thumbBytes, videoDuration, videoSize);
+                        VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration, videoSize);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbum albumObj;
-                        
+
                         if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                         {
-                            albumObj = new VideoAlbum(albumName, thumbBytes);
+                            albumObj = new VideoAlbum(albumName, videoThumbBytes);
                             videoAlbumList.Add(albumName, albumObj);
                         }
-
+                        else
+                        {
+                            if (albumObj.ThumbBytes == null && videoThumbBytes != null)
+                                albumObj.ThumbBytes = videoThumbBytes;
+                        }
+                        
                         albumObj.Add(video);
                         _listAllVideos.Add(video);
                     }

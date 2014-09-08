@@ -1240,7 +1240,25 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not send file.
+        ///   Looks up a localized string similar to Can&apos;t play video. It seems to be corrupt..
+        /// </summary>
+        public static string CT_FileNotPlayable_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotPlayable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported video.
+        /// </summary>
+        public static string CT_FileNotSupported_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotSupported_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exceeds limit.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {
             get {
@@ -1254,6 +1272,15 @@ namespace windows_client.Languages {
         public static string CT_FileSizeExceed_Text {
             get {
                 return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like the video is corrupt and can&apos;t be sent..
+        /// </summary>
+        public static string CT_FileUnableToSend_Text {
+            get {
+                return ResourceManager.GetString("CT_FileUnableToSend_Text", resourceCulture);
             }
         }
         
@@ -4245,6 +4272,15 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
+        public static string SaveSuccess_Caption_Txt {
+            get {
+                return ResourceManager.GetString("SaveSuccess_Caption_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File has been added to the gallery.
+        /// </summary>
         public static string SaveSuccess_Txt {
             get {
                 return ResourceManager.GetString("SaveSuccess_Txt", resourceCulture);
@@ -4495,7 +4531,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unmute.
+        ///   Looks up a localized string similar to unmute group.
         /// </summary>
         public static string SelectUser_UnMuteGrp_Txt {
             get {
@@ -4932,6 +4968,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving failed.
+        /// </summary>
+        public static string Something_WrongCaption_Txt {
+            get {
+                return ResourceManager.GetString("Something_WrongCaption_Txt", resourceCulture);
             }
         }
         

@@ -550,7 +550,7 @@
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute</value>
+    <value>unmute group</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1265,7 +1265,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>Exceeds limit</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 25 MB.</value>
@@ -2207,7 +2207,7 @@ Download it like asap from http://hike.in!</value>
   <data name="AutoSaveSettings_Txt" xml:space="preserve">
     <value>Auto save photo and video</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Saved successfully</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2234,6 +2234,15 @@ Download it like asap from http://hike.in!</value>
   <data name="SaveInGallery_Txt" xml:space="preserve">
     <value>save to gallery</value>
     <comment>Menu Item text</comment>
+  </data>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>It looks like the video is corrupt and can't be sent.</value>
+  </data>
+  <data name="CT_FileNotPlayable_Text" xml:space="preserve">
+    <value>Can't play video. It seems to be corrupt.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Unsupported video</value>
   </data>
   <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
     <value>Create new password</value>
@@ -2278,5 +2287,12 @@ Download it like asap from http://hike.in!</value>
   <data name="EmailConv_Subject_Txt" xml:space="preserve">
     <value>Backup of hike chat with {0}</value>
     <comment>subject of email text when backing up</comment>
+  </data> 
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>File has been added to the gallery</value>
   </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Saving failed</value>
+   </data>
+
 </root>
