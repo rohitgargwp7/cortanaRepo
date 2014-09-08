@@ -65,17 +65,17 @@ namespace windows_client.utils
                 CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 pivotIndex++;
             }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+            {
+                CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                pivotIndex++;
+            }
             if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 pivotIndex++;
             }
             if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
-            {
-                CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
-                pivotIndex++;
-            }
-            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 pivotIndex++;

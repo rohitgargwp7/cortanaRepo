@@ -4171,15 +4171,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to save to gallery.
-        /// </summary>
-        public static string SaveInGallery_Txt {
-            get {
-                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SaveSuccess_Caption_Txt {
@@ -4396,7 +4387,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hike is refreshing contacts with address book. It will be over before you know it....
+        ///   Looks up a localized string similar to hike is refreshing contacts with address book. It will be over before you know it....
         /// </summary>
         public static string SelectUser_RefreshWaitMsg_Txt {
             get {
