@@ -1552,6 +1552,96 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to email chat.
+        /// </summary>
+        public static string EmailChat_Txt {
+            get {
+                return ResourceManager.GetString("EmailChat_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  only; rest truncated by WP.
+        /// </summary>
+        public static string EmailConv_Header_Truncation_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_Header_Truncation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat with {0} - last {1} messages.
+        /// </summary>
+        public static string EmailConv_Header_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared an AUDIO.
+        /// </summary>
+        public static string EmailConv_SharedAudio_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedAudio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared a CONTACT.
+        /// </summary>
+        public static string EmailConv_SharedContact_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedContact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared a FILE.
+        /// </summary>
+        public static string EmailConv_SharedFile_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedFile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared an IMAGE.
+        /// </summary>
+        public static string EmailConv_SharedImage_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedImage_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared a LOCATION.
+        /// </summary>
+        public static string EmailConv_SharedLocation_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedLocation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared a VIDEO.
+        /// </summary>
+        public static string EmailConv_SharedVideo_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_SharedVideo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup of hike chat with {0}.
+        /// </summary>
+        public static string EmailConv_Subject_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_Subject_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field cannot be empty.
         /// </summary>
         public static string Empty_Field_Error {

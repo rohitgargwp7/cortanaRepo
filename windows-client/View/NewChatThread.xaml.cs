@@ -1700,7 +1700,7 @@ namespace windows_client.View
             appBar.Buttons.Add(fileTransferIconButton);
 
             emailConversationMenuItem = new ApplicationBarMenuItem();
-            emailConversationMenuItem.Text = "Email This Chat";
+            emailConversationMenuItem.Text = AppResources.EmailChat_Txt;
             emailConversationMenuItem.Click += emailConversationMenuItem_Click;
             appBar.MenuItems.Add(emailConversationMenuItem);
 

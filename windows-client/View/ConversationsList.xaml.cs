@@ -2026,7 +2026,7 @@ namespace windows_client.View
         private void MenuItem_EmailConversation_Clicked(object sender, RoutedEventArgs e)
         {
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
-            
+
             if (convObj == null)
                 return;
 

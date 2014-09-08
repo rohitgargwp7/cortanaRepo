@@ -275,7 +275,7 @@ namespace windows_client.Model
         {
             get
             {
-                return "Email This Chat";
+                return AppResources.EmailChat_Txt;
             }
         }
 
