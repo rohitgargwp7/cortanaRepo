@@ -84,13 +84,13 @@ namespace windows_client.View
                         int videoSize;
                         int videoDuration;
                         double date;
-                        
+
                         preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
 
                         if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
                             continue;
 
-                        Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration, out videoSize);
+                        Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
 
                         try
                         {
@@ -103,7 +103,7 @@ namespace windows_client.View
                             albumName = AppResources.Default_Video_Album_Txt;
                         }
 
-                        VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration, videoSize);
+                        VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
                         DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
                         video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
                         VideoAlbum albumObj;
@@ -230,14 +230,33 @@ namespace windows_client.View
         {
             LongListSelector lls = sender as LongListSelector;
             VideoItem selectedVideo = lls.SelectedItem as VideoItem;
-            
+
             if (selectedVideo == null)
                 return;
-            
+
             lls.SelectedItem = null;
+            int size;
+
+            try
+            {
+                StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(selectedVideo.FilePath, UriKind.Relative));
+                size = (int)streamInfo.Stream.Length;
+                streamInfo.Stream.Dispose();
+                if (size <= 0)
+                {
+                    MessageBox.Show(AppResources.CT_FileNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                    return;
+                }
+                selectedVideo.Size = size;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("PreviewVideo :: llsVideos_SelectionChanged , Exception : " + ex.StackTrace);
+                MessageBox.Show(AppResources.CT_FileNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                return;
+            }
 
             PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo;
-
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }
 

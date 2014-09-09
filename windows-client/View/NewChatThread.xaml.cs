@@ -4756,14 +4756,16 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine("NewChatThread :: AudioFileTransfer , Exception : " + ex.StackTrace);
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
                 if (fileBytes == null)
+                {
+                    MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                     return;
-
+                }
                 isAudio = false;
             }
 
