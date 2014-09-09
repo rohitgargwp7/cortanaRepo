@@ -436,7 +436,7 @@ namespace windows_client
         public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
         public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
         public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
-        public static readonly string FT_VIDEO_FILE = "ftvideo";
+        public static readonly string FT_VIDEO_FILE = "SendVideo";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
