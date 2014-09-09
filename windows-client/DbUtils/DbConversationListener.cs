@@ -403,7 +403,7 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE)))
+                                if (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     string targetFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
 
