@@ -309,7 +309,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             if (imageBytes == null)
                 return;
 
@@ -324,7 +324,7 @@ namespace windows_client.DbUtils
                     {
                         if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                             store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
-                        
+
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
                             stream.Write(imageBytes, 0, imageBytes.Length);
@@ -344,7 +344,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             if (imageBytes == null)
                 return;
             msisdn = msisdn.Replace(":", "_");
@@ -381,7 +381,7 @@ namespace windows_client.DbUtils
 
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             msisdn = msisdn.Replace(":", "_");
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -404,7 +404,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -1147,14 +1147,14 @@ namespace windows_client.DbUtils
                         store.DeleteFile(fName);
                         return;
                     }
-                   
+
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
                             writer.Write(App.ViewModel.PicUploadList.Count);
-                            
+
                             foreach (var ms in App.ViewModel.PicUploadList)
                             {
                                 ms.Write(writer);
@@ -1181,9 +1181,9 @@ namespace windows_client.DbUtils
                 {
                     if (!store.DirectoryExists(MISC_DIR))
                         return;
-                    
+
                     string fname = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
-                    
+
                     if (!store.FileExists(fname))
                         return;
 
@@ -1192,7 +1192,7 @@ namespace windows_client.DbUtils
                         using (var reader = new BinaryReader(file))
                         {
                             int count = 0;
-                            
+
                             try
                             {
                                 count = reader.ReadInt32();
@@ -1258,6 +1258,24 @@ namespace windows_client.DbUtils
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
+
+        /// <summary>
+        /// Update status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateBulkMessageDBsDeliveredStatus(string msisdn, long msgID, int status)
+        {
+            Stopwatch st = Stopwatch.StartNew();
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgDeliveredStatus(msisdn, msgID, status);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
+            return listUpdatedMsgIds;
+        }
+
         #endregion
     }
 }

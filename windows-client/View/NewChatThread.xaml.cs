@@ -4073,16 +4073,7 @@ namespace windows_client.View
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 object[] vals = (object[])obj;
-                List<ConvMessage> listConvMessage;
-                if (vals[0] is ConvMessage)
-                {
-                    listConvMessage = new List<ConvMessage>();
-                    listConvMessage.Add((ConvMessage)vals[0]);
-                }
-                else
-                {
-                    listConvMessage = (List<ConvMessage>)vals[0];
-                }
+                List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
 
                 //todo:handle vibration
 
@@ -4244,30 +4235,34 @@ namespace windows_client.View
             else if (HikePubSub.MESSAGE_DELIVERED == type)
             {
                 object[] vals = (object[])obj;
-                long msgId = (long)vals[0];
+                IList<long> listMesages = vals[0] is long ? new List<long>() { (long)vals[0] } : (IList<long>)vals[0];
                 string msisdnToCheck = (string)vals[1];
                 if (msisdnToCheck != mContactNumber)
                     return;
                 try
                 {
-                    ConvMessage msg = null;
-                    msgMap.TryGetValue(msgId, out msg);
-                    if (msg != null)
+                    bool isLastUndeliverdMessageFound = false;
+                    foreach (long msgId in listMesages)
                     {
-                        if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
-                            msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
-                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                        else
-                            return;
+                        ConvMessage msg = null;
+                        msgMap.TryGetValue(msgId, out msg);
+                        if (msg != null)
+                        {
+                            if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                                msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msg.MessageStatus < ConvMessage.State.SENT_DELIVERED)
+                                msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                            else
+                                return;
+                        }
+                        isLastUndeliverdMessageFound = msg == _lastUnDeliveredMessage;
                     }
-
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
                             ocMessages.Remove(_h2hofflineToolTip);
 
-                        if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
+                        if (_isSendAllAsSMSVisible && ocMessages != null && isLastUndeliverdMessageFound)
                         {
                             ocMessages.Remove(_tap2SendAsSMSMessage);
                             _isSendAllAsSMSVisible = false;

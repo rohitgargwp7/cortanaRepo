@@ -36,13 +36,6 @@ namespace windows_client.Model
             set { _lastReadMsgId = value; }
         }
 
-        private long _lastSentMsgId;
-
-        public long LastSentMsgId
-        {
-            get { return _lastSentMsgId; }
-            set { _lastSentMsgId = value; }
-        }
 
         public MsisdnBulkData(string msisdn)
         {

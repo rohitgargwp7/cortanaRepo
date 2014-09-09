@@ -283,8 +283,20 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+        public static Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> GetUndeliveredMessagesForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> q =
+                     CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
+                     ((HikeChatsDb hdc, long id, string msisdn) =>
+                         from o in hdc.messages
+                         where o.MessageId <= id && o.Msisdn == msisdn && o.MessageStatus < ConvMessage.State.SENT_DELIVERED
+                         select o);
+                return q;
+            }
+        }
 
-       
         public static Func<HikeChatsDb, IQueryable<ConvMessage>> GetAllMessages
         {
             get
