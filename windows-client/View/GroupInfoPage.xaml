@@ -22,7 +22,7 @@
             <phone:LongListSelector.ListHeader>
                 <Grid Height="350" Width="480" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tap="enlargeImage_Tap">
                     <Image x:Name="groupImage" Source="images\default_group.png" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap">
+                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MinHeight="100" Tap="Grid_Tap" Margin="0,0,0,-1">
                         <Border Background="{StaticResource HikeBlack}" Opacity="0.95" Canvas.ZIndex="-1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25">
                             <Grid.RowDefinitions>

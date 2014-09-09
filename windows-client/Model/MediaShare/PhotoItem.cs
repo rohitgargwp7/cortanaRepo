@@ -14,7 +14,7 @@ using windows_client.utils;
 namespace windows_client.Model
 {
     [DataContract]
-    public class PhotoClass : INotifyPropertyChanged
+    public class PhotoItem : INotifyPropertyChanged
     {
         Picture _pic;
         bool _isSelected;
@@ -66,7 +66,7 @@ namespace windows_client.Model
             }
         }
 
-        public PhotoClass(Picture pic)
+        public PhotoItem(Picture pic)
         {
             _pic = pic;
         }

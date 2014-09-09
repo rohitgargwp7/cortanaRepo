@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
 using windows_client.Languages;
+using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
@@ -391,17 +393,25 @@ namespace windows_client.View
         private void picSaveButton_Click(object sender, EventArgs e)
         {
             string tempName = Convert.ToString(_messsageId);
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + tempName;
-            bool temp = Utils.SavePictureToLibrary(tempName, filePath);
+            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
+            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp() + ".jpg";
+            bool isSaveSuccessful = false;
 
-            if (temp)
+            BackgroundWorker bgWorker = new BackgroundWorker();
+            bgWorker.DoWork += (ss, ee) =>
             {
-                MessageBox.Show(AppResources.SaveSuccess_Txt);
-            }
-            else
+                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
+                isSaveSuccessful = result.Result;
+            };
+            bgWorker.RunWorkerAsync();
+            bgWorker.RunWorkerCompleted += (sf, ef) =>
             {
-                MessageBox.Show(AppResources.Something_Wrong_Txt);
-            }
+                if (isSaveSuccessful)
+                    MessageBox.Show(AppResources.SaveSuccess_Txt);
+                else
+                    MessageBox.Show(AppResources.Something_Wrong_Txt);
+            };
 
         }
 

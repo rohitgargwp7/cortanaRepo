@@ -291,6 +291,7 @@ namespace windows_client.Model
                 {
                     case ConvMessage.State.FORCE_SMS_SENT_CONFIRMED:
                     case ConvMessage.State.SENT_CONFIRMED:
+                    case ConvMessage.State.SENT_SOCKET_WRITE:
                         return UI_Utils.Instance.Sent_Grey;
                     case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED:
@@ -319,6 +320,7 @@ namespace windows_client.Model
                         case ConvMessage.State.FORCE_SMS_SENT_DELIVERED:
                         case ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ:
                         case ConvMessage.State.SENT_CONFIRMED:
+                        case ConvMessage.State.SENT_SOCKET_WRITE:
                         case ConvMessage.State.SENT_DELIVERED:
                         case ConvMessage.State.SENT_DELIVERED_READ:
                         case ConvMessage.State.SENT_UNCONFIRMED:
@@ -738,7 +740,7 @@ namespace windows_client.Model
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
-            this._lastMessage = lastMessage;
+            this.LastMessage = lastMessage; 
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;

@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
+using windows_client.utils.ServerTips;
 
 namespace windows_client.DbUtils
 {
@@ -147,10 +148,12 @@ namespace windows_client.DbUtils
             App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
             App.appSettings[App.TIP_MARKED_KEY] = 0;
             App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
-            App.ViewModel.LoadToolTipsDict();
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();
+            #endregion
+            #region DELETE TIPS
+            TipManager.Instance.ClearTips();
             #endregion
         }
 
@@ -1236,6 +1239,24 @@ namespace windows_client.DbUtils
                 App.ViewModel.SendDisplayPic();
         }
 
+        #endregion
+
+        #region MESSAGE STATUS CHANGE
+        /// <summary>
+        /// Mark single msg as Sent Confirmed, Sent Socket Written and Sent Delivered
+        /// </summary>
+        /// <param name="fromUser"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static void UpdateDBsMessageStatus(string fromUser, long msgID, int status)
+        {
+            Stopwatch st = Stopwatch.StartNew();
+            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
+        }
         #endregion
     }
 }

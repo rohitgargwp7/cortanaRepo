@@ -65,6 +65,18 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage _hikeLogo;
+        public BitmapImage HikeLogo
+        {
+            get
+            {
+                if (_hikeLogo == null)
+                    _hikeLogo = new BitmapImage(new Uri("/View/images/ConversationPage/hike_logo.jpg", UriKind.Relative));
+
+                return _hikeLogo;
+            }
+        }
+
         BitmapImage _muteIconBlue;
         public BitmapImage MuteIconBlue
         {
@@ -136,6 +148,94 @@ namespace windows_client.utils
                     _toolTipArrow = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
 
                 return _toolTipArrow;
+            }
+        }
+
+        #endregion
+
+        #region SERVER TIPS
+        
+        BitmapImage _toolTipStickers; 
+        public BitmapImage ToolTipStickers
+        {
+            get
+            {
+                if (_toolTipStickers == null)
+                    _toolTipStickers = new BitmapImage(new Uri("/View/images/ServerTips/stickers.png", UriKind.Relative));
+
+                return _toolTipStickers;
+            }
+        }
+
+        BitmapImage _toolTipProfilePic;
+        public BitmapImage ToolTipProfilePic
+        {
+            get
+            {
+                if (_toolTipProfilePic == null)
+                    _toolTipProfilePic = new BitmapImage(new Uri("/View/images/ServerTips/profilepic.png", UriKind.Relative));
+
+                return _toolTipProfilePic;
+            }
+        }
+
+        BitmapImage _toolTipAttachment;
+        public BitmapImage ToolTipAttachment
+        {
+            get
+            {
+                if (_toolTipAttachment == null)
+                    _toolTipAttachment = new BitmapImage(new Uri("/view/images/ServerTips/attachments.png", UriKind.Relative));
+
+                return _toolTipAttachment;
+            }
+        }
+
+        BitmapImage _toolTipInvite;
+        public BitmapImage ToolTipInvite
+        {
+            get
+            {
+                if (_toolTipInvite == null)
+                    _toolTipInvite = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipInvite;
+            }
+        }
+
+        BitmapImage _toolTipChatTheme;
+        public BitmapImage ToolTipChatTheme
+        {
+            get
+            {
+                if (_toolTipChatTheme == null)
+                    _toolTipChatTheme = new BitmapImage(new Uri("/view/images/ServerTips/Themes.png", UriKind.Relative));
+
+                return _toolTipChatTheme;
+            }
+        }
+
+        BitmapImage _toolTipStatusUpdate;
+        public BitmapImage ToolTipStatusUpdate
+        {
+            get
+            {
+                if (_toolTipStatusUpdate == null)
+                    _toolTipStatusUpdate = new BitmapImage(new Uri("/view/images/ServerTips/status.png", UriKind.Relative));
+
+                return _toolTipStatusUpdate;
+            }
+        }
+
+        BitmapImage _toolTipFavourites;
+        public BitmapImage ToolTipFavourites
+        {
+            get
+            {
+                if (_toolTipFavourites == null)
+                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+
+                return _toolTipFavourites;
             }
         }
 
@@ -1224,18 +1324,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage closeButtonWhiteImage;
-        public BitmapImage CloseButtonWhiteImage
-        {
-            get
-            {
-                if (closeButtonWhiteImage == null)
-                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                return closeButtonWhiteImage;
-            }
-        }
-
         #endregion
 
         #region Chat Theme
@@ -2061,6 +2149,9 @@ namespace windows_client.utils
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
+            if (Utils.IsHikeBotMsg(msisdn))
+                return HikeLogo;
+
             int index = computeHash(msisdn);
             if (isHighRes)
             {
@@ -2426,6 +2517,30 @@ namespace windows_client.utils
 
                 return ms.ToArray();
             }
+        }
+
+        public static Byte[] DiminishThumbnailQuality(BitmapImage image)
+        {
+            Byte[] imageBytes;
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            int imageWidth, imageHeight;
+            Utils.AdjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out imageWidth, out imageHeight);
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 50);
+                imageBytes = msSmallImage.ToArray();
+            }
+            if (imageBytes.Length > HikeConstants.MAX_THUMBNAILSIZE)
+            {
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, imageWidth, imageHeight, 0, 20);
+                    imageBytes = msSmallImage.ToArray();
+                }
+            }
+            return imageBytes;
         }
     }
 }

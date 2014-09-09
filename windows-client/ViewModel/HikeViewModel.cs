@@ -242,7 +242,6 @@ namespace windows_client.ViewModel
 
             RegisterListeners();
 
-            LoadToolTipsDict();
             LoadCurrentLocation();
             ClearTempTransferData();
 
@@ -668,251 +667,6 @@ namespace windows_client.ViewModel
                 }
             }
         }
-
-        #region In Apptips
-
-        List<HikeToolTip> _toolTipsList;
-        public Dictionary<int, HikeToolTip> DictInAppTip;
-
-        public void ResetInAppTip(int index)
-        {
-            //should not reset tips 0 & 2 as chat thread count logic is involved
-
-            if (DictInAppTip == null)
-                DictInAppTip = new Dictionary<int, HikeToolTip>();
-
-            int marked;
-            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-            marked &= (int)~(1 << index);
-            App.appSettings[App.TIP_MARKED_KEY] = marked;
-
-            int currentShown;
-            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-            currentShown &= (int)~(1 << index);
-            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-            if (_toolTipsList == null)
-                LoadToolTipsList();
-
-            _toolTipsList[index].IsShown = false;
-            _toolTipsList[index].IsCurrentlyShown = false;
-
-            DictInAppTip[index] = _toolTipsList[index];
-        }
-
-        void LoadToolTipsList()
-        {
-            _toolTipsList = new List<HikeToolTip>();
-
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 180, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 262, 0), FullTipMargin = new Thickness(10, 0, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_3, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(10, 0, 10, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_4, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(15, 0, 10, 0), FullTipMargin = new Thickness(25, 165, 25, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_5, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_6, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(120, 0, 10, 0), FullTipMargin = new Thickness(10, 75, 10, 0) });
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_7, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(0), FullTipMargin = new Thickness(0) });
-
-            if (!App.appSettings.Contains(App.ENTER_TO_SEND))
-                _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_1, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-            else
-                _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_8_2, HAlingment = HorizontalAlignment.Stretch, IsShown = false, IsCurrentlyShown = false, IsTop = false, TipMargin = new Thickness(0, 0, 230, 0), FullTipMargin = new Thickness(10, 0, 10, 70) });
-
-            _toolTipsList.Add(new HikeToolTip() { Tip = AppResources.In_App_Tip_9, TipImage = UI_Utils.Instance.Circles, IsAnimationEnabled = true, Width = "300", HAlingment = HorizontalAlignment.Right, IsShown = false, IsCurrentlyShown = false, IsTop = true, TipMargin = new Thickness(260, 0, 10, 0), FullTipMargin = new Thickness(0, 80, 20, 0) });
-        }
-
-        /// <summary>
-        /// Load In App Hardcoded Tooltips
-        /// </summary>
-        public void LoadToolTipsDict()
-        {
-            int marked, currentlyShowing;
-            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked); //initilaized in upgrade logic
-            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentlyShowing); //initilaized in upgrade logic
-
-            if (marked == 511 && currentlyShowing == 0)//0x1ff
-                return;
-
-            if (_toolTipsList == null)
-                LoadToolTipsList();
-
-            DictInAppTip = new Dictionary<int, HikeToolTip>();
-            bool isShownVal, isCurrentShown;
-            int powerOfTwo = 1;
-
-            for (int index = 0; index < _toolTipsList.Count; index++)
-            {
-                powerOfTwo = 1 << index;
-                isShownVal = (marked & powerOfTwo) > 0;
-                isCurrentShown = (currentlyShowing & powerOfTwo) > 0;
-                _toolTipsList[index].IsShown = isShownVal;
-                _toolTipsList[index].IsCurrentlyShown = isCurrentShown;
-
-                if (!isShownVal || isCurrentShown)
-                    DictInAppTip[index] = _toolTipsList[index];
-            }
-        }
-
-        /// <summary>
-        /// Inserts the tooltip in grid element
-        /// </summary>
-        /// <param name="element">The grid element in which you want to insert the tooltip</param>
-        /// <param name="index">index of the tooltip you want to insert</param>
-        public void DisplayTip(Panel element, int index)
-        {
-            return;
-
-            if (DictInAppTip == null)
-                return;
-
-            HikeToolTip tip;
-            DictInAppTip.TryGetValue(index, out tip);
-
-            if (tip == null || !(!tip.IsShown || tip.IsCurrentlyShown))
-                return;
-
-            tip.IsShown = true;
-            tip.IsCurrentlyShown = true;
-
-            int marked;
-            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-            marked |= (int)(1 << index);
-            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
-
-            int currentShown;
-            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-            currentShown |= (int)(1 << index);
-            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-            if (element != null)
-            {
-                InAppTipUC inAppTipUC = new Controls.InAppTipUC() { Name = "tip" + index };
-                Canvas.SetTop(inAppTipUC, 0);
-                Canvas.SetLeft(inAppTipUC, 0);
-                Canvas.SetZIndex(inAppTipUC, 3);
-                inAppTipUC.Visibility = Visibility.Visible;
-
-                if (index == 0 || index == 1 || index == 2 || index == 3 || index == 5 || index == 7 || index == 8)
-                    inAppTipUC.SetValue(Grid.RowSpanProperty, 3);
-
-                if (tip.Width != null)
-                    inAppTipUC.Width = Convert.ToDouble(tip.Width);
-
-                inAppTipUC.HorizontalAlignment = tip.HAlingment;
-
-                if (tip.TipImage != null)
-                    inAppTipUC.TipImageSource = tip.TipImage;
-
-                inAppTipUC.IsAnimationEnabled = tip.IsAnimationEnabled;
-
-                if (tip.IsTop)
-                {
-                    inAppTipUC.VerticalAlignment = VerticalAlignment.Top;
-                    inAppTipUC.TopPathMargin = tip.TipMargin;
-                    inAppTipUC.TopPathVisibility = Visibility.Visible;
-                    inAppTipUC.BottomPathVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    inAppTipUC.VerticalAlignment = VerticalAlignment.Bottom;
-                    inAppTipUC.BottomPathMargin = tip.TipMargin;
-                    inAppTipUC.TopPathVisibility = Visibility.Collapsed;
-                    inAppTipUC.BottomPathVisibility = Visibility.Visible;
-                }
-
-                inAppTipUC.Tip = tip.Tip;
-
-                if (index == 8 && App.newChatThreadPage != null && App.newChatThreadPage.IsMute)
-                    inAppTipUC.Margin = new Thickness(0, 125, 20, 0);
-                else
-                    inAppTipUC.Margin = tip.FullTipMargin;
-
-                inAppTipUC.TipIndex = index;
-
-                inAppTipUC.Dismissed += inAppTipUC_Dismissed;
-
-                try
-                {
-                    element.Children.Add(inAppTipUC);
-                }
-                catch { }
-            }
-        }
-
-        /// <summary>
-        /// Hide the tool tip
-        /// </summary>
-        /// <param name="element">remove the tooltip from this parent</param>
-        /// <param name="index">tool tip index to be removed</param>
-        public void HideToolTip(Panel element, int index)
-        {
-            return;
-
-            if (DictInAppTip == null)
-                return;
-
-            HikeToolTip toolTip;
-            DictInAppTip.TryGetValue(index, out toolTip);
-
-            if (toolTip == null || !toolTip.IsCurrentlyShown)
-                return;
-
-            if (element != null)
-            {
-                InAppTipUC tip = element.FindName("tip" + index) as InAppTipUC;
-
-                if (tip != null)
-                {
-                    element.Children.Remove(tip);
-                    tip.Visibility = Visibility.Collapsed;
-
-                    toolTip.IsCurrentlyShown = false;
-
-                    int currentShown;
-                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (int)~(1 << index);
-                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-                }
-            }
-            else
-            {
-                toolTip.IsCurrentlyShown = false;
-
-                int currentShown;
-                App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown &= (int)~(1 << index);
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-            }
-        }
-
-        /// <summary>
-        /// Invoked when the user dismisses a tooltip
-        /// </summary>
-        /// <param name="sender">Is of type InAppTipUC</param>
-        /// <param name="e"></param>
-        void inAppTipUC_Dismissed(object sender, EventArgs e)
-        {
-            if (sender == null)
-                return;
-
-            InAppTipUC tip = sender as InAppTipUC;
-
-            if (tip != null)
-            {
-                tip.Visibility = Visibility.Collapsed;
-
-                HikeToolTip toolTip = DictInAppTip[tip.TipIndex];
-                toolTip.IsCurrentlyShown = false;
-
-                int currentShown;
-                App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                currentShown &= (int)~(1 << tip.TipIndex);
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-                toolTip.TriggerUIUpdateOnDismissed();
-            }
-        }
-
-        #endregion
 
         #region ChatBackground
 
@@ -1405,5 +1159,29 @@ namespace windows_client.ViewModel
         {
             StickerHelper = null;
         }
+        
+        #region Pause/Resume Background Audio
+
+        public bool resumeMediaPlayerAfterDone = false;
+        
+        public void PauseBackgroundAudio()
+        {
+            if (!MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Pause();
+                resumeMediaPlayerAfterDone = true;
+            }
+        }
+
+        public void ResumeBackgroundAudio()
+        {
+            if (resumeMediaPlayerAfterDone)
+            {
+                MediaPlayer.Resume();
+                resumeMediaPlayerAfterDone = false;
+            }
+        }
+        
+        #endregion
     }
 }

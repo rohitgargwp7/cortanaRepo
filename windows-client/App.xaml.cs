@@ -63,7 +63,7 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
-        public static readonly string AUTO_SAVE_PHOTO = "autoSavePhoto";
+        public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
 
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
@@ -840,30 +840,14 @@ namespace windows_client
 
             #endregion
             #region IN APP TIPS
-
-            if (isNewInstall) //upgrade logic for inapp tips, will change with every build
+            
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.1") < 0)
             {
-                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = 0; // to keep a track of shown keys
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
+                App.appSettings.Remove(App.TIP_MARKED_KEY);
+                App.appSettings.Remove(App.TIP_SHOW_KEY);
+                App.RemoveKeyFromAppSettings(App.CHAT_THREAD_COUNT_KEY);
             }
-            else if (Utils.compareVersion(_currentVersion, "2.2.0.0") < 0)
-            {
-                App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-                App.appSettings[App.TIP_MARKED_KEY] = 0x18;
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0x18);
-            }
-            else if (Utils.compareVersion(_currentVersion, "2.5.0.0") < 0)
-            {
-                var val = App.appSettings[App.TIP_MARKED_KEY];
-                App.RemoveKeyFromAppSettings(App.TIP_MARKED_KEY);
-                App.appSettings[App.TIP_MARKED_KEY] = Convert.ToInt32(val);
-
-                val = App.appSettings[App.TIP_SHOW_KEY];
-                App.RemoveKeyFromAppSettings(App.TIP_SHOW_KEY);
-                App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, Convert.ToInt32(val));
-            }
-
+            
             #endregion
             #region STCIKERS
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
@@ -1002,10 +986,6 @@ namespace windows_client
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
-
-                    //Reset in app tip for new stickers
-                    if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)//todo:update it to market version
-                        App.ViewModel.ResetInAppTip(1);
                 }
 
                 st.Stop();
@@ -1046,9 +1026,6 @@ namespace windows_client
             #region CHAT_FTUE
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
                 RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
-
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.5.2.0") < 0)//if it is upgrade
-                App.ViewModel.ResetInAppTip(8);
             #endregion
             #region Enter to send
 

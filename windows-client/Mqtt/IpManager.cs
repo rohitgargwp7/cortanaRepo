@@ -44,14 +44,19 @@ namespace windows_client.Mqtt
         Random _random = new Random();
 
         /// <summary>
-        /// returns ip and if ip fails 5 times then it returns domain name
+        /// fetch mqtt ip and port to connect
         /// </summary>
-        /// <returns></returns>
-        public string GetIp()
+        /// <param name="ip"> returns ip and if ip fails 5 times then it returns domain name </param>
+        /// <param name="port">returns port 8080 and if it fails to connect then returns 5222</param>
+        public void GetIpAndPort(out string ip, out  int port)
         {
-            string ip = string.Empty;
+            ip = string.Empty;
+            port = AccountUtils.MQTT_PORT;
             if (AccountUtils.IsProd)
             {
+                //try for port 8080 once and if it fails then fallback to xmpp (5222)
+                if (count > 0)//todo:check for wifi
+                    port = AccountUtils.MQTT_PRODUCTION_XMPP_PORT;
                 if (count < 5)
                 {
                     ip = ProductionIps[_random.Next(ProductionIps.Length)];
@@ -66,7 +71,6 @@ namespace windows_client.Mqtt
             else
                 ip = AccountUtils.MQTT_HOST;
 
-            return ip;
         }
 
 

@@ -31,7 +31,7 @@
 
         <Grid x:Name="previewGrid" Background="Black" Canvas.ZIndex="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="Collapsed" Tap="StartPlayback_Tap">
             <Image x:Name="snapshotThumbnail" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Stretch="Uniform" Opacity="0.75"/>
-            <Image x:Name="playIcon" Canvas.ZIndex="1" Source="/View/images/MediaPlayIcon.png" Stretch="Uniform" MaxHeight="150"/>
+            <Image x:Name="playIcon" Canvas.ZIndex="1" Source="/View/images/MediaPlayIconBig.png" Stretch="Uniform" MaxHeight="150"/>
         </Grid>
         
         <MediaElement 

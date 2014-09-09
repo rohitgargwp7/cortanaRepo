@@ -403,14 +403,19 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && !App.appSettings.Contains(App.AUTO_SAVE_PHOTO))
+                                if (!App.appSettings.Contains(App.AUTO_SAVE_MEDIA) && (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE)))
                                 {
-                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
-                                    string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName, destinationPath);
-                                }
+                                    string targetFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
 
+                                    if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
+                                        targetFileName = targetFileName + ".mp4";
+                                    else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                        targetFileName = targetFileName + ".jpg";
+
+                                    string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+                                    Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
+                                }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
                             }
@@ -475,7 +480,7 @@ namespace windows_client.DbUtils
                             {
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
+                                MiscDBUtil.UpdateDBsMessageStatus(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
                         }
 
