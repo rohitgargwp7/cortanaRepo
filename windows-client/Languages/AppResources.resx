@@ -2250,7 +2250,4 @@ Download it like asap from http://hike.in!</value>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
 </root>
