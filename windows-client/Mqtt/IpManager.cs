@@ -52,7 +52,7 @@ namespace windows_client.Mqtt
         {
             ip = string.Empty;
             port = AccountUtils.MQTT_PORT;
-            if (AccountUtils.IsProd)
+            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
             {
                 //try for port 8080 once and if it fails then fallback to xmpp (5222)
                 if (count > 0)//todo:check for wifi
@@ -68,6 +68,8 @@ namespace windows_client.Mqtt
                     count = 0;
                 }
             }
+            else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                ip = AccountUtils.MQTT_HOST;
             else
                 ip = AccountUtils.MQTT_HOST;
 

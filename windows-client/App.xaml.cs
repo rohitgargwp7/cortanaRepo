@@ -134,8 +134,8 @@ namespace windows_client
             {
                 return ps;
             }
-
         }
+
         public static bool IsAppLaunched
         {
             get
@@ -154,8 +154,6 @@ namespace windows_client
             {
                 mMqttManager = value;
             }
-
-
         }
 
         public static HikePubSub HikePubSubInstance
@@ -398,7 +396,13 @@ namespace windows_client
             if (ps != PageState.WELCOME_SCREEN)
             {
                 #region SERVER INFO
-                string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+                string env ;
+                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+                    env = "PRODUCTION";
+                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                    env = "DEV";
+                else
+                    env = "STAGING";
                 Debug.WriteLine("SERVER SETTING : " + env);
                 Debug.WriteLine("HOST : " + AccountUtils.HOST);
                 Debug.WriteLine("PORT : " + AccountUtils.PORT);
@@ -840,14 +844,14 @@ namespace windows_client
 
             #endregion
             #region IN APP TIPS
-            
+
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.1") < 0)
             {
                 App.appSettings.Remove(App.TIP_MARKED_KEY);
                 App.appSettings.Remove(App.TIP_SHOW_KEY);
                 App.RemoveKeyFromAppSettings(App.CHAT_THREAD_COUNT_KEY);
             }
-            
+
             #endregion
             #region STCIKERS
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)

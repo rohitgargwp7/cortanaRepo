@@ -20,18 +20,31 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
+        #region Environment enum
+        public enum DebugEnvironment
+        {
+            PRODUCTION,
+            DEV,
+            STAGING
+        }
+        #endregion
+
+        private static DebugEnvironment _appEnvironment = DebugEnvironment.PRODUCTION;
+
         private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
         private static readonly string STAGING_HOST = "staging.im.hike.in";
 
+        private static readonly string DEV_HOST = "staging2.im.hike.in";
+
         private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
 
         private static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
 
         private static readonly int PRODUCTION_PORT = 80;
-       
+
         /// <summary>
         /// Port number 5222
         /// </summary>
@@ -39,11 +52,54 @@ namespace windows_client.utils
 
         private static readonly int STAGING_PORT = 8080;
 
+        private static readonly int DEV_PORT = 8080;
+        /*
         public static bool IsProd
         {
             get
             {
                 return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
+            }
+        }*/
+
+        public static DebugEnvironment AppEnvironment
+        {
+            get
+            {
+                if (App.IS_MARKETPLACE)
+                    return DebugEnvironment.PRODUCTION;
+                else
+                    return _appEnvironment;
+            }
+            set
+            {
+                _appEnvironment = value;
+            }
+        }
+
+        public static string GetUpdateUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return "http://get.hike.in/updates/wp8";
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return "http://staging.im.hike.in:8080/updates/wp8";
+                else
+                    return "http://staging2.im.hike.in:8080/updates/wp8";
+            }
+        }
+
+        public static string GetStickerUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return "http://hike.in/s/";
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return "http://staging.im.hike.in/s/";
+                else
+                    return "http://staging2.im.hike.in/s/";
             }
         }
 
@@ -53,9 +109,12 @@ namespace windows_client.utils
         {
             get
             {
-                if (IsProd)
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
                     return MQTT_HOST_SERVER;
-                return STAGING_HOST;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return DEV_HOST;
+                else
+                    return STAGING_HOST;
             }
         }
 
@@ -63,9 +122,12 @@ namespace windows_client.utils
         {
             get
             {
-                if (IsProd)
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
                     return 8080;
-                return 1883;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return 1883;
+                else
+                    return 1883;
             }
         }
 
@@ -73,20 +135,74 @@ namespace windows_client.utils
         {
             get
             {
-                if (IsProd)
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
                     return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
-                return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return "http://" + DEV_HOST + ":" + Convert.ToString(DEV_PORT) + "/v1";
+                else
+                    return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
+            }
+        }
+
+        public static string FILE_TRANSFER_BASE_URL
+        {
+            get
+            {
+                return FILE_TRANSFER_BASE + "/user/ft";
+            }
+        }
+
+        public static string PARTIAL_FILE_TRANSFER_BASE_URL
+        {
+            get
+            {
+                return FILE_TRANSFER_BASE + "/user/pft/";
             }
         }
 
         #endregion
 
-        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
+        public static string HOST
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return PRODUCTION_HOST;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return DEV_HOST;
+                else
+                    return STAGING_HOST;
+            }
+        }
 
-        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
+        public static int PORT
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return PRODUCTION_PORT;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return DEV_PORT;
+                else
+                    return STAGING_PORT;
+            }
+        }
 
-        public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
-        public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
+        public static string BASE
+        {
+            get
+            {
+                return "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+            }
+        }
+
+        public static string AVATAR_BASE
+        {
+            get
+            {
+                return "http://" + HOST + ":" + Convert.ToString(PORT);
+            }
+        }
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 

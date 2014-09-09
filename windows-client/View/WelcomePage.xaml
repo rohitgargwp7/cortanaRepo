@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" MinHeight="50">
-            <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Staging" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
+            <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Production" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
         </Grid>
         <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,-20">
             <Grid.RowDefinitions>
@@ -32,7 +32,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <phone:Pivot x:Name="welcomePivot" SelectionChanged="Pivot_SelectionChanged" Grid.ColumnSpan="2">
+            <phone:Pivot x:Name="welcomePivot" SelectionChanged="Pivot_SelectionChanged" Tap="ChangeEnvironment" Grid.ColumnSpan="2">
                 <phone:PivotItem>
                     <Grid>
                         <Grid.RowDefinitions>

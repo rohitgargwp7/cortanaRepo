@@ -81,7 +81,7 @@ namespace windows_client.utils
             DateTime messageTime = new DateTime(ticks);
             DateTime now = DateTime.UtcNow;
             TimeSpan span = now.Subtract(messageTime);
-            if (AccountUtils.IsProd)
+            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                 return span.Hours > HikeConstants.CHECK_FOR_UPDATE_TIME;
             else
                 return span.Minutes > HikeConstants.CHECK_FOR_UPDATE_TIME;
@@ -94,7 +94,7 @@ namespace windows_client.utils
             DateTime messageTime = new DateTime(ticks);
             DateTime now = DateTime.UtcNow;
             TimeSpan span = now.Subtract(messageTime);
-            if (AccountUtils.IsProd)
+            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                 return span.Hours > HikeConstants.ANALYTICS_POST_TIME;
             else
                 return span.Minutes > HikeConstants.ANALYTICS_POST_TIME;
