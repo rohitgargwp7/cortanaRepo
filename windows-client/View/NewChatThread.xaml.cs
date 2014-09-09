@@ -512,6 +512,7 @@ namespace windows_client.View
                 App.newChatThreadPage = this;
             }
 
+            // Launch states
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_PUSH_MSISDN))
@@ -635,6 +636,8 @@ namespace windows_client.View
             }
 
             #endregion
+            
+            //File transfer states
             #region AUDIO FT
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
@@ -644,20 +647,19 @@ namespace windows_client.View
             }
             #endregion
             #region SHARE LOCATION
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
             {
                 shareLocation();
             }
             #endregion
             #region SHARE CONTACT
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
             {
                 ContactTransfer();
             }
             #endregion
             #region MULTIPLE IMAGES
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
                 MultipleImagesTransfer();
             }
