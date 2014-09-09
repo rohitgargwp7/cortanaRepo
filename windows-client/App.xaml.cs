@@ -396,7 +396,7 @@ namespace windows_client
             if (ps != PageState.WELCOME_SCREEN)
             {
                 #region SERVER INFO
-                string env ;
+                string env;
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                     env = "PRODUCTION";
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
