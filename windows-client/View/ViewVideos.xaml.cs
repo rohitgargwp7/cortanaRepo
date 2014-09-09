@@ -75,53 +75,49 @@ namespace windows_client.View
                 FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
                 ushort totalVideos = preRecordedVideos.GetVideoCount();
 
-                if (totalVideos > 0)
+                string filePath = string.Empty;
+                string albumName = string.Empty;
+                int videoDuration;
+                double date;
+
+                for (int index = 0; index < totalVideos; index++)
                 {
-                    for (int index = 0; index < totalVideos; index++)
+                    preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+                    if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
+                    
+                    Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
+
+                    try
                     {
-                        string filePath = string.Empty;
-                        string albumName = string.Empty;
-                        int videoSize;
-                        int videoDuration;
-                        double date;
-
-                        preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
-
-                        if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
-                            continue;
-
-                        Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
-
-                        try
-                        {
-                            albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
-                            albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
-                            albumName = AppResources.Default_Video_Album_Txt;
-                        }
-
-                        VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
-                        DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-                        video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
-                        VideoAlbum albumObj;
-
-                        if (!videoAlbumList.TryGetValue(albumName, out albumObj))
-                        {
-                            albumObj = new VideoAlbum(albumName, videoThumbBytes);
-                            videoAlbumList.Add(albumName, albumObj);
-                        }
-                        else
-                        {
-                            if (albumObj.ThumbBytes == null && videoThumbBytes != null)
-                                albumObj.ThumbBytes = videoThumbBytes;
-                        }
-                        
-                        albumObj.Add(video);
-                        _listAllVideos.Add(video);
+                        albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
+                        albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                     }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
+                        albumName = AppResources.Default_Video_Album_Txt;
+                    }
+
+                    VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
+                    DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+                    video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+                    VideoAlbum albumObj;
+
+                    if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                    {
+                        albumObj = new VideoAlbum(albumName, videoThumbBytes);
+                        videoAlbumList.Add(albumName, albumObj);
+                    }
+                    else
+                    {
+                        if (albumObj.ThumbBytes == null && videoThumbBytes != null)
+                            albumObj.ThumbBytes = videoThumbBytes;
+                    }
+
+                    albumObj.Add(video);
+                    _listAllVideos.Add(video);
                 }
 
                 preRecordedVideos.ClearData();
