@@ -166,6 +166,7 @@ namespace windows_client
         public static readonly string ST_UI_EVENT = "uiEvent";
         public static readonly string ST_CONFIG_EVENT = "config";
         public static readonly string ST_NETWORK_EVENT = "nw";
+        public static readonly string ST_FILE_TRANSFER = "ft";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -435,6 +436,7 @@ namespace windows_client
         public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
         public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
         public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
+        public static readonly string FT_VIDEO_FILE = "ftvideo";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";

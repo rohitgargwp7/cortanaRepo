@@ -4767,6 +4767,7 @@ namespace windows_client.View
                     return;
                 }
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER,HikeConstants.FT_VIDEO_FILE);
             }
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
