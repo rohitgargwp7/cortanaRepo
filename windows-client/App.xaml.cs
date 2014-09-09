@@ -350,6 +350,8 @@ namespace windows_client
             {
                 RootFrame.Navigating += RootFrame_CheckForFastResume;
             }
+            else if (e.NavigationMode == NavigationMode.Refresh && e.Uri.OriginalString.Contains("ConversationsList"))
+                RootFrame.Navigating -= RootFrame_CheckForFastResume;
         }
 
         // Code to execute when the application is launching (eg, from Start)
