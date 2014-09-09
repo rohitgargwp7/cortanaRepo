@@ -68,13 +68,9 @@ namespace windows_client.Mqtt
                     count = 0;
                 }
             }
-            else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
-                ip = AccountUtils.MQTT_HOST;
             else
                 ip = AccountUtils.MQTT_HOST;
-
         }
-
 
         public void ResetIp()
         {
