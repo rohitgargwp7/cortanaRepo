@@ -83,15 +83,11 @@ namespace windows_client.View
                     return;
                 }
 
-                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
                 if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
-                    App.APP_LAUNCH_STATE = App.LaunchState.PUSH_NOTIFICATION_LAUNCH;
-
-                    PhoneApplicationService.Current.State[App.LAUNCH_STATE] = App.APP_LAUNCH_STATE;
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
 
                     NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
@@ -128,9 +124,6 @@ namespace windows_client.View
                     NavigationService.Navigate(nUri);
                     return;
                 }
-
-                PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_UPGRADEPAGE] = true;
-                App.APP_LAUNCH_STATE = App.LaunchState.SHARE_PICKER_LAUNCH;
 
                 int idx = targetPage.IndexOf("?") + 1;
                 string param = targetPage.Substring(idx);

@@ -29,7 +29,6 @@ namespace windows_client
 
         #region Hike Specific Constants
 
-        public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string ACCOUNT_GENDER = "accountGender";
@@ -119,7 +118,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
         private static object lockObj = new object();
@@ -224,16 +222,6 @@ namespace windows_client
             }
         }
 
-        public static LaunchState APP_LAUNCH_STATE
-        {
-            get { return _appLaunchState; }
-            set
-            {
-                if (value != _appLaunchState)
-                    _appLaunchState = value;
-            }
-        }
-
         public static bool IS_TOMBSTONED
         {
             get { return _isTombstoneLaunch; }
@@ -298,33 +286,6 @@ namespace windows_client
             WELCOME_HIKE_SCREEN,
             NUX_SCREEN_FRIENDS,// Nux Screen for friends
             NUX_SCREEN_FAMILY// Nux Screen for family
-        }
-
-        #endregion
-
-        #region APP LAUNCH STATE
-
-        public enum LaunchState
-        {
-            /// <summary>
-            /// user clicked the app from menu or tile
-            /// </summary>
-            NORMAL_LAUNCH,
-
-            /// <summary>
-            /// app is alunched after push notification is clicked
-            /// </summary>
-            PUSH_NOTIFICATION_LAUNCH,
-
-            /// <summary>
-            /// app is alunched after share is clicked
-            /// </summary>
-            SHARE_PICKER_LAUNCH,
-
-            /// <summary>
-            /// app is resumed by launching app after suspension
-            /// </summary>
-            FAST_RESUME
         }
 
         #endregion
@@ -419,15 +380,6 @@ namespace windows_client
 
             if (_isTombstoneLaunch)
             {
-                try
-                {
-                    _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
-                }
-
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
 
@@ -452,8 +404,6 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-
-            PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
 
             if (IS_VIEWMODEL_LOADED)
             {
@@ -553,8 +503,6 @@ namespace windows_client
                         && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
-                        APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                        PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                         mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                     }
@@ -572,7 +520,6 @@ namespace windows_client
                         return;
                     }
 
-                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("FileId")) // SHARE PICKER CASE
@@ -583,8 +530,6 @@ namespace windows_client
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
                     }
-
-                    APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
@@ -642,8 +587,6 @@ namespace windows_client
                     && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                     && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
-                    _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                    PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                     mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                 }
@@ -654,8 +597,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
-                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
 
                 instantiateClasses(false);
@@ -670,9 +611,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
-                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -688,9 +626,6 @@ namespace windows_client
             }
             else
             {
-                _appLaunchState = LaunchState.NORMAL_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
                 instantiateClasses(false);
                 appInitialize();
 
