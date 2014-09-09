@@ -76,12 +76,11 @@ namespace windows_client.Model
         [DataMember]
         public DateTime TimeStamp { get; set; }
 
-        public VideoItem(string filePath, byte[] thumbnail,int videoDuration,int videoSize)
+        public VideoItem(string filePath, byte[] thumbnail,int videoDuration)
         {
             _filePath = filePath;
             _thumbnailBytes = thumbnail;
             _duration = videoDuration;
-            _size = videoSize;
         }
 
         BitmapImage _thumbnailImage;
