@@ -84,9 +84,7 @@ namespace windows_client
         public static readonly string ValidVideoDirectoryPath = "C:\\Data\\Users\\Public\\Pictures\\";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
-        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";  //to be removed
         public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
-        public static readonly string PARTIAL_FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/pft/"; //to be removed
 
         public static readonly string pushNotificationChannelName = "HikeApp";
 
@@ -130,9 +128,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = AccountUtils.GetUpdateUrl;  //NOT USING ANYWHERE
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
-        public static readonly string STICKER_URL = AccountUtils.GetStickerUrl; //NOT USING ANYWHERE
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
         public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
