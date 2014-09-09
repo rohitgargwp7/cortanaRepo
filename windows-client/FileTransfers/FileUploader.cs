@@ -312,12 +312,21 @@ namespace windows_client.FileTransfers
                 else
                 {
                     // resume upload from last position and update state
-
                     CurrentHeaderPosition = index + 1;
-                    FileState = FileTransferState.STARTED;
-                    Save();
-                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                    BeginUploadPostRequest();
+
+                    if (TotalBytes < CurrentHeaderPosition)
+                    {
+                        FileState = FileTransferState.FAILED;
+                        Delete();
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    }
+                    else
+                    {
+                        FileState = FileTransferState.STARTED;
+                        Save();
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                        BeginUploadPostRequest();
+                    }
                 }
             }
             else if (responseCode == HttpStatusCode.NotFound || responseCode == HttpStatusCode.InternalServerError)

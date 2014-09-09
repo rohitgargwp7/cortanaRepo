@@ -12,7 +12,7 @@ namespace RPALApiComponent
 		auto_ZMediaLibRequirement myLib;
 	public:
 		FetchPreRecordedVideos();
-		Array<byte>^ GetVideoInfo(uint8 position, float64* videoDate,int* videoDuration,int *videoSize);
+		Array<byte>^ GetVideoInfo(uint8 position, float64* videoDate,int* videoDuration);
 		uint16 GetVideoCount();
 		void ClearData();
 		void GetVideoFilePath(uint8 position, Platform::String^* strVideoFilePath);
