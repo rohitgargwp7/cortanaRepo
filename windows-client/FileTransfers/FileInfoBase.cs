@@ -145,6 +145,8 @@ namespace windows_client.FileTransfers
                 return false;
 
             String md5 = string.Empty;
+            md5 = Utils.GetMD5Hash(filePath);
+            System.Diagnostics.Debug.WriteLine(md5);
             try
             {
                 md5 = MD5CryptoServiceProvider.GetMd5String(bytes);

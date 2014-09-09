@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace windows_client.utils
 {
@@ -795,5 +796,56 @@ namespace windows_client.utils
             return absoulutePath;
         }
 
+        public static string GetMD5Hash(string filePath)
+        {
+            byte[] buffer;
+            byte[] oldBuffer;
+            int bytesRead;
+            int oldBytesRead;
+            long size;
+            long totalBytesRead = 0;
+
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(filePath))
+                {
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (MD5 hashAlgorithm = MD5.Create())
+                        {
+                            size = fileStream.Length;
+                            buffer = new byte[4096];
+                            bytesRead = fileStream.Read(buffer, 0, buffer.Length);
+                            totalBytesRead += bytesRead;
+
+                            do
+                            {
+                                oldBytesRead = bytesRead;
+                                oldBuffer = buffer;
+
+                                buffer = new byte[4096];
+                                bytesRead = fileStream.Read(buffer, 0, buffer.Length);
+
+                                totalBytesRead += bytesRead;
+
+                                if (bytesRead == 0)
+                                    hashAlgorithm.TransformFinalBlock(oldBuffer, 0, oldBytesRead);
+                                else
+                                    hashAlgorithm.TransformBlock(oldBuffer, 0, oldBytesRead, oldBuffer, 0);
+
+                            } while (bytesRead != 0);
+
+                            StringBuilder sb = new StringBuilder();
+                            foreach (byte b in hashAlgorithm.Hash)
+                                sb.Append(b.ToString("x2"));
+
+                            return sb.ToString();
+                        }
+                    }
+                }
+                else
+                    return string.Empty;
+            }
+        }
     }
 }
