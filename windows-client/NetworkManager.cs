@@ -145,6 +145,11 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+                        JToken typeToken = null;
+
+                        if (jsonObj.TryGetValue(HikeConstants.DATA, out typeToken) && jsonObj.TryGetValue(HikeConstants.METADATA, out typeToken) && jsonObj.TryGetValue(HikeConstants.GC_PIN, out typeToken))
+                            convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.PIN_MESSAGE;
+
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
@@ -159,7 +164,7 @@ namespace windows_client
 
                     if (obj == null)
                         return;
-
+                    
                     if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
                         || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {

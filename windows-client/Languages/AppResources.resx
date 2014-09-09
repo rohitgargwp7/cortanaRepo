@@ -2219,4 +2219,10 @@ Download it like asap from http://hike.in!</value>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>Create Pin</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>Pin It</value>
+  </data>
 </root>

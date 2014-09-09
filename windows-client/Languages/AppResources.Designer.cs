@@ -3730,6 +3730,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin It.
+        /// </summary>
+        public static string Pin_Done_Txt {
+            get {
+                return ResourceManager.GetString("Pin_Done_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Pin.
+        /// </summary>
+        public static string PinHeader_Txt {
+            get {
+                return ResourceManager.GetString("PinHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
         public static string Play_File {

@@ -134,9 +134,9 @@ namespace windows_client.View
             App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
-                });
+            {
+                muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            });
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)

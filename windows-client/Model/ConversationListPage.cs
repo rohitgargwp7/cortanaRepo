@@ -16,6 +16,7 @@ using System.Text;
 using windows_client.Languages;
 using windows_client.Controls;
 using windows_client.DbUtils;
+using Newtonsoft.Json;
 
 namespace windows_client.Model
 {
@@ -457,6 +458,36 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
+        string _metadata {get;set;}
+        JObject metadata;
+
+        public JObject MetaData
+        {
+            get
+            {
+                try
+                {
+                    if (metadata == null)
+                        metadata = JObject.Parse(_metadata);
+                    
+                    return metadata;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (metadata != value)
+                {
+                    metadata = value;
+                    _metadata = (value == null ) ? null : value.ToString(Newtonsoft.Json.Formatting.None);
+                }
+            }
+        }
+
         bool _isHidden = false;
         [DataMember]
         public bool IsHidden
@@ -799,6 +830,11 @@ namespace windows_client.Model
                     writer.WriteStringBytes(_draftMessage);
 
                 writer.Write(_isHidden);
+
+                if (_metadata == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_metadata);
             }
             catch (Exception ex)
             {
@@ -906,6 +942,11 @@ namespace windows_client.Model
                 {
                     _isHidden = false;
                 }
+
+                count = reader.ReadInt32();
+                _metadata = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_metadata == "*@N@*")
+                    _metadata = null;
             }
             catch (Exception ex)
             {
