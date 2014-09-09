@@ -33,7 +33,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-            
+
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 shellProgressAlbums.IsIndeterminate = true;
@@ -48,12 +48,16 @@ namespace windows_client.View
                 ToggleView(true);
                 e.Cancel = true;
             }
-            
+
             base.OnBackKeyPress(e);
         }
 
         #region Albums
-        
+
+        /// <summary>
+        /// Function to bind fetched video albums to LongListContainer
+        /// </summary>
+        /// <returns></returns>
         public async Task BindAlbums()
         {
             await Task.Delay(1);
@@ -65,6 +69,10 @@ namespace windows_client.View
             });
         }
 
+        /// <summary>
+        /// Create video albums from video files. Function creates video album from filepath and adds respective videos in it.
+        /// </summary>
+        /// <returns></returns>
         public List<VideoAlbum> GetAlbums()
         {
             Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
@@ -86,7 +94,7 @@ namespace windows_client.View
 
                     if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
                         continue;
-                    
+
                     Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
 
                     try
@@ -130,13 +138,18 @@ namespace windows_client.View
             return videoAlbumList.Values.ToList();
         }
 
+        /// <summary>
+        /// Function to call when a user taps on a album in long list selector
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VideoAlbum album = llsAlbums.SelectedItem as VideoAlbum;
-            
+
             if (album == null)
                 return;
-            
+
             albumNameTxt.Text = album.AlbumName.ToLower();
             llsAlbums.SelectedItem = null;
             ToggleView(false);
@@ -145,6 +158,11 @@ namespace windows_client.View
             BindAlbumVideos(album);
         }
 
+        /// <summary>
+        /// Binding videos to longList Selector when a user taps on a album
+        /// </summary>
+        /// <param name="album"></param>
+        /// <returns></returns>
         private async Task BindAlbumVideos(VideoAlbum album)
         {
             await Task.Delay(1);
@@ -161,6 +179,10 @@ namespace windows_client.View
 
         #region Videos
 
+        /// <summary>
+        /// Binding all videos to LongList selector when user swipe to all video section
+        /// </summary>
+        /// <returns></returns>
         public async Task BindVideos()
         {
             await Task.Delay(1);
@@ -172,17 +194,22 @@ namespace windows_client.View
             });
         }
 
+        /// <summary>
+        /// Group videos according to their creation month
+        /// </summary>
+        /// <param name="listVideos"></param>
+        /// <returns></returns>
         public List<KeyedList<string, VideoItem>> GroupedVideos(List<VideoItem> listVideos)
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
-            
+
             var groupedPhotos =
                 from video in listVideos
                 orderby video.TimeStamp descending
                 group video by video.TimeStamp.ToString("y") into videosByMonth
                 select new KeyedList<string, VideoItem>(videosByMonth);
-            
+
             return new List<KeyedList<string, VideoItem>>(groupedPhotos);
         }
 
@@ -206,6 +233,10 @@ namespace windows_client.View
 
         #region helper functions
 
+        /// <summary>
+        /// Function to set visibility for all album grids or grids for a particular video album
+        /// </summary>
+        /// <param name="showAlbum"></param>
         public void ToggleView(bool showAlbum)
         {
             if (showAlbum)
@@ -222,6 +253,11 @@ namespace windows_client.View
 
         #endregion
 
+        /// <summary>
+        /// Fuction to call when a user taps on a video
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LongListSelector lls = sender as LongListSelector;
@@ -256,6 +292,11 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }
 
+        /// <summary>
+        /// Function to call when user swipe between all video and album view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (pivotAlbums.SelectedIndex == 1)
