@@ -75,8 +75,8 @@ namespace windows_client.View
         {
             ApplicationBar = new ApplicationBar()
             {
-                ForegroundColor = ((SolidColorBrush)App.Current.Resources["AppBarForeground"]).Color,
-                BackgroundColor = ((SolidColorBrush)App.Current.Resources["AppBarBackground"]).Color,
+                ForegroundColor = (Color)App.Current.Resources["AppBarBlackForegroundColor"],
+                BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
             };
 
             //add icon for send
