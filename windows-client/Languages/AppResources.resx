@@ -2231,15 +2231,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
-  <data name="SaveInGallery_Txt" xml:space="preserve">
-    <value>save to gallery</value>
-    <comment>Menu Item text</comment>
-  </data>
   <data name="CT_FileUnableToSend_Text" xml:space="preserve">
     <value>It looks like the video is corrupt and can't be sent.</value>
-  </data>
-  <data name="CT_FileNotPlayable_Text" xml:space="preserve">
-    <value>Can't play video. It seems to be corrupt.</value>
   </data>
   <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
     <value>Unsupported video</value>
@@ -2253,5 +2246,8 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Saving failed</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Can't open this video. It seems to be corrupt.</value>
   </data>
 </root>

@@ -198,7 +198,6 @@ namespace windows_client.View
             this.statusLLS.SelectedItem = null;
 
             App.IS_TOMBSTONED = false;
-            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
 
             while (NavigationService.CanGoBack)

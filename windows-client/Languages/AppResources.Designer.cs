@@ -1240,11 +1240,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t play video. It seems to be corrupt..
+        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
         /// </summary>
-        public static string CT_FileNotPlayable_Text {
+        public static string CT_FileNotOpenable_Text {
             get {
-                return ResourceManager.GetString("CT_FileNotPlayable_Text", resourceCulture);
+                return ResourceManager.GetString("CT_FileNotOpenable_Text", resourceCulture);
             }
         }
         
@@ -4167,15 +4167,6 @@ namespace windows_client.Languages {
         public static string Save_Contact_Txt {
             get {
                 return ResourceManager.GetString("Save_Contact_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to save to gallery.
-        /// </summary>
-        public static string SaveInGallery_Txt {
-            get {
-                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
             }
         }
         

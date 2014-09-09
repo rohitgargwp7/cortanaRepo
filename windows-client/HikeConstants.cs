@@ -312,6 +312,10 @@ namespace windows_client
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
+        /// <summary>
+        /// Use key whenever relaunching chat thread from chat thread page to clear back stack
+        /// </summary>
+        public static string IS_CHAT_RELAUNCH = "isChatRelaunch";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
         public static string AUDIO_RECORDED = "audioRecorded";
@@ -326,7 +330,6 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
-        public static readonly string LAUNCH_FROM_UPGRADEPAGE = "launchFromUpgradePage";
         public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
         public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";

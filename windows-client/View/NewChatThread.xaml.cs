@@ -281,7 +281,7 @@ namespace windows_client.View
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (ocMessages == null) 
+                                if (ocMessages == null)
                                     return;
 
                                 if (_isSendAllAsSMSVisible)
@@ -378,6 +378,14 @@ namespace windows_client.View
                     statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
+            }
+
+            //whenever chat thread is relaunched, last page is chat thread, we need to remove from backstack
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_CHAT_RELAUNCH))
+            {
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_CHAT_RELAUNCH);
             }
 
             while (NavigationService.BackStack.Count() > 1)
@@ -512,13 +520,13 @@ namespace windows_client.View
                 App.newChatThreadPage = this;
             }
 
+            // Launch states
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_PUSH_MSISDN))
             {
                 string msisdn = (PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_PUSH_MSISDN);
-
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
@@ -551,17 +559,10 @@ namespace windows_client.View
 
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
-
                 ManagePage();
-
-                //remove if user came directly from upgrade page
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-                {
-                    if (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
-
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
-                }
+                //whenever launched from push, there should be no backstack. Navigation to conversation page is handled in onBackKeyPress
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
 
                 isFirstLaunch = false;
             }
@@ -572,6 +573,9 @@ namespace windows_client.View
             {
                 ManagePageStateObjects();
                 ManagePage();
+                //whenever launched from file picker, there should be no backstack. Navigation to conversation page is handled in onBackKeyPress
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
                 isFirstLaunch = false;
             }
             #endregion
@@ -609,20 +613,16 @@ namespace windows_client.View
             }
             #endregion
             #region NORMAL LAUNCH
-            else if (App.APP_LAUNCH_STATE == App.LaunchState.NORMAL_LAUNCH) // non tombstone case
-            //else
+            else if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
             {
-                if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
-                {
-                    ManagePageStateObjects();
-                    ManagePage();
-                    isFirstLaunch = false;
-                }
-                else //removing here because it may be case that user pressed back without selecting any user
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    this.UpdateLayout();
-                }
+                ManagePageStateObjects();
+                ManagePage();
+                isFirstLaunch = false;
+            }
+            else //removing here because it may be case that user pressed back without selecting any user
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                this.UpdateLayout();
             }
 
             /* This is called only when you add more participants to group */
@@ -635,6 +635,8 @@ namespace windows_client.View
             }
 
             #endregion
+            
+            //File transfer states
             #region AUDIO FT
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
@@ -644,20 +646,19 @@ namespace windows_client.View
             }
             #endregion
             #region SHARE LOCATION
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
             {
                 shareLocation();
             }
             #endregion
             #region SHARE CONTACT
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
             {
                 ContactTransfer();
             }
             #endregion
             #region MULTIPLE IMAGES
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
                 MultipleImagesTransfer();
             }
@@ -827,7 +828,7 @@ namespace windows_client.View
                 App.ViewModel.ResumeBackgroundAudio();
             }
 
-            if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
+            if (!NavigationService.CanGoBack)// if no page to go back in this case back would go to conversation list
             {
                 e.Cancel = true;
 
@@ -2977,7 +2978,7 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
             }
-
+            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -3227,38 +3228,6 @@ namespace windows_client.View
             else
                 displayAttachment(msg);
         }
-
-        private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
-        {
-            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            string tempName = Convert.ToString(msg.MessageId);
-            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
-            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
-            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
-            
-            if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                targetFileName = targetFileName + ".mp4";
-            else if(msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                targetFileName = targetFileName + ".jpg";
-
-            bool isSaveSuccessful = false;
-            BackgroundWorker bgWorker = new BackgroundWorker();
-            bgWorker.DoWork += (ss, ee) =>
-            {
-                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
-                isSaveSuccessful = result.Result;
-            };
-            bgWorker.RunWorkerAsync();
-            bgWorker.RunWorkerCompleted += (sf, ef) =>
-            {
-                if (isSaveSuccessful)
-                    MessageBox.Show(AppResources.SaveSuccess_Txt,AppResources.SaveSuccess_Caption_Txt,MessageBoxButton.OK);
-                else
-                    MessageBox.Show(AppResources.Something_Wrong_Txt,AppResources.Something_WrongCaption_Txt,MessageBoxButton.OK);
-            };
-
-        }
-
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -4773,7 +4742,7 @@ namespace windows_client.View
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
 
-                if (thumbnail!=null && thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                if (thumbnail != null && thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
                 {
                     BitmapImage image = new BitmapImage();
                     UI_Utils.Instance.createImageFromBytes(thumbnail, image);
@@ -4787,14 +4756,16 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine("NewChatThread :: AudioFileTransfer , Exception : " + ex.StackTrace);
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
                 if (fileBytes == null)
+                {
+                    MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                     return;
-
+                }
                 isAudio = false;
             }
 
@@ -6075,14 +6046,14 @@ namespace windows_client.View
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
-            if (e.Orientation == PageOrientation.Portrait 
-                || e.Orientation == PageOrientation.PortraitUp 
+            if (e.Orientation == PageOrientation.Portrait
+                || e.Orientation == PageOrientation.PortraitUp
                 || e.Orientation == PageOrientation.PortraitDown)
             {
                 sendMsgTxtbox.MaxHeight = 130;
             }
-            else if (e.Orientation == PageOrientation.Landscape 
-                || e.Orientation == PageOrientation.LandscapeLeft 
+            else if (e.Orientation == PageOrientation.Landscape
+                || e.Orientation == PageOrientation.LandscapeLeft
                 || e.Orientation == PageOrientation.LandscapeRight)
             {
                 sendMsgTxtbox.MaxHeight = 72;
@@ -6636,15 +6607,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
                 if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
                 if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
-                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
