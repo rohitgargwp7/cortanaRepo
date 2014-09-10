@@ -33,7 +33,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-            
+
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
             {
                 shellProgressAlbums.IsIndeterminate = true;
@@ -48,12 +48,16 @@ namespace windows_client.View
                 ToggleView(true);
                 e.Cancel = true;
             }
-            
+
             base.OnBackKeyPress(e);
         }
 
         #region Albums
-        
+
+        /// <summary>
+        /// Function to bind fetched video albums to LongListContainer
+        /// </summary>
+        /// <returns></returns>
         public async Task BindAlbums()
         {
             await Task.Delay(1);
@@ -65,6 +69,10 @@ namespace windows_client.View
             });
         }
 
+        /// <summary>
+        /// Create video albums from video files. Function creates video album from filepath and adds respective videos in it.
+        /// </summary>
+        /// <returns></returns>
         public List<VideoAlbum> GetAlbums()
         {
             Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
@@ -74,54 +82,41 @@ namespace windows_client.View
             {
                 FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
                 ushort totalVideos = preRecordedVideos.GetVideoCount();
+                VideoItem video;
+                string albumName;
 
-                if (totalVideos > 0)
+                for (int index = 0; index < totalVideos; index++)
                 {
-                    for (int index = 0; index < totalVideos; index++)
+                    video = GetVideoFile(preRecordedVideos, index);
+                    
+                    if (video == null)
+                        continue;
+
+                    VideoAlbum albumObj;
+                    try
                     {
-                        string filePath = string.Empty;
-                        string albumName = string.Empty;
-                        int videoSize;
-                        int videoDuration;
-                        double date;
-
-                        preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
-
-                        if (!filePath.Contains(HikeConstants.ValidVideoDirectoryPath))
-                            continue;
-
-                        Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
-
-                        try
-                        {
-                            albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
-                            albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
-                            albumName = AppResources.Default_Video_Album_Txt;
-                        }
-
-                        VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
-                        DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-                        video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
-                        VideoAlbum albumObj;
-
-                        if (!videoAlbumList.TryGetValue(albumName, out albumObj))
-                        {
-                            albumObj = new VideoAlbum(albumName, videoThumbBytes);
-                            videoAlbumList.Add(albumName, albumObj);
-                        }
-                        else
-                        {
-                            if (albumObj.ThumbBytes == null && videoThumbBytes != null)
-                                albumObj.ThumbBytes = videoThumbBytes;
-                        }
-                        
-                        albumObj.Add(video);
-                        _listAllVideos.Add(video);
+                        albumName = video.FilePath.Substring(0, video.FilePath.LastIndexOf("\\"));
+                        albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                     }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
+                        albumName = AppResources.Default_Video_Album_Txt;
+                    }
+                    
+                    if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                    {
+                        albumObj = new VideoAlbum(albumName, video.ThumbnailBytes);
+                        videoAlbumList.Add(albumName, albumObj);
+                    }
+                    else
+                    {
+                        if (albumObj.ThumbBytes == null && video.ThumbnailBytes != null)
+                            albumObj.ThumbBytes = video.ThumbnailBytes;
+                    }
+
+                    albumObj.Add(video);
+                    _listAllVideos.Add(video);
                 }
 
                 preRecordedVideos.ClearData();
@@ -134,13 +129,18 @@ namespace windows_client.View
             return videoAlbumList.Values.ToList();
         }
 
+        /// <summary>
+        /// Function to call when a user taps on a album in long list selector
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VideoAlbum album = llsAlbums.SelectedItem as VideoAlbum;
-            
+
             if (album == null)
                 return;
-            
+
             albumNameTxt.Text = album.AlbumName.ToLower();
             llsAlbums.SelectedItem = null;
             ToggleView(false);
@@ -149,6 +149,11 @@ namespace windows_client.View
             BindAlbumVideos(album);
         }
 
+        /// <summary>
+        /// Binding videos to longList Selector when a user taps on a album
+        /// </summary>
+        /// <param name="album"></param>
+        /// <returns></returns>
         private async Task BindAlbumVideos(VideoAlbum album)
         {
             await Task.Delay(1);
@@ -165,6 +170,10 @@ namespace windows_client.View
 
         #region Videos
 
+        /// <summary>
+        /// Binding all videos to LongList selector when user swipe to all video section
+        /// </summary>
+        /// <returns></returns>
         public async Task BindVideos()
         {
             await Task.Delay(1);
@@ -176,17 +185,22 @@ namespace windows_client.View
             });
         }
 
+        /// <summary>
+        /// Group videos according to their creation month
+        /// </summary>
+        /// <param name="listVideos"></param>
+        /// <returns></returns>
         public List<KeyedList<string, VideoItem>> GroupedVideos(List<VideoItem> listVideos)
         {
             if (listVideos == null || listVideos.Count == 0)
                 return null;
-            
+
             var groupedPhotos =
                 from video in listVideos
                 orderby video.TimeStamp descending
                 group video by video.TimeStamp.ToString("y") into videosByMonth
                 select new KeyedList<string, VideoItem>(videosByMonth);
-            
+
             return new List<KeyedList<string, VideoItem>>(groupedPhotos);
         }
 
@@ -206,10 +220,40 @@ namespace windows_client.View
                 Key = grouping.Key;
             }
         }
+
+        /// <summary>
+        /// Get video file from Video file list created by RPAL calls
+        /// </summary>
+        /// <param name="preRecordedVideos">RPAL object which contains video list pointer</param>
+        /// <param name="index">index of the file in the list </param>
+        /// <returns></returns>
+        public VideoItem GetVideoFile(FetchPreRecordedVideos preRecordedVideos, int index)
+        {
+            string filePath = string.Empty;
+            int videoDuration;
+            double date;
+            Byte[] videoThumbBytes;
+
+            preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+            if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
+                return null;
+
+            videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
+            VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
+            DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+            video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+            return video;
+        }
+
         #endregion
 
         #region helper functions
 
+        /// <summary>
+        /// Function to set visibility for all album grids or grids for a particular video album
+        /// </summary>
+        /// <param name="showAlbum"></param>
         public void ToggleView(bool showAlbum)
         {
             if (showAlbum)
@@ -226,6 +270,11 @@ namespace windows_client.View
 
         #endregion
 
+        /// <summary>
+        /// Fuction to call when a user taps on a video
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void llsVideos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LongListSelector lls = sender as LongListSelector;
@@ -260,6 +309,11 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }
 
+        /// <summary>
+        /// Function to call when user swipe between all video and album view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pivotAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (pivotAlbums.SelectedIndex == 1)

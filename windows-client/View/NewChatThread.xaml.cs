@@ -4736,6 +4736,7 @@ namespace windows_client.View
                 }
 
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, false);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
@@ -4767,6 +4768,7 @@ namespace windows_client.View
                     return;
                 }
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, true);
             }
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
