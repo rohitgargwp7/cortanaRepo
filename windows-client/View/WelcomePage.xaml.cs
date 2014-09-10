@@ -30,6 +30,8 @@ namespace windows_client
             if (!App.IS_MARKETPLACE)
             {
                 serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                welcomePivot.Tap -= ChangeEnvironment;
+                welcomePivot.Tap += ChangeEnvironment;
 
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                     serverTxtBlk.Text = "production";
@@ -196,7 +198,7 @@ namespace windows_client
                     AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
                     serverTxtBlk.Text = "DEV";
                 }
-                else if (utils.AccountUtils.AppEnvironment == utils.AccountUtils.DebugEnvironment.DEV)
+                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
                 {
                     AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
                     serverTxtBlk.Text = "STAGING";

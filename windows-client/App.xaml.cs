@@ -335,6 +335,13 @@ namespace windows_client
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
 
+            if (appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
+            {
+                AccountUtils.DebugEnvironment tmpEnv;
+                Enum.TryParse<AccountUtils.DebugEnvironment>((string)appSettings[HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING], out tmpEnv);
+                AccountUtils.AppEnvironment = tmpEnv;
+            }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
 
@@ -356,24 +363,6 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            if (ps != PageState.WELCOME_SCREEN)
-            {
-                #region SERVER INFO
-                string env;
-                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
-                    env = "PRODUCTION";
-                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
-                    env = "DEV";
-                else
-                    env = "STAGING";
-                Debug.WriteLine("SERVER SETTING : " + env);
-                Debug.WriteLine("HOST : " + AccountUtils.HOST);
-                Debug.WriteLine("PORT : " + AccountUtils.PORT);
-                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-                #endregion
-            }
-
             _isAppLaunched = true;
         }
 

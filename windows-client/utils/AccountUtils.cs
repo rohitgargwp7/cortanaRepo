@@ -29,38 +29,7 @@ namespace windows_client.utils
         }
         #endregion
 
-        private static DebugEnvironment _appEnvironment = DebugEnvironment.PRODUCTION;
-
-        private static readonly bool IS_PRODUCTION = false;
-
-        private static readonly string PRODUCTION_HOST = "api.im.hike.in";
-
-        private static readonly string STAGING_HOST = "staging.im.hike.in";
-
-        private static readonly string DEV_HOST = "staging2.im.hike.in";
-
-        private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
-
-        private static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
-
-        private static readonly int PRODUCTION_PORT = 80;
-
-        /// <summary>
-        /// Port number 5222
-        /// </summary>
-        public static readonly int MQTT_PRODUCTION_XMPP_PORT = 5222;
-
-        private static readonly int STAGING_PORT = 8080;
-
-        private static readonly int DEV_PORT = 8080;
-        /*
-        public static bool IsProd
-        {
-            get
-            {
-                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
-            }
-        }*/
+        private static DebugEnvironment _appEnvironment;
 
         public static DebugEnvironment AppEnvironment
         {
@@ -74,32 +43,7 @@ namespace windows_client.utils
             set
             {
                 _appEnvironment = value;
-            }
-        }
-
-        public static string GetUpdateUrl
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return "http://get.hike.in/updates/wp8";
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return "http://staging.im.hike.in:8080/updates/wp8";
-                else
-                    return "http://staging2.im.hike.in:8080/updates/wp8";
-            }
-        }
-
-        public static string GetStickerUrl
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return "http://hike.in/s/";
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return "http://staging.im.hike.in/s/";
-                else
-                    return "http://staging2.im.hike.in/s/";
+                App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING,_appEnvironment.ToString());
             }
         }
 
@@ -110,11 +54,11 @@ namespace windows_client.utils
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return MQTT_HOST_SERVER;
+                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_HOST;
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return DEV_HOST;
+                    return HikeConstants.ServerUrls.DevUrls.MQTT_HOST;
                 else
-                    return STAGING_HOST;
+                    return HikeConstants.ServerUrls.StagingUrls.MQTT_HOST;
             }
         }
 
@@ -123,24 +67,26 @@ namespace windows_client.utils
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return 8080;
+                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_PORT;
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return 1883;
+                    return HikeConstants.ServerUrls.DevUrls.MQTT_PORT;
                 else
-                    return 1883;
+                    return HikeConstants.ServerUrls.StagingUrls.MQTT_PORT;
             }
         }
+
+        #endregion
 
         public static string FILE_TRANSFER_BASE
         {
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
+                    return String.Format("http://{0}:{1}/v1",HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST,Convert.ToString(PORT)); 
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return "http://" + DEV_HOST + ":" + Convert.ToString(DEV_PORT) + "/v1";
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT)); 
                 else
-                    return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT)); ;
             }
         }
 
@@ -160,18 +106,16 @@ namespace windows_client.utils
             }
         }
 
-        #endregion
-
         public static string HOST
         {
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return PRODUCTION_HOST;
+                    return HikeConstants.ServerUrls.ProductionUrls.HOST;
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return DEV_HOST;
+                    return HikeConstants.ServerUrls.DevUrls.HOST;
                 else
-                    return STAGING_HOST;
+                    return HikeConstants.ServerUrls.StagingUrls.HOST;
             }
         }
 
@@ -180,11 +124,11 @@ namespace windows_client.utils
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return PRODUCTION_PORT;
+                    return HikeConstants.ServerUrls.ProductionUrls.PORT;
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return DEV_PORT;
+                    return HikeConstants.ServerUrls.DevUrls.PORT;
                 else
-                    return STAGING_PORT;
+                    return HikeConstants.ServerUrls.StagingUrls.PORT;
             }
         }
 
@@ -201,6 +145,32 @@ namespace windows_client.utils
             get
             {
                 return "http://" + HOST + ":" + Convert.ToString(PORT);
+            }
+        }
+
+        public static string GetUpdateUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.UPDATE_URL;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.UPDATE_URL;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.UPDATE_URL;
+            }
+        }
+
+        public static string GetStickerUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.STICKER_URL;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.STICKER_URL;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.STICKER_URL;
             }
         }
 
