@@ -132,8 +132,8 @@ namespace windows_client
             {
                 return ps;
             }
-
         }
+
         public static bool IsAppLaunched
         {
             get
@@ -152,8 +152,6 @@ namespace windows_client
             {
                 mMqttManager = value;
             }
-
-
         }
 
         public static HikePubSub HikePubSubInstance
@@ -337,6 +335,13 @@ namespace windows_client
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
 
+            if (appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
+            {
+                AccountUtils.DebugEnvironment tmpEnv;
+                appSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                AccountUtils.AppEnvironment = tmpEnv;
+            }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
 
@@ -358,18 +363,6 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            if (ps != PageState.WELCOME_SCREEN)
-            {
-                #region SERVER INFO
-                string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-                Debug.WriteLine("SERVER SETTING : " + env);
-                Debug.WriteLine("HOST : " + AccountUtils.HOST);
-                Debug.WriteLine("PORT : " + AccountUtils.PORT);
-                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-                #endregion
-            }
-
             _isAppLaunched = true;
         }
 
@@ -777,14 +770,14 @@ namespace windows_client
 
             #endregion
             #region IN APP TIPS
-            
+
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.1") < 0)
             {
                 App.appSettings.Remove(App.TIP_MARKED_KEY);
                 App.appSettings.Remove(App.TIP_SHOW_KEY);
                 App.RemoveKeyFromAppSettings(App.CHAT_THREAD_COUNT_KEY);
             }
-            
+
             #endregion
             #region STCIKERS
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)

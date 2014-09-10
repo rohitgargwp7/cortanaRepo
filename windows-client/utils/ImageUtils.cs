@@ -233,7 +233,7 @@ namespace windows_client.utils
             get
             {
                 if (_toolTipFavourites == null)
-                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ServerTips/favourites.png", UriKind.Relative));
 
                 return _toolTipFavourites;
             }

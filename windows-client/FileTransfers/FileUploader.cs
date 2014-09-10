@@ -189,7 +189,7 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
             if (!App.appSettings.Contains(App.UID_SETTING))
             {
@@ -359,7 +359,7 @@ namespace windows_client.FileTransfers
 
         void BeginUploadPostRequest()
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
             if (!App.appSettings.Contains(App.UID_SETTING))
             {
@@ -511,7 +511,7 @@ namespace windows_client.FileTransfers
                 Delete();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 return;
-            } 
+            }
 
             JObject jObject = null;
 
@@ -527,11 +527,11 @@ namespace windows_client.FileTransfers
                     SuccessObj = jObject;
                     CurrentHeaderPosition = TotalBytes;
                     Save();
-                    
+
                     // if state is started then mark it as complete
                     // else update file state with respective state
                     if (FileState == FileTransferState.STARTED)
-                        CheckIfComplete();   
+                        CheckIfComplete();
                     else
                         OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }
