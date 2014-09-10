@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>Hike is refreshing contacts with address book. It will be over before you know it...</value>
+    <value>hike is refreshing contacts with address book. It will be over before you know it...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute</value>
+    <value>unmute group</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1265,7 +1265,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Could not send file</value>
+    <value>Exceeds limit</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Max file size can be 25 MB.</value>
@@ -2196,10 +2196,10 @@ Download it like asap from http://hike.in!</value>
     <value>This will stop hidden mode reset. Are you sure?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Start a chat and tap on 'hi'</value>
+    <value>Hide your chats with a password. Start a chat and tap on 'hi'.</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Hide your chats with a password.</value>
+    <value>Hidden Mode</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Enter current password</value>
@@ -2207,7 +2207,7 @@ Download it like asap from http://hike.in!</value>
   <data name="AutoSaveSettings_Txt" xml:space="preserve">
     <value>Auto save photo and video</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Saved successfully</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2231,8 +2231,23 @@ Download it like asap from http://hike.in!</value>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
-  <data name="SaveInGallery_Txt" xml:space="preserve">
-    <value>save to gallery</value>
-    <comment>Menu Item text</comment>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>It looks like the video is corrupt and can't be sent.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Unsupported video</value>
+  </data>
+  <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
+    <value>Create new password</value>
+    <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>File has been added to the gallery</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Saving failed</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Can't open this video. It seems to be corrupt.</value>
   </data>
 </root>

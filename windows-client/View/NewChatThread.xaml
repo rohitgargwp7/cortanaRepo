@@ -174,50 +174,6 @@
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <templateSelector:ChatThreadTemplateSelector Content="{Binding}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom">
-                            <templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
-                                <DataTemplate>
-                                    <Grid Background="Transparent" Margin="24,-5,24,10" HorizontalAlignment="Stretch" Tap="H2hOfflineToolTip_Tapped">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="14"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Path Opacity="0.95" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Right" Fill="Black" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="0,0,20,-1"/>
-                                        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
-                                            <Border Background="Black" Opacity="0.95"/>
-                                            <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Margin="0,3,5,5" Text="{Binding DispMessage}" TextWrapping="Wrap"  Foreground="White"/>
-                                                <Image Grid.Column="1" MaxHeight="35" Margin="0,0,0,0" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </DataTemplate>
-                            </templateSelector:ChatThreadTemplateSelector.DtH2HOfflineInAppTip>
-                            <templateSelector:ChatThreadTemplateSelector.DtInAppTip>
-                                <DataTemplate>
-                                    <Grid Background="Transparent" Margin="12,-5,12,10" HorizontalAlignment="Stretch" Tap="TipDismiss_Tap">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="14"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Path Opacity="0.95" Data="M0,0 L1,1 L-1,1" HorizontalAlignment="Left" Fill="Black" Stretch="Fill" UseLayoutRounding="False" Width="16" Margin="20,0,0,-1"/>
-                                        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
-                                            <Border Background="Black" Opacity="0.95"/>
-                                            <Grid VerticalAlignment="Center" Margin="15" HorizontalAlignment="Stretch">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Margin="0,3,5,0" Text="{Binding DispMessage}" TextWrapping="Wrap" Foreground="White"/>
-                                                <Image Grid.Column="1" MaxHeight="35" Margin="0,0,10,0" Source="{Binding CloseImage}" Stretch="Uniform" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </DataTemplate>
-                            </templateSelector:ChatThreadTemplateSelector.DtInAppTip>
                             <templateSelector:ChatThreadTemplateSelector.DtForceSMSNotification>
                                 <DataTemplate>
                                     <Grid HorizontalAlignment="Stretch" Margin="0,-10,24,10">
@@ -309,7 +265,6 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Cancel_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Cancel" Visibility="{Binding ShowCancelMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Forward_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Forward" Visibility="{Binding ShowForwardMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
-                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.SaveInGallery_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_SaveInGallery" Visibility="{Binding SaveFileInDirectoryVisibility}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.DirectMsg_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding DirectMessageVisibility}" Click="MenuItem_Click_DirectMessage"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
@@ -825,7 +780,6 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete" Visibility="{Binding ShowDeleteMenu}"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.View_File, Source={StaticResource LocalizedStrings}}" Visibility="{Binding MediaActionVisibility}" Click="MenuItem_Click_View"/>
-                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.SaveInGallery_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_SaveInGallery" Visibility="{Binding SaveFileInDirectoryVisibility}"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Grid HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Center">

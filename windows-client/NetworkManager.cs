@@ -1804,9 +1804,6 @@ namespace windows_client
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerHelper.UpdateHasMoreMessages(category, true, true);
-
-                        //reset in app tip for "New Stickers"
-                        App.ViewModel.ResetInAppTip(1);
                     }
                     else if (subType == HikeConstants.REMOVE_STICKER)
                     {

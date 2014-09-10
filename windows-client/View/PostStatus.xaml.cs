@@ -52,29 +52,6 @@ namespace windows_client.View
             postStatusIcon.IsEnabled = false;
             appBar.Buttons.Add(postStatusIcon);
             ApplicationBar = appBar;
-
-            if (App.ViewModel.DictInAppTip != null)
-            {
-                App.ViewModel.DictInAppTip.TryGetValue(3, out tooltip);
-
-                if (tooltip != null)
-                {
-                    tooltip.TipDismissed += PostStatus_TipDismissed;
-                    App.ViewModel.DisplayTip(LayoutRoot, 3);
-                }
-            }
-        }
-
-        void PostStatus_TipDismissed(object sender, EventArgs e)
-        {
-            if (tooltip != null)
-            {
-                tooltip.TipDismissed -= PostStatus_TipDismissed;
-
-                App.ViewModel.HideToolTip(LayoutRoot, 3);
-
-                txtStatus.Focus();
-            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -230,7 +207,6 @@ namespace windows_client.View
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 3);
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }

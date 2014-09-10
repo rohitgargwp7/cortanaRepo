@@ -154,9 +154,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\InAppTipUC.xaml.cs">
-      <DependentUpon>InAppTipUC.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
@@ -379,15 +376,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Controls\InAppTipUC.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Overlay.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\PasswordPopUpUC.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
@@ -415,14 +409,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\NewGroup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PreviewVideo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ViewVideos.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -465,6 +451,9 @@
     <Page Include="View\PreviewImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PreviewVideo.xaml">
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Privacy.xaml">
       <SubType>Designer</SubType>
@@ -536,6 +525,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ViewVideos.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -564,10 +556,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="RPALManifest.xml" />
+    <Content Include="View\images\AppBar\icon_send_video.png" />
+    <Content Include="View\images\ConversationPage\backspace.png" />
+    <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
     <Content Include="View\images\AppBar\appbar.delete.png" />
     <Content Include="View\images\AppBar\appbar.select.png" />
-    <Content Include="View\images\AppBar\icon_send_video.png" />
     <Content Include="View\images\avatars\default_avatar_blue.jpg" />
     <Content Include="View\images\avatars\default_avatar_green.jpg" />
     <Content Include="View\images\avatars\default_avatar_group_blue.jpg" />
@@ -648,8 +642,8 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbStudy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbTechy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbValentines.jpg" />
-    <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\Chat_NotSelectedBlack.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_blue.png" />
     <Content Include="View\images\ConversationPage\favorites.png" />
     <Content Include="View\images\ConversationPage\friend_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\groupCard.jpg" />
@@ -658,9 +652,6 @@
     <Content Include="View\images\ConversationPage\hike_logo.jpg" />
     <Content Include="View\images\ConversationPage\inviteCard.jpg" />
     <Content Include="View\images\ConversationPage\lastSeenCard.jpg" />
-    <Content Include="View\images\ConversationPage\mute_icon_blue.png" />
-    <Content Include="View\images\ConversationPage\mute_icon_gray.png" />
-    <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\ConversationPage\profileCard.jpg" />
     <Content Include="View\images\ConversationPage\Status_NotselectedBlack.png" />
     <Content Include="View\images\ConversationPage\stickerCard.jpg" />
@@ -669,6 +660,7 @@
     <Content Include="View\images\ConversationPage\tooltip_Arrow.png" />
     <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
+    <Content Include="View\images\default_album_icon.png" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
     <Content Include="View\images\emoticons\emote_cat1_inactive.png" />
@@ -679,22 +671,25 @@
     <Content Include="View\images\emoticons\emote_cat4_active.png" />
     <Content Include="View\images\emoticons\emote_cat4_inactive.png" />
     <Content Include="View\images\image_default.png" />
+    <Content Include="View\images\MediaPlayIconBig.png" />
+    <Content Include="View\images\MediaPlayIconSmall.png" />
+    <Content Include="View\images\menu_camcorder_icon.png" />
+    <Content Include="View\images\play_icon.png" />
+    <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\ServerTips\attachments.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
     <Content Include="View\images\ServerTips\status.png" />
     <Content Include="View\images\ServerTips\stickers.png" />
     <Content Include="View\images\ServerTips\Themes.png" />
+    <Content Include="View\images\settings\change_password.png" />
     <Content Include="View\images\settings\made_with_love_Black.jpg" />
-    <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\recent_inactive.png" />
     <Content Include="View\images\retryAudio_icon.png" />
-    <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\sendMessage.png" />
     <Content Include="View\images\settings\legal.png" />
     <Content Include="View\images\chat_invited_green_ct.png" />
     <Content Include="View\images\chat_joined_blue_ct.png" />
-    <Content Include="View\images\close_white.png" />
     <Content Include="View\images\owner.png" />
     <Content Include="View\images\FTUE\camera_icon_profile.png" />
     <Content Include="View\images\ConversationPage\add_friend.png" />
@@ -703,6 +698,7 @@
     <Content Include="View\images\ConversationPage\friend_Notselected.png" />
     <Content Include="View\images\ConversationPage\friend_selected.png" />
     <Content Include="View\images\ConversationPage\hike_header.png" />
+    <Content Include="View\images\ConversationPage\mute_icon_gray.png" />
     <Content Include="View\images\ConversationPage\refresh_bar_arrow.png" />
     <Content Include="View\images\ConversationPage\Status_Notselected.png" />
     <Content Include="View\images\ConversationPage\Status_selected.png" />
@@ -771,6 +767,7 @@
     <Content Include="View\images\settings\preferences.png" />
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
+    <Content Include="View\images\settings\reset_hidden_mode.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
@@ -839,9 +836,6 @@
     <Content Include="View\images\rupee.png" />
     <Content Include="View\images\AppBar\icon_sticker.png" />
     <Content Include="View\images\recent_active.png" />
-    <Content Include="View\images\MediaPlayIconBig.png" />
-    <Content Include="View\images\MediaPlayIconSmall.png" />
-    <Content Include="View\images\menu_video_icon.png" />
     <Content Include="hike_small.png" />
     <Content Include="hike_medium.png" />
     <Content Include="hike_lock_bubble.png" />
@@ -952,7 +946,6 @@
     <Content Include="View\images\twitter_status.png" />
     <Content Include="View\images\typing_white.png" />
     <Content Include="View\images\menu_camera_icon.png" />
-    <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\video_default.png" />
     <Content Include="View\images\walkie_talkie_White_Big.png" />
@@ -1143,6 +1136,12 @@
     <Content Include="View\images\typing.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
+      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
+      <Name>RPALApiComponent</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1166,12 +1165,6 @@
     <EmbeddedResource Include="Languages\AppResources.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
-      <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
-      <Name>RPALApiComponent</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />

@@ -33,7 +33,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="0" x:Name="blackSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
@@ -42,8 +41,6 @@
                                               Header="{Binding Path= LocalizedResources.Auto_Download_Settings_Header, Source={StaticResource LocalizedStrings}}" />
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="2" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
                                               Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="3" x:Name="autoSaveSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                              Header="{Binding Path= LocalizedResources.AutoSaveSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="autoSavePhotoSettingsToggle_Loaded"/>
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="4" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                               Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="locationToggle_Loaded"/>
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="5" x:Name="enterToSendToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  

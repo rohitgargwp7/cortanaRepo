@@ -24,7 +24,8 @@ namespace windows_client.View
     public partial class PreviewVideo : PhoneApplicationPage
     {
         public VideoItem _videoShared;
-        
+        public int _size;
+
         public PreviewVideo()
         {
             InitializeComponent();
@@ -39,26 +40,27 @@ namespace windows_client.View
             
             ApplicationBarIconButton shareVideo = new ApplicationBarIconButton();
             shareVideo.Text = AppResources.Share_Txt;
-            shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send_video.png", UriKind.RelativeOrAbsolute); ;
+            shareVideo.IconUri = new Uri("/View/images/AppBar/icon_send_video.png", UriKind.RelativeOrAbsolute);
             shareVideo.Click += shareVideo_Click;
             this.ApplicationBar.Buttons.Add(shareVideo);
 
             _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
             thumbnailImage.Source = _videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
-            
-            if(_videoShared.Size>0)
-                VideoSizeText.Text = Utils.ConvertToStorageSizeString(_videoShared.Size);
-        
+
+            _size = _videoShared.Size;
+            VideoSizeText.Text = Utils.ConvertToStorageSizeString(_size);
+
         }
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-            if (_videoShared.Size > HikeConstants.FILE_MAX_SIZE)
+
+            if (_size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-                
+
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
             }
@@ -69,15 +71,12 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
             }
+
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-
-            if (!NavigationService.CanGoBack)
-                e.Cancel = true; 
-
             base.OnBackKeyPress(e);
         }
 

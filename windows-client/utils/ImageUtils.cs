@@ -65,6 +65,18 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage _hikeLogo;
+        public BitmapImage HikeLogo
+        {
+            get
+            {
+                if (_hikeLogo == null)
+                    _hikeLogo = new BitmapImage(new Uri("/View/images/ConversationPage/hike_logo.jpg", UriKind.Relative));
+
+                return _hikeLogo;
+            }
+        }
+
         BitmapImage _muteIconBlue;
         public BitmapImage MuteIconBlue
         {
@@ -221,7 +233,7 @@ namespace windows_client.utils
             get
             {
                 if (_toolTipFavourites == null)
-                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+                    _toolTipFavourites = new BitmapImage(new Uri("/view/images/ServerTips/favourites.png", UriKind.Relative));
 
                 return _toolTipFavourites;
             }
@@ -1312,18 +1324,6 @@ namespace windows_client.utils
             }
         }
 
-        BitmapImage closeButtonWhiteImage;
-        public BitmapImage CloseButtonWhiteImage
-        {
-            get
-            {
-                if (closeButtonWhiteImage == null)
-                    closeButtonWhiteImage = new BitmapImage(new Uri("/View/images/close_white.png", UriKind.Relative));
-
-                return closeButtonWhiteImage;
-            }
-        }
-
         #endregion
 
         #region Chat Theme
@@ -2148,6 +2148,9 @@ namespace windows_client.utils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
+
+            if (Utils.IsHikeBotMsg(msisdn))
+                return HikeLogo;
 
             int index = computeHash(msisdn);
             if (isHighRes)

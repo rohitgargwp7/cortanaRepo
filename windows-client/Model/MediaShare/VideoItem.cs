@@ -76,12 +76,11 @@ namespace windows_client.Model
         [DataMember]
         public DateTime TimeStamp { get; set; }
 
-        public VideoItem(string filePath, byte[] thumbnail,int videoDuration,int videoSize)
+        public VideoItem(string filePath, byte[] thumbnail,int videoDuration)
         {
             _filePath = filePath;
             _thumbnailBytes = thumbnail;
             _duration = videoDuration;
-            _size = videoSize;
         }
 
         BitmapImage _thumbnailImage;
@@ -90,8 +89,12 @@ namespace windows_client.Model
             get
             {
                 if (_thumbnailImage == null)
-                    _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
-                
+                {
+                    if(_thumbnailBytes != null)
+                        _thumbnailImage = UI_Utils.Instance.createImageFromBytes(_thumbnailBytes);
+                    else
+                        _thumbnailImage = new BitmapImage(new Uri("/View/images/video_default.png",UriKind.Relative));
+                }
                 return _thumbnailImage;
             }
         }

@@ -72,9 +72,6 @@ namespace windows_client.View
         private string hintText = string.Empty;
         private bool enableSendMsgButton = false;
         private long _lastUpdatedLastSeenTimeStamp = 0;
-
-        bool _isStatusUpdateToolTipShown = false;
-        ConvMessage _toolTipMessage, _h2hofflineToolTip;
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -131,7 +128,6 @@ namespace windows_client.View
         public ObservableCollection<ConvMessage> ocMessages;
 
         bool isMessageLoaded;
-        bool isInAppTipVisible = false;
         public bool IsSMSOptionValid = true;
 
         public int ResolutionId
@@ -281,20 +277,12 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, TimeUtils.getCurrentTimeStamp());
                         _lastUpdatedLastSeenTimeStamp = TimeUtils.getCurrentTimeStamp();
 
-                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                    ocMessages.Remove(_h2hofflineToolTip);
-                            });
-                        }
-
                         if (_isSendAllAsSMSVisible)
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                if (ocMessages == null) return;
+                                if (ocMessages == null)
+                                    return;
 
                                 if (_isSendAllAsSMSVisible)
                                 {
@@ -392,6 +380,14 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
             }
 
+            //whenever chat thread is relaunched, last page is chat thread, we need to remove from backstack
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_CHAT_RELAUNCH))
+            {
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_CHAT_RELAUNCH);
+            }
+
             while (NavigationService.BackStack.Count() > 1)
                 NavigationService.RemoveBackEntry();
         }
@@ -485,6 +481,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
@@ -523,13 +520,13 @@ namespace windows_client.View
                 App.newChatThreadPage = this;
             }
 
+            // Launch states
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_PUSH_MSISDN))
             {
                 string msisdn = (PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
                 PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_PUSH_MSISDN);
-
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
@@ -562,17 +559,10 @@ namespace windows_client.View
 
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
-
                 ManagePage();
-
-                //remove if user came directly from upgrade page
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-                {
-                    if (NavigationService.CanGoBack)
-                        NavigationService.RemoveBackEntry();
-
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
-                }
+                //whenever launched from push, there should be no backstack. Navigation to conversation page is handled in onBackKeyPress
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
 
                 isFirstLaunch = false;
             }
@@ -583,6 +573,9 @@ namespace windows_client.View
             {
                 ManagePageStateObjects();
                 ManagePage();
+                //whenever launched from file picker, there should be no backstack. Navigation to conversation page is handled in onBackKeyPress
+                while (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
                 isFirstLaunch = false;
             }
             #endregion
@@ -620,20 +613,16 @@ namespace windows_client.View
             }
             #endregion
             #region NORMAL LAUNCH
-            else if (App.APP_LAUNCH_STATE == App.LaunchState.NORMAL_LAUNCH) // non tombstone case
-            //else
+            else if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
             {
-                if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
-                {
-                    ManagePageStateObjects();
-                    ManagePage();
-                    isFirstLaunch = false;
-                }
-                else //removing here because it may be case that user pressed back without selecting any user
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    this.UpdateLayout();
-                }
+                ManagePageStateObjects();
+                ManagePage();
+                isFirstLaunch = false;
+            }
+            else //removing here because it may be case that user pressed back without selecting any user
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                this.UpdateLayout();
             }
 
             /* This is called only when you add more participants to group */
@@ -646,29 +635,30 @@ namespace windows_client.View
             }
 
             #endregion
+            
+            //File transfer states
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED)))
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
                 AudioFileTransfer();
             }
             #endregion
             #region SHARE LOCATION
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
             {
                 shareLocation();
             }
             #endregion
             #region SHARE CONTACT
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
             {
                 ContactTransfer();
             }
             #endregion
             #region MULTIPLE IMAGES
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
             {
                 MultipleImagesTransfer();
             }
@@ -838,7 +828,7 @@ namespace windows_client.View
                 App.ViewModel.ResumeBackgroundAudio();
             }
 
-            if (!NavigationService.CanGoBack || App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)// if no page to go back in this case back would go to conversation list
+            if (!NavigationService.CanGoBack)// if no page to go back in this case back would go to conversation list
             {
                 e.Cancel = true;
 
@@ -1078,11 +1068,7 @@ namespace windows_client.View
             if (!mUserIsBlocked)
             {
                 UpdateChatStatus();
-
-                if (mCredits > 0)
-                    ShowInAppTips();
-                else
-                    this.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
 
                 if (!isGroupChat)
                 {
@@ -1213,83 +1199,6 @@ namespace windows_client.View
             }
         }
 
-        private void ShowInAppTips()
-        {
-            HikeToolTip tip;
-
-            if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(8, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 8);
-                this.ApplicationBar = appBar;
-                isInAppTipVisible = true;
-            }
-            else if (App.ViewModel.DictInAppTip != null && App.ViewModel.DictInAppTip.TryGetValue(1, out tip) && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-            {
-                App.ViewModel.DisplayTip(LayoutRoot, 1);
-                this.ApplicationBar = appBar;
-                isInAppTipVisible = true;
-            }
-            else
-            {
-                int chatThreadCount;
-
-                var keyExist = App.appSettings.TryGetValue(App.CHAT_THREAD_COUNT_KEY, out chatThreadCount); //initilaized in upgrade logic
-                if (keyExist)
-                {
-                    if (App.ViewModel.DictInAppTip != null)
-                    {
-                        if (chatThreadCount == 0)
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(0, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 0);
-                                isInAppTipVisible = true;
-                            }
-                            else
-                                chatThreadCount++;
-
-                            this.ApplicationBar = appBar;
-                        }
-                        else if (chatThreadCount == 1)
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(2, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 2);
-                                isInAppTipVisible = true;
-                            }
-                            else
-                                chatThreadCount++;
-
-                            this.ApplicationBar = appBar;
-                        }
-                        else
-                        {
-                            App.ViewModel.DictInAppTip.TryGetValue(7, out tip);
-
-                            if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                            {
-                                App.ViewModel.DisplayTip(LayoutRoot, 7);
-                                isInAppTipVisible = true;
-                            }
-
-                            this.ApplicationBar = appBar;
-                        }
-
-                        this.ApplicationBar = appBar;
-                        App.WriteToIsoStorageSettings(App.CHAT_THREAD_COUNT_KEY, chatThreadCount);
-                    }
-                    else
-                        this.ApplicationBar = appBar;
-                }
-                else
-                    this.ApplicationBar = appBar;
-            }
-        }
-
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
@@ -1364,7 +1273,7 @@ namespace windows_client.View
                 if (isOnHike)
                     chatThemeTip.Visibility = Visibility.Visible;
 
-                ShowInAppTips();
+                this.ApplicationBar = appBar;
             });
 
             ContactUtils.UpdateGroupCacheWithContactOnHike(mContactNumber, true);
@@ -1754,9 +1663,7 @@ namespace windows_client.View
         private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar() { ForegroundColor = Colors.White, BackgroundColor = Colors.Black };
-            appBar.Mode = ApplicationBarMode.Default;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar.StateChanged += appBar_StateChanged;
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
@@ -1794,7 +1701,7 @@ namespace windows_client.View
             {
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.GroupInfo_Txt;
-                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.Click += infoMenuItem_Click;
                 infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
                 appBar.MenuItems.Add(infoMenuItem);
 
@@ -1833,7 +1740,7 @@ namespace windows_client.View
 
                 infoMenuItem = new ApplicationBarMenuItem();
                 infoMenuItem.Text = AppResources.User_Info_Txt;
-                infoMenuItem.Click += userHeader_Tap;
+                infoMenuItem.Click += infoMenuItem_Click;
                 appBar.MenuItems.Add(infoMenuItem);
             }
 
@@ -1846,6 +1753,20 @@ namespace windows_client.View
             blockMenuItem.Text = AppResources.Block_Txt;
             blockMenuItem.Click += blockMenuItem_Click;
             appBar.MenuItems.Add(blockMenuItem);
+        }
+
+        void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
+        {
+            if (e.IsMenuVisible)
+            {
+                if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                    CancelBackgroundChange();
+            }
+        }
+
+        void infoMenuItem_Click(object sender, EventArgs e)
+        {
+            GoToProfileScreen();
         }
 
         void blockMenuItem_Click(object sender, EventArgs e)
@@ -2002,10 +1923,6 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
-
-            InAppTipUC tip = LayoutRoot.FindName("tip8") as InAppTipUC;
-            if (tip != null)
-                tip.Margin = IsMute ? new Thickness(0, 125, 20, 0) : new Thickness(0, 80, 20, 0);
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -2046,10 +1963,7 @@ namespace windows_client.View
                 // no need to call last seen as friend is removed on blocking
                 //GetUserLastSeen();
 
-                if (mCredits > 0)
-                    ShowInAppTips();
-                else if (ApplicationBar == null)
-                    this.ApplicationBar = appBar;
+                this.ApplicationBar = appBar;
             }
         }
 
@@ -2529,37 +2443,6 @@ namespace windows_client.View
                         }
                     }
                     #endregion
-
-                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
-                    {
-                        HikeToolTip tip;
-                        App.ViewModel.DictInAppTip.TryGetValue(4, out tip);
-
-                        if (!_isStatusUpdateToolTipShown && tip != null && (!tip.IsShown || tip.IsCurrentlyShown))
-                        {
-                            _toolTipMessage = new ConvMessage();
-                            _toolTipMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.IN_APP_TIP;
-                            _toolTipMessage.Message = String.Format(AppResources.In_App_Tip_5, mContactName);
-                            ocMessages.Insert(insertPosition, _toolTipMessage);
-                            insertPosition++;
-                            _isStatusUpdateToolTipShown = true;
-
-                            tip.IsShown = true;
-                            tip.IsCurrentlyShown = true;
-
-                            int marked;
-                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (int)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, marked);
-
-                            int currentShown;
-                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (int)(1 << 4);
-                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-                            isInAppTipVisible = true;
-                        }
-                    }
                 }
                 #endregion
                 #region GROUP PIC CHANGED
@@ -2666,11 +2549,13 @@ namespace windows_client.View
                 return;
 
             if (_isHikeBot)
-            {
-                userImage_Tap(null, null);
                 return;
-            }
 
+            GoToProfileScreen();
+        }
+
+        private void GoToProfileScreen()
+        {
             if (isGroupChat)
             {
                 if (mUserIsBlocked || !isGroupAlive)
@@ -2690,6 +2575,10 @@ namespace windows_client.View
         private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (openChatBackgroundButton.Opacity == 0)
+                return;
+
+            // Don't open image for hike bot.
+            if (_isHikeBot)
                 return;
 
             object[] fileTapped = new object[1];
@@ -2911,8 +2800,6 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
-
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 CancelBackgroundChange();
 
@@ -2998,14 +2885,6 @@ namespace windows_client.View
                 {
                     if (_isSendAllAsSMSVisible)
                     {
-                        if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                        {
-                            ocMessages.Remove(_h2hofflineToolTip);
-                            App.ViewModel.HideToolTip(null, 6);
-                            _h2hofflineToolTip = null;
-                            ShowForceSMSOnUI();
-                        }
-
                         if (mCredits > 0)
                         {
                             var result = MessageBox.Show(AppResources.H2HOfline_Confirmation_Message, AppResources.H2HOfline_Confirmation_Message_Heading, MessageBoxButton.OKCancel);
@@ -3057,9 +2936,11 @@ namespace windows_client.View
 
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             _isContextMenuOpen = true;
         }
-
 
         private void MenuItem_Click_DirectMessage(object sender, RoutedEventArgs e)
         {
@@ -3097,7 +2978,7 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
             }
-
+            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -3181,14 +3062,6 @@ namespace windows_client.View
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
-
-            if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-            {
-                ocMessages.Remove(_h2hofflineToolTip);
-                App.ViewModel.HideToolTip(null, 6);
-                _h2hofflineToolTip = null;
-                ShowForceSMSOnUI();
-            }
 
             if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == msg)
             {
@@ -3330,14 +3203,6 @@ namespace windows_client.View
                 SendForceSMS(convMessage);
                 UpdateLastSentMessageStatusOnUI();
 
-                if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                {
-                    ocMessages.Remove(_h2hofflineToolTip);
-                    App.ViewModel.HideToolTip(null, 6);
-                    _h2hofflineToolTip = null;
-                    ShowForceSMSOnUI();
-                }
-
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage == convMessage)
                 {
                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -3362,40 +3227,7 @@ namespace windows_client.View
             }
             else
                 displayAttachment(msg);
-
         }
-
-        private void MenuItem_Click_SaveInGallery(object sender, RoutedEventArgs e)
-        {
-            ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
-            string tempName = Convert.ToString(msg.MessageId);
-            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + msg.Msisdn.Replace(":", "_") + "/" + tempName;
-            string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
-            string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp();
-
-            if (msg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                targetFileName = targetFileName + ".mp4";
-            else if (msg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                targetFileName = targetFileName + ".jpg";
-
-            bool isSaveSuccessful = false;
-            BackgroundWorker bgWorker = new BackgroundWorker();
-            bgWorker.DoWork += (ss, ee) =>
-            {
-                Task<bool> result = Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
-                isSaveSuccessful = result.Result;
-            };
-            bgWorker.RunWorkerAsync();
-            bgWorker.RunWorkerCompleted += (sf, ef) =>
-            {
-                if (isSaveSuccessful)
-                    MessageBox.Show(AppResources.SaveSuccess_Txt);
-                else
-                    MessageBox.Show(AppResources.Something_Wrong_Txt);
-            };
-
-        }
-
         #endregion
 
         #region EMOTICONS RELATED STUFF
@@ -3467,11 +3299,6 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
-
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
@@ -3542,11 +3369,6 @@ namespace windows_client.View
                 recordGrid.Visibility = Visibility.Collapsed;
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
-
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-            App.ViewModel.HideToolTip(LayoutRoot, 7);
 
             if (attachmentMenu.Visibility == Visibility.Collapsed)
                 attachmentMenu.Visibility = Visibility.Visible;
@@ -3738,12 +3560,6 @@ namespace windows_client.View
                 {
                     lastSeenTxt.Text = lastSeenStatus;
                     lastSeenPannel.Visibility = Visibility.Visible;
-
-                    if (isShowTip && !isInAppTipVisible && chatBackgroundPopUp.Visibility == Visibility.Collapsed)
-                    {
-                        App.ViewModel.DisplayTip(LayoutRoot, 5);
-                        isInAppTipVisible = true;
-                    }
                 }
             }), status, showTip);
         }
@@ -4175,9 +3991,6 @@ namespace windows_client.View
                         {
                             if (lastSeenTxt.Text != AppResources.Online)
                             {
-                                if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                    ocMessages.Remove(_h2hofflineToolTip);
-
                                 if (_isSendAllAsSMSVisible && ocMessages != null && msg.MessageId >= _lastUnDeliveredMessage.MessageId)
                                 {
                                     ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -4259,15 +4072,12 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                            ocMessages.Remove(_h2hofflineToolTip);
-
-                        if (_isSendAllAsSMSVisible && ocMessages != null && isLastUndeliverdMessageFound)
-                        {
-                            ocMessages.Remove(_tap2SendAsSMSMessage);
-                            _isSendAllAsSMSVisible = false;
-                            ShowForceSMSOnUI();
-                        }
+                        //if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
+                        //{
+                        //    ocMessages.Remove(_tap2SendAsSMSMessage);
+                        //    _isSendAllAsSMSVisible = false;
+                        //    ShowForceSMSOnUI();
+                        //}
 
                     });
                 }
@@ -4388,12 +4198,6 @@ namespace windows_client.View
                 }
 
                 #endregion
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                        ocMessages.Remove(_h2hofflineToolTip);
-                });
 
                 if (_isSendAllAsSMSVisible && _lastUnDeliveredMessage.MessageStatus != ConvMessage.State.SENT_CONFIRMED)
                 {
@@ -4552,14 +4356,6 @@ namespace windows_client.View
                                         ocMessages.Remove(_tap2SendAsSMSMessage);
                                         _isSendAllAsSMSVisible = false;
                                     }
-                                });
-                            }
-                            else if (_h2hofflineToolTip != null && ocMessages.Contains(_h2hofflineToolTip))
-                            {
-                                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                                {
-                                    if (_h2hofflineToolTip != null && ocMessages != null && ocMessages.Contains(_h2hofflineToolTip))
-                                        ocMessages.Remove(_h2hofflineToolTip);
                                 });
                             }
                         }
@@ -4928,6 +4724,7 @@ namespace windows_client.View
             bool isAudio = true;
             byte[] fileBytes = null;
             byte[] thumbnail = null;
+            
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -4952,13 +4749,14 @@ namespace windows_client.View
                 }
 
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, false);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
 
-                if (thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                if (thumbnail != null && thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
                 {
                     BitmapImage image = new BitmapImage();
                     UI_Utils.Instance.createImageFromBytes(thumbnail, image);
@@ -4972,16 +4770,20 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine("NewChatThread :: AudioFileTransfer , Exception : " + ex.StackTrace);
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
                 if (fileBytes == null)
+                {
+                    MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                     return;
-
+                }
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, true);
             }
+
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
@@ -4993,6 +4795,7 @@ namespace windows_client.View
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 return;
             }
+
             if (!isGroupChat || isGroupAlive)
             {
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -5167,12 +4970,12 @@ namespace windows_client.View
                     // Uploads
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -5185,7 +4988,7 @@ namespace windows_client.View
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
 
@@ -5221,6 +5024,9 @@ namespace windows_client.View
 
         public void displayAttachment(ConvMessage convMessage)
         {
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
 
             if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
@@ -5897,9 +5703,6 @@ namespace windows_client.View
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
 
-            App.ViewModel.HideToolTip(LayoutRoot, 5);
-            App.ViewModel.HideToolTip(LayoutRoot, 8);
-
             openChatBackgroundButton.Opacity = 0;
 
             chatBackgroundPopUp.Visibility = Visibility.Visible;
@@ -5910,14 +5713,8 @@ namespace windows_client.View
                 sendMsgTxtbox.Visibility = Visibility.Visible;
             }
 
-            App.ViewModel.HideToolTip(LayoutRoot, 0);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
             if (emoticonPanel.Visibility == Visibility.Visible)
-            {
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            }
 
             attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
@@ -6264,18 +6061,17 @@ namespace windows_client.View
             }
 
             //handled textbox hight to accomodate other data on screen in diff orientations
-            if (e.Orientation == PageOrientation.Portrait || e.Orientation == PageOrientation.PortraitUp || e.Orientation == PageOrientation.PortraitDown)
+            if (e.Orientation == PageOrientation.Portrait
+                || e.Orientation == PageOrientation.PortraitUp
+                || e.Orientation == PageOrientation.PortraitDown)
             {
                 sendMsgTxtbox.MaxHeight = 130;
             }
-            else if (e.Orientation == PageOrientation.Landscape || e.Orientation == PageOrientation.LandscapeLeft || e.Orientation == PageOrientation.LandscapeRight)
+            else if (e.Orientation == PageOrientation.Landscape
+                || e.Orientation == PageOrientation.LandscapeLeft
+                || e.Orientation == PageOrientation.LandscapeRight)
             {
                 sendMsgTxtbox.MaxHeight = 72;
-
-                App.ViewModel.HideToolTip(LayoutRoot, 0);
-                App.ViewModel.HideToolTip(LayoutRoot, 1);
-                App.ViewModel.HideToolTip(LayoutRoot, 5);
-                App.ViewModel.HideToolTip(LayoutRoot, 7);
             }
         }
 
@@ -6826,15 +6622,15 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
+                {
+                    listStickerCategories.Add(stickerCategory);
+                }
                 if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
                 if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null)
-                {
-                    listStickerCategories.Add(stickerCategory);
-                }
-                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
@@ -6887,31 +6683,6 @@ namespace windows_client.View
             {
                 MessageBox.Show(AppResources.MicrophoneNotFound_ErrorTxt, AppResources.MicrophoneNotFound_HeaderTxt, MessageBoxButton.OK);
                 return;
-            }
-
-            App.ViewModel.HideToolTip(LayoutRoot, 1);
-            App.ViewModel.HideToolTip(LayoutRoot, 2);
-
-            if (App.ViewModel.DictInAppTip != null)
-            {
-                HikeToolTip toolTip;
-                App.ViewModel.DictInAppTip.TryGetValue(2, out toolTip);
-                if (toolTip != null)
-                {
-                    toolTip.IsShown = true;
-                    toolTip.IsCurrentlyShown = false;
-
-                    int index = 2;
-                    int shownByte;
-                    App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out shownByte);
-                    shownByte &= (int)~(1 << index);
-                    App.WriteToIsoStorageSettings(App.TIP_MARKED_KEY, shownByte);
-
-                    int currentShown;
-                    App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                    currentShown &= (int)~(1 << index);
-                    App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-                }
             }
 
             if (attachmentMenu.Visibility == Visibility.Visible)
@@ -7259,7 +7030,7 @@ namespace windows_client.View
 
         void StartForceSMSTimer(bool isNewTimer)
         {
-            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked || isGroupChat)
                 return;
 
             if (ocMessages == null)
@@ -7323,7 +7094,7 @@ namespace windows_client.View
 
         void ShowForceSMSOnUI()
         {
-            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked)
+            if (!isOnHike || !IsSMSOptionValid || _isSendAllAsSMSVisible || mUserIsBlocked || isGroupChat)
                 return;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -7353,51 +7124,9 @@ namespace windows_client.View
                 {
                     var indexToInsert = ocMessages.IndexOf(_lastUnDeliveredMessage) + 1;
 
-                    if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert && !ocMessages.Contains(_h2hofflineToolTip))
+                    if (_readByMessage != null && ocMessages.Contains(_readByMessage) && ocMessages.IndexOf(_readByMessage) == indexToInsert)
                         ocMessages.Remove(_readByMessage);
 
-                    if (App.ViewModel.DictInAppTip != null && !isInAppTipVisible)
-                    {
-                        HikeToolTip tip;
-                        App.ViewModel.DictInAppTip.TryGetValue(6, out tip);
-
-                        if (tip != null && (!tip.IsShown || tip.IsCurrentlyShown) && _h2hofflineToolTip == null)
-                        {
-                            _h2hofflineToolTip = new ConvMessage();
-                            _h2hofflineToolTip.GrpParticipantState = ConvMessage.ParticipantInfoState.H2H_OFFLINE_IN_APP_TIP;
-                            _h2hofflineToolTip.Message = tip.Tip;
-                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-                            _isStatusUpdateToolTipShown = true;
-
-                            tip.IsShown = true;
-                            tip.IsCurrentlyShown = true;
-
-                            int marked;
-                            App.appSettings.TryGetValue(App.TIP_MARKED_KEY, out marked);
-                            marked |= (int)(1 << 6);
-                            App.appSettings[App.TIP_MARKED_KEY] = marked;
-
-                            int currentShown;
-                            App.appSettings.TryGetValue(App.TIP_SHOW_KEY, out currentShown);
-                            currentShown |= (int)(1 << 6);
-                            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, currentShown);
-
-                            if (indexToInsert == ocMessages.Count - 1)
-                                ScrollToBottom();
-
-                            isInAppTipVisible = true;
-
-                            return;
-                        }
-                    }
-
-                    if (_h2hofflineToolTip != null)
-                    {
-                        if (!ocMessages.Contains(_h2hofflineToolTip))
-                            this.ocMessages.Insert(indexToInsert, _h2hofflineToolTip);
-
-                        return;
-                    }
 
                     if (_tap2SendAsSMSMessage == null)
                     {
@@ -7486,25 +7215,6 @@ namespace windows_client.View
 
                 ConversationTableUtils.updateLastMsgStatus(convMsgList.Last().MessageId, convMsgList.Last().Msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
             }
-        }
-
-        private void H2hOfflineToolTip_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (_h2hofflineToolTip != null)
-            {
-                ocMessages.Remove(_h2hofflineToolTip);
-                App.ViewModel.HideToolTip(null, 6);
-                _h2hofflineToolTip = null;
-                ShowForceSMSOnUI();
-            }
-        }
-
-        private void TipDismiss_Tap(object sender, System.Windows.Input.GestureEventArgs e) // invoked for status update tooltip #4
-        {
-            if (_toolTipMessage != null)
-                ocMessages.Remove(_toolTipMessage);
-
-            App.ViewModel.HideToolTip(null, 4);
         }
 
         #endregion

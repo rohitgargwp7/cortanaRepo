@@ -13,6 +13,7 @@ namespace windows_client.Controls
 {
     public partial class ToolTipsUC : UserControl
     {
+        private bool _isFullTipTapDisabled = false;
         public ToolTipsUC()
         {
             InitializeComponent();
@@ -192,19 +193,27 @@ namespace windows_client.Controls
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (LeftIconClicked != null)
+            {
                 LeftIconClicked(sender, e);
+                _isFullTipTapDisabled = true;
+            }
         }
 
         public void rightIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (RightIconClicked != null)
+            {
                 RightIconClicked(sender, e);
+                _isFullTipTapDisabled = true;
+            }
         }
 
         public void toolTipGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (FullTipTapped != null)
+            if (FullTipTapped != null && !_isFullTipTapDisabled)
                 FullTipTapped(sender, e);
+
+            _isFullTipTapDisabled = false;
         }
     }
 }

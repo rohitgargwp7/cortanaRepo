@@ -1240,7 +1240,25 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not send file.
+        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
+        /// </summary>
+        public static string CT_FileNotOpenable_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotOpenable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported video.
+        /// </summary>
+        public static string CT_FileNotSupported_Caption_Text {
+            get {
+                return ResourceManager.GetString("CT_FileNotSupported_Caption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exceeds limit.
         /// </summary>
         public static string CT_FileSizeExceed_Caption_Text {
             get {
@@ -1254,6 +1272,15 @@ namespace windows_client.Languages {
         public static string CT_FileSizeExceed_Text {
             get {
                 return ResourceManager.GetString("CT_FileSizeExceed_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like the video is corrupt and can&apos;t be sent..
+        /// </summary>
+        public static string CT_FileUnableToSend_Text {
+            get {
+                return ResourceManager.GetString("CT_FileUnableToSend_Text", resourceCulture);
             }
         }
         
@@ -1611,6 +1638,15 @@ namespace windows_client.Languages {
         public static string EnterName_NameErrorTxt {
             get {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new password.
+        /// </summary>
+        public static string EnterNewPassword_PasswordChange_Txt {
+            get {
+                return ResourceManager.GetString("EnterNewPassword_PasswordChange_Txt", resourceCulture);
             }
         }
         
@@ -2479,7 +2515,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start a chat and tap on &apos;hi&apos;.
+        ///   Looks up a localized string similar to Hide your chats with a password. Start a chat and tap on &apos;hi&apos;..
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Body_Txt {
             get {
@@ -2488,7 +2524,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide your chats with a password..
+        ///   Looks up a localized string similar to Hidden Mode.
         /// </summary>
         public static string HiddenMode_ZeroChatConf_Header_Txt {
             get {
@@ -4135,16 +4171,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to save to gallery.
+        ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
-        public static string SaveInGallery_Txt {
+        public static string SaveSuccess_Caption_Txt {
             get {
-                return ResourceManager.GetString("SaveInGallery_Txt", resourceCulture);
+                return ResourceManager.GetString("SaveSuccess_Caption_Txt", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saved successfully.
+        ///   Looks up a localized string similar to File has been added to the gallery.
         /// </summary>
         public static string SaveSuccess_Txt {
             get {
@@ -4351,7 +4387,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hike is refreshing contacts with address book. It will be over before you know it....
+        ///   Looks up a localized string similar to hike is refreshing contacts with address book. It will be over before you know it....
         /// </summary>
         public static string SelectUser_RefreshWaitMsg_Txt {
             get {
@@ -4396,7 +4432,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unmute.
+        ///   Looks up a localized string similar to unmute group.
         /// </summary>
         public static string SelectUser_UnMuteGrp_Txt {
             get {
@@ -4833,6 +4869,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving failed.
+        /// </summary>
+        public static string Something_WrongCaption_Txt {
+            get {
+                return ResourceManager.GetString("Something_WrongCaption_Txt", resourceCulture);
             }
         }
         

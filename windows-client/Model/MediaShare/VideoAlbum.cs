@@ -25,6 +25,17 @@ namespace windows_client.Model
             _thumbBytes = thumbnail;
         }
 
+        public Byte[] ThumbBytes
+        {
+            get
+            {
+                return _thumbBytes;
+            }
+            set
+            {
+                _thumbBytes = value;
+            }
+        }
         public string AlbumName
         {
             get
@@ -38,8 +49,13 @@ namespace windows_client.Model
             get
             {
                 if (_thumbImage == null)
-                    _thumbImage = UI_Utils.Instance.createImageFromBytes(_thumbBytes);
-                
+                {
+                    if (_thumbBytes == null)
+                        _thumbImage = new BitmapImage(new Uri("/View/images/default_album_icon.png", UriKind.Relative));
+                    else
+                        _thumbImage = UI_Utils.Instance.createImageFromBytes(_thumbBytes);
+                }
+
                 return _thumbImage;
             }
         }
