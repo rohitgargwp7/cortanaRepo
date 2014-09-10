@@ -43,7 +43,6 @@ namespace windows_client.utils
             set
             {
                 _appEnvironment = value;
-                App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING,_appEnvironment.ToString());
             }
         }
 
@@ -82,11 +81,11 @@ namespace windows_client.utils
             get
             {
                 if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return String.Format("http://{0}:{1}/v1",HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST,Convert.ToString(PORT)); 
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
                 else if (AppEnvironment == DebugEnvironment.DEV)
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT)); 
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
                 else
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT)); ;
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
             }
         }
 

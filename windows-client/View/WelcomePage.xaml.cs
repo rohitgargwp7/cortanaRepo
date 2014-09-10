@@ -208,6 +208,7 @@ namespace windows_client
                     AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
                     serverTxtBlk.Text = "PRODUCTION";
                 }
+                App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
             }
         }
     }

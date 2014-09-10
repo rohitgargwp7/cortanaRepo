@@ -338,7 +338,7 @@ namespace windows_client
             if (appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
             {
                 AccountUtils.DebugEnvironment tmpEnv;
-                Enum.TryParse<AccountUtils.DebugEnvironment>((string)appSettings[HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING], out tmpEnv);
+                appSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
                 AccountUtils.AppEnvironment = tmpEnv;
             }
 
