@@ -4955,12 +4955,12 @@ namespace windows_client.View
                     // Uploads
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -4973,7 +4973,7 @@ namespace windows_client.View
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
 
