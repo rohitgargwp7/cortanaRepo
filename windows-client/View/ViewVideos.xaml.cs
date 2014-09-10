@@ -82,24 +82,20 @@ namespace windows_client.View
             {
                 FetchPreRecordedVideos preRecordedVideos = new FetchPreRecordedVideos();
                 ushort totalVideos = preRecordedVideos.GetVideoCount();
-
-                string filePath = string.Empty;
-                string albumName = string.Empty;
-                int videoDuration;
-                double date;
+                VideoItem video;
+                string albumName;
 
                 for (int index = 0; index < totalVideos; index++)
                 {
-                    preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
-
-                    if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
+                    video = GetVideoFile(preRecordedVideos, index);
+                    
+                    if (video == null)
                         continue;
 
-                    Byte[] videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
-
+                    VideoAlbum albumObj;
                     try
                     {
-                        albumName = filePath.Substring(0, filePath.LastIndexOf("\\"));
+                        albumName = video.FilePath.Substring(0, video.FilePath.LastIndexOf("\\"));
                         albumName = albumName.Substring(albumName.LastIndexOf("\\") + 1);
                     }
                     catch (Exception ex)
@@ -107,21 +103,16 @@ namespace windows_client.View
                         Debug.WriteLine("ViewVideos :: GetAlbums : Setting album name , Exception : " + ex.StackTrace);
                         albumName = AppResources.Default_Video_Album_Txt;
                     }
-
-                    VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
-                    DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-                    video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
-                    VideoAlbum albumObj;
-
+                    
                     if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                     {
-                        albumObj = new VideoAlbum(albumName, videoThumbBytes);
+                        albumObj = new VideoAlbum(albumName, video.ThumbnailBytes);
                         videoAlbumList.Add(albumName, albumObj);
                     }
                     else
                     {
-                        if (albumObj.ThumbBytes == null && videoThumbBytes != null)
-                            albumObj.ThumbBytes = videoThumbBytes;
+                        if (albumObj.ThumbBytes == null && video.ThumbnailBytes != null)
+                            albumObj.ThumbBytes = video.ThumbnailBytes;
                     }
 
                     albumObj.Add(video);
@@ -229,6 +220,32 @@ namespace windows_client.View
                 Key = grouping.Key;
             }
         }
+
+        /// <summary>
+        /// Get video file from Video file list created by RPAL calls
+        /// </summary>
+        /// <param name="preRecordedVideos">RPAL object which contains video list pointer</param>
+        /// <param name="index">index of the file in the list </param>
+        /// <returns></returns>
+        public VideoItem GetVideoFile(FetchPreRecordedVideos preRecordedVideos, int index)
+        {
+            string filePath = string.Empty;
+            int videoDuration;
+            double date;
+            Byte[] videoThumbBytes;
+
+            preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+
+            if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
+                return null;
+
+            videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
+            VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
+            DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+            video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+            return video;
+        }
+
         #endregion
 
         #region helper functions
