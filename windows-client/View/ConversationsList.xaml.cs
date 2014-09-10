@@ -3555,7 +3555,7 @@ namespace windows_client.View
 
                 case ToolTipMode.INFORMATIONAL:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipInformational, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:

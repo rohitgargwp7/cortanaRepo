@@ -20,6 +20,7 @@ namespace windows_client.Controls
             this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
+            tipHeaderText.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region
@@ -151,9 +152,19 @@ namespace windows_client.Controls
             ToolTipsUC tempToolTip = obj as ToolTipsUC;
             String tempText = (String)e.NewValue;
 
-            if (!String.IsNullOrEmpty(tempText) && !String.IsNullOrEmpty(tempToolTip.tipTextbox.Text)) //body must be set before setting header
-                tempText += ": ";
-            
+            if (!String.IsNullOrEmpty(tempText)) //body must be present
+            {
+                tempToolTip.tipHeaderText.Visibility = Visibility.Visible;
+                tempToolTip.tipHeaderText.Margin = new Thickness(0, 16, 0, 0);
+                tempToolTip.tipTextbox.Margin = new Thickness(0, 0, 0, 18);
+            }
+            else
+            {
+                tempToolTip.tipHeaderText.Visibility = Visibility.Collapsed;
+                tempToolTip.tipHeaderText.Margin = new Thickness(0, 0, 0, 0);
+                tempToolTip.tipTextbox.Margin = new Thickness(0, 0, 0, 0);
+            }
+
             tempToolTip.tipHeaderText.Text = tempText;
         }
 
@@ -172,7 +183,7 @@ namespace windows_client.Controls
         #endregion
 
         #region events
-        
+
         public event EventHandler<EventArgs> LeftIconClicked;
         public event EventHandler<EventArgs> RightIconClicked;
         public event EventHandler<EventArgs> FullTipTapped;

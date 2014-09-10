@@ -154,8 +154,8 @@ namespace windows_client.utils
         #endregion
 
         #region SERVER TIPS
-        
-        BitmapImage _toolTipStickers; 
+
+        BitmapImage _toolTipStickers;
         public BitmapImage ToolTipStickers
         {
             get
@@ -236,6 +236,18 @@ namespace windows_client.utils
                     _toolTipFavourites = new BitmapImage(new Uri("/view/images/ServerTips/favourites.png", UriKind.Relative));
 
                 return _toolTipFavourites;
+            }
+        }
+
+        BitmapImage _toolTipInformational;
+        public BitmapImage ToolTipInformational
+        {
+            get
+            {
+                if (_toolTipInformational == null)
+                    _toolTipInformational = new BitmapImage(new Uri("/view/images/ServerTips/info_tip.png", UriKind.Relative));
+
+                return _toolTipInformational;
             }
         }
 
