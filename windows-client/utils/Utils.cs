@@ -796,6 +796,11 @@ namespace windows_client.utils
             return absoulutePath;
         }
 
+        /// <summary>
+        /// Read and calculate md5 by parts from file
+        /// </summary>
+        /// <param name="filePath">file path for file of which md5 needs to be calculated</param>
+        /// <returns>md5 string</returns>
         public static string GetMD5Hash(string filePath)
         {
             byte[] buffer;
@@ -807,6 +812,7 @@ namespace windows_client.utils
 
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                
                 if (myIsolatedStorage.FileExists(filePath))
                 {
                     using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
@@ -835,11 +841,7 @@ namespace windows_client.utils
 
                             } while (bytesRead != 0);
 
-                            StringBuilder sb = new StringBuilder();
-                            foreach (byte b in hashAlgorithm.Hash)
-                                sb.Append(b.ToString("x2"));
-
-                            return sb.ToString();
+                            return MD5.GetMd5String(hashAlgorithm.Hash);
                         }
                     }
                 }
