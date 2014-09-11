@@ -132,29 +132,20 @@ namespace windows_client.FileTransfers
                 return false;
         }
 
+        /// <summary>
+        /// Check for CRC
+        /// </summary>
+        /// <param name="key">file key for which head call needs to be made</param>
+        /// <returns>true if md5 matches else false</returns>
         protected async Task<bool> CheckForCRC(string key)
         {
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
             string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            byte[] bytes;
-            MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
-
-            if (bytes == null || bytes.Length == 0)
-                return false;
-
-            String md5 = string.Empty;
-            md5 = Utils.GetMD5Hash(filePath);
-            System.Diagnostics.Debug.WriteLine(md5);
-            try
-            {
-                md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
-            }
-            catch
-            {
-                return false;
-            }
+            
+            // Calculate md5 by parts
+            String md5 = Utils.GetMD5Hash(filePath);
 
             string result = String.Empty;
 
