@@ -197,7 +197,7 @@ namespace windows_client.utils
             get
             {
                 if (_toolTipInvite == null)
-                    _toolTipInvite = new BitmapImage(new Uri("/view/images/ConversationPage/tooltip_Arrow.png", UriKind.Relative));
+                    _toolTipInvite = new BitmapImage(new Uri("/view/images/ServerTips/rewards.png", UriKind.Relative));
 
                 return _toolTipInvite;
             }
