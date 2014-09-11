@@ -193,10 +193,10 @@ namespace windows_client
         {
             if (!App.IS_MARKETPLACE)
             {
-                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
-                    serverTxtBlk.Text = "QA Staging";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
+                    serverTxtBlk.Text = "Staging 2";
                 }
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
                 {
@@ -205,8 +205,8 @@ namespace windows_client
                 }
                 else
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
-                    serverTxtBlk.Text = "Staging 2";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+                    serverTxtBlk.Text = "QA Staging";
                 }
                 App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
             }
