@@ -179,7 +179,7 @@ namespace windows_client.FileTransfers
                 }
             }
 
-            return md5.Equals(result, StringComparison.CurrentCultureIgnoreCase);
+            return md5.Equals(result, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
