@@ -34,11 +34,11 @@ namespace windows_client
                 welcomePivot.Tap += ChangeEnvironment;
 
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
-                    serverTxtBlk.Text = "production";
+                    serverTxtBlk.Text = "Production";
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
-                    serverTxtBlk.Text = "dev";
+                    serverTxtBlk.Text = "Staging 2";
                 else
-                    serverTxtBlk.Text = "staging";
+                    serverTxtBlk.Text = "QA Staging";
             }
         }
 
@@ -195,18 +195,18 @@ namespace windows_client
             {
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
-                    serverTxtBlk.Text = "DEV";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+                    serverTxtBlk.Text = "QA Staging";
                 }
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
-                    serverTxtBlk.Text = "STAGING";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
+                    serverTxtBlk.Text = "Production";
                 }
                 else
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
-                    serverTxtBlk.Text = "PRODUCTION";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
+                    serverTxtBlk.Text = "Staging 2";
                 }
                 App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
             }
