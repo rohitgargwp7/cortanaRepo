@@ -155,14 +155,24 @@ namespace windows_client.Controls
             if (!String.IsNullOrEmpty(tempText)) //body must be present
             {
                 tempToolTip.tipHeaderText.Visibility = Visibility.Visible;
-                tempToolTip.tipHeaderText.Margin = new Thickness(0, 16, 0, 0);
-                tempToolTip.tipTextbox.Margin = new Thickness(0, 0, 0, 18);
+                
+                if (tempToolTip.tipHeaderText.Margin.Bottom != 18)
+                {
+                    var margin = tempToolTip.tipTextbox.Margin;
+                    margin.Bottom = 18;
+                    tempToolTip.tipTextbox.Margin = margin;
+                }
             }
             else
             {
                 tempToolTip.tipHeaderText.Visibility = Visibility.Collapsed;
-                tempToolTip.tipHeaderText.Margin = new Thickness(0, 0, 0, 0);
-                tempToolTip.tipTextbox.Margin = new Thickness(0, 0, 0, 0);
+                
+                if (tempToolTip.tipTextbox.Margin.Bottom != 0)
+                {
+                    var margin = tempToolTip.tipTextbox.Margin;
+                    margin.Bottom = 0;
+                    tempToolTip.tipTextbox.Margin = margin;
+                }
             }
 
             tempToolTip.tipHeaderText.Text = tempText;
