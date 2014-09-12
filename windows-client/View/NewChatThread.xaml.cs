@@ -642,7 +642,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
-                AudioFileTransfer();
+                TransferFile();
             }
             #endregion
             #region SHARE LOCATION
@@ -4699,19 +4699,23 @@ namespace windows_client.View
 
                 ScrollToBottom();
 
-                object[] vals = new object[3];
+                object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = locationBytes;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
 
-        private void AudioFileTransfer()
+        /// <summary>
+        /// Call this function to transfer files of type audio and video
+        /// </summary>
+        private void TransferFile()
         {
             bool isAudio = true;
             byte[] fileBytes = null;
             byte[] thumbnail = null;
-            
+            string filePath = null;
+
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -4727,18 +4731,19 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
             {
-                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
-                if (fileBytes == null)
-                {
-                    return;
-                }
 
+                if (MiscDBUtil.GetFileSize(HikeConstants.TEMP_VIDEO_NAME) == 0)
+                    return;
+
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
+                filePath = HikeConstants.TEMP_VIDEO_NAME;
                 isAudio = false;
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
 
@@ -4752,20 +4757,19 @@ namespace windows_client.View
                 try
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
-                    fileBytes = AccountUtils.StreamToByteArray(streamInfo.Stream);
+                    filePath = videoShared.FilePath;
+
+                    if (streamInfo.Stream.Length <= 0)
+                    {
+                        MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("NewChatThread :: AudioFileTransfer , Exception : " + ex.StackTrace);
                 }
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-
-                if (fileBytes == null)
-                {
-                    MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
-                    return;
-                }
                 isAudio = false;
             }
 
@@ -4783,15 +4787,16 @@ namespace windows_client.View
 
             if (!isGroupChat || isGroupAlive)
             {
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                ConvMessage convMessage = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 string fileName;
+
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
-                    convMessage.FileAttachment.ContentType = "audio/voice";
+                    convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_AUDIO;
 
                     var fileInfo = new JObject();
                     fileInfo[HikeConstants.FILE_NAME] = convMessage.FileAttachment.FileName;
@@ -4803,21 +4808,23 @@ namespace windows_client.View
                         fileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(convMessage.FileAttachment.Thumbnail);
 
                     convMessage.MetaDataString = fileInfo.ToString(Newtonsoft.Json.Formatting.None);
-
                     convMessage.Message = AppResources.Audio_Txt;
                 }
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
-                    convMessage.FileAttachment.ContentType = "video/mp4";
+                    convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_VIDEO;
                     convMessage.Message = AppResources.Video_Txt;
                 }
+
                 AddNewMessageToUI(convMessage, false);
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
+                vals[2] = filePath;
+
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
@@ -4853,7 +4860,7 @@ namespace windows_client.View
 
                 AddNewMessageToUI(convMessage, false);
 
-                object[] vals = new object[3];
+                object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = bytes;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
@@ -5383,7 +5390,7 @@ namespace windows_client.View
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
                 ContactTransfer();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
-                AudioFileTransfer();
+                TransferFile();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
             {
                 shareLocation();
@@ -6917,7 +6924,7 @@ namespace windows_client.View
                 if (audioBytes != null && audioBytes.Length > 0)
                 {
                     PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
-                    AudioFileTransfer();
+                    TransferFile();
                 }
             }
         }

@@ -812,7 +812,6 @@ namespace windows_client.utils
 
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                
                 if (myIsolatedStorage.FileExists(filePath))
                 {
                     using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))

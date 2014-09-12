@@ -44,6 +44,14 @@ namespace windows_client.FileTransfers
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
 
+        public string FilePath
+        {
+            get
+            {
+                return HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+            }
+        }
+
         public FileInfoBase()
         {
         }
@@ -52,7 +60,7 @@ namespace windows_client.FileTransfers
         {
             Msisdn = msisdn;
             MessageId = messageId;
-            TotalBytes = size;
+            TotalBytes = size == 0 ? (int)MiscDBUtil.GetFileSize(FilePath) : size;
             FileName = fileName;
             ContentType = contentType;
             FileState = FileTransferState.NOT_STARTED;
@@ -142,10 +150,8 @@ namespace windows_client.FileTransfers
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            
             // Calculate md5 by parts
-            String md5 = Utils.GetMD5Hash(filePath);
+            String md5 = Utils.GetMD5Hash(FilePath);
 
             string result = String.Empty;
 

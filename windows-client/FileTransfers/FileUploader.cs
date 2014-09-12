@@ -33,7 +33,6 @@ namespace windows_client.FileTransfers
             : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
-
             Save();
         }
 
@@ -598,8 +597,7 @@ namespace windows_client.FileTransfers
 
         byte[] ReadChunkFromIsolatedStorage(int position, int size)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+            string fileDirectory = FilePath.Substring(0, FilePath.LastIndexOf("/"));
             byte[] bytes = null;
 
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
@@ -607,10 +605,10 @@ namespace windows_client.FileTransfers
                 if (!myIsolatedStorage.DirectoryExists(fileDirectory))
                     return null;
 
-                if (!myIsolatedStorage.FileExists(filePath))
+                if (!myIsolatedStorage.FileExists(FilePath))
                     return null;
 
-                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.Open, myIsolatedStorage))
+                using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(FilePath, FileMode.Open, myIsolatedStorage))
                 {
                     bytes = new byte[size];
 

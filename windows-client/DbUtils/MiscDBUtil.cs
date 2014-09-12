@@ -164,7 +164,7 @@ namespace windows_client.DbUtils
             msisdn = msisdn.Replace(":", "_");
             serverId = serverId.Replace(":", "_");
             string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-            storeFileInIsolatedStorage(fullFilePath, imageBytes);
+            StoreFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
         public static byte[] GetProfilePicUpdateForID(string msisdn, string serverId)
@@ -664,11 +664,16 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void storeFileInIsolatedStorage(string filePath, byte[] imagebytes)
+        /// <summary>
+        /// Save bytes in Isolated Storage
+        /// </summary>
+        /// <param name="filePath">file path where bytes need to be saved</param>
+        /// <param name="dataBytes">file bytes</param>
+        public static void StoreFileInIsolatedStorage(string filePath, byte[] dataBytes)
         {
             filePath = filePath.Replace(":", "_");
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
-            if (imagebytes != null)
+            if (dataBytes != null)
             {
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -686,14 +691,14 @@ namespace windows_client.DbUtils
                     {
                         using (BinaryWriter writer = new BinaryWriter(fileStream))
                         {
-                            writer.Write(imagebytes, 0, imagebytes.Length);
+                            writer.Write(dataBytes, 0, dataBytes.Length);
                         }
                     }
                 }
             }
         }
 
-        public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
             sourceFilePath = sourceFilePath.Replace(":", "_");
             destinationFilePath = destinationFilePath.Replace(":", "_");
@@ -703,14 +708,28 @@ namespace windows_client.DbUtils
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
-                {
                     return;
-                }
+                
                 if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
-                {
                     myIsolatedStorage.CreateDirectory(destinationFileDirectory);
-                }
+                
                 myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+            }
+        }
+
+        public static long GetFileSize(string filePath)
+        {
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(filePath))
+                {
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        return fileStream.Length;
+                    }
+                }
+                else
+                    return 0;
             }
         }
 

@@ -354,8 +354,7 @@ namespace windows_client.FileTransfers
 
         bool WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+            string fileDirectory = FilePath.Substring(0, FilePath.LastIndexOf("/"));
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
             {
@@ -374,7 +373,7 @@ namespace windows_client.FileTransfers
                     if (!myIsolatedStorage.DirectoryExists(fileDirectory))
                         myIsolatedStorage.CreateDirectory(fileDirectory);
 
-                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(FilePath, FileMode.OpenOrCreate, myIsolatedStorage))
                     {
                         using (BinaryWriter writer = new BinaryWriter(fileStream))
                         {
