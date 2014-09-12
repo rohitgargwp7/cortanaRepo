@@ -83,11 +83,6 @@ namespace windows_client.View
             blackSettingToggle.IsChecked = value;
             this.blackSettingToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            if (!App.appSettings.TryGetValue(App.AUTO_SAVE_MEDIA, out value))
-                value = true;
-            autoSaveSettingToggle.IsChecked = value;
-            this.autoSaveSettingToggle.Content = value ? AppResources.On : AppResources.Off;
-
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -227,23 +222,5 @@ namespace windows_client.View
             }
         }
 
-        private void autoSavePhotoSettingsToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            autoSaveSettingToggle.Loaded -= autoSavePhotoSettingsToggle_Loaded;
-            autoSaveSettingToggle.Checked += autoSaveSettingToggle_Checked;
-            autoSaveSettingToggle.Unchecked += autoSaveSettingToggle_UnChecked;
-        }
-
-        private void autoSaveSettingToggle_UnChecked(object sender, RoutedEventArgs e)
-        {
-            App.WriteToIsoStorageSettings(App.AUTO_SAVE_MEDIA, false);
-            this.autoSaveSettingToggle.Content = AppResources.Off;
-        }
-
-        private void autoSaveSettingToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
-            this.autoSaveSettingToggle.Content = AppResources.On;
-        }
     }
 }

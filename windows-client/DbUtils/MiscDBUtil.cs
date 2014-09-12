@@ -538,28 +538,32 @@ namespace windows_client.DbUtils
             if (msisdn == null) // this is imp as explicit handling of null is required to check exception
                 return null;
             msisdn = msisdn.Replace(":", "_");
-            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+
+            lock (attachmentLock)
             {
-                if (store.DirectoryExists(fileDirectory))
+                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string[] msgIds = store.GetFileNames(fileDirectory + "/*");
-                    foreach (string msgId in msgIds)
+                    if (store.DirectoryExists(fileDirectory))
                     {
-                        using (var file = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
+                        string[] msgIds = store.GetFileNames(fileDirectory + "/*");
+                        foreach (string msgId in msgIds)
                         {
-                            using (var reader = new BinaryReader(file))
+                            using (var file = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
                             {
-                                Attachment attachment = new Attachment();
-                                attachment.Read(reader);
-                                long messageId = Int64.Parse(msgId);
-                                msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    Attachment attachment = new Attachment();
+                                    attachment.Read(reader);
+                                    long messageId = Int64.Parse(msgId);
+                                    msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
+                                }
                             }
                         }
                     }
+                    return msgIdAttachmentMap;
                 }
-                return msgIdAttachmentMap;
             }
         }
 
@@ -569,23 +573,26 @@ namespace windows_client.DbUtils
                 return null;
 
             msisdn = msisdn.Replace(":", "_");
-
             Attachment attachment = null;
-            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
 
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (attachmentLock)
             {
-                if (store.DirectoryExists(fileDirectory))
+                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    var fName = fileDirectory + "/" + id;
-                    if (store.FileExists(fName))
+                    if (store.DirectoryExists(fileDirectory))
                     {
-                        using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.Read))
+                        var fName = fileDirectory + "/" + id;
+                        if (store.FileExists(fName))
                         {
-                            using (var reader = new BinaryReader(file))
+                            using (var file = store.OpenFile(fName, FileMode.Open, FileAccess.Read))
                             {
-                                attachment = new Attachment();
-                                attachment.Read(reader);
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    attachment = new Attachment();
+                                    attachment.Read(reader);
+                                }
                             }
                         }
                     }
@@ -605,6 +612,7 @@ namespace windows_client.DbUtils
                 msisdn = msisdn.Replace(":", "_");
                 string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
                 Attachment attachment = null;
+
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (store.DirectoryExists(fileDirectory))
@@ -617,7 +625,6 @@ namespace windows_client.DbUtils
                             {
                                 using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                 {
-
                                     attachment.Read(reader);
                                     attachment.FileState = fileState;
                                 }
@@ -717,12 +724,16 @@ namespace windows_client.DbUtils
             msisdn = msisdn.Replace(":", "_");
             string attachmentObjectPath = HikeConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
             string attachmentFileBytes = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+
+            lock (attachmentLock)
             {
-                if (store.FileExists(attachmentObjectPath))
-                    store.DeleteFile(attachmentObjectPath);
-                if (store.FileExists(attachmentFileBytes))
-                    store.DeleteFile(attachmentFileBytes);
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.FileExists(attachmentObjectPath))
+                        store.DeleteFile(attachmentObjectPath);
+                    if (store.FileExists(attachmentFileBytes))
+                        store.DeleteFile(attachmentFileBytes);
+                }
             }
 
             FileTransfers.FileTransferManager.Instance.DeleteTask(messageId.ToString());
@@ -738,25 +749,29 @@ namespace windows_client.DbUtils
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            
+            lock (attachmentLock)
             {
-                if (store.DirectoryExists(attachmentPaths[0]))
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
-                    foreach (string fileName in fileNames)
+                    if (store.DirectoryExists(attachmentPaths[0]))
                     {
-                        FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
-                    }
-                }
-
-                foreach (string attachmentPath in attachmentPaths)
-                {
-                    if (store.DirectoryExists(attachmentPath))
-                    {
-                        string[] fileNames = store.GetFileNames(attachmentPath + "/*");
+                        string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
                         foreach (string fileName in fileNames)
                         {
-                            store.DeleteFile(attachmentPath + "/" + fileName);
+                            FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
+                        }
+                    }
+
+                    foreach (string attachmentPath in attachmentPaths)
+                    {
+                        if (store.DirectoryExists(attachmentPath))
+                        {
+                            string[] fileNames = store.GetFileNames(attachmentPath + "/*");
+                            foreach (string fileName in fileNames)
+                            {
+                                store.DeleteFile(attachmentPath + "/" + fileName);
+                            }
                         }
                     }
                 }
@@ -771,20 +786,24 @@ namespace windows_client.DbUtils
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT;
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+
+            lock (attachmentLock)
             {
-                foreach (string attachmentPath in attachmentPaths)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (store.DirectoryExists(attachmentPath))
+                    foreach (string attachmentPath in attachmentPaths)
                     {
-                        string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
-                        foreach (string directoryName in directoryNames)
+                        if (store.DirectoryExists(attachmentPath))
                         {
-                            string escapedDirectoryName = directoryName.Replace(":", "_");
-                            string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
-                            foreach (string fileName in fileNames)
+                            string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
+                            foreach (string directoryName in directoryNames)
                             {
-                                store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
+                                string escapedDirectoryName = directoryName.Replace(":", "_");
+                                string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
+                                foreach (string fileName in fileNames)
+                                {
+                                    store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
+                                }
                             }
                         }
                     }

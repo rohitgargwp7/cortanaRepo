@@ -1295,22 +1295,11 @@ namespace windows_client.View
                     PageTitle.Text = _pageTitle;
 
 
-                    if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                    {
-                        while (NavigationService.CanGoBack)
-                            NavigationService.RemoveBackEntry();
-                    }
+                    while (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
                 }
 
                 enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
-            }
-
-            //remove if push came directly from upgrade page
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-            {
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
             }
         }
 

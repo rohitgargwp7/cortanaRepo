@@ -198,7 +198,6 @@ namespace windows_client.View
             this.statusLLS.SelectedItem = null;
 
             App.IS_TOMBSTONED = false;
-            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
 
             while (NavigationService.CanGoBack)
@@ -3567,7 +3566,7 @@ namespace windows_client.View
 
                 case ToolTipMode.INFORMATIONAL:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipInformational, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:

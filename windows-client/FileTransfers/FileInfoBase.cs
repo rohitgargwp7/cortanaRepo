@@ -162,7 +162,7 @@ namespace windows_client.FileTransfers
                 {
                     HttpClient httpClient = new HttpClient();
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + key));
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + key));
 
                     HttpResponseMessage response = await httpClient.SendAsync(request);
 
