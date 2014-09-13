@@ -562,5 +562,11 @@ namespace windows_client
             public const string STATUS_UPDATE_TIPS = "stts";
         }
         #endregion
+
+        #region HTTP HEADERS
+
+        public static readonly string IfModifiedSince = "30";
+
+        #endregion
     }
 }
