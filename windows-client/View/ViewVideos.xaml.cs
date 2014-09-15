@@ -106,13 +106,8 @@ namespace windows_client.View
                     
                     if (!videoAlbumList.TryGetValue(albumName, out albumObj))
                     {
-                        albumObj = new VideoAlbum(albumName, video.ThumbnailBytes);
+                        albumObj = new VideoAlbum(albumName);
                         videoAlbumList.Add(albumName, albumObj);
-                    }
-                    else
-                    {
-                        if (albumObj.ThumbBytes == null && video.ThumbnailBytes != null)
-                            albumObj.ThumbBytes = video.ThumbnailBytes;
                     }
 
                     albumObj.Add(video);
@@ -126,7 +121,33 @@ namespace windows_client.View
                 Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
 
+            GenerateThumbnailForAlbumsFromRecentVideo(videoAlbumList);
             return videoAlbumList.Values.ToList();
+        }
+
+        /// <summary>
+        /// Generate thumbnail for album tiles with latest video of that album
+        /// </summary>
+        /// <param name="videoAlbumList"></param>
+        void GenerateThumbnailForAlbumsFromRecentVideo(Dictionary<string, VideoAlbum> videoAlbumList)
+        {
+            foreach (var album in videoAlbumList)
+            {
+                DateTime maxTillnow = new DateTime(0);
+                VideoItem selectedVideo = null;
+
+                foreach (var video in album.Value)
+                {
+                    if (maxTillnow < video.TimeStamp && video.ThumbnailBytes != null)
+                    {
+                        maxTillnow = video.TimeStamp;
+                        selectedVideo = video;
+                    }
+                }
+
+                if (selectedVideo != null && selectedVideo.ThumbnailBytes != null)
+                    album.Value.ThumbBytes = selectedVideo.ThumbnailBytes;
+            }
         }
 
         /// <summary>

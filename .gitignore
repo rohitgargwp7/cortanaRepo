@@ -6,6 +6,7 @@ windows-client.sln
 # exclude patterns (uncomment them if you want to use them):
 # *.[oa]
 # *~
+windows-client.opensdf
 windows-client/Bin/
 windows-client/obj/
 windows-client/windows-client.csproj

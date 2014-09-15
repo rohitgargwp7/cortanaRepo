@@ -624,5 +624,11 @@ namespace windows_client
             public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
         }
         #endregion
+
+        #region HTTP HEADERS
+
+        public static readonly string IfModifiedSince = "30";
+
+        #endregion
     }
 }

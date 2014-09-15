@@ -171,7 +171,7 @@ namespace windows_client.View
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
-            AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
+            AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
