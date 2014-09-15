@@ -34,11 +34,11 @@ namespace windows_client
                 welcomePivot.Tap += ChangeEnvironment;
 
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
-                    serverTxtBlk.Text = "production";
+                    serverTxtBlk.Text = "Production";
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
-                    serverTxtBlk.Text = "dev";
+                    serverTxtBlk.Text = "Staging 2";
                 else
-                    serverTxtBlk.Text = "staging";
+                    serverTxtBlk.Text = "QA Staging";
             }
         }
 
@@ -189,24 +189,32 @@ namespace windows_client
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
 
+        /// <summary>
+        /// pivot tap event, changed the environment by lookin previous environment
+        /// if staging change to dev
+        /// if dev change to production
+        /// if production change to staging
+        /// </summary>
+        /// <param name="sender">Default sys gen</param>
+        /// <param name="e">Default sys gen</param>
         private void ChangeEnvironment(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!App.IS_MARKETPLACE)
             {
-                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
                 {
                     AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
-                    serverTxtBlk.Text = "DEV";
+                    serverTxtBlk.Text = "Staging 2";
                 }
                 else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
-                    serverTxtBlk.Text = "STAGING";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
+                    serverTxtBlk.Text = "Production";
                 }
                 else
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
-                    serverTxtBlk.Text = "PRODUCTION";
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+                    serverTxtBlk.Text = "QA Staging";
                 }
                 App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
             }

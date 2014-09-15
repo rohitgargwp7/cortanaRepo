@@ -23,9 +23,9 @@ namespace windows_client.utils
         #region Environment enum
         public enum DebugEnvironment
         {
-            PRODUCTION,
+            STAGING,
             DEV,
-            STAGING
+            PRODUCTION
         }
         #endregion
 

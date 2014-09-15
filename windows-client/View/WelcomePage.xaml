@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" MinHeight="50">
-            <TextBlock Name="serverTxtBlk" TextAlignment="Center" Text="Production" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
+            <TextBlock Name="serverTxtBlk" TextAlignment="Center" Visibility="Collapsed" Foreground="Red" FontSize="18" Margin="0,20,0,10"/>
         </Grid>
         <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,-20">
             <Grid.RowDefinitions>
