@@ -3010,13 +3010,14 @@ namespace windows_client.View
                 }
 
                 //done this way as on locking it is unable to serialize convmessage or attachment object
-                object[] attachmentForwardMessage = new object[6];
+                object[] attachmentForwardMessage = new object[7];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
                 attachmentForwardMessage[1] = mContactNumber;
                 attachmentForwardMessage[2] = convMessage.MessageId;
                 attachmentForwardMessage[3] = convMessage.MetaDataString;
-                attachmentForwardMessage[4] = convMessage.FileAttachment.Thumbnail;
-                attachmentForwardMessage[5] = convMessage.FileAttachment.FileName;
+                attachmentForwardMessage[4] = convMessage.FileAttachment.FileKey;
+                attachmentForwardMessage[5] = convMessage.FileAttachment.Thumbnail;
+                attachmentForwardMessage[6] = convMessage.FileAttachment.FileName;
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
@@ -4545,7 +4546,20 @@ namespace windows_client.View
                     state = Attachment.AttachmentState.COMPLETED;
 
                     if (fInfo is FileUploader)
+                    {
+                        var fileUploader = fInfo as FileUploader;
+
+                        // Update fileKey for convMessage on UI if already not updated
+                        if (fileUploader.IsFileExist)
+                            convMessage.FileAttachment.FileKey = fileUploader.FileKey;
+                        else
+                        {
+                            JObject data = fileUploader.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                            convMessage.FileAttachment.FileKey = data[HikeConstants.FILE_KEY].ToString();
+                        }
+
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    }
                 }
                 else if (fInfo.FileState == FileTransferState.PAUSED)
                     state = Attachment.AttachmentState.PAUSED;
@@ -4992,7 +5006,7 @@ namespace windows_client.View
                         else
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
 
-                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, string.Empty);
                     }
 
                     // if transfer was not placed because of queue limit reached then display limit reached message

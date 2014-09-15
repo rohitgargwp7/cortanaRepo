@@ -672,6 +672,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
+            req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 

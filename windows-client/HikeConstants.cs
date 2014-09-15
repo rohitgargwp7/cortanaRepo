@@ -614,5 +614,11 @@ namespace windows_client
             public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
         }
         #endregion
+
+        #region HTTP HEADERS
+
+        public static readonly string IfModifiedSince = "30";
+
+        #endregion
     }
 }

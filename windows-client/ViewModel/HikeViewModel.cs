@@ -798,14 +798,15 @@ namespace windows_client.ViewModel
                     foreach (var contact in contactsForForward)
                     {
                         var msisdn = contact.Msisdn;
-                        ConvMessage convMessage = new ConvMessage("", msisdn,
+                        ConvMessage convMessage = new ConvMessage(String.Empty, msisdn,
                           TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.HasAttachment = true;
                         convMessage.FileAttachment = new Attachment();
                         convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
-                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
+                        convMessage.FileAttachment.FileKey = (string)attachmentData[4];
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))
@@ -835,7 +836,7 @@ namespace windows_client.ViewModel
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
-                        object[] vals = new object[3];
+                        object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
