@@ -2246,7 +2246,7 @@ Download it like asap from http://hike.in!</value>
     <comment>menu items will show </comment>
   </data>
   <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
-    <value> only; rest truncated by WP</value>
+    <value>Chat with {0} - last {1} messages only; rest truncated by WP</value>
     <comment>Truncation text when msg is truncated</comment>
   </data>
   <data name="EmailConv_Header_Txt" xml:space="preserve">
@@ -2280,14 +2280,14 @@ Download it like asap from http://hike.in!</value>
   <data name="EmailConv_Subject_Txt" xml:space="preserve">
     <value>Backup of hike chat with {0}</value>
     <comment>subject of email text when backing up</comment>
-  </data> 
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>File has been added to the gallery</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Saving failed</value>
   </data>
- <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
 </root>

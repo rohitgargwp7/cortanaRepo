@@ -1588,7 +1588,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  only; rest truncated by WP.
+        ///   Looks up a localized string similar to Chat with {0} - last {1} messages only; rest truncated by WP.
         /// </summary>
         public static string EmailConv_Header_Truncation_Txt {
             get {

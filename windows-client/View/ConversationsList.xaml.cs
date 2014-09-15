@@ -2029,7 +2029,7 @@ namespace windows_client.View
             if (convObj == null)
                 return;
 
-            EmailHelper.FetchAndEmail(convObj.Msisdn);
+            EmailHelper.FetchAndEmail(convObj.Msisdn,convObj.ContactName,convObj.IsGroupChat);
         }
 
         #endregion

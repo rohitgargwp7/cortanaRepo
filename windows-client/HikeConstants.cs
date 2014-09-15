@@ -604,5 +604,15 @@ namespace windows_client
             public const string STATUS_UPDATE_TIPS = "stts";
         }
         #endregion
+
+        #region EMAIL CONVERSATION
+        public static class EmailConversation
+        {
+            public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
+            public static readonly int CHAT_FETCH_LIMIT = 500; //how many chats to be fetched from DB to avoid multiple DB call
+            public static readonly string CONV_MSG_DISP_FMT = "{0}- {1}: {2}"; //datetime- name: msg (format to display conversation)
+            public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
+        }
+        #endregion
     }
 }

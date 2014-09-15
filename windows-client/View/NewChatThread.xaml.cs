@@ -1770,7 +1770,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
-            EmailHelper.FetchAndEmail(mContactNumber,mContactName);
+            EmailHelper.FetchAndEmail(mContactNumber,mContactName,isGroupChat);
         }
 
         void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)

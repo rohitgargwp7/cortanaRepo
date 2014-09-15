@@ -248,7 +248,7 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
-        
+
         public Visibility MuteIconVisibility
         {
             get
@@ -268,14 +268,6 @@ namespace windows_client.Model
                     return true;
                 else
                     return false;
-            }
-        }
-
-        public string EmailConversationTxt
-        {
-            get
-            {
-                return AppResources.EmailChat_Txt;
             }
         }
 
@@ -717,7 +709,7 @@ namespace windows_client.Model
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
-            this.LastMessage = lastMessage; 
+            this.LastMessage = lastMessage;
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;
