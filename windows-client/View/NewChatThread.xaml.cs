@@ -7383,18 +7383,22 @@ namespace windows_client.View
                 case ToolTipMode.CHAT_THEMES:
 
                     HideServerTips();
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.THEME_TIP_TAP_EVENT);
                     chatBackgroundPopUp_Opened();
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.ATTACHMENT_TIP_TAP_EVENT);
                     fileTransferButton_Click(null, null);
                     break;
 
                 case ToolTipMode.STICKERS:
 
                     HideServerTips();
+
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.STICKER_TIP_TAP_EVENT);
 
                     if (stickersIconButton != null)
                         emoticonButton_Click(stickersIconButton, null);

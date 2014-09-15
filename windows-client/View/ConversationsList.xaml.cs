@@ -3627,6 +3627,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
                     PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.PROFILE_PIC_TIP_TAP_EVENT);
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3637,6 +3638,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.STATUS_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
                     break;
 
@@ -3644,6 +3646,7 @@ namespace windows_client.View
 
                     HideTips();
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.INVITE_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
@@ -3651,6 +3654,7 @@ namespace windows_client.View
 
                     HideTips();
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.FAVOURITE_TIP_TAP_EVENT);
                     launchPagePivot.SelectedIndex = 1;
 
                     break;
