@@ -145,9 +145,10 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="#FFEDEE2C">
+    <Grid x:Name="LayoutRoot" Background="#FFEDEE2C" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />

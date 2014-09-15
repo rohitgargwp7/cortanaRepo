@@ -12,6 +12,7 @@ using windows_client.DbUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using windows_client.Misc;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -42,32 +43,36 @@ namespace windows_client.View
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
 
-                if (convMessage.Msisdn == _grpMsisdn)
+                if (vals.Length == 3 && vals[0] is ConvMessage)
                 {
-                    if (vals.Length == 3 && vals[0] is ConvMessage)
+                    ConvMessage convMessage = (ConvMessage)vals[0];
+                    if (convMessage.Msisdn == _grpMsisdn && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                     {
-                        try
+                        
+                        Deployment.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            if (_pinMessages == null)
-                                return;
-
-                            Deployment.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            try
                             {
+                                if (_pinMessages == null)
+                                {
+                                    _pinMessages = new ObservableCollection<ConvMessage>();
+                                    pinLongList.ItemsSource = _pinMessages;
+                                    pinLongList.Visibility = Visibility.Visible;
+                                    nopinImage.Visibility = Visibility.Collapsed;
+                                }
                                 _pinMessages.Insert(0, convMessage);
 
-                                if (_pinMessages.Count>0)
+                                if (_pinMessages.Count > 0)
                                     pinLongList.ScrollTo(_pinMessages[0]);
-                            }));
-                        }
-                        catch
-                        {
-                           
-                        }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.WriteLine(e.Message);
+                            }
+                        }));
                     }
                 }
-
             }
         }
 
@@ -103,37 +108,25 @@ namespace windows_client.View
             if (pinMessages != null)
             {
                 _pinMessages = new ObservableCollection<ConvMessage>(pinMessages);
+                GroupParticipant gp;
 
                 foreach (ConvMessage convMessage in _pinMessages)
                 {
-                    GroupParticipant gp;
-                    if (convMessage.IsSent)
-                        convMessage.GroupMemberName = "You";
-                    else
-                    {
-                        gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                        convMessage.GroupMemberName = gp.Name;
-                    }
+                    gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
+                    convMessage.GroupMemberName = gp.Name;
                 }
             }
             else
             {
-                nopin_image.Visibility = Visibility.Visible;
+                nopinImage.Visibility = Visibility.Visible;
                 pinLongList.Visibility = Visibility.Collapsed;
             }
 
+            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && App.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
+                App.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
+
             progressBar.Opacity = 0;
             progressBar.IsEnabled = false;
-        }
-
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
-        {
-            ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
-
-            if (msg == null)
-                return;
-
-            _pinMessages.Remove(msg);
         }
     }
 }

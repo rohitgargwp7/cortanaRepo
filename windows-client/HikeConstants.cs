@@ -193,7 +193,7 @@ namespace windows_client
         #region ConvObject_MetaData
         public static readonly string PINID = "pinId";
         public static readonly string READ = "read";
-        public static readonly string UNREADCOUNTER = "unreadcounter";
+        public static readonly string UNREADPINS = "unreadpins";
         #endregion
 
         public static string FAQS_LINK

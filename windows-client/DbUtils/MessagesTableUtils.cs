@@ -403,15 +403,15 @@ namespace windows_client.DbUtils
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
                         metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
-                        metaData[HikeConstants.READ] = false;
+                        metaData[HikeConstants.READ] = (convMsg.IsSent) ? true : false;
                     }
 
                     if (obj.MetaData == null) //check for "should unread counter be increased??"
-                        metaData[HikeConstants.UNREADCOUNTER] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
+                        metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
                     else
                     {
                         if (!convMsg.IsSent)
-                            metaData[HikeConstants.UNREADCOUNTER] = obj.MetaData.Value<int>(HikeConstants.UNREADCOUNTER) + 1;
+                            metaData[HikeConstants.UNREADPINS] = obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
                     }
                        
                     obj.MetaData = metaData;
@@ -438,6 +438,11 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Creates in-app toast string while Message Preview is off
+        /// </summary>
+        /// <param name="convMsg"></param>
+        /// <returns></returns>
         private static string GetToastNotification(ConvMessage convMsg)
         {
             string toastText = HikeConstants.TOAST_FOR_MESSAGE;

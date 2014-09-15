@@ -277,7 +277,7 @@ namespace windows_client.View
 
         void gcPin_RightIconClicked(object sender, EventArgs e)
         {
-            gcPin.Visibility = Visibility.Collapsed;
+            gcPin.isShow(false,false);
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID] = null;
@@ -1093,7 +1093,7 @@ namespace windows_client.View
                         {
                             if (metadata.Value<bool>(HikeConstants.READ) == false)
                             {
-                                metadata[HikeConstants.UNREADCOUNTER] = metadata.Value<int>(HikeConstants.UNREADCOUNTER) - 1;
+                                metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
                                 metadata[HikeConstants.READ] = true;
                             }
 
@@ -1172,9 +1172,8 @@ namespace windows_client.View
         {
             if (lastPinConvMsg != null)
             {
-                gcPin.pinContactName.Text = lastPinConvMsg.GCPinMessageSender;
-                gcPin.pinTxt.Text = lastPinConvMsg.DispMessage;
-                gcPin.Visibility = Visibility.Visible;
+                gcPin.updateContent(lastPinConvMsg.GCPinMessageSender, lastPinConvMsg.DispMessage);
+                gcPin.isShow(false,true);
             }
         }
 
@@ -2913,8 +2912,7 @@ namespace windows_client.View
             convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.PIN_MESSAGE;
 
-            gcPin.pinContactName.Text = convMessage.GCPinMessageSender;
-            gcPin.pinTxt.Text = convMessage.DispMessage;
+            gcPin.updateContent(convMessage.GCPinMessageSender, convMessage.DispMessage);
 
             AddNewMessageToUI(convMessage, false);
             object[] vals = new object[3];
@@ -3933,7 +3931,7 @@ namespace windows_client.View
             MiscDBUtil.deleteMsisdnData(mContactNumber);
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
 
-            gcPin.Visibility = Visibility.Collapsed;
+            gcPin.isShow(false, false);
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 App.ViewModel.ConvMap[mContactNumber].MetaData = null;
@@ -4106,9 +4104,10 @@ namespace windows_client.View
                         {
                             GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
                             convMessage.GroupMemberName = gp.Name;
-                            gcPin.pinContactName.Text = convMessage.GCPinMessageSender;
-                            gcPin.pinTxt.Text = convMessage.DispMessage;
-                            gcPin.Visibility = Visibility.Visible;
+                            gcPin.updateContent(convMessage.GCPinMessageSender, convMessage.DispMessage);
+                            
+                            if (!_isNewPin)
+                                gcPin.isShow(false,true);
                         }
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                         {
@@ -5902,21 +5901,21 @@ namespace windows_client.View
 
         private void createPin_Click(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(gcPin.newPinTxt.Text))
+            if (String.IsNullOrWhiteSpace(gcPin.GetNewPinMessage()))
             {
                 MessageBox.Show("Pin Can't be Empty");
-                ToggleNewPin(true);
+                _isNewPin = true;
+                gcPin.isShow(true,false);
                 pinHeader.Visibility = Visibility.Visible;
                 userHeader.Visibility = Visibility.Collapsed;
-                gcPin.newPinTxt.Focus();
             }
             else
             {
-                ConvMessage convMessage = new ConvMessage(gcPin.newPinTxt.Text.Trim(), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                ConvMessage convMessage = new ConvMessage(gcPin.GetNewPinMessage(), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 sendPinMsg(convMessage);
 
-                ToggleNewPin(false);
+                gcPin.isShow(false, true);
 
                 pinHeader.Visibility = Visibility.Collapsed;
                 userHeader.Visibility = Visibility.Visible;
@@ -5936,49 +5935,27 @@ namespace windows_client.View
             userHeader.Visibility = Visibility.Collapsed;
             pinHeader.Visibility = Visibility.Visible;
 
-            if (gcPin.Visibility == Visibility.Collapsed)
-                gcPin.Visibility = Visibility.Visible;
-
-            ToggleNewPin(true);
+            _isNewPin = true;
+            gcPin.isShow(true, false);
         }
 
         void newPin_Close()
         {
             if (_isNewPin)
             {
-                ToggleNewPin(false);
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber)
+                    && App.ViewModel.ConvMap[mContactNumber].MetaData != null
+                    && App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID].Type != JTokenType.Null)
+                    gcPin.isShow(false, true);
+                else
+                    gcPin.isShow(false, false);
+
+                _isNewPin = false;
 
                 userHeader.Visibility = Visibility.Visible;
                 pinHeader.Visibility = Visibility.Collapsed;
 
                 EnableDisableAppBar(true);
-            }
-        }
-
-        void ToggleNewPin(bool toBeState)
-        {
-            if (toBeState == true)
-            {
-                gcPin.Visibility = Visibility.Visible;
-                gcPin.pinContent.Visibility = Visibility.Collapsed;
-                gcPin.newPinTxt.Visibility = Visibility.Visible;
-                gcPin.rightIcon.Visibility = Visibility.Collapsed;
-                gcPin.newPinTxt.Focus();
-                _isNewPin = true;
-            }
-            else
-            {
-                gcPin.Visibility = Visibility.Visible;
-                gcPin.pinContent.Visibility = Visibility.Visible;
-                gcPin.newPinTxt.Visibility = Visibility.Collapsed;
-                gcPin.rightIcon.Visibility = Visibility.Visible;
-
-                if (App.ViewModel.ConvMap[mContactNumber].MetaData != null && App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID] != null)
-                    gcPin.Visibility = Visibility.Visible;
-                else
-                    gcPin.Visibility = Visibility.Collapsed;
-
-                _isNewPin = false;
             }
         }
 

@@ -6,7 +6,6 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -43,11 +42,6 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
                             <Image Source="/images/chat_left.png" Width="50" Height="50" Margin="0,5" />
                             <Grid Grid.Column="1">
                                 <Grid.RowDefinitions>
@@ -66,7 +60,7 @@
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
             
-            <Image x:Name="nopin_image" Source="/View/images/noResult.png" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
+            <Image x:Name="nopinImage" Source="/View/images/noResult.png" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
             
         </Grid>
     </Grid>

@@ -461,7 +461,7 @@ namespace windows_client.Model
         }
 
         [DataMember]
-        string _metadata {get;set;}
+        string _metadata {get;set;} //stores the latest pin info
         JObject metadata;
 
         public JObject MetaData
