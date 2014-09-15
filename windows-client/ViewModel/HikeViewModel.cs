@@ -1082,6 +1082,7 @@ namespace windows_client.ViewModel
             if (co.IsHidden && !IsHiddenModeActive)
                 return;
 
+            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
 
@@ -1138,7 +1139,7 @@ namespace windows_client.ViewModel
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
             else
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
-            
+
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
         }
@@ -1155,16 +1156,16 @@ namespace windows_client.ViewModel
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
 
         public string Password { get; set; }
-       
+
         public static void ClearStickerHelperInstance()
         {
             StickerHelper = null;
         }
-        
+
         #region Pause/Resume Background Audio
 
         public bool resumeMediaPlayerAfterDone = false;
-        
+
         public void PauseBackgroundAudio()
         {
             if (!MediaPlayer.GameHasControl)
@@ -1182,7 +1183,7 @@ namespace windows_client.ViewModel
                 resumeMediaPlayerAfterDone = false;
             }
         }
-        
+
         #endregion
     }
 }

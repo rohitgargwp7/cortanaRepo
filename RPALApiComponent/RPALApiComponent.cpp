@@ -32,7 +32,7 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 }
 
 // Function to get a video file info using its position in the _rgItemsRoot
-Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoTime,int* videoDuration,int *videoSize) 
+Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoTime,int* videoDuration) 
 {
 	HRESULT hr = 0;
 	size_t cch = 0;
@@ -44,10 +44,9 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoT
 	Platform::Array<byte>^ intOutArray=ref new Platform::Array<byte>(myThumbData, cch);
 	delete myThumbData;
 
-	//get file duration and size
+	//get file duration
 	hr = ZMediaLib_GetItemIntAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_DURATION, videoDuration);
-	hr = ZMediaLib_GetItemIntAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILESIZE, videoSize);
-
+	
 	//get file creation date
 	FILETIME ft;
 	hr=ZMediaLib_GetItemDateTimeAttribute(_rgItemsRoot[position],ZMEDIAITEM_ATTRIBUTE_DATE,&ft);

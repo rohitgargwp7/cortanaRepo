@@ -29,7 +29,6 @@ namespace windows_client
 
         #region Hike Specific Constants
 
-        public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string ACCOUNT_GENDER = "accountGender";
@@ -119,7 +118,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
         private static object lockObj = new object();
@@ -134,8 +132,8 @@ namespace windows_client
             {
                 return ps;
             }
-
         }
+
         public static bool IsAppLaunched
         {
             get
@@ -154,8 +152,6 @@ namespace windows_client
             {
                 mMqttManager = value;
             }
-
-
         }
 
         public static HikePubSub HikePubSubInstance
@@ -221,16 +217,6 @@ namespace windows_client
                 {
                     ui_utils = value;
                 }
-            }
-        }
-
-        public static LaunchState APP_LAUNCH_STATE
-        {
-            get { return _appLaunchState; }
-            set
-            {
-                if (value != _appLaunchState)
-                    _appLaunchState = value;
             }
         }
 
@@ -302,33 +288,6 @@ namespace windows_client
 
         #endregion
 
-        #region APP LAUNCH STATE
-
-        public enum LaunchState
-        {
-            /// <summary>
-            /// user clicked the app from menu or tile
-            /// </summary>
-            NORMAL_LAUNCH,
-
-            /// <summary>
-            /// app is alunched after push notification is clicked
-            /// </summary>
-            PUSH_NOTIFICATION_LAUNCH,
-
-            /// <summary>
-            /// app is alunched after share is clicked
-            /// </summary>
-            SHARE_PICKER_LAUNCH,
-
-            /// <summary>
-            /// app is resumed by launching app after suspension
-            /// </summary>
-            FAST_RESUME
-        }
-
-        #endregion
-
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -376,6 +335,13 @@ namespace windows_client
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
 
+            if (appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
+            {
+                AccountUtils.DebugEnvironment tmpEnv;
+                appSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                AccountUtils.AppEnvironment = tmpEnv;
+            }
+
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
             RootFrame.Navigated += RootFrame_Navigated;
 
@@ -389,24 +355,14 @@ namespace windows_client
             {
                 RootFrame.Navigating += RootFrame_CheckForFastResume;
             }
+            else if (e.NavigationMode == NavigationMode.Refresh && e.Uri.OriginalString.Contains("ConversationsList"))
+                RootFrame.Navigating -= RootFrame_CheckForFastResume;
         }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            if (ps != PageState.WELCOME_SCREEN)
-            {
-                #region SERVER INFO
-                string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-                Debug.WriteLine("SERVER SETTING : " + env);
-                Debug.WriteLine("HOST : " + AccountUtils.HOST);
-                Debug.WriteLine("PORT : " + AccountUtils.PORT);
-                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-                #endregion
-            }
-
             _isAppLaunched = true;
         }
 
@@ -419,15 +375,6 @@ namespace windows_client
 
             if (_isTombstoneLaunch)
             {
-                try
-                {
-                    _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
-                }
-
                 if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                     isNewInstall = false;
 
@@ -452,8 +399,6 @@ namespace windows_client
         {
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
-
-            PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
 
             if (IS_VIEWMODEL_LOADED)
             {
@@ -553,8 +498,6 @@ namespace windows_client
                         && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
-                        APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                        PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                         mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                     }
@@ -572,7 +515,6 @@ namespace windows_client
                         return;
                     }
 
-                    APP_LAUNCH_STATE = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                     PhoneApplicationService.Current.State["IsStatusPush"] = true;
                 }
                 else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("FileId")) // SHARE PICKER CASE
@@ -583,8 +525,6 @@ namespace windows_client
                         mapper.UriMappings[0].MappedUri = nUri;
                         return;
                     }
-
-                    APP_LAUNCH_STATE = LaunchState.SHARE_PICKER_LAUNCH;
 
                     int idx = targetPage.IndexOf("?") + 1;
                     string param = targetPage.Substring(idx);
@@ -617,7 +557,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.7.0.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.5.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -642,8 +582,6 @@ namespace windows_client
                     && !App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                     && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
-                    _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                    PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                     mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                 }
@@ -654,8 +592,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
-                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
 
                 instantiateClasses(false);
@@ -670,9 +606,6 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
-                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
                 instantiateClasses(false);
                 appInitialize();
                 if (ps != PageState.CONVLIST_SCREEN)
@@ -688,9 +621,6 @@ namespace windows_client
             }
             else
             {
-                _appLaunchState = LaunchState.NORMAL_LAUNCH;
-                PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
-
                 instantiateClasses(false);
                 appInitialize();
 
@@ -789,7 +719,7 @@ namespace windows_client
         private static void instantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
-            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.7.0.0") < 0)
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
@@ -840,14 +770,14 @@ namespace windows_client
 
             #endregion
             #region IN APP TIPS
-            
+
             if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.1") < 0)
             {
                 App.appSettings.Remove(App.TIP_MARKED_KEY);
                 App.appSettings.Remove(App.TIP_SHOW_KEY);
                 App.RemoveKeyFromAppSettings(App.CHAT_THREAD_COUNT_KEY);
             }
-            
+
             #endregion
             #region STCIKERS
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
@@ -1042,6 +972,13 @@ namespace windows_client
                 }
             }
 
+            #endregion
+            #region Auto Save Media Key Removal
+            //TODO: Update market release build here when we release build for the first time from here
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.1.0") < 0)
+            {
+                App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
+            }
             #endregion
         }
 
