@@ -17,11 +17,6 @@ namespace windows_client.utils
     static class EmailHelper
     {
         /// <summary>
-        /// object for locking while sending email
-        /// </summary>
-        private static object _sendEmailLock = new object();
-
-        /// <summary>
         /// function to send email
         /// </summary>
         /// <param name="subject">subject of email</param>
