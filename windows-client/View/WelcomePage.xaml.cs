@@ -189,6 +189,14 @@ namespace windows_client
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
 
+        /// <summary>
+        /// pivot tap event, changed the environment by lookin previous environment
+        /// if staging change to dev
+        /// if dev change to production
+        /// if production change to staging
+        /// </summary>
+        /// <param name="sender">Default sys gen</param>
+        /// <param name="e">Default sys gen</param>
         private void ChangeEnvironment(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!App.IS_MARKETPLACE)
