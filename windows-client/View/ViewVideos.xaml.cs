@@ -75,7 +75,7 @@ namespace windows_client.View
         /// <returns></returns>
         public List<VideoAlbum> GetAlbums()
         {
-            Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
+            Dictionary<string, VideoAlbum> videoAlbumMap = new Dictionary<string, VideoAlbum>();
             _listAllVideos = new List<VideoItem>();
 
             try
@@ -104,10 +104,10 @@ namespace windows_client.View
                         albumName = AppResources.Default_Video_Album_Txt;
                     }
                     
-                    if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                    if (!videoAlbumMap.TryGetValue(albumName, out albumObj))
                     {
                         albumObj = new VideoAlbum(albumName);
-                        videoAlbumList.Add(albumName, albumObj);
+                        videoAlbumMap.Add(albumName, albumObj);
                     }
 
                     albumObj.Add(video);
@@ -121,17 +121,17 @@ namespace windows_client.View
                 Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
 
-            GenerateThumbnailForAlbumsFromRecentVideo(videoAlbumList);
-            return videoAlbumList.Values.ToList();
+            GenerateThumbnailForAlbumsFromRecentVideo(videoAlbumMap);
+            return videoAlbumMap.Values.ToList();
         }
 
         /// <summary>
         /// Generate thumbnail for album tiles with latest video of that album
         /// </summary>
-        /// <param name="videoAlbumList"></param>
-        void GenerateThumbnailForAlbumsFromRecentVideo(Dictionary<string, VideoAlbum> videoAlbumList)
+        /// <param name="videoAlbumMap"></param>
+        void GenerateThumbnailForAlbumsFromRecentVideo(Dictionary<string, VideoAlbum> videoAlbumMap)
         {
-            foreach (var album in videoAlbumList)
+            foreach (var album in videoAlbumMap)
             {
                 DateTime maxTillnow = new DateTime(0);
                 VideoItem selectedVideo = null;
