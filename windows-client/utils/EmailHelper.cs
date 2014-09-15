@@ -16,30 +16,42 @@ namespace windows_client.utils
 {
     static class EmailHelper
     {
+        /// <summary>
+        /// object for locking while sending email
+        /// </summary>
         private static object _sendEmailLock = new object();
 
-        public static void SendEmail(string subject, string body, string recipient, string cc, string bcc)
+        /// <summary>
+        /// function to send email
+        /// </summary>
+        /// <param name="subject">subject of email</param>
+        /// <param name="body">body of email</param>
+        /// <param name="recipient">recipient</param>
+        /// <param name="cc">carbon copy</param>
+        /// <param name="bcc">blind carbon copy</param>
+        public static void SendEmail(string subject="", string body="", string recipient="", string cc="", string bcc="")
         {
-            lock (_sendEmailLock)
+            try
             {
-                try
-                {
-                    EmailComposeTask emailComposeTask = new EmailComposeTask();
-                    emailComposeTask.Subject = subject;
-                    emailComposeTask.Body = body;
-                    emailComposeTask.To = recipient;
-                    emailComposeTask.Cc = cc;
-                    emailComposeTask.Bcc = bcc;
-                    emailComposeTask.Show();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
+                EmailComposeTask emailComposeTask = new EmailComposeTask();
+                emailComposeTask.Subject = subject;
+                emailComposeTask.Body = body;
+                emailComposeTask.To = recipient;
+                emailComposeTask.Cc = cc;
+                emailComposeTask.Bcc = bcc;
+                emailComposeTask.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("EmailHelper::SendMail:"+ex.StackTrace);
             }
         }
 
-
+        /// <summary>
+        /// reads stack of message and builds a string for email body
+        /// </summary>
+        /// <param name="messagesStack">stack of message</param>
+        /// <returns>returns string</returns>
         private static string GetEmailString(Stack<String> messagesStack)
         {
             StringBuilder sb = new StringBuilder();
@@ -50,6 +62,13 @@ namespace windows_client.utils
             return sb.ToString();
         }
 
+        /// <summary>
+        /// fetch mail from database and sends mail
+        /// </summary>
+        /// <param name="msisdn">msisdn of user or group</param>
+        /// <param name="contactName">username or group name</param>
+        /// <param name="isGroupChat">group chat or not</param>
+        /// <returns>void</returns>
         public static async Task FetchAndEmail(string msisdn, string contactName, bool isGroupChat)
         {
             await Task.Run(() =>
@@ -168,7 +187,7 @@ namespace windows_client.utils
 
                         header += "\r\n";
                         messagesStack.Push(header);
-                        SendEmail(subject, GetEmailString(messagesStack), "", "", "");
+                        SendEmail(subject, GetEmailString(messagesStack));
                     }
                 });
         }

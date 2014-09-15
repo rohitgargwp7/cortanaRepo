@@ -850,18 +850,9 @@ namespace windows_client.ViewModel
         {
             var regexType = (SmileyParser.RegexType)objArray[0];
             var target = (string)objArray[1];
+
             if (regexType == SmileyParser.RegexType.EMAIL)
-            {
-                var task = new EmailComposeTask() { To = target };
-                try
-                {
-                    task.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
+                EmailHelper.SendEmail("", "", target);
             else if (regexType == SmileyParser.RegexType.URL)
             {
                 var task = new WebBrowserTask() { URL = target };
