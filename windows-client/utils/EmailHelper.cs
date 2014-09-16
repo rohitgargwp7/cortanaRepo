@@ -72,11 +72,10 @@ namespace windows_client.utils
                     int bytesConsumed = 0;
                     List<ConvMessage> convList = MessagesTableUtils.getMessagesForMsisdn(msisdn, long.MaxValue, HikeConstants.EmailConversation.CHAT_FETCH_LIMIT);
 
-                    //TO:Do Handle empty chat state?
                     if (convList != null)
                     {
                         Dictionary<string, string> groupChatParticipantInfo = null;
-                        Dictionary<long, Attachment> attachments = MiscDBUtil.getAllFileAttachment(msisdn);
+                        Attachment attachment;
                         StringBuilder emailText = new StringBuilder();
                         bool isShowTruncatedText = false;
                         Stack<string> messagesStack = new Stack<string>();
@@ -90,7 +89,7 @@ namespace windows_client.utils
                             List<GroupParticipant> grpParticipantList = GroupManager.Instance.GetParticipantList(msisdn);
 
                             string participantName;
-
+                            
                             foreach (GroupParticipant grpParticipant in grpParticipantList)
                             {
                                 //TO:Do get name from group participant, if null then check in db.
@@ -112,28 +111,34 @@ namespace windows_client.utils
 
                         int msgcount = 0;
 
-
                         string currentMessage;
                         string messageTime;
                         string messageSender;
                         string messageText;
-
+                        string contentType;
+                        
                         foreach (ConvMessage convMsg in convList)
                         {
                             messageTime = TimeUtils.getTimeStringForEmailConversation(convMsg.Timestamp);
 
                             if (convMsg.HasAttachment)
                             {
-                                //To:Do Check in different culture info
-                                if (convMsg.Message.Equals(AppResources.Image_Txt, StringComparison.InvariantCulture))//to:do
+                                attachment = MiscDBUtil.getFileAttachment(msisdn, convMsg.MessageId.ToString());
+                                
+                                if(attachment!=null)
+                                    contentType=attachment.ContentType ;
+                                else
+                                    contentType=string.Empty;
+
+                                if (contentType.Contains(HikeConstants.IMAGE))
                                     messageText = AppResources.EmailConv_SharedImage_Txt;
-                                else if (convMsg.Message.Equals(AppResources.Audio_Txt, StringComparison.CurrentCultureIgnoreCase))//to:do
+                                else if (contentType.Contains(HikeConstants.AUDIO))
                                     messageText = AppResources.EmailConv_SharedAudio_Txt;
-                                else if (convMsg.Message.Equals(AppResources.Video_Txt))
+                                else if (contentType.Contains(HikeConstants.VIDEO))
                                     messageText = AppResources.EmailConv_SharedVideo_Txt;
-                                else if (convMsg.Message.Equals(AppResources.ContactTransfer_Text))
+                                else if (contentType.Contains(HikeConstants.CT_CONTACT))
                                     messageText = AppResources.EmailConv_SharedContact_Txt;
-                                else if (convMsg.Message.Equals(AppResources.Location_Txt))
+                                else if (contentType.Contains(HikeConstants.LOCATION))
                                     messageText = AppResources.EmailConv_SharedLocation_Txt;
                                 else
                                     messageText = AppResources.EmailConv_SharedFile_Txt;

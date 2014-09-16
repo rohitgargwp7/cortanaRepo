@@ -52,7 +52,7 @@ namespace windows_client.View
 
         private void Email_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string inviteToken = "";
+            string inviteToken = string.Empty;
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
             EmailHelper.SendEmail(AppResources.Invite_Email_Subject, inviteMsg);
