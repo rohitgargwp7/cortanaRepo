@@ -1750,7 +1750,6 @@ namespace windows_client.View
                 infoMenuItem.Text = AppResources.User_Info_Txt;
                 infoMenuItem.Click += infoMenuItem_Click;
                 appBar.MenuItems.Add(infoMenuItem);
-
             }
 
             emailConversationMenuItem = new ApplicationBarMenuItem();
