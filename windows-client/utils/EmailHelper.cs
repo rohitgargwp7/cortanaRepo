@@ -119,6 +119,7 @@ namespace windows_client.utils
 
                         foreach (ConvMessage convMsg in convList)
                         {
+                            contentType = string.Empty;
                             messageTime = TimeUtils.getTimeStringForEmailConversation(convMsg.Timestamp);
 
                             if (convMsg.HasAttachment)
@@ -127,8 +128,6 @@ namespace windows_client.utils
 
                                 if (attachment != null)
                                     contentType = attachment.ContentType;
-                                else
-                                    contentType = string.Empty;
 
                                 if (contentType.Contains(HikeConstants.IMAGE))
                                     messageText = AppResources.EmailConv_SharedImage_Txt;
