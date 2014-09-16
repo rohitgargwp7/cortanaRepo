@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>hike está actualizando los contactos con la agenda de direcciones. No tarda nada...</value>
+    <value>hike está actualizando los contactos con la agenda de direcciones. Estará listo en un momento...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>no silenciar</value>
+    <value>dejar de silenciar grupo</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1103,7 +1103,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>compartir</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Toca para {0} a esta persona</value>
@@ -1265,7 +1265,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Error al enviar archivo</value>
+    <value>Supera el límite</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Tamaño máximo del archivo: 25 MB</value>
@@ -1728,8 +1728,8 @@ No esperes más y descárgalo ya en http://hike.in</value>
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>álbumes</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>fecha</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>vídeos</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>seleccionar</value>
@@ -2109,6 +2109,12 @@ No esperes más y descárgalo ya en http://hike.in</value>
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Reiniciar</value>
   </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Cámara de vídeo</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>fotos</value>
+  </data>
   <data name="Hide_Txt" xml:space="preserve">
     <value>ocultar chat</value>
   </data>
@@ -2190,18 +2196,18 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>Se detendrá el restablecimiento del modo oculto. ¿Estás seguro?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Inicia un chat y toca "hola".</value>
+    <value>Oculta tus chats con una contraseña. Inicia un chat y toca "hola".</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Oculta tus chats con una contraseña.</value>
+    <value>Modo oculto</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Escribir contraseña actual</value>
   </data>
-  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Guardar foto automáticamente</value>
+  <data name="AutoSaveSettings_Txt" xml:space="preserve">
+    <value>Guardar fotos y vídeos automáticamente</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Se ha guardado correctamente</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2216,7 +2222,32 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>Nadie</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>SELECCIONAR VÍDEO</value>
+  </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Las contraseñas no coinciden</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>Parece que el vídeo está dañado y no puede enviarse.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Vídeo no compatible</value>
+  </data>
+  <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
+    <value>Crear nueva contraseña</value>
+    <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Archivo añadido a la galería</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Error al guardar archivo</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Este vídeo no se puede abrir. Parece que está dañado.</value>
   </data>
 </root>
