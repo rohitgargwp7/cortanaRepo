@@ -231,6 +231,7 @@
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="utils\MD5.cs" />
+    <Compile Include="utils\EmailHelper.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />
     <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
@@ -677,7 +678,9 @@
     <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\ServerTips\attachments.png" />
     <Content Include="View\images\ServerTips\favourites.png" />
+    <Content Include="View\images\ServerTips\info_tip.png" />
     <Content Include="View\images\ServerTips\profilepic.png" />
+    <Content Include="View\images\ServerTips\rewards.png" />
     <Content Include="View\images\ServerTips\status.png" />
     <Content Include="View\images\ServerTips\stickers.png" />
     <Content Include="View\images\ServerTips\Themes.png" />

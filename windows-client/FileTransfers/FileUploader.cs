@@ -23,16 +23,24 @@ namespace windows_client.FileTransfers
         string _boundary = "----------V2ymHFg03ehbqgZCaKO6jy";
         public string Id { get; set; }
         public JObject SuccessObj { get; set; }
+        public string FileKey { get; set; }
+        public bool IsFileExist { get; set; }
 
         public FileUploader()
             : base()
         {
         }
 
-        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size)
+        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey)
             : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
+
+            if (!String.IsNullOrEmpty(fileKey))
+                FileKey = fileKey;
+
+            IsFileExist = false;
+
             Save();
         }
 
@@ -73,6 +81,11 @@ namespace windows_client.FileTransfers
             writer.Write((int)FileState);
 
             writer.Write(TotalBytes);
+
+            if (FileKey == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(FileKey);
         }
 
         public override void Read(BinaryReader reader)
@@ -117,6 +130,18 @@ namespace windows_client.FileTransfers
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
+
+            try
+            {
+                count = reader.ReadInt32();
+                FileKey = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (FileKey == "*@N@*")
+                    FileKey = null;
+            }
+            catch
+            {
+                FileKey = null;
+            }
         }
 
         public override void Save()
@@ -188,7 +213,43 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            if (!String.IsNullOrEmpty(FileKey) && CurrentHeaderPosition == 0)
+                CheckForExistingFile();
+            else
+                GetWritingIndexFromServer();
+        }
+
+        private async void CheckForExistingFile()
+        {
+            try
+            {
+                HttpClient httpClient = new HttpClient();
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+                request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    IsFileExist = true;
+                    FileState = FileTransferState.COMPLETED;
+                    Save();
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                }
+                else
+                {
+                    GetWritingIndexFromServer();
+                    IsFileExist = false;
+                }
+
+            }
+            catch { }
+        }
+
+        private void GetWritingIndexFromServer()
+        {
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
             if (!App.appSettings.Contains(App.UID_SETTING))
             {
@@ -358,7 +419,7 @@ namespace windows_client.FileTransfers
 
         void BeginUploadPostRequest()
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
             if (!App.appSettings.Contains(App.UID_SETTING))
             {
@@ -510,7 +571,7 @@ namespace windows_client.FileTransfers
                 Delete();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 return;
-            } 
+            }
 
             JObject jObject = null;
 
@@ -526,11 +587,11 @@ namespace windows_client.FileTransfers
                     SuccessObj = jObject;
                     CurrentHeaderPosition = TotalBytes;
                     Save();
-                    
+
                     // if state is started then mark it as complete
                     // else update file state with respective state
                     if (FileState == FileTransferState.STARTED)
-                        CheckIfComplete();   
+                        CheckIfComplete();
                     else
                         OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
                 }

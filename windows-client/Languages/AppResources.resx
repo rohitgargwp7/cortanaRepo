@@ -2241,6 +2241,46 @@ Download it like asap from http://hike.in!</value>
     <value>Create new password</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
   </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>email chat</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>Chat with {0} - last {1} messages only; rest truncated by WP</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>Chat with {0} - last {1} messages</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>Shared an AUDIO</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>Shared a CONTACT</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>Shared a FILE</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>Shared an IMAGE</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>Shared a LOCATION</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>Shared a VIDEO</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>Backup of hike chat with {0}</value>
+    <comment>subject of email text when backing up</comment>
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>File has been added to the gallery</value>
   </data>
@@ -2249,5 +2289,9 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Chat with {0} - last 1 message</value>
+    <comment>Only one Message in email body</comment>
   </data>
 </root>

@@ -46,7 +46,6 @@ using Windows.Storage;
 using windows_client.Model.Sticker;
 using windows_client.utils.ServerTips;
 using System.Windows.Resources;
-using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -111,6 +110,7 @@ namespace windows_client.View
         ApplicationBarMenuItem clearChatItem;
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
+        ApplicationBarMenuItem emailConversationMenuItem;
         ApplicationBarMenuItem blockMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -635,7 +635,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             //File transfer states
             #region AUDIO FT
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
@@ -1483,6 +1483,9 @@ namespace windows_client.View
                     if (clearChatItem != null && clearChatItem.IsEnabled)
                         clearChatItem.IsEnabled = false;
 
+                    if (emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
+                        emailConversationMenuItem.IsEnabled = false;
+
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -1705,6 +1708,11 @@ namespace windows_client.View
                 infoMenuItem.IsEnabled = !mUserIsBlocked && isGroupAlive;
                 appBar.MenuItems.Add(infoMenuItem);
 
+                emailConversationMenuItem = new ApplicationBarMenuItem();
+                emailConversationMenuItem.Text = AppResources.EmailChat_Txt;
+                emailConversationMenuItem.Click += emailConversationMenuItem_Click;
+                appBar.MenuItems.Add(emailConversationMenuItem);
+
                 muteGroupMenuItem = new ApplicationBarMenuItem();
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
@@ -1744,6 +1752,11 @@ namespace windows_client.View
                 appBar.MenuItems.Add(infoMenuItem);
             }
 
+            emailConversationMenuItem = new ApplicationBarMenuItem();
+            emailConversationMenuItem.Text = AppResources.EmailChat_Txt;
+            emailConversationMenuItem.Click += emailConversationMenuItem_Click;
+            appBar.MenuItems.Add(emailConversationMenuItem);
+
             clearChatItem = new ApplicationBarMenuItem();
             clearChatItem.Text = AppResources.Clear_Chat_Txt;
             clearChatItem.Click += clearChatItem_Click;
@@ -1753,6 +1766,12 @@ namespace windows_client.View
             blockMenuItem.Text = AppResources.Block_Txt;
             blockMenuItem.Click += blockMenuItem_Click;
             appBar.MenuItems.Add(blockMenuItem);
+        }
+
+
+        private void emailConversationMenuItem_Click(object sender, EventArgs e)
+        {
+            EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
         void appBar_StateChanged(object sender, ApplicationBarStateChangedEventArgs e)
@@ -1843,6 +1862,9 @@ namespace windows_client.View
 
                 if (clearChatItem != null && clearChatItem.IsEnabled)
                     clearChatItem.IsEnabled = false;
+
+                if (emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
+                    emailConversationMenuItem.IsEnabled = false;
 
                 ClearChat();
 
@@ -2097,6 +2119,9 @@ namespace windows_client.View
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
 
+            if (emailConversationMenuItem != null && !emailConversationMenuItem.IsEnabled)
+                emailConversationMenuItem.IsEnabled = true;
+
             if (_isSendAllAsSMSVisible && ocMessages != null && convMessage.IsSent)
             {
                 ocMessages.Remove(_tap2SendAsSMSMessage);
@@ -2160,7 +2185,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
+                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
                         {
                             string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
                             if (message.Length > 0)
@@ -3010,13 +3035,14 @@ namespace windows_client.View
                 }
 
                 //done this way as on locking it is unable to serialize convmessage or attachment object
-                object[] attachmentForwardMessage = new object[6];
+                object[] attachmentForwardMessage = new object[7];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
                 attachmentForwardMessage[1] = mContactNumber;
                 attachmentForwardMessage[2] = convMessage.MessageId;
                 attachmentForwardMessage[3] = convMessage.MetaDataString;
-                attachmentForwardMessage[4] = convMessage.FileAttachment.Thumbnail;
-                attachmentForwardMessage[5] = convMessage.FileAttachment.FileName;
+                attachmentForwardMessage[4] = convMessage.FileAttachment.FileKey;
+                attachmentForwardMessage[5] = convMessage.FileAttachment.Thumbnail;
+                attachmentForwardMessage[6] = convMessage.FileAttachment.FileName;
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
@@ -3059,6 +3085,9 @@ namespace windows_client.View
 
             if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
+
+            if (ocMessages.Count == 0 && emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
+                emailConversationMenuItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
@@ -4545,7 +4574,20 @@ namespace windows_client.View
                     state = Attachment.AttachmentState.COMPLETED;
 
                     if (fInfo is FileUploader)
+                    {
+                        var fileUploader = fInfo as FileUploader;
+
+                        // Update fileKey for convMessage on UI if already not updated
+                        if (fileUploader.IsFileExist)
+                            convMessage.FileAttachment.FileKey = fileUploader.FileKey;
+                        else
+                        {
+                            JObject data = fileUploader.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                            convMessage.FileAttachment.FileKey = data[HikeConstants.FILE_KEY].ToString();
+                        }
+
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                    }
                 }
                 else if (fInfo.FileState == FileTransferState.PAUSED)
                     state = Attachment.AttachmentState.PAUSED;
@@ -4739,6 +4781,7 @@ namespace windows_client.View
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
                 filePath = HikeConstants.TEMP_VIDEO_NAME;
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, false);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
@@ -4771,6 +4814,7 @@ namespace windows_client.View
                 }
 
                 isAudio = false;
+                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, true);
             }
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
@@ -4962,12 +5006,12 @@ namespace windows_client.View
                     // Uploads
                     if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -4980,7 +5024,7 @@ namespace windows_client.View
                     }
                     else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                     {
-                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
 
@@ -4997,7 +5041,7 @@ namespace windows_client.View
                         else
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
 
-                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length);
+                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, string.Empty);
                     }
 
                     // if transfer was not placed because of queue limit reached then display limit reached message
@@ -7370,18 +7414,22 @@ namespace windows_client.View
                 case ToolTipMode.CHAT_THEMES:
 
                     HideServerTips();
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.THEME_TIP_TAP_EVENT);
                     chatBackgroundPopUp_Opened();
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.ATTACHMENT_TIP_TAP_EVENT);
                     fileTransferButton_Click(null, null);
                     break;
 
                 case ToolTipMode.STICKERS:
 
                     HideServerTips();
+
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.STICKER_TIP_TAP_EVENT);
 
                     if (stickersIconButton != null)
                         emoticonButton_Click(stickersIconButton, null);

@@ -164,7 +164,7 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
             req.AllowReadStreamBuffering = false;
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
