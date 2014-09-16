@@ -112,6 +112,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("FormattedTimeStamp");
                     NotifyPropertyChanged("TimeStampVisibility");
                     NotifyPropertyChanged("MuteIconTimeStampVisibility");
+                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -409,6 +410,14 @@ namespace windows_client.Model
             get
             {
                 return TimeStampVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Visibility EmailChatMenuVisibility
+        {
+            get
+            {
+                return TimeStampVisibility;
             }
         }
 

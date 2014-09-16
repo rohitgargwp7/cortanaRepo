@@ -2290,4 +2290,8 @@ Download it like asap from http://hike.in!</value>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Chat with {0} - last 1 message</value>
+    <comment>Only one Message in email body</comment>
+  </data>
 </root>

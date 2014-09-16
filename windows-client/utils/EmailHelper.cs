@@ -46,13 +46,13 @@ namespace windows_client.utils
         /// reads stack of message and builds a string for email body
         /// </summary>
         /// <param name="messagesStack">stack of message</param>
-        /// <returns>returns string</returns>
+        /// <returns>concatenated string of messages</returns>
         private static string GetEmailString(Stack<String> messagesStack)
         {
             StringBuilder sb = new StringBuilder();
 
             while (messagesStack.Count > 0)
-                sb.AppendLine(messagesStack.Pop());
+                sb.AppendLine(messagesStack.Pop()); // appending using new line
 
             return sb.ToString();
         }
@@ -61,63 +61,73 @@ namespace windows_client.utils
         /// fetch mail from database and sends mail
         /// </summary>
         /// <param name="msisdn">msisdn of user or group</param>
-        /// <param name="contactName">username or group name</param>
+        /// <param name="displayName">username or group name</param>
         /// <param name="isGroupChat">group chat or not</param>
         /// <returns>void</returns>
-        public static async Task FetchAndEmail(string msisdn, string contactName, bool isGroupChat)
+        public static async Task FetchAndEmail(string msisdn, string displayName, bool isGroupChat)
         {
+            // Fetch messages asynchronously
             await Task.Run(() =>
                 {
-                    int bytes_consumed = 0;
+                    int bytesConsumed = 0;
                     List<ConvMessage> convList = MessagesTableUtils.getMessagesForMsisdn(msisdn, long.MaxValue, HikeConstants.EmailConversation.CHAT_FETCH_LIMIT);
 
+                    //TO:Do Handle empty chat state?
                     if (convList != null)
                     {
                         Dictionary<string, string> groupChatParticipantInfo = null;
+                        Dictionary<long, Attachment> attachments = MiscDBUtil.getAllFileAttachment(msisdn);
                         StringBuilder emailText = new StringBuilder();
                         bool isShowTruncatedText = false;
                         Stack<string> messagesStack = new Stack<string>();
 
-                        string subject = string.Format(AppResources.EmailConv_Subject_Txt, contactName);
+                        string subject = string.Format(AppResources.EmailConv_Subject_Txt, displayName);
 
                         if (isGroupChat)
                         {
-                            ContactInfo cinfo;
+                            ContactInfo contactObj;
                             groupChatParticipantInfo = new Dictionary<string, string>();
                             List<GroupParticipant> grpParticipantList = GroupManager.Instance.GetParticipantList(msisdn);
 
+                            string participantName;
+
                             foreach (GroupParticipant grpParticipant in grpParticipantList)
                             {
-                                string cname = string.Empty;
+                                //TO:Do get name from group participant, if null then check in db.
+                                participantName = grpParticipant.Name;
 
-                                cinfo = UsersTableUtils.getContactInfoFromMSISDN(grpParticipant.Msisdn);
+                                if (string.IsNullOrEmpty(participantName))
+                                {
+                                    contactObj = UsersTableUtils.getContactInfoFromMSISDN(grpParticipant.Msisdn);
 
-                                if (cinfo == null)
-                                    cname = grpParticipant.Msisdn;
-                                else
-                                    cname = cinfo.NameToshow;
+                                    if (contactObj == null)
+                                        participantName = grpParticipant.Msisdn;
+                                    else
+                                        participantName = contactObj.NameToshow;
+                                }
 
-                                groupChatParticipantInfo.Add(grpParticipant.Msisdn, cname);
+                                groupChatParticipantInfo.Add(grpParticipant.Msisdn, participantName);
                             }
                         }
 
                         int msgcount = 0;
 
+
+                        string currentMessage;
+                        string messageTime;
+                        string messageSender;
+                        string messageText;
+
                         foreach (ConvMessage convMsg in convList)
                         {
-                            string currentMessage = string.Empty;
-
-                            string messageTime = string.Empty;
-                            string messageSender = string.Empty;
-                            string messageText = string.Empty;
-
                             messageTime = TimeUtils.getTimeStringForEmailConversation(convMsg.Timestamp);
 
                             if (convMsg.HasAttachment)
                             {
-                                if (convMsg.Message.Equals(AppResources.Image_Txt))
+                                //To:Do Check in different culture info
+                                if (convMsg.Message.Equals(AppResources.Image_Txt, StringComparison.InvariantCulture))//to:do
                                     messageText = AppResources.EmailConv_SharedImage_Txt;
-                                else if (convMsg.Message.Equals(AppResources.Audio_Txt))
+                                else if (convMsg.Message.Equals(AppResources.Audio_Txt, StringComparison.CurrentCultureIgnoreCase))//to:do
                                     messageText = AppResources.EmailConv_SharedAudio_Txt;
                                 else if (convMsg.Message.Equals(AppResources.Video_Txt))
                                     messageText = AppResources.EmailConv_SharedVideo_Txt;
@@ -130,7 +140,7 @@ namespace windows_client.utils
                             }
                             else
                             {
-                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains("lm"))
+                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
                                 {
                                     string message = MessagesTableUtils.ReadLongMessageFile(convMsg.Timestamp, convMsg.Msisdn);
                                     messageText = message;
@@ -153,18 +163,18 @@ namespace windows_client.utils
                                         messageSender = convMsg.GroupParticipant;
                                 }
                                 else
-                                    messageSender = contactName;
+                                    messageSender = displayName;
 
                                 currentMessage = string.Format(HikeConstants.EmailConversation.CONV_MSG_DISP_FMT, messageTime, messageSender, messageText);
                             }
                             else
                                 currentMessage = string.Format(HikeConstants.EmailConversation.SYS_MSG_DISP_FMT, messageTime, messageText);
 
-                            if (currentMessage.Length + bytes_consumed <= HikeConstants.EmailConversation.EMAIL_LIMIT)
+                            if (currentMessage.Length + bytesConsumed <= HikeConstants.EmailConversation.EMAIL_LIMIT)
                             {
                                 msgcount++;
                                 messagesStack.Push(currentMessage);
-                                bytes_consumed += currentMessage.Length;
+                                bytesConsumed += currentMessage.Length;
                             }
                             else
                             {
@@ -176,9 +186,11 @@ namespace windows_client.utils
                         string header;
 
                         if (isShowTruncatedText)
-                            header = string.Format(AppResources.EmailConv_Header_Truncation_Txt, contactName, msgcount);
+                            header = string.Format(AppResources.EmailConv_Header_Truncation_Txt, displayName, msgcount);
+                        else if (msgcount == 1)
+                            header = string.Format(AppResources.EmailConv_Header_One_Message_Txt,displayName);
                         else
-                            header = string.Format(AppResources.EmailConv_Header_Txt, contactName, msgcount);
+                            header = string.Format(AppResources.EmailConv_Header_Txt, displayName, msgcount);
 
                         header += "\r\n";
                         messagesStack.Push(header);

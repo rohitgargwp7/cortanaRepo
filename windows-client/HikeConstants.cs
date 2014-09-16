@@ -38,6 +38,7 @@ namespace windows_client
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
+        public static readonly string LONG_MESSAGE = "lm";
 
         public static readonly string PUSH = "push";
         public static readonly string CRITICAL = "critical";
