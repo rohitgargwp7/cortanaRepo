@@ -635,7 +635,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             //File transfer states
             #region AUDIO FT
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
@@ -1580,9 +1580,9 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    if (!isGroupChat)
+                    if (!isGroupChat)//todo:why gc check
                     {
-                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, null);
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
                         idsToUpdate = null;
                     }
                 };
@@ -4068,16 +4068,17 @@ namespace windows_client.View
                             else
                                 return;
                         }
-                        isLastUndeliverdMessageFound = msg == _lastUnDeliveredMessage;
+                        if (!isLastUndeliverdMessageFound)
+                            isLastUndeliverdMessageFound = msg == _lastUnDeliveredMessage;
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        //if (_isSendAllAsSMSVisible && ocMessages != null && msg == _lastUnDeliveredMessage)
-                        //{
-                        //    ocMessages.Remove(_tap2SendAsSMSMessage);
-                        //    _isSendAllAsSMSVisible = false;
-                        //    ShowForceSMSOnUI();
-                        //}
+                        if (_isSendAllAsSMSVisible && ocMessages != null && isLastUndeliverdMessageFound)
+                        {
+                            ocMessages.Remove(_tap2SendAsSMSMessage);
+                            _isSendAllAsSMSVisible = false;
+                            ShowForceSMSOnUI();
+                        }
 
                     });
                 }
@@ -4117,24 +4118,7 @@ namespace windows_client.View
                             else
                                 msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
 
-                            if (isGroupChat)
-                            {
-                                if (!String.IsNullOrEmpty(sender))
-                                {
-                                    if (msg.ReadByArray == null)
-                                        msg.ReadByArray = new JArray();
-
-                                    msg.ReadByArray.Add(sender);
-                                    msg.ReadByInfo = msg.ReadByArray.ToString();
-
-                                    if (msg.ReadByArray.Count == _activeUsers)
-                                        msgMap.Remove(ids[i]);
-                                }
-                            }
-                            else
-                            {
-                                msgMap.Remove(ids[i]);
-                            }
+                            msgMap.Remove(ids[i]);
                         }
                     }
                     catch (Exception ex)
@@ -4159,21 +4143,6 @@ namespace windows_client.View
 
                                 if (msg.IsSent && (msg.FileAttachment == null || (msg.FileAttachment.FileState == Attachment.AttachmentState.COMPLETED)))
                                 {
-                                    if (isGroupChat)
-                                    {
-                                        if (!String.IsNullOrEmpty(sender))
-                                        {
-                                            if (msg.ReadByArray == null)
-                                                msg.ReadByArray = new JArray();
-
-                                            if (!msg.ReadByArray.Contains(sender))
-                                            {
-                                                msg.ReadByArray.Add(sender);
-                                                msg.ReadByInfo = msg.ReadByArray.ToString();
-                                            }
-                                        }
-                                    }
-
                                     idsToUpdate.Add(kv.Key);
 
                                     if (msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED || msg.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
@@ -4188,7 +4157,7 @@ namespace windows_client.View
                         foreach (long id in idsToUpdate)
                             msgMap.Remove(id);
 
-                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ, sender);
+                        MessagesTableUtils.updateAllMsgStatus(mContactNumber, idsToUpdate.ToArray(), (int)ConvMessage.State.SENT_DELIVERED_READ);
                         idsToUpdate = null;
                     }
                     catch (Exception ex)
@@ -4724,7 +4693,7 @@ namespace windows_client.View
             bool isAudio = true;
             byte[] fileBytes = null;
             byte[] thumbnail = null;
-            
+
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -7228,14 +7197,14 @@ namespace windows_client.View
             if (!isGroupChat || !isGroupAlive)
                 return;
 
+            ConversationListObject co;
+            if (!App.ViewModel.ConvMap.TryGetValue(mContactNumber, out co))
+                return;
             _lastReceivedSentMessage = null;
 
             try
             {
-                var msgList = (from message in ocMessages
-                               where message.IsSent == true && message.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
-                               && (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ || message.MessageStatus == ConvMessage.State.SENT_DELIVERED_READ)
-                               select message);
+                var msgList = ocMessages.Where(arg=>arg.MessageId==co.LastReadMsgId);
 
                 _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }
@@ -7260,7 +7229,7 @@ namespace windows_client.View
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                     }
 
-                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _lastReceivedSentMessage.ReadByArray, _activeUsers, mContactNumber);
+                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, co.ReadByArray, _activeUsers, mContactNumber);
 
                     if (String.IsNullOrEmpty(msg))
                         return;

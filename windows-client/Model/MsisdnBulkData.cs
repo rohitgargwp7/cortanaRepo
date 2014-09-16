@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,24 @@ namespace windows_client.Model
             get { return _lastReadMsgId; }
             set { _lastReadMsgId = value; }
         }
+
+        private JArray _readByArray;
+
+        public JArray ReadByArray
+        {
+            get
+            {
+                if (_readByArray == null)
+                    _readByArray = new JArray();
+                return _readByArray;
+            }
+            set
+            {
+                if (value != _readByArray)
+                    _readByArray = value;
+            }
+        }
+
 
 
         public MsisdnBulkData(string msisdn)

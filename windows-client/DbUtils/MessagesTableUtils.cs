@@ -541,13 +541,52 @@ namespace windows_client.DbUtils
             }
             return listUpdatedMsgIds;
         }
+
+        public static IList<long> updateBulkMsgReadStatus(string msisdn, long msgID, int val)
+        {
+            IList<long> listUpdatedMsgIds = new List<long>();
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            {
+                IList<ConvMessage> listMessages = DbCompiledQueries.GetUndeliveredMessagesForMsisdn(context, msgID, msisdn).ToList<ConvMessage>();
+                foreach (var message in listMessages)
+                {
+                    if (message != null)
+                    {
+                        var msgState = (ConvMessage.State)val;
+
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
+                        {
+                            if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        }
+
+                        //hack to update db for sent socket write
+                        if ((int)message.MessageStatus < val ||
+                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
+                                    (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
+                        {
+                            message.MessageStatus = (ConvMessage.State)val;
+                            listUpdatedMsgIds.Add(message.MessageId);
+                        }
+                    }
+                }
+                if (listUpdatedMsgIds.Count > 0)
+                    SubmitWithConflictResolve(context);
+            }
+            return listUpdatedMsgIds;
+        }
+
         /// <summary>
         /// Thread safe function to update msg status
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(string fromUser, long[] ids, int status, string sender)
+        public static string updateAllMsgStatus(string fromUser, long[] ids, int status)
         {
             bool shouldSubmit = false;
             string msisdn = null;
@@ -594,32 +633,6 @@ namespace windows_client.DbUtils
 
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
-
-                shouldSubmit = false;
-
-                //todo look for a solution to prevent exception while comiting two column changes
-
-                if (sender != null)
-                {
-                    foreach (var message in messageList)
-                    {
-                        if (message != null && message.IsSent)
-                        {
-                            if (message.ReadByArray == null)
-                                message.ReadByArray = new JArray();
-
-                            if (!message.ReadByArray.Contains(sender))
-                            {
-                                message.ReadByArray.Add(sender);
-                                message.ReadByInfo = message.ReadByArray.ToString();
-                                shouldSubmit = true;
-                            }
-                        }
-                    }
-
-                    if (shouldSubmit)
-                        SubmitWithConflictResolve(context);
-                }
             }
 
             messageList.Clear();

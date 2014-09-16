@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -749,7 +750,7 @@ namespace windows_client.DbUtils
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
-            
+
             lock (attachmentLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -1278,7 +1279,7 @@ namespace windows_client.DbUtils
         }
 
         /// <summary>
-        /// Update status of all messages less than msg id 
+        /// Update delivered status of all messages less than msg id 
         /// </summary>
         /// <param name="msisdn"></param>
         /// <param name="msgID"></param>
@@ -1288,6 +1289,23 @@ namespace windows_client.DbUtils
             Stopwatch st = Stopwatch.StartNew();
             IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgDeliveredStatus(msisdn, msgID, status);
             ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
+            return listUpdatedMsgIds;
+        }
+
+        /// <summary>
+        /// Update read status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateBulkMessageDBsReadStatus(string msisdn, long msgID, int status, long lastReadMessageId, JArray readByArray)
+        {
+            Stopwatch st = Stopwatch.StartNew();
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, msgID, status);
+            ConversationTableUtils.updateLastMsgReadStatus(msgID, msisdn, readByArray); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
