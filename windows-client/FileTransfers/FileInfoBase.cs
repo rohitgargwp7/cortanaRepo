@@ -21,7 +21,7 @@ namespace windows_client.FileTransfers
         public static int MaxBlockSize;
         protected int BlockSize = 1024;
         protected int ChunkFactor = 1;
-        
+
         public int BytesTransfered
         {
             get
@@ -44,11 +44,15 @@ namespace windows_client.FileTransfers
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
 
+        string _filePath = null;
         public string FilePath
         {
             get
             {
-                return HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+                if (String.IsNullOrEmpty(_filePath))
+                    _filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+
+                return _filePath;
             }
         }
 
