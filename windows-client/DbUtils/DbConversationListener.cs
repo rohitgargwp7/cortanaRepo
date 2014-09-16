@@ -161,7 +161,7 @@ namespace windows_client.DbUtils
                 var fileBytes = (byte[])vals[1];
                 string filePath = String.Empty;
 
-                if(vals.Length ==3)
+                if (vals.Length == 3)
                     filePath = (string)vals[2];
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
