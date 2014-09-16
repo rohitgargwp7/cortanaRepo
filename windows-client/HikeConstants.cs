@@ -129,6 +129,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        public static readonly string CONTACT_US_EMAIL = "support@hike.in";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
@@ -605,7 +606,7 @@ namespace windows_client
             public const string STATUS_UPDATE_TIPS = "stts";
 
             //Analytic Events
-            public static readonly string STICKER_TIP_TAP_EVENT= "StickerTClick";
+            public static readonly string STICKER_TIP_TAP_EVENT = "StickerTClick";
             public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
             public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
             public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";

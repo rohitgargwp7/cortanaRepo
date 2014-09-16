@@ -59,7 +59,7 @@ namespace windows_client.View
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
                 "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
-            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(),"support@hike.in");
+            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(),HikeConstants.CONTACT_US_EMAIL);
         }
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)

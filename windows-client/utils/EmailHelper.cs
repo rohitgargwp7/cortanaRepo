@@ -24,7 +24,7 @@ namespace windows_client.utils
         /// <param name="recipient">recipient</param>
         /// <param name="cc">carbon copy</param>
         /// <param name="bcc">blind carbon copy</param>
-        public static void SendEmail(string subject="", string body="", string recipient="", string cc="", string bcc="")
+        public static void SendEmail(string subject = "", string body = "", string recipient = "", string cc = "", string bcc = "")
         {
             try
             {
@@ -38,7 +38,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("EmailHelper::SendMail:"+ex.StackTrace);
+                Debug.WriteLine("EmailHelper::SendMail:" + ex.StackTrace);
             }
         }
 
@@ -89,7 +89,7 @@ namespace windows_client.utils
                             List<GroupParticipant> grpParticipantList = GroupManager.Instance.GetParticipantList(msisdn);
 
                             string participantName;
-                            
+
                             foreach (GroupParticipant grpParticipant in grpParticipantList)
                             {
                                 //TO:Do get name from group participant, if null then check in db.
@@ -116,7 +116,7 @@ namespace windows_client.utils
                         string messageSender;
                         string messageText;
                         string contentType;
-                        
+
                         foreach (ConvMessage convMsg in convList)
                         {
                             messageTime = TimeUtils.getTimeStringForEmailConversation(convMsg.Timestamp);
@@ -124,11 +124,11 @@ namespace windows_client.utils
                             if (convMsg.HasAttachment)
                             {
                                 attachment = MiscDBUtil.getFileAttachment(msisdn, convMsg.MessageId.ToString());
-                                
-                                if(attachment!=null)
-                                    contentType=attachment.ContentType ;
+
+                                if (attachment != null)
+                                    contentType = attachment.ContentType;
                                 else
-                                    contentType=string.Empty;
+                                    contentType = string.Empty;
 
                                 if (contentType.Contains(HikeConstants.IMAGE))
                                     messageText = AppResources.EmailConv_SharedImage_Txt;
@@ -193,7 +193,7 @@ namespace windows_client.utils
                         if (isShowTruncatedText)
                             header = string.Format(AppResources.EmailConv_Header_Truncation_Txt, displayName, msgcount);
                         else if (msgcount == 1)
-                            header = string.Format(AppResources.EmailConv_Header_One_Message_Txt,displayName);
+                            header = string.Format(AppResources.EmailConv_Header_One_Message_Txt, displayName);
                         else
                             header = string.Format(AppResources.EmailConv_Header_Txt, displayName, msgcount);
 
