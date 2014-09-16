@@ -105,7 +105,7 @@ namespace windows_client
         private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -975,7 +975,7 @@ namespace windows_client
             #endregion
             #region Auto Save Media Key Removal
             //TODO: Update market release build here when we release build for the first time from here
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.0.5") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
             {
                 App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
             }
