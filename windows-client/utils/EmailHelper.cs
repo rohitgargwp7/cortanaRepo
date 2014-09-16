@@ -150,9 +150,12 @@ namespace windows_client.utils
                                 }
                                 else
                                     messageText = convMsg.Message;
+
+                                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                                    messageText = "\"" + messageText + "\"";
                             }
 
-                            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                             {
                                 if (convMsg.IsSent || convMsg.Msisdn == App.MSISDN)
                                 {
@@ -198,6 +201,13 @@ namespace windows_client.utils
                         header += "\r\n";
                         messagesStack.Push(header);
                         SendEmail(subject, GetEmailString(messagesStack));
+                    }
+                    else
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    MessageBox.Show(AppResources.EmailConvError_Txt, AppResources.Alert_Txt, MessageBoxButton.OK);
+                                });
                     }
                 });
         }

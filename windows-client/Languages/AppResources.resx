@@ -2294,4 +2294,12 @@ Download it like asap from http://hike.in!</value>
     <value>Chat with {0} - last 1 message</value>
     <comment>Only one Message in email body</comment>
   </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>Alert</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>you don't have messages in this chat</value>
+    <comment>when there is no message</comment>
+  </data>
 </root>

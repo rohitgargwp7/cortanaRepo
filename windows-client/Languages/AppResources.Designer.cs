@@ -142,6 +142,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alert.
+        /// </summary>
+        public static string Alert_Txt {
+            get {
+                return ResourceManager.GetString("Alert_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
@@ -1674,6 +1683,15 @@ namespace windows_client.Languages {
         public static string EmailConv_Subject_Txt {
             get {
                 return ResourceManager.GetString("EmailConv_Subject_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to you don&apos;t have messages in this chat.
+        /// </summary>
+        public static string EmailConvError_Txt {
+            get {
+                return ResourceManager.GetString("EmailConvError_Txt", resourceCulture);
             }
         }
         
