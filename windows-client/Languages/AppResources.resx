@@ -2299,7 +2299,7 @@ Download it like asap from http://hike.in!</value>
     <comment>alert text for message box</comment>
   </data>
   <data name="EmailConvError_Txt" xml:space="preserve">
-    <value>you don't have messages in this chat</value>
+    <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
   </data>
 </root>

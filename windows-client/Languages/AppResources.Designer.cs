@@ -1687,7 +1687,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to you don&apos;t have messages in this chat.
+        ///   Looks up a localized string similar to You don&apos;t have messages in this chat.
         /// </summary>
         public static string EmailConvError_Txt {
             get {
