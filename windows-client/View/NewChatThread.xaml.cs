@@ -111,6 +111,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem clearChatItem;
+        ApplicationBarMenuItem pinHistoryItem; 
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
@@ -1810,7 +1811,7 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                ApplicationBarMenuItem pinHistoryItem = new ApplicationBarMenuItem();
+                pinHistoryItem = new ApplicationBarMenuItem();
                 pinHistoryItem.Text = "pin history";
                 pinHistoryItem.Click += gcPin_PinContentTapped;
                 appBar.MenuItems.Add(pinHistoryItem);
@@ -1941,6 +1942,9 @@ namespace windows_client.View
 
                 if (clearChatItem != null && clearChatItem.IsEnabled)
                     clearChatItem.IsEnabled = false;
+
+                if (pinHistoryItem != null && pinHistoryItem.IsEnabled)
+                    pinHistoryItem.IsEnabled = false;
 
                 ClearChat();
 
@@ -2200,6 +2204,9 @@ namespace windows_client.View
 
             if (clearChatItem != null && !clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = true;
+
+            if (pinHistoryItem != null && !pinHistoryItem.IsEnabled)
+                pinHistoryItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3200,6 +3207,9 @@ namespace windows_client.View
 
             if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
+
+            if (ocMessages.Count == 0 && pinHistoryItem != null && pinHistoryItem.IsEnabled)
+                pinHistoryItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
