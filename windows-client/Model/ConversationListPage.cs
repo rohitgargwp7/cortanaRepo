@@ -75,6 +75,7 @@ namespace windows_client.Model
                     _lastMessage = value;
                     _toastText = value;
                     NotifyPropertyChanged("LastMessage");
+                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -108,11 +109,9 @@ namespace windows_client.Model
                 if (_timeStamp != value)
                 {
                     _timeStamp = value;
-                    NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                     NotifyPropertyChanged("TimeStampVisibility");
                     NotifyPropertyChanged("MuteIconTimeStampVisibility");
-                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -417,7 +416,7 @@ namespace windows_client.Model
         {
             get
             {
-                return TimeStampVisibility;
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 

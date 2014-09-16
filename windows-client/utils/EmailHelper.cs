@@ -92,7 +92,6 @@ namespace windows_client.utils
 
                             foreach (GroupParticipant grpParticipant in grpParticipantList)
                             {
-                                //TO:Do get name from group participant, if null then check in db.
                                 participantName = grpParticipant.Name;
 
                                 if (string.IsNullOrEmpty(participantName))
@@ -119,7 +118,7 @@ namespace windows_client.utils
 
                         foreach (ConvMessage convMsg in convList)
                         {
-                            contentType = string.Empty;
+                            contentType = string.Empty; // Reset content type
                             messageTime = TimeUtils.getTimeStringForEmailConversation(convMsg.Timestamp);
 
                             if (convMsg.HasAttachment)

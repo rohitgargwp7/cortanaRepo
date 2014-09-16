@@ -853,7 +853,7 @@ namespace windows_client.ViewModel
             var target = (string)objArray[1];
 
             if (regexType == SmileyParser.RegexType.EMAIL)
-                EmailHelper.SendEmail(string.Empty,string.Empty, target);
+                EmailHelper.SendEmail(string.Empty, string.Empty, target);
             else if (regexType == SmileyParser.RegexType.URL)
             {
                 var task = new WebBrowserTask() { URL = target };
