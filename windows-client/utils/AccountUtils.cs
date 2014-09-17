@@ -498,7 +498,7 @@ namespace windows_client.utils
                     data[HikeConstants.APPVERSION] = Utils.getAppVersion();
                     data[HikeConstants.OS_NAME] = "win8";
                     data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
-                    string inviteToken = "";
+                    string inviteToken = String.Empty;
                     if (!string.IsNullOrEmpty(inviteToken))
                         data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;
                     if (pin != null)
@@ -717,7 +717,7 @@ namespace windows_client.utils
             object[] vars = (object[])result.AsyncState;
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
-            string data = "";
+            string data = String.Empty;
             byte[] fileBytes = null;
             if (request != null)
             {

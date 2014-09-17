@@ -271,7 +271,7 @@ namespace windows_client.utils
 
         private static string computeHash(string input)
         {
-            string rethash = "";
+            string rethash = String.Empty;
             try
             {
                 var sha = new SHA1Managed();
@@ -469,7 +469,7 @@ namespace windows_client.utils
             catch (Exception ex)
             {
                 Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
-                return "";
+                return String.Empty;
             }
         }
 
@@ -602,7 +602,7 @@ namespace windows_client.utils
             if (obj == null)
                 return AppResources.MessageStatus_ReadByEveryone;
 
-            string readBy = "";
+            string readBy = String.Empty;
 
             var list = obj.ToObject<List<string>>();
             list = list.Distinct().ToList();
@@ -840,7 +840,12 @@ namespace windows_client.utils
 
                             } while (bytesRead != 0);
 
-                            return MD5.GetMd5String(hashAlgorithm.Hash);
+                            StringBuilder sb = new StringBuilder();
+
+                            foreach (byte b in hashAlgorithm.Hash)
+                                sb.Append(b.ToString("x2"));
+                            
+                            return sb.ToString();
                         }
                     }
                 }

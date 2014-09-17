@@ -27,7 +27,7 @@ namespace windows_client.utils
 
         public void requestLastSeen_Callback(JObject obj)
         {
-            string stat = "";
+            string stat = String.Empty;
             if (obj != null)
             {
                 JToken statusToken;
@@ -69,7 +69,7 @@ namespace windows_client.utils
                 return Languages.AppResources.Online;
 
             if (timeStamp == -1)
-                return "";
+                return String.Empty;
 
             return TimeUtils.getRelativeTimeForLastSeen(timeStamp);
         }

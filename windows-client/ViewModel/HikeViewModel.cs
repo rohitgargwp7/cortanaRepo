@@ -290,8 +290,6 @@ namespace windows_client.ViewModel
                     }
                     catch (Exception ex)
                     {
-                        // Couldn't get current location - location might be disabled in settings
-                        //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                         System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
                     }
                     finally
@@ -869,9 +867,9 @@ namespace windows_client.ViewModel
             else if (regexType == SmileyParser.RegexType.PHONE_NO)
             {
                 var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = target.Replace("-", "");
+                var targetPhoneNumber = target.Replace("-", String.Empty);
                 targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", String.Empty);
                 phoneCallTask.PhoneNumber = targetPhoneNumber;
                 try
                 {

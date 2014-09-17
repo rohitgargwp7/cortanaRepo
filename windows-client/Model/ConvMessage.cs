@@ -1403,7 +1403,7 @@ namespace windows_client.Model
         string getTimeTextFromMetaData()
         {
             if (String.IsNullOrEmpty(this.MetaDataString))
-                return "";
+                return String.Empty;
 
             try
             {
@@ -1414,7 +1414,7 @@ namespace windows_client.Model
             }
             catch
             {
-                return "";
+                return String.Empty;
             }
         }
 
@@ -1926,7 +1926,7 @@ namespace windows_client.Model
                 JObject metadataObject = null;
                 JToken val = null;
                 obj.TryGetValue(HikeConstants.TO, out val);
-                string messageText = "";
+                string messageText = String.Empty;
 
                 JToken metadataToken = null;
                 try
@@ -1991,7 +1991,7 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
                         contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
@@ -2005,7 +2005,7 @@ namespace windows_client.Model
                         }
                         else
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 
@@ -2189,7 +2189,7 @@ namespace windows_client.Model
                 else
                     this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
 
-                this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
+                this._message = this._message.Replace(";", String.Empty);// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)

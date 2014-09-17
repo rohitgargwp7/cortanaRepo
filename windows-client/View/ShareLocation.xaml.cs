@@ -327,8 +327,6 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                // Couldn't get current location - location might be disabled in settings
-                //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                 System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
 
                 _isFetchingCurrentLocation = false;
@@ -513,7 +511,7 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
-        String _searchString = "";
+        String _searchString = String.Empty;
         Place _lastSelectedPlace = null;
 
         private void SearchAction_Tap(object sender, EventArgs e)

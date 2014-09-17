@@ -67,7 +67,7 @@ namespace windows_client.View
         private string groupOwner = null;
         public string mContactNumber;
         private string mContactName = null;
-        private string lastText = "";
+        private string lastText = String.Empty;
         private string hintText = string.Empty;
         private bool enableSendMsgButton = false;
         private long _lastUpdatedLastSeenTimeStamp = 0;
@@ -2701,7 +2701,7 @@ namespace windows_client.View
 
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-            if (message == "" || (!isOnHike && mCredits <= 0))
+            if (message == String.Empty || (!isOnHike && mCredits <= 0))
                 return;
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
@@ -3649,7 +3649,7 @@ namespace windows_client.View
             {
                 if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                 {
-                    sendMsgTxtbox.Text = "";
+                    sendMsgTxtbox.Text = String.Empty;
                 }
                 sendMsgTxtbox.Hint = ZERO_CREDITS_MSG;
 
@@ -3661,7 +3661,7 @@ namespace windows_client.View
                 {
                     if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                     {
-                        sendMsgTxtbox.Text = "";
+                        sendMsgTxtbox.Text = String.Empty;
                     }
                     sendMsgTxtbox.IsEnabled = true;
                 }
@@ -3806,7 +3806,7 @@ namespace windows_client.View
                     UpdateLastSeenOnUI(AppResources.Online);
             }
 
-            string typingNotSenderOrSendee = "";
+            string typingNotSenderOrSendee = String.Empty;
             if (isGroupChat)
             {
                 typingNotSenderOrSendee = (string)vals[1];
@@ -4757,7 +4757,7 @@ namespace windows_client.View
             byte[] fileBytes = null;
             byte[] thumbnail = null;
             string filePath = null;
-            long fileSize = 0;
+            int fileSize = 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
@@ -4769,27 +4769,29 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
                 }
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
                 fileSize = fileBytes.Length;
                 isAudio = true;
+                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
                 fileSize = MiscDBUtil.GetFileSize(HikeConstants.TEMP_VIDEO_NAME);
 
                 if (fileSize == 0)
+                {
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
                     return;
+                }
 
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
                 filePath = HikeConstants.TEMP_VIDEO_NAME;
                 isAudio = false;
                 Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, false);
+
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
-
                 VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
 
@@ -4804,11 +4806,12 @@ namespace windows_client.View
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
                     filePath = videoShared.FilePath;
-                    fileSize = streamInfo.Stream.Length;
+                    fileSize = (int)streamInfo.Stream.Length;
 
                     if (fileSize <= 0)
                     {
                         MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
                         return;
                     }
                 }
@@ -4819,9 +4822,10 @@ namespace windows_client.View
 
                 isAudio = false;
                 Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, true);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
             }
 
-            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileBytes.Length))
+            if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileSize))
             {
                 MessageBox.Show(AppResources.Memory_Limit_Reached_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
                 return;
@@ -4843,7 +4847,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileSize);
                     convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_AUDIO;
 
                     var fileInfo = new JObject();
@@ -4861,7 +4865,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileSize);
                     convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_VIDEO;
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -4898,7 +4902,7 @@ namespace windows_client.View
 
                 string fileName = string.IsNullOrEmpty(con.Name) ? AppResources.ContactTransfer_Text : con.Name;
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                ConvMessage convMessage = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 

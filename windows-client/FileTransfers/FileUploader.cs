@@ -485,7 +485,7 @@ namespace windows_client.FileTransfers
             String res = "--" + _boundary + "\r\n";
 
             // keep ct empty since we are not sure about content type for images and video
-            var ct = ContentType.Contains(HikeConstants.IMAGE) || ContentType.Contains(HikeConstants.VIDEO) ? "" : ContentType;
+            var ct = ContentType.Contains(HikeConstants.IMAGE) || ContentType.Contains(HikeConstants.VIDEO) ? String.Empty : ContentType;
             res += "Content-Disposition: form-data; name=\"file\"; filename=\"" + FileName + "\"\r\n" + "Content-Type: " + ct + "\r\n\r\n";
 
             return res;
