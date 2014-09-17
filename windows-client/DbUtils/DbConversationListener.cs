@@ -173,9 +173,9 @@ namespace windows_client.DbUtils
 
                 //send attachment message (new attachment - upload case)
                 if (fileBytes == null || fileBytes.Length == 0)
-                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-                else
                     MiscDBUtil.CopyFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), filePath);
+                else
+                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
 
                 convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
