@@ -367,22 +367,30 @@ namespace windows_client.FileTransfers
                 return false;
             }
 
-            if (bytes != null)
+            try
             {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                if (bytes != null)
                 {
-                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
-                        myIsolatedStorage.CreateDirectory(fileDirectory);
-
-                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                    using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (BinaryWriter writer = new BinaryWriter(fileStream))
+                        if (!myIsolatedStorage.DirectoryExists(fileDirectory))
+                            myIsolatedStorage.CreateDirectory(fileDirectory);
+
+                        using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
                         {
-                            writer.Seek(position, SeekOrigin.Begin);
-                            writer.Write(bytes, 0, bytes.Length);
+                            using (BinaryWriter writer = new BinaryWriter(fileStream))
+                            {
+                                writer.Seek(position, SeekOrigin.Begin);
+                                writer.Write(bytes, 0, bytes.Length);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // crashing in BETA build.
+                return false;
             }
 
             return true;

@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>hike обновляет контакты в адресной книге. Это не займет много времени...</value>
+    <value>hike обновляет контакты с помощью адресной книги. И глазом не успеете моргнуть, как все будет готово...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>включить звук</value>
+    <value>вкл. уведомления группы</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1097,7 +1097,7 @@
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>поделиться</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Коснитесь, чтобы {0} этого пользователя</value>
@@ -1259,7 +1259,7 @@
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Нельзя отправ. файл</value>
+    <value>Превышен лимит</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Размер файла не может превышать 25 МБ.</value>
@@ -1722,8 +1722,8 @@
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>альбомы</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>дата</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>видео</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>выберите</value>
@@ -2103,6 +2103,12 @@
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Перезапустить</value>
   </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Видеокамера</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>фото</value>
+  </data>
   <data name="Hide_Txt" xml:space="preserve">
     <value>скрыть чат</value>
   </data>
@@ -2184,18 +2190,18 @@
     <value>Сброс скрытого режима будет отменен. Продолжить?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Начните чат и нажмите \"hi\".</value>
+    <value>Скройте свои чаты с помощью пароля. Начните чат и коснитесь "hi".</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Скройте свои чаты с помощью пароля.</value>
+    <value>Скрытый режим</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Введите текущий пароль</value>
   </data>
-  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Автосохр. фото</value>
+  <data name="AutoSaveSettings_Txt" xml:space="preserve">
+    <value>Автосохранение фото и видео</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Сохранено</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2210,7 +2216,32 @@
     <value>Никому</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>ВЫБЕРИТЕ ВИДЕО</value>
+  </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Пароли не совпадают.</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>Похоже, видео повреждено и не может быть отправлено.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Неподдерживаемое видео</value>
+  </data>
+  <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
+    <value>Создайте новый пароль</value>
+    <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Файл добавлен в галерею</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Не удалось сохранить</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Не удается открыть это видео. По-видимому, оно повреждено.</value>
   </data>
 </root>
