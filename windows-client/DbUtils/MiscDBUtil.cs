@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
+using Windows.Storage;
 
 namespace windows_client.DbUtils
 {

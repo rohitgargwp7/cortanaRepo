@@ -64,7 +64,7 @@ namespace windows_client.FileTransfers
         {
             Msisdn = msisdn;
             MessageId = messageId;
-            TotalBytes = size == 0 ? (int)MiscDBUtil.GetFileSize(FilePath) : size;
+            TotalBytes = size;
             FileName = fileName;
             ContentType = contentType;
             FileState = FileTransferState.NOT_STARTED;

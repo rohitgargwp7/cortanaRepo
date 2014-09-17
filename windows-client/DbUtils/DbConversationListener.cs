@@ -159,10 +159,15 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 var convMessage = (ConvMessage)vals[0];
                 var fileBytes = (byte[])vals[1];
-                string filePath = String.Empty;
 
-                if (vals.Length == 3)
-                    filePath = (string)vals[2];
+                string filePath = String.Empty;
+                int fileSize = fileBytes != null ? fileBytes.Length : 0; // Initaillize for Contact/Location sharing
+
+                if (vals.Length >= 3)
+                    filePath = (string)vals[2]; // Get file path for Video uploads.
+
+                if (vals.Length >= 4)
+                    fileSize = (int)vals[3]; // Initiallize for Video/Audio Sharing
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
@@ -189,8 +194,7 @@ namespace windows_client.DbUtils
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        int length = fileBytes == null ? 0 : fileBytes.Length;
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, length, string.Empty);
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);

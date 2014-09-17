@@ -2784,7 +2784,7 @@ namespace windows_client.View
                     return false;
                 }
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                ConvMessage convMessage = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
@@ -2793,7 +2793,7 @@ namespace windows_client.View
 
                 AddNewMessageToUI(convMessage, false);
 
-                object[] vals = new object[3];
+                object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
                 mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
@@ -4757,6 +4757,7 @@ namespace windows_client.View
             byte[] fileBytes = null;
             byte[] thumbnail = null;
             string filePath = null;
+            long fileSize = 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
@@ -4769,13 +4770,15 @@ namespace windows_client.View
                 }
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+                fileSize = fileBytes.Length;
                 isAudio = true;
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
             {
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
+                fileSize = MiscDBUtil.GetFileSize(HikeConstants.TEMP_VIDEO_NAME);
 
-                if (MiscDBUtil.GetFileSize(HikeConstants.TEMP_VIDEO_NAME) == 0)
+                if (fileSize == 0)
                     return;
 
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
@@ -4801,8 +4804,9 @@ namespace windows_client.View
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
                     filePath = videoShared.FilePath;
+                    fileSize = streamInfo.Stream.Length;
 
-                    if (streamInfo.Stream.Length <= 0)
+                    if (fileSize <= 0)
                     {
                         MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                         return;
@@ -4823,7 +4827,7 @@ namespace windows_client.View
                 return;
             }
 
-            if (fileBytes.Length > HikeConstants.FILE_MAX_SIZE)
+            if (fileSize > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 return;
@@ -4864,10 +4868,11 @@ namespace windows_client.View
 
                 AddNewMessageToUI(convMessage, false);
 
-                object[] vals = new object[3];
+                object[] vals = new object[4];
                 vals[0] = convMessage;
                 vals[1] = fileBytes;
                 vals[2] = filePath;
+                vals[3] = fileSize;
 
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
