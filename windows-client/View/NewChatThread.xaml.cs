@@ -4807,7 +4807,7 @@ namespace windows_client.View
                 {
                     StreamResourceInfo streamInfo = Application.GetResourceStream(new Uri(videoShared.FilePath, UriKind.Relative));
                     filePath = videoShared.FilePath;
-                    fileSize = (int)streamInfo.Stream.Length;
+                    fileSize = Convert.ToInt32(streamInfo.Stream.Length);
 
                     if (fileSize <= 0)
                     {

@@ -750,7 +750,7 @@ namespace windows_client.DbUtils
                 {
                     using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
                     {
-                        return (int)fileStream.Length;
+                        return Convert.ToInt32(fileStream.Length);
                     }
                 }
                 else
