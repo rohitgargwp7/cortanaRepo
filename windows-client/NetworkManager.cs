@@ -173,7 +173,21 @@ namespace windows_client
                     }
                     else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     {
-                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                        if (!obj.IsGroupChat)
+                        {
+                            ContactInfo contactInfo = null;
+
+                            if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
+                                contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
+                            else
+                                contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+
+                            if (contactInfo != null)
+                                FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                        }
+                        else
+                            FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                    
                     }
 
                     if (convMessage.FileAttachment != null)
@@ -1221,7 +1235,7 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
-                
+
                 //check if same image is set
                 if (cObj.Avatar != null)
                 {
@@ -1565,7 +1579,7 @@ namespace windows_client
                                 {
                                     if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                         tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-                                
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -2019,12 +2033,12 @@ namespace windows_client
 
                     if (!data.TryGetValue(TIPS_HEADER, out headertext))
                         headertext = String.Empty;
-                    
+
                     JToken bodyText;
-                    
+
                     if (!data.TryGetValue(TIPS_BODY, out bodyText))
                         bodyText = String.Empty;
-                    
+
                     TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
                 }
                 catch (Exception e)
