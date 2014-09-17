@@ -3011,6 +3011,7 @@ namespace windows_client.View
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
+
             if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.STICKER_ID))
             {
                 Object[] obj = new Object[1];
@@ -3046,8 +3047,8 @@ namespace windows_client.View
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
+         
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
-
         }
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)

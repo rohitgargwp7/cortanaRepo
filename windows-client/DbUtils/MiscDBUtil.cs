@@ -16,7 +16,8 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
-using Windows.Storage;
+using System.Windows.Resources;
+using System.Windows;
 
 namespace windows_client.DbUtils
 {
@@ -701,20 +702,43 @@ namespace windows_client.DbUtils
 
         public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
-            sourceFilePath = sourceFilePath.Replace(":", "_");
-            destinationFilePath = destinationFilePath.Replace(":", "_");
-            string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
-            string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
-
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            if (sourceFilePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
-                    return;
+                destinationFilePath = destinationFilePath.Replace(":", "_");
+                StreamResourceInfo resource = Application.GetResourceStream(new Uri(sourceFilePath, UriKind.Relative));
 
-                if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
-                    myIsolatedStorage.CreateDirectory(destinationFileDirectory);
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    using (IsolatedStorageFileStream file = myIsolatedStorage.CreateFile(destinationFilePath))
+                    {
+                        int chunkSize = 4096;
+                        byte[] bytes = new byte[chunkSize];
+                        int byteCount;
 
-                myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+                        while ((byteCount = resource.Stream.Read(bytes, 0, chunkSize)) > 0)
+                        {
+                            file.Write(bytes, 0, byteCount);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                sourceFilePath = sourceFilePath.Replace(":", "_");
+                destinationFilePath = destinationFilePath.Replace(":", "_");
+                string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
+                string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
+
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
+                        return;
+
+                    if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
+                        myIsolatedStorage.CreateDirectory(destinationFileDirectory);
+
+                    myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+                }
             }
         }
 
