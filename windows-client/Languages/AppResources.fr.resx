@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>Hike actualise les contacts depuis le carnet d'adresses. Ça prendra très peu de temps...</value>
+    <value>hike actualise les contacts depuis le carnet d'adresses. Ça prendra très peu de temps...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>annuler sourdine</value>
+    <value>enlever sourdine groupe</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1097,7 +1097,7 @@
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>partager</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Touche vite pour {0} cette personne</value>
@@ -1259,7 +1259,7 @@
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Fichier pas envoyé</value>
+    <value>Limite dépassée</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Le fichier ne peut excéder 25 Mo.</value>
@@ -1722,8 +1722,8 @@
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>albums</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>date</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>vidéos</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>choisir</value>
@@ -2103,6 +2103,12 @@
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Redémarrer</value>
   </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Caméscope</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>photos</value>
+  </data>
   <data name="Hide_Txt" xml:space="preserve">
     <value>cacher tchat</value>
   </data>
@@ -2184,18 +2190,18 @@
     <value>Ceci va interrompre la réinitialisation du mode. Tu confirmes ?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Lance un tchat et touche "salut"</value>
+    <value>Masque tes chats avec un mot de passe. Lance un tchat et touche "salut".</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Masque tes chats avec un mot de passe.</value>
+    <value>Mode Caché</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Saisir mot de passe actuel</value>
   </data>
-  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Enregistrement photo automatique</value>
+  <data name="AutoSaveSettings_Txt" xml:space="preserve">
+    <value>Enregistrement automatique photo et vidéo</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Enregistrement réussi</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2210,7 +2216,32 @@
     <value>Personne</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>CHOISIR VIDÉO</value>
+  </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Les mots de passe sont différents.</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Téléphone</value>
+  </data>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>La vidéo semble corrompue et ne peut être envoyée.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Vidéo non prise en charge</value>
+  </data>
+  <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
+    <value>Créer nouveau mot de passe</value>
+    <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Fichier ajouté à la galerie</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>L'enregistrement a échoué</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Impossible d'ouvrir cette vidéo. Elle semble corrompue.</value>
   </data>
 </root>

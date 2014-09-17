@@ -975,7 +975,7 @@ namespace windows_client
             #endregion
             #region Auto Save Media Key Removal
             //TODO: Update market release build here when we release build for the first time from here
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.1.0") < 0)
             {
                 App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
             }
