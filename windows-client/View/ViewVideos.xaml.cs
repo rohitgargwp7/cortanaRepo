@@ -254,16 +254,20 @@ namespace windows_client.View
             int videoDuration;
             double date;
             Byte[] videoThumbBytes;
+            VideoItem video = null;
 
-            preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+            try
+            {
+                videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date, out videoDuration);
+                video = new VideoItem(filePath, videoThumbBytes, videoDuration);
+                DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+                video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("PreviewVideo :: GetVideoFile , Exception : " + ex.StackTrace);
+            }
 
-            if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
-                return null;
-
-            videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
-            VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
-            DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-            video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
             return video;
         }
 

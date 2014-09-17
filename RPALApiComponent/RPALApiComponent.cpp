@@ -7,7 +7,7 @@ using namespace Windows::Foundation::Collections;
 FetchPreRecordedVideos::FetchPreRecordedVideos()
 {
 	myLib.Require();
-	_rgItemsRoot =NULL;
+	_rgItemsRoot = NULL;
 }
 
 void FetchPreRecordedVideos::ClearData()
@@ -21,7 +21,7 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 {
 	HRESULT hr = 0;
 	HZMEDIALIST hRootList = NULL;
-	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS, ZMEDIAITEM_ROOTFOLDER, &hRootList);
+	hr = ZMediaLib_CreateList(ZMEDIALIST_TYPE_ALL_VIDEOS_PERSONAL, 0, &hRootList);
 
 	size_t cItemsRoot = 0;
 	hr = ZMediaList_GetItemCount(hRootList, &cItemsRoot);
@@ -32,7 +32,7 @@ uint16 FetchPreRecordedVideos::GetVideoCount()
 }
 
 // Function to get a video file info using its position in the _rgItemsRoot
-Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoTime,int* videoDuration) 
+Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, Platform::String^* strVideoFilePath, double* videoTime,int* videoDuration) 
 {
 	HRESULT hr = 0;
 	size_t cch = 0;
@@ -44,6 +44,14 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoT
 	Platform::Array<byte>^ intOutArray=ref new Platform::Array<byte>(myThumbData, cch);
 	delete myThumbData;
 
+	// get filepath
+	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, NULL, NULL, &cch);
+	WCHAR *str = new WCHAR[cch]; 
+	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
+	*strVideoFilePath = ref new String(str);
+	delete str;
+
+
 	//get file duration
 	hr = ZMediaLib_GetItemIntAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_DURATION, videoDuration);
 	
@@ -53,17 +61,4 @@ Array<byte>^ FetchPreRecordedVideos::GetVideoInfo(uint8 position, double* videoT
 	*videoTime= (((ULONGLONG) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
 
 	return intOutArray;
-}
-
-void FetchPreRecordedVideos::GetVideoFilePath(uint8 position,Platform::String^* strVideoFilePath)
-{
-	HRESULT hr = 0;
-	size_t cch = 0;
-
-	// get filepath
-	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, NULL, NULL, &cch);
-	WCHAR *str = new WCHAR[cch]; 
-	hr = ZMediaLib_GetItemStringAttribute(_rgItemsRoot[position], ZMEDIAITEM_ATTRIBUTE_FILEPATH, str, cch, &cch);
-	*strVideoFilePath = ref new String(str);
-	delete str;
 }
