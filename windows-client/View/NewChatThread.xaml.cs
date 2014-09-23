@@ -5044,14 +5044,14 @@ namespace windows_client.View
                     // if message cannot be resumed try to fresh upload
                     if (!transferPlaced)
                     {
-                        byte[] fileBytes = null;
+                        int length = 0;
 
                         if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                            fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                            length = Encoding.UTF8.GetBytes(convMessage.MetaDataString).Length;
                         else
-                            MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId, out fileBytes);
+                            length = MiscDBUtil.GetFileSize(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId);
 
-                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, string.Empty);
+                        convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, length, string.Empty);
                     }
 
                     // if transfer was not placed because of queue limit reached then display limit reached message

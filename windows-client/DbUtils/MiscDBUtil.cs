@@ -18,6 +18,8 @@ using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
 using System.Windows.Resources;
 using System.Windows;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace windows_client.DbUtils
 {
@@ -700,46 +702,36 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        public static async Task<bool> CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
-            if (sourceFilePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) >= 0)
+            string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
+            string destinationFileName = destinationFilePath.Substring(destinationFilePath.LastIndexOf("/") + 1);
+
+            string absoulutePath = null;
+
+            try
             {
-                destinationFilePath = destinationFilePath.Replace(":", "_");
-                StreamResourceInfo resource = Application.GetResourceStream(new Uri(sourceFilePath, UriKind.Relative));
-
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    using (IsolatedStorageFileStream file = myIsolatedStorage.CreateFile(destinationFilePath))
-                    {
-                        int chunkSize = 4096;
-                        byte[] bytes = new byte[chunkSize];
-                        int byteCount;
+                    if (!isoStore.DirectoryExists(destinationFileDirectory))
+                        isoStore.CreateDirectory(destinationFileDirectory);
 
-                        while ((byteCount = resource.Stream.Read(bytes, 0, chunkSize)) > 0)
-                        {
-                            file.Write(bytes, 0, byteCount);
-                        }
+                    using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(destinationFilePath, FileMode.CreateNew, isoStore))
+                    {
+                        absoulutePath = output.Name;
                     }
                 }
+
+                File.Copy(sourceFilePath, absoulutePath, true);
+
+                return true;
             }
-            else
+            catch (Exception ex)
             {
-                sourceFilePath = sourceFilePath.Replace(":", "_");
-                destinationFilePath = destinationFilePath.Replace(":", "_");
-                string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
-                string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
-
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
-                        return;
-
-                    if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
-                        myIsolatedStorage.CreateDirectory(destinationFileDirectory);
-
-                    myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
-                }
+                Debug.WriteLine("Exception at MiscDBUtils::CopyFileInIsolatedStorage" + ex.StackTrace);
             }
+
+            return false;
         }
 
         public static int GetFileSize(string filePath)

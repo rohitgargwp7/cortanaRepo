@@ -777,17 +777,17 @@ namespace windows_client.utils
         /// <summary>
         /// Returns absolute path of a file in Isolated Storage
         /// </summary>
-        /// <param name="filename">Path of the file in Isolated storage.</param>
+        /// <param name="reltiveFilePath">Relative path of the file in Isolated storage.</param>
         /// <returns></returns>
-        public static string GetAbsolutePath(string filename)
+        public static string GetAbsolutePath(string reltiveFilePath)
         {
             IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
 
             string absoulutePath = null;
 
-            if (isoStore.FileExists(filename))
+            if (isoStore.FileExists(reltiveFilePath))
             {
-                IsolatedStorageFileStream output = new IsolatedStorageFileStream(filename, FileMode.Open, isoStore);
+                IsolatedStorageFileStream output = new IsolatedStorageFileStream(reltiveFilePath, FileMode.Open, isoStore);
                 absoulutePath = output.Name;
 
                 output.Close();
