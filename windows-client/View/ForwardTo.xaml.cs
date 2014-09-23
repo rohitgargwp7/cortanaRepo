@@ -253,6 +253,11 @@ namespace windows_client.View
                 _isTextSelected = true;
                 return;
             }
+            else if (enterNameTxt.Text.Length < stringBuilderForContactNames.Length || !enterNameTxt.Text.Contains(stringBuilderForContactNames.ToString()))
+            {
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                return;
+            }
 
             _contactToBeRemoved = null;
 
@@ -1190,7 +1195,7 @@ namespace windows_client.View
                         PageTitle.Text = _pageTitle;
                     }
 
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + _charsEntered;
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 }
                 else
@@ -1290,22 +1295,11 @@ namespace windows_client.View
                     PageTitle.Text = _pageTitle;
 
 
-                    if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH)
-                    {
-                        while (NavigationService.CanGoBack)
-                            NavigationService.RemoveBackEntry();
-                    }
+                    while (NavigationService.CanGoBack)
+                        NavigationService.RemoveBackEntry();
                 }
 
                 enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
-            }
-
-            //remove if push came directly from upgrade page
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_UPGRADEPAGE))
-            {
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_UPGRADEPAGE);
             }
         }
 

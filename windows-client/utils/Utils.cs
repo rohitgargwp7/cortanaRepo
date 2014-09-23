@@ -15,6 +15,9 @@ using windows_client.Languages;
 using windows_client.Misc;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.Media;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using System.Threading.Tasks;
 
 namespace windows_client.utils
 {
@@ -731,5 +734,74 @@ namespace windows_client.utils
             }
             return result;
         }
+
+
+
+        /// <summary>
+        /// It creates a file in Hike directory under Pictures folder.
+        /// </summary>
+        /// <param name="sourceFile">absolute path of file which we want to copy to Hike directory</param>
+        /// <param name="targetFileName">name of the file in hike directory </param>
+        public static async Task<bool> StoreFileInHikeDirectory(string sourceFile, string targetFileName)
+        {
+            bool result = true;
+
+            if (!Directory.Exists(HikeConstants.HikeDirectoryPath))
+                Directory.CreateDirectory(HikeConstants.HikeDirectoryPath);
+            
+            try
+            {
+                string targetFile = HikeConstants.HikeDirectoryName + "\\" + targetFileName;
+                StorageFile source = await StorageFile.GetFileFromPathAsync(sourceFile);
+                StorageFile target = await KnownFolders.PicturesLibrary.CreateFileAsync(targetFile, CreationCollisionOption.GenerateUniqueName);
+
+                using (IRandomAccessStream inStream = await target.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    using (IRandomAccessStream outStream = await source.OpenAsync(FileAccessMode.Read))
+                    {
+                        Windows.Storage.Streams.Buffer buffer = new Windows.Storage.Streams.Buffer((uint)outStream.Size);
+                        await outStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.None);
+                        await inStream.WriteAsync(buffer);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception at Utils::SaveFileInHikeDirectory" + ex.StackTrace);
+                result = false;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns absolute path of a file in Isolated Storage
+        /// </summary>
+        /// <param name="filename">Path of the file in Isolated storage.</param>
+        /// <returns></returns>
+        public static string GetAbsolutePath(string filename)
+        {
+            string absoulutePath = null;
+
+            try
+            {
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (isoStore.FileExists(filename))
+                    {
+                        using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, isoStore))
+                        {
+                            absoulutePath = output.Name;
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Utils.cs ::  GetAbsolutePath , Exception : " + ex.StackTrace);
+            }
+
+            return absoulutePath;
+        }
+
     }
 }

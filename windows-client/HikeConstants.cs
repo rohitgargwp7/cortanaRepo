@@ -79,11 +79,12 @@ namespace windows_client
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
+        public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
+        public static readonly string HikeDirectoryName = "hike";
+        public static readonly string ValidVideoDirectoryPath = "C:\\Data\\Users\\Public\\Pictures\\";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
-        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
         public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
-        public static readonly string PARTIAL_FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/pft/";
 
         public static readonly string pushNotificationChannelName = "HikeApp";
 
@@ -108,6 +109,7 @@ namespace windows_client
         public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 6; //seconds
         public static readonly int SEND_START_TYPING_TIMER = 4; //seconds
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
+        public static readonly int STARTING_BASE_YEAR = 1600; //file time is ticks starting from jan 1 1601 so adding 1600 years
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
@@ -126,9 +128,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp8" : "http://staging.im.hike.in:8080/updates/wp8";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
-        public static readonly string STICKER_URL = AccountUtils.IsProd ? "http://hike.in/s/" : "http://staging.im.hike.in/s/";
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
         public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
@@ -162,6 +162,7 @@ namespace windows_client
         public static readonly string ST_UI_EVENT = "uiEvent";
         public static readonly string ST_CONFIG_EVENT = "config";
         public static readonly string ST_NETWORK_EVENT = "nw";
+        public static readonly string ST_FILE_TRANSFER = "ft";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -267,7 +268,7 @@ namespace windows_client
         public static readonly string CHAT_DISABLED = "di";
         public static readonly string HIDDEN_MODE_ENABLED = "enabled";
         public static readonly string HIDDEN_MODE_TYPE = "ts";
-       
+
         public static readonly string PREVIEW = "preview";
 
         public static string MOOD_TOD_SEPARATOR = ":";
@@ -308,11 +309,16 @@ namespace windows_client
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
+        /// <summary>
+        /// Use key whenever relaunching chat thread from chat thread page to clear back stack
+        /// </summary>
+        public static string IS_CHAT_RELAUNCH = "isChatRelaunch";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";
+        public static string VIDEO_SHARED = "videoShared";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
@@ -321,7 +327,6 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
-        public static readonly string LAUNCH_FROM_UPGRADEPAGE = "launchFromUpgradePage";
         public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
         public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
@@ -427,6 +432,7 @@ namespace windows_client
         public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
         public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
         public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
+        public static readonly string FT_VIDEO_FILE = "SendVideo";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
@@ -444,7 +450,7 @@ namespace windows_client
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
-        
+
         #endregion
 
         public static class Extras
@@ -541,5 +547,72 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
+
+        #region Server URL Constants
+        public static class ServerUrls
+        {
+            public static readonly string APP_ENVIRONMENT_SETTING = "appEnv";
+
+            public static class ProductionUrls
+            {
+                public static readonly string HOST = "api.im.hike.in";
+                public static readonly int PORT = 80;
+                public static readonly string MQTT_HOST = "mqtt.im.hike.in";
+                public static readonly int MQTT_PRODUCTION_XMPP_PORT = 5222;
+                public static readonly int MQTT_PORT = 8080;
+                public static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
+                public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp8";
+                public static readonly string STICKER_URL = "http://hike.in/s/";
+            }
+
+            public static class DevUrls
+            {
+                public static readonly string HOST = "staging2.im.hike.in";
+                public static readonly int PORT = 8080;
+                public static readonly string MQTT_HOST = "staging2.im.hike.in";
+                public static readonly int MQTT_PORT = 1883;
+                public static readonly string FILE_TRANSFER_HOST = "staging2.im.hike.in";
+                public static readonly string UPDATE_URL = "http://staging2.im.hike.in:8080/updates/wp8";
+                public static readonly string STICKER_URL = "http://staging2.im.hike.in/s/";
+            }
+
+            public static class StagingUrls
+            {
+                public static readonly string HOST = "staging.im.hike.in";
+                public static readonly int PORT = 8080;
+                public static readonly string MQTT_HOST = "staging.im.hike.in";
+                public static readonly int MQTT_PORT = 1883;
+                public static readonly string FILE_TRANSFER_HOST = "staging.im.hike.in";
+                public static readonly string UPDATE_URL = "http://staging.im.hike.in:8080/updates/wp8";
+                public static readonly string STICKER_URL = "http://staging.im.hike.in/s/";
+            }
+        }
+        #endregion
+
+        #region SERVER TIPS
+        public static class ServerTips
+        {
+            public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
+            public static readonly string CONV_PAGE_TIP_ID = "cnvPgTipId";
+            public const string STICKER_TIPS = "stk";
+            public const string PROFILE_TIPS = "pp";
+            public const string ATTACHMENT_TIPS = "ft";
+            public const string INFORMATIONAL_TIPS = "info";
+            public const string FAVOURITE_TIPS = "fav";
+            public const string THEME_TIPS = "theme";
+            public const string INVITATION_TIPS = "inv";
+            public const string STATUS_UPDATE_TIPS = "stts";
+
+            //Analytic Events
+            public static readonly string STICKER_TIP_TAP_EVENT= "StickerTClick";
+            public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
+            public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
+            public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";
+            public static readonly string STATUS_TIP_TAP_EVENT = "atomicStatusTClick";
+            public static readonly string INVITE_TIP_TAP_EVENT = "atomicAppInvFreeSmsTClick";
+            public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
+            public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
+        }
+        #endregion
     }
 }

@@ -129,7 +129,7 @@ namespace windows_client.View
 
                     if (App.ViewModel.Password == popup.Password)
                     {
-                        popup.Text = AppResources.EnterNewPassword_Txt;
+                        popup.Text = AppResources.EnterNewPassword_PasswordChange_Txt;
                         popup.Password = String.Empty;
                     }
                     else

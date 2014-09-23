@@ -13,12 +13,14 @@ namespace windows_client.Controls
 {
     public partial class ToolTipsUC : UserControl
     {
+        private bool _isFullTipTapDisabled = false;
         public ToolTipsUC()
         {
             InitializeComponent();
             this.Visibility = Visibility.Collapsed;
             leftIcon.Visibility = Visibility.Collapsed;
             rightIcon.Visibility = Visibility.Collapsed;
+            tipHeaderText.Visibility = Visibility.Collapsed;
         }
 
         #region dependency property region
@@ -76,9 +78,9 @@ namespace windows_client.Controls
             tempToolTip.leftIcon.Source = tempSource;
             tempToolTip.leftIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
 
-            var margin = tempToolTip.tipTextbox.Margin;
+            var margin = tempToolTip.TextGrid.Margin;
             margin.Left = tempSource == null ? 24 : 0;
-            tempToolTip.tipTextbox.Margin = margin;
+            tempToolTip.TextGrid.Margin = margin;
         }
 
         public ImageSource LeftIconSource
@@ -103,9 +105,9 @@ namespace windows_client.Controls
             tempToolTip.rightIcon.Source = tempSource;
             tempToolTip.rightIcon.Visibility = ((tempSource != null) ? (Visibility.Visible) : (Visibility.Collapsed));
 
-            var margin = tempToolTip.tipTextbox.Margin;
+            var margin = tempToolTip.TextGrid.Margin;
             margin.Right = tempSource == null ? 24 : 0;
-            tempToolTip.tipTextbox.Margin = margin;
+            tempToolTip.TextGrid.Margin = margin;
         }
 
         public ImageSource RightIconSource
@@ -142,6 +144,52 @@ namespace windows_client.Controls
             }
         }
 
+        public static readonly DependencyProperty TipHeaderTextProperty =
+    DependencyProperty.Register("TipHeaderText", typeof(String), typeof(ToolTipsUC), new PropertyMetadata(OnTipHeaderTextChanged));
+
+        public static void OnTipHeaderTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            ToolTipsUC tempToolTip = obj as ToolTipsUC;
+            String tempText = (String)e.NewValue;
+
+            if (!String.IsNullOrEmpty(tempText)) //body must be present
+            {
+                tempToolTip.tipHeaderText.Visibility = Visibility.Visible;
+                
+                if (tempToolTip.tipHeaderText.Margin.Bottom != 18)
+                {
+                    var margin = tempToolTip.tipTextbox.Margin;
+                    margin.Bottom = 18;
+                    tempToolTip.tipTextbox.Margin = margin;
+                }
+            }
+            else
+            {
+                tempToolTip.tipHeaderText.Visibility = Visibility.Collapsed;
+                
+                if (tempToolTip.tipTextbox.Margin.Bottom != 0)
+                {
+                    var margin = tempToolTip.tipTextbox.Margin;
+                    margin.Bottom = 0;
+                    tempToolTip.tipTextbox.Margin = margin;
+                }
+            }
+
+            tempToolTip.tipHeaderText.Text = tempText;
+        }
+
+        public String TipHeaderText
+        {
+            get
+            {
+                return (String)GetValue(TipHeaderTextProperty);
+            }
+            set
+            {
+                SetValue(TipHeaderTextProperty, value);
+            }
+        }
+
         #endregion
 
         #region events
@@ -152,29 +200,41 @@ namespace windows_client.Controls
 
         #endregion
 
-        public void ResetClickEvents()
+        public void ResetToolTip()
         {
             LeftIconClicked = null;
             RightIconClicked = null;
             FullTipTapped = null;
+            LeftIconSource = null;
+            RightIconSource = null;
+            TipHeaderText = null;
+            TipText = null;
         }
 
         public void leftIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (LeftIconClicked != null)
+            {
                 LeftIconClicked(sender, e);
+                _isFullTipTapDisabled = true;
+            }
         }
 
         public void rightIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (RightIconClicked != null)
+            {
                 RightIconClicked(sender, e);
+                _isFullTipTapDisabled = true;
+            }
         }
 
         public void toolTipGrid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (FullTipTapped != null)
+            if (FullTipTapped != null && !_isFullTipTapDisabled)
                 FullTipTapped(sender, e);
+
+            _isFullTipTapDisabled = false;
         }
     }
 }

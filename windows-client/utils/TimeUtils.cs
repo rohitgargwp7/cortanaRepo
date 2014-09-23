@@ -23,6 +23,15 @@ namespace windows_client.utils
             return dateStr;
         }
 
+        //Used on video preview: Function to get duration in Human Readable form from Milliseconds
+        public static string GetDurationInHourMinFromMilliseconds(int ms)
+        {
+            TimeSpan t = TimeSpan.FromMilliseconds(ms);
+            string answer = t.TotalHours >= 1 ? t.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture)
+                                             : t.ToString("mm\\:ss", CultureInfo.InvariantCulture);
+            return answer;
+        }
+
         //used on conversation list
         public static string getTimeString(long timestamp)
         {
@@ -72,7 +81,7 @@ namespace windows_client.utils
             DateTime messageTime = new DateTime(ticks);
             DateTime now = DateTime.UtcNow;
             TimeSpan span = now.Subtract(messageTime);
-            if (AccountUtils.IsProd)
+            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                 return span.Hours > HikeConstants.CHECK_FOR_UPDATE_TIME;
             else
                 return span.Minutes > HikeConstants.CHECK_FOR_UPDATE_TIME;
@@ -85,7 +94,7 @@ namespace windows_client.utils
             DateTime messageTime = new DateTime(ticks);
             DateTime now = DateTime.UtcNow;
             TimeSpan span = now.Subtract(messageTime);
-            if (AccountUtils.IsProd)
+            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
                 return span.Hours > HikeConstants.ANALYTICS_POST_TIME;
             else
                 return span.Minutes > HikeConstants.ANALYTICS_POST_TIME;

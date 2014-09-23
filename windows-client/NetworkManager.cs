@@ -14,6 +14,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
+using windows_client.utils.ServerTips;
 
 namespace windows_client
 {
@@ -55,6 +56,11 @@ namespace windows_client
         public static readonly string ACTION = "action";
 
         public static readonly string ICON_REMOVE = "icr";
+
+        public static readonly string TIPS_POPUP = "popup";
+        private static readonly string TIPS_HEADER = "h";
+        private static readonly string TIPS_BODY = "b";
+        private static readonly string TIPS_ID = "i";
 
         public static bool turnOffNetworkManager = true;
 
@@ -303,7 +309,7 @@ namespace windows_client
                     return;
                 }
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
-                updateDB(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
+                MiscDBUtil.UpdateDBsMessageStatus(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
             #endregion
             #region DELIVERY_REPORT
@@ -333,7 +339,7 @@ namespace windows_client
                 vals[0] = msgID;
                 vals[1] = msisdnToCheck;
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
-                updateDB(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
+                MiscDBUtil.UpdateDBsMessageStatus(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
             #region MESSAGE_READ
@@ -1719,9 +1725,6 @@ namespace windows_client
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerHelper.UpdateHasMoreMessages(category, true, true);
-
-                        //reset in app tip for "New Stickers"
-                        App.ViewModel.ResetInAppTip(1);
                     }
                     else if (subType == HikeConstants.REMOVE_STICKER)
                     {
@@ -1966,7 +1969,7 @@ namespace windows_client
                 {
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                    
+
                     if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         App.ViewModel.ConvMap[msisdn].Avatar = null;
@@ -1974,7 +1977,7 @@ namespace windows_client
                     }
 
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    
+
                     if (c != null) // for favourites
                     {
                         c.Avatar = null;
@@ -2002,6 +2005,31 @@ namespace windows_client
                 catch (JsonReaderException ex)
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage : Icon Remove Handling, Exception : " + ex.Message);
+                }
+            }
+            #endregion
+            #region Server Tips
+            else if (TIPS_POPUP == type)
+            {
+                try
+                {
+                    JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken headertext;
+
+                    if (!data.TryGetValue(TIPS_HEADER, out headertext))
+                        headertext = String.Empty;
+                    
+                    JToken bodyText;
+                    
+                    if (!data.TryGetValue(TIPS_BODY, out bodyText))
+                        bodyText = String.Empty;
+                    
+                    TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NetworkManager :: OnMessage : TipsException " + e.StackTrace);
                 }
             }
             #endregion
@@ -2347,22 +2375,6 @@ namespace windows_client
             for (int i = 0; i < groupParticipantList.Count; i++)
                 map[groupParticipantList[i].Msisdn] = groupParticipantList[i];
             return map;
-        }
-
-        /// <summary>
-        /// Mark single msg as Sent Confirmed and Sent Delivered
-        /// </summary>
-        /// <param name="fromUser"></param>
-        /// <param name="msgID"></param>
-        /// <param name="status"></param>
-        public static void updateDB(string fromUser, long msgID, int status)
-        {
-            Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
-            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
         /// <summary>

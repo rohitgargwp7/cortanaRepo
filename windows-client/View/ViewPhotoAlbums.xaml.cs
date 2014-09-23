@@ -23,7 +23,7 @@ namespace windows_client.View
         ApplicationBarIconButton multipleSelect;
         bool isSingleListSelected = true;
         bool isAllPicturesLaoded = false;
-        List<PhotoClass> listPic = null;
+        List<PhotoItem> listPic = null;
 
         public ViewPhotoAlbums()
         {
@@ -57,15 +57,15 @@ namespace windows_client.View
             llsAlbums.ItemsSource = GetAlbums(out listPic);
             //create a delay so that it hides after ui render
             Dispatcher.BeginInvoke(() =>
-                {
-                    shellProgressAlbums.Visibility = Visibility.Collapsed;
-                });
+            {
+                shellProgressAlbums.Visibility = Visibility.Collapsed;
+            });
         }
 
-        public List<AlbumClass> GetAlbums(out List<PhotoClass> listPicture)
+        public List<PhotoAlbum> GetAlbums(out List<PhotoItem> listPicture)
         {
-            Dictionary<string, AlbumClass> albumList = new Dictionary<string, AlbumClass>();
-            listPicture = new List<PhotoClass>();
+            Dictionary<string, PhotoAlbum> albumList = new Dictionary<string, PhotoAlbum>();
+            listPicture = new List<PhotoItem>();
 
             try
             {
@@ -73,15 +73,15 @@ namespace windows_client.View
                 //lib.pictures without ordering was throwing unexpected error exception on non debugger mode
                 foreach (Picture pic in lib.Pictures.OrderBy(x => x.Date))
                 {
-                    PhotoClass imageData = new PhotoClass(pic)
+                    PhotoItem imageData = new PhotoItem(pic)
                     {
                         Title = pic.Name,
                         TimeStamp = pic.Date
                     };
-                    AlbumClass albumObj;
+                    PhotoAlbum albumObj;
                     if (!albumList.TryGetValue(pic.Album.Name, out albumObj))
                     {
-                        albumObj = new AlbumClass(pic.Album.Name);
+                        albumObj = new PhotoAlbum(pic.Album.Name);
                         albumList.Add(pic.Album.Name, albumObj);
                     }
                     albumObj.Add(imageData);
@@ -99,7 +99,7 @@ namespace windows_client.View
 
         private void Albums_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AlbumClass album = llsAlbums.SelectedItem as AlbumClass;
+            PhotoAlbum album = llsAlbums.SelectedItem as PhotoAlbum;
             if (album == null)
                 return;
             albumNameTxt.Text = album.AlbumName.ToLower();
@@ -110,7 +110,7 @@ namespace windows_client.View
             BindAlbumPhotos(album);
         }
 
-        private async Task BindAlbumPhotos(AlbumClass album)
+        private async Task BindAlbumPhotos(PhotoAlbum album)
         {
             await Task.Delay(1);
             llsPhotos.ItemsSource = GroupedPhotos(album);
@@ -130,16 +130,16 @@ namespace windows_client.View
             llsAllPhotos.ItemsSource = GroupedPhotos(listPic);
             //create a delay so that it doesnot pause abruptly
             Dispatcher.BeginInvoke(() =>
-                {
-                    shellProgressAllPhotos.Visibility = Visibility.Collapsed;
-                });
+            {
+                shellProgressAllPhotos.Visibility = Visibility.Collapsed;
+            });
         }
 
         void OnPicturesUploadClick(object sender, EventArgs e)
         {
-            List<PhotoClass> listSelectedItems = new List<PhotoClass>();
+            List<PhotoItem> listSelectedItems = new List<PhotoItem>();
             LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
-            foreach (PhotoClass picture in lls.SelectedItems)
+            foreach (PhotoItem picture in lls.SelectedItems)
             {
                 listSelectedItems.Add(picture);
             }
@@ -148,7 +148,7 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
         }
 
-        public List<KeyedList<string, PhotoClass>> GroupedPhotos(List<PhotoClass> album)
+        public List<KeyedList<string, PhotoItem>> GroupedPhotos(List<PhotoItem> album)
         {
             if (album == null || album.Count == 0)
                 return null;
@@ -156,8 +156,8 @@ namespace windows_client.View
                 from photo in album
                 orderby photo.TimeStamp descending
                 group photo by photo.TimeStamp.ToString("y") into photosByMonth
-                select new KeyedList<string, PhotoClass>(photosByMonth);
-            return new List<KeyedList<string, PhotoClass>>(groupedPhotos);
+                select new KeyedList<string, PhotoItem>(photosByMonth);
+            return new List<KeyedList<string, PhotoItem>>(groupedPhotos);
         }
 
         public class KeyedList<TKey, TItem> : List<TItem>
@@ -276,8 +276,8 @@ namespace windows_client.View
             FrameworkElement fe = sender as FrameworkElement;
             if (fe != null)
             {
-                PhotoClass picture = fe.DataContext as PhotoClass;
-                PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoClass>() { picture };
+                PhotoItem picture = fe.DataContext as PhotoItem;
+                PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoItem>() { picture };
                 NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
             }
         }
@@ -300,11 +300,11 @@ namespace windows_client.View
             //clear multiselect list and update selected items so that if user deleted some items it can be updated
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
             {
-                List<PhotoClass> listSelectedItems = (List<PhotoClass>)obj;
+                List<PhotoItem> listSelectedItems = (List<PhotoItem>)obj;
                 LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
                 ToggleAppBarIcons(true);
                 lls.SelectedItems.Clear();
-                foreach (PhotoClass pic in listSelectedItems)
+                foreach (PhotoItem pic in listSelectedItems)
                 {
                     var container = lls.ContainerFromItem(pic) as LongListMultiSelectorItem;
                     if (container != null)

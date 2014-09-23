@@ -20,25 +20,29 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        #region Environment enum
+        public enum DebugEnvironment
+        {
+            STAGING,
+            DEV,
+            PRODUCTION
+        }
+        #endregion
 
-        private static readonly string PRODUCTION_HOST = "api.im.hike.in";
+        private static DebugEnvironment _appEnvironment;
 
-        private static readonly string STAGING_HOST = "staging.im.hike.in";
-
-        private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
-
-        private static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
-
-        private static readonly int PRODUCTION_PORT = 80;
-
-        private static readonly int STAGING_PORT = 8080;
-
-        public static bool IsProd
+        public static DebugEnvironment AppEnvironment
         {
             get
             {
-                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
+                if (App.IS_MARKETPLACE)
+                    return DebugEnvironment.PRODUCTION;
+                else
+                    return _appEnvironment;
+            }
+            set
+            {
+                _appEnvironment = value;
             }
         }
 
@@ -48,9 +52,12 @@ namespace windows_client.utils
         {
             get
             {
-                if (IsProd)
-                    return MQTT_HOST_SERVER;
-                return STAGING_HOST;
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_HOST;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.MQTT_HOST;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.MQTT_HOST;
             }
         }
 
@@ -58,30 +65,113 @@ namespace windows_client.utils
         {
             get
             {
-                if (IsProd)
-                    return 8080;
-                return 1883;
-            }
-        }
-
-        public static string FILE_TRANSFER_BASE
-        {
-            get
-            {
-                if (IsProd)
-                    return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
-                return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_PORT;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.MQTT_PORT;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.MQTT_PORT;
             }
         }
 
         #endregion
 
-        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
+        public static string FILE_TRANSFER_BASE
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                else
+                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+            }
+        }
 
-        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
+        public static string FILE_TRANSFER_BASE_URL
+        {
+            get
+            {
+                return FILE_TRANSFER_BASE + "/user/ft";
+            }
+        }
 
-        public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
-        public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
+        public static string PARTIAL_FILE_TRANSFER_BASE_URL
+        {
+            get
+            {
+                return FILE_TRANSFER_BASE + "/user/pft/";
+            }
+        }
+
+        public static string HOST
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.HOST;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.HOST;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.HOST;
+            }
+        }
+
+        public static int PORT
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.PORT;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.PORT;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.PORT;
+            }
+        }
+
+        public static string BASE
+        {
+            get
+            {
+                return "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+            }
+        }
+
+        public static string AVATAR_BASE
+        {
+            get
+            {
+                return "http://" + HOST + ":" + Convert.ToString(PORT);
+            }
+        }
+
+        public static string GetUpdateUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.UPDATE_URL;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.UPDATE_URL;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.UPDATE_URL;
+            }
+        }
+
+        public static string GetStickerUrl
+        {
+            get
+            {
+                if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                    return HikeConstants.ServerUrls.ProductionUrls.STICKER_URL;
+                else if (AppEnvironment == DebugEnvironment.DEV)
+                    return HikeConstants.ServerUrls.DevUrls.STICKER_URL;
+                else
+                    return HikeConstants.ServerUrls.StagingUrls.STICKER_URL;
+            }
+        }
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
@@ -557,7 +647,7 @@ namespace windows_client.utils
                     bool on_off = (bool)vars[3];
                     finalCallbackFunction = vars[4] as parametrisedPostResponseFunction;
                     obj = vars[5];
-                    data.Add("dev_token",push_token);
+                    data.Add("dev_token", push_token);
                     data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
                     data.Add(HikeConstants.PREVIEW, on_off);
                     break;
@@ -1002,7 +1092,7 @@ namespace windows_client.utils
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();
-                                    
+
                                     prefContactList.Add(msisdn);
                                 }
                             }
@@ -1020,7 +1110,7 @@ namespace windows_client.utils
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
-                
+
                 if (isRefresh)
                 {
                     GroupManager.Instance.LoadGroupCache();

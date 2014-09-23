@@ -403,14 +403,19 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE) && !App.appSettings.Contains(App.AUTO_SAVE_PHOTO))
+                                if (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    string destinationPath = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
-                                    string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
-                                    Utils.SavePictureToLibrary(convMessage.FileAttachment.FileName, destinationPath);
-                                }
+                                    string targetFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
 
+                                    if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
+                                        targetFileName = targetFileName + ".mp4";
+                                    else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                        targetFileName = targetFileName + ".jpg";
+
+                                    string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
+                                    Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
+                                }
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
                             }
@@ -432,32 +437,32 @@ namespace windows_client.DbUtils
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.AUDIO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
 
@@ -475,7 +480,7 @@ namespace windows_client.DbUtils
                             {
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
-                                NetworkManager.updateDB(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
+                                MiscDBUtil.UpdateDBsMessageStatus(null, convMessage.MessageId, (int)ConvMessage.State.SENT_FAILED);
                             }
                         }
 

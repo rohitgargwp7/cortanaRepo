@@ -1,0 +1,30 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="windows_client.View.PreviewVideo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    toolkit:TiltEffect.IsTiltEnabled="True"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="False">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Black">
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Tap="ContentPanel_Tap" Margin="0,0,0,72">
+            <Image Name="thumbnailImage" HorizontalAlignment="Stretch" MinHeight="180"/>
+            <Image MaxWidth="150" MaxHeight="150" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/View/images/MediaPlayIconBig.png"/>
+            <TextBlock Name="VideoDurationText" Margin="15,0,0,25" Foreground="White" FontSize="50" FontWeight="Light" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+            <TextBlock Name="VideoSizeText" Margin="0,0,10,25" Foreground="White" FontSize="50" FontWeight="Light" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

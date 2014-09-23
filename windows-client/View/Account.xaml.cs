@@ -126,7 +126,7 @@ namespace windows_client.View
 
                 if (progress == null)
                     progress = new ProgressIndicatorControl();
-                
+
                 LayoutRoot.IsHitTestVisible = false;
                 progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
                 canGoBack = false;
@@ -163,7 +163,7 @@ namespace windows_client.View
             HikeViewModel.ClearStickerHelperInstance();
             App.ClearAppSettings();
             App.appSettings[App.IS_DB_CREATED] = true;
-            
+
             //so that on signing up again user can see these tutorials 
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
@@ -171,6 +171,7 @@ namespace windows_client.View
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
+            AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -202,10 +203,10 @@ namespace windows_client.View
                 return;
 
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
-            
+
             if (res != MessageBoxResult.OK)
                 return;
-            
+
             shellProgress.IsIndeterminate = true;
             LogoutFb(false);
         }
@@ -216,7 +217,7 @@ namespace windows_client.View
                 return;
 
             MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
-            
+
             if (res != MessageBoxResult.OK)
                 return;
             else
@@ -264,7 +265,7 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
             App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
 
-            if(isAccountDeleteUnlink)
+            if (isAccountDeleteUnlink)
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);
             else
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);

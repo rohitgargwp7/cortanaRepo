@@ -18,4 +18,13 @@ PageTransitions/Bin/
 PageTransitions/obj/
 HikeBackgroundAgent/Bin/
 HikeBackgroundAgent/obj/
+ARM/
+Debug/
+ipch/
+Release/
+RPALApiComponent/Release
+windows-client.sdf
+RPALApiComponent/Arm/
+RPALApiComponent/Generated Files/
+RPALApiComponent/Debug/
 *.suo
