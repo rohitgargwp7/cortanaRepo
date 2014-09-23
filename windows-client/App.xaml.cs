@@ -771,7 +771,7 @@ namespace windows_client
             #endregion
             #region IN APP TIPS
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 App.appSettings.Remove(App.TIP_MARKED_KEY);
                 App.appSettings.Remove(App.TIP_SHOW_KEY);
@@ -974,8 +974,7 @@ namespace windows_client
 
             #endregion
             #region Auto Save Media Key Removal
-            //TODO: Update market release build here when we release build for the first time from here
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
             }
