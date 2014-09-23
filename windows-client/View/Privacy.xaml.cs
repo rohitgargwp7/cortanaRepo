@@ -21,19 +21,23 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            bool showlastSeen = true;
-            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out showlastSeen))
-                showlastSeen = true;
-            lastSeenTimeStampToggle.IsChecked = showlastSeen;
-            this.lastSeenTimeStampToggle.Content = showlastSeen ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
+            bool value = true;
+            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out value))
+                value = true;
+            lastSeenTimeStampToggle.IsChecked = value;
+            this.lastSeenTimeStampToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
-            bool value = App.appSettings.TryGetValue(App.DISPLAYPIC_FAV_ONLY, out value);
+            value = App.appSettings.TryGetValue(App.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
+
+            value = App.appSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
+            activateHiddenModeOnExitToggle.IsChecked = value;
+            this.activateHiddenModeOnExitToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -73,6 +77,26 @@ namespace windows_client.View
             data.Add(HikeConstants.LASTSEENONOFF, false);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void hideChatOnExitToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            activateHiddenModeOnExitToggle.Loaded -= hideChatOnExitToggle_Loaded;
+            activateHiddenModeOnExitToggle.Checked += hideChatOnExitToggle_Checked;
+            activateHiddenModeOnExitToggle.Unchecked += hideChatOnExitToggle_Unchecked;
+        }
+
+        private void hideChatOnExitToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.activateHiddenModeOnExitToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+        }
+
+        private void hideChatOnExitToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.activateHiddenModeOnExitToggle.Content = AppResources.Off;
+            App.appSettings.Remove(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
+            App.appSettings.Save();
         }
 
         #region Hidden Mode Settings
@@ -175,7 +199,7 @@ namespace windows_client.View
         private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Favorites_Txt;
-            App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+            App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -189,7 +213,7 @@ namespace windows_client.View
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Everyone_Txt;
-            App.RemoveKeyFromAppSettings(App.DISPLAYPIC_FAV_ONLY);
+            App.RemoveKeyFromAppSettings(App.DISPLAY_PIC_FAV_ONLY);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);

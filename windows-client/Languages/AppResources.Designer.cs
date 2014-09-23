@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate hidden mode on app exit.
+        /// </summary>
+        public static string Activate_HiddenMode_on_Exit {
+            get {
+                return ResourceManager.GetString("Activate_HiddenMode_on_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add.
         /// </summary>
         public static string Add_AppBar_Txt {
