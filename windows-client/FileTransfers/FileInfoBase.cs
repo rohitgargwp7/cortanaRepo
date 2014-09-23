@@ -21,7 +21,7 @@ namespace windows_client.FileTransfers
         public static int MaxBlockSize;
         protected int BlockSize = 1024;
         protected int ChunkFactor = 1;
-        
+
         public int BytesTransfered
         {
             get
@@ -43,6 +43,18 @@ namespace windows_client.FileTransfers
         public string FileName { get; set; }
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
+
+        string _filePath = null;
+        public string FilePath
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_filePath))
+                    _filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+
+                return _filePath;
+            }
+        }
 
         public FileInfoBase()
         {
@@ -132,27 +144,18 @@ namespace windows_client.FileTransfers
                 return false;
         }
 
+        /// <summary>
+        /// Check for CRC
+        /// </summary>
+        /// <param name="key">file key for which head call needs to be made</param>
+        /// <returns>true if md5 matches else false</returns>
         protected async Task<bool> CheckForCRC(string key)
         {
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            byte[] bytes;
-            MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
-
-            if (bytes == null || bytes.Length == 0)
-                return false;
-
-            String md5 = string.Empty;
-            try
-            {
-                md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
-            }
-            catch
-            {
-                return false;
-            }
+            // Calculate md5 by parts
+            String md5 = Utils.GetMD5Hash(FilePath);
 
             string result = String.Empty;
 
@@ -187,7 +190,7 @@ namespace windows_client.FileTransfers
                 }
             }
 
-            return md5 == result;
+            return md5.Equals(result, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

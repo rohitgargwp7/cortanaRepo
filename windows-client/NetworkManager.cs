@@ -197,7 +197,7 @@ namespace windows_client
             #region REQUEST_DISPLAY_PIC
             else if (REQUEST_DISPLAY_PIC == type)
             {
-                string grpId = "";
+                string grpId = String.Empty;
                 try
                 {
                     grpId = (string)jsonObj[HikeConstants.TO];
@@ -213,7 +213,7 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
-                string sentTo = "";
+                string sentTo = String.Empty;
                 try
                 {
                     // If not null then this is group id
@@ -1766,24 +1766,24 @@ namespace windows_client
                     var header = (string)data[HikeConstants.PRO_TIP_HEADER];
                     var text = (string)data[HikeConstants.PRO_TIP_TEXT];
 
-                    var imageUrl = "";
+                    var imageUrl = String.Empty;
                     try
                     {
                         imageUrl = (string)data[HikeConstants.PRO_TIP_IMAGE];
                     }
                     catch
                     {
-                        imageUrl = "";
+                        imageUrl = String.Empty;
                     }
 
-                    var base64Image = "";
+                    var base64Image = String.Empty;
                     try
                     {
                         base64Image = (string)data[HikeConstants.THUMBNAIL];
                     }
                     catch
                     {
-                        base64Image = "";
+                        base64Image = String.Empty;
                     }
 
                     ProTipHelper.Instance.AddProTip(id, header, text, imageUrl, base64Image);
@@ -1916,7 +1916,7 @@ namespace windows_client
                         isCritical = false;
                     }
 
-                    var message = "";
+                    var message = String.Empty;
                     try
                     {
                         message = (string)data[HikeConstants.TEXT_UPDATE_MSG];

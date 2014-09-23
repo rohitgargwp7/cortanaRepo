@@ -73,16 +73,15 @@ namespace windows_client.DbUtils
         /// call this from UI thread for outgoing messages. These messages will be added to msgmap on new chat thread page
         /// </summary>
         /// <param name="conMessage"></param>
-        private void addSentMessageToMsgMap(ConvMessage conMessage)
+        private void AddSentMessageToMsgMap(ConvMessage conMessage)
         {
             NewChatThread currentPage = App.newChatThreadPage;
+
             if (currentPage != null && conMessage != null && currentPage.mContactNumber == conMessage.Msisdn)
-            {
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
-            }
         }
 
-        public void onEventReceived(string type, object obj)
+        public async void onEventReceived(string type, object obj)
         {
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
@@ -143,7 +142,7 @@ namespace windows_client.DbUtils
                     if (fileBytes == null)
                         return;
 
-                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
@@ -158,8 +157,17 @@ namespace windows_client.DbUtils
             else if (HikePubSub.ATTACHMENT_SENT == type)
             {
                 object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
-                byte[] fileBytes = (byte[])vals[1];
+                var convMessage = (ConvMessage)vals[0];
+                var fileBytes = (byte[])vals[1];
+
+                string filePath = String.Empty;
+                int fileSize = fileBytes != null ? fileBytes.Length : 0; // Initaillize for Contact/Location sharing
+
+                if (vals.Length >= 3)
+                    filePath = (string)vals[2]; // Get file path for Video uploads.
+
+                if (vals.Length >= 4)
+                    fileSize = (int)vals[3]; // Initiallize for Video/Audio Sharing
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
@@ -168,21 +176,25 @@ namespace windows_client.DbUtils
                 if (convObj == null)
                     return;
 
+                //send attachment message (new attachment - upload case)
+                if (fileBytes == null || fileBytes.Length == 0)
+                    await MiscDBUtil.CopyFileInIsolatedStorage(filePath, HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
+                else
+                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+
+                convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     UpdateConvListForSentMessage(convMessage, convObj);
-                    //send attachment message (new attachment - upload case)
-
-                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
-                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
                     {
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, string.Empty);
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
@@ -412,7 +424,7 @@ namespace windows_client.DbUtils
                                     else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                         targetFileName = targetFileName + ".jpg";
 
-                                    string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + fInfo.Msisdn.Replace(":", "_") + "/" + fInfo.MessageId;
+                                    string sourceFile = fInfo.FilePath;
                                     string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
                                     Utils.StoreFileInHikeDirectory(absoluteFilePath, targetFileName);
                                 }
@@ -505,11 +517,17 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Update convlist as new message is being sent. Call on ui thread
+        /// </summary>
+        /// <param name="convMessage">convMessage being sent</param>
+        /// <param name="convObj">convObj to update</param>
         private void UpdateConvListForSentMessage(ConvMessage convMessage, ConversationListObject convObj)
         {
             if (convObj == null)
                 return;
-            addSentMessageToMsgMap(convMessage);
+
+            AddSentMessageToMsgMap(convMessage);
 
             int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
             //cannot use convMap here because object has pushed to map but not to ui

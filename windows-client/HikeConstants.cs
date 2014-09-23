@@ -73,6 +73,9 @@ namespace windows_client
         public static readonly string LOCATION_FILENAME = "Location";
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
 
+        public static readonly string FILE_TYPE_AUDIO = "audio/voice";
+        public static readonly string FILE_TYPE_VIDEO = "video/mp4";
+
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
