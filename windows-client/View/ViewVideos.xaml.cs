@@ -75,7 +75,7 @@ namespace windows_client.View
         /// <returns></returns>
         public List<VideoAlbum> GetAlbums()
         {
-            Dictionary<string, VideoAlbum> videoAlbumList = new Dictionary<string, VideoAlbum>();
+            Dictionary<string, VideoAlbum> videoAlbumMap = new Dictionary<string, VideoAlbum>();
             _listAllVideos = new List<VideoItem>();
 
             try
@@ -104,15 +104,10 @@ namespace windows_client.View
                         albumName = AppResources.Default_Video_Album_Txt;
                     }
                     
-                    if (!videoAlbumList.TryGetValue(albumName, out albumObj))
+                    if (!videoAlbumMap.TryGetValue(albumName, out albumObj))
                     {
-                        albumObj = new VideoAlbum(albumName, video.ThumbnailBytes);
-                        videoAlbumList.Add(albumName, albumObj);
-                    }
-                    else
-                    {
-                        if (albumObj.ThumbBytes == null && video.ThumbnailBytes != null)
-                            albumObj.ThumbBytes = video.ThumbnailBytes;
+                        albumObj = new VideoAlbum(albumName);
+                        videoAlbumMap.Add(albumName, albumObj);
                     }
 
                     albumObj.Add(video);
@@ -126,7 +121,33 @@ namespace windows_client.View
                 Debug.WriteLine("ViewVideos :: GetAlbums , Exception : " + ex.StackTrace);
             }
 
-            return videoAlbumList.Values.ToList();
+            GenerateThumbnailForAlbumsFromRecentVideo(videoAlbumMap);
+            return videoAlbumMap.Values.ToList();
+        }
+
+        /// <summary>
+        /// Generate thumbnail for album tiles with latest video of that album
+        /// </summary>
+        /// <param name="videoAlbumMap"></param>
+        void GenerateThumbnailForAlbumsFromRecentVideo(Dictionary<string, VideoAlbum> videoAlbumMap)
+        {
+            foreach (var album in videoAlbumMap)
+            {
+                DateTime maxTillnow = new DateTime(0);
+                VideoItem selectedVideo = null;
+
+                foreach (var video in album.Value)
+                {
+                    if (maxTillnow < video.TimeStamp && video.ThumbnailBytes != null)
+                    {
+                        maxTillnow = video.TimeStamp;
+                        selectedVideo = video;
+                    }
+                }
+
+                if (selectedVideo != null && selectedVideo.ThumbnailBytes != null)
+                    album.Value.ThumbBytes = selectedVideo.ThumbnailBytes;
+            }
         }
 
         /// <summary>
@@ -233,16 +254,20 @@ namespace windows_client.View
             int videoDuration;
             double date;
             Byte[] videoThumbBytes;
+            VideoItem video = null;
 
-            preRecordedVideos.GetVideoFilePath((byte)index, out filePath);
+            try
+            {
+                videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out filePath, out date, out videoDuration);
+                video = new VideoItem(filePath, videoThumbBytes, videoDuration);
+                DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
+                video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("PreviewVideo :: GetVideoFile , Exception : " + ex.StackTrace);
+            }
 
-            if (filePath.IndexOf(HikeConstants.ValidVideoDirectoryPath, StringComparison.OrdinalIgnoreCase) < 0)
-                return null;
-
-            videoThumbBytes = preRecordedVideos.GetVideoInfo((byte)index, out date, out videoDuration);
-            VideoItem video = new VideoItem(filePath, videoThumbBytes, videoDuration);
-            DateTime dob = new DateTime(Convert.ToInt64(date), DateTimeKind.Utc);
-            video.TimeStamp = dob.AddYears(HikeConstants.STARTING_BASE_YEAR);//file time is ticks starting from jan 1 1601 so adding 1600 years
             return video;
         }
 

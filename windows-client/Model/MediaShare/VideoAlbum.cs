@@ -19,10 +19,9 @@ namespace windows_client.Model
         private byte[] _thumbBytes;
         private BitmapImage _thumbImage;
 
-        public VideoAlbum(string albumName, byte[] thumbnail)
+        public VideoAlbum(string albumName)
         {
             _albumName = albumName;
-            _thumbBytes = thumbnail;
         }
 
         public Byte[] ThumbBytes

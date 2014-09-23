@@ -741,10 +741,10 @@ namespace windows_client.Model
         {
             get
             {
-                return FileAttachment != null && FileAttachment.FileState != Attachment.AttachmentState.STARTED
-                && FileAttachment.FileState != Attachment.AttachmentState.PAUSED
-                && FileAttachment.FileState != Attachment.AttachmentState.MANUAL_PAUSED
-                && MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
+                return FileAttachment != null && MessageStatus == State.SENT_FAILED &&
+                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED 
+                    || FileAttachment.FileState == Attachment.AttachmentState.CANCELED) ?
+                    Visibility.Visible : Visibility.Collapsed;
             }
         }
 
