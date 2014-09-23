@@ -613,7 +613,7 @@ namespace windows_client
             public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
             public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
             public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";
-            public static readonly string STATUS_TIP_TAP_EVENT = "	atomicStatusTClick";
+            public static readonly string STATUS_TIP_TAP_EVENT = "atomicStatusTClick";
             public static readonly string INVITE_TIP_TAP_EVENT = "atomicAppInvFreeSmsTClick";
             public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
             public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";

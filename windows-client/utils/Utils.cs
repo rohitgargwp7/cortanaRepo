@@ -746,10 +746,10 @@ namespace windows_client.utils
         public static async Task<bool> StoreFileInHikeDirectory(string sourceFile, string targetFileName)
         {
             bool result = true;
+
             if (!Directory.Exists(HikeConstants.HikeDirectoryPath))
-            {
                 Directory.CreateDirectory(HikeConstants.HikeDirectoryPath);
-            }
+            
             try
             {
                 string targetFile = HikeConstants.HikeDirectoryName + "\\" + targetFileName;
@@ -781,18 +781,26 @@ namespace windows_client.utils
         /// <returns></returns>
         public static string GetAbsolutePath(string reltiveFilePath)
         {
-            IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
-
             string absoulutePath = null;
 
-            if (isoStore.FileExists(reltiveFilePath))
+            try
             {
-                IsolatedStorageFileStream output = new IsolatedStorageFileStream(reltiveFilePath, FileMode.Open, isoStore);
-                absoulutePath = output.Name;
-
-                output.Close();
-                output = null;
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (isoStore.FileExists(reltiveFilePath))
+                    {
+                        using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(reltiveFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, isoStore))
+                        {
+                            absoulutePath = output.Name;
+                        }
+                    }
+                }
             }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Utils.cs ::  GetAbsolutePath , Exception : " + ex.StackTrace);
+            }
+
             return absoulutePath;
         }
 

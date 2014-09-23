@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>Hike aktualisiert die Kontakte mit dem Adressbuch. Dieser Vorgang wird blitzschnell beendet sein.</value>
+    <value>hike aktualisiert die Kontakte aus dem Adressbuch. Das dauert nur einen Augenblick ...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -1097,7 +1097,7 @@
   </data>
   <data name="Share_Txt" xml:space="preserve">
     <value>Teilen</value>
-    <comment>Used in share photo</comment>
+    <comment>Used in share photo,video</comment>
   </data>
   <data name="Block_Tap_Txt" xml:space="preserve">
     <value>Hier tippen, um diese Person zu {0}.</value>
@@ -1259,7 +1259,7 @@
     <comment>Warning Text</comment>
   </data>
   <data name="CT_FileSizeExceed_Caption_Text" xml:space="preserve">
-    <value>Datei senden fehlgeschlagen</value>
+    <value>Übersteigt das Limit</value>
   </data>
   <data name="CT_FileSizeExceed_Text" xml:space="preserve">
     <value>Die max. Dateigröße beträgt 25 MB.</value>
@@ -1722,8 +1722,8 @@
   <data name="ViewAlbums_Pivot_Album_txt" xml:space="preserve">
     <value>Alben</value>
   </data>
-  <data name="ViewAlbums_Pivot_Date_txt" xml:space="preserve">
-    <value>Datum</value>
+  <data name="ViewAlbums_Pivot_Video_txt" xml:space="preserve">
+    <value>Videos</value>
   </data>
   <data name="ViewAlbum_AppBar_Select_text" xml:space="preserve">
     <value>auswählen</value>
@@ -2103,6 +2103,12 @@
   <data name="RestartApp_Txt" xml:space="preserve">
     <value>Neu starten</value>
   </data>
+  <data name="Attachment_Camcorder_Txt" xml:space="preserve">
+    <value>Camcorder</value>
+  </data>
+  <data name="ViewAlbums_Pivot_Photo_txt" xml:space="preserve">
+    <value>Fotos</value>
+  </data>
   <data name="Hide_Txt" xml:space="preserve">
     <value>Chat ausblenden</value>
   </data>
@@ -2184,18 +2190,18 @@
     <value>Hiermit wird das Zurücksetzen des Geheimmodus unterbrochen. Sicher?</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Body_Txt" xml:space="preserve">
-    <value>Start einen Chat und tippe auf „Hi“</value>
+    <value>Verbirg deine Chats mit einem Passwort. Starte einen Chat und tippe auf "hi".</value>
   </data>
   <data name="HiddenMode_ZeroChatConf_Header_Txt" xml:space="preserve">
-    <value>Blende deine Chats mit einem Passwort aus.</value>
+    <value>Geheimmodus</value>
   </data>
   <data name="Enter_Current_Pwd_Txt" xml:space="preserve">
     <value>Aktuelles Passwort eingeben</value>
   </data>
-  <data name="AutoSavePhotoSettings_Txt" xml:space="preserve">
-    <value>Foto autom. speichern</value>
+  <data name="AutoSaveSettings_Txt" xml:space="preserve">
+    <value>Fotos und Videos automatisch speichern</value>
   </data>
-  <data name="SaveSuccess_Txt" xml:space="preserve">
+  <data name="SaveSuccess_Caption_Txt" xml:space="preserve">
     <value>Erfolgreich gespeichert</value>
   </data>
   <data name="Everyone_Txt" xml:space="preserve">
@@ -2210,7 +2216,32 @@
     <value>Keiner</value>
     <comment>Toggle Switch Text</comment>
   </data>
+  <data name="Select_Video_txt" xml:space="preserve">
+    <value>VIDEO AUSWÄHLEN</value>
+  </data>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Die Passwörter stimmen nicht überein.</value>
+  </data>
+  <data name="Default_Video_Album_Txt" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="CT_FileUnableToSend_Text" xml:space="preserve">
+    <value>Das Video ist beschädigt und kann nicht gesendet werden.</value>
+  </data>
+  <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
+    <value>Nicht unterstütztes Video</value>
+  </data>
+  <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
+    <value>Neues Passwort erstellen </value>
+    <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="SaveSuccess_Txt" xml:space="preserve">
+    <value>Datei wurde zur Galerie hinzugefügt</value>
+  </data>
+  <data name="Something_WrongCaption_Txt" xml:space="preserve">
+    <value>Speichern fehlgeschlagen</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Video kann nicht geöffnet werden. Es ist beschädigt.</value>
   </data>
 </root>
