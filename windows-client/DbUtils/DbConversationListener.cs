@@ -81,7 +81,7 @@ namespace windows_client.DbUtils
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
         }
 
-        public async void onEventReceived(string type, object obj)
+        public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
@@ -178,7 +178,7 @@ namespace windows_client.DbUtils
 
                 //send attachment message (new attachment - upload case)
                 if (fileBytes == null || fileBytes.Length == 0)
-                    await MiscDBUtil.CopyFileInIsolatedStorage(filePath, HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
+                    MiscDBUtil.CopyFileInIsolatedStorage(filePath, HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
                 else
                     MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
 

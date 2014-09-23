@@ -702,7 +702,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static async Task<bool> CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
             string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
             string destinationFileName = destinationFilePath.Substring(destinationFilePath.LastIndexOf("/") + 1);
@@ -723,15 +723,11 @@ namespace windows_client.DbUtils
                 }
 
                 File.Copy(sourceFilePath, absoulutePath, true);
-
-                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Exception at MiscDBUtils::CopyFileInIsolatedStorage" + ex.StackTrace);
             }
-
-            return false;
         }
 
         public static int GetFileSize(string filePath)
