@@ -290,8 +290,6 @@ namespace windows_client.ViewModel
                     }
                     catch (Exception ex)
                     {
-                        // Couldn't get current location - location might be disabled in settings
-                        //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                         System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate HikeViewModel : " + ex.StackTrace);
                     }
                     finally
@@ -798,14 +796,15 @@ namespace windows_client.ViewModel
                     foreach (var contact in contactsForForward)
                     {
                         var msisdn = contact.Msisdn;
-                        ConvMessage convMessage = new ConvMessage("", msisdn,
+                        ConvMessage convMessage = new ConvMessage(String.Empty, msisdn,
                           TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.HasAttachment = true;
                         convMessage.FileAttachment = new Attachment();
                         convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
-                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
+                        convMessage.FileAttachment.FileKey = (string)attachmentData[4];
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))
@@ -835,7 +834,7 @@ namespace windows_client.ViewModel
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
-                        object[] vals = new object[3];
+                        object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
@@ -850,18 +849,9 @@ namespace windows_client.ViewModel
         {
             var regexType = (SmileyParser.RegexType)objArray[0];
             var target = (string)objArray[1];
+
             if (regexType == SmileyParser.RegexType.EMAIL)
-            {
-                var task = new EmailComposeTask() { To = target };
-                try
-                {
-                    task.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
+                EmailHelper.SendEmail(string.Empty, string.Empty, target);
             else if (regexType == SmileyParser.RegexType.URL)
             {
                 var task = new WebBrowserTask() { URL = target };
@@ -877,9 +867,9 @@ namespace windows_client.ViewModel
             else if (regexType == SmileyParser.RegexType.PHONE_NO)
             {
                 var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = target.Replace("-", "");
+                var targetPhoneNumber = target.Replace("-", String.Empty);
                 targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", String.Empty);
                 phoneCallTask.PhoneNumber = targetPhoneNumber;
                 try
                 {
@@ -1081,6 +1071,7 @@ namespace windows_client.ViewModel
             if (co.IsHidden && !IsHiddenModeActive)
                 return;
 
+            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
 
@@ -1137,7 +1128,7 @@ namespace windows_client.ViewModel
                 App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
             else
                 App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
-            
+
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
         }
@@ -1154,16 +1145,16 @@ namespace windows_client.ViewModel
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
 
         public string Password { get; set; }
-       
+
         public static void ClearStickerHelperInstance()
         {
             StickerHelper = null;
         }
-        
+
         #region Pause/Resume Background Audio
 
         public bool resumeMediaPlayerAfterDone = false;
-        
+
         public void PauseBackgroundAudio()
         {
             if (!MediaPlayer.GameHasControl)
@@ -1181,7 +1172,7 @@ namespace windows_client.ViewModel
                 resumeMediaPlayerAfterDone = false;
             }
         }
-        
+
         #endregion
     }
 }

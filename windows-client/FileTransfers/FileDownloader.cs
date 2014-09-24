@@ -164,7 +164,7 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            var req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
             req.AllowReadStreamBuffering = false;
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
@@ -354,8 +354,7 @@ namespace windows_client.FileTransfers
 
         bool WriteChunkToIsolatedStorage(byte[] bytes, int position)
         {
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
+            string fileDirectory = FilePath.Substring(0, FilePath.LastIndexOf("/"));
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(bytes.Length))
             {
@@ -367,22 +366,30 @@ namespace windows_client.FileTransfers
                 return false;
             }
 
-            if (bytes != null)
+            try
             {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                if (bytes != null)
                 {
-                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
-                        myIsolatedStorage.CreateDirectory(fileDirectory);
-
-                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.OpenOrCreate, myIsolatedStorage))
+                    using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (BinaryWriter writer = new BinaryWriter(fileStream))
+                        if (!myIsolatedStorage.DirectoryExists(fileDirectory))
+                            myIsolatedStorage.CreateDirectory(fileDirectory);
+
+                        using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(FilePath, FileMode.OpenOrCreate, myIsolatedStorage))
                         {
-                            writer.Seek(position, SeekOrigin.Begin);
-                            writer.Write(bytes, 0, bytes.Length);
+                            using (BinaryWriter writer = new BinaryWriter(fileStream))
+                            {
+                                writer.Seek(position, SeekOrigin.Begin);
+                                writer.Write(bytes, 0, bytes.Length);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // crashing in BETA build.
+                return false;
             }
 
             return true;

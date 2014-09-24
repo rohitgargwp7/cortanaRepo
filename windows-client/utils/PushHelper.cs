@@ -243,10 +243,10 @@ namespace windows_client.utils
                 IconicTileData newTileData = new IconicTileData()
                 {
                     Count = 0,
-                    Title = "",
-                    WideContent1 = "",
-                    WideContent2 = "",
-                    WideContent3 = ""
+                    Title = String.Empty,
+                    WideContent1 = String.Empty,
+                    WideContent2 = String.Empty,
+                    WideContent3 = String.Empty
                 };
 
                 flipTile.Update(newTileData);

@@ -76,6 +76,7 @@ namespace windows_client.Model
                     _lastMessage = value;
                     _toastText = value;
                     NotifyPropertyChanged("LastMessage");
+                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -109,7 +110,6 @@ namespace windows_client.Model
                 if (_timeStamp != value)
                 {
                     _timeStamp = value;
-                    NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                     NotifyPropertyChanged("TimeStampVisibility");
                     NotifyPropertyChanged("MuteIconTimeStampVisibility");
@@ -249,7 +249,7 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
-        
+
         public Visibility MuteIconVisibility
         {
             get
@@ -410,6 +410,14 @@ namespace windows_client.Model
             get
             {
                 return TimeStampVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        public Visibility EmailChatMenuVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
@@ -737,7 +745,7 @@ namespace windows_client.Model
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
-            this.LastMessage = lastMessage; 
+            this.LastMessage = lastMessage;
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;

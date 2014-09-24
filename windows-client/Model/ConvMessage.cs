@@ -809,10 +809,10 @@ namespace windows_client.Model
         {
             get
             {
-                return FileAttachment != null && FileAttachment.FileState != Attachment.AttachmentState.STARTED
-                && FileAttachment.FileState != Attachment.AttachmentState.PAUSED
-                && FileAttachment.FileState != Attachment.AttachmentState.MANUAL_PAUSED
-                && MessageStatus == State.SENT_FAILED ? Visibility.Visible : Visibility.Collapsed;
+                return FileAttachment != null && MessageStatus == State.SENT_FAILED &&
+                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED 
+                    || FileAttachment.FileState == Attachment.AttachmentState.CANCELED) ?
+                    Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -890,17 +890,6 @@ namespace windows_client.Model
                         return Visibility.Collapsed;
                     return Visibility.Visible;
                 }
-                else
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public Visibility SaveFileInDirectoryVisibility
-        {
-            get
-            {
-                if (_fileAttachment != null && _fileAttachment.FileState == Attachment.AttachmentState.COMPLETED)
-                    return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
             }
@@ -1443,7 +1432,7 @@ namespace windows_client.Model
         string getTimeTextFromMetaData()
         {
             if (String.IsNullOrEmpty(this.MetaDataString))
-                return "";
+                return String.Empty;
 
             try
             {
@@ -1454,7 +1443,7 @@ namespace windows_client.Model
             }
             catch
             {
-                return "";
+                return String.Empty;
             }
         }
 
@@ -1903,7 +1892,7 @@ namespace windows_client.Model
         public String GetMessageForServer()
         {
             if (StickerObj != null)
-                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + HikeConstants.STICKER_URL + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
+                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + AccountUtils.GetStickerUrl + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
 
             string message = Message;
 
@@ -1912,31 +1901,31 @@ namespace windows_client.Model
 
             if (FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + AccountUtils.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
                         "/" + FileAttachment.FileKey;
 
             return message;
@@ -1972,7 +1961,7 @@ namespace windows_client.Model
                 JObject metadataObject = null;
                 JToken val = null;
                 obj.TryGetValue(HikeConstants.TO, out val);
-                string messageText = "";
+                string messageText = String.Empty;
 
                 JToken metadataToken = null;
                 try
@@ -2037,7 +2026,7 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
                         contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
 
                             JObject locationFile = new JObject();
@@ -2051,7 +2040,7 @@ namespace windows_client.Model
                         }
                         else
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
                         }
 
@@ -2235,7 +2224,7 @@ namespace windows_client.Model
                 else
                     this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
 
-                this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
+                this._message = this._message.Replace(";", String.Empty);// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)

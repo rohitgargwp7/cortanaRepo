@@ -64,7 +64,8 @@ namespace windows_client.View
             }
             else
             {
-                string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)App.appSettings[HikeConstants.REWARDS_TOKEN];
+                //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)App.appSettings[HikeConstants.REWARDS_TOKEN];
+                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)App.appSettings[HikeConstants.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }
@@ -267,7 +268,7 @@ namespace windows_client.View
                     {
                         string[] nameValue = item.Split('=');
                         if (nameValue[0].Contains("?"))
-                            nameValue[0] = nameValue[0].Replace("?", "");
+                            nameValue[0] = nameValue[0].Replace("?", String.Empty);
                         nameValueCollection.Add(nameValue[0], System.Net.HttpUtility.UrlDecode(nameValue[1]));
                     }
                 }

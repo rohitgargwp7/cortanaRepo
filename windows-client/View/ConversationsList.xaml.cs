@@ -198,7 +198,6 @@ namespace windows_client.View
             this.statusLLS.SelectedItem = null;
 
             App.IS_TOMBSTONED = false;
-            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
 
             while (NavigationService.CanGoBack)
@@ -2022,6 +2021,17 @@ namespace windows_client.View
 
             Clipboard.SetText(selectedItem.Text);
         }
+
+        private void MenuItem_EmailConversation_Clicked(object sender, RoutedEventArgs e)
+        {
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+
+            if (convObj == null)
+                return;
+
+            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.ContactName, convObj.IsGroupChat);
+        }
+
         #endregion
 
         private void disableAppBar()
@@ -3556,7 +3566,7 @@ namespace windows_client.View
 
                 case ToolTipMode.INFORMATIONAL:
 
-                    InitializeToolTipControl(null, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
+                    InitializeToolTipControl(UI_Utils.Instance.ToolTipInformational, UI_Utils.Instance.ToolTipCrossIcon, TipManager.ConversationPageTip.HeaderText, TipManager.ConversationPageTip.BodyText, true, false);
                     break;
 
                 case ToolTipMode.INVITE_FRIENDS:
@@ -3617,6 +3627,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
                     PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.PROFILE_PIC_TIP_TAP_EVENT);
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3627,6 +3638,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.STATUS_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
                     break;
 
@@ -3634,6 +3646,7 @@ namespace windows_client.View
 
                     HideTips();
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.INVITE_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
@@ -3641,6 +3654,7 @@ namespace windows_client.View
 
                     HideTips();
 
+                    Analytics.SendClickEvent(HikeConstants.ServerTips.FAVOURITE_TIP_TAP_EVENT);
                     launchPagePivot.SelectedIndex = 1;
 
                     break;

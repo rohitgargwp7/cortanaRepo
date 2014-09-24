@@ -538,7 +538,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
-    <value>Hike is refreshing contacts with address book. It will be over before you know it...</value>
+    <value>hike is refreshing contacts with address book. It will be over before you know it...</value>
     <comment>This text is shown when user clicks refresh (cs)</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
@@ -2237,15 +2237,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
-  <data name="SaveInGallery_Txt" xml:space="preserve">
-    <value>save to gallery</value>
-    <comment>Menu Item text</comment>
-  </data>
   <data name="CT_FileUnableToSend_Text" xml:space="preserve">
     <value>It looks like the video is corrupt and can't be sent.</value>
-  </data>
-  <data name="CT_FileNotPlayable_Text" xml:space="preserve">
-    <value>Can't play video. It seems to be corrupt.</value>
   </data>
   <data name="CT_FileNotSupported_Caption_Text" xml:space="preserve">
     <value>Unsupported video</value>
@@ -2253,6 +2246,46 @@ Download it like asap from http://hike.in!</value>
   <data name="EnterNewPassword_PasswordChange_Txt" xml:space="preserve">
     <value>Create new password</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
+  </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>email chat</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>Chat with {0} - last {1} messages only; rest truncated by WP</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>Chat with {0} - last {1} messages</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>Shared an AUDIO</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>Shared a CONTACT</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>Shared a FILE</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>Shared an IMAGE</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>Shared a LOCATION</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>Shared a VIDEO</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>Backup of hike chat with {0}</value>
+    <comment>subject of email text when backing up</comment>
   </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>File has been added to the gallery</value>
@@ -2265,5 +2298,20 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="PinHistory_Header_Txt" xml:space="preserve">
     <value>pin history</value>
+  </data>
+  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+    <value>Can't open this video. It seems to be corrupt.</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Chat with {0} - last 1 message</value>
+    <comment>Only one Message in email body</comment>
+  </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>Alert</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>You don't have messages in this chat</value>
+    <comment>when there is no message</comment>
   </data>
 </root>

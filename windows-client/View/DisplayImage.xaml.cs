@@ -182,7 +182,7 @@ namespace windows_client.View
         {
             if (fileBytes != null && fileBytes.Length > 0)
             {
-                MiscDBUtil.storeFileInIsolatedStorage(filePath as string, fileBytes);
+                MiscDBUtil.StoreFileInIsolatedStorage(filePath as string, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     loadingProgress.Opacity = 0;
@@ -408,9 +408,9 @@ namespace windows_client.View
             bgWorker.RunWorkerCompleted += (sf, ef) =>
             {
                 if (isSaveSuccessful)
-                    MessageBox.Show(AppResources.SaveSuccess_Txt);
+                    MessageBox.Show(AppResources.SaveSuccess_Txt, AppResources.SaveSuccess_Caption_Txt, MessageBoxButton.OK);
                 else
-                    MessageBox.Show(AppResources.Something_Wrong_Txt);
+                    MessageBox.Show(AppResources.Something_Wrong_Txt, AppResources.Something_WrongCaption_Txt, MessageBoxButton.OK);
             };
 
         }

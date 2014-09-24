@@ -451,7 +451,7 @@ namespace windows_client.View
 
                     defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
 
-                    charsEntered = (isPlus ? "+" : "") + charsEntered;
+                    charsEntered = (isPlus ? "+" : String.Empty) + charsEntered;
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
 
@@ -899,7 +899,7 @@ namespace windows_client.View
                         string country_code = null;
 
                         if (App.appSettings.TryGetValue(App.COUNTRY_CODE_SETTING, out country_code))
-                            searchNumber = searchNumber.Replace(country_code, "");
+                            searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;
 

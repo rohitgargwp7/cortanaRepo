@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace windows_client.utils
 {
@@ -270,7 +271,7 @@ namespace windows_client.utils
 
         private static string computeHash(string input)
         {
-            string rethash = "";
+            string rethash = String.Empty;
             try
             {
                 var sha = new SHA1Managed();
@@ -468,7 +469,7 @@ namespace windows_client.utils
             catch (Exception ex)
             {
                 Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
-                return "";
+                return String.Empty;
             }
         }
 
@@ -601,7 +602,7 @@ namespace windows_client.utils
             if (obj == null)
                 return AppResources.MessageStatus_ReadByEveryone;
 
-            string readBy = "";
+            string readBy = String.Empty;
 
             var list = obj.ToObject<List<string>>();
             list = list.Distinct().ToList();
@@ -745,10 +746,10 @@ namespace windows_client.utils
         public static async Task<bool> StoreFileInHikeDirectory(string sourceFile, string targetFileName)
         {
             bool result = true;
+
             if (!Directory.Exists(HikeConstants.HikeDirectoryPath))
-            {
                 Directory.CreateDirectory(HikeConstants.HikeDirectoryPath);
-            }
+            
             try
             {
                 string targetFile = HikeConstants.HikeDirectoryName + "\\" + targetFileName;
@@ -776,24 +777,89 @@ namespace windows_client.utils
         /// <summary>
         /// Returns absolute path of a file in Isolated Storage
         /// </summary>
-        /// <param name="filename">Path of the file in Isolated storage.</param>
+        /// <param name="reltiveFilePath">Relative path of the file in Isolated storage.</param>
         /// <returns></returns>
-        public static string GetAbsolutePath(string filename)
+        public static string GetAbsolutePath(string reltiveFilePath)
         {
-            IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
-
             string absoulutePath = null;
 
-            if (isoStore.FileExists(filename))
+            try
             {
-                IsolatedStorageFileStream output = new IsolatedStorageFileStream(filename, FileMode.Open, isoStore);
-                absoulutePath = output.Name;
-
-                output.Close();
-                output = null;
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (isoStore.FileExists(reltiveFilePath))
+                    {
+                        using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(reltiveFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, isoStore))
+                        {
+                            absoulutePath = output.Name;
+                        }
+                    }
+                }
             }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Utils.cs ::  GetAbsolutePath , Exception : " + ex.StackTrace);
+            }
+
             return absoulutePath;
         }
 
+        /// <summary>
+        /// Read and calculate md5 by parts from file
+        /// </summary>
+        /// <param name="filePath">file path for file of which md5 needs to be calculated</param>
+        /// <returns>md5 string</returns>
+        public static string GetMD5Hash(string filePath)
+        {
+            byte[] buffer;
+            byte[] oldBuffer;
+            int bytesRead;
+            int oldBytesRead;
+            long size;
+            long totalBytesRead = 0;
+
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(filePath))
+                {
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (MD5 hashAlgorithm = MD5.Create())
+                        {
+                            size = fileStream.Length;
+                            buffer = new byte[4096];
+                            bytesRead = fileStream.Read(buffer, 0, buffer.Length);
+                            totalBytesRead += bytesRead;
+
+                            do
+                            {
+                                oldBytesRead = bytesRead;
+                                oldBuffer = buffer;
+
+                                buffer = new byte[4096];
+                                bytesRead = fileStream.Read(buffer, 0, buffer.Length);
+
+                                totalBytesRead += bytesRead;
+
+                                if (bytesRead == 0)
+                                    hashAlgorithm.TransformFinalBlock(oldBuffer, 0, oldBytesRead);
+                                else
+                                    hashAlgorithm.TransformBlock(oldBuffer, 0, oldBytesRead, oldBuffer, 0);
+
+                            } while (bytesRead != 0);
+
+                            StringBuilder sb = new StringBuilder();
+
+                            foreach (byte b in hashAlgorithm.Hash)
+                                sb.Append(b.ToString("x2"));
+                            
+                            return sb.ToString();
+                        }
+                    }
+                }
+                else
+                    return string.Empty;
+            }
+        }
     }
 }

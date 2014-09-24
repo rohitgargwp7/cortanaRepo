@@ -30,10 +30,15 @@ namespace windows_client
             if (!App.IS_MARKETPLACE)
             {
                 serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                if (!AccountUtils.IsProd)
-                    serverTxtBlk.Text = "staging";
+                welcomePivot.Tap -= ChangeEnvironment;
+                welcomePivot.Tap += ChangeEnvironment;
+
+                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+                    serverTxtBlk.Text = "Production";
+                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                    serverTxtBlk.Text = "Staging 2";
                 else
-                    serverTxtBlk.Text = "production";
+                    serverTxtBlk.Text = "QA Staging";
             }
         }
 
@@ -126,14 +131,14 @@ namespace windows_client
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     break;
-                case 1: 
+                case 1:
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
 
                     Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_STICKER_VIEWED);
                     break;
-                case 2: 
+                case 2:
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
@@ -151,7 +156,7 @@ namespace windows_client
                 App.appSettings.Save();
 
             #region SERVER INFO
-            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+            string env = AccountUtils.AppEnvironment.ToString();
             Debug.WriteLine("SERVER SETTING : " + env);
             Debug.WriteLine("HOST : " + AccountUtils.HOST);
             Debug.WriteLine("PORT : " + AccountUtils.PORT);
@@ -178,10 +183,41 @@ namespace windows_client
             {
                 Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
             }
-            
+
             progressBar.Opacity = 1;
 
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
+        }
+
+        /// <summary>
+        /// pivot tap event, changed the environment by lookin previous environment
+        /// if staging change to dev
+        /// if dev change to production
+        /// if production change to staging
+        /// </summary>
+        /// <param name="sender">Default sys gen</param>
+        /// <param name="e">Default sys gen</param>
+        private void ChangeEnvironment(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!App.IS_MARKETPLACE)
+            {
+                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
+                {
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
+                    serverTxtBlk.Text = "Staging 2";
+                }
+                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                {
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
+                    serverTxtBlk.Text = "Production";
+                }
+                else
+                {
+                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+                    serverTxtBlk.Text = "QA Staging";
+                }
+                App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
+            }
         }
     }
 }
