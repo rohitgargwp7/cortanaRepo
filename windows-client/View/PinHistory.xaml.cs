@@ -81,22 +81,19 @@ namespace windows_client.View
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
         #endregion
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GC_PIN))
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
-
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -123,8 +120,6 @@ namespace windows_client.View
 
                 App.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;
             }
-
-            
         }
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -157,10 +152,10 @@ namespace windows_client.View
                         convMessage.GroupMemberName = gp.Name;
                     }
 
-                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
                     {
                         string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
-                        
+
                         if (message.Length > 0)
                             convMessage.Message = message;
                     }

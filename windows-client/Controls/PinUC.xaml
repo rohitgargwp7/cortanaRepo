@@ -146,6 +146,7 @@
             </Setter>
         </Style>
         
+        <!-- Opening and closing animations-->
         <Storyboard x:Name="openPinAnimation">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="LayoutRoot">
         		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>

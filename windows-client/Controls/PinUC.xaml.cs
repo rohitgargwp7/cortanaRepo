@@ -20,31 +20,6 @@ namespace windows_client.Controls
             InitializeComponent();
         }
 
-        #region Dependency_Properties
-
-        public static readonly DependencyProperty RightIconSourceProperty =
-            DependencyProperty.Register("RightIconSource", typeof(ImageSource), typeof(PinUC), new PropertyMetadata(OnRightIconSourceChanged));
-
-        public static void OnRightIconSourceChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        {
-            PinUC tempPin = obj as PinUC;
-            ImageSource tempSource = (ImageSource)e.NewValue;
-            tempPin.rightIcon.Source = tempSource;
-        }
-
-        public ImageSource RightIconSource
-        {
-            get
-            {
-                return (ImageSource)GetValue(RightIconSourceProperty);
-            }
-            set
-            {
-                SetValue(RightIconSourceProperty, value);
-            }
-        }
-        #endregion
-
         #region Event_Handlers
         public event EventHandler<EventArgs> RightIconClicked;
         public event EventHandler<EventArgs> NewPinLostFocus;
@@ -148,7 +123,7 @@ namespace windows_client.Controls
         }
 
         public void SetUnreadPinCount(int count)
-        {       
+        {
             notificationCountTxtBlk.Text = (count < 10) ? count.ToString() : "9+";
             notificationCountGrid.Visibility = (notificationCountTxtBlk.Text == null || notificationCountTxtBlk.Text == "0") ? Visibility.Collapsed : Visibility.Visible;
         }

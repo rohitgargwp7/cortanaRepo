@@ -151,10 +151,6 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
-                        JToken typeToken = null;
-
-                        if (jsonObj.TryGetValue(HikeConstants.DATA, out typeToken) && jsonObj.TryGetValue(HikeConstants.METADATA, out typeToken) && jsonObj.TryGetValue(HikeConstants.GC_PIN, out typeToken))
-                            convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.PIN_MESSAGE;
 
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
@@ -170,7 +166,7 @@ namespace windows_client
 
                     if (obj == null)
                         return;
-                    
+
                     if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
                         || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
@@ -1226,7 +1222,7 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
-                
+
                 //check if same image is set
                 if (cObj.Avatar != null)
                 {
@@ -1570,7 +1566,7 @@ namespace windows_client
                                 {
                                     if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                         tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-                                
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -2024,12 +2020,12 @@ namespace windows_client
 
                     if (!data.TryGetValue(TIPS_HEADER, out headertext))
                         headertext = String.Empty;
-                    
+
                     JToken bodyText;
-                    
+
                     if (!data.TryGetValue(TIPS_BODY, out bodyText))
                         bodyText = String.Empty;
-                    
+
                     TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
                 }
                 catch (Exception e)

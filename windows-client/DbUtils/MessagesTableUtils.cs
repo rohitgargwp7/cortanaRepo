@@ -177,9 +177,9 @@ namespace windows_client.DbUtils
         {
             if (convMsg == null)
                 return null;
-            
+
             ConversationListObject obj = null;
-            
+
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
@@ -322,22 +322,26 @@ namespace windows_client.DbUtils
                 }
                 #endregion
                 #region NO_INFO
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
                     || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     string toastText = String.Empty;
- 
+
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
 
                         if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                        {
                             toastText = gp != null ? (gp.FirstName + " " + HikeConstants.TOAST_FOR_PIN + " - " + convMsg.Message) : convMsg.Message;
+                            obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        }
                         else
+                        {
                             toastText = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
-                        
-                        obj.LastMessage = toastText;
+                            obj.LastMessage = toastText;
+                        }
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
@@ -388,18 +392,18 @@ namespace windows_client.DbUtils
 
                 if (!success)
                     return null;
-                
+
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
                 #region GCPIN_MESSAGE
                 //Not included with other 'ifs' because we need pinID which we will get after inserting in DB
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE) 
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     JObject metaData = new JObject();
 
-                    if (obj.MetaData==null || obj.MetaData.Value<long>(HikeConstants.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
+                    if (obj.MetaData == null || obj.MetaData.Value<long>(HikeConstants.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
                         metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
@@ -410,7 +414,7 @@ namespace windows_client.DbUtils
                         metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
                     else
                         metaData[HikeConstants.UNREADPINS] = (convMsg.IsSent) ? obj.MetaData.Value<int>(HikeConstants.UNREADPINS) : obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
-                       
+
                     obj.MetaData = metaData;
                 }
                 #endregion
