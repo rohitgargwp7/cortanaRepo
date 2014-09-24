@@ -205,7 +205,7 @@ namespace windows_client.Model
         public static string GetCompleteAddress(CivicAddress address)
         {
             if (address == null)
-                return "";
+                return String.Empty;
 
             List<string> listAddress = new List<string>();
             if (!string.IsNullOrEmpty(address.AddressLine1))

@@ -136,7 +136,7 @@ namespace windows_client.View
 
         public void postStatus_Callback(JObject obj)
         {
-            string stat = "";
+            string stat = String.Empty;
             
             if (obj != null)
             {

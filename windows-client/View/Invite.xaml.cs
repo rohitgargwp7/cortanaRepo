@@ -52,20 +52,10 @@ namespace windows_client.View
 
         private void Email_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string inviteToken = "";
+            string inviteToken = string.Empty;
             //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
-            EmailComposeTask f5EmailCompose = new EmailComposeTask();
-            f5EmailCompose.Subject = AppResources.Invite_Email_Subject;
-            f5EmailCompose.Body = inviteMsg;
-            try
-            {
-                f5EmailCompose.Show();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Invite.xaml ::  Email_Tap , Exception : " + ex.StackTrace);
-            }
+            EmailHelper.SendEmail(AppResources.Invite_Email_Subject, inviteMsg);
         }
 
         private void Messaging_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -236,7 +226,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Posted_Successfully, title,MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Invite_Posted_Successfully, title, MessageBoxButton.OK);
                 });
             }
         }

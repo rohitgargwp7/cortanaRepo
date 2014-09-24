@@ -53,8 +53,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="-12,-12,-12,0" Tap="hikeLogo_Tapped">
-                    <Image x:Name="headerIcon" Source="/view/images/ConversationPage/hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12"/>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" Margin="-24,-24,-24,-12" Tap="hikeLogo_Tapped">
+                    <Image x:Name="headerIcon" Source="/view/images/ConversationPage/hike_header.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="24"/>
                 </Grid>
                 <Grid Grid.Column="1" Tap="chatsTabImage_Tapped" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
                     <Image x:Name="chatsTabImage" Stretch="Uniform" Height="26" Margin="19,15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -283,6 +283,7 @@
                                         <toolkit:ContextMenu Background="{StaticResource HikeContextMenuBGBrush}" HorizontalAlignment="Center" IsZoomEnabled="False" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded">
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding HideUnhideChatText}" Visibility="{Binding HideUnhideChatVisibility}" Click="MenuItem_Click_HideChat"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding ProfileMsg}" Visibility="{Binding ViewProfileVisibility}" Click="MenuItem_Click_GoToUserInfo"/>
+                                            <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding Path= LocalizedResources.EmailChat_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding EmailChatMenuVisibility}" Click="MenuItem_EmailConversation_Clicked"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding FavMsg}" Visibility="{Binding AddToFriendVisibility}" Click="MenuItem_Click_AddRemoveFav"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding DeleteMsg}" Click="MenuItem_Click_Delete"/>
                                             <toolkit:MenuItem Foreground="{StaticResource HikeContextMenuFGBrush}" Header="{Binding MuteMsg}" Visibility="{Binding MuteOptionVisibility}" Click="MenuItem_Click_Mute"/>
