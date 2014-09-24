@@ -2,13 +2,14 @@
 using windows_client.Model;
 using System.Linq;
 using System.Data.Linq;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
     public class DbCompiledQueries
     {
-        public static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring);
-        public static HikeUsersDb usersDbContext = new HikeUsersDb(App.UsersDBConnectionstring);
+        public static HikeChatsDb chatsDbContext = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring);
+        public static HikeUsersDb usersDbContext = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring);
 
         #region GroupTable Queries
 

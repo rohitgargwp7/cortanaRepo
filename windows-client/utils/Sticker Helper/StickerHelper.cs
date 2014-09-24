@@ -207,7 +207,7 @@ namespace windows_client.utils
             {
                 UI_Utils.Instance.createImageFromBytes(stickerImageBytes, image);
                 if (isHighres)
-                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                    HikeInstantiation.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                 else
                     lruStickers.AddObject(category + "_" + stickerId, image);
                 return;
@@ -217,7 +217,7 @@ namespace windows_client.utils
             {
                 image.UriSource = new Uri(string.Format(StickerHelper._stickerWVGAPath, category, stickerId), UriKind.Relative);
                 if (isHighres)
-                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                    HikeInstantiation.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                 else
                     lruStickers.AddObject(category + "_" + stickerId, image);
                 return;
@@ -238,7 +238,7 @@ namespace windows_client.utils
                                 Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
                                 UI_Utils.Instance.createImageFromBytes(imageBytes, image);
                                 if (isHighres)
-                                    App.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
+                                    HikeInstantiation.newChatThreadPage.lruStickerCache.AddObject(category + "_" + stickerId, image);
                                 else
                                     lruStickers.AddObject(category + "_" + stickerId, image);
                                 return;

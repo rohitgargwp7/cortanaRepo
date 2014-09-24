@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using windows_client.Controls;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.TemplateSelectors
 {
@@ -141,7 +142,7 @@ namespace windows_client.TemplateSelectors
         {
             // Determine which template to return;
             ConvMessage convMesssage = (ConvMessage)item;
-            if (App.newChatThreadPage != null)
+            if (HikeInstantiation.newChatThreadPage != null)
             {
                 if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {

@@ -126,7 +126,7 @@ namespace windows_client.FileTransfers
 
             FileState = (FileTransferState)reader.ReadInt32();
 
-            if (App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
+            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -251,7 +251,7 @@ namespace windows_client.FileTransfers
         {
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
-            if (!App.appSettings.Contains(App.UID_SETTING))
+            if (!HikeInstantiation.appSettings.Contains(HikeInstantiation.UID_SETTING))
             {
                 Delete();
                 return;
@@ -421,7 +421,7 @@ namespace windows_client.FileTransfers
         {
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
-            if (!App.appSettings.Contains(App.UID_SETTING))
+            if (!HikeInstantiation.appSettings.Contains(HikeInstantiation.UID_SETTING))
             {
                 Delete();
                 return;
@@ -632,7 +632,7 @@ namespace windows_client.FileTransfers
                 else
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
-                if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
+                if (FileState == FileTransferState.STARTED || (!HikeInstantiation.appSettings.Contains(HikeInstantiation.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
             else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload

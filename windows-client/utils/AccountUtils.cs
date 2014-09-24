@@ -35,7 +35,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (App.IS_MARKETPLACE)
+                if (HikeInstantiation.IS_MARKETPLACE)
                     return DebugEnvironment.PRODUCTION;
                 else
                     return _appEnvironment;
@@ -236,8 +236,8 @@ namespace windows_client.utils
 
         public static void AddToken(HttpWebRequest req)
         {
-            if (App.appSettings.Contains(App.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)App.appSettings[App.UID_SETTING];
+            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.UID_SETTING))
+                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)HikeInstantiation.appSettings[HikeInstantiation.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
@@ -1089,7 +1089,7 @@ namespace windows_client.utils
                             foreach (var entry in prefContacts)
                             {
                                 var msisdn = (string)entry;
-                                if (msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
+                                if (msisdn != (string)HikeInstantiation.appSettings[HikeInstantiation.MSISDN_SETTING]) // do not add own number
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();
@@ -1099,7 +1099,7 @@ namespace windows_client.utils
                             }
                         }
 
-                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, prefContactList);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, prefContactList);
                     }
                 }
 
@@ -1155,11 +1155,11 @@ namespace windows_client.utils
 
                             if (isRefresh) // this is case for new installation
                             {
-                                if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
+                                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
                                 {
                                     try
                                     {
-                                        App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
+                                        HikeInstantiation.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
                                     }
                                     catch (Exception e)
                                     {
@@ -1168,7 +1168,7 @@ namespace windows_client.utils
                                 }
                                 else // fav and pending case
                                 {
-                                    ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                    ConversationListObject c = HikeInstantiation.ViewModel.GetFav(cn.Msisdn);
 
                                     if (c != null) // this user is in favs
                                     {
@@ -1178,7 +1178,7 @@ namespace windows_client.utils
                                     }
                                     else
                                     {
-                                        c = App.ViewModel.GetPending(cn.Msisdn);
+                                        c = HikeInstantiation.ViewModel.GetPending(cn.Msisdn);
                                         if (c != null)
                                         {
                                             c.ContactName = cn.Name;

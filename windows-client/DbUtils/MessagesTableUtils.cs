@@ -19,12 +19,12 @@ namespace windows_client.DbUtils
     {
         private static object lockObj = new object();
 
-        //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
+        //private static HikeChatsDb chatsDbContext = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn, long lastMessageId, int count)
         {
-            using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb chatsDbContext = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
             List<ConvMessage> res;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
@@ -46,7 +46,7 @@ namespace windows_client.DbUtils
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
@@ -59,7 +59,7 @@ namespace windows_client.DbUtils
         {
             string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
             SaveLongMessage(convMessage);
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 if (convMessage.MappedMessageId > 0)
                 {
@@ -97,14 +97,14 @@ namespace windows_client.DbUtils
         public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj, string gName)
         {
             ConversationListObject obj = null;
-            if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
+            if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 bool success = addMessage(convMsg);
                 if (!success)
                     return null;
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
-                App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
+                HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
@@ -115,7 +115,7 @@ namespace windows_client.DbUtils
                 if (existingMembers == null)
                     return null;
 
-                obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                obj = HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn];
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
 
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
@@ -150,7 +150,7 @@ namespace windows_client.DbUtils
             if (convMsg == null)
                 return null;
             ConversationListObject obj = null;
-            if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
+            if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
@@ -159,11 +159,11 @@ namespace windows_client.DbUtils
                     return null;
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, imageBytes, from);
-                App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
+                HikeInstantiation.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
             {
-                obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                obj = HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn];
                 obj.IsLastMsgStatusUpdate = false;
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
@@ -305,7 +305,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.appSettings.Contains(HikeInstantiation.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
                             toastText = GetToastNotification(convMsg);
                             toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.appSettings.Contains(HikeInstantiation.HIDE_MESSAGE_PREVIEW_SETTING))
                             toastText = GetToastNotification(convMsg);
 
                         obj.ToastText = toastText;
@@ -331,7 +331,7 @@ namespace windows_client.DbUtils
                 {
                     if (!Utils.isGroupConversation(from))
                     {
-                        if (from == App.MSISDN)
+                        if (from == HikeInstantiation.MSISDN)
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
                         else
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
@@ -403,7 +403,7 @@ namespace windows_client.DbUtils
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)
@@ -458,7 +458,7 @@ namespace windows_client.DbUtils
             string msisdn = null;
             List<ConvMessage> messageList = new List<ConvMessage>();
 
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
                     messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
@@ -534,7 +534,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllMessages()
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 SubmitWithConflictResolve(context);
@@ -543,7 +543,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMessage(long msgId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
                 SubmitWithConflictResolve(context);
@@ -556,7 +556,7 @@ namespace windows_client.DbUtils
         /// <param name="msisdn">user id</param>
         public static void deleteAllMessagesForMsisdn(string msisdn)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
                 SubmitWithConflictResolve(context);
@@ -565,7 +565,7 @@ namespace windows_client.DbUtils
 
         public static void addMessages(List<ConvMessage> messages)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 context.messages.InsertAllOnSubmit(messages);
                 context.SubmitChanges();

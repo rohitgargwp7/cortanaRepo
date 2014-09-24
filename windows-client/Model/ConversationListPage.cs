@@ -275,7 +275,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (App.ViewModel.BlockedHashset.Contains(Msisdn) || Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(Msisdn))
+                if (HikeInstantiation.ViewModel.BlockedHashset.Contains(Msisdn) || Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(Msisdn))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -502,7 +502,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : Visibility.Collapsed;
+                return HikeInstantiation.ViewModel.IsHiddenModeActive ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -510,7 +510,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.IsHiddenModeActive ? Visibility.Visible : IsHidden ? Visibility.Collapsed : Visibility.Visible;
+                return HikeInstantiation.ViewModel.IsHiddenModeActive ? Visibility.Visible : IsHidden ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
@@ -819,7 +819,7 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+            if (Utils.compareVersion(HikeInstantiation.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
             {
                 ReadVer_1_4_0_0(reader);
             }

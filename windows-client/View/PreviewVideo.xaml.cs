@@ -82,7 +82,7 @@ namespace windows_client.View
 
         private void ContentPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.ViewModel.PauseBackgroundAudio();
+            HikeInstantiation.ViewModel.PauseBackgroundAudio();
             Utils.PlayFileInMediaPlayer(_videoShared.FilePath);
         }
     }

@@ -9,6 +9,7 @@ using System.Text;
 using windows_client.DbUtils;
 using windows_client.Languages;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.Misc
 {
@@ -77,9 +78,9 @@ namespace windows_client.Misc
             var isInAdressBook = false;
             ContactInfo cInfo = null;
 
-            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
             {
-                cInfo = App.ViewModel.ContactsCache[msisdn];
+                cInfo = HikeInstantiation.ViewModel.ContactsCache[msisdn];
 
                 if (cInfo.Name != null)
                     isInAdressBook = true;
@@ -95,7 +96,7 @@ namespace windows_client.Misc
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             gp.IsInAddressBook = isInAdressBook;
 
-            if (gp.Msisdn == App.MSISDN)
+            if (gp.Msisdn == HikeInstantiation.MSISDN)
                 return gp;
 
             if (groupCache.ContainsKey(grpId))
@@ -521,19 +522,19 @@ namespace windows_client.Misc
                 {
                     gp.Name = cn.Name;
                     gp.IsInAddressBook = isNew ? true : false;
-                    if (App.ViewModel.ConvMap.ContainsKey(grpId))
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId))
                     {
                         GroupInfo g = null;
                         allGrpsInfo.TryGetValue(grpId, out g);
                         if (g != null && string.IsNullOrEmpty(g.GroupName))  // update groupname if not already set
                         {
                             GetParticipantList(grpId).Sort();
-                            App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId);
+                            HikeInstantiation.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId);
                             // update chat thread and group info page
                             object[] o = new object[2];
                             o[0] = grpId;
-                            o[1] = App.ViewModel.ConvMap[grpId].ContactName;
-                            App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
+                            o[1] = HikeInstantiation.ViewModel.ConvMap[grpId].ContactName;
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
                         }
                     }
                     else // if this group is not present in conversation , remove it

@@ -34,7 +34,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
             {
                 shellProgressAlbums.IsIndeterminate = true;
                 BindAlbums();

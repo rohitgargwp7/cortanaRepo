@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -50,7 +51,7 @@ namespace windows_client.View
 
         void hyperlink_Click_CallBack(object[] objArray)
         {
-            App.ViewModel.Hyperlink_Clicked(objArray);
+            HikeInstantiation.ViewModel.Hyperlink_Clicked(objArray);
         }
 
         const int MAX_CHARS_PER_LINE = 40;

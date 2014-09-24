@@ -29,7 +29,7 @@ namespace windows_client.DbUtils
         /* Register all the listeners*/
         public DbConversationListener()
         {
-            mPubSub = App.HikePubSubInstance;
+            mPubSub = HikeInstantiation.HikePubSubInstance;
             registerListeners();
         }
 
@@ -75,7 +75,7 @@ namespace windows_client.DbUtils
         /// <param name="conMessage"></param>
         private void AddSentMessageToMsgMap(ConvMessage conMessage)
         {
-            NewChatThread currentPage = App.newChatThreadPage;
+            NewChatThread currentPage = HikeInstantiation.newChatThreadPage;
 
             if (currentPage != null && conMessage != null && currentPage.mContactNumber == conMessage.Msisdn)
                 currentPage.OutgoingMsgsMap[conMessage.MessageId] = conMessage;
@@ -348,7 +348,7 @@ namespace windows_client.DbUtils
             {
                 var fInfo = obj as FileInfoBase;
 
-                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+                using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
                     var id = Convert.ToInt64(fInfo.MessageId);
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();
@@ -494,7 +494,7 @@ namespace windows_client.DbUtils
                                 convMessage.FileAttachment.FileKey = fileKey;
                                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
 
                                 FileTransferManager.Instance.TaskMap.Remove(fInfo.MessageId);
                                 fInfo.Delete();
@@ -529,19 +529,19 @@ namespace windows_client.DbUtils
 
             AddSentMessageToMsgMap(convMessage);
 
-            int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+            int index = HikeInstantiation.ViewModel.MessageListPageCollection.IndexOf(convObj);
             //cannot use convMap here because object has pushed to map but not to ui
             if (index < 0)//not present in convmap
             {
-                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                HikeInstantiation.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }
             else if (index > 0)
             {
-                App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                HikeInstantiation.ViewModel.MessageListPageCollection.RemoveAt(index);
+                HikeInstantiation.ViewModel.MessageListPageCollection.Insert(0, convObj);
             }//if already at zero, do nothing
 
-            App.ViewModel.IsConversationUpdated = true;
+            HikeInstantiation.ViewModel.IsConversationUpdated = true;
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

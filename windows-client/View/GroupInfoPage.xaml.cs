@@ -64,7 +64,7 @@ namespace windows_client.View
         public GroupInfoPage()
         {
             InitializeComponent();
-            mPubSub = App.HikePubSubInstance;
+            mPubSub = HikeInstantiation.HikePubSubInstance;
 
             InitAppBar();
 
@@ -75,7 +75,7 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            App.ViewModel.GroupOwnerChangedEvent += GroupOwnerChanged;
+            HikeInstantiation.ViewModel.GroupOwnerChangedEvent += GroupOwnerChanged;
         }
 
 
@@ -183,15 +183,15 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
-                App.MqttManagerInstance.mqttPublishToServer(obj);
+                HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
                 MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
             }
             else
             {
                 obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-                App.MqttManagerInstance.mqttPublishToServer(obj);
+                HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
@@ -323,8 +323,8 @@ namespace windows_client.View
             GroupManager.Instance.LoadGroupParticipants(groupId);
             groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
-            if (!App.IS_TOMBSTONED && App.ViewModel.ConvMap.ContainsKey(groupId))
-                groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
+            if (!HikeInstantiation.IS_TOMBSTONED && HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
+                groupImage.Source = HikeInstantiation.ViewModel.ConvMap[groupId].AvatarImage;
             else
             {
                 string grpId = groupId.Replace(":", "_");
@@ -362,7 +362,7 @@ namespace windows_client.View
 
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
-            GroupParticipant self = new GroupParticipant(groupId, (string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
+            GroupParticipant self = new GroupParticipant(groupId, (string)HikeInstantiation.appSettings[HikeInstantiation.ACCOUNT_NAME], HikeInstantiation.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
 
@@ -372,7 +372,7 @@ namespace windows_client.View
                 if (gi.GroupOwner == gp.Msisdn)
                     gp.IsOwner = true;
 
-                if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.appSettings[HikeInstantiation.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;
@@ -386,7 +386,7 @@ namespace windows_client.View
             {
                 GroupParticipant gp = smsUsersList[i];
 
-                if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING]) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.appSettings[HikeInstantiation.MSISDN_SETTING]) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;
@@ -458,7 +458,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     LoadParticipants();
-                    groupName = App.ViewModel.ConvMap[groupId].NameToShow;
+                    groupName = HikeInstantiation.ViewModel.ConvMap[groupId].NameToShow;
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
                     groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
@@ -486,7 +486,7 @@ namespace windows_client.View
                             appBar.IsMenuEnabled = false;
                     }
 
-                    groupName = App.ViewModel.ConvMap[groupId].NameToShow; // change name of group
+                    groupName = HikeInstantiation.ViewModel.ConvMap[groupId].NameToShow; // change name of group
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
 
                     groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
@@ -504,7 +504,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupNameTxtBox.Text = groupNameTextBlock.Text = App.ViewModel.ConvMap[groupId].ContactName;
+                        this.groupNameTxtBox.Text = groupNameTextBlock.Text = HikeInstantiation.ViewModel.ConvMap[groupId].ContactName;
                     });
                 }
             }
@@ -517,7 +517,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
+                        this.groupImage.Source = HikeInstantiation.ViewModel.ConvMap[groupId].AvatarImage;
                     });
                 }
             }
@@ -590,13 +590,13 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    App.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
+                    HikeInstantiation.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
                     groupImage.Source = grpImage;
 
                     string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
                     ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1, this.Orientation);
                     cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
-                    cm.GroupParticipant = App.MSISDN;
+                    cm.GroupParticipant = HikeInstantiation.MSISDN;
                     JObject jo = new JObject();
                     jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
                     cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
@@ -810,10 +810,10 @@ namespace windows_client.View
                 {
                     string gpName = GroupManager.Instance.defaultGroupName(groupId);
                     groupNameTxtBox.Text = groupNameTextBlock.Text = gpName;
-                    if (App.newChatThreadPage != null)
-                        App.newChatThreadPage.userName.Text = gpName;
-                    if (App.ViewModel.ConvMap.ContainsKey(groupId))
-                        App.ViewModel.ConvMap[groupId].ContactName = gpName;
+                    if (HikeInstantiation.newChatThreadPage != null)
+                        HikeInstantiation.newChatThreadPage.userName.Text = gpName;
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
+                        HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
 
                 if (count > 1)
@@ -826,15 +826,15 @@ namespace windows_client.View
                 }
             });
 
-            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
+            HikeInstantiation.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             GroupParticipant gp = (sender as Grid).DataContext as GroupParticipant;
 
-            if (gp == null || (!App.ViewModel.IsHiddenModeActive 
-                && App.ViewModel.ConvMap.ContainsKey(gp.Msisdn) && App.ViewModel.ConvMap[gp.Msisdn].IsHidden))
+            if (gp == null || (!HikeInstantiation.ViewModel.IsHiddenModeActive 
+                && HikeInstantiation.ViewModel.ConvMap.ContainsKey(gp.Msisdn) && HikeInstantiation.ViewModel.ConvMap[gp.Msisdn].IsHidden))
                 return;
 
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
@@ -883,7 +883,7 @@ namespace windows_client.View
             data.Add(HikeConstants.MSISDNS, kickOutMsisdns);
             JObject jObj = new JObject();
             jObj.Add(HikeConstants.TO, groupId);
-            jObj.Add(HikeConstants.FROM, App.MSISDN);
+            jObj.Add(HikeConstants.FROM, HikeInstantiation.MSISDN);
             jObj.Add(HikeConstants.DATA, data);
             jObj.Add(HikeConstants.TYPE, "gck");
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
@@ -899,10 +899,10 @@ namespace windows_client.View
             //{
             //    string grpName = GroupManager.Instance.defaultGroupName(groupId);
             //    groupNameTxtBox.Text = grpName;
-            //    if (App.ViewModel.ConvMap.ContainsKey(groupId))
-            //        App.ViewModel.ConvMap[groupId].ContactName = grpName;
-            //    if(App.newChatThreadPage != null)
-            //        App.newChatThreadPage.userName.Text = grpName;
+            //    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
+            //        HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = grpName;
+            //    if(HikeInstantiation.newChatThreadPage != null)
+            //        HikeInstantiation.newChatThreadPage.userName.Text = grpName;
         }
 
         private void MenuItem_Tap_AddRemoveFav(object sender, RoutedEventArgs e)
@@ -917,11 +917,11 @@ namespace windows_client.View
                     if (result != MessageBoxResult.OK)
                         return;
                     gp.IsFav = false;
-                    ConversationListObject favObj = App.ViewModel.GetFav(gp.Msisdn);
-                    App.ViewModel.FavList.Remove(favObj);
-                    if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
+                    ConversationListObject favObj = HikeInstantiation.ViewModel.GetFav(gp.Msisdn);
+                    HikeInstantiation.ViewModel.FavList.Remove(favObj);
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
                     {
-                        (App.ViewModel.ConvMap[gp.Msisdn]).IsFav = false;
+                        (HikeInstantiation.ViewModel.ConvMap[gp.Msisdn]).IsFav = false;
                     }
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
@@ -930,59 +930,59 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
 
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.DeleteFavourite(gp.Msisdn);
                     int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (gp.IsOnHike)//on hike and in address book will be checked by convlist page
                     {
-                        App.HikePubSubInstance.publish(HikePubSub.REMOVE_FRIENDS, gp.Msisdn);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.REMOVE_FRIENDS, gp.Msisdn);
                     }
                 }
                 else // add to fav
                 {
                     gp.IsFav = true;
                     ConversationListObject favObj;
-                    if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
                     {
-                        favObj = App.ViewModel.ConvMap[gp.Msisdn];
+                        favObj = HikeInstantiation.ViewModel.ConvMap[gp.Msisdn];
                         favObj.IsFav = true;
                     }
                     else
                         favObj = new ConversationListObject(gp.Msisdn, gp.Name, gp.IsOnHike, MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn));
-                    App.ViewModel.FavList.Insert(0, favObj);
-                    if (App.ViewModel.IsPending(gp.Msisdn))
+                    HikeInstantiation.ViewModel.FavList.Insert(0, favObj);
+                    if (HikeInstantiation.ViewModel.IsPending(gp.Msisdn))
                     {
-                        App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
+                        HikeInstantiation.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
                     }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
                     int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     if (gp.IsOnHike)
                     {
                         ContactInfo c = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
+                        if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
                         {
-                            c = App.ViewModel.ContactsCache[gp.Msisdn];
-                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                            c = HikeInstantiation.ViewModel.ContactsCache[gp.Msisdn];
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
                         }
                         else if (gp.IsOnHike)
                         {
-                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, gp.Msisdn);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, gp.Msisdn);
                         }
                     }
 
@@ -1045,15 +1045,15 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 obj[HikeConstants.TYPE] = NetworkManager.INVITE;
 
-                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+                if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
                     MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
                 }
                 else
                 {
                     obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;

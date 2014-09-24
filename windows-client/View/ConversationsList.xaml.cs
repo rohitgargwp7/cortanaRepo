@@ -45,7 +45,7 @@ namespace windows_client.View
         bool _isFavListBound = false;
         private bool firstLoad = true;
         private HikePubSub mPubSub;
-        private IsolatedStorageSettings appSettings = App.appSettings;
+        private IsolatedStorageSettings appSettings = HikeInstantiation.appSettings;
         private ApplicationBar appBar;
         //private ApplicationBar deleteAppBar;
         private BitmapImage _avatarImageBitmap = new BitmapImage();
@@ -94,7 +94,7 @@ namespace windows_client.View
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests + ProTipCount);
-            App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 this.Loaded += ConversationsList_Loaded;
@@ -105,28 +105,28 @@ namespace windows_client.View
             TipManager.Instance.ConversationPageTipChanged -= Instance_ShowServerTip;
             TipManager.Instance.ConversationPageTipChanged += Instance_ShowServerTip;
 
-            App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
-            App.ViewModel.StatusNotificationsStatusChanged += ViewModel_statusNotificationsStatusChanged;
+            HikeInstantiation.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
+            HikeInstantiation.ViewModel.StatusNotificationsStatusChanged += ViewModel_statusNotificationsStatusChanged;
 
             if (ProTipHelper.CurrentProTip != null)
                 showProTip();
 
             int tipCount;
-            App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
+            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
 
-            App.ViewModel.ShowTypingNotification += ShowTypingNotification;
-            App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
+            HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
+            HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
+            appSettings.TryGetValue(HikeInstantiation.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
-            string password = App.ViewModel.Password;
-            App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
-            App.ViewModel.Password = password;
-            App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
+            string password = HikeInstantiation.ViewModel.Password;
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            HikeInstantiation.ViewModel.Password = password;
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
-            App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
+            HikeInstantiation.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
         }
 
         string _firstName;
@@ -135,7 +135,7 @@ namespace windows_client.View
         void ViewModel_statusNotificationsStatusChanged(object sender, EventArgs e)
         {
             byte statusSettingsValue;
-            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -197,8 +197,8 @@ namespace windows_client.View
             this.llsConversations.SelectedItem = null;
             this.statusLLS.SelectedItem = null;
 
-            App.IS_TOMBSTONED = false;
-            App.newChatThreadPage = null;
+            HikeInstantiation.IS_TOMBSTONED = false;
+            HikeInstantiation.newChatThreadPage = null;
 
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
@@ -206,7 +206,7 @@ namespace windows_client.View
             if (firstLoad)
             {
                 shellProgress.IsIndeterminate = true;
-                mPubSub = App.HikePubSubInstance;
+                mPubSub = HikeInstantiation.HikePubSubInstance;
                 registerListeners();
 
                 #region LOAD MESSAGES
@@ -223,7 +223,7 @@ namespace windows_client.View
 
                         if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
                         {
-                            if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                            if (HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
                                 ShowAppUpdateAvailableMessage();
                             else
                                 ShowInvitePopups();
@@ -234,11 +234,11 @@ namespace windows_client.View
 
                 #endregion
 
-                App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
-            else if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+            else if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
             {
                 ShowFTUECards();
                 UpdateLayout();
@@ -247,22 +247,22 @@ namespace windows_client.View
             {
                 ShowChats();
 
-                if (App.ViewModel.IsConversationUpdated && App.ViewModel.MessageListPageCollection[0] != null)
+                if (HikeInstantiation.ViewModel.IsConversationUpdated && HikeInstantiation.ViewModel.MessageListPageCollection[0] != null)
                 {
                     try
                     {
-                        llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                        llsConversations.ScrollTo(HikeInstantiation.ViewModel.MessageListPageCollection[0]);
                     }
                     catch
                     {
                         Debug.WriteLine("llsConversations Scroll to null Exception :: OnNavigatedTo");
                     }
-                    App.ViewModel.IsConversationUpdated = false;
+                    HikeInstantiation.ViewModel.IsConversationUpdated = false;
                 }
             }
 
             byte statusSettingsValue;
-            _isStatusUpdatesNotMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
+            _isStatusUpdatesNotMute = HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 2;
@@ -300,7 +300,7 @@ namespace windows_client.View
             await Task.Delay(500);
 
             contactsCollectionView.Source = hikeContactList;
-            favCollectionView.Source = App.ViewModel.FavList;
+            favCollectionView.Source = HikeInstantiation.ViewModel.FavList;
 
             contactGrid.RowDefinitions[0].Height = GridLength.Auto;
             cohProgressBar.Visibility = Visibility.Collapsed;
@@ -308,8 +308,8 @@ namespace windows_client.View
             txtCircleOfFriends.Visibility = Visibility.Visible;
             txtContactsOnHike.Visibility = Visibility.Visible;
 
-            favourites.Visibility = App.ViewModel.FavList.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            emptyListPlaceholderFiends.Visibility = App.ViewModel.FavList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            favourites.Visibility = HikeInstantiation.ViewModel.FavList.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            emptyListPlaceholderFiends.Visibility = HikeInstantiation.ViewModel.FavList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             emptyListPlaceholderHikeContacts.Visibility = hikeContactList.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
             hikeContactListBox.Visibility = hikeContactList.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
@@ -338,7 +338,7 @@ namespace windows_client.View
         //    overlay.Visibility = Visibility.Collapsed;
         //    TutorialStatusUpdate.Visibility = Visibility.Collapsed;
         //    launchPagePivot.IsHitTestVisible = true;
-        //    App.RemoveKeyFromAppSettings(App.SHOW_STATUS_UPDATES_TUTORIAL);
+        //    HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.SHOW_STATUS_UPDATES_TUTORIAL);
         //}
 
         #endregion
@@ -349,15 +349,15 @@ namespace windows_client.View
 
         public static void LoadMessages()
         {
-            if (App.ViewModel.MessageListPageCollection == null || App.ViewModel.MessageListPageCollection.Count == 0)
+            if (HikeInstantiation.ViewModel.MessageListPageCollection == null || HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0)
             {
                 return;
             }
-            foreach (string key in App.ViewModel.ConvMap.Keys)
+            foreach (string key in HikeInstantiation.ViewModel.ConvMap.Keys)
             {
                 string id = key.Replace(":", "_");
                 byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
-                App.ViewModel.ConvMap[key].Avatar = _avatar;
+                HikeInstantiation.ViewModel.ConvMap[key].Avatar = _avatar;
             }
         }
 
@@ -365,9 +365,9 @@ namespace windows_client.View
         private void loadingCompleted()
         {
             shellProgress.IsIndeterminate = false;
-            llsConversations.ItemsSource = App.ViewModel.MessageListPageCollection;
+            llsConversations.ItemsSource = HikeInstantiation.ViewModel.MessageListPageCollection;
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+            if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                 ShowFTUECards();
             else
                 ShowChats();
@@ -389,17 +389,17 @@ namespace windows_client.View
             if (!PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 NetworkManager.turnOffNetworkManager = false;
 
-            App.MqttManagerInstance.connect();
+            HikeInstantiation.MqttManagerInstance.connect();
 
-            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
                     Utils.RequestHikeBot();
                 else
                     Utils.requestAccountInfo();
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
         }
 
@@ -416,7 +416,7 @@ namespace windows_client.View
             if (_tipMode != null)
                 conversationPageToolTip.Visibility = Visibility.Collapsed;
 
-            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.HasCustomProfileImage(App.MSISDN))
+            if (profileFTUECard.Visibility == Visibility.Visible && MiscDBUtil.HasCustomProfileImage(HikeInstantiation.MSISDN))
                 profileFTUECard.Visibility = Visibility.Collapsed;
 
             if (String.IsNullOrEmpty(groupCountCard.Text))
@@ -425,8 +425,8 @@ namespace windows_client.View
             if (h2oFTUECard.Visibility == Visibility.Collapsed)
             {
                 bool showFreeSMS = true;
-                App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-                if (showFreeSMS && App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
+                HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+                if (showFreeSMS && HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
                     h2oFTUECard.Visibility = Visibility.Visible;
             }
 
@@ -434,7 +434,7 @@ namespace windows_client.View
             {
                 List<ContactInfo> cl = null;
                 List<string> contacts = null;
-                App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out contacts);
+                HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out contacts);
 
                 if (contacts == null)
                     return;
@@ -443,13 +443,13 @@ namespace windows_client.View
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        cn = App.ViewModel.ContactsCache[msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        cn = HikeInstantiation.ViewModel.ContactsCache[msisdn];
                     else
                     {
                         cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
                         if (cn != null)
-                            App.ViewModel.ContactsCache[msisdn] = cn;
+                            HikeInstantiation.ViewModel.ContactsCache[msisdn] = cn;
                     }
 
                     if (cn != null)
@@ -517,7 +517,7 @@ namespace windows_client.View
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
-            if (!App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
+            if (!HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
                 statusSettingsValue = (byte)1;
             muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             muteStatusMenu.Click += muteStatusMenu_Click;
@@ -529,7 +529,7 @@ namespace windows_client.View
             appBar.MenuItems.Add(inviteMenu);
 
             bool showRewards;
-            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
+            if (HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
             {
                 rewardsMenu = new ApplicationBarMenuItem();
                 rewardsMenu.Text = AppResources.ConversationsList_Rewards_Txt;
@@ -564,7 +564,7 @@ namespace windows_client.View
         void rewardsMenu_Click(object sender, EventArgs e)
         {
             // do not open rewards if rewards token not recieved yet.
-            if (!App.appSettings.Contains(HikeConstants.REWARDS_TOKEN))
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.REWARDS_TOKEN))
                 return;
 
             try
@@ -605,12 +605,12 @@ namespace windows_client.View
 
             if (_isStatusUpdatesNotMute)
             {
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
             else
             {
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.STATUS_UPDATE_SETTING, (byte)0);
                 settingsValue = -1;
             }
 
@@ -623,7 +623,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, settingsValue);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         void profileMenu_Click(object sender, EventArgs e)
@@ -639,7 +639,7 @@ namespace windows_client.View
 
         //void deleteChatIconButton_Click(object sender, EventArgs e)
         //{
-        //    var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).ToList();
+        //    var list = HikeInstantiation.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).ToList();
         //    string message = list.Count > 1 ? AppResources.Conversations_Delete_MoreThan1Chat_Confirmation : AppResources.Conversations_Delete_Chat_Confirmation;
 
         //    MessageBoxResult result = MessageBox.Show(message, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
@@ -653,12 +653,12 @@ namespace windows_client.View
         //        return;
         //    }
 
-        //    for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count;)
+        //    for (int i = 0; i < HikeInstantiation.ViewModel.MessageListPageCollection.Count;)
         //    {
-        //        if (App.ViewModel.MessageListPageCollection[i].IsSelected)
+        //        if (HikeInstantiation.ViewModel.MessageListPageCollection[i].IsSelected)
         //        {
-        //            var conv = App.ViewModel.MessageListPageCollection[i];
-        //            App.ViewModel.MessageListPageCollection.RemoveAt(i);
+        //            var conv = HikeInstantiation.ViewModel.MessageListPageCollection[i];
+        //            HikeInstantiation.ViewModel.MessageListPageCollection.RemoveAt(i);
         //            deleteConversation(conv);
         //            continue;
         //        }
@@ -671,16 +671,16 @@ namespace windows_client.View
 
         public static void ReloadConversations() // running on some background thread
         {
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                App.ViewModel.MessageListPageCollection.Clear();
-                App.ViewModel.ConvMap.Clear();
+                HikeInstantiation.ViewModel.MessageListPageCollection.Clear();
+                HikeInstantiation.ViewModel.ConvMap.Clear();
                 LoadMessages();
             });
 
-            App.MqttManagerInstance.connect();
+            HikeInstantiation.MqttManagerInstance.connect();
         }
 
         #endregion
@@ -745,17 +745,17 @@ namespace windows_client.View
         //private void initProfilePage()
         //{
         //    bool showRewards;
-        //    if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
+        //    if (HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
         //        rewardsPanel.Visibility = Visibility.Visible;
 
         //    int rew_val = 0;
 
         //    string name;
-        //    appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+        //    appSettings.TryGetValue(HikeInstantiation.ACCOUNT_NAME, out name);
         //    if (name != null)
         //        accountName.Text = name;
         //    int smsCount = 0;
-        //    App.appSettings.TryGetValue<int>(App.SMS_SETTING, out smsCount);
+        //    HikeInstantiation.appSettings.TryGetValue<int>(HikeInstantiation.SMS_SETTING, out smsCount);
         //    creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, smsCount);
 
         //    Stopwatch st = Stopwatch.StartNew();
@@ -803,12 +803,12 @@ namespace windows_client.View
         void DeleteConversation(ConversationListObject convObj, bool sendHiddenChatToogledPacket)
         {
             // Remove entry from map for UI.
-            App.ViewModel.ConvMap.Remove(convObj.Msisdn);
+            HikeInstantiation.ViewModel.ConvMap.Remove(convObj.Msisdn);
 
             // Removed from observable collection.
-            App.ViewModel.MessageListPageCollection.Remove(convObj);
+            HikeInstantiation.ViewModel.MessageListPageCollection.Remove(convObj);
 
-            if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+            if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                 ShowFTUECards();
 
             // If group conversation, send group leave packet too.
@@ -824,7 +824,7 @@ namespace windows_client.View
 
             if (sendHiddenChatToogledPacket && convObj.IsHidden)
             {
-                App.ViewModel.SendRemoveStealthPacket(convObj);
+                HikeInstantiation.ViewModel.SendRemoveStealthPacket(convObj);
             }
         }
 
@@ -864,13 +864,13 @@ namespace windows_client.View
                     cohProgressBar.Visibility = Visibility.Visible;
                     favBw.DoWork += (sf, ef) =>
                     {
-                        for (int i = 0; i < App.ViewModel.FavList.Count; i++)
+                        for (int i = 0; i < HikeInstantiation.ViewModel.FavList.Count; i++)
                         {
-                            if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.FavList[i].Msisdn))
-                                App.ViewModel.FavList[i].Avatar = App.ViewModel.ConvMap[App.ViewModel.FavList[i].Msisdn].Avatar;
+                            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(HikeInstantiation.ViewModel.FavList[i].Msisdn))
+                                HikeInstantiation.ViewModel.FavList[i].Avatar = HikeInstantiation.ViewModel.ConvMap[HikeInstantiation.ViewModel.FavList[i].Msisdn].Avatar;
                             else
                             {
-                                App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
+                                HikeInstantiation.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(HikeInstantiation.ViewModel.FavList[i].Msisdn);
                             }
                         }
                         List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContactsOrdered();
@@ -884,12 +884,12 @@ namespace windows_client.View
                                 ContactInfo cinfoTemp = tempHikeContactList[i];
 
                                 // if user is not fav and is not blocked then add to hike contacts
-                                if (!msisdns.Contains(cinfoTemp.Msisdn) && !App.ViewModel.Isfavourite(cinfoTemp.Msisdn) && !App.ViewModel.BlockedHashset.Contains(cinfoTemp.Msisdn) && cinfoTemp.Msisdn != App.MSISDN)
+                                if (!msisdns.Contains(cinfoTemp.Msisdn) && !HikeInstantiation.ViewModel.Isfavourite(cinfoTemp.Msisdn) && !HikeInstantiation.ViewModel.BlockedHashset.Contains(cinfoTemp.Msisdn) && cinfoTemp.Msisdn != HikeInstantiation.MSISDN)
                                 {
                                     msisdns.Add(cinfoTemp.Msisdn);
                                     hikeContactList.Add(cinfoTemp);
-                                    if (!App.ViewModel.ContactsCache.ContainsKey(cinfoTemp.Msisdn))
-                                        App.ViewModel.ContactsCache[cinfoTemp.Msisdn] = cinfoTemp;
+                                    if (!HikeInstantiation.ViewModel.ContactsCache.ContainsKey(cinfoTemp.Msisdn))
+                                        HikeInstantiation.ViewModel.ContactsCache[cinfoTemp.Msisdn] = cinfoTemp;
                                 }
                             }
                         }
@@ -901,7 +901,7 @@ namespace windows_client.View
                         contactGrid.RowDefinitions[0].Height = GridLength.Auto;
                         cohProgressBar.Visibility = Visibility.Collapsed;
                         contactsCollectionView.Source = hikeContactList;
-                        favCollectionView.Source = App.ViewModel.FavList; // this is done to sort in view
+                        favCollectionView.Source = HikeInstantiation.ViewModel.FavList; // this is done to sort in view
                         favourites.SelectedIndex = -1;
                         hikeContactListBox.SelectedIndex = -1;
 
@@ -910,7 +910,7 @@ namespace windows_client.View
                         txtCircleOfFriends.Visibility = Visibility.Visible;
                         UpdateContactsOnHikeCounter();
                         txtContactsOnHike.Visibility = Visibility.Visible;
-                        if (App.ViewModel.FavList.Count > 0)
+                        if (HikeInstantiation.ViewModel.FavList.Count > 0)
                         {
                             emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
@@ -949,7 +949,7 @@ namespace windows_client.View
                     BackgroundWorker statusBw = new BackgroundWorker();
                     statusBw.DoWork += (sf, ef) =>
                     {
-                        App.ViewModel.LoadPendingRequests();
+                        HikeInstantiation.ViewModel.LoadPendingRequests();
                         //corresponding counters should be handled for eg unread count
                         statusMessagesFromDBUnblocked = GetUnblockedStatusUpdates(HikeConstants.STATUS_INITIAL_FETCH_COUNT);
                     };
@@ -960,18 +960,18 @@ namespace windows_client.View
                     {
                         shellProgress.IsIndeterminate = false;
 
-                        foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
+                        foreach (ConversationListObject co in HikeInstantiation.ViewModel.PendingRequests.Values)
                         {
                             var friendRequest = new FriendRequestStatusUpdate(co);
-                            App.ViewModel.StatusList.Add(friendRequest);
+                            HikeInstantiation.ViewModel.StatusList.Add(friendRequest);
                         }
 
                         AddStatusToViewModel(statusMessagesFromDBUnblocked, HikeConstants.STATUS_INITIAL_FETCH_COUNT);
 
-                        this.statusLLS.ItemsSource = App.ViewModel.StatusList;
+                        this.statusLLS.ItemsSource = HikeInstantiation.ViewModel.StatusList;
 
-                        if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(DefaultStatus);
+                        if (HikeInstantiation.ViewModel.StatusList.Count == 0 || (HikeInstantiation.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                            HikeInstantiation.ViewModel.StatusList.Add(DefaultStatus);
 
                         RefreshBarCount = 0;
                         UnreadFriendRequests = 0;
@@ -984,7 +984,7 @@ namespace windows_client.View
 
                         isStatusMessagesLoaded = true;
                     };
-                    //if (appSettings.Contains(App.SHOW_STATUS_UPDATES_TUTORIAL))
+                    //if (appSettings.Contains(HikeInstantiation.SHOW_STATUS_UPDATES_TUTORIAL))
                     //{
                     //    overlay.Visibility = Visibility.Visible;
                     //    overlay.Tap += DismissStatusUpdateTutorial_Tap;
@@ -998,7 +998,7 @@ namespace windows_client.View
                     UnreadFriendRequests = 0;
 
                     if (statusLLS.ItemsSource == null)
-                        statusLLS.ItemsSource = App.ViewModel.StatusList;
+                        statusLLS.ItemsSource = HikeInstantiation.ViewModel.StatusList;
                 }
             }
             if (_newIndex != 2)
@@ -1061,7 +1061,7 @@ namespace windows_client.View
                 for (int i = 0; i < count; i++)
                 {
                     // if this user is blocked dont show his/her statuses
-                    if (!App.ViewModel.BlockedHashset.Contains(listStatusUpdate[i].Msisdn))
+                    if (!HikeInstantiation.ViewModel.BlockedHashset.Contains(listStatusUpdate[i].Msisdn))
                         statusMessagesFromDBUnblocked.Add(listStatusUpdate[i]);
                 }
 
@@ -1085,7 +1085,7 @@ namespace windows_client.View
 
                     var status = StatusUpdateHelper.Instance.CreateStatusUpdate(statusMessage, true);
                     if (status != null)
-                        App.ViewModel.StatusList.Add(status);
+                        HikeInstantiation.ViewModel.StatusList.Add(status);
                 }
             }
         }
@@ -1117,7 +1117,7 @@ namespace windows_client.View
 
                 mObj.TypingNotificationText = null;
 
-                if (!isDeleteAllChats && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive))) // this is to avoid exception caused due to deleting all chats while receiving msgs
+                if (!isDeleteAllChats && (!mObj.IsHidden || (mObj.IsHidden && HikeInstantiation.ViewModel.IsHiddenModeActive))) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -1125,8 +1125,8 @@ namespace windows_client.View
                         {
                             ShowChats();
 
-                            if (App.ViewModel.MessageListPageCollection.Count > 0 && App.ViewModel.MessageListPageCollection[0] != null)
-                                llsConversations.ScrollTo(App.ViewModel.MessageListPageCollection[0]);
+                            if (HikeInstantiation.ViewModel.MessageListPageCollection.Count > 0 && HikeInstantiation.ViewModel.MessageListPageCollection[0] != null)
+                                llsConversations.ScrollTo(HikeInstantiation.ViewModel.MessageListPageCollection[0]);
                         }
                         catch (Exception ex)
                         {
@@ -1135,17 +1135,17 @@ namespace windows_client.View
                     });
                 }
 
-                if (App.newChatThreadPage == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
+                if (HikeInstantiation.newChatThreadPage == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
                     bool isHikeJingleEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
-                    if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
+                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && HikeInstantiation.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-                    if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
+                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.VIBRATE_PREF, out isVibrateEnabled);
+                    if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && HikeInstantiation.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
@@ -1174,13 +1174,13 @@ namespace windows_client.View
                 {
                     UpdateFriendsCounter();
 
-                    if (App.ViewModel.FavList.Count == 0 && emptyListPlaceholderFiends.Visibility == Visibility.Collapsed) // remove fav
+                    if (HikeInstantiation.ViewModel.FavList.Count == 0 && emptyListPlaceholderFiends.Visibility == Visibility.Collapsed) // remove fav
                     {
                         emptyListPlaceholderFiends.Visibility = Visibility.Visible;
                         favourites.Visibility = Visibility.Collapsed;
                         //addFavsPanel.Opacity = 0;
                     }
-                    else if (App.ViewModel.FavList.Count > 0 && emptyListPlaceholderFiends.Visibility == Visibility.Visible)
+                    else if (HikeInstantiation.ViewModel.FavList.Count > 0 && emptyListPlaceholderFiends.Visibility == Visibility.Visible)
                     {
                         emptyListPlaceholderFiends.Visibility = Visibility.Collapsed;
                         favourites.Visibility = Visibility.Visible;
@@ -1193,7 +1193,7 @@ namespace windows_client.View
             #region ADD TO PENDING
             else if (HikePubSub.ADD_TO_PENDING == type)
             {
-                if (!App.ViewModel.IsPendingListLoaded || !isStatusMessagesLoaded)
+                if (!HikeInstantiation.ViewModel.IsPendingListLoaded || !isStatusMessagesLoaded)
                     return;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1203,17 +1203,17 @@ namespace windows_client.View
                     {
                         // if isStatusMessagesLoaded & pending list are not loaded simply ignore this packet , as then this packet will
                         // be shown twice , one here and one from DB.
-                        if (isStatusMessagesLoaded && App.ViewModel.IsPendingListLoaded)
+                        if (isStatusMessagesLoaded && HikeInstantiation.ViewModel.IsPendingListLoaded)
                         {
                             int index = 0;
                             if (ProTipHelper.CurrentProTip != null)
                                 index = 1;
 
-                            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
-                                App.ViewModel.StatusList.RemoveAt(index);
+                            if (HikeInstantiation.ViewModel.StatusList.Count > index && HikeInstantiation.ViewModel.StatusList[index] is DefaultStatus)
+                                HikeInstantiation.ViewModel.StatusList.RemoveAt(index);
 
                             FriendRequestStatusUpdate frs = new FriendRequestStatusUpdate(co);
-                            App.ViewModel.StatusList.Insert(index, frs);
+                            HikeInstantiation.ViewModel.StatusList.Insert(index, frs);
 
                         }
                         if (launchPagePivot.SelectedIndex != 2)
@@ -1231,7 +1231,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        App.ViewModel.ClearViewModel();
+                        HikeInstantiation.ViewModel.ClearViewModel();
                         Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                         NavigationService.Navigate(nextPage);
                     });
@@ -1254,10 +1254,10 @@ namespace windows_client.View
                     //if its image update and status are laoded, update each status userImage async
                     if (sm.Status_Type == StatusMessage.StatusType.PROFILE_PIC_UPDATE && isStatusMessagesLoaded)
                     {
-                        App.ViewModel.UpdateUserImageInStatus(sm.Msisdn);
+                        HikeInstantiation.ViewModel.UpdateUserImageInStatus(sm.Msisdn);
                     }
 
-                    if (sm.Msisdn == App.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
+                    if (sm.Msisdn == HikeInstantiation.MSISDN || sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
                     {
                         if (sm.Status_Type == StatusMessage.StatusType.TEXT_UPDATE)
                             StatusMsgsTable.SaveLastStatusMessage(sm.Message, sm.MoodId);
@@ -1273,10 +1273,10 @@ namespace windows_client.View
                                 if (ProTipHelper.CurrentProTip != null)
                                     index = 1;
 
-                                if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
-                                    App.ViewModel.StatusList.RemoveAt(index);
-                                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                App.ViewModel.StatusList.Insert(count + index, status);
+                                if (HikeInstantiation.ViewModel.StatusList.Count > index && HikeInstantiation.ViewModel.StatusList[index] is DefaultStatus)
+                                    HikeInstantiation.ViewModel.StatusList.RemoveAt(index);
+                                int count = HikeInstantiation.ViewModel.PendingRequests != null ? HikeInstantiation.ViewModel.PendingRequests.Count : 0;
+                                HikeInstantiation.ViewModel.StatusList.Insert(count + index, status);
                             }
                         }
                     }
@@ -1303,10 +1303,10 @@ namespace windows_client.View
                                     if (ProTipHelper.CurrentProTip != null)
                                         index = 1;
 
-                                    if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus)
-                                        App.ViewModel.StatusList.RemoveAt(index);
-                                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
-                                    App.ViewModel.StatusList.Insert(count + index, status);
+                                    if (HikeInstantiation.ViewModel.StatusList.Count > index && HikeInstantiation.ViewModel.StatusList[index] is DefaultStatus)
+                                        HikeInstantiation.ViewModel.StatusList.RemoveAt(index);
+                                    int count = HikeInstantiation.ViewModel.PendingRequests != null ? HikeInstantiation.ViewModel.PendingRequests.Count : 0;
+                                    HikeInstantiation.ViewModel.StatusList.Insert(count + index, status);
                                 }
                             }
                         }
@@ -1325,15 +1325,15 @@ namespace windows_client.View
                     BaseStatusUpdate sb = obj as BaseStatusUpdate;
                     if (sb != null)
                     {
-                        App.ViewModel.StatusList.Remove(sb);
+                        HikeInstantiation.ViewModel.StatusList.Remove(sb);
                         if (sb.IsUnread)
                         {
                             _totalUnreadStatuses--;
                             RefreshBarCount--;
                         }
 
-                        if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                            App.ViewModel.StatusList.Add(DefaultStatus);
+                        if (HikeInstantiation.ViewModel.StatusList.Count == 0 || (HikeInstantiation.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                            HikeInstantiation.ViewModel.StatusList.Add(DefaultStatus);
                     }
                 });
             }
@@ -1350,13 +1350,13 @@ namespace windows_client.View
                     //will be populated automatically while loading from db
                     if (!isContactListLoaded)
                         return;
-                    if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
+                    if (!HikeInstantiation.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
                         ConversationListObject convObj = null;
 
-                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
-                            convObj = App.ViewModel.ConvMap[msisdn];
+                            convObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
 
                             if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                             {
@@ -1379,7 +1379,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
 
-                        if (c != null && c.Msisdn != App.MSISDN)
+                        if (c != null && c.Msisdn != HikeInstantiation.MSISDN)
                         {
                             hikeContactList.Add(c);
                             UpdateContactsOnHikeCounter();
@@ -1424,9 +1424,9 @@ namespace windows_client.View
                 else if (obj is string)
                 {
                     string ms = obj as string;
-                    if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(ms))
                     {
-                        ConversationListObject co = App.ViewModel.ConvMap[ms];
+                        ConversationListObject co = HikeInstantiation.ViewModel.ConvMap[ms];
                         if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
                         {
                             ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
@@ -1477,13 +1477,13 @@ namespace windows_client.View
                     {
                         #region removing friend request
                         // UI and Data is decoupled by pubsub , so have to remove from UI here
-                        if (App.ViewModel.StatusList != null)
+                        if (HikeInstantiation.ViewModel.StatusList != null)
                         {
-                            for (int i = 0; i < App.ViewModel.StatusList.Count; i++)
+                            for (int i = 0; i < HikeInstantiation.ViewModel.StatusList.Count; i++)
                             {
-                                if (App.ViewModel.StatusList[i] is FriendRequestStatusUpdate)
+                                if (HikeInstantiation.ViewModel.StatusList[i] is FriendRequestStatusUpdate)
                                 {
-                                    FriendRequestStatusUpdate f = App.ViewModel.StatusList[i] as FriendRequestStatusUpdate;
+                                    FriendRequestStatusUpdate f = HikeInstantiation.ViewModel.StatusList[i] as FriendRequestStatusUpdate;
                                     if (f.Msisdn == c.Msisdn)
                                     {
                                         Dispatcher.BeginInvoke(() =>
@@ -1493,10 +1493,10 @@ namespace windows_client.View
 
                                             try
                                             {
-                                                App.ViewModel.StatusList.Remove(f);
+                                                HikeInstantiation.ViewModel.StatusList.Remove(f);
 
-                                                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                                                    App.ViewModel.StatusList.Add(DefaultStatus);
+                                                if (HikeInstantiation.ViewModel.StatusList.Count == 0 || (HikeInstantiation.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                                                    HikeInstantiation.ViewModel.StatusList.Add(DefaultStatus);
                                             }
                                             catch (Exception e)
                                             {
@@ -1530,7 +1530,7 @@ namespace windows_client.View
                     //if conatct is removed from circle of friends then show no friends placehoder
                     Dispatcher.BeginInvoke(() =>
                    {
-                       if (favCollectionView.Source != null && App.ViewModel.FavList.Count == 0)
+                       if (favCollectionView.Source != null && HikeInstantiation.ViewModel.FavList.Count == 0)
                        {
                            emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                            favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -1542,7 +1542,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (isStatusMessagesLoaded)
-                            App.ViewModel.UpdateUserImageInStatus(c.Msisdn);
+                            HikeInstantiation.ViewModel.UpdateUserImageInStatus(c.Msisdn);
                     });
                     #endregion
                 }
@@ -1564,8 +1564,8 @@ namespace windows_client.View
                 else
                 {
                     string msisdn = obj as string;
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        c = App.ViewModel.ContactsCache[msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        c = HikeInstantiation.ViewModel.ContactsCache[msisdn];
                     else
                         c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                 }
@@ -1576,7 +1576,7 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
-                    if (c.Msisdn != App.MSISDN)
+                    if (c.Msisdn != HikeInstantiation.MSISDN)
                     {
                         hikeContactList.Add(c);
                         UpdateContactsOnHikeCounter();
@@ -1596,9 +1596,9 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = obj as ConversationListObject;
-                    App.ViewModel.MessageListPageCollection.Remove(co);
+                    HikeInstantiation.ViewModel.MessageListPageCollection.Remove(co);
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                    if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                         ShowFTUECards();
                 });
             }
@@ -1612,7 +1612,7 @@ namespace windows_client.View
                     if (!isContactListLoaded)
                         return;
                     ContactInfo cinfo = obj as ContactInfo;
-                    if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn))
+                    if (cinfo.OnHike && !HikeInstantiation.ViewModel.Isfavourite(cinfo.Msisdn))
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
@@ -1647,7 +1647,7 @@ namespace windows_client.View
                             bool isNewUserAdded = false;
                             foreach (ContactInfo cinfo in listAddedContacts)
                             {
-                                if (cinfo.OnHike && !App.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c => c.Msisdn == cinfo.Msisdn).Count() == 0)
+                                if (cinfo.OnHike && !HikeInstantiation.ViewModel.Isfavourite(cinfo.Msisdn) && hikeContactList.Where(c => c.Msisdn == cinfo.Msisdn).Count() == 0)
                                 {
                                     hikeContactList.Add(cinfo);
                                     isNewUserAdded = true;
@@ -1671,7 +1671,7 @@ namespace windows_client.View
                            foreach (ContactInfo cinfo in listDeletedContacts)
                            {
                                hikeContactList.Remove(cinfo);
-                               App.ViewModel.ContactsCache.Remove(cinfo.Msisdn);
+                               HikeInstantiation.ViewModel.ContactsCache.Remove(cinfo.Msisdn);
                            }
                            UpdateContactsOnHikeCounter();
                            if (hikeContactList.Count == 0)
@@ -1738,18 +1738,18 @@ namespace windows_client.View
             if (llsConversations.Visibility == Visibility.Collapsed)
                 llsConversations.Visibility = Visibility.Visible;
 
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
                 UpdateToolTip(true);
         }
 
         private void UpdateFriendsCounter()
         {
-            if (App.ViewModel.FavList.Count == 0)
+            if (HikeInstantiation.ViewModel.FavList.Count == 0)
                 txtCircleOfFriends.Text = AppResources.Conversations_Circle_Of_friends_txt;
-            else if (App.ViewModel.FavList.Count == 1)
+            else if (HikeInstantiation.ViewModel.FavList.Count == 1)
                 txtCircleOfFriends.Text = AppResources.Conversations_1Circle_Of_friends_txt;
             else
-                txtCircleOfFriends.Text = string.Format(AppResources.Conversations_NCircle_Of_friends_txt, App.ViewModel.FavList.Count);
+                txtCircleOfFriends.Text = string.Format(AppResources.Conversations_NCircle_Of_friends_txt, HikeInstantiation.ViewModel.FavList.Count);
         }
 
         private void UpdateContactsOnHikeCounter()
@@ -1770,15 +1770,15 @@ namespace windows_client.View
         void ShowAppUpdateAvailableMessage()
         {
             String updateObj;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
+            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, out updateObj))
             {
                 JObject obj = JObject.Parse(updateObj);
 
-                var currentVersion = App.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var currentVersion = HikeInstantiation.appSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
                 var version = (string)obj[HikeConstants.VERSION];
                 if (Utils.compareVersion(version, currentVersion) <= 0)
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
                     return;
                 }
 
@@ -1825,7 +1825,7 @@ namespace windows_client.View
                              if (returned == 1)
                                  openMarketPlace();
                              else
-                                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
+                                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE);
                          }
 
                      }, null);
@@ -1890,7 +1890,7 @@ namespace windows_client.View
                 if (result != MessageBoxResult.OK)
                     return;
                 convObj.IsFav = false;
-                App.ViewModel.FavList.Remove(convObj);
+                HikeInstantiation.ViewModel.FavList.Remove(convObj);
                 UpdateFriendsCounter();
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
@@ -1901,9 +1901,9 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(convObj.Msisdn);
                 int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                if (App.ViewModel.FavList.Count == 0)
+                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                if (HikeInstantiation.ViewModel.FavList.Count == 0)
                 {
                     emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                     favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -1916,15 +1916,15 @@ namespace windows_client.View
                 if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                 {
                     ContactInfo c = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
-                        c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                        c = HikeInstantiation.ViewModel.ContactsCache[convObj.Msisdn];
                     else
                     {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                         c.Avatar = convObj.Avatar;
                     }
 
-                    if (c.Msisdn != App.MSISDN && isContactListLoaded)
+                    if (c.Msisdn != HikeInstantiation.MSISDN && isContactListLoaded)
                     {
                         hikeContactList.Add(c);
                         UpdateContactsOnHikeCounter();
@@ -1941,27 +1941,27 @@ namespace windows_client.View
                 convObj.IsFav = true;
 
                 ContactInfo c = null;
-                if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
-                    c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                    c = HikeInstantiation.ViewModel.ContactsCache[convObj.Msisdn];
                 else
                     c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
 
                 hikeContactList.Remove(c);
                 UpdateContactsOnHikeCounter();
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
-                App.ViewModel.FavList.Insert(0, convObj);
+                HikeInstantiation.ViewModel.FavList.Insert(0, convObj);
                 UpdateFriendsCounter();
-                if (App.ViewModel.IsPending(convObj.Msisdn))
+                if (HikeInstantiation.ViewModel.IsPending(convObj.Msisdn))
                 {
-                    App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
+                    HikeInstantiation.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn, fs);
+                    HikeInstantiation.ViewModel.RemoveFrndReqFromTimeline(convObj.Msisdn, fs);
                 }
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(convObj);
                 int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
@@ -1999,15 +1999,15 @@ namespace windows_client.View
             if (convObj.IsMute) // GC is muted , request to unmute
             {
                 obj[HikeConstants.TYPE] = "unmute";
-                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = -1;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
             else // GC is unmute , request to mute
             {
                 obj[HikeConstants.TYPE] = "mute";
-                App.ViewModel.ConvMap[convObj.Msisdn].MuteVal = 0;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
+                HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn].MuteVal = 0;
+                ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
@@ -2066,11 +2066,11 @@ namespace windows_client.View
                 return;
             }
 
-            if (App.IS_VIEWMODEL_LOADED)
+            if (HikeInstantiation.IS_VIEWMODEL_LOADED)
             {
                 int convs = 0;
                 appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
@@ -2095,7 +2095,7 @@ namespace windows_client.View
         private void checkForRateApp()
         {
             int appLaunchCount = 0;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
+            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
             {
                 double result = Math.Log(appLaunchCount / 5f, 2);//using gp
                 if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
@@ -2103,7 +2103,7 @@ namespace windows_client.View
                 {
                     showRateAppMessage();
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
             }
         }
 
@@ -2124,7 +2124,7 @@ namespace windows_client.View
                                  try
                                  {
                                      marketplaceReviewTask.Show();
-                                     App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
+                                     HikeInstantiation.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
                                  }
                                  catch (Exception ex)
                                  {
@@ -2144,7 +2144,7 @@ namespace windows_client.View
             if (favourites.SelectedItem != null)
             {
                 ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-                if (obj == null || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(obj.Msisdn) && App.ViewModel.ConvMap[obj.Msisdn].IsHidden))
+                if (obj == null || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(obj.Msisdn) && HikeInstantiation.ViewModel.ConvMap[obj.Msisdn].IsHidden))
                     return;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 string uri = "/View/NewChatThread.xaml";
@@ -2164,7 +2164,7 @@ namespace windows_client.View
                     return;
 
                 convObj.IsFav = false;
-                App.ViewModel.FavList.Remove(convObj);
+                HikeInstantiation.ViewModel.FavList.Remove(convObj);
                 UpdateFriendsCounter();
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
@@ -2175,8 +2175,8 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
                 int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                 FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
                 // if this user is on hike and contact is stored in DB then add it to contacts on hike list
@@ -2184,22 +2184,22 @@ namespace windows_client.View
                 {
 
                     ContactInfo c = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
-                        c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                        c = HikeInstantiation.ViewModel.ContactsCache[convObj.Msisdn];
                     else
                     {
                         c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                         c.Avatar = convObj.Avatar;
                     }
 
-                    if (c.Msisdn != App.MSISDN)
+                    if (c.Msisdn != HikeInstantiation.MSISDN)
                     {
                         hikeContactList.Add(c);
                         UpdateContactsOnHikeCounter();
                     }
                 }
             }
-            if (App.ViewModel.FavList.Count == 0)
+            if (HikeInstantiation.ViewModel.FavList.Count == 0)
             {
                 emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -2222,13 +2222,13 @@ namespace windows_client.View
 
         private void StartNewChatWithSelectContact(ContactInfo c)
         {
-            if (!App.ViewModel.IsHiddenModeActive
-                && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+            if (!HikeInstantiation.ViewModel.IsHiddenModeActive
+                && HikeInstantiation.ViewModel.ConvMap.ContainsKey(c.Msisdn) && HikeInstantiation.ViewModel.ConvMap[c.Msisdn].IsHidden)
                 return;
 
             object objToSend;
-            if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
-                objToSend = App.ViewModel.ConvMap[c.Msisdn];
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(c.Msisdn))
+                objToSend = HikeInstantiation.ViewModel.ConvMap[c.Msisdn];
             else
                 objToSend = c;
             // TODO: Handle this properly
@@ -2245,7 +2245,7 @@ namespace windows_client.View
                 if (contactInfo == null)
                     return;
 
-                if (App.ViewModel.Isfavourite(contactInfo.Msisdn))
+                if (HikeInstantiation.ViewModel.Isfavourite(contactInfo.Msisdn))
                 {
                     hikeContactList.Remove(contactInfo);
                     UpdateContactsOnHikeCounter();
@@ -2257,11 +2257,11 @@ namespace windows_client.View
                 JObject obj = new JObject();
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                 ConversationListObject cObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
                 {
-                    cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                    cObj = HikeInstantiation.ViewModel.ConvMap[contactInfo.Msisdn];
                     cObj.IsFav = true;
                 }
                 else
@@ -2272,13 +2272,13 @@ namespace windows_client.View
 
                 hikeContactList.Remove(contactInfo);
                 UpdateContactsOnHikeCounter();
-                App.ViewModel.FavList.Add(cObj);
+                HikeInstantiation.ViewModel.FavList.Add(cObj);
                 UpdateFriendsCounter();
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
                 int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
                 if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                 {
@@ -2292,11 +2292,11 @@ namespace windows_client.View
                 }
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
 
-                if (App.ViewModel.IsPending(contactInfo.Msisdn))
+                if (HikeInstantiation.ViewModel.IsPending(contactInfo.Msisdn))
                 {
-                    App.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
+                    HikeInstantiation.ViewModel.PendingRequests.Remove(contactInfo.Msisdn);
                     MiscDBUtil.SavePendingRequests();
-                    App.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn, fs);
+                    HikeInstantiation.ViewModel.RemoveFrndReqFromTimeline(contactInfo.Msisdn, fs);
                 }
             }
             hikeContactListBox.SelectedIndex = -1;
@@ -2317,7 +2317,7 @@ namespace windows_client.View
             }
             get
             {
-                if (App.IS_TOMBSTONED)
+                if (HikeInstantiation.IS_TOMBSTONED)
                 {
                     _freshStatusUpdates = StatusMsgsTable.GetUnReadStatusMsgs(TotalUnreadStatuses);
                 }
@@ -2400,7 +2400,7 @@ namespace windows_client.View
                     });
 
                     _proTipCount = value;
-                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, value);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.PRO_TIP_COUNT, value);
                 }
             }
         }
@@ -2417,12 +2417,12 @@ namespace windows_client.View
             {
                 if (value != _totalUnreadStatuses)
                 {
-                    if (value == 0 && (App.ViewModel.StatusList.Count >= App.ViewModel.PendingRequests.Count + _totalUnreadStatuses))
+                    if (value == 0 && (HikeInstantiation.ViewModel.StatusList.Count >= HikeInstantiation.ViewModel.PendingRequests.Count + _totalUnreadStatuses))
                     {
-                        for (int i = App.ViewModel.PendingRequests.Count;
-                            i < App.ViewModel.PendingRequests.Count + _totalUnreadStatuses; i++)
+                        for (int i = HikeInstantiation.ViewModel.PendingRequests.Count;
+                            i < HikeInstantiation.ViewModel.PendingRequests.Count + _totalUnreadStatuses; i++)
                         {
-                            App.ViewModel.StatusList[i].IsUnread = false;
+                            HikeInstantiation.ViewModel.StatusList[i].IsUnread = false;
                         }
                     }
                     StatusMsgsTable.SaveUnreadCounts(HikeConstants.UNREAD_UPDATES, value);
@@ -2474,23 +2474,23 @@ namespace windows_client.View
             int index = 0;
             if (ProTipHelper.CurrentProTip != null)
                 index = 1;
-            if (App.ViewModel.StatusList.Count > index && App.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
-                App.ViewModel.StatusList.RemoveAt(index);
+            if (HikeInstantiation.ViewModel.StatusList.Count > index && HikeInstantiation.ViewModel.StatusList[index] is DefaultStatus && FreshStatusUpdates != null && FreshStatusUpdates.Count > 0)
+                HikeInstantiation.ViewModel.StatusList.RemoveAt(index);
 
             // this fix will solve the possible crash , suggested by nitesh
-            int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count + index : index;
+            int pendingCount = HikeInstantiation.ViewModel.PendingRequests != null ? HikeInstantiation.ViewModel.PendingRequests.Count + index : index;
             for (int i = 0; i < (FreshStatusUpdates != null ? FreshStatusUpdates.Count : 0); i++)
             {
                 var status = StatusUpdateHelper.Instance.CreateStatusUpdate(FreshStatusUpdates[i], true);
                 if (status != null)
                 {
-                    App.ViewModel.StatusList.Insert(pendingCount, status);
+                    HikeInstantiation.ViewModel.StatusList.Insert(pendingCount, status);
                 }
             }
 
             //scroll to the recent item(the most recent status update on tapping this bar)
-            if (App.ViewModel.StatusList.Count > pendingCount)
-                statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
+            if (HikeInstantiation.ViewModel.StatusList.Count > pendingCount)
+                statusLLS.ScrollTo(HikeInstantiation.ViewModel.StatusList[pendingCount]);
 
             RefreshBarCount = 0;
         }
@@ -2516,49 +2516,49 @@ namespace windows_client.View
             if (fObj != null)
             {
                 _buttonInsideStatusUpdateTapped = true;
-                App.ViewModel.StatusList.Remove(fObj);
+                HikeInstantiation.ViewModel.StatusList.Remove(fObj);
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
-                App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+                HikeInstantiation.ViewModel.PendingRequests.Remove(fObj.Msisdn);
                 MiscDBUtil.SavePendingRequests();
 
-                if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                if (HikeInstantiation.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
                 {
-                    if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                        App.ViewModel.StatusList.Add(DefaultStatus);
+                    if (HikeInstantiation.ViewModel.StatusList.Count == 0 || (HikeInstantiation.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                        HikeInstantiation.ViewModel.StatusList.Add(DefaultStatus);
 
                     return;
                 }
 
                 ConversationListObject cObj = null;
                 ContactInfo cn = null;
-                if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
                 {
-                    cObj = App.ViewModel.ConvMap[fObj.Msisdn];
+                    cObj = HikeInstantiation.ViewModel.ConvMap[fObj.Msisdn];
                     cObj.IsFav = true;
                 }
                 else
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                        cn = HikeInstantiation.ViewModel.ContactsCache[fObj.Msisdn];
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
                         if (cn != null)
-                            App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                            HikeInstantiation.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                     }
                     bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
 
-                if (cn == null && App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                if (cn == null && HikeInstantiation.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                    cn = HikeInstantiation.ViewModel.ContactsCache[fObj.Msisdn];
 
                 if (cn != null)
                 {
                     hikeContactList.Remove(cn);
                     UpdateContactsOnHikeCounter();
                 }
-                App.ViewModel.FavList.Insert(0, cObj);
+                HikeInstantiation.ViewModel.FavList.Insert(0, cObj);
                 UpdateFriendsCounter(); JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
@@ -2568,8 +2568,8 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
                 int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                 if (emptyListPlaceholderFiends.Visibility == System.Windows.Visibility.Visible)
                 {
                     emptyListPlaceholderFiends.Visibility = System.Windows.Visibility.Collapsed;
@@ -2593,11 +2593,11 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                App.ViewModel.StatusList.Remove(fObj);
-                App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
+                HikeInstantiation.ViewModel.StatusList.Remove(fObj);
+                HikeInstantiation.ViewModel.PendingRequests.Remove(fObj.Msisdn);
 
-                if (App.ViewModel.StatusList.Count == 0 || (App.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
-                    App.ViewModel.StatusList.Add(DefaultStatus);
+                if (HikeInstantiation.ViewModel.StatusList.Count == 0 || (HikeInstantiation.ViewModel.StatusList.Count == 1 && ProTipHelper.CurrentProTip != null))
+                    HikeInstantiation.ViewModel.StatusList.Add(DefaultStatus);
 
                 MiscDBUtil.SavePendingRequests();
                 FriendsTableUtils.SetFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -2616,18 +2616,18 @@ namespace windows_client.View
                     if (ProTipHelper.CurrentProTip != null)
                         index = 1;
 
-                    int pendingCount = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                    int pendingCount = HikeInstantiation.ViewModel.PendingRequests != null ? HikeInstantiation.ViewModel.PendingRequests.Count : 0;
                     //if no new status scroll to latest unseen friends request
                     if (UnreadFriendRequests > 0 && (pendingCount > UnreadFriendRequests))
                     {
                         int x = pendingCount - UnreadFriendRequests;
-                        if (x >= 0 && App.ViewModel.StatusList.Count > (x + index))
-                            statusLLS.ScrollTo(App.ViewModel.StatusList[x + index]); //handling index out of bounds exception
+                        if (x >= 0 && HikeInstantiation.ViewModel.StatusList.Count > (x + index))
+                            statusLLS.ScrollTo(HikeInstantiation.ViewModel.StatusList[x + index]); //handling index out of bounds exception
                     }
                     //scroll to latest unread status
-                    else if ((App.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
+                    else if ((HikeInstantiation.ViewModel.StatusList.Count > (pendingCount + index)) && RefreshBarCount > 0) //handling index out of bounds exception
                     {
-                        statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount + index]);
+                        statusLLS.ScrollTo(HikeInstantiation.ViewModel.StatusList[pendingCount + index]);
                     }
                 }
             }
@@ -2679,10 +2679,10 @@ namespace windows_client.View
                 return;
             }
 
-            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(status.Msisdn) && App.ViewModel.ConvMap[status.Msisdn].IsHidden)
+            if (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(status.Msisdn) && HikeInstantiation.ViewModel.ConvMap[status.Msisdn].IsHidden)
                 return;
 
-            if (status.Msisdn == App.MSISDN)
+            if (status.Msisdn == HikeInstantiation.MSISDN)
             {
                 Object[] obj = new Object[2];
                 obj[0] = status.Msisdn;
@@ -2692,11 +2692,11 @@ namespace windows_client.View
                 return;
             }
 
-            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[status.Msisdn];
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = HikeInstantiation.ViewModel.ConvMap[status.Msisdn];
             else
             {
-                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
+                ConversationListObject cFav = HikeInstantiation.ViewModel.GetFav(status.Msisdn);
                 if (cFav != null)
                 {
                     if (!_isFavListBound)
@@ -2765,9 +2765,9 @@ namespace windows_client.View
             bool isPresent = false;
             int i;
 
-            for (i = 0; i < App.ViewModel.StatusList.Count; i++)
+            for (i = 0; i < HikeInstantiation.ViewModel.StatusList.Count; i++)
             {
-                if (App.ViewModel.StatusList[i] is ProTipStatusUpdate)
+                if (HikeInstantiation.ViewModel.StatusList[i] is ProTipStatusUpdate)
                 {
                     isPresent = true;
                     break;
@@ -2777,9 +2777,9 @@ namespace windows_client.View
             if (!isPresent)
                 return;
 
-            App.ViewModel.StatusList.RemoveAt(i);
+            HikeInstantiation.ViewModel.StatusList.RemoveAt(i);
 
-            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
 
             ProTipCount = 0;
 
@@ -2788,11 +2788,11 @@ namespace windows_client.View
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
                 {
-                    if (App.appSettings.Contains(App.PRO_TIP))
+                    if (HikeInstantiation.appSettings.Contains(HikeInstantiation.PRO_TIP))
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
-                        App.appSettings.Remove(App.PRO_TIP);
-                        App.appSettings.Save();
+                        HikeInstantiation.appSettings.Remove(HikeInstantiation.PRO_TIP);
+                        HikeInstantiation.appSettings.Save();
                     }
                 };
             worker.RunWorkerAsync();
@@ -2802,11 +2802,11 @@ namespace windows_client.View
         {
             if (ProTipHelper.CurrentProTip != null)
             {
-                if (App.ViewModel.StatusList != null && App.ViewModel.StatusList.Count > 0 && App.ViewModel.StatusList[0] is ProTipStatusUpdate)
-                    App.ViewModel.StatusList.RemoveAt(0);
+                if (HikeInstantiation.ViewModel.StatusList != null && HikeInstantiation.ViewModel.StatusList.Count > 0 && HikeInstantiation.ViewModel.StatusList[0] is ProTipStatusUpdate)
+                    HikeInstantiation.ViewModel.StatusList.RemoveAt(0);
 
                 var proTipStatus = new ProTipStatusUpdate();
-                App.ViewModel.StatusList.Insert(0, proTipStatus);
+                HikeInstantiation.ViewModel.StatusList.Insert(0, proTipStatus);
 
                 ProTipCount = 1;
             }
@@ -2889,7 +2889,7 @@ namespace windows_client.View
         {
             Object[] obj = null;
 
-            if (App.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
+            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.SHOW_POPUP, out obj))
             {
                 showFreeMessageOverlay = obj == null;
                 if (!showFreeMessageOverlay)
@@ -2925,7 +2925,7 @@ namespace windows_client.View
 
                 ApplicationBar.IsMenuEnabled = true;
                 launchPagePivot.IsHitTestVisible = true;
-                App.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.SHOW_POPUP);
             }
             else
             {
@@ -3030,7 +3030,7 @@ namespace windows_client.View
             string typerMsisdn = (string)vals[0];
             string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
 
-            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+            var list = HikeInstantiation.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
 
             if (list.Count() == 0)
                 return;
@@ -3063,7 +3063,7 @@ namespace windows_client.View
             string typerMsisdn = (string)vals[0];
             string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
 
-            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+            var list = HikeInstantiation.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
 
             if (list.Count() == 0)
                 return;
@@ -3080,7 +3080,7 @@ namespace windows_client.View
             string typerMsisdn = (string)vals[0];
             string searchBy = vals[1] != null ? (string)vals[1] : typerMsisdn;
 
-            var list = App.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
+            var list = HikeInstantiation.ViewModel.MessageListPageCollection.Where(f => f.Msisdn == searchBy);
 
             if (list.Count() == 0)
                 return;
@@ -3101,14 +3101,14 @@ namespace windows_client.View
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
 
-            App.ViewModel.Hyperlink_Clicked(sender as object[]);
+            HikeInstantiation.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             _hyperlinkedInsideStatusUpdateClicked = true;
 
-            App.ViewModel.ViewMoreMessage_Clicked(sender);
+            HikeInstantiation.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 
         //bool _profileImageTapped = false;
@@ -3129,7 +3129,7 @@ namespace windows_client.View
 
         //private void ChangeAppBarOnConvSelected()
         //{
-        //    if (App.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).Count() > 0)
+        //    if (HikeInstantiation.ViewModel.MessageListPageCollection.Where(c => c.IsSelected == true).Count() > 0)
         //    {
         //        if (ApplicationBar != deleteAppBar)
         //        {
@@ -3214,14 +3214,14 @@ namespace windows_client.View
         /// <param name="e"></param>
         private void hikeLogo_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0)
             {
                 MessageBox.Show(AppResources.HiddenMode_ZeroChatConf_Body_Txt, AppResources.HiddenMode_ZeroChatConf_Header_Txt, MessageBoxButton.OK);
                 return;
             }
             else
             {
-                if (!App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                if (!HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 {
                     if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
                         Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
@@ -3229,12 +3229,12 @@ namespace windows_client.View
                         Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
                 }
 
-                if (!App.ViewModel.IsHiddenModeActive)
+                if (!HikeInstantiation.ViewModel.IsHiddenModeActive)
                 {
                     if (launchPagePivot.SelectedIndex != 0)
                         launchPagePivot.SelectedIndex = 0;
 
-                    passwordOverlay.Text = App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
+                    passwordOverlay.Text = HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
                         AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
                     passwordOverlay.IsShow = true;
@@ -3243,9 +3243,9 @@ namespace windows_client.View
                 {
                     ToggleHidddenMode();
 
-                    if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
+                    if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
                     {
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
 
                         _tipMode = ToolTipMode.DEFAULT;
 
@@ -3261,10 +3261,10 @@ namespace windows_client.View
         /// </summary>
         void ToggleHidddenMode()
         {
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 conversationPageToolTip.IsShow = false;
 
-            App.ViewModel.ToggleHiddenMode();
+            HikeInstantiation.ViewModel.ToggleHiddenMode();
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -3278,7 +3278,7 @@ namespace windows_client.View
                         //handled exception due to scroll to
                     }
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                    if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                         ShowFTUECards();
                     else
                         ShowChats();
@@ -3298,7 +3298,7 @@ namespace windows_client.View
 
             JObject data = new JObject();
 
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
             else
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
@@ -3323,7 +3323,7 @@ namespace windows_client.View
             {
                 obj.IsHidden = !obj.IsHidden;
 
-                if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 {
                     _tipMode = ToolTipMode.HIDDEN_MODE_COMPLETE;
                     UpdateToolTip(true);
@@ -3357,7 +3357,7 @@ namespace windows_client.View
             var popup = sender as PasswordPopUpUC;
             if (popup != null)
             {
-                if (String.IsNullOrWhiteSpace(App.ViewModel.Password))
+                if (String.IsNullOrWhiteSpace(HikeInstantiation.ViewModel.Password))
                 {
                     if (_isConfirmPassword)
                     {
@@ -3365,8 +3365,8 @@ namespace windows_client.View
                         {
                             Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
 
-                            App.ViewModel.Password = popup.Password;
-                            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
+                            HikeInstantiation.ViewModel.Password = popup.Password;
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
                             ToggleHidddenMode();
 
                             _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
@@ -3386,12 +3386,12 @@ namespace windows_client.View
                         popup.Password = String.Empty;
                     }
                 }
-                else if (App.ViewModel.Password == popup.Password)
+                else if (HikeInstantiation.ViewModel.Password == popup.Password)
                 {
                     ToggleHidddenMode();
                     popup.IsShow = false;
 
-                    if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                    if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                         UpdateToolTip(false);
                 }
                 else
@@ -3425,7 +3425,7 @@ namespace windows_client.View
         private void ShowHiddenModeResetToolTip()
         {
             long resetTime;
-            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            if (HikeInstantiation.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
             {
                 _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
                 if (_resetTimeSeconds > 0)
@@ -3456,7 +3456,7 @@ namespace windows_client.View
         private void UpdateResetHiddenModeTimer()
         {
             long resetTime;
-            if (App.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            if (HikeInstantiation.appSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
             {
                 _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
                 if (_resetTimeSeconds <= 0)
@@ -3521,7 +3521,7 @@ namespace windows_client.View
 
                 case ToolTipMode.HIDDEN_MODE_STEP2:
 
-                    if (!App.ViewModel.IsHiddenModeActive)
+                    if (!HikeInstantiation.ViewModel.IsHiddenModeActive)
                         return;
 
                     if (isModeChanged)
@@ -3585,10 +3585,10 @@ namespace windows_client.View
                 if (!conversationPageToolTip.IsShow)
                     conversationPageToolTip.IsShow = true;
 
-                App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
             }
-            else if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
-                App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+            else if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
         }
 
         /// <summary>
@@ -3617,7 +3617,7 @@ namespace windows_client.View
                     else
                         HideTips();
 
-                    App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
                     break;
 
@@ -3679,7 +3679,7 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
                         if (_resetTimer != null)
                         {
@@ -3718,7 +3718,7 @@ namespace windows_client.View
 
                     if (mBox1 == MessageBoxResult.OK)
                     {
-                        App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
 
                         if (_resetTimer != null)
                         {
@@ -3768,7 +3768,7 @@ namespace windows_client.View
 
             RemoveHiddenModePassword();
 
-            App.ViewModel.ResetHiddenMode();
+            HikeInstantiation.ViewModel.ResetHiddenMode();
 
             ResetHiddenModeToolTip();
 
@@ -3782,8 +3782,8 @@ namespace windows_client.View
         /// </summary>
         private void RemoveHiddenModePassword()
         {
-            App.ViewModel.Password = null;
-            App.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
+            HikeInstantiation.ViewModel.Password = null;
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
         }
 
         /// <summary>
@@ -3791,7 +3791,7 @@ namespace windows_client.View
         /// </summary>
         private void ResetHiddenModeToolTip()
         {
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
             UpdateToolTip(true);
         }
@@ -3801,22 +3801,22 @@ namespace windows_client.View
         /// </summary>
         void DeleteHiddenChats()
         {
-            var list = App.ViewModel.MessageListPageCollection.Where(c => c.IsHidden);
+            var list = HikeInstantiation.ViewModel.MessageListPageCollection.Where(c => c.IsHidden);
 
             if (list != null && list.Count() > 0)
             {
-                for (int i = 0; i < App.ViewModel.MessageListPageCollection.Count; )
+                for (int i = 0; i < HikeInstantiation.ViewModel.MessageListPageCollection.Count; )
                 {
-                    if (App.ViewModel.MessageListPageCollection[i].IsHidden)
+                    if (HikeInstantiation.ViewModel.MessageListPageCollection[i].IsHidden)
                     {
-                        var convObj = App.ViewModel.MessageListPageCollection[i];
+                        var convObj = HikeInstantiation.ViewModel.MessageListPageCollection[i];
                         DeleteConversation(convObj, false);
                     }
                     else
                         i++;
                 }
 
-                if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
+                if (HikeInstantiation.ViewModel.MessageListPageCollection.Count == 0 || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
                     ShowFTUECards();
             }
         }

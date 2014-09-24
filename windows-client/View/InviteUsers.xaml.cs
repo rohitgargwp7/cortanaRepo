@@ -155,10 +155,10 @@ namespace windows_client.View
                 ContactInfo c = allContactsList[i];
                 c.CheckBoxVisibility = Visibility.Visible;
 
-                if (c.Msisdn == App.MSISDN)
+                if (c.Msisdn == HikeInstantiation.MSISDN)
                     continue;
 
-                if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+                if (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(c.Msisdn) && HikeInstantiation.ViewModel.ConvMap[c.Msisdn].IsHidden)
                     continue;
 
                 string ch = GetCaptionGroup(c);
@@ -209,7 +209,7 @@ namespace windows_client.View
 
             foreach (var item in SelectedContacts)
             {
-                if (item.Msisdn != App.MSISDN)
+                if (item.Msisdn != HikeInstantiation.MSISDN)
                 {
                     msisdns += item.Msisdn + ";";
                     toNum = item.Msisdn;
@@ -235,16 +235,16 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
-            if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+            if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
             {
-                App.MqttManagerInstance.mqttPublishToServer(obj);
+                HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 MessageBox.Show(AppResources.InviteUsers_TotalInvitesSent_Txt, AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             else
             {
                 obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
-                App.MqttManagerInstance.mqttPublishToServer(obj);
+                HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
                 smsComposeTask.To = msisdns;
@@ -492,8 +492,8 @@ namespace windows_client.View
             {
                 cInfo.IsSelected = !cInfo.IsSelected;
 
-                if (!App.ViewModel.IsHiddenModeActive
-                && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                if (!HikeInstantiation.ViewModel.IsHiddenModeActive
+                && HikeInstantiation.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && HikeInstantiation.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                 {
                     cInfo.IsSelected = false;
                     return;

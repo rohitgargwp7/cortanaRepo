@@ -23,7 +23,7 @@ namespace windows_client.Model
         {
             get
             {
-                return AddMoreImage ? new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute)) : App.ViewModel.GetMftImageCache(Pic);
+                return AddMoreImage ? new BitmapImage(new Uri("/View/images/add.png", UriKind.RelativeOrAbsolute)) : HikeInstantiation.ViewModel.GetMftImageCache(Pic);
             }
         }
         public BitmapImage ImageSource

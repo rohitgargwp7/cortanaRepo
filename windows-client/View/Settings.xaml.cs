@@ -29,7 +29,7 @@ namespace windows_client.View
             InitializeComponent();
 
             int creditsRemaining = 0;
-            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 
@@ -165,7 +165,7 @@ namespace windows_client.View
             ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
 
             /*
@@ -193,7 +193,7 @@ namespace windows_client.View
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
-                App.MqttManagerInstance.connect();
+                HikeInstantiation.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
                 scanningComplete();
                 _canGoBack = true;
@@ -225,12 +225,12 @@ namespace windows_client.View
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, cinfo.Msisdn);
                     hikeIds.Add(dCn);
                     deletedContacts.Add(cinfo);
-                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
                         {
                             // here we are removing name so that Msisdn will be shown instead of Name
-                            App.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
+                            HikeInstantiation.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
                         }
                         catch (Exception e)
                         {
@@ -240,11 +240,11 @@ namespace windows_client.View
                     else // if this contact is in favourite or pending and not in convMap update this also
                     {
                         ConversationListObject obj;
-                        obj = App.ViewModel.GetFav(cinfo.Msisdn);
+                        obj = HikeInstantiation.ViewModel.GetFav(cinfo.Msisdn);
 
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
-                            obj = App.ViewModel.GetPending(cinfo.Msisdn);
+                            obj = HikeInstantiation.ViewModel.GetPending(cinfo.Msisdn);
 
                             if (obj != null)
                             {
@@ -260,8 +260,8 @@ namespace windows_client.View
                         }
                     }
 
-                    if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
-                        App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
+                        HikeInstantiation.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
@@ -291,7 +291,7 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = false;//denotes deleted contact
                 obj[1] = deletedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
             if (updatedContacts != null && updatedContacts.Count > 0)
@@ -301,12 +301,12 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = true;//denotes updated/added contact
                 obj[1] = updatedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
-            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+            HikeInstantiation.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
 
-            App.MqttManagerInstance.connect();
+            HikeInstantiation.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>

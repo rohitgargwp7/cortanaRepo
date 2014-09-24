@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -45,7 +46,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.ViewModel.GetMftImageCache(_albumPicture);
+                return HikeInstantiation.ViewModel.GetMftImageCache(_albumPicture);
             }
         }
 

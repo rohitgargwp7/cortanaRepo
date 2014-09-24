@@ -230,6 +230,7 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="utils\HikeInstantiation.cs" />
     <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\EmailHelper.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />

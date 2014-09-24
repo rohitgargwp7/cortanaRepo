@@ -50,7 +50,7 @@ namespace windows_client.utils
                         {
                             instance = new ProTipHelper();
                             string id = String.Empty;
-                            App.appSettings.TryGetValue(App.PRO_TIP, out id);
+                            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.PRO_TIP, out id);
 
                             if (!String.IsNullOrEmpty(id))
                                 ReadProTipFromFile(id);
@@ -67,7 +67,7 @@ namespace windows_client.utils
 
             CurrentProTip = new ProTip(id, header, body, imageUrl, base64Image);
 
-            App.WriteToIsoStorageSettings(App.PRO_TIP, id);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.PRO_TIP, id);
 
             WriteProTipToFile();
 
@@ -220,8 +220,8 @@ namespace windows_client.utils
 
             ClearOldProTips();
 
-            App.appSettings.Remove(App.PRO_TIP);
-            App.RemoveKeyFromAppSettings(App.PRO_TIP_COUNT);
+            HikeInstantiation.appSettings.Remove(HikeInstantiation.PRO_TIP);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.PRO_TIP_COUNT);
         }
 
         public void ClearOldProTips()

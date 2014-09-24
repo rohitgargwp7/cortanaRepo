@@ -58,7 +58,7 @@ namespace windows_client.DbUtils
             GroupManager.Instance.DeleteAllGroups();
             FriendsTableUtils.DeleteAllFriends();
             MessagesTableUtils.DeleteAllLongMessages();
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
@@ -85,10 +85,10 @@ namespace windows_client.DbUtils
             #region DELETE USERS, BLOCKLIST
 
             //BLockhasshSet.clear() reinitiates blocklist with default value preventing blocklist to have actual values so use this function to clear blocklist
-            App.ViewModel.ClearBLockedHashSet();
-            App.ViewModel.ContactsCache.Clear();
+            HikeInstantiation.ViewModel.ClearBLockedHashSet();
+            HikeInstantiation.ViewModel.ContactsCache.Clear();
 
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
@@ -114,7 +114,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region DELETE MQTTPERSISTED MESSAGES
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeInstantiation.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 try
@@ -141,7 +141,7 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
-            App.appSettings[App.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
+            HikeInstantiation.appSettings[HikeInstantiation.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
             StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
@@ -149,9 +149,9 @@ namespace windows_client.DbUtils
             StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
             #endregion
             #region RESET IN APP TIPS
-            App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-            App.appSettings[App.TIP_MARKED_KEY] = 0;
-            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
+            HikeInstantiation.appSettings[HikeInstantiation.CHAT_THREAD_COUNT_KEY] = 0;
+            HikeInstantiation.appSettings[HikeInstantiation.TIP_MARKED_KEY] = 0;
+            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();
@@ -310,7 +310,7 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             if (imageBytes == null)
@@ -345,7 +345,7 @@ namespace windows_client.DbUtils
 
         public static void saveLargeImage(string msisdn, byte[] imageBytes)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             if (imageBytes == null)
@@ -382,7 +382,7 @@ namespace windows_client.DbUtils
             if (string.IsNullOrEmpty(msisdn))
                 return false;
 
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             msisdn = msisdn.Replace(":", "_");
@@ -405,7 +405,7 @@ namespace windows_client.DbUtils
 
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             msisdn = msisdn.Replace(":", "_");
@@ -434,7 +434,7 @@ namespace windows_client.DbUtils
 
         public static byte[] getLargeImageForMsisdn(string msisdn)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             msisdn = msisdn.Replace(":", "_");
@@ -465,7 +465,7 @@ namespace windows_client.DbUtils
         {
             await Task.Delay(1);
 
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             msisdn = msisdn.Replace(":", "_");
@@ -981,10 +981,10 @@ namespace windows_client.DbUtils
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
-                            writer.Write(App.ViewModel.FavList.Count);
-                            for (int i = 0; i < App.ViewModel.FavList.Count; i++)
+                            writer.Write(HikeInstantiation.ViewModel.FavList.Count);
+                            for (int i = 0; i < HikeInstantiation.ViewModel.FavList.Count; i++)
                             {
-                                ConversationListObject item = App.ViewModel.FavList[i];
+                                ConversationListObject item = HikeInstantiation.ViewModel.FavList[i];
                                 item.WriteFavOrPending(writer);
                             }
                             writer.Flush();
@@ -1037,7 +1037,7 @@ namespace windows_client.DbUtils
                     {
                         store.DeleteFile("FAVS\\" + file);
                     }
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
                 catch (Exception ex)
                 {
@@ -1069,7 +1069,7 @@ namespace windows_client.DbUtils
         {
             lock (pendingReadWriteLock)
             {
-                if (App.ViewModel.IsPendingListLoaded)
+                if (HikeInstantiation.ViewModel.IsPendingListLoaded)
                     return;
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -1102,8 +1102,8 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         item.ReadFavOrPending(reader);
-                                        if (App.ViewModel.ConvMap.ContainsKey(item.Msisdn))
-                                            _pendingReq[item.Msisdn] = App.ViewModel.ConvMap[item.Msisdn];
+                                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(item.Msisdn))
+                                            _pendingReq[item.Msisdn] = HikeInstantiation.ViewModel.ConvMap[item.Msisdn];
                                         else
                                         {
                                             item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
@@ -1130,7 +1130,7 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                App.ViewModel.IsPendingListLoaded = true;
+                HikeInstantiation.ViewModel.IsPendingListLoaded = true;
             }
         }
 
@@ -1150,10 +1150,10 @@ namespace windows_client.DbUtils
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
-                            writer.Write(App.ViewModel.PendingRequests.Count);
-                            foreach (string ms in App.ViewModel.PendingRequests.Keys)
+                            writer.Write(HikeInstantiation.ViewModel.PendingRequests.Count);
+                            foreach (string ms in HikeInstantiation.ViewModel.PendingRequests.Keys)
                             {
-                                ConversationListObject item = App.ViewModel.PendingRequests[ms];
+                                ConversationListObject item = HikeInstantiation.ViewModel.PendingRequests[ms];
                                 item.WriteFavOrPending(writer);
                             }
                             writer.Flush();
@@ -1192,7 +1192,7 @@ namespace windows_client.DbUtils
 
                     string fName = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
 
-                    if (App.ViewModel.PicUploadList.Count == 0)
+                    if (HikeInstantiation.ViewModel.PicUploadList.Count == 0)
                     {
                         store.DeleteFile(fName);
                         return;
@@ -1203,9 +1203,9 @@ namespace windows_client.DbUtils
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
-                            writer.Write(App.ViewModel.PicUploadList.Count);
+                            writer.Write(HikeInstantiation.ViewModel.PicUploadList.Count);
 
-                            foreach (var ms in App.ViewModel.PicUploadList)
+                            foreach (var ms in HikeInstantiation.ViewModel.PicUploadList)
                             {
                                 ms.Write(writer);
                             }
@@ -1261,7 +1261,7 @@ namespace windows_client.DbUtils
                                     {
                                         group = new GroupPic();
                                         group.Read(reader);
-                                        App.ViewModel.PicUploadList.Add(group);
+                                        HikeInstantiation.ViewModel.PicUploadList.Add(group);
                                     }
                                     catch (Exception ex)
                                     {
@@ -1286,8 +1286,8 @@ namespace windows_client.DbUtils
                 }
             }
 
-            if (App.ViewModel.PicUploadList.Count > 0 && NetworkInterface.GetIsNetworkAvailable())
-                App.ViewModel.SendDisplayPic();
+            if (HikeInstantiation.ViewModel.PicUploadList.Count > 0 && NetworkInterface.GetIsNetworkAvailable())
+                HikeInstantiation.ViewModel.SendDisplayPic();
         }
 
         #endregion

@@ -36,10 +36,10 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
 
-            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
         }
@@ -81,7 +81,7 @@ namespace windows_client.View
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 LogoutFb(true);
 
             DeleteLocalStorage();
@@ -149,7 +149,7 @@ namespace windows_client.View
                 });
                 return;
             }
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 LogoutFb(true);
             DeleteLocalStorage();
         }
@@ -159,14 +159,14 @@ namespace windows_client.View
             // this is done so that just after unlink/delete , app can again start add book scan
             ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING;
             NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.ClearStickerHelperInstance();
-            App.ClearAppSettings();
-            App.appSettings[App.IS_DB_CREATED] = true;
+            HikeInstantiation.ClearAppSettings();
+            HikeInstantiation.appSettings[HikeInstantiation.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
-            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
@@ -176,7 +176,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 StickerPivotHelper.Instance.ClearData();
-                App.ViewModel.ClearViewModel();
+                HikeInstantiation.ViewModel.ClearViewModel();
                 try
                 {
                     progress.Hide(LayoutRoot);
@@ -223,9 +223,9 @@ namespace windows_client.View
             else
             {
                 shellProgress.IsIndeterminate = true;
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
-                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
-                App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
                 return;
             }
@@ -261,9 +261,9 @@ namespace windows_client.View
               {
                   await (new WebBrowser()).ClearCookiesAsync();
               }));
-            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
-            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-            App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
 
             if (isAccountDeleteUnlink)
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);

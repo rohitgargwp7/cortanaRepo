@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -17,7 +18,7 @@ namespace windows_client.Model
 
         public void AutoHideAfterTyping()
         {
-            App.ViewModel.CallAutohide(_params);
+            HikeInstantiation.ViewModel.CallAutohide(_params);
         }
 
     }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using windows_client.Languages;
 using System.Threading.Tasks;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -185,7 +186,7 @@ namespace windows_client.View
                 NavigationService.GoBack();
 
             //clear thumbnail cache as it is not required now
-            App.ViewModel.ClearMFtImageCache();
+            HikeInstantiation.ViewModel.ClearMFtImageCache();
         }
 
         private void lbThumbnails_SelectionChanged(object sender, SelectionChangedEventArgs e)

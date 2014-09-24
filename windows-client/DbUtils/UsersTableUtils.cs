@@ -7,6 +7,7 @@ using windows_client.View;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -19,7 +20,7 @@ namespace windows_client.DbUtils
         public static void block(string msisdn)
         {
             Blocked userBlocked = new Blocked(msisdn);
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
                 try
@@ -35,7 +36,7 @@ namespace windows_client.DbUtils
 
         public static void unblock(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res == null || res.Count == 0)
@@ -47,7 +48,7 @@ namespace windows_client.DbUtils
 
         public static void addContact(ContactInfo user)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 context.users.InsertOnSubmit(user);
                 context.SubmitChanges();
@@ -60,7 +61,7 @@ namespace windows_client.DbUtils
                 return;
             try
             {
-                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
+                using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
                 {
                     context.users.InsertAllOnSubmit(contacts);
                     context.SubmitChanges();
@@ -74,7 +75,7 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> GetAllHikeContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -91,7 +92,7 @@ namespace windows_client.DbUtils
         }
         public static List<ContactInfo> GetAllHikeContactsOrdered()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -108,7 +109,7 @@ namespace windows_client.DbUtils
         }
         public static List<ContactInfo> getAllContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -126,16 +127,16 @@ namespace windows_client.DbUtils
 
         public static Int32 getHikeContactCount()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
-                var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN select user;
+                var users = from user in context.users where user.OnHike == true && user.Msisdn != HikeInstantiation.MSISDN select user;
                 return users.Count();
             }
         }
 
         public static List<ContactInfo> getAllContactsByGroup()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 var users = from user in context.users orderby user.Name select user;
                 return users.ToList<ContactInfo>();
@@ -144,7 +145,7 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 var users = from user in context.users where user.OnHike == false orderby user.Name select user;
                 return users.ToList<ContactInfo>();
@@ -153,7 +154,7 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -171,7 +172,7 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getHikeContactInfoFromMSISDN(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -189,7 +190,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
                 SubmitWithConflictResolve(context);
@@ -204,7 +205,7 @@ namespace windows_client.DbUtils
             {
                 return;
             }
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 foreach (string m in msisdns)
                 {
@@ -224,7 +225,7 @@ namespace windows_client.DbUtils
 
         public static List<Blocked> getBlockList()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockList(context).ToList<Blocked>();
                 return (res == null || res.Count == 0) ? null : res;
@@ -233,7 +234,7 @@ namespace windows_client.DbUtils
 
         public static void deleteBlocklist()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.SubmitChanges();
@@ -244,7 +245,7 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 if (res == null || res.Count == 0)
@@ -259,7 +260,7 @@ namespace windows_client.DbUtils
 
         public static bool isUserBlocked(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res != null && res.Count > 0)
@@ -275,16 +276,16 @@ namespace windows_client.DbUtils
             if (ids == null || ids.Count == 0)
                 return;
             bool shouldSubmit = false;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
             {
-                //using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
+                //using (HikeChatsDb chats = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
                         context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
-                        if (App.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
-                            ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
+                            ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
                             ConversationTableUtils.saveConvObject(obj, obj.Msisdn);
                             //ConversationTableUtils.saveConvObjectList();
@@ -302,7 +303,7 @@ namespace windows_client.DbUtils
 
             try
             {
-                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+                using (HikeUsersDb context = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
