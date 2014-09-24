@@ -48,7 +48,7 @@ namespace windows_client.Controls
         #region Event_Handlers
         public event EventHandler<EventArgs> RightIconClicked;
         public event EventHandler<EventArgs> NewPinLostFocus;
-        public event EventHandler<EventArgs> PinContent_Tapped;
+        public event EventHandler<EventArgs> PinContentTapped;
 
         private void rightIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -64,8 +64,8 @@ namespace windows_client.Controls
 
         private void pinContent_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (PinContent_Tapped != null)
-                PinContent_Tapped(sender, e);
+            if (PinContentTapped != null)
+                PinContentTapped(sender, e);
         }
         #endregion
 

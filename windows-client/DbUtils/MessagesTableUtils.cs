@@ -403,7 +403,7 @@ namespace windows_client.DbUtils
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
                         metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
-                        metaData[HikeConstants.READ] = (convMsg.IsSent) ? true : false;
+                        metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
                     }
 
                     if (obj.MetaData == null) //check for "should unread counter be increased??"

@@ -118,7 +118,7 @@ namespace windows_client.View
                 if (metadata != null)
                 {
                     metadata[HikeConstants.UNREADPINS] = 0;
-                    metadata[HikeConstants.READ] = true;
+                    metadata[HikeConstants.READPIN] = true;
                 }
 
                 App.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;

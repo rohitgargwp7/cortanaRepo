@@ -110,7 +110,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem clearChatItem;
-        ApplicationBarMenuItem pinHistoryItem; 
+        ApplicationBarMenuItem pinHistoryMenuItem; 
         public ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarMenuItem infoMenuItem;
         ApplicationBarMenuItem blockMenuItem;
@@ -240,8 +240,8 @@ namespace windows_client.View
             gcPin.RightIconClicked += gcPin_RightIconClicked;
             gcPin.NewPinLostFocus -= gcPin_LostFocus;
             gcPin.NewPinLostFocus += gcPin_LostFocus;
-            gcPin.PinContent_Tapped -= gcPin_PinContentTapped;
-            gcPin.PinContent_Tapped += gcPin_PinContentTapped;
+            gcPin.PinContentTapped -= gcPin_PinContentTapped;
+            gcPin.PinContentTapped += gcPin_PinContentTapped;
             #endregion
 
             if (App.ViewModel.IsDarkMode)
@@ -718,10 +718,10 @@ namespace windows_client.View
 
                     if (metadata != null)
                     {
-                        if (metadata.Value<bool>(HikeConstants.READ) == false)
+                        if (metadata.Value<bool>(HikeConstants.READPIN) == false)
                         {
                             metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
-                            metadata[HikeConstants.READ] = true;
+                            metadata[HikeConstants.READPIN] = true;
                         }
 
                         App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
@@ -1830,10 +1830,10 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                pinHistoryItem = new ApplicationBarMenuItem();
-                pinHistoryItem.Text = "pin history";
-                pinHistoryItem.Click += gcPin_PinContentTapped;
-                appBar.MenuItems.Add(pinHistoryItem);
+                pinHistoryMenuItem = new ApplicationBarMenuItem();
+                pinHistoryMenuItem.Text = AppResources.PinHistory_Header_Txt;
+                pinHistoryMenuItem.Click += gcPin_PinContentTapped;
+                appBar.MenuItems.Add(pinHistoryMenuItem);
 
                 return;
             }
@@ -1962,8 +1962,8 @@ namespace windows_client.View
                 if (clearChatItem != null && clearChatItem.IsEnabled)
                     clearChatItem.IsEnabled = false;
 
-                if (pinHistoryItem != null && pinHistoryItem.IsEnabled)
-                    pinHistoryItem.IsEnabled = false;
+                if (pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
+                    pinHistoryMenuItem.IsEnabled = false;
 
                 ClearChat();
 
@@ -2224,8 +2224,8 @@ namespace windows_client.View
             if (clearChatItem != null && !clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = true;
 
-            if (pinHistoryItem != null && !pinHistoryItem.IsEnabled)
-                pinHistoryItem.IsEnabled = true;
+            if (pinHistoryMenuItem != null && !pinHistoryMenuItem.IsEnabled)
+                pinHistoryMenuItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
                 nudgeTut.Visibility = Visibility.Collapsed;
@@ -3227,8 +3227,8 @@ namespace windows_client.View
             if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
 
-            if (ocMessages.Count == 0 && pinHistoryItem != null && pinHistoryItem.IsEnabled)
-                pinHistoryItem.IsEnabled = false;
+            if (ocMessages.Count == 0 && pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
+                pinHistoryMenuItem.IsEnabled = false;
 
             if (!isGroupChat && ocMessages.Count == 0 && isNudgeOn)
                 nudgeTut.Visibility = Visibility.Visible;
