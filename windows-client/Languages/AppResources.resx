@@ -2302,7 +2302,7 @@ Download it like asap from http://hike.in!</value>
     <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
   </data>
-  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
-    <value>Activate hidden mode on app exit</value>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>Unable to upload file</value>
   </data>
 </root>

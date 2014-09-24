@@ -70,15 +70,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activate hidden mode on app exit.
-        /// </summary>
-        public static string Activate_HiddenMode_on_Exit {
-            get {
-                return ResourceManager.GetString("Activate_HiddenMode_on_Exit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to add.
         /// </summary>
         public static string Add_AppBar_Txt {
@@ -2106,6 +2097,15 @@ namespace windows_client.Languages {
         public static string FileTransfer_NetworkError {
             get {
                 return ResourceManager.GetString("FileTransfer_NetworkError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to upload file.
+        /// </summary>
+        public static string FileTransfer_UploadErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_UploadErrorMsgBoxText", resourceCulture);
             }
         }
         
