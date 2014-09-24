@@ -2229,10 +2229,10 @@ Download it like asap from http://hike.in!</value>
     <value>Passwords don’t match.</value>
   </data>
   <data name="PinHeader_Txt" xml:space="preserve">
-    <value>Create Pin</value>
+    <value>create pin</value>
   </data>
   <data name="Pin_Done_Txt" xml:space="preserve">
-    <value>Pin It</value>
+    <value>pin</value>
   </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
@@ -2259,5 +2259,11 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Saving failed</value>
+  </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>share something important...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>pin history</value>
   </data>
 </root>

@@ -3514,6 +3514,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to share something important....
+        /// </summary>
+        public static string NewGCPin_Hint_Txt {
+            get {
+                return ResourceManager.GetString("NewGCPin_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new group.
         /// </summary>
         public static string NewGrpChat_Txt {
@@ -3784,7 +3793,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin It.
+        ///   Looks up a localized string similar to pin.
         /// </summary>
         public static string Pin_Done_Txt {
             get {
@@ -3793,11 +3802,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Pin.
+        ///   Looks up a localized string similar to create pin.
         /// </summary>
         public static string PinHeader_Txt {
             get {
                 return ResourceManager.GetString("PinHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin history.
+        /// </summary>
+        public static string PinHistory_Header_Txt {
+            get {
+                return ResourceManager.GetString("PinHistory_Header_Txt", resourceCulture);
             }
         }
         

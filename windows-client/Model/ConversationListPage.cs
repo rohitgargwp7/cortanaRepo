@@ -461,8 +461,8 @@ namespace windows_client.Model
         }
 
         [DataMember]
-        string _metadata {get;set;} //stores the latest pin info
-        JObject metadata;
+        public string _metadata {get;set;} //stores the latest pin info
+        JObject metadata = null;
 
         public JObject MetaData
         {
@@ -481,12 +481,9 @@ namespace windows_client.Model
                 }
             }
             set
-            {
-                if (metadata != value)
-                {
-                    metadata = value;
-                    _metadata = (value == null ) ? null : value.ToString(Newtonsoft.Json.Formatting.None);
-                }
+            {               
+                metadata = value;
+                _metadata = (value == null) ? null : value.ToString(Newtonsoft.Json.Formatting.None);
             }
         }
 
@@ -945,10 +942,17 @@ namespace windows_client.Model
                     _isHidden = false;
                 }
 
-                count = reader.ReadInt32();
-                _metadata = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (_metadata == "*@N@*")
+                try
+                {
+                    count = reader.ReadInt32();
+                    _metadata = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (_metadata == "*@N@*")
+                        _metadata = null;
+                }
+                catch
+                {
                     _metadata = null;
+                }
             }
             catch (Exception ex)
             {

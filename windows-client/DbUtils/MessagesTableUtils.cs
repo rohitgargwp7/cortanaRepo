@@ -409,10 +409,7 @@ namespace windows_client.DbUtils
                     if (obj.MetaData == null) //check for "should unread counter be increased??"
                         metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
                     else
-                    {
-                        if (!convMsg.IsSent)
-                            metaData[HikeConstants.UNREADPINS] = obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
-                    }
+                        metaData[HikeConstants.UNREADPINS] = (convMsg.IsSent) ? obj.MetaData.Value<int>(HikeConstants.UNREADPINS) : obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
                        
                     obj.MetaData = metaData;
                 }

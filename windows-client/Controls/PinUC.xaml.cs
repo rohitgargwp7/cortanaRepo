@@ -8,6 +8,8 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using windows_client.Languages;
 
 namespace windows_client.Controls
 {
@@ -54,7 +56,7 @@ namespace windows_client.Controls
                 RightIconClicked(sender, e);
         }
 
-        private void newPinTxt_LostFocus(object sender, RoutedEventArgs e)
+        private void newPinTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (NewPinLostFocus != null)
                 NewPinLostFocus(sender, e);
@@ -67,36 +69,71 @@ namespace windows_client.Controls
         }
         #endregion
 
-        private void newPinTxt_GotFocus(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Hint has to be reset otherwise it will not show hint initially
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void newPinTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            newPinTxt.Text = String.Empty;
-            newPinTxt.Hint = string.Empty;
-            newPinTxt.Hint = "Share something..."; //to be decided constant or Localize
+            newPinTextBox.Text = String.Empty;
+            newPinTextBox.Hint = String.Empty;
+            newPinTextBox.Hint = AppResources.NewGCPin_Hint_Txt;
         }
 
-        public void isShow(bool showNewPin, bool showOldPin)
+        /// <summary>
+        /// It controls the Visibility and Animation for Pin Control
+        /// </summary>
+        /// <param name="showNewPin"></param>
+        /// <param name="showOldPin"></param>
+        /// <param name="forceShow">forcefully displays pin</param>
+        public void isShow(bool showNewPin, bool showOldPin, bool forceShow = false)
         {
             if (showNewPin || showOldPin)
-                Visibility = Visibility.Visible;
+            {
+                if (this.Visibility == Visibility.Collapsed || forceShow)
+                {
+                    this.Visibility = Visibility.Visible;
+
+                    if (forceShow)
+                        closePinAnimation.Stop();
+                    else
+                        openPinAnimation.Begin();
+                }
+            }
             else
-                Visibility = Visibility.Collapsed;
+            {
+                if (this.Visibility == Visibility.Visible)
+                {
+                    closePinAnimation.Completed -= closePinAnimation_Completed;
+                    closePinAnimation.Completed += closePinAnimation_Completed;
+                    closePinAnimation.Begin();
+                }
+            }
 
             if (showNewPin)
             {
                 pinContent.Visibility = Visibility.Collapsed;
-                newPinTxt.Visibility = Visibility.Visible;
+                newPinTextBox.Visibility = Visibility.Visible;
                 rightIcon.Visibility = Visibility.Collapsed;
-                newPinTxt.Focus();
+                notificationCountGrid.Visibility = Visibility.Collapsed;
+                newPinTextBox.Focus();
             }
-            else
+            else if (showOldPin)
             {
                 pinContent.Visibility = Visibility.Visible;
-                newPinTxt.Visibility = Visibility.Collapsed;
                 rightIcon.Visibility = Visibility.Visible;
+                notificationCountGrid.Visibility = (notificationCountTxtBlk.Text == null || notificationCountTxtBlk.Text == "0") ? Visibility.Collapsed : Visibility.Visible;
+                newPinTextBox.Visibility = Visibility.Collapsed;
             }
         }
 
-        public void updateContent(string contact, string message)
+        void closePinAnimation_Completed(object sender, EventArgs e)
+        {
+            this.Visibility = Visibility.Collapsed;
+        }
+
+        public void UpdateContent(string contact, string message)
         {
             if (!String.IsNullOrWhiteSpace(contact) && !String.IsNullOrWhiteSpace(message))
             {
@@ -107,7 +144,13 @@ namespace windows_client.Controls
 
         public string GetNewPinMessage()
         {
-            return newPinTxt.Text.Trim();
+            return newPinTextBox.Text.Trim();
+        }
+
+        public void SetUnreadPinCount(int count)
+        {       
+            notificationCountTxtBlk.Text = (count < 10) ? count.ToString() : "9+";
+            notificationCountGrid.Visibility = (notificationCountTxtBlk.Text == null || notificationCountTxtBlk.Text == "0") ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

@@ -23,7 +23,6 @@ private copy.
     <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelected.png</system:String>
 
     <Color x:Key="PhoneSubtleColor">#66000000</Color>
-    
     <Color x:Key="PhoneTextBoxColor">#26000000</Color>
     <Color x:Key="PhoneTextBoxEditBackgroundColor">#00000000</Color>
     <Color x:Key="PhoneTextBoxEditBorderColor">#DE000000</Color>
@@ -1949,6 +1948,14 @@ private copy.
         <Setter Property="Background" Value="{StaticResource HikeBlue}"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="MinWidth" Value="22"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="2"/>
+    </Style>
+
+    <Style x:Key="UnreadPinCounterContainerStyle" TargetType="Border">
+        <Setter Property="Background" Value="#e65939"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="MinWidth" Value="30"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="2"/>
     </Style>

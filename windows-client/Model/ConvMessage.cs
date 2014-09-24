@@ -523,7 +523,7 @@ namespace windows_client.Model
             }
         }
 
-        public string GCPinMessageSender
+        public string GCPinMessageSenderName
         {
             get
             {
@@ -1247,11 +1247,7 @@ namespace windows_client.Model
             }
             set
             {
-                if (value != _statusUpdateImage)
-                {
-                    _statusUpdateImage = value;
-                    NotifyPropertyChanged("StatusUpdateImage");
-                }
+                _statusUpdateImage = value;
             }
         }
 
@@ -1368,7 +1364,7 @@ namespace windows_client.Model
             {
                 _groupMemeberName = value;
                 NotifyPropertyChanged("GroupMemberName");
-                NotifyPropertyChanged("GCPinMessageSender");
+                NotifyPropertyChanged("GCPinMessageSenderName");
                 IsGroup = true;
             }
         }

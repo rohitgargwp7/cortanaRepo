@@ -46,7 +46,6 @@ using Windows.Storage;
 using windows_client.Model.Sticker;
 using windows_client.utils.ServerTips;
 using System.Windows.Resources;
-using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -279,9 +278,14 @@ namespace windows_client.View
         void gcPin_RightIconClicked(object sender, EventArgs e)
         {
             gcPin.isShow(false,false);
+            tipControl.Visibility = Visibility.Visible;
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID] = null;
+            {
+                JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                metadata[HikeConstants.PINID] = null;
+                App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+            }
         }
 
         void RequestLastSeenHandler(object sender, EventArgs e)
@@ -706,6 +710,26 @@ namespace windows_client.View
 
             #endregion
 
+            if (isGroupChat)
+            {
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
+                    JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+
+                    if (metadata != null)
+                    {
+                        if (metadata.Value<bool>(HikeConstants.READ) == false)
+                        {
+                            metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
+                            metadata[HikeConstants.READ] = true;
+                        }
+
+                        App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                        gcPin.SetUnreadPinCount(metadata.Value<int>(HikeConstants.UNREADPINS));
+                    }
+                }
+            }
+
             if (_patternNotLoaded)
                 CreateBackgroundImage();
         }
@@ -1092,12 +1116,6 @@ namespace windows_client.View
                         JToken pinId = null;
                         if (metadata.TryGetValue(HikeConstants.PINID, out pinId) && pinId!=null) //to be Checked if value is null && load Last Pin Message
                         {
-                            if (metadata.Value<bool>(HikeConstants.READ) == false)
-                            {
-                                metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
-                                metadata[HikeConstants.READ] = true;
-                            }
-
                             BackgroundWorker latestPinBW = new BackgroundWorker();
                             latestPinBW.RunWorkerCompleted += latestPinBW_RunWorkerCompleted;
                             latestPinBW.DoWork += (s, e) =>
@@ -1173,7 +1191,7 @@ namespace windows_client.View
         {
             if (lastPinConvMsg != null)
             {
-                gcPin.updateContent(lastPinConvMsg.GCPinMessageSender, lastPinConvMsg.DispMessage);
+                gcPin.UpdateContent(lastPinConvMsg.GCPinMessageSenderName, lastPinConvMsg.DispMessage);
                 gcPin.isShow(false,true);
             }
         }
@@ -1341,6 +1359,7 @@ namespace windows_client.View
 
                 spContactTransfer.IsEnabled = true;
                 chatPaint.Opacity = 1;
+                newPin.Opacity = 1;
 
                 if (appBar.MenuItems.Contains(inviteMenuItem))
                     appBar.MenuItems.Remove(inviteMenuItem);
@@ -2919,7 +2938,7 @@ namespace windows_client.View
             convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.PIN_MESSAGE;
 
-            gcPin.updateContent(convMessage.GCPinMessageSender, convMessage.DispMessage);
+            gcPin.UpdateContent(convMessage.GCPinMessageSenderName, convMessage.DispMessage);
 
             AddNewMessageToUI(convMessage, false);
             object[] vals = new object[3];
@@ -3942,6 +3961,7 @@ namespace windows_client.View
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
 
             gcPin.isShow(false, false);
+            tipControl.Visibility = Visibility.Visible;
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 App.ViewModel.ConvMap[mContactNumber].MetaData = null;
@@ -4114,7 +4134,7 @@ namespace windows_client.View
                         {
                             GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
                             convMessage.GroupMemberName = gp.Name;
-                            gcPin.updateContent(convMessage.GCPinMessageSender, convMessage.DispMessage);
+                            gcPin.UpdateContent(convMessage.GCPinMessageSenderName, convMessage.DispMessage);
                             
                             if (!_isNewPin)
                                 gcPin.isShow(false,true);
@@ -4423,6 +4443,7 @@ namespace windows_client.View
                         else if (!isOnHike)
                         {
                             chatPaint.Opacity = 0.5;
+                            newPin.Opacity = 1;
 
                             showNoSmsLeftOverlay = true;
                             ToggleAlertOnNoSms(true);
@@ -4438,6 +4459,7 @@ namespace windows_client.View
                         showNoSmsLeftOverlay = false;
                         ToggleAlertOnNoSms(false);
 
+                        newPin.Opacity = 1;
                         chatPaint.Opacity = 1;
                     }
 
@@ -4687,6 +4709,7 @@ namespace windows_client.View
             EnableDisableUI(false);
             llsMessages.IsHitTestVisible = true;
             chatPaint.Opacity = 0.5;
+            newPin.Opacity = 0.5;
         }
 
         private void groupChatAlive()
@@ -5810,7 +5833,10 @@ namespace windows_client.View
 
         private void chatPaintCancel_Click(object sender, RoutedEventArgs e)
         {
-            CancelBackgroundChange();
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
+                CancelBackgroundChange();
+            else
+                newPin_Close();
         }
 
         private void CancelBackgroundChange()
@@ -5827,15 +5853,20 @@ namespace windows_client.View
 
         private void chatPaintSave_Click(object sender, RoutedEventArgs e)
         {
-            chatBackgroundPopUp_Closed();
-
-            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            if (chatBackgroundPopUp.Visibility == Visibility.Visible)
             {
-                ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
-                SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID);
+                chatBackgroundPopUp_Closed();
 
-                App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+                if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+                {
+                    ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
+                    SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID);
+
+                    App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+                }
             }
+            else
+                createPin_Click();
         }
 
         void chatPaint_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -5872,6 +5903,8 @@ namespace windows_client.View
             });
 
             chatThemeHeader.Visibility = Visibility.Visible;
+            chatThemeHeaderTxt.Text = AppResources.ChatThemeHeader_Txt;
+            doneButton.Content = AppResources.AppBar_Done_Btn;
             userHeader.Visibility = Visibility.Collapsed;
 
             App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
@@ -5909,15 +5942,17 @@ namespace windows_client.View
             fileTransferIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
         }
 
-        private void createPin_Click(object sender, RoutedEventArgs e)
+        private void createPin_Click()
         {
             if (String.IsNullOrWhiteSpace(gcPin.GetNewPinMessage()))
             {
                 MessageBox.Show("Pin Can't be Empty");
                 _isNewPin = true;
-                gcPin.isShow(true,false);
-                pinHeader.Visibility = Visibility.Visible;
+                gcPin.isShow(true,false,true);
                 userHeader.Visibility = Visibility.Collapsed;
+                chatThemeHeader.Visibility = Visibility.Visible;
+                chatThemeHeaderTxt.Text = AppResources.PinHeader_Txt;
+                doneButton.Content = AppResources.Pin_Done_Txt;
             }
             else
             {
@@ -5925,9 +5960,10 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 sendPinMsg(convMessage);
 
-                gcPin.isShow(false, true);
+                tipControl.Visibility = Visibility.Collapsed;
+                gcPin.isShow(false, true,true);
 
-                pinHeader.Visibility = Visibility.Collapsed;
+                chatThemeHeader.Visibility = Visibility.Collapsed;
                 userHeader.Visibility = Visibility.Visible;
 
                 EnableDisableAppBar(true);
@@ -5943,8 +5979,11 @@ namespace windows_client.View
                 return;
 
             userHeader.Visibility = Visibility.Collapsed;
-            pinHeader.Visibility = Visibility.Visible;
+            chatThemeHeader.Visibility = Visibility.Visible;
+            chatThemeHeaderTxt.Text = AppResources.PinHeader_Txt;
+            doneButton.Content = AppResources.Pin_Done_Txt;
 
+            tipControl.Visibility = Visibility.Collapsed;
             _isNewPin = true;
             gcPin.isShow(true, false);
         }
@@ -5956,14 +5995,20 @@ namespace windows_client.View
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber)
                     && App.ViewModel.ConvMap[mContactNumber].MetaData != null
                     && App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID].Type != JTokenType.Null)
+                {
                     gcPin.isShow(false, true);
+                    tipControl.Visibility = Visibility.Collapsed;
+                }
                 else
+                {
                     gcPin.isShow(false, false);
+                    tipControl.Visibility = Visibility.Visible;
+                }
 
                 _isNewPin = false;
 
                 userHeader.Visibility = Visibility.Visible;
-                pinHeader.Visibility = Visibility.Collapsed;
+                chatThemeHeader.Visibility = Visibility.Collapsed;
 
                 EnableDisableAppBar(true);
             }
@@ -5981,7 +6026,11 @@ namespace windows_client.View
             LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
 
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
+            {
                 chatPaint.Opacity = 0.5;
+                newPin.Opacity = 0.5;
+            }
+
 
             if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
             {
@@ -7654,7 +7703,7 @@ namespace windows_client.View
 
         void ShowServerTips()
         {
-            if (TipManager.ChatScreenTip != null)
+            if (TipManager.ChatScreenTip != null && gcPin.Visibility == Visibility.Collapsed)
             {
                 _tipMode = TipManager.ChatScreenTip.TipType;
                 UpdateToolTip(true);
@@ -7676,6 +7725,7 @@ namespace windows_client.View
         }
 
         #endregion
+
     }
 
 }

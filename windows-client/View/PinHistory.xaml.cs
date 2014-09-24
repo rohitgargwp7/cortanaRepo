@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using windows_client.Misc;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.View
 {
@@ -25,9 +26,6 @@ namespace windows_client.View
         public PinHistory()
         {
             InitializeComponent();
-
-            progressBar.Opacity = 1;
-            progressBar.IsEnabled = true;
 
             mPubSub = App.HikePubSubInstance;
             registerListeners();
@@ -49,7 +47,6 @@ namespace windows_client.View
                     ConvMessage convMessage = (ConvMessage)vals[0];
                     if (convMessage.Msisdn == _grpMsisdn && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                     {
-                        
                         Deployment.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             try
@@ -80,7 +77,7 @@ namespace windows_client.View
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-         //Used to notify Silverlight that a property has changed.
+        //Used to notify Silverlight that a property has changed.
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -95,9 +92,51 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GC_PIN))
-                _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;            
+                _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
-            loadPinMessages();
+            progressBar.Opacity = 1;
+            progressBar.IsEnabled = true;
+
+
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.DoWork += (s, ev) =>
+                {
+                    loadPinMessages();
+                };
+            bw.RunWorkerAsync();
+        }
+
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn))
+            {
+                JObject metadata = App.ViewModel.ConvMap[_grpMsisdn].MetaData;
+
+                if (metadata != null)
+                {
+                    metadata[HikeConstants.UNREADPINS] = 0;
+                    metadata[HikeConstants.READ] = true;
+                }
+
+                App.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;
+            }
+
+            
+        }
+
+        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (_pinMessages == null)
+            {
+                nopinImage.Visibility = Visibility.Visible;
+                pinLongList.Visibility = Visibility.Collapsed;
+            }
+
+            progressBar.Opacity = 0;
+            progressBar.IsEnabled = false;
             pinLongList.ItemsSource = _pinMessages;
         }
 
@@ -112,21 +151,24 @@ namespace windows_client.View
 
                 foreach (ConvMessage convMessage in _pinMessages)
                 {
-                    gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                    convMessage.GroupMemberName = gp.Name;
+                    if (!convMessage.IsSent)
+                    {
+                        gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
+                        convMessage.GroupMemberName = gp.Name;
+                    }
+
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains("lm"))
+                    {
+                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                        
+                        if (message.Length > 0)
+                            convMessage.Message = message;
+                    }
                 }
-            }
-            else
-            {
-                nopinImage.Visibility = Visibility.Visible;
-                pinLongList.Visibility = Visibility.Collapsed;
             }
 
             if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && App.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
                 App.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
-
-            progressBar.Opacity = 0;
-            progressBar.IsEnabled = false;
         }
     }
 }
