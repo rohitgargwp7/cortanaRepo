@@ -28,10 +28,10 @@ namespace windows_client.View
             InitializeComponent();
 
             mPubSub = App.HikePubSubInstance;
-            registerListeners();
+            RegisterListeners();
         }
 
-        private void registerListeners()
+        private void RegisterListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
         }
@@ -101,6 +101,18 @@ namespace windows_client.View
                     loadPinMessages();
                 };
             bw.RunWorkerAsync();
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
+            base.OnBackKeyPress(e);
+        }
+
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
+            base.OnRemovedFromJournal(e);
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

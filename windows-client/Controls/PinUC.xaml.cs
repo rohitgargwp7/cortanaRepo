@@ -62,7 +62,7 @@ namespace windows_client.Controls
         /// <param name="showNewPin"></param>
         /// <param name="showOldPin"></param>
         /// <param name="forceShow">forcefully displays pin</param>
-        public void isShow(bool showNewPin, bool showOldPin, bool forceShow = false)
+        public void IsShow(bool showNewPin, bool showOldPin, bool forceShow = false)
         {
             if (showNewPin || showOldPin)
             {
