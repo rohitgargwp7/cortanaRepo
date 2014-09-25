@@ -86,7 +86,8 @@ namespace windows_client.Model
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
             MESSAGE_STATUS,
-            UNREAD_NOTIFICATION
+            UNREAD_NOTIFICATION,
+            PIN_MESSAGE
         }
 
         public enum MessageType
@@ -119,8 +120,13 @@ namespace windows_client.Model
         {
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
+
             JToken typeToken = null;
             string type = null;
+
+            if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
+                return ParticipantInfoState.PIN_MESSAGE;
+
             if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
@@ -517,11 +523,33 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinMessageSenderName
+        {
+            get
+            {
+                if (this.IsSent)
+                    return AppResources.You_Txt;
+
+                if (this.GroupMemberName == null)
+                    return this.GroupParticipant;
+                else
+                    return this.GroupMemberName;    
+            }
+        }
+
+        public string DirectTimeStampStr
+        {
+            get
+            {
+                return TimeUtils.getTimeStringForChatThread(_timestamp);
+            }
+        }
+
         public string TimeStampStr
         {
             get
             {
-                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE)
+                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE || participantInfoState == ParticipantInfoState.PIN_MESSAGE)
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                 {
@@ -1199,16 +1227,16 @@ namespace windows_client.Model
 
         public BitmapImage StatusUpdateImage
         {
-            set
-            {
-                _statusUpdateImage = value;
-            }
             get
             {
                 if (_statusUpdateImage != null)
                     return _statusUpdateImage;
                 else
                     return MoodsInitialiser.Instance.GetMoodImageForMoodId(MoodsInitialiser.GetMoodId(metadataJsonString));
+            }
+            set
+            {
+                _statusUpdateImage = value;
             }
         }
 
@@ -1325,6 +1353,7 @@ namespace windows_client.Model
             {
                 _groupMemeberName = value;
                 NotifyPropertyChanged("GroupMemberName");
+                NotifyPropertyChanged("GCPinMessageSenderName");
                 IsGroup = true;
             }
         }
@@ -1539,7 +1568,8 @@ namespace windows_client.Model
             {
                 if (GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
-                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                     return ChatForegroundColor;
                 else
                 {
@@ -1686,6 +1716,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
                         {
@@ -1718,6 +1749,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.Thumbnail != null)
                             singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
@@ -1741,6 +1773,11 @@ namespace windows_client.Model
                 data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
                 obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
             }
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
+            {
+                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
+            }
+
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
 
@@ -1973,7 +2010,6 @@ namespace windows_client.Model
 
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                     fileName = AppResources.ContactTransfer_Text;
-
                             }
                         }
 
@@ -1992,7 +2028,7 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -2006,7 +2042,7 @@ namespace windows_client.Model
                         else
                         {
                             this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))

@@ -60,6 +60,7 @@ namespace windows_client
         public static readonly string FILE_KEY = "fk";
         public static readonly string FILE_SIZE = "fs";
         public static readonly string FILE_THUMBNAIL = "tn";
+        public static readonly string SOURCE = "source";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
         public static readonly string FILE_PLAY_TIME = "pt";
@@ -167,7 +168,6 @@ namespace windows_client
         public static readonly string ST_UI_EVENT = "uiEvent";
         public static readonly string ST_CONFIG_EVENT = "config";
         public static readonly string ST_NETWORK_EVENT = "nw";
-        public static readonly string ST_FILE_TRANSFER = "ft";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -187,10 +187,17 @@ namespace windows_client
         public static readonly string VERSION = "version";
         public static readonly string BLACK_THEME = "black_theme";
 
+        public static readonly string ACTIVATE_HIDDEN_MODE_ON_EXIT = "act_hidden_mode_exit";
         public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
+
+        #region ConvObject_MetaData
+        public static readonly string PINID = "pinId";
+        public static readonly string READPIN = "readPin";
+        public static readonly string UNREADPINS = "unreadpins";
+        #endregion
 
         public static string FAQS_LINK
         {
@@ -363,6 +370,7 @@ namespace windows_client
         public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
+        public static readonly string GC_PIN = "pin";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
@@ -415,6 +423,7 @@ namespace windows_client
         public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
         public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
         public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
         #endregion
 
         #region ANALYTICS EVENTS KEYS
@@ -437,7 +446,6 @@ namespace windows_client
         public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
         public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
         public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
-        public static readonly string FT_VIDEO_FILE = "SendVideo";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";

@@ -151,6 +151,7 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
@@ -830,7 +831,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -1221,7 +1222,7 @@ namespace windows_client
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
-                
+
                 //check if same image is set
                 if (cObj.Avatar != null)
                 {
@@ -1565,7 +1566,7 @@ namespace windows_client
                                 {
                                     if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
                                         tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-                                
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -2019,12 +2020,12 @@ namespace windows_client
 
                     if (!data.TryGetValue(TIPS_HEADER, out headertext))
                         headertext = String.Empty;
-                    
+
                     JToken bodyText;
-                    
+
                     if (!data.TryGetValue(TIPS_BODY, out bodyText))
                         bodyText = String.Empty;
-                    
+
                     TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
                 }
                 catch (Exception e)

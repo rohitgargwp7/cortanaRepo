@@ -18,16 +18,69 @@ namespace windows_client.Model
         private string _contentType;
         private byte[] _thumbnail;
         private volatile AttachmentState _fileState;
+        private volatile AttachemntSource _fileSource;
 
         public enum AttachmentState
         {
-            FAILED = 0,  /* message sent to server */
-            STARTED, /* message could not be sent, manually retry */
-            COMPLETED, /* message received by server */
+            /// <summary>
+            /// File transfer failed.
+            /// </summary>
+            FAILED = 0,
+
+            /// <summary>
+            /// File transfer started.
+            /// </summary>
+            STARTED,
+            
+            /// <summary>
+            /// File transfer completed.
+            /// </summary>
+            COMPLETED,
+            
+            /// <summary>
+            /// File transfer was cancelled.
+            /// </summary>
             CANCELED,
+
+            /// <summary>
+            /// File transfer was paused. 
+            /// This will be automatically retried based on user settings.
+            /// </summary>
             PAUSED,
+
+            /// <summary>
+            /// File transfer was manually paused. 
+            /// This will be automatically retried till user taps to retry.
+            /// </summary>
             MANUAL_PAUSED,
+
+            /// <summary>
+            /// File transfer has not started.
+            /// </summary>
             NOT_STARTED
+        }
+
+        public enum AttachemntSource
+        {
+            /// <summary>
+            /// The file attachment was recorded from camera.
+            /// </summary>
+            CAMERA,
+
+            /// <summary>
+            /// The file attachment was selected from gallery.
+            /// </summary>
+            GALLERY,
+
+            /// <summary>
+            /// The file attachment was forwarded.
+            /// </summary>
+            FORWARDED,
+
+            /// <summary>
+            /// The file attachment was generated using other means.
+            /// </summary>
+            OTHER
         }
 
         [DataMember]
@@ -126,6 +179,20 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
+        public AttachemntSource FileSource
+        {
+            get
+            {
+                return _fileSource;
+            }
+            set
+            {
+                if (_fileSource != value)
+                    _fileSource = value;
+            }
+        }
+
         BitmapImage _thumbnailImage;
         public BitmapImage ThumbnailImage
         {
@@ -149,27 +216,28 @@ namespace windows_client.Model
         }
 
         //newly received messages
-        public Attachment(string fileName, string fileKey, byte[] thumbnailBytes, string contentType, AttachmentState attachmentState, int fileSize)
+        public Attachment(string fileName, string fileKey, byte[] thumbnailBytes, string contentType, AttachmentState attachmentState, AttachemntSource source, int fileSize)
         {
-            this.FileName = fileName;
-            this.FileKey = fileKey;
-            this.Thumbnail = thumbnailBytes;
-            this.ContentType = contentType;
-            this.FileState = attachmentState;
-            this.FileSize = fileSize;
+            FileName = fileName;
+            FileKey = fileKey;
+            Thumbnail = thumbnailBytes;
+            ContentType = contentType;
+            FileState = attachmentState;
+            FileSize = fileSize;
+            FileSource = source;
         }
 
-        public Attachment(string fileName, byte[] thumbnailBytes, AttachmentState attachmentState, int fileSize)
+        public Attachment(string fileName, byte[] thumbnailBytes, AttachmentState attachmentState, AttachemntSource source, int fileSize)
         {
-            this.FileName = fileName;
-            this.Thumbnail = thumbnailBytes;
-            this.FileState = attachmentState;
-            this.FileSize = fileSize;
+            FileName = fileName;
+            Thumbnail = thumbnailBytes;
+            FileState = attachmentState;
+            FileSize = fileSize;
+            FileSource = source;
         }
 
         public Attachment()
         {
-            // TODO: Complete member initialization
         }
 
         public void Write(BinaryWriter writer)
@@ -177,11 +245,14 @@ namespace windows_client.Model
             writer.WriteString(FileKey);
             writer.WriteString(FileName);
             writer.WriteString(ContentType);
+            
             writer.Write(_thumbnail != null ?_thumbnail.Length:0);
             if(_thumbnail != null)
                 writer.Write(Thumbnail);
+            
             writer.Write((int)FileState);
             writer.Write(FileSize);
+            writer.Write((int)FileSource);
         }
 
         public void Read(BinaryReader reader)
@@ -189,12 +260,15 @@ namespace windows_client.Model
             _fileKey = reader.ReadString();
             _fileName = reader.ReadString();
             _contentType = reader.ReadString();
+            
             int count = reader.ReadInt32();
             if (count != 0)
                 _thumbnail = reader.ReadBytes(count);
             else
                 _thumbnail = null;
+            
             _fileState = (AttachmentState)reader.ReadInt32();
+            
             try
             {
                 _fileSize = reader.ReadInt32();
@@ -202,6 +276,27 @@ namespace windows_client.Model
             catch
             {
                 _fileSize = 0;
+            }
+
+            try
+            {
+                _fileSource = (AttachemntSource)reader.ReadInt32();
+            }
+            catch
+            {
+                _fileSource = AttachemntSource.CAMERA;
+            }
+        }
+
+        public static string GetAttachmentSource(AttachemntSource source)
+        {
+            switch(source)
+            {
+                case AttachemntSource.CAMERA: return "cam";
+                case AttachemntSource.GALLERY: return "gal";
+                case AttachemntSource.FORWARDED: return "fwd";
+                case AttachemntSource.OTHER: return "oth";
+                default: return String.Empty;
             }
         }
     }

@@ -2228,6 +2228,12 @@ Download it like asap from http://hike.in!</value>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>create pin</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>pin</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
@@ -2287,6 +2293,12 @@ Download it like asap from http://hike.in!</value>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Saving failed</value>
   </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>share something important...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>pin history</value>
+  </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
@@ -2301,5 +2313,13 @@ Download it like asap from http://hike.in!</value>
   <data name="EmailConvError_Txt" xml:space="preserve">
     <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
+  </data>
+
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>Pin Can't be Empty</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>Unable to upload file</value>
   </data>
 </root>
