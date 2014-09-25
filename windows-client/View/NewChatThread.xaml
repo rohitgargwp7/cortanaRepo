@@ -1153,8 +1153,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 
                                                 <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
-                                                
-                                                <Grid Grid.Column="1" Margin="12,0,12,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+
+                                            <Grid Grid.Column="1" Margin="12,0,12,5" VerticalAlignment="Center" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
@@ -1171,7 +1171,7 @@
                                                         <TextBlock Grid.Column="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top" HorizontalAlignment="Right" />
                                                     </Grid>
                                                     <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
-                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"/>
+                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"  />
                                                     
                                                 </Grid>
                                             </Grid>

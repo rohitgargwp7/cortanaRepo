@@ -1979,7 +1979,7 @@ namespace windows_client.View
                 if (clearChatItem != null && clearChatItem.IsEnabled)
                     clearChatItem.IsEnabled = false;
 
-                if (pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
+                if (isGroupChat && pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
                     pinHistoryMenuItem.IsEnabled = false;
 
                 if (emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
@@ -2235,7 +2235,7 @@ namespace windows_client.View
             if (clearChatItem != null && !clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = true;
 
-            if (pinHistoryMenuItem != null && !pinHistoryMenuItem.IsEnabled)
+            if (isGroupChat && pinHistoryMenuItem != null && !pinHistoryMenuItem.IsEnabled)
                 pinHistoryMenuItem.IsEnabled = true;
 
             if (nudgeTut.Visibility == Visibility.Visible)
@@ -3243,7 +3243,7 @@ namespace windows_client.View
             if (ocMessages.Count == 0 && clearChatItem != null && clearChatItem.IsEnabled)
                 clearChatItem.IsEnabled = false;
 
-            if (ocMessages.Count == 0 && pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
+            if (ocMessages.Count == 0 && isGroupChat && pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
                 pinHistoryMenuItem.IsEnabled = false;
 
             if (ocMessages.Count == 0 && emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
@@ -7767,6 +7767,12 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void PinTemplate_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.GC_PIN] = mContactNumber;
+            NavigationService.Navigate(new Uri("/View/PinHistory.xaml", UriKind.Relative));
+        }
 
     }
 
