@@ -95,8 +95,7 @@ namespace windows_client.View
         private void hideChatOnExitToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.Off;
-            App.appSettings.Remove(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
-            App.appSettings.Save();
+            App.RemoveKeyFromAppSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
         }
 
         #region Hidden Mode Settings

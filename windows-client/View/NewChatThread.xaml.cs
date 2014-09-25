@@ -7473,5 +7473,4 @@ namespace windows_client.View
 
         #endregion
     }
-
 }
