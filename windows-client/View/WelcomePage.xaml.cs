@@ -68,7 +68,7 @@ namespace windows_client
             {
                 utils.Utils.savedAccountCredentials(obj);
                 if (App.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
-                    App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
+                    App.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -175,7 +175,7 @@ namespace windows_client
 
             try
             {
-                if (App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
+                if (App.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
                     MiscDBUtil.clearDatabase();
                 //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }

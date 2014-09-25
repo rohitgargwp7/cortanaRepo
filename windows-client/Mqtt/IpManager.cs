@@ -14,7 +14,7 @@ namespace windows_client.Mqtt
         private IpManager()
         {
             string[] iplist = null;
-            if (App.appSettings.TryGetValue(App.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
+            if (App.appSettings.TryGetValue(HikeConstants.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
             {
                 ProductionIps = iplist;
             }

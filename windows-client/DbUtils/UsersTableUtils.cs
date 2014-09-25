@@ -19,7 +19,7 @@ namespace windows_client.DbUtils
         public static void block(string msisdn)
         {
             Blocked userBlocked = new Blocked(msisdn);
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
                 try
@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
 
         public static void unblock(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res == null || res.Count == 0)
@@ -47,7 +47,7 @@ namespace windows_client.DbUtils
 
         public static void addContact(ContactInfo user)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 context.users.InsertOnSubmit(user);
                 context.SubmitChanges();
@@ -60,7 +60,7 @@ namespace windows_client.DbUtils
                 return;
             try
             {
-                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
+                using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
                 {
                     context.users.InsertAllOnSubmit(contacts);
                     context.SubmitChanges();
@@ -74,7 +74,7 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> GetAllHikeContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -91,7 +91,7 @@ namespace windows_client.DbUtils
         }
         public static List<ContactInfo> GetAllHikeContactsOrdered()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -108,7 +108,7 @@ namespace windows_client.DbUtils
         }
         public static List<ContactInfo> getAllContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -126,7 +126,7 @@ namespace windows_client.DbUtils
 
         public static Int32 getHikeContactCount()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN select user;
                 return users.Count();
@@ -135,7 +135,7 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsByGroup()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 var users = from user in context.users orderby user.Name select user;
                 return users.ToList<ContactInfo>();
@@ -144,7 +144,7 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 var users = from user in context.users where user.OnHike == false orderby user.Name select user;
                 return users.ToList<ContactInfo>();
@@ -153,7 +153,7 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -171,7 +171,7 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getHikeContactInfoFromMSISDN(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
@@ -189,7 +189,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
                 SubmitWithConflictResolve(context);
@@ -204,7 +204,7 @@ namespace windows_client.DbUtils
             {
                 return;
             }
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 foreach (string m in msisdns)
                 {
@@ -224,7 +224,7 @@ namespace windows_client.DbUtils
 
         public static List<Blocked> getBlockList()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockList(context).ToList<Blocked>();
                 return (res == null || res.Count == 0) ? null : res;
@@ -233,7 +233,7 @@ namespace windows_client.DbUtils
 
         public static void deleteBlocklist()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.SubmitChanges();
@@ -244,7 +244,7 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 if (res == null || res.Count == 0)
@@ -259,7 +259,7 @@ namespace windows_client.DbUtils
 
         public static bool isUserBlocked(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res != null && res.Count > 0)
@@ -275,7 +275,7 @@ namespace windows_client.DbUtils
             if (ids == null || ids.Count == 0)
                 return;
             bool shouldSubmit = false;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 //using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
@@ -302,7 +302,7 @@ namespace windows_client.DbUtils
 
             try
             {
-                using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+                using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {

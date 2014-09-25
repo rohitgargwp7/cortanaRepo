@@ -348,7 +348,7 @@ namespace windows_client.DbUtils
             {
                 var fInfo = obj as FileInfoBase;
 
-                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+                using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
                     var id = Convert.ToInt64(fInfo.MessageId);
                     ConvMessage convMessage = DbCompiledQueries.GetMessagesForMsgId(context, id).FirstOrDefault<ConvMessage>();

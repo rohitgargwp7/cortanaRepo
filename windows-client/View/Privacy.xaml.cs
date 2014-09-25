@@ -22,7 +22,7 @@ namespace windows_client.View
             InitializeComponent();
 
             bool value = true;
-            if (!App.appSettings.TryGetValue(App.LAST_SEEN_SEETING, out value))
+            if (!App.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
                 value = true;
             lastSeenTimeStampToggle.IsChecked = value;
             this.lastSeenTimeStampToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
@@ -31,7 +31,7 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
-            value = App.appSettings.TryGetValue(App.DISPLAY_PIC_FAV_ONLY, out value);
+            value = App.appSettings.TryGetValue(HikeConstants.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
 
@@ -55,7 +55,7 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Favorites_Txt;
-            App.appSettings.Remove(App.LAST_SEEN_SEETING);
+            App.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
             App.appSettings.Save();
 
             JObject obj = new JObject();
@@ -69,7 +69,7 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Nobody_Txt;
-            App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
+            App.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -198,7 +198,7 @@ namespace windows_client.View
         private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Favorites_Txt;
-            App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
+            App.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -212,7 +212,7 @@ namespace windows_client.View
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Everyone_Txt;
-            App.RemoveKeyFromAppSettings(App.DISPLAY_PIC_FAV_ONLY);
+            App.RemoveKeyFromAppSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);

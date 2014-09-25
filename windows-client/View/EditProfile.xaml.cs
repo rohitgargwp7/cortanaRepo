@@ -37,7 +37,7 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            App.appSettings.TryGetValue(App.GENDER, out userGender);
+            App.appSettings.TryGetValue(HikeConstants.GENDER, out userGender);
 
             if (userGender == "m" || userGender == "f")
             {
@@ -71,13 +71,13 @@ namespace windows_client.View
 
         private void prepopulate()
         {
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName);
+            App.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out userName);
             name.Text = string.IsNullOrWhiteSpace(userName) ? string.Empty : userName;
 
             phone.Text = App.MSISDN;
 
-            if (App.appSettings.Contains(App.EMAIL))
-                userEmail = (string)App.appSettings[App.EMAIL];
+            if (App.appSettings.Contains(HikeConstants.EMAIL))
+                userEmail = (string)App.appSettings[HikeConstants.EMAIL];
             email.Text = userEmail;
 
             if (userGender == "m")
@@ -121,7 +121,7 @@ namespace windows_client.View
             {
                 if (ValidateEmail(email.Text)) // check if email is valid
                 {
-                    obj[App.EMAIL] = email.Text;
+                    obj[HikeConstants.EMAIL] = email.Text;
                     shouldSendProfile = true;
                 }
                 else //if email is not valid
@@ -135,7 +135,7 @@ namespace windows_client.View
             // if gender is changed
             if (genderIndex != genderListPicker.SelectedIndex)
             {
-                obj[App.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
+                obj[HikeConstants.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
                 shouldSendProfile = true;
             }
 
@@ -187,7 +187,7 @@ namespace windows_client.View
                     {
                         userName = name.Text;
                         App.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
-                        App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, userName);
+                        App.WriteToIsoStorageSettings(HikeConstants.ACCOUNT_NAME, userName);
 
                         // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
                         PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED] = userName;
@@ -238,14 +238,14 @@ namespace windows_client.View
                     if (userEmail != email.Text)
                     {
                         userEmail = email.Text;
-                        App.WriteToIsoStorageSettings(App.EMAIL, email.Text);
+                        App.WriteToIsoStorageSettings(HikeConstants.EMAIL, email.Text);
                     }
 
                     if (genderIndex != genderListPicker.SelectedIndex)
                     {
                         genderIndex = genderListPicker.SelectedIndex;
                         string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : "f");
-                        App.WriteToIsoStorageSettings(App.GENDER, gender);
+                        App.WriteToIsoStorageSettings(HikeConstants.GENDER, gender);
 
                         if (genderListPicker.Items.Count == 3) // if select is there remove it
                         {
@@ -270,8 +270,8 @@ namespace windows_client.View
                 else // failure from server
                 {
                     MakeFieldsReadOnly(false);
-                    if (App.appSettings.Contains(App.EMAIL))
-                        email.Text = (string)App.appSettings[App.EMAIL];
+                    if (App.appSettings.Contains(HikeConstants.EMAIL))
+                        email.Text = (string)App.appSettings[HikeConstants.EMAIL];
 
                     shellProgress.IsIndeterminate = false;
                     

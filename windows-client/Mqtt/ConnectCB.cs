@@ -21,11 +21,11 @@ namespace windows_client.Mqtt
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
                 bool isPresent = false;
-                if (App.appSettings.Contains(App.IS_DB_CREATED))
+                if (App.appSettings.Contains(HikeConstants.IS_DB_CREATED))
                     isPresent = true;
                 App.ClearAppSettings();
                 if (isPresent)
-                    App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+                    App.WriteToIsoStorageSettings(HikeConstants.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 App.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();

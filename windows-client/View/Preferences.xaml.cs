@@ -30,7 +30,7 @@ namespace windows_client.View
         private void initializeBaseOnState()
         {
             bool isLocationEnabled = true;
-            if (!App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out isLocationEnabled))
+            if (!App.appSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out isLocationEnabled))
                 isLocationEnabled = true;
 
             this.locationToggle.IsChecked = isLocationEnabled;
@@ -41,7 +41,7 @@ namespace windows_client.View
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
 
             byte firstSetting;
-            if (App.appSettings.TryGetValue(App.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
+            if (App.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -49,7 +49,7 @@ namespace windows_client.View
                     listSettingsValue.Add(string.Format(AppResources.Settings_StatusUpdate_EveryXHour_txt, firstSetting));
             }
 
-            if (App.appSettings.TryGetValue(App.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
+            if (App.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -58,22 +58,22 @@ namespace windows_client.View
             }
 
             bool value;
-            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out value))
+            if (!App.appSettings.TryGetValue(HikeConstants.AUTO_DOWNLOAD_SETTING, out value))
                 value = true;
             autoDownloadToggle.IsChecked = value;
             this.autoDownloadToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out value))
+            if (!App.appSettings.TryGetValue(HikeConstants.AUTO_RESUME_SETTING, out value))
                 value = true;
             autoResumeToggle.IsChecked = value;
             this.autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out value))
+            if (!App.appSettings.TryGetValue(HikeConstants.ENTER_TO_SEND, out value))
                 value = true;
             enterToSendToggle.IsChecked = value;
             this.enterToSendToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            if (!App.appSettings.TryGetValue(App.SEND_NUDGE, out value))
+            if (!App.appSettings.TryGetValue(HikeConstants.SEND_NUDGE, out value))
                 value = true;
             nudgeSettingToggle.IsChecked = value;
             this.nudgeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
@@ -95,7 +95,7 @@ namespace windows_client.View
         private void locationToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.On;
-            App.appSettings.Remove(App.USE_LOCATION_SETTING);
+            App.appSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
             App.appSettings.Save();
 
             App.ViewModel.LoadCurrentLocation(); // load current location
@@ -104,7 +104,7 @@ namespace windows_client.View
         private void locationToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.locationToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
+            App.WriteToIsoStorageSettings(HikeConstants.USE_LOCATION_SETTING, false);
             App.RemoveKeyFromAppSettings(HikeConstants.LOCATION_DEVICE_COORDINATE);
         }
         private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
@@ -116,13 +116,13 @@ namespace windows_client.View
         private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING);
+            App.RemoveKeyFromAppSettings(HikeConstants.AUTO_DOWNLOAD_SETTING);
         }
 
         private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.autoDownloadToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
+            App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_SETTING, false);
         }
 
         private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
@@ -135,7 +135,7 @@ namespace windows_client.View
         private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.autoResumeToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.AUTO_RESUME_SETTING);
+            App.RemoveKeyFromAppSettings(HikeConstants.AUTO_RESUME_SETTING);
 
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
         }
@@ -143,7 +143,7 @@ namespace windows_client.View
         private void autoResumeToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.autoResumeToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.AUTO_RESUME_SETTING, false);
+            App.WriteToIsoStorageSettings(HikeConstants.AUTO_RESUME_SETTING, false);
         }
 
         private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)
@@ -156,7 +156,7 @@ namespace windows_client.View
         private void enterToSendToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.ENTER_TO_SEND);
+            App.RemoveKeyFromAppSettings(HikeConstants.ENTER_TO_SEND);
 
             App.SendEnterToSendStatusToServer();
         }
@@ -164,7 +164,7 @@ namespace windows_client.View
         private void enterToSendToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.enterToSendToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.ENTER_TO_SEND, false);
+            App.WriteToIsoStorageSettings(HikeConstants.ENTER_TO_SEND, false);
             App.SendEnterToSendStatusToServer();
         }
 
@@ -178,13 +178,13 @@ namespace windows_client.View
         private void nudgeSettingToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.nudgeSettingToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.SEND_NUDGE);
+            App.RemoveKeyFromAppSettings(HikeConstants.SEND_NUDGE);
         }
 
         private void nudgeSettingToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.nudgeSettingToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SEND_NUDGE, false);
+            App.WriteToIsoStorageSettings(HikeConstants.SEND_NUDGE, false);
         }
 
         private void blackSettingToggle_Loaded(object sender, RoutedEventArgs e)
