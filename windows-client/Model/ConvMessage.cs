@@ -1716,6 +1716,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
                         {
@@ -1748,6 +1749,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.Thumbnail != null)
                             singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
@@ -2008,7 +2010,6 @@ namespace windows_client.Model
 
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                     fileName = AppResources.ContactTransfer_Text;
-
                             }
                         }
 
@@ -2027,7 +2028,7 @@ namespace windows_client.Model
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -2041,7 +2042,7 @@ namespace windows_client.Model
                         else
                         {
                             this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
