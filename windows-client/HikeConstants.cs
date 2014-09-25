@@ -193,6 +193,12 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
+        #region ConvObject_MetaData
+        public static readonly string PINID = "pinId";
+        public static readonly string READPIN = "readPin";
+        public static readonly string UNREADPINS = "unreadpins";
+        #endregion
+
         public static string FAQS_LINK
         {
             get
@@ -364,6 +370,7 @@ namespace windows_client
         public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
+        public static readonly string GC_PIN = "pin";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
@@ -416,6 +423,7 @@ namespace windows_client
         public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
         public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
         public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
         #endregion
 
         #region ANALYTICS EVENTS KEYS

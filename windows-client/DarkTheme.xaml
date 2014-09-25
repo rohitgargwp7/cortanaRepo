@@ -21,9 +21,8 @@ private copy.
     <system:String x:Key="ChatsTabImageNotSelected">/View/images/ConversationPage/chat_NotSelectedBlack.png</system:String>
     <system:String x:Key="FriendsTabImageNotSelected">/View/images/ConversationPage/friend_NotSelectedBlack.png</system:String>
     <system:String x:Key="StatusTabImageNotSelected">/View/images/ConversationPage/status_NotSelectedBlack.png</system:String>
-    
-    <Color x:Key="PhoneSubtleColor">#99ffffff</Color>
 
+    <Color x:Key="PhoneSubtleColor">#99ffffff</Color>
     <Color x:Key="PhoneTextBoxColor">#BFFFFFFF</Color>
     <Color x:Key="PhoneTextBoxEditBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="PhoneTextBoxEditBorderColor">#FFFFFFFF</Color>
@@ -46,7 +45,7 @@ private copy.
 
     <Color x:Key="AppBarBlackBackgroundColor">#232323</Color>
     <Color x:Key="AppBarBlackForegroundColor">#ffffff</Color>
-    
+
     <Color x:Key="HikeBlackColor">#2c313d</Color>
 
     <SolidColorBrush x:Key="FriendBGColor" Color="#232323"/>
@@ -72,7 +71,7 @@ private copy.
     <SolidColorBrush x:Key="HikeCheckBoxBrush" Color="White"/>
     <SolidColorBrush x:Key="HikeFreeSMSCardBrush" Color="#232323"/>
     <SolidColorBrush x:Key="HikeEarnFreeSMSBrush" Color="White"/>
-    
+
     <SolidColorBrush x:Key="InAppToastBgBrush" Color="#353535"/>
 
     <SolidColorBrush x:Key="AppBarBackground" Color="{StaticResource AppBarBlackBackgroundColor}"/>
@@ -284,7 +283,7 @@ private copy.
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="HyperlinkButton">
         <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -1945,6 +1944,14 @@ private copy.
         <Setter Property="Background" Value="{StaticResource HikeBlue}"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="MinWidth" Value="22"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="2"/>
+    </Style>
+
+    <Style x:Key="UnreadPinCounterContainerStyle" TargetType="Border">
+        <Setter Property="Background" Value="#e65939"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="MinWidth" Value="30"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="2"/>
     </Style>
