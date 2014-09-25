@@ -949,7 +949,7 @@ namespace windows_client.View
             msisdn = App.MSISDN;
 
             string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            App.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
 
             if (name != null)
             {

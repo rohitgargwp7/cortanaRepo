@@ -162,7 +162,7 @@ namespace windows_client.View
             App.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.ClearStickerHelperInstance();
             App.ClearAppSettings();
-            App.appSettings[App.IS_DB_CREATED] = true;
+            App.appSettings[HikeConstants.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);

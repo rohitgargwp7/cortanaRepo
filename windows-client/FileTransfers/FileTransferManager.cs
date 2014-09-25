@@ -235,7 +235,7 @@ namespace windows_client.FileTransfers
                     fileInfo.StatusChanged += File_StatusChanged;
                     fileInfo.CheckIfComplete();
                 }
-                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
@@ -289,7 +289,7 @@ namespace windows_client.FileTransfers
 
         public void PopulatePreviousTasks()
         {
-            if (!App.appSettings.Contains(App.AUTO_RESUME_SETTING))
+            if (!App.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING))
             {
                 BackgroundWorker worker = new BackgroundWorker();
 

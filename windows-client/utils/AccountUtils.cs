@@ -236,8 +236,8 @@ namespace windows_client.utils
 
         public static void AddToken(HttpWebRequest req)
         {
-            if (App.appSettings.Contains(App.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)App.appSettings[App.UID_SETTING];
+            if (App.appSettings.Contains(HikeConstants.UID_SETTING))
+                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)App.appSettings[HikeConstants.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
@@ -1089,7 +1089,7 @@ namespace windows_client.utils
                             foreach (var entry in prefContacts)
                             {
                                 var msisdn = (string)entry;
-                                if (msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
+                                if (msisdn != (string)App.appSettings[HikeConstants.MSISDN_SETTING]) // do not add own number
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();

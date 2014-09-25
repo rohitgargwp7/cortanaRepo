@@ -11,6 +11,7 @@ using System.Diagnostics;
 using windows_client.Misc;
 using windows_client.Languages;
 using Microsoft.Phone.Shell;
+using windows_client.Constants;
 
 namespace windows_client.utils
 {

@@ -23,7 +23,7 @@ namespace windows_client.View
             App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
 
             bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -44,7 +44,7 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Visible;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            App.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Collapsed;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            App.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -100,7 +100,7 @@ namespace windows_client.View
         private void initializeCredits()
         {
             int creditsRemaining = 0;
-            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 

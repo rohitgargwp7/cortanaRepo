@@ -112,13 +112,13 @@ namespace windows_client.View
                 showProTip();
 
             int tipCount;
-            App.appSettings.TryGetValue(App.PRO_TIP_COUNT, out tipCount);
+            App.appSettings.TryGetValue(HikeConstants.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
 
             App.ViewModel.ShowTypingNotification += ShowTypingNotification;
             App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out _userName);
+            appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
             string password = App.ViewModel.Password;
@@ -135,7 +135,7 @@ namespace windows_client.View
         void ViewModel_statusNotificationsStatusChanged(object sender, EventArgs e)
         {
             byte statusSettingsValue;
-            App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            App.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -262,7 +262,7 @@ namespace windows_client.View
             }
 
             byte statusSettingsValue;
-            _isStatusUpdatesNotMute = App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
+            _isStatusUpdatesNotMute = App.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 2;
@@ -425,7 +425,7 @@ namespace windows_client.View
             if (h2oFTUECard.Visibility == Visibility.Collapsed)
             {
                 bool showFreeSMS = true;
-                App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+                App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
                 if (showFreeSMS && App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
                     h2oFTUECard.Visibility = Visibility.Visible;
             }
@@ -517,7 +517,7 @@ namespace windows_client.View
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
-            if (!App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
+            if (!App.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
                 statusSettingsValue = (byte)1;
             muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             muteStatusMenu.Click += muteStatusMenu_Click;
@@ -605,12 +605,12 @@ namespace windows_client.View
 
             if (_isStatusUpdatesNotMute)
             {
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)1);
+                App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
             else
             {
-                App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SETTING, (byte)0);
+                App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SETTING, (byte)0);
                 settingsValue = -1;
             }
 
@@ -1138,13 +1138,13 @@ namespace windows_client.View
                 if (App.newChatThreadPage == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
                     bool isHikeJingleEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    App.appSettings.TryGetValue<bool>(HikeConstants.HIKEJINGLE_PREF, out isHikeJingleEnabled);
                     if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                    App.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && App.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
@@ -2400,7 +2400,7 @@ namespace windows_client.View
                     });
 
                     _proTipCount = value;
-                    App.WriteToIsoStorageSettings(App.PRO_TIP_COUNT, value);
+                    App.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_COUNT, value);
                 }
             }
         }
@@ -2779,7 +2779,7 @@ namespace windows_client.View
 
             App.ViewModel.StatusList.RemoveAt(i);
 
-            App.WriteToIsoStorageSettings(App.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
+            App.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
 
             ProTipCount = 0;
 
@@ -2788,10 +2788,10 @@ namespace windows_client.View
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
                 {
-                    if (App.appSettings.Contains(App.PRO_TIP))
+                    if (App.appSettings.Contains(HikeConstants.PRO_TIP))
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
-                        App.appSettings.Remove(App.PRO_TIP);
+                        App.appSettings.Remove(HikeConstants.PRO_TIP);
                         App.appSettings.Save();
                     }
                 };

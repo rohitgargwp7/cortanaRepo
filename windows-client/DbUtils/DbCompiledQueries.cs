@@ -7,8 +7,8 @@ namespace windows_client.DbUtils
 {
     public class DbCompiledQueries
     {
-        public static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring);
-        public static HikeUsersDb usersDbContext = new HikeUsersDb(App.UsersDBConnectionstring);
+        public static HikeChatsDb chatsDbContext = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring);
+        public static HikeUsersDb usersDbContext = new HikeUsersDb(HikeConstants.UsersDBConnectionstring);
 
         #region GroupTable Queries
 

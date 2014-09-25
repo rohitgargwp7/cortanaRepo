@@ -171,7 +171,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
                     {
                         FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
@@ -283,7 +283,7 @@ namespace windows_client
                 try
                 {
                     int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                    App.WriteToIsoStorageSettings(App.SMS_SETTING, sms_credits);
+                    App.WriteToIsoStorageSettings(HikeConstants.SMS_SETTING, sms_credits);
                     this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
                 catch (Exception ex)
@@ -539,7 +539,7 @@ namespace windows_client
                 try
                 {
                     int invited = (int)data[HikeConstants.ALL_INVITEE];
-                    App.WriteToIsoStorageSettings(App.INVITED, invited);
+                    App.WriteToIsoStorageSettings(HikeConstants.INVITED, invited);
                 }
                 catch (Exception ex)
                 {
@@ -548,7 +548,7 @@ namespace windows_client
                 try
                 {
                     int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
-                    App.WriteToIsoStorageSettings(App.INVITED_JOINED, invited_joined);
+                    App.WriteToIsoStorageSettings(HikeConstants.INVITED_JOINED, invited_joined);
                 }
                 catch (Exception ex)
                 {
@@ -782,11 +782,11 @@ namespace windows_client
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
                                                 {
-                                                    App.appSettings.Remove(App.LAST_SEEN_SEETING);
+                                                    App.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
                                                     App.appSettings.Save();
                                                 }
                                                 else
-                                                    App.WriteToIsoStorageSettings(App.LAST_SEEN_SEETING, false);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
                                             }
                                             catch { }
                                         }
@@ -830,7 +830,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -909,12 +909,12 @@ namespace windows_client
                             {
                                 if (jArray.Count > 1)
                                 {
-                                    App.appSettings[App.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
-                                    App.WriteToIsoStorageSettings(App.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
+                                    App.appSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
+                                    App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
                                 }
                                 else if (jArray.Count == 1)
                                 {
-                                    App.WriteToIsoStorageSettings(App.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
+                                    App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
                                 }
                             }
                         }
@@ -925,12 +925,12 @@ namespace windows_client
                     }
                     #endregion
                     #region moods zone
-                    if (data.TryGetValue(App.HIDE_CRICKET_MOODS, out rew))
+                    if (data.TryGetValue(HikeConstants.HIDE_CRICKET_MOODS, out rew))
                     {
                         //we are keeping state for hide because by default moods are ON. If server never sends this packet, no
                         //appsetting would ever be stored
                         bool showMoods = rew.ToObject<bool>();
-                        App.WriteToIsoStorageSettings(App.HIDE_CRICKET_MOODS, !showMoods);
+                        App.WriteToIsoStorageSettings(HikeConstants.HIDE_CRICKET_MOODS, !showMoods);
                     }
                     #endregion
                     #region Invite pop up
@@ -973,7 +973,7 @@ namespace windows_client
                                     ips[i] = (string)jArray[i];
                                 }
 
-                                App.WriteToIsoStorageSettings(App.IP_LIST, ips);
+                                App.WriteToIsoStorageSettings(HikeConstants.IP_LIST, ips);
                             }
                         }
                         catch (Exception ex)

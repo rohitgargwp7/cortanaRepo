@@ -343,7 +343,7 @@ namespace windows_client
                 return;
             }
 
-            string unauthedMSISDN = (string)obj[App.MSISDN_SETTING];
+            string unauthedMSISDN = (string)obj[HikeConstants.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -360,10 +360,10 @@ namespace windows_client
             }
 
             /*If all well*/
-            App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
+            App.WriteToIsoStorageSettings(HikeConstants.MSISDN_SETTING, unauthedMSISDN);
             
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
-            App.WriteToIsoStorageSettings(App.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
+            App.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

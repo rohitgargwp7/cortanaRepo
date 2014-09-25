@@ -29,7 +29,7 @@ namespace windows_client.View
             InitializeComponent();
 
             int creditsRemaining = 0;
-            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 

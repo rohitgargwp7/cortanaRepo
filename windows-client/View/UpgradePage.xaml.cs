@@ -163,7 +163,7 @@ namespace windows_client.View
         {
             if (Utils.compareVersion(App.LATEST_VERSION, App.CURRENT_VERSION) == 1) // shows this is update
             {
-                App.appSettings[App.APP_UPDATE_POSTPENDING] = true;
+                App.appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE
@@ -406,7 +406,7 @@ namespace windows_client.View
         /// </summary>
         private void UpgradeConvMessageDBForReadBy()
         {
-            using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb db = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 if (db.DatabaseExists())
                 {
@@ -442,7 +442,7 @@ namespace windows_client.View
 
             StatusMsgsTable.MessagesDbUpdateToLatestVersion();
 
-            using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb db = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 if (db.DatabaseExists())
                 {

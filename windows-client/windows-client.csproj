@@ -154,6 +154,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constants\HikeConstants.cs" />
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>

@@ -24,7 +24,7 @@ namespace windows_client.DbUtils
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn, long lastMessageId, int count)
         {
-            using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb chatsDbContext = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
             List<ConvMessage> res;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
@@ -46,7 +46,7 @@ namespace windows_client.DbUtils
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
@@ -59,7 +59,7 @@ namespace windows_client.DbUtils
         {
             string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
             SaveLongMessage(convMessage);
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 if (convMessage.MappedMessageId > 0)
                 {
@@ -305,7 +305,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (App.appSettings.Contains(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
                             toastText = GetToastNotification(convMsg);
                             toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (App.appSettings.Contains(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING))
                             toastText = GetToastNotification(convMsg);
 
                         obj.ToastText = toastText;
@@ -403,7 +403,7 @@ namespace windows_client.DbUtils
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)
@@ -458,7 +458,7 @@ namespace windows_client.DbUtils
             string msisdn = null;
             List<ConvMessage> messageList = new List<ConvMessage>();
 
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
                     messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
@@ -534,7 +534,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllMessages()
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 SubmitWithConflictResolve(context);
@@ -543,7 +543,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMessage(long msgId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
                 SubmitWithConflictResolve(context);
@@ -556,7 +556,7 @@ namespace windows_client.DbUtils
         /// <param name="msisdn">user id</param>
         public static void deleteAllMessagesForMsisdn(string msisdn)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
                 SubmitWithConflictResolve(context);
@@ -565,7 +565,7 @@ namespace windows_client.DbUtils
 
         public static void addMessages(List<ConvMessage> messages)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.messages.InsertAllOnSubmit(messages);
                 context.SubmitChanges();

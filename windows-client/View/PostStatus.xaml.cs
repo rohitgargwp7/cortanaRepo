@@ -252,7 +252,7 @@ namespace windows_client.View
             if (hintText == string.Empty)
             {
                 string name;
-                App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+                App.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
                 string nameToShow = null;
                 if (!string.IsNullOrEmpty(name))
                 {

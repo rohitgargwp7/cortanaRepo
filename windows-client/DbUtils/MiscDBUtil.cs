@@ -58,7 +58,7 @@ namespace windows_client.DbUtils
             GroupManager.Instance.DeleteAllGroups();
             FriendsTableUtils.DeleteAllFriends();
             MessagesTableUtils.DeleteAllLongMessages();
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
@@ -88,7 +88,7 @@ namespace windows_client.DbUtils
             App.ViewModel.ClearBLockedHashSet();
             App.ViewModel.ContactsCache.Clear();
 
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
@@ -114,7 +114,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region DELETE MQTTPERSISTED MESSAGES
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 try
@@ -141,7 +141,7 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
-            App.appSettings[App.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
+            App.appSettings[HikeConstants.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
             StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
@@ -149,9 +149,9 @@ namespace windows_client.DbUtils
             StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
             #endregion
             #region RESET IN APP TIPS
-            App.appSettings[App.CHAT_THREAD_COUNT_KEY] = 0;
-            App.appSettings[App.TIP_MARKED_KEY] = 0;
-            App.WriteToIsoStorageSettings(App.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
+            App.appSettings[HikeConstants.CHAT_THREAD_COUNT_KEY] = 0;
+            App.appSettings[HikeConstants.TIP_MARKED_KEY] = 0;
+            App.WriteToIsoStorageSettings(HikeConstants.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();

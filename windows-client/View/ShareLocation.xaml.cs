@@ -610,13 +610,13 @@ namespace windows_client.View
 
                 _isLocationEnabled = false;
             }
-            else if (App.appSettings.TryGetValue<bool>(App.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (App.appSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
-                    App.appSettings.Remove(App.USE_LOCATION_SETTING);
+                    App.appSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
                     App.appSettings.Save();
                     _isLocationEnabled = true;
 
