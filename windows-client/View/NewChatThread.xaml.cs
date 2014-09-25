@@ -253,11 +253,7 @@ namespace windows_client.View
 
         void gcPin_PinContentTapped(object sender, EventArgs e)
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GC_PIN))
-                PhoneApplicationService.Current.State[HikeConstants.GC_PIN] = mContactNumber;
-            else
-                PhoneApplicationService.Current.State.Add(HikeConstants.GC_PIN,mContactNumber);
-
+            PhoneApplicationService.Current.State[HikeConstants.GC_PIN] = mContactNumber;
             NavigationService.Navigate(new Uri("/View/PinHistory.xaml",UriKind.Relative));
         }
 

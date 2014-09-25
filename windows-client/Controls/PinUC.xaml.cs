@@ -98,7 +98,7 @@ namespace windows_client.Controls
             {
                 pinContent.Visibility = Visibility.Visible;
                 rightIcon.Visibility = Visibility.Visible;
-                notificationCountGrid.Visibility = (notificationCountTxtBlk.Text == null || notificationCountTxtBlk.Text == "0") ? Visibility.Collapsed : Visibility.Visible;
+                notificationCountGrid.Visibility = String.IsNullOrEmpty(notificationCountTxtBlk.Text) ? Visibility.Collapsed : Visibility.Visible;
                 newPinTextBox.Visibility = Visibility.Collapsed;
             }
         }
@@ -124,7 +124,7 @@ namespace windows_client.Controls
 
         public void SetUnreadPinCount(int count)
         {
-            notificationCountTxtBlk.Text = (count < 10) ? count.ToString() : "9+";
+            notificationCountTxtBlk.Text = (count < 10) ? (count == 0 ? String.Empty : count.ToString()) : "9+";
             notificationCountGrid.Visibility = (String.IsNullOrEmpty(notificationCountTxtBlk.Text) || count<=0) ? Visibility.Collapsed : Visibility.Visible;
         }
     }
