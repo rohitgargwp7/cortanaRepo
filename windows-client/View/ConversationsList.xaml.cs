@@ -138,9 +138,9 @@ namespace windows_client.View
             App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
-                });
+            {
+                muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            });
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)
@@ -3275,7 +3275,7 @@ namespace windows_client.View
                     }
                     catch (Exception)
                     {
-                        //handled exception due to scroll to
+                        Debug.WriteLine("llsConversations Scroll to null Exception :: HiddenToggleMode");
                     }
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
