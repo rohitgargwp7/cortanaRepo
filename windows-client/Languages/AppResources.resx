@@ -2314,4 +2314,8 @@ Download it like asap from http://hike.in!</value>
     <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
   </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>Pin Can't be Empty</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
 </root>

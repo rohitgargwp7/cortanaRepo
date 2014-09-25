@@ -3919,6 +3919,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin Can&apos;t be Empty.
+        /// </summary>
+        public static string Pin_Empty_Msg {
+            get {
+                return ResourceManager.GetString("Pin_Empty_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to create pin.
         /// </summary>
         public static string PinHeader_Txt {

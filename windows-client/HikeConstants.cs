@@ -422,7 +422,7 @@ namespace windows_client
         public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
         public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
         public static readonly string TOAST_FOR_FILE = "Sent you a file";
-        public static readonly string TOAST_FOR_PIN = "has posted a pin";
+        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
         #endregion
 
         #region ANALYTICS EVENTS KEYS

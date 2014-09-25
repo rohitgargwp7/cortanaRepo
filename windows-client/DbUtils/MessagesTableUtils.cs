@@ -343,6 +343,8 @@ namespace windows_client.DbUtils
                             obj.LastMessage = toastText;
                         }
 
+
+
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
                         else if (App.appSettings.Contains(App.HIDE_MESSAGE_PREVIEW_SETTING))

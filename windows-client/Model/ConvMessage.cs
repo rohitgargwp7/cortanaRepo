@@ -527,11 +527,11 @@ namespace windows_client.Model
         {
             get
             {
-                if (this.Msisdn == App.MSISDN || this.IsSent)
+                if (this.IsSent)
                     return AppResources.You_Txt;
 
                 if (this.GroupMemberName == null)
-                    return this.GroupParticipant.ToString();
+                    return this.GroupParticipant;
                 else
                     return this.GroupMemberName;    
             }

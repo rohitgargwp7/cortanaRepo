@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
@@ -37,30 +37,32 @@
    Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Grid Background="#FFF38F" Margin="0,20,0,0" HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image Source="/images/chat_left.png" Width="50" Height="50"  />
-                            <Grid Grid.Column="1" Margin="0,10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource PinHistoryContainerStyle}">
+                            <Grid Background="#FFF38F" Margin="0,0" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Width="10"  Fill="Brown" Margin="0,0,10,0" />
+                                <Grid Grid.Column="1" Margin="0,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
                                     
-                                    <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="Brown"></TextBlock>
-                                    <TextBlock Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="Brown" HorizontalAlignment="Right" Margin="0,0,25,0"></TextBlock>
-                                </Grid>
+                                        <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#B0A75A"></TextBlock>
+                                        <TextBlock Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#B0A75A" HorizontalAlignment="Right" Margin="0,0,25,0"></TextBlock>
+                                    </Grid>
                                 
-                                <TextBlock Grid.Row="1" Text="{Binding DispMessage}" Foreground="Black" TextWrapping="Wrap"></TextBlock>
+                                    <TextBlock Grid.Row="1" Text="{Binding DispMessage}" Foreground="#867f40" TextWrapping="Wrap" Margin="0,0,25,0"></TextBlock>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </Border>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>

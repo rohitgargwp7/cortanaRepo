@@ -92,8 +92,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GC_PIN))
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
-            progressBar.Opacity = 1;
-            progressBar.IsEnabled = true;
+            progressBar.Visibility = Visibility.Visible;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -119,6 +118,7 @@ namespace windows_client.View
                 }
 
                 App.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;
+                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
             }
         }
 
@@ -130,8 +130,7 @@ namespace windows_client.View
                 pinLongList.Visibility = Visibility.Collapsed;
             }
 
-            progressBar.Opacity = 0;
-            progressBar.IsEnabled = false;
+            progressBar.Visibility = Visibility.Collapsed;
             pinLongList.ItemsSource = _pinMessages;
         }
 
@@ -149,7 +148,7 @@ namespace windows_client.View
                     if (!convMessage.IsSent)
                     {
                         gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                        convMessage.GroupMemberName = gp.Name;
+                        convMessage.GroupMemberName = gp.FirstName;
                     }
 
                     if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
@@ -163,7 +162,10 @@ namespace windows_client.View
             }
 
             if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && App.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
+            {
                 App.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
+                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+            }
         }
     }
 }

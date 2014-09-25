@@ -125,7 +125,7 @@ namespace windows_client.Controls
         public void SetUnreadPinCount(int count)
         {
             notificationCountTxtBlk.Text = (count < 10) ? count.ToString() : "9+";
-            notificationCountGrid.Visibility = (notificationCountTxtBlk.Text == null || notificationCountTxtBlk.Text == "0") ? Visibility.Collapsed : Visibility.Visible;
+            notificationCountGrid.Visibility = (String.IsNullOrEmpty(notificationCountTxtBlk.Text) || count<=0) ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

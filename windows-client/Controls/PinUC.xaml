@@ -173,7 +173,7 @@
         <TextBlock Grid.Column="1" Tap="pinContent_Tap" x:Name="pinContent" VerticalAlignment="Center" LineHeight="30" TextWrapping="Wrap" MaxHeight="60" TextTrimming="WordEllipsis">
             <Run x:Name="pinContactName"  Foreground="#B0A75A" FontSize="24" />
             <Run Foreground="#B0A75A" FontSize="24" Text=":"/>
-            <Run x:Name="pinTxt" Foreground="#867140" FontSize="24" />
+            <Run x:Name="pinTxt" Foreground="#867f40" FontSize="24" />
         </TextBlock>
         <toolkit:PhoneTextBox  FontSize="24" Grid.Column="1" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
         <Border Grid.Column="2" x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">

@@ -236,15 +236,6 @@ namespace windows_client.View
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
 
-            #region GC_PINS_EVENTS_ASSIGN
-            gcPin.RightIconClicked -= gcPin_RightIconClicked;
-            gcPin.RightIconClicked += gcPin_RightIconClicked;
-            gcPin.NewPinLostFocus -= gcPin_LostFocus;
-            gcPin.NewPinLostFocus += gcPin_LostFocus;
-            gcPin.PinContentTapped -= gcPin_PinContentTapped;
-            gcPin.PinContentTapped += gcPin_PinContentTapped;
-            #endregion
-
             if (App.ViewModel.IsDarkMode)
                 darkModeLayer.Visibility = Visibility.Visible;
 
@@ -286,6 +277,7 @@ namespace windows_client.View
                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
                 metadata[HikeConstants.PINID] = null;
                 App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
             }
         }
 
@@ -714,6 +706,15 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
+                #region GC_PINS_EVENTS_ASSIGN
+                gcPin.RightIconClicked -= gcPin_RightIconClicked;
+                gcPin.RightIconClicked += gcPin_RightIconClicked;
+                gcPin.NewPinLostFocus -= gcPin_LostFocus;
+                gcPin.NewPinLostFocus += gcPin_LostFocus;
+                gcPin.PinContentTapped -= gcPin_PinContentTapped;
+                gcPin.PinContentTapped += gcPin_PinContentTapped;
+                #endregion
+
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 {
                     JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
@@ -724,9 +725,11 @@ namespace windows_client.View
                         {
                             metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
                             metadata[HikeConstants.READPIN] = true;
-                        }
 
-                        App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                            App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                            ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                        }
+                        
                         gcPin.SetUnreadPinCount(metadata.Value<int>(HikeConstants.UNREADPINS));
                     }
                 }
@@ -1127,7 +1130,7 @@ namespace windows_client.View
                                     if (lastPinConvMsg != null)
                                     {
                                         var gp = GroupManager.Instance.GetGroupParticipant(null, lastPinConvMsg.GroupParticipant, mContactNumber);
-                                        lastPinConvMsg.GroupMemberName = gp.Name;
+                                        lastPinConvMsg.GroupMemberName = gp.FirstName;
                                     }
                                 };
                             latestPinBW.RunWorkerAsync();
@@ -1361,7 +1364,9 @@ namespace windows_client.View
 
                 spContactTransfer.IsEnabled = true;
                 chatPaint.Opacity = 1;
-                newPin.Opacity = 1;
+                
+                if (isGroupChat)
+                    newPin.Opacity = 1;
 
                 if (appBar.MenuItems.Contains(inviteMenuItem))
                     appBar.MenuItems.Remove(inviteMenuItem);
@@ -2619,7 +2624,7 @@ namespace windows_client.View
                     else if (isGroupChat)
                     {
                         var gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
-                        convMessage.GroupMemberName = gp.Name;
+                        convMessage.GroupMemberName = gp.FirstName;
                         convMessage.IsInAddressBook = gp.IsInAddressBook;
                         convMessage.StatusUpdateImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
                     }
@@ -3912,7 +3917,6 @@ namespace windows_client.View
             actionIcon.IsHitTestVisible = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
 
             EnableDisableAppBar(enable);
-
         }
 
         private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
@@ -3950,7 +3954,10 @@ namespace windows_client.View
             tipControl.Visibility = Visibility.Visible;
 
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+            {
                 App.ViewModel.ConvMap[mContactNumber].MetaData = null;
+                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+            }
         }
 
         #endregion
@@ -4119,9 +4126,22 @@ namespace windows_client.View
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         {
                             GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
-                            convMessage.GroupMemberName = gp.Name;
+                            convMessage.GroupMemberName = gp.FirstName;
                             gcPin.UpdateContent(convMessage.GCPinMessageSenderName, convMessage.DispMessage);
-                            
+
+                            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            {
+                                JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                                
+                                if (metadata != null)
+                                {
+                                    metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
+                                    metadata[HikeConstants.READPIN] = true;
+                                    App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                                    ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                                }
+                            }
+
                             if (!_isNewPin)
                                 gcPin.isShow(false,true);
                         }
@@ -4429,7 +4449,6 @@ namespace windows_client.View
                         else if (!isOnHike)
                         {
                             chatPaint.Opacity = 0.5;
-                            newPin.Opacity = 1;
 
                             showNoSmsLeftOverlay = true;
                             ToggleAlertOnNoSms(true);
@@ -4445,7 +4464,9 @@ namespace windows_client.View
                         showNoSmsLeftOverlay = false;
                         ToggleAlertOnNoSms(false);
 
-                        newPin.Opacity = 1;
+                        if (isGroupChat)
+                            newPin.Opacity = 1;
+
                         chatPaint.Opacity = 1;
                     }
 
@@ -5968,7 +5989,7 @@ namespace windows_client.View
         {
             if (String.IsNullOrWhiteSpace(gcPin.GetNewPinMessage()))
             {
-                MessageBox.Show("Pin Can't be Empty");
+                MessageBox.Show(AppResources.Pin_Empty_Msg);
                 _isNewPin = true;
                 gcPin.isShow(true,false,true);
                 userHeader.Visibility = Visibility.Collapsed;
@@ -6052,7 +6073,6 @@ namespace windows_client.View
                 chatPaint.Opacity = 0.5;
                 newPin.Opacity = 0.5;
             }
-
 
             if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
             {
