@@ -109,12 +109,6 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
-            base.OnRemovedFromJournal(e);
-        }
-
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
