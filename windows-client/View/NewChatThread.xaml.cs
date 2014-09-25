@@ -5009,7 +5009,7 @@ namespace windows_client.View
                 {
                     if (!NetworkInterface.GetIsNetworkAvailable())
                     {
-                        MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_UploadErrorMsgBoxText, MessageBoxButton.OK);
                         return;
                     }
 
@@ -7473,5 +7473,4 @@ namespace windows_client.View
 
         #endregion
     }
-
 }

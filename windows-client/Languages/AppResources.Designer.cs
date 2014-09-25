@@ -2101,6 +2101,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to upload file.
+        /// </summary>
+        public static string FileTransfer_UploadErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_UploadErrorMsgBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to forward.
         /// </summary>
         public static string Forward_Txt {
