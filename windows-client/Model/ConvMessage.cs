@@ -86,7 +86,8 @@ namespace windows_client.Model
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
             MESSAGE_STATUS,
-            UNREAD_NOTIFICATION
+            UNREAD_NOTIFICATION,
+            PIN_MESSAGE
         }
 
         public enum MessageType
@@ -119,8 +120,13 @@ namespace windows_client.Model
         {
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
+
             JToken typeToken = null;
             string type = null;
+
+            if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
+                return ParticipantInfoState.PIN_MESSAGE;
+
             if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
@@ -517,11 +523,33 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinMessageSenderName
+        {
+            get
+            {
+                if (this.IsSent)
+                    return AppResources.You_Txt;
+
+                if (this.GroupMemberName == null)
+                    return this.GroupParticipant;
+                else
+                    return this.GroupMemberName;    
+            }
+        }
+
+        public string DirectTimeStampStr
+        {
+            get
+            {
+                return TimeUtils.getTimeStringForChatThread(_timestamp);
+            }
+        }
+
         public string TimeStampStr
         {
             get
             {
-                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE)
+                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE || participantInfoState == ParticipantInfoState.PIN_MESSAGE)
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                 {
@@ -1199,16 +1227,16 @@ namespace windows_client.Model
 
         public BitmapImage StatusUpdateImage
         {
-            set
-            {
-                _statusUpdateImage = value;
-            }
             get
             {
                 if (_statusUpdateImage != null)
                     return _statusUpdateImage;
                 else
                     return MoodsInitialiser.Instance.GetMoodImageForMoodId(MoodsInitialiser.GetMoodId(metadataJsonString));
+            }
+            set
+            {
+                _statusUpdateImage = value;
             }
         }
 
@@ -1325,6 +1353,7 @@ namespace windows_client.Model
             {
                 _groupMemeberName = value;
                 NotifyPropertyChanged("GroupMemberName");
+                NotifyPropertyChanged("GCPinMessageSenderName");
                 IsGroup = true;
             }
         }
@@ -1539,7 +1568,8 @@ namespace windows_client.Model
             {
                 if (GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
-                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                     return ChatForegroundColor;
                 else
                 {
@@ -1742,6 +1772,10 @@ namespace windows_client.Model
             {
                 data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
                 obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
+            }
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
+            {
+                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
             }
 
             obj[HikeConstants.TO] = _msisdn;
