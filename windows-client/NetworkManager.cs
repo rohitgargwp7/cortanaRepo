@@ -831,7 +831,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
