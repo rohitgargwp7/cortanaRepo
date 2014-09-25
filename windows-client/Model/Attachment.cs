@@ -292,7 +292,7 @@ namespace windows_client.Model
         {
             switch(source)
             {
-                case AttachemntSource.CAMERA: return "rec";
+                case AttachemntSource.CAMERA: return "cam";
                 case AttachemntSource.GALLERY: return "gal";
                 case AttachemntSource.FORWARDED: return "fwd";
                 case AttachemntSource.OTHER: return "oth";
