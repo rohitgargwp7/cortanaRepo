@@ -26,78 +26,6 @@ namespace windows_client.utils
     {
         public static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        #region Hike Specific Constants
-
-        public static readonly string PAGE_STATE = "page_State";
-        public static readonly string ACCOUNT_NAME = "accountName";
-        public static readonly string ACCOUNT_GENDER = "accountGender";
-        public static readonly string MSISDN_SETTING = "msisdn";
-        public static readonly string COUNTRY_CODE_SETTING = "countryCode";
-        public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
-
-        public static readonly string TOKEN_SETTING = "token";
-        public static readonly string UID_SETTING = "uid";
-        public static readonly string SMS_SETTING = "smscredits";
-        public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
-        public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
-        public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
-        public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
-        public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
-        public static readonly string USE_LOCATION_SETTING = "locationSet";
-        public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
-        public static readonly string AUTO_RESUME_SETTING = "autoResume";
-
-        public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
-
-        public static readonly string ENTER_TO_SEND = "enterToSend";
-        public static readonly string SEND_NUDGE = "sendNudge";
-        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
-        public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
-        public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
-        public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
-        public static readonly string HIDE_CRICKET_MOODS = "cmoods";
-        public static readonly string LATEST_PUSH_TOKEN = "pushToken";
-        public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
-        public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
-        public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
-        public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
-        public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
-
-        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
-        public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
-        public static readonly string TIP_SHOW_KEY = "tipShowKey";
-        public static readonly string PRO_TIP = "proTip";
-        public static readonly string PRO_TIP_COUNT = "proTipCount";
-        public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
-        public static readonly string PRO_TIP_LAST_DISMISS_TIME = "proTipLastDismissTime";
-
-        public static readonly string INVITED = "invited";
-        public static readonly string INVITED_JOINED = "invitedJoined";
-
-        public static readonly string GROUPS_CACHE = "GroupsCache";
-        public static readonly string IS_DB_CREATED = "is_db_created";
-        public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
-        public static readonly string IP_LIST = "ip_list";
-
-        public static string EMAIL = "email";
-        public static string GENDER = "gender";
-        public static string NAME = "name";
-        public static string DOB = "dob";
-        public static string YEAR = "year";
-        public static string SCREEN = "screen";
-        public static readonly string VIBRATE_PREF = "vibratePref";
-        public static readonly string HIKEJINGLE_PREF = "jinglePref";
-        public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
-        public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
-
-        public static readonly string CURRENT_LOCALE = "curLocale";
-
-        public static readonly string GROUP_NAME = "groupName";
-        public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
-        public static readonly string NEW_GROUP_ID = "newGroupId";
-
-        #endregion
-
         #region Hike specific instances and functions
 
         #region instances
@@ -319,7 +247,6 @@ namespace windows_client.utils
 
         #endregion
 
-
         public static void instantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
@@ -336,17 +263,17 @@ namespace windows_client.utils
                 try
                 {
                     var proTip = new ProTip();
-                    HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.PRO_TIP, out proTip);
+                    HikeInstantiation.appSettings.TryGetValue(HikeConstants.PRO_TIP, out proTip);
 
                     if (proTip != null)
                     {
-                        HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.PRO_TIP);
-                        HikeInstantiation.appSettings[HikeInstantiation.PRO_TIP] = proTip._id;
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PRO_TIP);
+                        HikeInstantiation.appSettings[HikeConstants.PRO_TIP] = proTip._id;
                     }
                 }
                 catch { }
 
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.PRO_TIP_DISMISS_TIME);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PRO_TIP_DISMISS_TIME);
                 ProTipHelper.Instance.ClearOldProTips();
             }
             #endregion
@@ -357,13 +284,13 @@ namespace windows_client.utils
                 try
                 {
                     byte value;
-                    if (HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.LAST_SEEN_SEETING, out value))
+                    if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
                     {
-                        HikeInstantiation.appSettings.Remove(HikeInstantiation.LAST_SEEN_SEETING);
+                        HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
                         HikeInstantiation.appSettings.Save();
 
                         if (value <= 0)
-                            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.LAST_SEEN_SEETING, false);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
                     }
                 }
                 catch (InvalidCastException ex)
@@ -377,9 +304,9 @@ namespace windows_client.utils
 
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
-                HikeInstantiation.appSettings.Remove(HikeInstantiation.TIP_MARKED_KEY);
-                HikeInstantiation.appSettings.Remove(HikeInstantiation.TIP_SHOW_KEY);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.CHAT_THREAD_COUNT_KEY);
+                HikeInstantiation.appSettings.Remove(HikeConstants.TIP_MARKED_KEY);
+                HikeInstantiation.appSettings.Remove(HikeConstants.TIP_SHOW_KEY);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.CHAT_THREAD_COUNT_KEY);
             }
 
             #endregion
@@ -398,20 +325,20 @@ namespace windows_client.utils
                 if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
                     || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
                 {
-                    RemoveKeyFromAppSettings(HikeInstantiation.SHOW_STATUS_UPDATES_TUTORIAL);
+                    RemoveKeyFromAppSettings(HikeConstants.SHOW_STATUS_UPDATES_TUTORIAL);
                     ps = PageState.CONVLIST_SCREEN;
-                    RemoveKeyFromAppSettings(HikeInstantiation.SHOW_BASIC_TUTORIAL);
-                    HikeInstantiation.WriteToIsoStorageSettings(PAGE_STATE, ps);
+                    RemoveKeyFromAppSettings(HikeConstants.SHOW_BASIC_TUTORIAL);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.PAGE_STATE, ps);
                 }
             }
             #endregion
             #region GROUP CACHE
 
-            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.appSettings[HikeInstantiation.GROUPS_CACHE];
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.appSettings[HikeConstants.GROUPS_CACHE];
                 GroupManager.Instance.SaveGroupCache();
-                RemoveKeyFromAppSettings(HikeInstantiation.GROUPS_CACHE);
+                RemoveKeyFromAppSettings(HikeConstants.GROUPS_CACHE);
             }
 
             #endregion
@@ -514,7 +441,7 @@ namespace windows_client.utils
                 {
                     if (!initInUpgradePage)
                     {
-                        appSettings[HikeInstantiation.APP_UPDATE_POSTPENDING] = true;
+                        appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
                         appSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
@@ -528,8 +455,8 @@ namespace windows_client.utils
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
-                if (IsNewInstall && !appSettings.Contains(HikeInstantiation.PRO_TIP_COUNT))
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.PRO_TIP_COUNT, 1);
+                if (IsNewInstall && !appSettings.Contains(HikeConstants.PRO_TIP_COUNT))
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_COUNT, 1);
             }
             #endregion
             #region POST APP INFO ON UPDATE
@@ -567,8 +494,8 @@ namespace windows_client.utils
             {
                 if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
                 {
-                    appSettings[HikeInstantiation.HIKEJINGLE_PREF] = (bool)true;
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.ENTER_TO_SEND, false);
+                    appSettings[HikeConstants.HIKEJINGLE_PREF] = (bool)true;
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ENTER_TO_SEND, false);
                 }
                 else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)
                 {
@@ -580,7 +507,7 @@ namespace windows_client.utils
             #region Auto Save Media Key Removal
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeInstantiation.AUTO_SAVE_MEDIA);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AUTO_SAVE_MEDIA);
             }
             #endregion
         }
@@ -599,7 +526,7 @@ namespace windows_client.utils
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
             if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
-                WriteToIsoStorageSettings(HikeInstantiation.SHOW_NUDGE_TUTORIAL, true);
+                WriteToIsoStorageSettings(HikeConstants.SHOW_NUDGE_TUTORIAL, true);
             }
 
             if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
@@ -612,8 +539,8 @@ namespace windows_client.utils
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 HikeInstantiation.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                HikeInstantiation.appSettings[COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.SHOW_FREE_SMS_SETTING, true);
+                HikeInstantiation.appSettings[HikeConstants.COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
             else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
@@ -627,11 +554,11 @@ namespace windows_client.utils
                 HikeInstantiation.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
 
                 string country_code = null;
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeInstantiation.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
                 if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.SHOW_FREE_SMS_SETTING, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
                 else
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.SHOW_FREE_SMS_SETTING, false);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
 
@@ -653,11 +580,11 @@ namespace windows_client.utils
         public static void PostLocaleInfo()
         {
             string savedLocale;
-            if (!HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.CURRENT_LOCALE, out savedLocale) ||
+            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.CURRENT_LOCALE, out savedLocale) ||
                 savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
             {
                 string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.CURRENT_LOCALE, currentLocale);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.CURRENT_LOCALE, currentLocale);
                 JObject obj = new JObject();
                 obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
                 JObject data = new JObject();
@@ -667,10 +594,9 @@ namespace windows_client.utils
             }
         }
 
-
         public static void createDatabaseAsync()
         {
-            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.IS_DB_CREATED)) // shows db are created
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // shows db are created
                 return;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -706,24 +632,24 @@ namespace windows_client.utils
                     }
                     // Create the database if it does not exist.
                     Stopwatch st = Stopwatch.StartNew();
-                    using (HikeChatsDb db = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+                    using (HikeChatsDb db = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
 
-                    using (HikeUsersDb db = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring))
+                    using (HikeUsersDb db = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
 
-                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(HikeInstantiation.MqttDBConnectionstring))
+                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
-                    WriteToIsoStorageSettings(HikeInstantiation.IS_DB_CREATED, true);
+                    WriteToIsoStorageSettings(HikeConstants.IS_DB_CREATED, true);
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
@@ -731,7 +657,7 @@ namespace windows_client.utils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
-                    RemoveKeyFromAppSettings(HikeInstantiation.IS_DB_CREATED);
+                    RemoveKeyFromAppSettings(HikeConstants.IS_DB_CREATED);
                 }
 
             };
@@ -809,15 +735,13 @@ namespace windows_client.utils
             }
         }
 
-        
-
         public static void SendEnterToSendStatusToServer()
         {
             bool enterToSend;
-            if (!HikeInstantiation.appSettings.TryGetValue(ENTER_TO_SEND, out enterToSend))
+            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ANALYTICS_ENTER_TO_SEND, enterToSend);
         }
     }
 }

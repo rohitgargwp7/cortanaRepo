@@ -262,7 +262,8 @@ namespace windows_client.ViewModel
         /// </summary>
         public void LoadCurrentLocation()
         {
-            if (!HikeInstantiation.appSettings.Contains(HikeInstantiation.USE_LOCATION_SETTING) && !HikeInstantiation.appSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
+
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.USE_LOCATION_SETTING) && !HikeInstantiation.appSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 

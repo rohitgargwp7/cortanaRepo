@@ -2101,6 +2101,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to upload file.
+        /// </summary>
+        public static string FileTransfer_UploadErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_UploadErrorMsgBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to forward.
         /// </summary>
         public static string Forward_Txt {
@@ -3631,6 +3640,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to share something important....
+        /// </summary>
+        public static string NewGCPin_Hint_Txt {
+            get {
+                return ResourceManager.GetString("NewGCPin_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new group.
         /// </summary>
         public static string NewGrpChat_Txt {
@@ -3897,6 +3915,42 @@ namespace windows_client.Languages {
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin.
+        /// </summary>
+        public static string Pin_Done_Txt {
+            get {
+                return ResourceManager.GetString("Pin_Done_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pin Can&apos;t be Empty.
+        /// </summary>
+        public static string Pin_Empty_Msg {
+            get {
+                return ResourceManager.GetString("Pin_Empty_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to create pin.
+        /// </summary>
+        public static string PinHeader_Txt {
+            get {
+                return ResourceManager.GetString("PinHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin history.
+        /// </summary>
+        public static string PinHistory_Header_Txt {
+            get {
+                return ResourceManager.GetString("PinHistory_Header_Txt", resourceCulture);
             }
         }
         

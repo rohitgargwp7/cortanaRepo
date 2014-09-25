@@ -67,8 +67,9 @@ namespace windows_client
             else
             {
                 utils.Utils.savedAccountCredentials(obj);
+
                 if (HikeInstantiation.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -175,7 +176,8 @@ namespace windows_client
 
             try
             {
-                if (HikeInstantiation.appSettings.Contains(HikeInstantiation.IS_DB_CREATED)) // if db is created then only delete tables.
+
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
                     MiscDBUtil.clearDatabase();
                 //HikeInstantiation.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }

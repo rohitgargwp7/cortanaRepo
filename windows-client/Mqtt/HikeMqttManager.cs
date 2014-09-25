@@ -90,9 +90,9 @@ namespace windows_client.Mqtt
 
         private bool init()
         {
-            HikeInstantiation.appSettings.TryGetValue<string>(HikeInstantiation.TOKEN_SETTING, out password);
-            HikeInstantiation.appSettings.TryGetValue<string>(HikeInstantiation.UID_SETTING, out topic);
-            HikeInstantiation.appSettings.TryGetValue<string>(HikeInstantiation.MSISDN_SETTING, out clientId);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.TOKEN_SETTING, out password);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.UID_SETTING, out topic);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
                 clientId += string.Format(":{0}:{1}", API_VERSION, AUTO_SUBSCRIBE);//: Api version : Auto subscribe(true/false)

@@ -22,11 +22,13 @@ namespace windows_client.Mqtt
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
                 bool isPresent = false;
-                if (HikeInstantiation.appSettings.Contains(HikeInstantiation.IS_DB_CREATED))
+
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED))
                     isPresent = true;
                 HikeInstantiation.ClearAppSettings();
                 if (isPresent)
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.IS_DB_CREATED, true);
+
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();

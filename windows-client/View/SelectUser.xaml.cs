@@ -74,7 +74,8 @@ namespace windows_client.View
 
             enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
 
-            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.SMS_SETTING, out _smsCredits);
+
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -898,7 +899,8 @@ namespace windows_client.View
                         string searchNumber = cInfo.Msisdn;
                         string country_code = null;
 
-                        if (HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.COUNTRY_CODE_SETTING, out country_code))
+
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.COUNTRY_CODE_SETTING, out country_code))
                             searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;

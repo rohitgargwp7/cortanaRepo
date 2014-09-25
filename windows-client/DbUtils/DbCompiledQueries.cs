@@ -8,8 +8,8 @@ namespace windows_client.DbUtils
 {
     public class DbCompiledQueries
     {
-        public static HikeChatsDb chatsDbContext = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring);
-        public static HikeUsersDb usersDbContext = new HikeUsersDb(HikeInstantiation.UsersDBConnectionstring);
+        public static HikeChatsDb chatsDbContext = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring);
+        public static HikeUsersDb usersDbContext = new HikeUsersDb(HikeConstants.UsersDBConnectionstring);
 
         #region GroupTable Queries
 
@@ -228,6 +228,24 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Db Call for retrieving pin history of any Group
+        /// </summary>
+        public static Func<HikeChatsDb,string, IQueryable<ConvMessage>> GetPinMessagesForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, string myMsisdn) =>
+                    from o in hdc.messages
+                    where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1")
+                    orderby o.Timestamp descending
+                    select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb, string, IQueryable<ConvMessage>> GetLastMessageForMsisdn
         {
             get
@@ -257,6 +275,7 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+
         public static Func<HikeChatsDb, string, long, string, IQueryable<ConvMessage>> GetMessageForMappedMsgIdMsisdn
         {
             get

@@ -20,7 +20,7 @@ namespace windows_client.DbUtils
 
         public static void addGroupInfo(GroupInfo gi)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.groupInfo.InsertOnSubmit(gi);
                 context.SubmitChanges();
@@ -29,7 +29,7 @@ namespace windows_client.DbUtils
 
         public static bool updateGroupName(string groupId, string groupName)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (cObj == null)
@@ -42,7 +42,7 @@ namespace windows_client.DbUtils
 
         public static bool UpdateGroupOwner(string groupId, string groupOwner)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (gi == null)
@@ -58,7 +58,7 @@ namespace windows_client.DbUtils
 
         public static bool SetGroupDead(string groupId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (cObj == null)
@@ -71,7 +71,7 @@ namespace windows_client.DbUtils
 
         public static void SetGroupAlive(string groupId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (cObj == null)
@@ -83,7 +83,7 @@ namespace windows_client.DbUtils
 
         public static bool IsGroupAlive(string groupId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (cObj == null)
@@ -94,7 +94,7 @@ namespace windows_client.DbUtils
 
         public static List<GroupInfo> GetAllGroups()
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 return DbCompiledQueries.GetAllGroups(context).ToList();
             }
@@ -102,7 +102,7 @@ namespace windows_client.DbUtils
 
         public static GroupInfo getGroupInfoForId(string groupId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 return cObj;
@@ -111,7 +111,7 @@ namespace windows_client.DbUtils
 
         public static List<GroupInfo> getAllGroupInfo()
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 return DbCompiledQueries.GetAllGroupInfo(context).ToList();
             }
@@ -119,7 +119,7 @@ namespace windows_client.DbUtils
 
         public static void deleteGroupWithId(string groupId)
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(DbCompiledQueries.GetGroupInfoForID(context, groupId));
                 MessagesTableUtils.SubmitWithConflictResolve(context);
@@ -128,7 +128,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllGroups()
         {
-            using (HikeChatsDb context = new HikeChatsDb(HikeInstantiation.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
                 MessagesTableUtils.SubmitWithConflictResolve(context);

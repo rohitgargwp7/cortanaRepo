@@ -235,7 +235,8 @@ namespace windows_client.FileTransfers
                     fileInfo.StatusChanged += File_StatusChanged;
                     fileInfo.CheckIfComplete();
                 }
-                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!HikeInstantiation.appSettings.Contains(HikeInstantiation.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+
+                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
@@ -289,7 +290,8 @@ namespace windows_client.FileTransfers
 
         public void PopulatePreviousTasks()
         {
-            if (!HikeInstantiation.appSettings.Contains(HikeInstantiation.AUTO_RESUME_SETTING))
+
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING))
             {
                 BackgroundWorker worker = new BackgroundWorker();
 

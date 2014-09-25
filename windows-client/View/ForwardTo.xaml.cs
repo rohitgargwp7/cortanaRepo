@@ -75,10 +75,11 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
+
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
             _showSmsContacts = _isFreeSmsOn ? true : false;
 
-            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
 
             object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))

@@ -89,7 +89,8 @@ namespace windows_client.FileTransfers
 
             FileState = (FileTransferState)reader.ReadInt32();
 
-            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
+
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();

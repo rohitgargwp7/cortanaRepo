@@ -949,7 +949,8 @@ namespace windows_client.View
             msisdn = HikeInstantiation.MSISDN;
 
             string name;
-            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.ACCOUNT_NAME, out name);
+
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
 
             if (name != null)
             {

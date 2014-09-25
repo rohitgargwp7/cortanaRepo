@@ -66,14 +66,13 @@ namespace windows_client
             }
 
             /* Load App token if its there*/
-            if (HikeInstantiation.appSettings.Contains(HikeInstantiation.TOKEN_SETTING))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)HikeInstantiation.appSettings[HikeInstantiation.TOKEN_SETTING];
+                AccountUtils.Token = (string)HikeInstantiation.appSettings[HikeConstants.TOKEN_SETTING];
                 string _msisdn = string.Empty;
     
-                if(HikeInstantiation.appSettings.TryGetValue<string>(HikeInstantiation.MSISDN_SETTING, out _msisdn))
+                if(HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out _msisdn))
                     HikeInstantiation.MSISDN = _msisdn;
-            
             }
 
             if (HikeInstantiation.appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
@@ -105,6 +104,10 @@ namespace windows_client
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             HikeInstantiation.IsAppLaunched = true;
+
+            // Activate hidden mode whne app is launched if setting is true.
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                HikeInstantiation.appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -117,7 +120,7 @@ namespace windows_client
             if (HikeInstantiation.IS_TOMBSTONED)
             {
                 HikeInstantiation.PageState _pageStateVal;
-                if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeInstantiation.PAGE_STATE, out _pageStateVal))
+                if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
                 {
                     HikeInstantiation.PageStateVal = _pageStateVal;
                     HikeInstantiation.IsNewInstall = false;
@@ -174,7 +177,8 @@ namespace windows_client
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+            
             if (isPushEnabled)
             {
                 PushHelper.Instance.registerPushnotifications(false);
@@ -197,7 +201,8 @@ namespace windows_client
                 {
                     HikeInstantiation.MqttManagerInstance.connect();
                     bool isPushEnabled = true;
-                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.IS_PUSH_ENABLED, out isPushEnabled);
+                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+
                     if (isPushEnabled)
                     {
                         PushHelper.Instance.registerPushnotifications(false);
@@ -229,8 +234,9 @@ namespace windows_client
 
             HikeInstantiation.PageState _pageStateVal;
 
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeInstantiation.PAGE_STATE, out _pageStateVal))
+            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
                 HikeInstantiation.PageStateVal = _pageStateVal;
+
 
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -297,7 +303,7 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
 
             HikeInstantiation.PageState _pageStateVal;
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeInstantiation.PAGE_STATE, out _pageStateVal))
+            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
             {
                 HikeInstantiation.PageStateVal = _pageStateVal;
                 HikeInstantiation.IsNewInstall = false;
@@ -473,22 +479,21 @@ namespace windows_client
         }
 
         #endregion
-
-        public void sendAppBgStatusToServer()
-        {
-            JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
-            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
-            obj.Add(HikeConstants.STATUS, "bg");
-
-            if (HikeInstantiation.HikePubSubInstance != null)
-            {
-                Object[] objArr = new object[2];
-                objArr[0] = obj;
-                objArr[1] = 0;
-                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
-            }
-        }
+         public void sendAppBgStatusToServer()
+         {
+             JObject obj = new JObject();
+             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+             obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+             obj.Add(HikeConstants.STATUS, "bg");
+ 
+             if (HikeInstantiation.HikePubSubInstance != null)
+             {
+                 Object[] objArr = new object[2];
+                 objArr[0] = obj;
+                 objArr[1] = 0;
+                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
+             }
+         }
 
         public static MediaElement GlobalMediaElement
         {

@@ -23,7 +23,8 @@ namespace windows_client.View
             HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
 
             bool showFreeSMS = true;
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeInstantiation.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -44,7 +45,8 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Visible;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.SHOW_FREE_SMS_SETTING, true);
+
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -52,7 +54,8 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Collapsed;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeInstantiation.SHOW_FREE_SMS_SETTING, false);
+
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -100,7 +103,8 @@ namespace windows_client.View
         private void initializeCredits()
         {
             int creditsRemaining = 0;
-            HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.SMS_SETTING, out creditsRemaining);
+
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 

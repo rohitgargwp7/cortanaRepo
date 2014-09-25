@@ -161,8 +161,9 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = true;
             HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.ClearStickerHelperInstance();
+
             HikeInstantiation.ClearAppSettings();
-            HikeInstantiation.appSettings[HikeInstantiation.IS_DB_CREATED] = true;
+            HikeInstantiation.appSettings[HikeConstants.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);

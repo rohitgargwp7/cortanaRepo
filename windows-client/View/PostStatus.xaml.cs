@@ -252,7 +252,8 @@ namespace windows_client.View
             if (hintText == string.Empty)
             {
                 string name;
-                HikeInstantiation.appSettings.TryGetValue(HikeInstantiation.ACCOUNT_NAME, out name);
+
+                HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
                 string nameToShow = null;
                 if (!string.IsNullOrEmpty(name))
                 {
