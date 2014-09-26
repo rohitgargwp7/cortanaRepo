@@ -128,7 +128,7 @@ namespace windows_client
 
             JObject obj = new JObject();
 
-            obj.Add(HikeConstants.NAME, (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.ACCOUNT_NAME]);
+            obj.Add(HikeConstants.ServerJsonKeys.NAME, (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.ACCOUNT_NAME]);
             obj.Add(HikeConstants.AppSettings.SCREEN, "signup");
 
             bool isScanned;

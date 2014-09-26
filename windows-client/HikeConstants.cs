@@ -70,6 +70,7 @@ namespace windows_client
             public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
             public static readonly string APP_VERSION = "app_version";//The app version
             public static readonly string APPVERSION = "appversion";//The app version
+            public static readonly string INVITE_TOKEN = "invite_token";
             public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
             public static readonly string FAVORITES = "favorites";
             public static readonly string PENDING = "pending";
@@ -105,6 +106,7 @@ namespace windows_client
 
             public static readonly string ALL_INVITEE = "ai";
             public static readonly string ALL_INVITEE_JOINED = "aij";
+            public static readonly string ACCOUNT = "account";
             public static readonly string ACCOUNTS = "accounts";
             public static readonly string TWITTER = "twitter";
             public static readonly string FACEBOOK = "fb";
@@ -129,6 +131,7 @@ namespace windows_client
 
             public static readonly string BACKGROUND_ID = "bg_id";
             public static readonly string HAS_CUSTOM_BACKGROUND = "custom";
+            public static string CHAT_BACKGROUND_ARRAY = "cbgs";
 
             public static readonly string STEALTH = "stlth";
             public static readonly string RESET = "reset";
@@ -159,6 +162,11 @@ namespace windows_client
             public static readonly string JUSTOPENED = "justOpened";
 
             public static readonly string ENABLE_PUSH_BATCH_SU = "enablepushbatchingforsu";
+
+            public static string REQUEST_DISPLAY_PIC = "rdp";
+            public static string MSISDN = "msisdn";
+            public static string MSISDNS = "msisdns";
+            public static string NAME = "name";
 
             public static class MqttMessageTypes
             {
@@ -281,10 +289,6 @@ namespace windows_client
 
         public static string MOOD_TOD_SEPARATOR = ":";
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
-        public static string REQUEST_DISPLAY_PIC = "rdp";
-        public static string MSISDN = "msisdn";
-        public static string MSISDNS = "msisdns";
-        public static string NAME = "name";
 
         public static string START_NEW_GROUP = "start_new_group";
         public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
@@ -327,10 +331,8 @@ namespace windows_client
         public static string VIDEO_RECORDED = "videoRecorded";
         public static string VIDEO_SHARED = "videoShared";
         public static string SHARED_LOCATION = "sharedLocation";
-        public static string INVITE_TOKEN = "invite_token";
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
-        public static string ACCOUNT = "account";
         public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
         public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
         public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
@@ -342,8 +344,6 @@ namespace windows_client
         public static string UNREAD_UPDATES = "urUp";
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
-        public static string CHAT_BACKGROUND_ARRAY = "cbgs";
-        public static string CHAT_FTUE = "cftue";
         public static string SHOW_CHAT_FTUE = "showcftue";
         public static string HIDDEN_TOOLTIP_STATUS = "hiddenToolTipStatus";
         public static string GO_TO_CONV_VIEW = "goToConvView";
@@ -444,6 +444,7 @@ namespace windows_client
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
             public static readonly string SEND_BOT = "sendbot";
+            public static readonly string IfModifiedSince = "30";
         }
 
         public static class AppSettings
@@ -588,7 +589,6 @@ namespace windows_client
             }
         }
 
-        #region SERVER TIPS
         public static class ServerTips
         {
             public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
@@ -613,11 +613,6 @@ namespace windows_client
             public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
             public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
         }
-        #endregion
-
-        #region HTTP HEADERS
-
-        public static readonly string IfModifiedSince = "30";
 
         public static class EmailConversation
         {
@@ -626,7 +621,5 @@ namespace windows_client
             public static readonly string CONV_MSG_DISP_FMT = "{0}- {1}: {2}"; //datetime- name: msg (format to display conversation)
             public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
         }
-
-        #endregion
     }
 }

@@ -2179,7 +2179,7 @@ namespace windows_client.Model
                 for (int i = 0; i < arr.Count; i++)
                 {
                     JObject nameMsisdn = (JObject)arr[i];
-                    string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
+                    string msisdn = (string)nameMsisdn[HikeConstants.ServerJsonKeys.MSISDN];
                     if (msisdn == HikeInstantiation.MSISDN)
                         continue;
                     bool onhike = true;
@@ -2201,7 +2201,7 @@ namespace windows_client.Model
                         Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
                     }
 
-                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant((string)nameMsisdn[HikeConstants.ServerJsonKeys.NAME], msisdn, _msisdn);
                     gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {

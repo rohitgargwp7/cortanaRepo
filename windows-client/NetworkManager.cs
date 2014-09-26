@@ -392,7 +392,7 @@ namespace windows_client
                 try
                 {
                     o = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
-                    uMsisdn = (string)o[HikeConstants.MSISDN];
+                    uMsisdn = (string)o[HikeConstants.ServerJsonKeys.MSISDN];
                     serverTimestamp = (long)jsonObj[HikeConstants.ServerJsonKeys.TIMESTAMP];
                 }
                 catch (Exception ex)
@@ -596,7 +596,7 @@ namespace windows_client
                             Debug.WriteLine("AI :: Key : " + kv.Key);
                             JToken valTok = kv.Value;
                             object oj = valTok.ToObject<object>();
-                            if (kv.Key == HikeConstants.ACCOUNT)
+                            if (kv.Key == HikeConstants.ServerJsonKeys.ACCOUNT)
                             {
                                 JObject acntValObj = (JObject)oj;
                                 KeyValuePair<string, JToken> kkvv;
@@ -796,7 +796,7 @@ namespace windows_client
 
                                         #region CHAT BACKGROUNDS
 
-                                        else if (kkvv.Key == HikeConstants.CHAT_BACKGROUND_ARRAY)
+                                        else if (kkvv.Key == HikeConstants.ServerJsonKeys.CHAT_BACKGROUND_ARRAY)
                                         {
                                             bool isUpdated = false;
 
@@ -805,7 +805,7 @@ namespace windows_client
                                             {
                                                 JObject jObj = (JObject)obj;
 
-                                                var id = (string)jObj[HikeConstants.MSISDN];
+                                                var id = (string)jObj[HikeConstants.ServerJsonKeys.MSISDN];
                                                 bool hasCustomBg = false;
                                                 JToken custom;
                                                 if (jObj.TryGetValue(HikeConstants.ServerJsonKeys.HAS_CUSTOM_BACKGROUND, out custom))
@@ -846,12 +846,12 @@ namespace windows_client
                                 // save only for Twitter , FB
                                 //HikeInstantiation.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
                             }// save only tc , invite_token
-                            else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
+                            else if (kv.Key == HikeConstants.ServerJsonKeys.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
                             {
                                 string val = oj.ToString();
                                 Debug.WriteLine("AI :: Value : " + val);
 
-                                if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
+                                if (kv.Key == HikeConstants.ServerJsonKeys.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
                                     HikeInstantiation.WriteToIsoStorageSettings(kv.Key, val);
                             }
                         }
@@ -1063,7 +1063,7 @@ namespace windows_client
 
                     JToken gName;
                     //pubsub for gcn is not raised
-                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                    if (metaData.TryGetValue(HikeConstants.ServerJsonKeys.NAME, out gName))
                         groupName = gName.ToString().Trim();
 
                     #endregion
@@ -1424,7 +1424,7 @@ namespace windows_client
                                 {
                                     JToken n;
                                     JObject dobj = data.ToObject<JObject>();
-                                    if (dobj.TryGetValue(HikeConstants.NAME, out n))
+                                    if (dobj.TryGetValue(HikeConstants.ServerJsonKeys.NAME, out n))
                                         name = n.ToString();
                                 }
                             }
@@ -2140,7 +2140,7 @@ namespace windows_client
             try
             {
                 JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
-                ms = (string)data[HikeConstants.MSISDN];
+                ms = (string)data[HikeConstants.ServerJsonKeys.MSISDN];
                 try
                 {
                     credits = (int)data["credits"];

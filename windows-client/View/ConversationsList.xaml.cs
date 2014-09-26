@@ -221,13 +221,10 @@ namespace windows_client.View
                     {
                         loadingCompleted();
 
-                        if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
-                        {
-                            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
-                                ShowAppUpdateAvailableMessage();
-                            else
-                                ShowInvitePopups();
-                        }
+                        if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
+                            ShowAppUpdateAvailableMessage();
+                        else
+                            ShowInvitePopups();
                     };
 
                 bw.RunWorkerAsync();

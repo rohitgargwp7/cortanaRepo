@@ -1536,8 +1536,8 @@ namespace windows_client.View
                     for (int i = 0; i < usersToAdd.Count; i++)
                     {
                         JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = usersToAdd[i].Name;
-                        nameMsisdn[HikeConstants.MSISDN] = usersToAdd[i].Msisdn;
+                        nameMsisdn[HikeConstants.ServerJsonKeys.NAME] = usersToAdd[i].Name;
+                        nameMsisdn[HikeConstants.ServerJsonKeys.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
 
@@ -1548,10 +1548,10 @@ namespace windows_client.View
                 if (isNewGroup)
                 {
                     JObject metaData = new JObject();
-                    metaData.Add(HikeConstants.NAME, mContactName);
+                    metaData.Add(HikeConstants.ServerJsonKeys.NAME, mContactName);
 
                     if (isDisplayPicSet)
-                        metaData.Add(HikeConstants.REQUEST_DISPLAY_PIC, true);
+                        metaData.Add(HikeConstants.ServerJsonKeys.REQUEST_DISPLAY_PIC, true);
 
                     obj.Add(HikeConstants.ServerJsonKeys.METADATA, metaData);
                 }

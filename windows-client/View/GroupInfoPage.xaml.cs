@@ -883,7 +883,7 @@ namespace windows_client.View
             JArray kickOutMsisdns = new JArray();
             kickOutMsisdns.Add(gp_obj.Msisdn);
             JObject data = new JObject();
-            data.Add(HikeConstants.MSISDNS, kickOutMsisdns);
+            data.Add(HikeConstants.ServerJsonKeys.MSISDNS, kickOutMsisdns);
             JObject jObj = new JObject();
             jObj.Add(HikeConstants.ServerJsonKeys.TO, groupId);
             jObj.Add(HikeConstants.ServerJsonKeys.FROM, HikeInstantiation.MSISDN);
