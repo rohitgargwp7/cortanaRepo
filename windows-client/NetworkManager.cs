@@ -172,7 +172,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
                     {
                         FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
@@ -252,7 +252,7 @@ namespace windows_client
                     if (lastSeen > 0)
                     {
                         long timedifference;
-                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             lastSeen = lastSeen - timedifference;
                     }
 
@@ -414,7 +414,7 @@ namespace windows_client
                 if (joined)
                 {
                     long lastTimeStamp;
-                    if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                    if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
                         return;
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
                     // if user is in contact list then only show the joined msg
@@ -584,7 +584,7 @@ namespace windows_client
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
                     {
-                        HikeInstantiation.appSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
+                        HikeInstantiation.AppSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
                     }
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
@@ -783,8 +783,8 @@ namespace windows_client
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
                                                 {
-                                                    HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
-                                                    HikeInstantiation.appSettings.Save();
+                                                    HikeInstantiation.AppSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+                                                    HikeInstantiation.AppSettings.Save();
                                                 }
                                                 else
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
@@ -815,7 +815,7 @@ namespace windows_client
                                                 {
                                                     isUpdated = true;
 
-                                                    if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber == id)
+                                                    if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber == id)
                                                         pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
                                                 }
                                             }
@@ -910,7 +910,7 @@ namespace windows_client
                             {
                                 if (jArray.Count > 1)
                                 {
-                                    HikeInstantiation.appSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
+                                    HikeInstantiation.AppSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
                                 }
                                 else if (jArray.Count == 1)
@@ -941,7 +941,7 @@ namespace windows_client
                     {
                         JToken jtokenShowFreeInvites;
                         string previousId;
-                        if ((!HikeInstantiation.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
+                        if ((!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
                         {
                             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
                             bool showInvite = (bool)jtokenShowFreeInvites;
@@ -954,7 +954,7 @@ namespace windows_client
                                 popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
                                 //add text to first place;
                                 popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
-                                HikeInstantiation.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
+                                HikeInstantiation.AppSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
                             }
                         }
                     }
@@ -1523,7 +1523,7 @@ namespace windows_client
                         ts = val.ToObject<long>();
                         long tsCorrection;
 
-                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
                             ts -= tsCorrection;
                     }
 
@@ -1807,7 +1807,7 @@ namespace windows_client
                     if (ts > 0)
                     {
                         long timedifference;
-                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             ts = ts - timedifference;
                     }
 
@@ -1905,7 +1905,7 @@ namespace windows_client
 
                     var version = (string)data[HikeConstants.VERSION];
 
-                    if (Utils.compareVersion(version, HikeInstantiation.CURRENT_VERSION) <= 0)
+                    if (Utils.compareVersion(version, HikeInstantiation.CurrentVersion) <= 0)
                         return;
 
                     bool isCritical = false;
@@ -2069,7 +2069,7 @@ namespace windows_client
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
                     int count = 0;
-                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                 });
             }

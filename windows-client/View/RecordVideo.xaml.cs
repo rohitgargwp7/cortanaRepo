@@ -383,7 +383,7 @@ namespace windows_client.View
             if (videoCaptureDevice == null)
                 await InitializeVideoRecorder();
 
-            if (HikeInstantiation.IS_TOMBSTONED)
+            if (HikeInstantiation.IsTombstoneLaunch)
             {
                 object obj;
 

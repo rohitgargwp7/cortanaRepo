@@ -24,7 +24,7 @@ namespace windows_client.View
 
             bool showFreeSMS = true;
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -104,7 +104,7 @@ namespace windows_client.View
         {
             int creditsRemaining = 0;
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 

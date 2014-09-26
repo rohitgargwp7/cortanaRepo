@@ -72,7 +72,7 @@ namespace windows_client.DbUtils
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
             int convs = 0;
-            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             //saveNewConv(obj);
             return obj;
@@ -187,7 +187,7 @@ namespace windows_client.DbUtils
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             int convs = 0;
-            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
@@ -222,7 +222,7 @@ namespace windows_client.DbUtils
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + msisdn);
 
                     int convs = 0;
-                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                    HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs - 1);
                 }
                 catch (Exception ex)
@@ -304,7 +304,7 @@ namespace windows_client.DbUtils
 
             if (convMap == null)
             {
-                if (!HikeInstantiation.IS_MARKETPLACE)
+                if (!HikeInstantiation.IsMarketplace)
                     MessageBox.Show("Map is null !!", "TESTING", MessageBoxButton.OK);
                 return;
             }
@@ -485,7 +485,7 @@ namespace windows_client.DbUtils
                             if (count > 0)
                             {
                                 bool isLessThanEqualTo_1500 = false;
-                                if (Utils.compareVersion(HikeInstantiation.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+                                if (Utils.compareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
 
                                 convList = new List<ConversationListObject>(count);

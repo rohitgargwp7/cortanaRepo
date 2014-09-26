@@ -15,7 +15,7 @@ namespace windows_client.Mqtt
         {
             string[] iplist = null;
 
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
             {
                 ProductionIps = iplist;
             }

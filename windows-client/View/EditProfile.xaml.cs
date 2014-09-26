@@ -37,7 +37,7 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.GENDER, out userGender);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.GENDER, out userGender);
 
             if (userGender == "m" || userGender == "f")
             {
@@ -72,13 +72,13 @@ namespace windows_client.View
         private void prepopulate()
         {
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out userName);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out userName);
             name.Text = string.IsNullOrWhiteSpace(userName) ? string.Empty : userName;
 
             phone.Text = HikeInstantiation.MSISDN;
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.EMAIL))
-                userEmail = (string)HikeInstantiation.appSettings[HikeConstants.EMAIL];
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.EMAIL))
+                userEmail = (string)HikeInstantiation.AppSettings[HikeConstants.EMAIL];
             email.Text = userEmail;
 
             if (userGender == "m")
@@ -272,8 +272,8 @@ namespace windows_client.View
                 {
                     MakeFieldsReadOnly(false);
 
-                    if (HikeInstantiation.appSettings.Contains(HikeConstants.EMAIL))
-                        email.Text = (string)HikeInstantiation.appSettings[HikeConstants.EMAIL];
+                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.EMAIL))
+                        email.Text = (string)HikeInstantiation.AppSettings[HikeConstants.EMAIL];
 
                     shellProgress.IsIndeterminate = false;
                     
@@ -305,7 +305,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 if (this.State.ContainsKey("nameErrorTxt.Opacity"))
                     nameErrorTxt.Opacity = (int)this.State["nameErrorTxt.Opacity"];

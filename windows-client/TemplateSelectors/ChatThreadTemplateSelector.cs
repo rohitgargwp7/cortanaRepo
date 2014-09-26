@@ -148,7 +148,7 @@ namespace windows_client.TemplateSelectors
         {
             // Determine which template to return;
             ConvMessage convMesssage = (ConvMessage)item;
-            if (HikeInstantiation.newChatThreadPage != null)
+            if (HikeInstantiation.NewChatThreadPageObj != null)
             {
                 if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {

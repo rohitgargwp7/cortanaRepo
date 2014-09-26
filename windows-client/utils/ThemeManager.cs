@@ -45,7 +45,7 @@ namespace windows_client.utils.ThemeManager
         {
             get
             {
-                return HikeInstantiation.appSettings.Contains(HikeConstants.BLACK_THEME);
+                return HikeInstantiation.AppSettings.Contains(HikeConstants.BLACK_THEME);
             }
         }
     }

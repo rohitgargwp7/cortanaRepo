@@ -128,7 +128,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 shellProgress.IsIndeterminate = true;
                 registerListeners();

@@ -21,13 +21,13 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-            HikeInstantiation.createDatabaseAsync();
+            HikeInstantiation.CreateDatabaseAsync();
 
             // if addbook is not scanned and state is not scanning
-            if (!HikeInstantiation.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+            if (!HikeInstantiation.AppSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
-            if (!HikeInstantiation.IS_MARKETPLACE)
+            if (!HikeInstantiation.IsMarketplace)
             {
                 serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
                 welcomePivot.Tap -= ChangeEnvironment;
@@ -89,7 +89,7 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            if (HikeInstantiation.IS_TOMBSTONED)
+            if (HikeInstantiation.IsTombstoneLaunch)
             {
                 if (this.State.ContainsKey("NetworkErrorTxtBlk.Opacity"))
                     NetworkErrorTxtBlk.Opacity = (int)this.State["NetworkErrorTxtBlk.Opacity"];
@@ -106,7 +106,7 @@ namespace windows_client
                 this.State["NetworkErrorTxtBlk.Opacity"] = (int)NetworkErrorTxtBlk.Opacity;
             }
             else
-                HikeInstantiation.IS_TOMBSTONED = false;
+                HikeInstantiation.IsTombstoneLaunch = false;
         }
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -153,8 +153,8 @@ namespace windows_client
         {
             getStartedButton.Opacity = 0;
 
-            if (!HikeInstantiation.IS_MARKETPLACE) // this is done to save the server info
-                HikeInstantiation.appSettings.Save();
+            if (!HikeInstantiation.IsMarketplace) // this is done to save the server info
+                HikeInstantiation.AppSettings.Save();
 
             #region SERVER INFO
             string env = AccountUtils.AppEnvironment.ToString();
@@ -177,7 +177,7 @@ namespace windows_client
             try
             {
 
-                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
                     MiscDBUtil.clearDatabase();
                 //HikeInstantiation.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }
@@ -201,7 +201,7 @@ namespace windows_client
         /// <param name="e">Default sys gen</param>
         private void ChangeEnvironment(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!HikeInstantiation.IS_MARKETPLACE)
+            if (!HikeInstantiation.IsMarketplace)
             {
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
                 {

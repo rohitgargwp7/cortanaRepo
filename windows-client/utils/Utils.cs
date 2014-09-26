@@ -377,13 +377,13 @@ namespace windows_client.utils
             else if (msisdn.StartsWith("0"))
             {
                 string country_code = null;
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
                 return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code2);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code2);
                 return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
             }
         }
@@ -432,15 +432,15 @@ namespace windows_client.utils
                     nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                     break;
                 case HikeInstantiation.PageState.PHONE_SCREEN:
-                    HikeInstantiation.createDatabaseAsync();
+                    HikeInstantiation.CreateDatabaseAsync();
                     nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
                     break;
                 case HikeInstantiation.PageState.PIN_SCREEN:
-                    HikeInstantiation.createDatabaseAsync();
+                    HikeInstantiation.CreateDatabaseAsync();
                     nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
                     break;
                 case HikeInstantiation.PageState.SETNAME_SCREEN:
-                    HikeInstantiation.createDatabaseAsync();
+                    HikeInstantiation.CreateDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
                     break;
                 case HikeInstantiation.PageState.TUTORIAL_SCREEN_STATUS:

@@ -852,7 +852,7 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            if (Utils.compareVersion(HikeInstantiation.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+            if (Utils.compareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
             {
                 ReadVer_1_4_0_0(reader);
             }

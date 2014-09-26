@@ -258,7 +258,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 object o;
                 #region USER INFO FROM CONVERSATION PAGE
@@ -395,10 +395,10 @@ namespace windows_client.View
                 bw.RunWorkerAsync();
             }
 
-            if (HikeInstantiation.IS_TOMBSTONED)
+            if (HikeInstantiation.IsTombstoneLaunch)
                 avatarImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
 
-            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
                 LoadHighResImage();
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
@@ -822,7 +822,7 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
                 int count = 0;
-                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
@@ -950,7 +950,7 @@ namespace windows_client.View
 
             string name;
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
 
             if (name != null)
             {
@@ -1240,7 +1240,7 @@ namespace windows_client.View
             MiscDBUtil.SavePendingRequests();
             int count = 0;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
-            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
             HikeInstantiation.ViewModel.RemoveFrndReqFromTimeline(msisdn, friendStatus);
@@ -1423,8 +1423,8 @@ namespace windows_client.View
                 firstName = Utils.GetFirstName(nameToShow);
                 isOnHike = contactInfo.OnHike;
 
-                if (HikeInstantiation.newChatThreadPage != null && _groupParticipantObject == null)
-                    HikeInstantiation.newChatThreadPage.userName.Text = nameToShow;
+                if (HikeInstantiation.NewChatThreadPageObj != null && _groupParticipantObject == null)
+                    HikeInstantiation.NewChatThreadPageObj.userName.Text = nameToShow;
 
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
 
@@ -1442,8 +1442,8 @@ namespace windows_client.View
                 if (txtMsisdn.Visibility == Visibility.Collapsed && txtMsisdn.Text != txtUserName.Text)
                     txtMsisdn.Visibility = Visibility.Visible;
 
-                if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.ApplicationBar.MenuItems != null && HikeInstantiation.newChatThreadPage.ApplicationBar.MenuItems.Contains(HikeInstantiation.newChatThreadPage.addUserMenuItem))
-                    HikeInstantiation.newChatThreadPage.ApplicationBar.MenuItems.Remove(HikeInstantiation.newChatThreadPage.addUserMenuItem);
+                if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.ApplicationBar.MenuItems != null && HikeInstantiation.NewChatThreadPageObj.ApplicationBar.MenuItems.Contains(HikeInstantiation.NewChatThreadPageObj.addUserMenuItem))
+                    HikeInstantiation.NewChatThreadPageObj.ApplicationBar.MenuItems.Remove(HikeInstantiation.NewChatThreadPageObj.addUserMenuItem);
             });
         }
 

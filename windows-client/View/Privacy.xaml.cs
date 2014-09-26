@@ -22,20 +22,20 @@ namespace windows_client.View
             InitializeComponent();
 
             bool value = true;
-            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
                 value = true;
             lastSeenTimeStampToggle.IsChecked = value;
             this.lastSeenTimeStampToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
-            value = HikeInstantiation.appSettings.TryGetValue(HikeConstants.DISPLAY_PIC_FAV_ONLY, out value);
+            value = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
 
-            value = HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
+            value = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
             activateHiddenModeOnExitToggle.IsChecked = value;
             this.activateHiddenModeOnExitToggle.Content = value ? AppResources.On : AppResources.Off;
         }
@@ -55,8 +55,8 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Favorites_Txt;
-            HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
-            HikeInstantiation.appSettings.Save();
+            HikeInstantiation.AppSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+            HikeInstantiation.AppSettings.Save();
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
@@ -129,7 +129,7 @@ namespace windows_client.View
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string password;
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
             {
                 HikeInstantiation.ViewModel.Password = password;
                 passwordOverlay.Text = AppResources.Enter_Current_Pwd_Txt;

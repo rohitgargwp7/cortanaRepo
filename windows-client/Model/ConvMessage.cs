@@ -1613,7 +1613,7 @@ namespace windows_client.Model
             get
             {
                 //not enabling send as sms on socket write
-                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.IsSMSOptionValid)
+                if (IsSent && !IsSms && MessageStatus == State.SENT_CONFIRMED && HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.IsSMSOptionValid)
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
@@ -2119,7 +2119,7 @@ namespace windows_client.Model
                 long serverTimeStamp = (long)data[HikeConstants.TIMESTAMP];
 
                 long timedifference;
-                if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                     _timestamp = serverTimeStamp - timedifference;
                 else
                     _timestamp = serverTimeStamp;

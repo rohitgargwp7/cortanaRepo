@@ -24,28 +24,14 @@ namespace windows_client.utils
 {
     public class HikeInstantiation
     {
-        public static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        public static readonly IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        #region Hike specific instances and functions
+        #region DATA
 
-        #region instances
-        private static string _currentVersion;
-        private static string _latestVersion;
-        public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
-        private static bool _IsNewInstall = true;
-        public static NewChatThread newChatThreadPage = null;
-        private static bool _isTombstoneLaunch = false;
-        private static bool _isAppLaunched = false;
+        public static bool IsViewModelLoaded = false;
+        public static bool IsMarketplace = false; // change this to toggle debugging
+        public static NewChatThread NewChatThreadPageObj = null;
         public static string MSISDN;
-        private static HikePubSub mPubSubInstance;
-        private static HikeViewModel _viewModel;
-        private static DbConversationListener dbListener;
-        private static HikeMqttManager mMqttManager;
-        private static NetworkManager networkManager;
-        private static UI_Utils ui_utils;
-        private static Analytics _analytics;
-        private static PageState ps = PageState.WELCOME_SCREEN;
 
         private static object lockObj = new object();
 
@@ -53,6 +39,7 @@ namespace windows_client.utils
 
         #region PROPERTIES
 
+        private static PageState ps = PageState.WELCOME_SCREEN;
         public static PageState PageStateVal
         {
             set
@@ -66,19 +53,7 @@ namespace windows_client.utils
             }
         }
 
-        public static bool IsAppLaunched
-        {
-            set
-            {
-                if (value != _isAppLaunched)
-                    _isAppLaunched = value;
-            }
-            get
-            {
-                return _isAppLaunched;
-            }
-        }
-
+        private static HikeMqttManager mMqttManager;
         public static HikeMqttManager MqttManagerInstance
         {
             get
@@ -91,6 +66,7 @@ namespace windows_client.utils
             }
         }
 
+        private static HikePubSub mPubSubInstance;
         public static HikePubSub HikePubSubInstance
         {
             get
@@ -104,6 +80,7 @@ namespace windows_client.utils
             }
         }
 
+        private static HikeViewModel _viewModel;
         public static HikeViewModel ViewModel
         {
             get
@@ -112,52 +89,8 @@ namespace windows_client.utils
             }
         }
 
-        public static DbConversationListener DbListener
-        {
-            get
-            {
-                return dbListener;
-            }
-            set
-            {
-                if (value != dbListener)
-                {
-                    dbListener = value;
-                }
-            }
-        }
-
-        public static NetworkManager NetworkManagerInstance
-        {
-            get
-            {
-                return networkManager;
-            }
-            set
-            {
-                if (value != networkManager)
-                {
-                    networkManager = value;
-                }
-            }
-        }
-
-        public static UI_Utils UI_UtilsInstance
-        {
-            get
-            {
-                return ui_utils;
-            }
-            set
-            {
-                if (value != ui_utils)
-                {
-                    ui_utils = value;
-                }
-            }
-        }
-
-        public static bool IS_TOMBSTONED
+        private static bool _isTombstoneLaunch = false;
+        public static bool IsTombstoneLaunch
         {
             get { return _isTombstoneLaunch; }
             set
@@ -167,22 +100,8 @@ namespace windows_client.utils
             }
         }
 
-        public static Analytics AnalyticsInstance
-        {
-            get
-            {
-                return _analytics;
-            }
-            set
-            {
-                if (value != _analytics)
-                {
-                    _analytics = value;
-                }
-            }
-        }
-
-        public static string CURRENT_VERSION
+        private static string _currentVersion;
+        public static string CurrentVersion
         {
             set
             {
@@ -194,7 +113,8 @@ namespace windows_client.utils
             }
         }
 
-        public static string LATEST_VERSION
+        private static string _latestVersion;
+        public static string LatestVersion
         {
             set
             {
@@ -207,20 +127,19 @@ namespace windows_client.utils
             }
         }
 
+        private static bool _isNewInstall = true;
         public static bool IsNewInstall
         {
             set
             {
-                if (value != _IsNewInstall)
-                    _IsNewInstall = value;
+                if (value != _isNewInstall)
+                    _isNewInstall = value;
             }
             get
             {
-                return _IsNewInstall;
+                return _isNewInstall;
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -228,26 +147,61 @@ namespace windows_client.utils
 
         public enum PageState
         {
-            WELCOME_SCREEN, // WelcomePage Screen
-            PHONE_SCREEN,   // EnterNumber Screen
-            PIN_SCREEN,     // EnterPin Screen
+            /// <summary>
+            /// Welcome Screen
+            /// </summary>
+            WELCOME_SCREEN,
+
+            /// <summary>
+            /// Enter number Screen
+            /// </summary>
+            PHONE_SCREEN,
+
+            /// <summary>
+            /// Enter Pin Screen
+            /// </summary>
+            PIN_SCREEN,
+
+            /// <summary>
+            /// Status tutorial screen.
+            /// </summary>
             TUTORIAL_SCREEN_STATUS,
+
+            /// <summary>
+            /// Sticker tutorial screen.
+            /// </summary>
             TUTORIAL_SCREEN_STICKERS,
-            SETNAME_SCREEN, // EnterName Screen
-            CONVLIST_SCREEN, // ConversationsList Screen
-            UPGRADE_SCREEN,//Upgrade page
+
+            /// <summary>
+            /// Enter name screen.
+            /// </summary>
+            SETNAME_SCREEN,
+
+            /// <summary>
+            /// ConversationList Screen
+            /// </summary>
+            CONVLIST_SCREEN,
+
+            /// <summary>
+            /// Upgrade page screen
+            /// </summary>
+            UPGRADE_SCREEN,
 
             //the below pages have been removed after 2.2, but still we need these to handle them in case of upgrade.
             //app settings is storing pagestate in form of object and not value, hence while converting on upgrade
             //app settings is getting corrupted which throws the ap to welcome page
             WELCOME_HIKE_SCREEN,
-            NUX_SCREEN_FRIENDS,// Nux Screen for friends
-            NUX_SCREEN_FAMILY// Nux Screen for family
+            NUX_SCREEN_FRIENDS,
+            NUX_SCREEN_FAMILY
         }
 
         #endregion
 
-        public static void instantiateClasses(bool initInUpgradePage)
+        /// <summary>
+        /// Instntiate hike classes useful for app functioning
+        /// </summary>
+        /// <param name="initInUpgradePage">is upgrade page called</param>
+        public static void InstantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
             if (IsNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
@@ -263,12 +217,12 @@ namespace windows_client.utils
                 try
                 {
                     var proTip = new ProTip();
-                    HikeInstantiation.appSettings.TryGetValue(HikeConstants.PRO_TIP, out proTip);
+                    HikeInstantiation.AppSettings.TryGetValue(HikeConstants.PRO_TIP, out proTip);
 
                     if (proTip != null)
                     {
                         HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PRO_TIP);
-                        HikeInstantiation.appSettings[HikeConstants.PRO_TIP] = proTip._id;
+                        HikeInstantiation.AppSettings[HikeConstants.PRO_TIP] = proTip._id;
                     }
                 }
                 catch { }
@@ -284,10 +238,10 @@ namespace windows_client.utils
                 try
                 {
                     byte value;
-                    if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
+                    if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
                     {
-                        HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
-                        HikeInstantiation.appSettings.Save();
+                        HikeInstantiation.AppSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+                        HikeInstantiation.AppSettings.Save();
 
                         if (value <= 0)
                             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
@@ -304,8 +258,8 @@ namespace windows_client.utils
 
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
-                HikeInstantiation.appSettings.Remove(HikeConstants.TIP_MARKED_KEY);
-                HikeInstantiation.appSettings.Remove(HikeConstants.TIP_SHOW_KEY);
+                HikeInstantiation.AppSettings.Remove(HikeConstants.TIP_MARKED_KEY);
+                HikeInstantiation.AppSettings.Remove(HikeConstants.TIP_SHOW_KEY);
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.CHAT_THREAD_COUNT_KEY);
             }
 
@@ -334,9 +288,9 @@ namespace windows_client.utils
             #endregion
             #region GROUP CACHE
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.appSettings[HikeConstants.GROUPS_CACHE];
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.AppSettings[HikeConstants.GROUPS_CACHE];
                 GroupManager.Instance.SaveGroupCache();
                 RemoveKeyFromAppSettings(HikeConstants.GROUPS_CACHE);
             }
@@ -349,23 +303,6 @@ namespace windows_client.utils
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
-            #endregion
-            #region DBCONVERSATION LISTENER
-            st.Reset();
-            st.Start();
-            if (HikeInstantiation.DbListener == null)
-                HikeInstantiation.DbListener = new DbConversationListener();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
-            #endregion
-            #region NETWORK MANAGER
-            st.Reset();
-            st.Start();
-            HikeInstantiation.NetworkManagerInstance = NetworkManager.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
             #endregion
             #region MQTT MANAGER
             st.Reset();
@@ -380,22 +317,6 @@ namespace windows_client.utils
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
-            #endregion
-            #region UI UTILS
-            st.Reset();
-            st.Start();
-            HikeInstantiation.UI_UtilsInstance = UI_Utils.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
-            #endregion
-            #region ANALYTICS
-            st.Reset();
-            st.Start();
-            HikeInstantiation.AnalyticsInstance = Analytics.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
             #endregion
             #region PUSH HELPER
             st.Reset();
@@ -418,7 +339,7 @@ namespace windows_client.utils
             #endregion
             #region VIEW MODEL
 
-            IS_VIEWMODEL_LOADED = false;
+            IsViewModelLoaded = false;
             if (_viewModel == null)
             {
                 _latestVersion = Utils.getAppVersion(); // this will get the new version we have installed
@@ -441,8 +362,8 @@ namespace windows_client.utils
                 {
                     if (!initInUpgradePage)
                     {
-                        appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
-                        appSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
+                        AppSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
+                        AppSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
                         WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
@@ -452,10 +373,10 @@ namespace windows_client.utils
                 st.Stop();
                 msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
-                IS_VIEWMODEL_LOADED = true;
+                IsViewModelLoaded = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
-                if (IsNewInstall && !appSettings.Contains(HikeConstants.PRO_TIP_COUNT))
+                if (IsNewInstall && !AppSettings.Contains(HikeConstants.PRO_TIP_COUNT))
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_COUNT, 1);
             }
             #endregion
@@ -494,7 +415,7 @@ namespace windows_client.utils
             {
                 if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
                 {
-                    appSettings[HikeConstants.HIKEJINGLE_PREF] = (bool)true;
+                    AppSettings[HikeConstants.HIKEJINGLE_PREF] = (bool)true;
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ENTER_TO_SEND, false);
                 }
                 else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)
@@ -519,7 +440,7 @@ namespace windows_client.utils
         private static List<ConversationListObject> GetConversations()
         {
             List<ConversationListObject> convList = null;
-            appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
 
@@ -537,9 +458,9 @@ namespace windows_client.utils
                  */
                 convList = ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                HikeInstantiation.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
+                HikeInstantiation.AppSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                HikeInstantiation.appSettings[HikeConstants.COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
+                HikeInstantiation.AppSettings[HikeConstants.COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
@@ -551,10 +472,10 @@ namespace windows_client.utils
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                HikeInstantiation.appSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
+                HikeInstantiation.AppSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
 
                 string country_code = null;
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
                 if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
                 else
@@ -565,7 +486,7 @@ namespace windows_client.utils
             else // this corresponds to the latest version and is called everytime except update launch
             {
                 int convs = 0;
-                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                 convList = ConversationTableUtils.getAllConvs();
 
                 int convListCount = convList == null ? 0 : convList.Count;
@@ -577,10 +498,13 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// Post device locale info to server
+        /// </summary>
         public static void PostLocaleInfo()
         {
             string savedLocale;
-            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.CURRENT_LOCALE, out savedLocale) ||
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.CURRENT_LOCALE, out savedLocale) ||
                 savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
             {
                 string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
@@ -594,9 +518,12 @@ namespace windows_client.utils
             }
         }
 
-        public static void createDatabaseAsync()
+        /// <summary>
+        /// Create database for hike
+        /// </summary>
+        public static void CreateDatabaseAsync()
         {
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // shows db are created
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.IS_DB_CREATED)) // shows db are created
                 return;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -664,9 +591,11 @@ namespace windows_client.utils
             bw.RunWorkerAsync();
         }
 
-        /* This function should always be used to store values to isolated storage
-         * Its a thread safe implemenatation to save values.
-         * */
+        /// <summary>
+        /// This function should always be used to store values to isolated storage
+        /// Its a thread safe implemenatation to save values
+        /// </summary>
+        /// <param name="kvlist">List of key value pair.</param>
         public static void WriteToIsoStorageSettings(List<KeyValuePair<string, object>> kvlist)
         {
             if (kvlist == null)
@@ -677,23 +606,26 @@ namespace windows_client.utils
                 {
                     string key = kvlist[i].Key;
                     object value = kvlist[i].Value;
-                    HikeInstantiation.appSettings[key] = value;
+                    HikeInstantiation.AppSettings[key] = value;
                 }
-                HikeInstantiation.appSettings.Save();
+                HikeInstantiation.AppSettings.Save();
             }
         }
 
-        /* This function should always be used to store values to isolated storage
-         * Its a thread safe implemenatation to save values.
-         * */
+        /// <summary>
+        /// This function should always be used to store values to isolated storage
+        /// Its a thread safe implemenatation to save values.
+        /// </summary>
+        /// <param name="key">Key to be added.</param>
+        /// <param name="value">Value for the passed key.</param>
         public static void WriteToIsoStorageSettings(string key, object value)
         {
             lock (lockObj)
             {
                 try
                 {
-                    HikeInstantiation.appSettings[key] = value;
-                    HikeInstantiation.appSettings.Save();
+                    HikeInstantiation.AppSettings[key] = value;
+                    HikeInstantiation.AppSettings.Save();
                 }
                 catch (Exception ex)
                 {
@@ -702,14 +634,18 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// Clear app settings. This function should always be used to clear values to isolated storage
+        /// Its a thread safe implemenatation to clear values
+        /// </summary>
         public static void ClearAppSettings()
         {
             lock (lockObj)
             {
                 try
                 {
-                    HikeInstantiation.appSettings.Clear();
-                    HikeInstantiation.appSettings.Save();
+                    HikeInstantiation.AppSettings.Clear();
+                    HikeInstantiation.AppSettings.Save();
                 }
                 catch (Exception ex)
                 {
@@ -718,6 +654,11 @@ namespace windows_client.utils
             }
         }
 
+        /// <summary>
+        /// Remove key from app settings. This function should always be used to remove values to isolated storage
+        /// Its a thread safe implemenatation to remove values
+        /// </summary>
+        /// <param name="key">Key to be removed.</param>
         public static void RemoveKeyFromAppSettings(string key)
         {
             lock (lockObj)
@@ -725,8 +666,8 @@ namespace windows_client.utils
                 try
                 {
                     // if key exists then only remove and save it
-                    if (HikeInstantiation.appSettings.Remove(key))
-                        HikeInstantiation.appSettings.Save();
+                    if (HikeInstantiation.AppSettings.Remove(key))
+                        HikeInstantiation.AppSettings.Save();
                 }
                 catch (Exception ex)
                 {
@@ -738,7 +679,7 @@ namespace windows_client.utils
         public static void SendEnterToSendStatusToServer()
         {
             bool enterToSend;
-            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.ENTER_TO_SEND, out enterToSend))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
             Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ANALYTICS_ENTER_TO_SEND, enterToSend);

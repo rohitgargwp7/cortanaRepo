@@ -46,7 +46,7 @@ namespace windows_client.utils
         {
             bool isAppUpdatePostPending = true;
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
             if (isAppUpdatePostPending)
                 AccountUtils.postUpdateInfo(postUpdateInfo_Callback);
         }

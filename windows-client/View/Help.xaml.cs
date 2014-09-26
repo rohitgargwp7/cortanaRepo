@@ -52,7 +52,7 @@ namespace windows_client.View
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string msisdn = (string)HikeInstantiation.appSettings[HikeConstants.MSISDN_SETTING];
+            string msisdn = (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING];
             StringBuilder emailBodyText = new StringBuilder();
             emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
                 "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
