@@ -318,18 +318,20 @@ namespace windows_client
         public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
 
         #region TOAST CONSTANTS
-        public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
-        public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
-        public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
-        public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
-        public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
-        public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
-        public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
-        public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
-        public static readonly string TOAST_FOR_FILE = "Sent you a file";
-        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+        public static class ToastConstants
+        {
+            public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
+            public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
+            public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
+            public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
+            public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
+            public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
+            public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
+            public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
+            public static readonly string TOAST_FOR_FILE = "Sent you a file";
+            public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+        }
         #endregion
-
 
         public static class AnalyticsKeys
         {

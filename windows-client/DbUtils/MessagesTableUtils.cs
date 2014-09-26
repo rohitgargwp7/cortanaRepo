@@ -335,7 +335,7 @@ namespace windows_client.DbUtils
 
                         if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         {
-                            toastText = gp != null ? (gp.FirstName + " " + HikeConstants.TOAST_FOR_PIN + " - " + convMsg.Message) : convMsg.Message;
+                            toastText = gp != null ? (gp.FirstName + " " + HikeConstants.ToastConstants.TOAST_FOR_PIN + " - " + convMsg.Message) : convMsg.Message;
                             obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
                         }
                         else
@@ -345,7 +345,7 @@ namespace windows_client.DbUtils
                         }
 
                         if (obj.IsHidden)
-                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                            toastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
                         else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
                             toastText = GetToastNotification(convMsg);
@@ -359,7 +359,7 @@ namespace windows_client.DbUtils
                         obj.LastMessage = toastText = convMsg.Message;
 
                         if (obj.IsHidden)
-                            toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                            toastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
                         else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                             toastText = GetToastNotification(convMsg);
 
@@ -381,7 +381,7 @@ namespace windows_client.DbUtils
                         obj.LastMessage = convMsg.Message;
 
                     if (obj.IsHidden)
-                        obj.ToastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+                        obj.ToastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
                 }
                 #endregion
                 #region OTHER MSGS
@@ -447,26 +447,26 @@ namespace windows_client.DbUtils
         /// <returns></returns>
         private static string GetToastNotification(ConvMessage convMsg)
         {
-            string toastText = HikeConstants.TOAST_FOR_MESSAGE;
+            string toastText = HikeConstants.ToastConstants.TOAST_FOR_MESSAGE;
 
             if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
-                toastText = HikeConstants.TOAST_FOR_PIN;
+                toastText = HikeConstants.ToastConstants.TOAST_FOR_PIN;
             else if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
-                toastText = HikeConstants.TOAST_FOR_STICKER;
+                toastText = HikeConstants.ToastConstants.TOAST_FOR_STICKER;
             else if (convMsg.FileAttachment != null)
             {
                 if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
-                    toastText = HikeConstants.TOAST_FOR_PHOTO;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_PHOTO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
-                    toastText = HikeConstants.TOAST_FOR_AUDIO;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_AUDIO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
-                    toastText = HikeConstants.TOAST_FOR_VIDEO;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_VIDEO;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                    toastText = HikeConstants.TOAST_FOR_CONTACT;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_CONTACT;
                 else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    toastText = HikeConstants.TOAST_FOR_LOCATION;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_LOCATION;
                 else
-                    toastText = HikeConstants.TOAST_FOR_FILE;
+                    toastText = HikeConstants.ToastConstants.TOAST_FOR_FILE;
             }
 
             return toastText;
