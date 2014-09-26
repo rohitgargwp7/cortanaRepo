@@ -330,11 +330,6 @@ namespace windows_client
         public static readonly string TOAST_FOR_PIN = "Has posted a pin";
         #endregion
 
-        #region ANALYTICS EVENTS KEYS
-
-
-
-        #endregion
 
         public static class AnalyticsKeys
         {
@@ -508,11 +503,14 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
-
-        public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
-        public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
-        public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
-
+        
+        public static class DBStrings
+        {
+            public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
+            public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
+            public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
+        }
+        
         public class NavigationKeys
         {
             public static readonly string GROUP_NAME = "groupName";

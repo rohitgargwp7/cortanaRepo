@@ -29,7 +29,7 @@ namespace windows_client.DbUtils
             {
 
                 List<HikePacket> res;
-                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
                 {
                     res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
                     //context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
@@ -53,7 +53,7 @@ namespace windows_client.DbUtils
                     try
                     {
                         HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-                        using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+                        using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
                         {
                             context.mqttMessages.InsertOnSubmit(mqttMessage);
                             context.SubmitChanges();
@@ -72,7 +72,7 @@ namespace windows_client.DbUtils
         {
             lock (lockObj)
             {
-                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
                 {
                     List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForTimestamp(context, timestamp).ToList();
                     if (entriesToDelete == null || entriesToDelete.Count == 0)
@@ -102,7 +102,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllUnsentMessages()
         {
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 try
@@ -127,7 +127,7 @@ namespace windows_client.DbUtils
 
         public static void MqttDbUpdateToLatestVersion()
         {
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
             {
                 DatabaseSchemaUpdater schemaUpdater = context.CreateDatabaseSchemaUpdater();
                 // get current database schema version

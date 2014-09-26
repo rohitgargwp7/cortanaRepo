@@ -555,19 +555,19 @@ namespace windows_client.utils
                     }
                     // Create the database if it does not exist.
                     Stopwatch st = Stopwatch.StartNew();
-                    using (HikeChatsDb db = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
+                    using (HikeChatsDb db = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
 
-                    using (HikeUsersDb db = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
+                    using (HikeUsersDb db = new HikeUsersDb(HikeConstants.DBStrings.UsersDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
 
-                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
