@@ -32,7 +32,7 @@ namespace windows_client.View
 
         public NewGroup()
         {
-            string uid = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.UID_SETTING];
+            string uid = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
 
             InitializeComponent();
@@ -91,7 +91,7 @@ namespace windows_client.View
                     reloadImage = false;
 
                     avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
-                    PhoneApplicationService.Current.State[HikeConstants.HAS_CUSTOM_IMAGE] = true;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.HAS_CUSTOM_IMAGE] = true;
                 }
                 catch (Exception ex)
                 {
@@ -119,9 +119,9 @@ namespace windows_client.View
 
             Focus();
 
-            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME] = group_name;
-            PhoneApplicationService.Current.State[HikeConstants.NEW_GROUP_ID] = mContactNumber;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.START_NEW_GROUP] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME] = group_name;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.NEW_GROUP_ID] = mContactNumber;
 
             var nextPage = new Uri("/View/ForwardTo.xaml", UriKind.Relative);
             isClicked = false;
@@ -172,7 +172,7 @@ namespace windows_client.View
 
                 if (HikeInstantiation.IsTombstoneLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
                 {
-                    if (State.TryGetValue(HikeConstants.GROUP_NAME, out obj))
+                    if (State.TryGetValue(HikeConstants.NavigationKeys.GROUP_NAME, out obj))
                     {
                         txtBxEnterName.Text = (string)obj;
                         txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
@@ -239,10 +239,10 @@ namespace windows_client.View
         {
             base.OnBackKeyPress(e);
 
-            PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.NEW_GROUP_ID);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.HAS_CUSTOM_IMAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.START_NEW_GROUP);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.NEW_GROUP_ID);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_NAME);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.HAS_CUSTOM_IMAGE);
             MiscDBUtil.DeleteImageForMsisdn(mContactNumber);
         }
 

@@ -344,7 +344,7 @@ namespace windows_client
             }
 
 
-            string unauthedMSISDN = (string)obj[HikeConstants.AppSettings.MSISDN_SETTING];
+            string unauthedMSISDN = (string)obj[HikeConstants.AppSettingsKeys.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -362,10 +362,10 @@ namespace windows_client
 
             /*If all well*/
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.MSISDN_SETTING, unauthedMSISDN);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.MSISDN_SETTING, unauthedMSISDN);
             
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -385,9 +385,9 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.COUNTRY_SELECTED))
             {
-                countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED];
+                countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.COUNTRY_SELECTED];
             }
             else
             {
@@ -454,7 +454,7 @@ namespace windows_client
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
-            PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED] = countryCode;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.COUNTRY_SELECTED] = countryCode;
 
             if (!uri.Contains("View"))
             {

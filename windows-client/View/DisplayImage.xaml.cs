@@ -31,8 +31,8 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
-            PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.STATUS_IMAGE_TO_DISPLAY);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IMAGE_TO_DISPLAY);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -102,7 +102,7 @@ namespace windows_client.View
                             this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(_msisdn, true);
                     }
                 }
-                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IMAGE_TO_DISPLAY))
                 {
                     if (ProTipHelper.CurrentProTip != null)
                     {
@@ -121,9 +121,9 @@ namespace windows_client.View
                         }
                     }
                 }
-                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY))
                 {
-                    string[] statusImageInfo = (string[])PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
+                    string[] statusImageInfo = (string[])PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY];
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(statusImageInfo[0], statusImageInfo[1], out statusImageBytes, out isThumbnail);
@@ -176,7 +176,7 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(_msisdn);
             });
 
-            PhoneApplicationService.Current.State[HikeConstants.IS_PIC_DOWNLOADED] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED] = true;
         }
 
         private void onStatusImageDownloaded(byte[] fileBytes, object filePath)

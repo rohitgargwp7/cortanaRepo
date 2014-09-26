@@ -32,7 +32,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);
 
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
@@ -330,7 +330,7 @@ namespace windows_client.View
                 return;
             }
 
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED] = selectedVideo;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIDEO_SHARED] = selectedVideo;
             NavigationService.Navigate(new Uri("/View/PreviewVideo.xaml", UriKind.Relative));
         }
 

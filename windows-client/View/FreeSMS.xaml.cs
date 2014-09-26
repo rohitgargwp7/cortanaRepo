@@ -24,7 +24,7 @@ namespace windows_client.View
 
             bool showFreeSMS = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -46,7 +46,7 @@ namespace windows_client.View
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -55,7 +55,7 @@ namespace windows_client.View
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, false);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -104,7 +104,7 @@ namespace windows_client.View
         {
             int creditsRemaining = 0;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 
@@ -112,13 +112,13 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GO_TO_CONV_VIEW))
-                PhoneApplicationService.Current.State.Remove(HikeConstants.GO_TO_CONV_VIEW);
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.GO_TO_CONV_VIEW))
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GO_TO_CONV_VIEW);
         }
 
         private void startChat_Click(object sender, RoutedEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GO_TO_CONV_VIEW] = true;
             Analytics.SendClickEvent(HikeConstants.START_HIKING);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }

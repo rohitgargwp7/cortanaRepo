@@ -30,7 +30,7 @@ namespace windows_client.View
 
             int creditsRemaining = 0;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 

@@ -76,13 +76,13 @@ namespace windows_client.View
             InitializeComponent();
 
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
             _showSmsContacts = _isFreeSmsOn ? true : false;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out _smsCredits);
 
             object obj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.FORWARD_MSG, out obj))
             {
                 _showExistingGroups = true;
                 _pageTitle = AppResources.SelectUser_Forward_To_Txt;
@@ -99,15 +99,15 @@ namespace windows_client.View
                 }
             }
             /* Case when this page is called from GroupInfo page*/
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS))
             {
                 _isGroupChat = true;
                 _pageTitle = AppResources.SelectUser_Title_AddParticipant_Txt;
             }
             /* Case when this page is called from create group button.*/
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.START_NEW_GROUP))
             {
-                _isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
+                _isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.START_NEW_GROUP];
                 _pageTitle = AppResources.GrpChat_Txt;
             }
 
@@ -162,7 +162,7 @@ namespace windows_client.View
             _refreshIconButton.IsEnabled = true;
             ApplicationBar.Buttons.Add(_refreshIconButton);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.FORWARD_MSG))
             {
                 _isForward = true;
 
@@ -197,11 +197,11 @@ namespace windows_client.View
 
             _isClicked = true;
 
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = SelectedContacts.ToList();
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_CHAT] = SelectedContacts.ToList();
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS))
             {
-                PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IS_EXISTING_GROUP] = true;
 
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry(); // will remove groupinfo page
@@ -843,10 +843,10 @@ namespace windows_client.View
         /// <returns>group list</returns>
         private ObservableCollection<ContactGroup<ContactInfo>> GetGroupedList(List<ContactInfo> allContactsList)
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS))
             {
                 _isExistingGroup = true;
-                activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
+                activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
                 _existingGroupUsers = activeExistingGroupMembers.Count + 1; // Adding +1 is for owner of the group
             }
 
@@ -1210,7 +1210,7 @@ namespace windows_client.View
                     if (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && HikeInstantiation.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                         return;
 
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cInfo;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE] = cInfo;
                     string uri = "/View/NewChatThread.xaml";
                     NavigationService.Navigate(new Uri(uri, UriKind.Relative));
                 }
@@ -1334,9 +1334,9 @@ namespace windows_client.View
                 Debug.WriteLine("ForwardTo.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
             }
 
-            PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.FORWARD_MSG);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.START_NEW_GROUP);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS);
             PhoneApplicationService.Current.State.Remove("Group_GroupId");
             base.OnRemovedFromJournal(e);
         }
@@ -1356,7 +1356,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS);
                         PhoneApplicationService.Current.State.Remove("Group_GroupId");
                         NavigationService.RemoveBackEntry();
                         NavigationService.GoBack();

@@ -224,7 +224,7 @@ namespace windows_client.View
             HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
             HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SEND_NUDGE, out isNudgeOn))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
 
             if (isNudgeOn)
@@ -250,7 +250,7 @@ namespace windows_client.View
 
         void gcPin_PinContentTapped(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.GC_PIN] = mContactNumber;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GC_PIN] = mContactNumber;
             NavigationService.Navigate(new Uri("/View/PinHistory.xaml",UriKind.Relative));
         }
 
@@ -324,7 +324,7 @@ namespace windows_client.View
                     else
                     {
                         long timedifference;
-                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.TIME_DIFF_EPOCH, out timedifference))
                             actualTimeStamp = e.TimeStamp - timedifference;
 
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, actualTimeStamp);
@@ -362,57 +362,57 @@ namespace windows_client.View
         private void ManagePageStateObjects()
         {
             //or condition for case of tombstoning
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE) || this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE))
             {
                 Object obj;
-                if (!PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, out obj))
+                if (!PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE, out obj))
                 {
-                    obj = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                    obj = this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE];
                 }
                 if (obj is ConversationListObject)
-                    statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+                    statusObject = this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
 
                 else // obj is ContactInfo obj
-                    statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
+                    statusObject = this.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE] = obj;
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE) || this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE))
             {
                 //contact info object
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_SELECTUSER_PAGE, out statusObject))
-                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE, out statusObject))
+                    this.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE] = statusObject;
                 else
-                    statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                    statusObject = this.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE];
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.GROUP_CHAT) || this.State.ContainsKey(HikeConstants.NavigationKeys.GROUP_CHAT))
             {
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.GROUP_CHAT, out statusObject))
-                    this.State[HikeConstants.GROUP_CHAT] = statusObject;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.GROUP_CHAT, out statusObject))
+                    this.State[HikeConstants.NavigationKeys.GROUP_CHAT] = statusObject;
                 else
-                    statusObject = this.State[HikeConstants.GROUP_CHAT];
+                    statusObject = this.State[HikeConstants.NavigationKeys.GROUP_CHAT];
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_CHAT);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE) || this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE) || this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE))
             {
                 //contactInfo
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.OBJ_FROM_STATUSPAGE, out statusObject))
-                    this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = statusObject;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE, out statusObject))
+                    this.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = statusObject;
                 else
-                    statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                    statusObject = this.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE];
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE);
             }
 
             //whenever chat thread is relaunched, last page is chat thread, we need to remove from backstack
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_CHAT_RELAUNCH))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_CHAT_RELAUNCH))
             {
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_CHAT_RELAUNCH);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_CHAT_RELAUNCH);
             }
 
             while (NavigationService.BackStack.Count() > 1)
@@ -428,9 +428,9 @@ namespace windows_client.View
             initPageBasedOnState();
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
-            if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            if (this.State.ContainsKey(HikeConstants.NavigationKeys.GROUP_CHAT))
             {
-                this.State.Remove(HikeConstants.GROUP_CHAT);
+                this.State.Remove(HikeConstants.NavigationKeys.GROUP_CHAT);
                 isGC = true;
             }
 
@@ -477,7 +477,7 @@ namespace windows_client.View
                     });
 
                 }
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out mCredits);
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
                 HikeInstantiation.MqttManagerInstance.connect();
@@ -550,10 +550,10 @@ namespace windows_client.View
             // Launch states
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.LAUNCH_FROM_PUSH_MSISDN))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN))
             {
-                string msisdn = (PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.LAUNCH_FROM_PUSH_MSISDN);
+                string msisdn = (PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] as string).Trim();
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN);
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
@@ -562,7 +562,7 @@ namespace windows_client.View
                     string id = msisdn.Replace(":", "_");
                     byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
                     HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = _avatar;
-                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = HikeInstantiation.ViewModel.ConvMap[msisdn];
+                    this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 }
                 else if (Utils.isGroupConversation(msisdn))
                 {
@@ -570,7 +570,7 @@ namespace windows_client.View
                     co.ContactName = AppResources.SelectUser_NewGroup_Text;
                     co.Msisdn = msisdn;
                     co.IsOnhike = true;
-                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = co;
+                    this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = co;
                 }
                 else
                 {
@@ -584,7 +584,7 @@ namespace windows_client.View
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
 
-                    this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
+                    this.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE] = statusObject = contact;
                 }
                 ManagePage();
                 //whenever launched from push, there should be no backstack. Navigation to conversation page is handled in onBackKeyPress
@@ -617,7 +617,7 @@ namespace windows_client.View
                     HikeInstantiation.MqttManagerInstance.connect();
 
                     /* This is called only when you add more participants to group */
-                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_EXISTING_GROUP))
                     {
                         ManagePage();
                     }
@@ -628,11 +628,11 @@ namespace windows_client.View
                     }
                 }
                 /* This is called only when you add more participants to group */
-                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_EXISTING_GROUP))
                 {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_EXISTING_GROUP);
+                    this.State[HikeConstants.NavigationKeys.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_CHAT];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_CHAT);
                     processGroupJoin(false);
                 }
 
@@ -648,16 +648,16 @@ namespace windows_client.View
             }
             else //removing here because it may be case that user pressed back without selecting any user
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.FORWARD_MSG);
                 this.UpdateLayout();
             }
 
             /* This is called only when you add more participants to group */
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_EXISTING_GROUP))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_EXISTING_GROUP);
+                this.State[HikeConstants.NavigationKeys.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_CHAT];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_CHAT);
                 processGroupJoin(false);
             }
 
@@ -665,27 +665,27 @@ namespace windows_client.View
 
             //File transfer states
             #region AUDIO FT
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED) ||
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.AUDIO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.VIDEO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.VIDEO_SHARED))
             {
                 TransferFile();
             }
             #endregion
             #region SHARE LOCATION
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SHARED_LOCATION))
             {
                 shareLocation();
             }
             #endregion
             #region SHARE CONTACT
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.CONTACT_SELECTED))
             {
                 ContactTransfer();
             }
             #endregion
             #region MULTIPLE IMAGES
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.MULTIPLE_IMAGES))
             {
                 MultipleImagesTransfer();
             }
@@ -763,7 +763,7 @@ namespace windows_client.View
                 {
                     if (currentAudioMessage != null)
                     {
-                        PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
+                        PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
                         HikeInstantiation.ViewModel.ResumeBackgroundAudio();
 
@@ -792,7 +792,7 @@ namespace windows_client.View
             try
             {
                 //remove new group pic key
-                PhoneApplicationService.Current.State.Remove(HikeConstants.HAS_CUSTOM_IMAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.HAS_CUSTOM_IMAGE);
 
                 HikeInstantiation.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
 
@@ -919,7 +919,7 @@ namespace windows_client.View
 
         public void RemoveEmmaBot()
         {
-            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.REMOVE_EMMA))
+            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.REMOVE_EMMA))
             {
                 ConversationListObject convObj;
                 if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
@@ -942,9 +942,9 @@ namespace windows_client.View
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
 
-            if (this.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE)) // represents NewChatThread is called from convlist page
+            if (this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE)) // represents NewChatThread is called from convlist page
             {
-                ConversationListObject convObj = (ConversationListObject)this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                ConversationListObject convObj = (ConversationListObject)this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE];
                 mContactNumber = convObj.Msisdn;
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
@@ -980,16 +980,16 @@ namespace windows_client.View
             #endregion
             #region OBJECT FROM SELECT GROUP PAGE
 
-            else if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            else if (this.State.ContainsKey(HikeConstants.NavigationKeys.GROUP_CHAT))
             {
                 // here always create a new group
-                string id = (string)PhoneApplicationService.Current.State[HikeConstants.NEW_GROUP_ID];
+                string id = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.NEW_GROUP_ID];
                 mContactNumber = id;
 
-                mContactName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME];
+                mContactName = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME];
                 groupOwner = HikeInstantiation.MSISDN;
 
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.HAS_CUSTOM_IMAGE))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.HAS_CUSTOM_IMAGE))
                     isDisplayPicSet = true;
 
                 processGroupJoin(true);
@@ -1011,9 +1011,9 @@ namespace windows_client.View
 
             #region OBJECT FROM SELECT USER PAGE
 
-            else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            else if (this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE))
             {
-                ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                ContactInfo obj = (ContactInfo)this.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE];
                 if (obj.HasCustomPhoto) // represents group chat
                 {
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
@@ -1042,9 +1042,9 @@ namespace windows_client.View
             }
             #endregion
             #region OBJECT FROM STATUS PAGE
-            else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            else if (this.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE))
             {
-                object obj = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                object obj = this.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE];
                 if (obj is ConversationListObject) //from timeline
                 {
                     ConversationListObject co = (ConversationListObject)obj;
@@ -1232,16 +1232,16 @@ namespace windows_client.View
                     catch (Exception ex)
                     {
                         Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING], false);
+                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING], false);
                     }
                 }
             }
 
             /* This is done so that after Tombstone when this page is launched, no group is created again and again */
-            this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.NEW_GROUP_ID);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.HAS_CUSTOM_IMAGE);
+            this.State.Add(HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.NEW_GROUP_ID);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_NAME);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.HAS_CUSTOM_IMAGE);
         }
 
         int _unreadCount = 0;
@@ -1252,12 +1252,12 @@ namespace windows_client.View
                 groupChatEnd();
             else
             {
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out mCredits);
                 if (mCredits <= 0)
                 {
                     if (isGroupChat)
                     {
-                        if (HikeInstantiation.AppSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
+                        if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY))
                         {
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
@@ -1307,7 +1307,7 @@ namespace windows_client.View
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING))
             {
                 if (_lastSeenWorker == null)
                 {
@@ -1406,7 +1406,7 @@ namespace windows_client.View
         bool IsSMSOptionAvalable()
         {
             bool showFreeSMS = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
 
             if (!showFreeSMS) // if setting is off return false
                 return showFreeSMS; // == false
@@ -1430,7 +1430,7 @@ namespace windows_client.View
 
         private void processGroupJoin(bool isNewgroup)
         {
-            List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
+            List<ContactInfo> contactsForGroup = this.State[HikeConstants.NavigationKeys.GROUP_CHAT] as List<ContactInfo>;
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>();
 
             if (isNewgroup) // if new group add all members to the group
@@ -1723,11 +1723,11 @@ namespace windows_client.View
             }
             if (HikeInstantiation.IsTombstoneLaunch) // tombstone , chat thread not created , add GC members.
             {
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_EXISTING_GROUP))
                 {
-                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                    this.State[HikeConstants.NavigationKeys.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_CHAT];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_CHAT);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_EXISTING_GROUP);
                     processGroupJoin(false);
                 }
             }
@@ -2142,7 +2142,7 @@ namespace windows_client.View
                     if (showNoSmsLeftOverlay || isGroupChat)
                         showOverlay(false);
                     if (isGroupChat)
-                        HikeInstantiation.AppSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
+                        HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
                 }
                 else
                 {
@@ -2727,13 +2727,13 @@ namespace windows_client.View
                 if (mUserIsBlocked || !isGroupAlive)
                     return;
 
-                PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
-                PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
                 NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
@@ -2948,7 +2948,7 @@ namespace windows_client.View
         private void SendPinMsg(ConvMessage convMessage)
         {
             JObject metaData = new JObject();
-            metaData[HikeConstants.GC_PIN] = 1;
+            metaData[HikeConstants.NavigationKeys.GC_PIN] = 1;
             convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.PIN_MESSAGE;
 
@@ -3138,7 +3138,7 @@ namespace windows_client.View
                 if (co.Avatar == null)
                     co.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
 
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             }
             else
             {
@@ -3157,9 +3157,9 @@ namespace windows_client.View
                     HikeInstantiation.ViewModel.ContactsCache[msisdn] = cn;
                 }
 
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_SELECTUSER_PAGE] = cn;
             }
-            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IS_CHAT_RELAUNCH] = true;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -3177,11 +3177,11 @@ namespace windows_client.View
                 if (HikeViewModel.StickerHelper.CheckLowResStickerExists(convMessage.StickerObj.Category, convMessage.StickerObj.Id))
                     HikeViewModel.StickerHelper.RecentStickerHelper.AddSticker(sticker);
 
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = obj;//done this way to distinguish it from message
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] = obj;//done this way to distinguish it from message
             }
             else if (convMessage.FileAttachment == null)
             {
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = convMessage.Message;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] = convMessage.Message;
             }
             else
             {
@@ -3201,7 +3201,7 @@ namespace windows_client.View
                 attachmentForwardMessage[5] = convMessage.FileAttachment.Thumbnail;
                 attachmentForwardMessage[6] = convMessage.FileAttachment.FileName;
 
-                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] = attachmentForwardMessage;
             }
          
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
@@ -3501,7 +3501,7 @@ namespace windows_client.View
             {
                 int index = 0;
 
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, out index))
                     emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
                 else
                     emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
@@ -3518,7 +3518,7 @@ namespace windows_client.View
             if (!isStickersLoaded)
             {
                 String category;
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
+                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category))
                 {
                     if (category == StickerHelper.CATEGORY_RECENT)
                     {
@@ -3614,7 +3614,7 @@ namespace windows_client.View
             if (!spContactTransfer.IsHitTestVisible)
                 return;
 
-            PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SHARE_CONTACT] = true;
 
             NavigationService.Navigate(new Uri("/View/SelectUser.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
@@ -3883,7 +3883,7 @@ namespace windows_client.View
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (isGroupChat)
-                HikeInstantiation.AppSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
+                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
             showOverlay(false);
         }
 
@@ -3918,7 +3918,7 @@ namespace windows_client.View
 
         private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
             {
                 SendMsg();
             }
@@ -3963,7 +3963,7 @@ namespace windows_client.View
 
         void ShowTypingNotification(object sender, object[] vals)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -4091,7 +4091,7 @@ namespace windows_client.View
                     convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
                 {
                     bool isVibrateEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.VIBRATE_PREF, out isVibrateEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
 
                     if (isVibrateEnabled)
                     {
@@ -4432,7 +4432,7 @@ namespace windows_client.View
                     {
                         if (isGroupChat)
                         {
-                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY, true);
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
                                 if (!gp.IsOnHike)
@@ -4519,7 +4519,7 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING))
+                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING))
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
@@ -4891,8 +4891,8 @@ namespace windows_client.View
         {
             if (!isGroupChat || isGroupAlive)
             {
-                object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.SHARED_LOCATION);
+                object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SHARED_LOCATION];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SHARED_LOCATION);
 
                 byte[] imageThumbnail = null;
                 JObject locationJSON = (JObject)locationInfo[0];
@@ -4949,41 +4949,41 @@ namespace windows_client.View
             int fileSize = 0;
             Attachment.AttachemntSource source = Attachment.AttachemntSource.CAMERA;
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.AUDIO_RECORDED))
             {
-                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.AUDIO_RECORDED];
 
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED_DURATION))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.AUDIO_RECORDED_DURATION))
                 {
-                    _recordedDuration = (int)PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED_DURATION];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
+                    _recordedDuration = (int)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.AUDIO_RECORDED_DURATION];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.AUDIO_RECORDED_DURATION);
                 }
 
                 source = Attachment.AttachemntSource.CAMERA;
                 fileSize = fileBytes.Length;
                 isAudio = true;
-                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.AUDIO_RECORDED);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.VIDEO_RECORDED))
             {
                 fileSize = MiscDBUtil.GetFileSize(HikeConstants.TEMP_VIDEO_NAME);
 
                 if (fileSize == 0)
                 {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_RECORDED);
                     return;
                 }
 
                 source = Attachment.AttachemntSource.CAMERA;
-                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIDEO_RECORDED];
                 filePath = HikeConstants.TEMP_VIDEO_NAME;
                 isAudio = false;
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_RECORDED);
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_SHARED))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.VIDEO_SHARED))
             {
-                VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+                VideoItem videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIDEO_SHARED];
                 thumbnail = videoShared.ThumbnailBytes;
 
                 if (thumbnail != null && thumbnail.Length > HikeConstants.MAX_THUMBNAILSIZE)
@@ -5002,7 +5002,7 @@ namespace windows_client.View
                     if (fileSize <= 0)
                     {
                         MessageBox.Show(AppResources.CT_FileUnableToSend_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);
                         return;
                     }
                 }
@@ -5013,7 +5013,7 @@ namespace windows_client.View
 
                 source = Attachment.AttachemntSource.GALLERY;
                 isAudio = false;
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);
             }
 
             if (!StorageManager.StorageManager.Instance.IsDeviceMemorySufficient(fileSize))
@@ -5075,8 +5075,8 @@ namespace windows_client.View
 
         private void ContactTransfer()
         {
-            Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
-            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
+            Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.CONTACT_SELECTED];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.CONTACT_SELECTED);
 
             if (contact != null)
             {
@@ -5113,9 +5113,9 @@ namespace windows_client.View
 
         private async Task MultipleImagesTransfer()
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.MULTIPLE_IMAGES))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.MULTIPLE_IMAGES))
             {
-                List<PhotoItem> listPic = PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] as List<PhotoItem>;
+                List<PhotoItem> listPic = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.MULTIPLE_IMAGES] as List<PhotoItem>;
 
                 foreach (PhotoItem pic in listPic)
                 {
@@ -5128,7 +5128,7 @@ namespace windows_client.View
                     pic.Pic.Dispose();
                 }
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.MULTIPLE_IMAGES);
             }
         }
 
@@ -5149,7 +5149,7 @@ namespace windows_client.View
 
             if (!isGroupChat && !_isHikeBot && convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
             {
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
             if (convMessage.StickerObj != null && !convMessage.StickerObj.IsStickerDownloaded && convMessage.ImageDownloadFailed)
@@ -5287,8 +5287,8 @@ namespace windows_client.View
                 {
                     if (mediaElement.Source != null)
                     {
-                        if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
-                            PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                        if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PLAYER_TIMER))
+                            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PLAYER_TIMER);
 
                         if (mediaElement.Source.OriginalString.Contains(fileLocation)) //handle already playing audio
                         {
@@ -5404,8 +5404,8 @@ namespace windows_client.View
                         }
                         else //play new file after resume app
                         {
-                            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
-                                PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PLAYER_TIMER))
+                                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PLAYER_TIMER);
 
                             if (currentAudioMessage != null)
                             {
@@ -5455,8 +5455,8 @@ namespace windows_client.View
                 }
                 else // play first audio
                 {
-                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PLAYER_TIMER))
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PLAYER_TIMER);
 
                     mediaElement = new MediaElement() { Name = "myMediaElement" };
                     mediaElement.MediaEnded -= mediaPlayback_MediaEnded;
@@ -5521,7 +5521,7 @@ namespace windows_client.View
                     double latitude = double.Parse(locationJSON[HikeConstants.ServerJsonKeys.LATITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
                     double longitude = double.Parse(locationJSON[HikeConstants.ServerJsonKeys.LONGITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
 
-                    PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
                     this.NavigationService.Navigate(new Uri("/View/ShowLocation.xaml", UriKind.Relative));
                 }
@@ -5568,10 +5568,10 @@ namespace windows_client.View
 
             if (element != null && element.CurrentState == MediaElementState.Playing)
             {
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PLAYER_TIMER))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PLAYER_TIMER))
                 {
-                    mediaElement.Position = (TimeSpan)PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER];
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.PLAYER_TIMER);
+                    mediaElement.Position = (TimeSpan)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PLAYER_TIMER];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PLAYER_TIMER);
                 }
 
             }
@@ -5632,11 +5632,11 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
-            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.CONTACT_SELECTED))
                 ContactTransfer();
-            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.AUDIO_RECORDED))
                 TransferFile();
-            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            if (HikeInstantiation.IsTombstoneLaunch && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SHARED_LOCATION))
             {
                 shareLocation();
             }
@@ -5745,7 +5745,7 @@ namespace windows_client.View
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
 
             switch (emoticonPivot.SelectedIndex)
             {
@@ -5829,7 +5829,7 @@ namespace windows_client.View
             convMessage.MetaDataString = "{poke:1}";
             sendMsg(convMessage, false);
             bool isVibrateEnabled = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
             if (isVibrateEnabled)
             {
                 VibrateController vibrate = VibrateController.Default;
@@ -6550,7 +6550,7 @@ namespace windows_client.View
                 {
                     lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
                 });
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
 
@@ -7269,7 +7269,7 @@ namespace windows_client.View
                 byte[] audioBytes = _stream.ToArray();
                 if (audioBytes != null && audioBytes.Length > 0)
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = _stream.ToArray();
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.AUDIO_RECORDED] = _stream.ToArray();
                     TransferFile();
                 }
             }
@@ -7772,7 +7772,7 @@ namespace windows_client.View
 
         private void PinTemplate_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.GC_PIN] = mContactNumber;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GC_PIN] = mContactNumber;
             NavigationService.Navigate(new Uri("/View/PinHistory.xaml", UriKind.Relative));
         }
 

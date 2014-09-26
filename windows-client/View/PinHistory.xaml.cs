@@ -90,8 +90,8 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GC_PIN))
-                _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.GC_PIN))
+                _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GC_PIN] as string;
 
             progressBar.Visibility = Visibility.Visible;
 
@@ -106,7 +106,7 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GC_PIN);
             base.OnBackKeyPress(e);
         }
 

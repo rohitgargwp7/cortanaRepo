@@ -44,7 +44,7 @@ namespace windows_client.View
             shareVideo.Click += shareVideo_Click;
             this.ApplicationBar.Buttons.Add(shareVideo);
 
-            _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.VIDEO_SHARED];
+            _videoShared = (VideoItem)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIDEO_SHARED];
             thumbnailImage.Source = _videoShared.ThumbnailImage;
             VideoDurationText.Text = TimeUtils.GetDurationInHourMinFromMilliseconds(_videoShared.Duration);
 
@@ -59,7 +59,7 @@ namespace windows_client.View
             if (_size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);
 
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
@@ -76,7 +76,7 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);
             base.OnBackKeyPress(e);
         }
 

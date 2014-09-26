@@ -204,14 +204,12 @@ namespace windows_client
             }
         }
 
-        public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
-
-        public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
         public static readonly string pushNotificationChannelName = "HikeApp";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
+        public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
@@ -220,8 +218,6 @@ namespace windows_client
         public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
         public static readonly string HikeDirectoryName = "hike";
         public static readonly string ValidVideoDirectoryPath = "C:\\Data\\Users\\Public\\Pictures\\";
-
-        public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
 
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_HEIGHT = 180;
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 180;
@@ -265,12 +261,6 @@ namespace windows_client
         public const string FTUE_HIKE_DAILY_MSISDN = "+hike3+";
         public const string FTUE_HIKE_SUPPORT_MSISDN = "+hike4+";
 
-        public static readonly string BLACK_THEME = "black_theme";
-
-        public static readonly string ACTIVATE_HIDDEN_MODE_ON_EXIT = "act_hidden_mode_exit";
-        public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
-        public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
-        public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
         #region ConvObject_MetaData
@@ -288,72 +278,16 @@ namespace windows_client
         public static readonly string INDIA_COUNTRY_CODE = "+91";
 
         public static string MOOD_TOD_SEPARATOR = ":";
-        public static string GROUP_PARTICIPANT_SEPARATOR = ",";
 
-        public static string START_NEW_GROUP = "start_new_group";
-        public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
-        public static string IS_EXISTING_GROUP = "is_existing_group";
-        public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
-        public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
-        public static string GROUP_CHAT = "groupChat";
-        public static string SHARE_CONTACT = "shareContact";
-        public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
-        public static string COUNTRY_SELECTED = "country_selected";
-        public static string IMAGE_TO_DISPLAY = "imageToDisplay";
-        public static string STATUS_IMAGE_TO_DISPLAY = "statusToDisplay";
-        public static string FROM_SOCIAL_PAGE = "fromSocialPage";
-        public static string SOCIAL_STATE = "socialState";
-        public static string SOCIAL = "Social_Request";
-        public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
-        public static string PLAYER_TIMER = "playerTimer";
-        public static string MULTIPLE_IMAGES = "multipleimages";
-        public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
-        public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
+
         public static string LOCATION_SEARCH = "locationSearch";
-        public static string LOCATION_ZOOM_LEVEL = "locationZoomLevel";
         public static string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
         public static string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
-        public static string SET_PROFILE_PIC = "setProfilePic";
 
-        /* NAVIGATION CONSTANTS*/
-        public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
-        public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
-        public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
-        /// <summary>
-        /// Use key whenever relaunching chat thread from chat thread page to clear back stack
-        /// </summary>
-        public static string IS_CHAT_RELAUNCH = "isChatRelaunch";
-        public static string FORWARD_MSG = "forwardedText";
-        public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
-        public static string AUDIO_RECORDED = "audioRecorded";
-        public static string CONTACT_SELECTED = "contactSelected";
-        public static string VIDEO_RECORDED = "videoRecorded";
-        public static string VIDEO_SHARED = "videoShared";
-        public static string SHARED_LOCATION = "sharedLocation";
-        public static string FB_LOGGED_IN = "FbLoggedIn";
-        public static string TW_LOGGED_IN = "TwLoggedIn";
-        public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
-        public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
-        public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
-        public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
-        public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
-        public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
-        public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
-        public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
         public static string UNREAD_UPDATES = "urUp";
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
-        public static string SHOW_CHAT_FTUE = "showcftue";
-        public static string HIDDEN_TOOLTIP_STATUS = "hiddenToolTipStatus";
-        public static string GO_TO_CONV_VIEW = "goToConvView";
-
-        public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
-
-        public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
-        public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
-
-        public static string IS_PIC_DOWNLOADED = "isPicDownloaded";
 
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
@@ -364,7 +298,6 @@ namespace windows_client
         public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
-        public static readonly string GC_PIN = "pin";
 
         public static readonly string AVATAR = "avatar";
         public static readonly string STICKER_ID = "stId";
@@ -383,13 +316,11 @@ namespace windows_client
 
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
-        public static readonly string SHOW_FREE_INVITES = "show_free_invites";
-        public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
-        public static readonly string SHOW_POPUP = "show_popup";
+
+
 
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
-
         public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
         public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
         public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
@@ -447,7 +378,7 @@ namespace windows_client
             public static readonly string IfModifiedSince = "30";
         }
 
-        public static class AppSettings
+        public static class AppSettingsKeys
         {
             public static readonly string PAGE_STATE = "page_State";
             public static readonly string FB_USER_ID = "FbUserId";
@@ -521,6 +452,33 @@ namespace windows_client
 
             public static readonly string CURRENT_LOCALE = "curLocale";
 
+            public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
+
+            public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
+
+            public static readonly string ACTIVATE_HIDDEN_MODE_ON_EXIT = "act_hidden_mode_exit";
+            public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
+            public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
+            public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
+
+            public static string IS_NEW_INSTALLATION = "is_new_installation";
+            public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
+            public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
+
+            public static string FB_LOGGED_IN = "FbLoggedIn";
+            public static string TW_LOGGED_IN = "TwLoggedIn";
+
+            public static string SHOW_CHAT_FTUE = "showcftue";
+            public static string HIDDEN_TOOLTIP_STATUS = "hiddenToolTipStatus";
+
+            public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
+
+            public static readonly string SHOW_FREE_INVITES = "show_free_invites";
+            public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
+            public static readonly string SHOW_POPUP = "show_popup";
+            public static readonly string BLACK_THEME = "black_theme";
+
+
         }
 
         public static class NokiaHere
@@ -542,9 +500,71 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
 
+
+
+        public class NavigationKeys
+        {
+            public static readonly string GROUP_NAME = "groupName";
+            public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
+            public static readonly string NEW_GROUP_ID = "newGroupId";
+
+            public static string START_NEW_GROUP = "start_new_group";
+            public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
+            public static string IS_EXISTING_GROUP = "is_existing_group";
+            public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
+            public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
+            public static string GROUP_CHAT = "groupChat";
+            public static string SHARE_CONTACT = "shareContact";
+            public static string COUNTRY_SELECTED = "country_selected";
+
+            public static string IMAGE_TO_DISPLAY = "imageToDisplay";
+            public static string STATUS_IMAGE_TO_DISPLAY = "statusToDisplay";
+            public static string FROM_SOCIAL_PAGE = "fromSocialPage";
+            public static string SOCIAL_STATE = "socialState";
+            public static string SOCIAL = "Social_Request";
+
+            public static string PLAYER_TIMER = "playerTimer";
+            public static string MULTIPLE_IMAGES = "multipleimages";
+            public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
+            public static string SET_PROFILE_PIC = "setProfilePic";
+
+            public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
+            public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
+            public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
+            
+            /// <summary>
+            /// Use key whenever relaunching chat thread from chat thread page to clear back stack
+            /// </summary>
+            public static string IS_CHAT_RELAUNCH = "isChatRelaunch";
+            public static string FORWARD_MSG = "forwardedText";
+            public static string AUDIO_RECORDED_DURATION = "audioRecordedDuration";
+            public static string AUDIO_RECORDED = "audioRecorded";
+            public static string CONTACT_SELECTED = "contactSelected";
+            public static string VIDEO_RECORDED = "videoRecorded";
+            public static string VIDEO_SHARED = "videoShared";
+            public static string SHARED_LOCATION = "sharedLocation";
+
+            public static string OBJ_FROM_BLOCKED_LIST = "objFrmBlckList";
+            public static readonly string PAGE_TO_NAVIGATE_TO = "pageToNavigateTo";
+            public static readonly string VIEW_MORE_MESSAGE_OBJ = "viewMoreMsg";
+            public static string USERINFO_FROM_CONVERSATION_PAGE = "userInfoFromConvPage";
+            public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
+            public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
+            public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
+            public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
+
+            public static string GO_TO_CONV_VIEW = "goToConvView";
+            public static readonly string LAUNCH_FROM_PUSH_MSISDN = "launchFromPushMsisdn";
+            public static readonly string GC_PIN = "pin";
+            public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
+            public static string IS_PIC_DOWNLOADED = "isPicDownloaded";
+        }
+
+
         public static readonly string GROUP_NAME = "groupName";
         public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";
         public static readonly string NEW_GROUP_ID = "newGroupId";
+
 
         public static class ServerUrls
         {

@@ -262,7 +262,7 @@ namespace windows_client.View
             {
                 object o;
                 #region USER INFO FROM CONVERSATION PAGE
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE, out o))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_CONVERSATION_PAGE, out o))
                 {
                     ConversationListObject co = (ConversationListObject)o;
                     if (o != null)
@@ -277,7 +277,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER INFO FROM CHAT THREAD
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out o))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE, out o))
                 {
                     if (o is ConversationListObject)
                     {
@@ -301,7 +301,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER INFO FROM GROUP CHAT
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
                     _groupParticipantObject = o as GroupParticipant;
                     msisdn = _groupParticipantObject.Msisdn;
@@ -321,12 +321,12 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER OWN PROFILE
-                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE))
                 {
                     InitSelfProfile();
 
                     #region SET PROFILE PIC
-                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SET_PROFILE_PIC))
                     {
                         try
                         {
@@ -336,13 +336,13 @@ namespace windows_client.View
                         {
                             Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
                         }
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SET_PROFILE_PIC);
                     }
                     #endregion
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_TIMELINE, out o))
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_TIMELINE, out o))
                 {
                     Object[] objArr = o as Object[];
                     if (objArr != null)
@@ -401,15 +401,15 @@ namespace windows_client.View
             if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
                 LoadHighResImage();
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED))
             {
                 LoadHighResImage();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_PIC_DOWNLOADED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED);
             }
 
             // this is done to update profile name , as soon as it gets updated
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
-                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED))
+                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED];
         }
 
         async void LoadHighResImage()
@@ -519,12 +519,12 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_TIMELINE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.PROFILE_NAME_CHANGED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_CONVERSATION_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_GROUPCHAT_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_TIMELINE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED);
             removeListeners();
         }
 
@@ -729,7 +729,7 @@ namespace windows_client.View
             string[] statusImageInfo = new string[2];
             statusImageInfo[0] = statusUpdate.Msisdn;
             statusImageInfo[1] = statusUpdate.ServerId;
-            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -864,7 +864,7 @@ namespace windows_client.View
                 return;
 
             if (co != null)
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = co;
             else
             {
                 ContactInfo contactInfo = null;
@@ -881,7 +881,7 @@ namespace windows_client.View
                     contactInfo = new ContactInfo();
                     contactInfo.Msisdn = msisdn;
                 }
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = contactInfo;
             }
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -950,7 +950,7 @@ namespace windows_client.View
 
             string name;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.ACCOUNT_NAME, out name);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, out name);
 
             if (name != null)
             {

@@ -75,14 +75,14 @@ namespace windows_client.View
             enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
 
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out _smsCredits);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SHARE_CONTACT))
             {
                 _isContactShared = true;
                 PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_BLOCKED_LIST))
             {
                 _frmBlockedList = true;
                 blockedSet = new HashSet<string>();
@@ -900,7 +900,7 @@ namespace windows_client.View
                         string country_code = null;
 
 
-                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.COUNTRY_CODE_SETTING, out country_code))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code))
                             searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;
@@ -957,7 +957,7 @@ namespace windows_client.View
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.CONTACT_SELECTED] = contact;
                 NavigationService.GoBack();
             }
         }
@@ -1050,8 +1050,8 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.OBJ_FROM_BLOCKED_LIST);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SHARE_CONTACT);
             base.OnRemovedFromJournal(e);
         }
 

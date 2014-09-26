@@ -127,7 +127,7 @@ namespace windows_client.FileTransfers
             FileState = (FileTransferState)reader.ReadInt32();
 
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -253,7 +253,7 @@ namespace windows_client.FileTransfers
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
 
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.UID_SETTING))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
             {
                 Delete();
                 return;
@@ -424,7 +424,7 @@ namespace windows_client.FileTransfers
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
 
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.UID_SETTING))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
             {
                 Delete();
                 return;
@@ -636,7 +636,7 @@ namespace windows_client.FileTransfers
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
 
-                if (FileState == FileTransferState.STARTED || (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
+                if (FileState == FileTransferState.STARTED || (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
             else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload

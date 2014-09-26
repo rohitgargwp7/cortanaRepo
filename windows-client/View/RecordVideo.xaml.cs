@@ -297,7 +297,7 @@ namespace windows_client.View
 
         private void send_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED] = thumbnail;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIDEO_RECORDED] = thumbnail;
             NavigationService.GoBack();
         }
 

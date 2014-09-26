@@ -62,31 +62,31 @@ namespace windows_client.View
                 moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
                 isFirstLoad = false;
             }
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE);
 
                 object oo;
                 FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.SOCIAL_STATE, out oo))
                 {
                     ss = (FreeSMS.SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SOCIAL_STATE);
                 }
                 switch (ss)
                 {
                     case FreeSMS.SocialState.FB_LOGIN:
                         JObject oj = new JObject();
-                        oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_USER_ID];
-                        oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+                        oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.FB_USER_ID];
+                        oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN];
                         oj["post"] = false;//so that hike promotional post is not posted on fb
                         AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.ServerJsonKeys.FACEBOOK, true);
                         break;
 
                     case FreeSMS.SocialState.TW_LOGIN:
                         JObject ojj = new JObject();
-                        ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+                        ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TWITTER_TOKEN]; ;
+                        ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET];
                         ojj["post"] = false;
                         AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.ServerJsonKeys.TWITTER, true);
                         break;
@@ -253,7 +253,7 @@ namespace windows_client.View
             {
                 string name;
 
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.ACCOUNT_NAME, out name);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, out name);
                 string nameToShow = null;
                 if (!string.IsNullOrEmpty(name))
                 {
@@ -333,14 +333,14 @@ namespace windows_client.View
         {
             if (!isFacebookPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN)) // already logged in
                 {
                     fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isFacebookPost = true;
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -355,7 +355,7 @@ namespace windows_client.View
         {
             if (!isTwitterPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.TW_LOGGED_IN)) // already logged in
                 {
                     twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isTwitterPost = true;
@@ -366,7 +366,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.TWITTER;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.ServerJsonKeys.TWITTER;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }

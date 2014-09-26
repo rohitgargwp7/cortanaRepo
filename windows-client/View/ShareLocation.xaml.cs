@@ -418,7 +418,7 @@ namespace windows_client.View
             object[] locationDetails = new object[2];
             locationDetails[0] = metadata;
             locationDetails[1] = thumbnailBytes;
-            PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SHARED_LOCATION] = locationDetails;
             LayoutRoot.Visibility = Visibility.Collapsed;
             ApplicationBar.IsVisible = false;
             NavigationService.GoBack();
@@ -611,14 +611,14 @@ namespace windows_client.View
                 _isLocationEnabled = false;
             }
 
-            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
 
-                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.USE_LOCATION_SETTING);
+                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING);
                     HikeInstantiation.AppSettings.Save();
                     _isLocationEnabled = true;
 
@@ -634,13 +634,13 @@ namespace windows_client.View
                     GetCurrentCoordinate();
             }
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (HikeInstantiation.IsTombstoneLaunch)
             {
                 _isDefaultLocationCall = false;
 
-                _customCoordinate = State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
+                _customCoordinate = State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] as GeoCoordinate;
                 _searchString = State[HikeConstants.LOCATION_SEARCH] as String;
                 _resultString = (String)State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
                 _selectedIndex = (Int32)State[HikeConstants.LOCATION_SELECTED_INDEX];
@@ -704,7 +704,7 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+                State.Remove(HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE);
                 State.Remove(HikeConstants.LOCATION_SEARCH);
                 State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
                 State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
@@ -712,7 +712,7 @@ namespace windows_client.View
             }
             else
             {
-                State[HikeConstants.LOCATION_MAP_COORDINATE] = _customCoordinate;
+                State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] = _customCoordinate;
                 State[HikeConstants.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
@@ -725,7 +725,7 @@ namespace windows_client.View
             }
 
             if (_myCoordinate != null)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }

@@ -36,10 +36,10 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.TW_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
         }
@@ -81,7 +81,7 @@ namespace windows_client.View
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
                 LogoutFb(true);
 
             DeleteLocalStorage();
@@ -149,7 +149,7 @@ namespace windows_client.View
                 });
                 return;
             }
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
                 LogoutFb(true);
             DeleteLocalStorage();
         }
@@ -163,11 +163,11 @@ namespace windows_client.View
             HikeViewModel.ClearStickerHelperInstance();
 
             HikeInstantiation.ClearAppSettings();
-            HikeInstantiation.AppSettings[HikeConstants.AppSettings.IS_DB_CREATED] = true;
+            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.REMOVE_EMMA, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
@@ -224,9 +224,9 @@ namespace windows_client.View
             else
             {
                 shellProgress.IsIndeterminate = true;
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TW_LOGGED_IN);
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.ServerJsonKeys.TWITTER, false);
                 return;
             }
@@ -262,9 +262,9 @@ namespace windows_client.View
               {
                   await (new WebBrowser()).ClearCookiesAsync();
               }));
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_USER_ID);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN);
 
             if (isAccountDeleteUnlink)
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.ServerJsonKeys.FACEBOOK, false);

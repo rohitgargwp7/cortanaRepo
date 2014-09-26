@@ -124,7 +124,7 @@ namespace windows_client.Model
             JToken typeToken = null;
             string type = null;
 
-            if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
+            if (obj.TryGetValue(HikeConstants.NavigationKeys.GC_PIN,out typeToken))
                 return ParticipantInfoState.PIN_MESSAGE;
 
             if (obj.TryGetValue(HikeConstants.ServerJsonKeys.TYPE, out typeToken))
@@ -1773,7 +1773,7 @@ namespace windows_client.Model
                 data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
                 obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = NetworkManager.STICKER;
             }
-            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.NavigationKeys.GC_PIN))
             {
                 data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
             }
@@ -2119,7 +2119,7 @@ namespace windows_client.Model
                 long serverTimeStamp = (long)data[HikeConstants.ServerJsonKeys.TIMESTAMP];
 
                 long timedifference;
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.TIME_DIFF_EPOCH, out timedifference))
                     _timestamp = serverTimeStamp - timedifference;
                 else
                     _timestamp = serverTimeStamp;
