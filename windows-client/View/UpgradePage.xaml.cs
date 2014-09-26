@@ -65,7 +65,7 @@ namespace windows_client.View
             App.AppInitialize();
 
             // Upgrade complete, write the current version
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
 
             ManageNavigation();
         }
@@ -85,7 +85,7 @@ namespace windows_client.View
 
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -163,8 +163,8 @@ namespace windows_client.View
         {
             if (Utils.compareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
             {
-                HikeInstantiation.AppSettings[HikeConstants.AppSettings.APP_UPDATE_POSTPENDING] = true;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
+                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE
                 // If app info is already sent to server , this function will automatically handle.
@@ -244,8 +244,8 @@ namespace windows_client.View
 
             // Change last selected category to recent
             String category;
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
         }
 
         /// <summary>

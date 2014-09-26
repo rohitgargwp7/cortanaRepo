@@ -143,7 +143,7 @@ namespace windows_client.DbUtils
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
 
-            HikeInstantiation.AppSettings[HikeConstants.AppSettings.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
+            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
             StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
@@ -152,9 +152,9 @@ namespace windows_client.DbUtils
             #endregion
             #region RESET IN APP TIPS
 
-            HikeInstantiation.AppSettings[HikeConstants.AppSettings.CHAT_THREAD_COUNT_KEY] = 0;
-            HikeInstantiation.AppSettings[HikeConstants.AppSettings.TIP_MARKED_KEY] = 0;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
+            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.CHAT_THREAD_COUNT_KEY] = 0;
+            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TIP_MARKED_KEY] = 0;
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();

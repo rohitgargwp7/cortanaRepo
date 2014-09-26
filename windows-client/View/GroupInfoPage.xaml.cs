@@ -363,7 +363,7 @@ namespace windows_client.View
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
 
-            GroupParticipant self = new GroupParticipant(groupId, (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.ACCOUNT_NAME], HikeInstantiation.MSISDN, true);
+            GroupParticipant self = new GroupParticipant(groupId, (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.ACCOUNT_NAME], HikeInstantiation.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
 
@@ -374,7 +374,7 @@ namespace windows_client.View
                     gp.IsOwner = true;
 
 
-                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;
@@ -389,7 +389,7 @@ namespace windows_client.View
                 GroupParticipant gp = smsUsersList[i];
 
 
-                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING]) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING]) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;

@@ -2119,7 +2119,7 @@ namespace windows_client.Model
                 long serverTimeStamp = (long)data[HikeConstants.ServerJsonKeys.TIMESTAMP];
 
                 long timedifference;
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.TIME_DIFF_EPOCH, out timedifference))
                     _timestamp = serverTimeStamp - timedifference;
                 else
                     _timestamp = serverTimeStamp;

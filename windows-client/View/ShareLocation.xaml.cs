@@ -611,14 +611,14 @@ namespace windows_client.View
                 _isLocationEnabled = false;
             }
 
-            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
 
-                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.USE_LOCATION_SETTING);
+                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING);
                     HikeInstantiation.AppSettings.Save();
                     _isLocationEnabled = true;
 
@@ -634,7 +634,7 @@ namespace windows_client.View
                     GetCurrentCoordinate();
             }
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (HikeInstantiation.IsTombstoneLaunch)
             {
@@ -725,7 +725,7 @@ namespace windows_client.View
             }
 
             if (_myCoordinate != null)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE, _myCoordinate);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }

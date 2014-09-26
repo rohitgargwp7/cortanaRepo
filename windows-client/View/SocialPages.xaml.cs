@@ -57,7 +57,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE] = true;
                 if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
                     fromEnterName = true;
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.FB_LOGGED_IN))
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
                     LogoutFb();
                 else
                     LogInFb();
@@ -97,9 +97,9 @@ namespace windows_client.View
         {
             await BrowserControl.ClearCookiesAsync();
 
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_LOGGED_IN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_USER_ID);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
@@ -166,8 +166,8 @@ namespace windows_client.View
 
                 var result = (IDictionary<string, object>)e.GetResultData();
                 string id = (string)result["id"];
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, accessToken);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, id);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN, accessToken);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_USER_ID, id);
                 if (fromEnterName)
                 {
                     string profilePictureUrl = string.Format("https://graph.facebook.com/{0}/picture?height={1}&width={1}", id, HikeConstants.PROFILE_PICS_SIZE);
@@ -204,7 +204,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_LOGGED_IN, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN, true);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGIN;
@@ -336,9 +336,9 @@ namespace windows_client.View
                 StreamReader reader = new StreamReader(e.Response);
                 string strResponse = reader.ReadToEnd();
                 var parameters = GetQueryParameters(strResponse);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, parameters["oauth_token"]);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, parameters["oauth_token_secret"]);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TW_LOGGED_IN, true);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN, parameters["oauth_token"]);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET, parameters["oauth_token_secret"]);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TW_LOGGED_IN, true);
                 Dispatcher.BeginInvoke(() =>
                 {
                     PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.TW_LOGIN;

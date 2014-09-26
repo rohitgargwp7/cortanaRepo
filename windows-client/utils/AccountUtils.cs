@@ -237,8 +237,8 @@ namespace windows_client.utils
         public static void AddToken(HttpWebRequest req)
         {
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.UID_SETTING];
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
+                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
@@ -1091,7 +1091,7 @@ namespace windows_client.utils
                             {
                                 var msisdn = (string)entry;
 
-                                if (msisdn != (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING]) // do not add own number
+                                if (msisdn != (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING]) // do not add own number
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();
@@ -1101,7 +1101,7 @@ namespace windows_client.utils
                             }
                         }
 
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, prefContactList);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.CONTACTS_TO_SHOW, prefContactList);
                     }
                 }
 

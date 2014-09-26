@@ -23,12 +23,12 @@ namespace windows_client.Mqtt
             {
                 bool isPresent = false;
 
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.IS_DB_CREATED))
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED))
                     isPresent = true;
                 HikeInstantiation.ClearAppSettings();
                 if (isPresent)
 
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.IS_DB_CREATED, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();

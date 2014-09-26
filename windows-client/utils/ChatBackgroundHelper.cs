@@ -248,7 +248,7 @@ namespace windows_client.utils
         /// </summary>
         void LoadDefaultBackgrounds()
         {
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME))
             {
                 BackgroundList.Add(new ChatBackground()
                 {

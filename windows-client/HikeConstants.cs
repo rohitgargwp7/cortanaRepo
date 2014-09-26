@@ -378,7 +378,7 @@ namespace windows_client
             public static readonly string IfModifiedSince = "30";
         }
 
-        public static class AppSettings
+        public static class AppSettingsKeys
         {
             public static readonly string PAGE_STATE = "page_State";
             public static readonly string FB_USER_ID = "FbUserId";

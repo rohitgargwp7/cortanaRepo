@@ -250,10 +250,10 @@ namespace windows_client.ViewModel
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME))
                 IsDarkMode = true;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
 
@@ -263,7 +263,7 @@ namespace windows_client.ViewModel
         public void LoadCurrentLocation()
         {
 
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 
@@ -287,7 +287,7 @@ namespace windows_client.ViewModel
                         var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
                         var newCoordinate = new GeoCoordinate(latitutde, longitute);
 
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE, newCoordinate);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
                     catch (Exception ex)
                     {
@@ -1115,7 +1115,7 @@ namespace windows_client.ViewModel
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
         }
 
         /// <summary>
@@ -1126,9 +1126,9 @@ namespace windows_client.ViewModel
             IsHiddenModeActive = !IsHiddenModeActive;
 
             if (IsHiddenModeActive)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED, true);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED, true);
             else
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
 
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();
