@@ -105,13 +105,13 @@ namespace windows_client.utils
             if (forcePushToken)//have to push token to server forcefully
             {
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LATEST_PUSH_TOKEN, string.Empty);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LATEST_PUSH_TOKEN, string.Empty);
                 _latestPushToken = string.Empty;
             }
             else
             {
 
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.LATEST_PUSH_TOKEN, out pushToken);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.LATEST_PUSH_TOKEN, out pushToken);
                 _latestPushToken = pushToken;
             }
 
@@ -221,7 +221,7 @@ namespace windows_client.utils
             else if (stat == HikeConstants.OK)
             {
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LATEST_PUSH_TOKEN, _latestPushToken);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LATEST_PUSH_TOKEN, _latestPushToken);
                 if (httpPostScheduled != null)
                 {
                     httpPostScheduled.Dispose();
@@ -234,7 +234,7 @@ namespace windows_client.utils
         private void postTokenToServer()
         {
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
 

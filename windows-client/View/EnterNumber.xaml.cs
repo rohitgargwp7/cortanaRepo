@@ -344,7 +344,7 @@ namespace windows_client
             }
 
 
-            string unauthedMSISDN = (string)obj[HikeConstants.MSISDN_SETTING];
+            string unauthedMSISDN = (string)obj[HikeConstants.AppSettings.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -362,10 +362,10 @@ namespace windows_client
 
             /*If all well*/
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.MSISDN_SETTING, unauthedMSISDN);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.MSISDN_SETTING, unauthedMSISDN);
             
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
