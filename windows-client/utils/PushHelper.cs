@@ -71,7 +71,7 @@ namespace windows_client.utils
             try
             {
                 HttpNotificationChannel pushChannel;
-                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+                pushChannel = HttpNotificationChannel.Find(HikeConstants.PushNotificationChannelName);
                 if (pushChannel != null)
                 {
                     if (pushChannel.IsShellTileBound)
@@ -118,13 +118,13 @@ namespace windows_client.utils
             HttpNotificationChannel pushChannel;
             pollingTime = minPollingTime;
             // Try to find the push channel.
-            pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+            pushChannel = HttpNotificationChannel.Find(HikeConstants.PushNotificationChannelName);
             try
             {
                 // If the channel was not found, then create a new connection to the push service.
                 if (pushChannel == null)
                 {
-                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
+                    pushChannel = new HttpNotificationChannel(HikeConstants.PushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
                     // Register for all the events before attempting to open the channel.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);

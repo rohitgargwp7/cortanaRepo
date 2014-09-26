@@ -951,9 +951,9 @@ namespace windows_client
                                 JToken jtoken;
                                 Object[] popupDataobj = new object[2];
                                 //add title to zero place;
-                                popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
+                                popupDataobj[0] = data.TryGetValue(HikeConstants.ServerJsonKeys.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
                                 //add text to first place;
-                                popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
+                                popupDataobj[1] = data.TryGetValue(HikeConstants.ServerJsonKeys.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
                                 HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.SHOW_POPUP] = popupDataobj;
                             }
                         }
