@@ -209,6 +209,7 @@ namespace windows_client
         }
         #endregion
 
+        #region All Uncategorized constants
         public static readonly string PushNotificationChannelName = "HikeApp";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
@@ -286,10 +287,6 @@ namespace windows_client
 
         public static readonly string MY_PROFILE_PIC = "my_profile_pic";
 
-        public static readonly string LOCATION_SEARCH = "locationSearch";
-        public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
-        public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
-
         public static readonly string UNREAD_UPDATES = "urUp";
         public static readonly string UNREAD_FRIEND_REQUESTS = "urFr";
         public static readonly string REFRESH_BAR = "refBar";
@@ -318,6 +315,8 @@ namespace windows_client
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
         public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
+
+        #endregion
 
         #region TOAST CONSTANTS
         public static class ToastConstants
@@ -582,6 +581,10 @@ namespace windows_client
             public static readonly string GC_PIN = "pin";
             public static readonly string PROFILE_NAME_CHANGED = "ProfileNameChanged";
             public static readonly string IS_PIC_DOWNLOADED = "isPicDownloaded";
+
+            public static readonly string LOCATION_SEARCH = "locationSearch";
+            public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
+            public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
         }
         #endregion
 

@@ -641,9 +641,9 @@ namespace windows_client.View
                 _isDefaultLocationCall = false;
 
                 _customCoordinate = State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] as GeoCoordinate;
-                _searchString = State[HikeConstants.LOCATION_SEARCH] as String;
-                _resultString = (String)State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
-                _selectedIndex = (Int32)State[HikeConstants.LOCATION_SELECTED_INDEX];
+                _searchString = State[HikeConstants.NavigationKeys.LOCATION_SEARCH] as String;
+                _resultString = (String)State[HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT];
+                _selectedIndex = (Int32)State[HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX];
 
                 MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
 
@@ -705,23 +705,23 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE);
-                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.NavigationKeys.LOCATION_SEARCH);
                 State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
-                State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
-                State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
+                State.Remove(HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT);
+                State.Remove(HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX);
             }
             else
             {
                 State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] = _customCoordinate;
-                State[HikeConstants.LOCATION_SEARCH] = _searchString;
+                State[HikeConstants.NavigationKeys.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
                     State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
                     State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = 16;
 
-                State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
-                State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;
+                State[HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
+                State[HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX] = _selectedIndex;
             }
 
             if (_myCoordinate != null)
