@@ -69,10 +69,10 @@ namespace windows_client
             if (HikeInstantiation.appSettings.Contains(HikeConstants.TOKEN_SETTING))
             {
                 AccountUtils.Token = (string)HikeInstantiation.appSettings[HikeConstants.TOKEN_SETTING];
-                string _msisdn = string.Empty;
+                string msisdn = string.Empty;
     
-                if(HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out _msisdn))
-                    HikeInstantiation.MSISDN = _msisdn;
+                if(HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
+                    HikeInstantiation.MSISDN = msisdn;
             }
 
             if (HikeInstantiation.appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
@@ -105,7 +105,7 @@ namespace windows_client
         {
             HikeInstantiation.IsAppLaunched = true;
 
-            // Activate hidden mode whne app is launched if setting is true.
+            // Activate hidden mode when app is launched if setting is true.
             if (HikeInstantiation.appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
                 HikeInstantiation.appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
@@ -119,18 +119,17 @@ namespace windows_client
 
             if (HikeInstantiation.IS_TOMBSTONED)
             {
-                HikeInstantiation.PageState _pageStateVal;
-                if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
+                HikeInstantiation.PageState pageStateVal;
+                if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
                 {
-                    HikeInstantiation.PageStateVal = _pageStateVal;
+                    HikeInstantiation.PageStateVal = pageStateVal;
                     HikeInstantiation.IsNewInstall = false;
                 }
 
-                string _currentVersion = string.Empty;
-                if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion))
-                {
-                    HikeInstantiation.CURRENT_VERSION = _currentVersion;
-                }
+                string currentVersion = string.Empty;
+                if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+                    HikeInstantiation.CURRENT_VERSION = currentVersion;
+                
                 HikeInstantiation.instantiateClasses(false);
             }
             else
@@ -156,8 +155,10 @@ namespace windows_client
             {
                 int convs = 0;
                 HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+
                 if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
+                
                 ConversationTableUtils.saveConvObjectList();
             }
 
@@ -232,10 +233,10 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
             var targetPage = e.Uri.ToString();
 
-            HikeInstantiation.PageState _pageStateVal;
+            HikeInstantiation.PageState pageStateVal;
 
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
-                HikeInstantiation.PageStateVal = _pageStateVal;
+            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+                HikeInstantiation.PageStateVal = pageStateVal;
 
 
             if (e.NavigationMode == NavigationMode.New)
@@ -302,10 +303,10 @@ namespace windows_client
             UriMapper mapper = Resources["mapper"] as UriMapper;
             RootFrame.UriMapper = mapper;
 
-            HikeInstantiation.PageState _pageStateVal;
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out _pageStateVal))
+            HikeInstantiation.PageState pageStateVal;
+            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
             {
-                HikeInstantiation.PageStateVal = _pageStateVal;
+                HikeInstantiation.PageStateVal = pageStateVal;
                 HikeInstantiation.IsNewInstall = false;
             }
             /*
@@ -313,15 +314,15 @@ namespace windows_client
             */
 
             // this will get the current version installed already in "_currentVersion"
-            string _currentVersion;
-            if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion))
-                HikeInstantiation.CURRENT_VERSION = _currentVersion;
+            string currentVersion;
+            if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+                HikeInstantiation.CURRENT_VERSION = currentVersion;
 
             HikeInstantiation.LATEST_VERSION = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.5.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.6.5.0", currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 HikeInstantiation.instantiateClasses(true);
