@@ -163,7 +163,7 @@ namespace windows_client.View
             HikeViewModel.ClearStickerHelperInstance();
 
             HikeInstantiation.ClearAppSettings();
-            HikeInstantiation.AppSettings[HikeConstants.IS_DB_CREATED] = true;
+            HikeInstantiation.AppSettings[HikeConstants.AppSettings.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);

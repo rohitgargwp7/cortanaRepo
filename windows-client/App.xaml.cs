@@ -66,12 +66,12 @@ namespace windows_client
             }
 
             /* Load App token if its there*/
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.TOKEN_SETTING))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)HikeInstantiation.AppSettings[HikeConstants.TOKEN_SETTING];
+                AccountUtils.Token = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TOKEN_SETTING];
                 string msisdn = string.Empty;
 
-                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.MSISDN_SETTING, out msisdn))
                     HikeInstantiation.MSISDN = msisdn;
             }
 
@@ -117,7 +117,7 @@ namespace windows_client
             if (HikeInstantiation.IsTombstoneLaunch)
             {
                 HikeInstantiation.PageState pageStateVal;
-                if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+                if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettings.PAGE_STATE, out pageStateVal))
                 {
                     HikeInstantiation.PageStateVal = pageStateVal;
                     HikeInstantiation.IsNewInstall = false;
@@ -179,7 +179,7 @@ namespace windows_client
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.IS_PUSH_ENABLED, out isPushEnabled);
 
             if (isPushEnabled)
                 PushHelper.Instance.registerPushnotifications(false);
@@ -197,7 +197,7 @@ namespace windows_client
                 {
                     HikeInstantiation.MqttManagerInstance.connect();
                     bool isPushEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.IS_PUSH_ENABLED, out isPushEnabled);
 
                     if (isPushEnabled)
                     {
@@ -230,7 +230,7 @@ namespace windows_client
 
             HikeInstantiation.PageState pageStateVal;
 
-            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettings.PAGE_STATE, out pageStateVal))
                 HikeInstantiation.PageStateVal = pageStateVal;
 
 
@@ -299,7 +299,7 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
 
             HikeInstantiation.PageState pageStateVal;
-            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettings.PAGE_STATE, out pageStateVal))
             {
                 HikeInstantiation.PageStateVal = pageStateVal;
                 HikeInstantiation.IsNewInstall = false;

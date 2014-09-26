@@ -237,8 +237,8 @@ namespace windows_client.utils
         public static void AddToken(HttpWebRequest req)
         {
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)HikeInstantiation.AppSettings[HikeConstants.UID_SETTING];
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.UID_SETTING))
+                req.Headers["Cookie"] = "user=" + mToken + ";UID=" + (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
@@ -1091,7 +1091,7 @@ namespace windows_client.utils
                             {
                                 var msisdn = (string)entry;
 
-                                if (msisdn != (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING]) // do not add own number
+                                if (msisdn != (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING]) // do not add own number
                                 {
                                     if (prefContactList == null)
                                         prefContactList = new List<string>();

@@ -224,7 +224,7 @@ namespace windows_client.View
             HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
             HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SEND_NUDGE, out isNudgeOn))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
 
             if (isNudgeOn)
@@ -477,7 +477,7 @@ namespace windows_client.View
                     });
 
                 }
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out mCredits);
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
                 HikeInstantiation.MqttManagerInstance.connect();
@@ -1232,7 +1232,7 @@ namespace windows_client.View
                     catch (Exception ex)
                     {
                         Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING], false);
+                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING], false);
                     }
                 }
             }
@@ -1252,7 +1252,7 @@ namespace windows_client.View
                 groupChatEnd();
             else
             {
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out mCredits);
                 if (mCredits <= 0)
                 {
                     if (isGroupChat)
@@ -1307,7 +1307,7 @@ namespace windows_client.View
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING))
             {
                 if (_lastSeenWorker == null)
                 {
@@ -1406,7 +1406,7 @@ namespace windows_client.View
         bool IsSMSOptionAvalable()
         {
             bool showFreeSMS = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, out showFreeSMS);
 
             if (!showFreeSMS) // if setting is off return false
                 return showFreeSMS; // == false
@@ -3920,7 +3920,7 @@ namespace windows_client.View
 
         private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
             {
                 SendMsg();
             }
@@ -3965,7 +3965,7 @@ namespace windows_client.View
 
         void ShowTypingNotification(object sender, object[] vals)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -4093,7 +4093,7 @@ namespace windows_client.View
                     convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
                 {
                     bool isVibrateEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.VIBRATE_PREF, out isVibrateEnabled);
 
                     if (isVibrateEnabled)
                     {
@@ -4521,7 +4521,7 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
+                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LAST_SEEN_SEETING))
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
@@ -5831,7 +5831,7 @@ namespace windows_client.View
             convMessage.MetaDataString = "{poke:1}";
             sendMsg(convMessage, false);
             bool isVibrateEnabled = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.VIBRATE_PREF, out isVibrateEnabled);
             if (isVibrateEnabled)
             {
                 VibrateController vibrate = VibrateController.Default;

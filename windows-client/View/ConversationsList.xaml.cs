@@ -112,13 +112,13 @@ namespace windows_client.View
                 showProTip();
 
             int tipCount;
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.PRO_TIP_COUNT, out tipCount);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.PRO_TIP_COUNT, out tipCount);
             ProTipCount = tipCount;
 
             HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
             HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            appSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out _userName);
+            appSettings.TryGetValue(HikeConstants.AppSettings.ACCOUNT_NAME, out _userName);
 
             _firstName = Utils.GetFirstName(_userName);
             string password = HikeInstantiation.ViewModel.Password;
@@ -135,7 +135,7 @@ namespace windows_client.View
         void ViewModel_statusNotificationsStatusChanged(object sender, EventArgs e)
         {
             byte statusSettingsValue;
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -262,7 +262,7 @@ namespace windows_client.View
             }
 
             byte statusSettingsValue;
-            _isStatusUpdatesNotMute = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
+            _isStatusUpdatesNotMute = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, out statusSettingsValue) && statusSettingsValue == 0;
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 launchPagePivot.SelectedIndex = 2;
@@ -425,7 +425,7 @@ namespace windows_client.View
             if (h2oFTUECard.Visibility == Visibility.Collapsed)
             {
                 bool showFreeSMS = true;
-                HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+                HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.SHOW_FREE_SMS_SETTING, out showFreeSMS);
                 if (showFreeSMS && HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))
                     h2oFTUECard.Visibility = Visibility.Visible;
             }
@@ -517,7 +517,7 @@ namespace windows_client.View
 
             muteStatusMenu = new ApplicationBarMenuItem();
             byte statusSettingsValue;
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, out statusSettingsValue)) // settings dont exist on new sign up, hence on by default
                 statusSettingsValue = (byte)1;
             muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
             muteStatusMenu.Click += muteStatusMenu_Click;
@@ -606,12 +606,12 @@ namespace windows_client.View
             if (_isStatusUpdatesNotMute)
             {
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SETTING, (byte)1);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
             else
             {
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SETTING, (byte)0);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, (byte)0);
                 settingsValue = -1;
             }
 
@@ -1139,13 +1139,13 @@ namespace windows_client.View
                 if (HikeInstantiation.NewChatThreadPageObj == null && showPush && (!Utils.isGroupConversation(mObj.Msisdn) || !mObj.IsMute) && Utils.ShowNotificationAlert())
                 {
                     bool isHikeJingleEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.HIKEJINGLE_PREF, out isHikeJingleEnabled);
                     if (isHikeJingleEnabled && (!mObj.IsHidden || (mObj.IsHidden && HikeInstantiation.ViewModel.IsHiddenModeActive)))
                     {
                         PlayAudio();
                     }
                     bool isVibrateEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.VIBRATE_PREF, out isVibrateEnabled);
                     if (isVibrateEnabled && (!mObj.IsHidden || (mObj.IsHidden && HikeInstantiation.ViewModel.IsHiddenModeActive)))
                     {
                         VibrateController vibrate = VibrateController.Default;
@@ -2401,7 +2401,7 @@ namespace windows_client.View
                     });
 
                     _proTipCount = value;
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_COUNT, value);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.PRO_TIP_COUNT, value);
                 }
             }
         }
@@ -2779,7 +2779,7 @@ namespace windows_client.View
                 return;
 
             HikeInstantiation.ViewModel.StatusList.RemoveAt(i);
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.PRO_TIP_LAST_DISMISS_TIME, DateTime.Now);
 
             ProTipCount = 0;
 
@@ -2788,10 +2788,10 @@ namespace windows_client.View
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
                 {
-                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.PRO_TIP))
+                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.PRO_TIP))
                     {
                         ProTipHelper.Instance.RemoveCurrentProTip();
-                        HikeInstantiation.AppSettings.Remove(HikeConstants.PRO_TIP);
+                        HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.PRO_TIP);
                         HikeInstantiation.AppSettings.Save();
                     }
                 };

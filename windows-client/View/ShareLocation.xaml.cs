@@ -611,14 +611,14 @@ namespace windows_client.View
                 _isLocationEnabled = false;
             }
 
-            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettings.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
 
-                    HikeInstantiation.AppSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
+                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.USE_LOCATION_SETTING);
                     HikeInstantiation.AppSettings.Save();
                     _isLocationEnabled = true;
 

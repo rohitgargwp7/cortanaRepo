@@ -514,6 +514,63 @@ namespace windows_client
             public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
             public static readonly string LAST_USER_JOIN_TIMESTAMP = "lastUjTs";
 
+            public static readonly string ACCOUNT_NAME = "accountName";
+            public static readonly string ACCOUNT_GENDER = "accountGender";
+            public static readonly string MSISDN_SETTING = "msisdn";
+            public static readonly string COUNTRY_CODE_SETTING = "countryCode";
+            public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
+
+            public static readonly string TOKEN_SETTING = "token";
+            public static readonly string UID_SETTING = "uid";
+            public static readonly string SMS_SETTING = "smscredits";
+            public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
+            public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
+            public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
+            public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
+            public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
+            public static readonly string USE_LOCATION_SETTING = "locationSet";
+            public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
+            public static readonly string AUTO_RESUME_SETTING = "autoResume";
+
+            public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
+
+            public static readonly string ENTER_TO_SEND = "enterToSend";
+            public static readonly string SEND_NUDGE = "sendNudge";
+            public static readonly string DISPLAY_PIC_FAV_ONLY = "dpFavorites";
+            public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
+            public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
+            public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
+            public static readonly string HIDE_CRICKET_MOODS = "cmoods";
+            public static readonly string LATEST_PUSH_TOKEN = "pushToken";
+
+            public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
+            public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
+
+            public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
+            public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
+            public static readonly string TIP_SHOW_KEY = "tipShowKey";
+            public static readonly string PRO_TIP = "proTip";
+            public static readonly string PRO_TIP_COUNT = "proTipCount";
+            public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
+            public static readonly string PRO_TIP_LAST_DISMISS_TIME = "proTipLastDismissTime";
+
+            public static readonly string INVITED = "invited";
+            public static readonly string INVITED_JOINED = "invitedJoined";
+
+            public static readonly string GROUPS_CACHE = "GroupsCache";
+            public static readonly string IS_DB_CREATED = "is_db_created";
+            public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
+            public static readonly string IP_LIST = "ip_list";
+
+            public static string EMAIL = "email";
+            public static string GENDER = "gender";
+            public static string SCREEN = "screen";
+            public static readonly string VIBRATE_PREF = "vibratePref";
+            public static readonly string HIKEJINGLE_PREF = "jinglePref";
+            public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
+
+            public static readonly string CURRENT_LOCALE = "curLocale";
+
         }
 
         public static class NokiaHere
@@ -531,69 +588,12 @@ namespace windows_client
             public static readonly string CGEN_MAP = "map";
         }
 
-
-        public static readonly string PAGE_STATE = "page_State";
-        public static readonly string ACCOUNT_NAME = "accountName";
-        public static readonly string ACCOUNT_GENDER = "accountGender";
-        public static readonly string MSISDN_SETTING = "msisdn";
-        public static readonly string COUNTRY_CODE_SETTING = "countryCode";
-        public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
-
-        public static readonly string TOKEN_SETTING = "token";
-        public static readonly string UID_SETTING = "uid";
-        public static readonly string SMS_SETTING = "smscredits";
-        public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
-        public static readonly string STATUS_UPDATE_SETTING = "stUpSet";
-        public static readonly string STATUS_UPDATE_FIRST_SETTING = "stUpFirSet";
-        public static readonly string STATUS_UPDATE_SECOND_SETTING = "stUpSecSet";
-        public static readonly string LAST_SEEN_SEETING = "lstSeenSet";
-        public static readonly string USE_LOCATION_SETTING = "locationSet";
-        public static readonly string AUTO_DOWNLOAD_SETTING = "autoDownload";
-        public static readonly string AUTO_RESUME_SETTING = "autoResume";
-
-        public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
-
-        public static readonly string ENTER_TO_SEND = "enterToSend";
-        public static readonly string SEND_NUDGE = "sendNudge";
-        public static readonly string DISPLAY_PIC_FAV_ONLY = "dpFavorites";
-        public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
-        public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
-        public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
-        public static readonly string HIDE_CRICKET_MOODS = "cmoods";
-        public static readonly string LATEST_PUSH_TOKEN = "pushToken";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
-        public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
-        public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
 
-        public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
-        public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
-        public static readonly string TIP_SHOW_KEY = "tipShowKey";
-        public static readonly string PRO_TIP = "proTip";
-        public static readonly string PRO_TIP_COUNT = "proTipCount";
-        public static readonly string PRO_TIP_DISMISS_TIME = "proTipDismissTime";
-        public static readonly string PRO_TIP_LAST_DISMISS_TIME = "proTipLastDismissTime";
 
-        public static readonly string INVITED = "invited";
-        public static readonly string INVITED_JOINED = "invitedJoined";
 
-        public static readonly string GROUPS_CACHE = "GroupsCache";
-        public static readonly string IS_DB_CREATED = "is_db_created";
-        public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
-        public static readonly string IP_LIST = "ip_list";
-
-        public static string EMAIL = "email";
-        public static string GENDER = "gender";
-        public static string DOB = "dob";
-        public static string YEAR = "year";
-        public static string SCREEN = "screen";
-        public static readonly string VIBRATE_PREF = "vibratePref";
-        public static readonly string HIKEJINGLE_PREF = "jinglePref";
-        public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
-        public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
-
-        public static readonly string CURRENT_LOCALE = "curLocale";
 
         public static readonly string GROUP_NAME = "groupName";
         public static readonly string HAS_CUSTOM_IMAGE = "hasCustomImage";

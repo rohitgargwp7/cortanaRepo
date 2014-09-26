@@ -37,7 +37,7 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.GENDER, out userGender);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.GENDER, out userGender);
 
             if (userGender == "m" || userGender == "f")
             {
@@ -72,13 +72,13 @@ namespace windows_client.View
         private void prepopulate()
         {
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out userName);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.ACCOUNT_NAME, out userName);
             name.Text = string.IsNullOrWhiteSpace(userName) ? string.Empty : userName;
 
             phone.Text = HikeInstantiation.MSISDN;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.EMAIL))
-                userEmail = (string)HikeInstantiation.AppSettings[HikeConstants.EMAIL];
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.EMAIL))
+                userEmail = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.EMAIL];
             email.Text = userEmail;
 
             if (userGender == "m")
@@ -122,7 +122,7 @@ namespace windows_client.View
             {
                 if (ValidateEmail(email.Text)) // check if email is valid
                 {
-                    obj[HikeConstants.EMAIL] = email.Text;
+                    obj[HikeConstants.AppSettings.EMAIL] = email.Text;
                     shouldSendProfile = true;
                 }
                 else //if email is not valid
@@ -136,7 +136,7 @@ namespace windows_client.View
             // if gender is changed
             if (genderIndex != genderListPicker.SelectedIndex)
             {
-                obj[HikeConstants.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
+                obj[HikeConstants.AppSettings.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
                 shouldSendProfile = true;
             }
 
@@ -188,7 +188,7 @@ namespace windows_client.View
                     {
                         userName = name.Text;
                         HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ACCOUNT_NAME, userName);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.ACCOUNT_NAME, userName);
 
                         // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
                         PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED] = userName;
@@ -239,14 +239,14 @@ namespace windows_client.View
                     if (userEmail != email.Text)
                     {
                         userEmail = email.Text;
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.EMAIL, email.Text);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.EMAIL, email.Text);
                     }
 
                     if (genderIndex != genderListPicker.SelectedIndex)
                     {
                         genderIndex = genderListPicker.SelectedIndex;
                         string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : "f");
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.GENDER, gender);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.GENDER, gender);
 
                         if (genderListPicker.Items.Count == 3) // if select is there remove it
                         {
@@ -272,8 +272,8 @@ namespace windows_client.View
                 {
                     MakeFieldsReadOnly(false);
 
-                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.EMAIL))
-                        email.Text = (string)HikeInstantiation.AppSettings[HikeConstants.EMAIL];
+                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.EMAIL))
+                        email.Text = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.EMAIL];
 
                     shellProgress.IsIndeterminate = false;
                     

@@ -32,14 +32,14 @@ namespace windows_client.utils
             HikeInstantiation.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
 
-            appSettings[HikeConstants.MSISDN_SETTING] = HikeInstantiation.MSISDN;
-            appSettings[HikeConstants.UID_SETTING] = (string)obj["uid"];
-            appSettings[HikeConstants.TOKEN_SETTING] = (string)obj["token"];
-            appSettings[HikeConstants.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
-            appSettings[HikeConstants.IS_PUSH_ENABLED] = (bool)true;
-            appSettings[HikeConstants.VIBRATE_PREF] = (bool)true;
-            appSettings[HikeConstants.HIKEJINGLE_PREF] = (bool)true;
-            appSettings[HikeConstants.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
+            appSettings[HikeConstants.AppSettings.MSISDN_SETTING] = HikeInstantiation.MSISDN;
+            appSettings[HikeConstants.AppSettings.UID_SETTING] = (string)obj["uid"];
+            appSettings[HikeConstants.AppSettings.TOKEN_SETTING] = (string)obj["token"];
+            appSettings[HikeConstants.AppSettings.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
+            appSettings[HikeConstants.AppSettings.IS_PUSH_ENABLED] = (bool)true;
+            appSettings[HikeConstants.AppSettings.VIBRATE_PREF] = (bool)true;
+            appSettings[HikeConstants.AppSettings.HIKEJINGLE_PREF] = (bool)true;
+            appSettings[HikeConstants.AppSettings.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
 
@@ -377,13 +377,13 @@ namespace windows_client.utils
             else if (msisdn.StartsWith("0"))
             {
                 string country_code = null;
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.COUNTRY_CODE_SETTING, out country_code);
                 return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code2);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.COUNTRY_CODE_SETTING, out country_code2);
                 return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
             }
         }

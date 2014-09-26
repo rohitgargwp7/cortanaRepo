@@ -34,6 +34,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
             PhoneApplicationService.Current.State.Remove(HikeConstants.STATUS_IMAGE_TO_DISPLAY);
         }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);

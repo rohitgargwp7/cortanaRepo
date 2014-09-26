@@ -346,7 +346,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
                             toastText = GetToastNotification(convMsg);
                             toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
@@ -360,7 +360,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDE_MESSAGE_PREVIEW_SETTING))
                             toastText = GetToastNotification(convMsg);
 
                         obj.ToastText = toastText;
