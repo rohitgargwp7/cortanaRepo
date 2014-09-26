@@ -107,7 +107,7 @@ namespace windows_client.utils
             {
                 JObject upgradeJobj = new JObject();
                 upgradeJobj.Add(HikeConstants.ServerJsonKeys.UPGRADE, true);
-                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
                 requestAccountInfo.Add(HikeConstants.ServerJsonKeys.DATA, upgradeJobj);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
@@ -575,7 +575,7 @@ namespace windows_client.utils
         public static void RequestHikeBot()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
             data.Add(HikeConstants.Extras.SEND_BOT, false);
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);

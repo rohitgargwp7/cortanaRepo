@@ -57,11 +57,11 @@ namespace windows_client.utils
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK)
+            if (stat != HikeConstants.ServerJsonKeys.OK)
             {
                 if (scheduler == null)
                 {
@@ -72,7 +72,7 @@ namespace windows_client.utils
                 if (pollingTime > maxPollingTime)
                     pollingTime = minPollingTime;
             }
-            else if (stat == HikeConstants.OK)
+            else if (stat == HikeConstants.ServerJsonKeys.OK)
             {
 
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.APP_UPDATE_POSTPENDING);

@@ -13,8 +13,8 @@ namespace windows_client.Model
 
         public MessageMetadata(JObject metadata)
         {
-            this.newUser = (string)metadata[HikeConstants.NEW_USER] == "true";
-            this.dndNumbers = (JArray)metadata[HikeConstants.DND_NUMBERS];
+            this.newUser = (string)metadata[HikeConstants.ServerJsonKeys.NEW_USER] == "true";
+            this.dndNumbers = (JArray)metadata[HikeConstants.ServerJsonKeys.DND_NUMBERS];
             this.participantInfoState = ConvMessage.fromJSON(metadata);
             this.dndMissedCallNumber = (string)metadata[HikeConstants.ServerJsonKeys.METADATA_DND];
             this.json = metadata;

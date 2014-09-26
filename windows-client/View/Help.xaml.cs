@@ -39,7 +39,7 @@ namespace windows_client.View
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.FAQS_LINK, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.FAQS_LINK, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();
@@ -59,13 +59,13 @@ namespace windows_client.View
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
                 "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
-            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(), HikeConstants.CONTACT_US_EMAIL);
+            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(), HikeConstants.ServerUrls.CONTACT_US_EMAIL);
         }
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_AND_CONDITIONS, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();
@@ -97,7 +97,7 @@ namespace windows_client.View
         private void SystemHealth_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.SYSTEM_HEALTH_LINK, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.SYSTEM_HEALTH_LINK, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();

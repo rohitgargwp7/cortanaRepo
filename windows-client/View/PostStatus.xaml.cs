@@ -80,7 +80,7 @@ namespace windows_client.View
                         oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_USER_ID];
                         oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
                         oj["post"] = false;//so that hike promotional post is not posted on fb
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.ServerJsonKeys.FACEBOOK, true);
                         break;
 
                     case FreeSMS.SocialState.TW_LOGIN:
@@ -88,7 +88,7 @@ namespace windows_client.View
                         ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
                         ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
                         ojj["post"] = false;
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.ServerJsonKeys.TWITTER, true);
                         break;
                 }
             }
@@ -141,15 +141,15 @@ namespace windows_client.View
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
 
-            if (stat == HikeConstants.OK)
+            if (stat == HikeConstants.ServerJsonKeys.OK)
             {
                 JToken statusData;
                 JObject moodData;
-                obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out statusData);
                 try
                 {
                     moodData = statusData.ToObject<JObject>();
@@ -158,15 +158,15 @@ namespace windows_client.View
                     int moodId = -1;
                     int tod = 0;
 
-                    if (statusData[HikeConstants.MOOD] != null)
+                    if (statusData[HikeConstants.ServerJsonKeys.MOOD] != null)
                     {
-                        string moodId_String = statusData[HikeConstants.MOOD].ToString();
+                        string moodId_String = statusData[HikeConstants.ServerJsonKeys.MOOD].ToString();
                         if (!string.IsNullOrEmpty(moodId_String))
                         {
                             int.TryParse(moodId_String, out moodId);
                             moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
                             if (moodId > 0)
-                                tod = statusData[HikeConstants.TIME_OF_DAY].ToObject<int>();
+                                tod = statusData[HikeConstants.ServerJsonKeys.TIME_OF_DAY].ToObject<int>();
                         }
                     }
 
@@ -273,7 +273,7 @@ namespace windows_client.View
 
         public void SocialPostFB(JObject obj)
         {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -288,7 +288,7 @@ namespace windows_client.View
 
         public void SocialPostTW(JObject obj)
         {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -340,7 +340,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -366,7 +366,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.TWITTER;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }

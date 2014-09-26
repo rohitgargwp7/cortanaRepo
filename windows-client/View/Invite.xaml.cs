@@ -76,7 +76,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.TWITTER;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -101,7 +101,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -155,7 +155,7 @@ namespace windows_client.View
                         oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_USER_ID];
                         oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
                         oj["post"] = false;//so that hike promotional post is not posted on fb
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
+                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.ServerJsonKeys.FACEBOOK, true);
                         break;
 
                     case FreeSMS.SocialState.TW_LOGIN:
@@ -163,7 +163,7 @@ namespace windows_client.View
                         ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
                         ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
                         ojj["post"] = false;
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
+                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.ServerJsonKeys.TWITTER, true);
                         break;
                 }
             }
@@ -196,26 +196,26 @@ namespace windows_client.View
                         SystemTray.ProgressIndicator.IsIndeterminate = false;
                 });
 
-            if (isFacebookPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (isFacebookPost && obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
-                status = (string)obj[HikeConstants.FACEBOOK];
+                status = (string)obj[HikeConstants.ServerJsonKeys.FACEBOOK];
                 isFacebookPost = false;
             }
 
-            if (isTwitterPost && obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (isTwitterPost && obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
-                status = (string)obj[HikeConstants.TWITTER];
+                status = (string)obj[HikeConstants.ServerJsonKeys.TWITTER];
                 isTwitterPost = false;
             }
 
-            if (status.Equals(HikeConstants.NO_TOKEN) || status.Equals(HikeConstants.INVALID_TOKEN))
+            if (status.Equals(HikeConstants.ServerJsonKeys.NO_TOKEN) || status.Equals(HikeConstants.ServerJsonKeys.INVALID_TOKEN))
             {
-                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = isTwitterPost ? HikeConstants.TWITTER : HikeConstants.FACEBOOK;
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = isTwitterPost ? HikeConstants.ServerJsonKeys.TWITTER : HikeConstants.ServerJsonKeys.FACEBOOK;
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 return;
             }
 
-            if (status.Equals(HikeConstants.FAILURE))
+            if (status.Equals(HikeConstants.ServerJsonKeys.FAILURE))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

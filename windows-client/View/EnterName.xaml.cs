@@ -324,7 +324,7 @@ namespace windows_client
                 return;
 
             reloadImage = true;
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
             PhoneApplicationService.Current.State["fromEnterName"] = true;
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
@@ -469,7 +469,7 @@ namespace windows_client
 
         private void setProfile_Callback(JObject obj)
         {
-            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+            if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -509,7 +509,7 @@ namespace windows_client
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+                if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
                     progressBar.Opacity = 0;
                     MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);

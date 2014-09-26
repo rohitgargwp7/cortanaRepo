@@ -595,12 +595,12 @@ namespace windows_client.View
         {
             string serverId = null;
             bool uploadSuccess = false;
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 uploadSuccess = true;
                 try
                 {
-                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.ServerJsonKeys.STATUS_ID].ToString();
                     //todo:check
                 }
                 catch (Exception ex)
@@ -792,7 +792,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
@@ -1045,7 +1045,7 @@ namespace windows_client.View
 
         public void GetHikeStatus_Callback(JObject obj)
         {
-            if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.FAIL != (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 var isOnHike = (bool)obj["onhike"];
                 if (isOnHike)
@@ -1232,7 +1232,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             MiscDBUtil.SaveFavourites();
@@ -1251,7 +1251,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -1363,7 +1363,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {
