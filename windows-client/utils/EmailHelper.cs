@@ -143,7 +143,7 @@ namespace windows_client.utils
                             }
                             else
                             {
-                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains(HikeConstants.ServerJsonKeys.LONG_MESSAGE))
                                 {
                                     string message = MessagesTableUtils.ReadLongMessageFile(convMsg.Timestamp, convMsg.Msisdn);
                                     messageText = message;

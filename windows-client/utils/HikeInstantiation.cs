@@ -510,10 +510,10 @@ namespace windows_client.utils
                 string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.CURRENT_LOCALE, currentLocale);
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
                 JObject data = new JObject();
                 data.Add(HikeConstants.LOCALE, currentLocale);
-                obj.Add(HikeConstants.DATA, data);
+                obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
@@ -547,10 +547,6 @@ namespace windows_client.utils
                         if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
                         {
                             store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
-                        }
-                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                        {
-                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                         }
                         if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
                         {
@@ -682,7 +678,7 @@ namespace windows_client.utils
             if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_CONFIG_EVENT, HikeConstants.ANALYTICS_ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.ANALYTICS_ENTER_TO_SEND, enterToSend);
         }
     }
 }

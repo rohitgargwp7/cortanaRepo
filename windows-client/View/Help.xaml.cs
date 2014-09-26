@@ -65,7 +65,7 @@ namespace windows_client.View
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_AND_CONDITIONS, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();

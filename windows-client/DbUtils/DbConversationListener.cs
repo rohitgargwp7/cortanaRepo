@@ -447,14 +447,14 @@ namespace windows_client.DbUtils
                                 }
                                 else
                                 {
-                                    JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                                    fileKey = data[HikeConstants.FILE_KEY].ToString();
+                                    JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                                    fileKey = data[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
 
                                     //send the content type which is sent by server
-                                    fInfo.ContentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
+                                    fInfo.ContentType = data[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE].ToString();
 
                                     JToken fs;
-                                    if (data.TryGetValue(HikeConstants.FILE_SIZE, out fs))
+                                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.FILE_SIZE, out fs))
                                         fileSize = Convert.ToInt32(fs.ToString());
                                 }
 
@@ -547,8 +547,8 @@ namespace windows_client.DbUtils
         private JObject blockUnblockSerialize(string type, string msisdn)
         {
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = type;
-            obj[HikeConstants.DATA] = msisdn;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = type;
+            obj[HikeConstants.ServerJsonKeys.DATA] = msisdn;
             return obj;
         }
 

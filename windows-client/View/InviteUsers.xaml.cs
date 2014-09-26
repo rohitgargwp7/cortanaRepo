@@ -219,20 +219,20 @@ namespace windows_client.View
 
             if (SelectedContacts.Count == 1)
             {
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
             }
             else
             {
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.INVITE_LIST] = numlist;
-                obj[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.INVITE_LIST] = numlist;
+                obj[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
             if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
@@ -243,7 +243,7 @@ namespace windows_client.View
             }
             else
             {
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
                 HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();

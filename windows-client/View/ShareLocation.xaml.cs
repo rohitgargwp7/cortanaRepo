@@ -403,17 +403,17 @@ namespace windows_client.View
 
             var title = _selectedPlace == null || _selectedPlace.title.Contains(AppResources.Location_Txt) || _selectedPlace.title.Contains(AppResources.My_Location_Text) ? String.Empty : _selectedPlace.title;
 
-            singleFileInfo[HikeConstants.FILE_NAME] = HikeConstants.LOCATION_FILENAME;
-            singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.LOCATION_CONTENT_TYPE;
-            singleFileInfo[HikeConstants.LATITUDE] = _selectedCoordinate.Latitude;
-            singleFileInfo[HikeConstants.LONGITUDE] = _selectedCoordinate.Longitude;
-            singleFileInfo[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.LOCATION_TITLE] = title;
-            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
+            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_NAME] = HikeConstants.ServerJsonKeys.LOCATION_FILENAME;
+            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE] = HikeConstants.ServerJsonKeys.LOCATION_CONTENT_TYPE;
+            singleFileInfo[HikeConstants.ServerJsonKeys.LATITUDE] = _selectedCoordinate.Latitude;
+            singleFileInfo[HikeConstants.ServerJsonKeys.LONGITUDE] = _selectedCoordinate.Longitude;
+            singleFileInfo[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
+            singleFileInfo[HikeConstants.ServerJsonKeys.LOCATION_TITLE] = title;
+            singleFileInfo[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
-            metadata[HikeConstants.FILES_DATA] = filesData;
+            metadata[HikeConstants.ServerJsonKeys.FILES_DATA] = filesData;
 
             object[] locationDetails = new object[2];
             locationDetails[0] = metadata;
@@ -645,7 +645,7 @@ namespace windows_client.View
                 _resultString = (String)State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT];
                 _selectedIndex = (Int32)State[HikeConstants.LOCATION_SELECTED_INDEX];
 
-                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
 
                 _selectedCoordinate = _customCoordinate == null ? _myCoordinate : _customCoordinate;
                 PlacesGrid.Visibility = NetworkInterface.GetIsNetworkAvailable() ? PlacesGrid.Visibility = Visibility.Visible : PlacesGrid.Visibility = Visibility.Collapsed;
@@ -706,7 +706,7 @@ namespace windows_client.View
             {
                 State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
                 State.Remove(HikeConstants.LOCATION_SEARCH);
-                State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
                 State.Remove(HikeConstants.LOCATION_PLACE_SEARCH_RESULT);
                 State.Remove(HikeConstants.LOCATION_SELECTED_INDEX);
             }
@@ -716,9 +716,9 @@ namespace windows_client.View
                 State[HikeConstants.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
-                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = 16;
 
                 State[HikeConstants.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
                 State[HikeConstants.LOCATION_SELECTED_INDEX] = _selectedIndex;

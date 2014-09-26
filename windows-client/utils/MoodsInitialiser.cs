@@ -169,7 +169,7 @@ namespace windows_client.utils
             try
             {
                 JObject metaData = JObject.Parse(metadataJson);
-                JObject data = (JObject)metaData[HikeConstants.DATA];
+                JObject data = (JObject)metaData[HikeConstants.ServerJsonKeys.DATA];
                 if (data[HikeConstants.MOOD] != null)
                 {
                     string moodId_String = data[HikeConstants.MOOD].ToString();

@@ -274,8 +274,8 @@ namespace windows_client.FileTransfers
         {
             if (SuccessObj != null)
             {
-                var jData = SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                var fileKey = jData[HikeConstants.FILE_KEY].ToString();
+                var jData = SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                var fileKey = jData[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
                 var result = await CheckForCRC(fileKey);
 
                 if (result)
@@ -352,8 +352,8 @@ namespace windows_client.FileTransfers
                     // check for successful upload
                     if (SuccessObj != null)
                     {
-                        var jData = SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                        var fileKey = jData[HikeConstants.FILE_KEY].ToString();
+                        var jData = SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                        var fileKey = jData[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
                         var result = await CheckForCRC(fileKey);
 
                         if (result)

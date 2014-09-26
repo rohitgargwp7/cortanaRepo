@@ -5,76 +5,108 @@ namespace windows_client
 {
     public class HikeConstants
     {
-        public static readonly string MESSAGE = "msg";
-        public static readonly string UI_TOPIC = "/u";
-        public static readonly string APP_TOPIC = "/a";
-        public static readonly string SERVICE_TOPIC = "/s";
-        public static readonly string PUBLISH_TOPIC = "/p";
+        public static class ServerJsonKeys
+        {
+            public static readonly string MESSAGE = "msg";
+            public static readonly string UI_TOPIC = "/u";
+            public static readonly string APP_TOPIC = "/a";
+            public static readonly string SERVICE_TOPIC = "/s";
+            public static readonly string PUBLISH_TOPIC = "/p";
 
-        public static readonly string TYPE = "t";
-        public static readonly string DATA = "d";
-        public static readonly string TO = "to";
-        public static readonly string FROM = "f";
-        public static readonly string SUB_TYPE = "st";
-        public static readonly string SUBTYPE_NEW_JOIN = "nu";
-        public static readonly string SUBTYPE_REJOIN = "ru";
-        public static readonly string TAG = "tag";
-        public static readonly string UPGRADE = "upgrade";
+            public static readonly string TYPE = "t";
+            public static readonly string DATA = "d";
+            public static readonly string TO = "to";
+            public static readonly string FROM = "f";
+            public static readonly string SUB_TYPE = "st";
+            public static readonly string SUBTYPE_NEW_JOIN = "nu";
+            public static readonly string SUBTYPE_REJOIN = "ru";
+            public static readonly string TAG = "tag";
+            public static readonly string UPGRADE = "upgrade";
 
-        public static readonly string ADD_STICKER = "addStk";
-        public static readonly string ADD_CATEGORY = "addCat";
-        public static readonly string REMOVE_STICKER = "remStk";
-        public static readonly string REMOVE_CATEGORY = "remCat";
+            public static readonly string ADD_STICKER = "addStk";
+            public static readonly string ADD_CATEGORY = "addCat";
+            public static readonly string REMOVE_STICKER = "remStk";
+            public static readonly string REMOVE_CATEGORY = "remCat";
 
-        public static readonly string HIKE_MESSAGE = "hm";
-        public static readonly string SMS_MESSAGE = "sm";
-        public static readonly string TIMESTAMP = "ts";
-        public static readonly string MESSAGE_ID = "i";
-        public static readonly string INVITE_LIST = "list";
-        public static readonly string METADATA = "md";
-        public static readonly string METADATA_DND = "dnd";
-        public static readonly string ANALYTICS_EVENT = "ae";
-        public static readonly string LOG_EVENT = "le";//for analytics
+            public static readonly string HIKE_MESSAGE = "hm";
+            public static readonly string SMS_MESSAGE = "sm";
+            public static readonly string TIMESTAMP = "ts";
+            public static readonly string MESSAGE_ID = "i";
+            public static readonly string INVITE_LIST = "list";
+            public static readonly string METADATA = "md";
+            public static readonly string METADATA_DND = "dnd";
+            public static readonly string ANALYTICS_EVENT = "ae";
+            public static readonly string LOG_EVENT = "le";//for analytics
+            public static readonly string REQUEST_SERVER_TIME = "rsts";
+            public static readonly string STATUS = "st";
+            public static readonly string LONG_MESSAGE = "lm";
+
+            public static readonly string PUSH = "push";
+            public static readonly string CRITICAL = "critical";
+
+            public static readonly string FILE_NAME = "fn";
+            public static readonly string FILE_RESPONSE_DATA = "data";
+            public static readonly string FILE_KEY = "fk";
+            public static readonly string FILE_SIZE = "fs";
+            public static readonly string FILE_THUMBNAIL = "tn";
+            public static readonly string SOURCE = "source";
+            public static readonly string FILE_CONTENT_TYPE = "ct";
+            public static readonly string FILES_DATA = "files";
+            public static readonly string FILE_PLAY_TIME = "pt";
+            public static readonly string MD5_ORIGINAL = "md5_original";
+
+            public static readonly string LATITUDE = "lat";
+            public static readonly string LONGITUDE = "long";
+            public static readonly string ZOOM_LEVEL = "zoom";
+            public static readonly string LOCATION_ADDRESS = "add";
+            public static readonly string LOCATION_TITLE = "title";
+            public static readonly string LOCATION_FILENAME = "Location";
+
+            public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
+            public static readonly string FILE_TYPE_AUDIO = "audio/voice";
+            public static readonly string FILE_TYPE_VIDEO = "video/mp4";
+
+            public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device 
+            public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
+            public static readonly string APP_VERSION = "app_version";//The app version
+            public static readonly string APPVERSION = "appversion";//The app version
+            public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
+            public static readonly string FAVORITES = "favorites";
+            public static readonly string PENDING = "pending";
+            public static readonly string REQUEST_PENDING = "requestpending";
+
+            //CS prefix for contactsharing
+            public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
+            public static readonly string CS_NAME = "name";
+            public static readonly string CS_EMAILS = "emails";
+            public static readonly string CS_ADDRESSES = "addresses";
+            public static readonly string CS_HOME_KEY = "Home";
+            public static readonly string CS_WORK_KEY = "Work";
+            public static readonly string CS_MOBILE_KEY = "Mobile";
+            public static readonly string CS_OTHERS_KEY = "Others";
+
+            // keys for application info in analytics, update and signup
+            public static readonly string OS_NAME = "_os";
+            public static readonly string OS_VERSION = "_os_version";
+            public static readonly string DEVICE_TYPE_KEY = "dev_type";
+
+            public static readonly string NO_SMS = "nosms";
+            public static readonly string ST_UI_EVENT = "uiEvent";
+            public static readonly string ST_CONFIG_EVENT = "config";
+            public static readonly string ST_NETWORK_EVENT = "nw";
+
+            public static readonly string COUNT = "c";
+            public static readonly string FORCE_SMS_MESSAGE = "m";
+
+            public static readonly string TAG_MOBILE = "wp8";
+
+            public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
+        }
+
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
-        public static readonly string REQUEST_SERVER_TIME = "rsts";
-        public static readonly string STATUS = "st";
-        public static readonly string LONG_MESSAGE = "lm";
-
-        public static readonly string PUSH = "push";
-        public static readonly string CRITICAL = "critical";
-        public static readonly string LATEST = "latest";
-        public static readonly string APP_ID = "appID";
 
         public static readonly string LAST_NOTIFICATION_TIME = "lastNotTime";
-        public static readonly string SOUND_PREF = "soundPref";
-        public static readonly string HIKEBOT = "TD-HIKE";
-
-        public static readonly string DONE = "Done";
-        public static readonly string PIN_ERROR = "PinError";
-        public static readonly string ADDRESS_BOOK_ERROR = "AddressBookError";
-        public static readonly string CHANGE_NUMBER = "ChangeNumber";
-
-        public static readonly string FILE_NAME = "fn";
-        public static readonly string FILE_RESPONSE_DATA = "data";
-        public static readonly string FILE_KEY = "fk";
-        public static readonly string FILE_SIZE = "fs";
-        public static readonly string FILE_THUMBNAIL = "tn";
-        public static readonly string SOURCE = "source";
-        public static readonly string FILE_CONTENT_TYPE = "ct";
-        public static readonly string FILES_DATA = "files";
-        public static readonly string FILE_PLAY_TIME = "pt";
-        public static readonly string MD5_ORIGINAL = "md5_original";
-
-        public static readonly string LATITUDE = "lat";
-        public static readonly string LONGITUDE = "long";
-        public static readonly string ZOOM_LEVEL = "zoom";
-        public static readonly string LOCATION_ADDRESS = "add";
-        public static readonly string LOCATION_TITLE = "title";
-        public static readonly string LOCATION_FILENAME = "Location";
-        public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
-
-        public static readonly string FILE_TYPE_AUDIO = "audio/voice";
-        public static readonly string FILE_TYPE_VIDEO = "video/mp4";
+        public static readonly string pushNotificationChannelName = "HikeApp";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
@@ -82,6 +114,7 @@ namespace windows_client
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
         public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
+        
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
         public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
         public static readonly string HikeDirectoryName = "hike";
@@ -89,8 +122,6 @@ namespace windows_client
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
-
-        public static readonly string pushNotificationChannelName = "HikeApp";
 
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_HEIGHT = 180;
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 180;
@@ -104,9 +135,9 @@ namespace windows_client
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
         public static readonly int MAX_THUMBNAILSIZE = 4800;
 
-        public const byte MAX_IMAGES_SHARE = 15;
-        public const int STATUS_INITIAL_FETCH_COUNT = 31;
-        public const int STATUS_SUBSEQUENT_FETCH_COUNT = 21;
+        public static readonly byte MAX_IMAGES_SHARE = 15;
+        public static readonly int STATUS_INITIAL_FETCH_COUNT = 31;
+        public static readonly int STATUS_SUBSEQUENT_FETCH_COUNT = 21;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -115,61 +146,19 @@ namespace windows_client
         public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
         public static readonly int STARTING_BASE_YEAR = 1600; //file time is ticks starting from jan 1 1601 so adding 1600 years
 
-        public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
-        public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
-        public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
-
         //Chat bubbles
         public static readonly int CHATBUBBLE_LANDSCAPE_WIDTH = 510;
         public static readonly int CHATBUBBLE_LANDSCAPE_MINWIDTH = 170;
         public static readonly int CHATBUBBLE_PORTRAIT_WIDTH = 330;
         public static readonly int CHATBUBBLE_PORTRAIT_MINWIDTH = 110;
 
-        //file for sharing info with background agent
-        public static readonly string BACKGROUND_AGENT_FILE = "token";
-        public static readonly string BACKGROUND_AGENT_DIRECTORY = "ba";
-
-        private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
-        private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
-        //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        public static readonly string TERMS_AND_CONDITIONS = "http://hike.in/terms/wp8";
+        public static readonly string FAQS_LINK = "http://get.hike.in/help/wp8/index.html";
         public static readonly string CONTACT_US_EMAIL = "support@hike.in";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
-        //for device info
-        public static readonly string DEVICE_TYPE = "devicetype";//The OS
-        public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
-        public static readonly string DEVICE_TOKEN = "devicetoken";// A unique ID of the device 
-        public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
-        public static readonly string APP_VERSION = "app_version";//The app version
-        public static readonly string APPVERSION = "appversion";//The app version
-        public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
-        public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
-        public static readonly string FAVORITES = "favorites";
-        public static readonly string PENDING = "pending";
-        public static readonly string REQUEST_PENDING = "requestpending";
+        
+        public static readonly string PUSH_CHANNEL_CN = "*.hike.in";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
-
-        //CS prefix for contactsharing
-        public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
-        public static readonly string CS_NAME = "name";
-        public static readonly string CS_EMAILS = "emails";
-        public static readonly string CS_ADDRESSES = "addresses";
-        public static readonly string CS_HOME_KEY = "Home";
-        public static readonly string CS_WORK_KEY = "Work";
-        public static readonly string CS_MOBILE_KEY = "Mobile";
-        public static readonly string CS_OTHERS_KEY = "Others";
-
-        // keys for application info in analytics, update and signup
-        public static readonly string OS_NAME = "_os";
-        public static readonly string OS_VERSION = "_os_version";
-        public static readonly string DEVICE_TYPE_KEY = "dev_type";
-
-        public static readonly string NO_SMS = "nosms";
-        public static readonly string ST_UI_EVENT = "uiEvent";
-        public static readonly string ST_CONFIG_EVENT = "config";
-        public static readonly string ST_NETWORK_EVENT = "nw";
-
-        public static readonly string COUNT = "c";
-        public static readonly string FORCE_SMS_MESSAGE = "m";
 
         public static readonly string MICROSOFT_MAP_SERVICE_APPLICATION_ID = "b4703e38-092f-4144-826a-3e3d41f50714";
         public static readonly string MICROSOFT_MAP_SERVICE_AUTHENTICATION_TOKEN = "CjsOsVAhJ0GPdjiP12KwvA";
@@ -197,22 +186,6 @@ namespace windows_client
         public static readonly string READPIN = "readPin";
         public static readonly string UNREADPINS = "unreadpins";
         #endregion
-
-        public static string FAQS_LINK
-        {
-            get
-            {
-                return FAQS_LINK_WHITE;
-            }
-        }
-
-        public static string TERMS_LINK
-        {
-            get
-            {
-                return TERMS_AND_CONDITIONS_WHITE;
-            }
-        }
 
         /* how long to wait between sending publish and receiving an acknowledgement */
 
@@ -245,7 +218,6 @@ namespace windows_client
         public static readonly int NO_UPDATE = 0;
         public static readonly string ALL_INVITEE = "ai";
         public static readonly string ALL_INVITEE_JOINED = "aij";
-        public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string ACCOUNTS = "accounts";
         public static readonly string TWITTER = "twitter";
         public static readonly string FACEBOOK = "fb";
@@ -449,7 +421,6 @@ namespace windows_client
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
-        public static readonly string TAG_MOBILE = "wp8";
 
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
