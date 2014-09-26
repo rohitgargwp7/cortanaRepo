@@ -950,7 +950,7 @@ namespace windows_client.View
 
             string name;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACCOUNT_NAME, out name);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.ACCOUNT_NAME, out name);
 
             if (name != null)
             {

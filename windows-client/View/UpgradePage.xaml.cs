@@ -163,7 +163,7 @@ namespace windows_client.View
         {
             if (Utils.compareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
             {
-                HikeInstantiation.AppSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
+                HikeInstantiation.AppSettings[HikeConstants.AppSettings.APP_UPDATE_POSTPENDING] = true;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE

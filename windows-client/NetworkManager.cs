@@ -172,7 +172,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.AUTO_DOWNLOAD_SETTING))
                     {
                         FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
@@ -284,7 +284,7 @@ namespace windows_client
                 try
                 {
                     int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SMS_SETTING, sms_credits);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SMS_SETTING, sms_credits);
                     this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
                 catch (Exception ex)
@@ -540,7 +540,7 @@ namespace windows_client
                 try
                 {
                     int invited = (int)data[HikeConstants.ALL_INVITEE];
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITED, invited);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.INVITED, invited);
                 }
                 catch (Exception ex)
                 {
@@ -549,7 +549,7 @@ namespace windows_client
                 try
                 {
                     int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITED_JOINED, invited_joined);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.INVITED_JOINED, invited_joined);
                 }
                 catch (Exception ex)
                 {
@@ -783,11 +783,11 @@ namespace windows_client
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
                                                 {
-                                                    HikeInstantiation.AppSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+                                                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.LAST_SEEN_SEETING);
                                                     HikeInstantiation.AppSettings.Save();
                                                 }
                                                 else
-                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SEEN_SEETING, false);
                                             }
                                             catch { }
                                         }
@@ -831,7 +831,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
+                                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -910,12 +910,12 @@ namespace windows_client
                             {
                                 if (jArray.Count > 1)
                                 {
-                                    HikeInstantiation.AppSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
-                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
+                                    HikeInstantiation.AppSettings[HikeConstants.AppSettings.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
+                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
                                 }
                                 else if (jArray.Count == 1)
                                 {
-                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
+                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
                                 }
                             }
                         }
@@ -927,12 +927,12 @@ namespace windows_client
                     #endregion
                     #region moods zone
 
-                    if (data.TryGetValue(HikeConstants.HIDE_CRICKET_MOODS, out rew))
+                    if (data.TryGetValue(HikeConstants.AppSettings.HIDE_CRICKET_MOODS, out rew))
                     {
                         //we are keeping state for hide because by default moods are ON. If server never sends this packet, no
                         //appsetting would ever be stored
                         bool showMoods = rew.ToObject<bool>();
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDE_CRICKET_MOODS, !showMoods);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDE_CRICKET_MOODS, !showMoods);
                     }
                     #endregion
                     #region Invite pop up
@@ -975,7 +975,7 @@ namespace windows_client
                                     ips[i] = (string)jArray[i];
                                 }
 
-                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.IP_LIST, ips);
+                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.IP_LIST, ips);
                             }
                         }
                         catch (Exception ex)

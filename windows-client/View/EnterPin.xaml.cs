@@ -62,7 +62,7 @@ namespace windows_client
             }
             txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
-            string unAuthMsisdn = (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING];
+            string unAuthMsisdn = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.MSISDN_SETTING];
             pinErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -114,7 +114,7 @@ namespace windows_client
             if (isNextClicked)
                 return;
 
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.MSISDN_SETTING);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.MSISDN_SETTING);
 
             if (NavigationService.CanGoBack)
             {
@@ -261,7 +261,7 @@ namespace windows_client
             {
                 string msisdn;
 
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
                 MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
             }

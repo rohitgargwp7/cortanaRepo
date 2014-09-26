@@ -32,7 +32,7 @@ namespace windows_client.View
 
         public NewGroup()
         {
-            string uid = (string)HikeInstantiation.AppSettings[HikeConstants.UID_SETTING];
+            string uid = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
 
             InitializeComponent();
