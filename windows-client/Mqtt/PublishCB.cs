@@ -32,8 +32,8 @@ namespace windows_client.Mqtt
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {
                     JObject obj = new JObject();
-                    obj[HikeConstants.TYPE] = NetworkManager.SERVER_REPORT;
-                    obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
+                    obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.SERVER_REPORT;
+                    obj[HikeConstants.ServerJsonKeys.DATA] = Convert.ToString(packet.MessageId);
                     NetworkManager.Instance.onMessage(obj.ToString());
                 }
             }

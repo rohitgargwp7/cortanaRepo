@@ -118,7 +118,7 @@ namespace windows_client
             string type = null;
             try
             {
-                type = (string)jsonObj[HikeConstants.TYPE];
+                type = (string)jsonObj[HikeConstants.ServerJsonKeys.TYPE];
             }
             catch (JsonReaderException ex)
             {
@@ -128,7 +128,7 @@ namespace windows_client
             string msisdn = null;
             try
             {
-                msisdn = (string)jsonObj[HikeConstants.FROM];
+                msisdn = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
             }
             catch (JsonReaderException ex)
             {
@@ -143,8 +143,8 @@ namespace windows_client
                 {
                     bool isPush = true;
                     JToken pushJToken;
-                    var jData = (JObject)jsonObj[HikeConstants.DATA];
-                    if (jData.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                    var jData = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
+                    if (jData.TryGetValue(HikeConstants.ServerJsonKeys.PUSH, out pushJToken))
                         isPush = (Boolean)pushJToken;
 
                     ConvMessage convMessage = null;
@@ -201,7 +201,7 @@ namespace windows_client
                 string grpId = String.Empty;
                 try
                 {
-                    grpId = (string)jsonObj[HikeConstants.TO];
+                    grpId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
                 }
                 catch (Exception ex)
                 {
@@ -218,7 +218,7 @@ namespace windows_client
                 try
                 {
                     // If not null then this is group id
-                    sentTo = (string)jsonObj[HikeConstants.TO];
+                    sentTo = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
                 }
                 catch (Exception ex)
                 {
@@ -246,7 +246,7 @@ namespace windows_client
 
                 try
                 {
-                    var data = jsonObj[HikeConstants.DATA];
+                    var data = jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     lastSeen = (long)data[HikeConstants.LASTSEEN];
 
                     if (lastSeen > 0)
@@ -283,7 +283,7 @@ namespace windows_client
             {
                 try
                 {
-                    int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
+                    int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.ServerJsonKeys.DATA]);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SMS_SETTING, sms_credits);
                     this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
@@ -296,7 +296,7 @@ namespace windows_client
             #region SERVER_REPORT
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
             {
-                string id = (string)jsonObj[HikeConstants.DATA];
+                string id = (string)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                 long msgID;
                 try
                 {
@@ -316,14 +316,14 @@ namespace windows_client
             #region DELIVERY_REPORT
             else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
             {
-                string id = (string)jsonObj[HikeConstants.DATA];
+                string id = (string)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                 JToken msisdnToken = null;
                 string msisdnToCheck = null;
                 long msgID;
                 try
                 {
                     msgID = Int64.Parse(id);
-                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.TO, out msisdnToken);
                     if (msisdnToken != null)
                         msisdnToCheck = msisdnToken.ToString();
                     else
@@ -353,7 +353,7 @@ namespace windows_client
                 try
                 {
                     msgIds = (JArray)jsonObj["d"];
-                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.TO, out msisdnToken);
                     if (msisdnToken != null)
                         msisdnToCheck = msisdnToken.ToString();
                     else
@@ -391,9 +391,9 @@ namespace windows_client
                 long serverTimestamp = 0;
                 try
                 {
-                    o = (JObject)jsonObj[HikeConstants.DATA];
+                    o = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     uMsisdn = (string)o[HikeConstants.MSISDN];
-                    serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
+                    serverTimestamp = (long)jsonObj[HikeConstants.ServerJsonKeys.TIMESTAMP];
                 }
                 catch (Exception ex)
                 {
@@ -403,9 +403,9 @@ namespace windows_client
                 bool joined = USER_JOINED == type;
                 bool isRejoin = false;
                 JToken subtype;
-                if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                if (jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out subtype))
                 {
-                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                    isRejoin = HikeConstants.ServerJsonKeys.SUBTYPE_REJOIN == (string)subtype;
                 }
                 // update contacts cache
                 if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(uMsisdn))
@@ -461,7 +461,7 @@ namespace windows_client
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 JToken jt;
                 long ts = 0;
-                if (joined && jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
+                if (joined && jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.TIMESTAMP, out jt))
                     ts = jt.ToObject<long>();
                 FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
@@ -475,7 +475,7 @@ namespace windows_client
                     return;
 
                 JToken temp;
-                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out temp);
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
@@ -533,7 +533,7 @@ namespace windows_client
             {
                 JObject data;
                 JToken temp;
-                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out temp);
                 if (temp == null)
                     return;
                 data = temp.ToObject<JObject>();
@@ -558,7 +558,7 @@ namespace windows_client
                 string totalCreditsPerMonth = "0";
                 try
                 {
-                    totalCreditsPerMonth = data[HikeConstants.TOTAL_CREDITS_PER_MONTH].ToString();
+                    totalCreditsPerMonth = data[HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH].ToString();
                 }
                 catch (Exception ex)
                 {
@@ -567,7 +567,7 @@ namespace windows_client
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
                     this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
 
@@ -579,7 +579,7 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
@@ -609,7 +609,7 @@ namespace windows_client
                                         Debug.WriteLine("AI :: Key : " + kkvv.Key);
 
                                         #region FAVOURITES
-                                        if (kkvv.Key == HikeConstants.FAVORITES)
+                                        if (kkvv.Key == HikeConstants.ServerJsonKeys.FAVORITES)
                                         {
                                             JObject favJSON = kkvv.Value.ToObject<JObject>();
                                             if (favJSON != null)
@@ -630,7 +630,7 @@ namespace windows_client
 
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
                                                         JToken pToken;
-                                                        if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
+                                                        if (pendingJSON.TryGetValue(HikeConstants.ServerJsonKeys.REQUEST_PENDING, out pToken))
                                                         {
                                                             bool rp = false;
                                                             thrAreFavs = true;
@@ -653,7 +653,7 @@ namespace windows_client
                                                             else
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                                                         }
-                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null)
+                                                        else if (pendingJSON.TryGetValue(HikeConstants.ServerJsonKeys.PENDING, out pToken) && pToken != null)
                                                         {
                                                             if (pToken.ToObject<bool>() == true) // pending is true
                                                             {
@@ -846,12 +846,12 @@ namespace windows_client
                                 // save only for Twitter , FB
                                 //HikeInstantiation.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
                             }// save only tc , invite_token
-                            else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
+                            else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
                             {
                                 string val = oj.ToString();
                                 Debug.WriteLine("AI :: Value : " + val);
 
-                                if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
+                                if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH)
                                     HikeInstantiation.WriteToIsoStorageSettings(kv.Key, val);
                             }
                         }
@@ -861,7 +861,7 @@ namespace windows_client
                         }
                     }
 
-                    JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                    JToken it = data[HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH];
                     if (it != null)
                     {
                         string tc = it.ToString().Trim();
@@ -883,7 +883,7 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
@@ -937,7 +937,7 @@ namespace windows_client
                     #endregion
                     #region Invite pop up
                     JToken jtokenMessageId;
-                    if (data.TryGetValue(HikeConstants.MESSAGE_ID, out jtokenMessageId))
+                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.MESSAGE_ID, out jtokenMessageId))
                     {
                         JToken jtokenShowFreeInvites;
                         string previousId;
@@ -1005,11 +1005,11 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
                 string groupName = string.Empty;
-                jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
+                jsonObj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 JArray arr = null;
                 try
                 {
-                    arr = (JArray)jsonObj[HikeConstants.DATA];
+                    arr = (JArray)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                 }
                 catch (Exception e)
                 {
@@ -1021,7 +1021,7 @@ namespace windows_client
                 string grpId = null;
                 try
                 {
-                    grpId = jsonObj[HikeConstants.TO].ToString();
+                    grpId = jsonObj[HikeConstants.ServerJsonKeys.TO].ToString();
                 }
                 catch (Exception ex)
                 {
@@ -1034,7 +1034,7 @@ namespace windows_client
 
                 #region META DATA CHAT BACKGROUND
 
-                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+                JObject metaData = (JObject)jsonObj[HikeConstants.ServerJsonKeys.METADATA];
                 if (metaData != null)
                 {
                     #region chat background
@@ -1099,7 +1099,7 @@ namespace windows_client
                     if (dndList.Count > 0) // there are people who are in dnd , show their msg
                     {
                         JObject o = new JObject();
-                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                        o[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
                         convMessage = new ConvMessage(); // this will be normal DND msg
                         convMessage.Msisdn = grpId;
                         convMessage.MetaDataString = o.ToString(Formatting.None);
@@ -1169,9 +1169,9 @@ namespace windows_client
             {
                 try
                 {
-                    string groupName = (string)jsonObj[HikeConstants.DATA];
+                    string groupName = (string)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     groupName = groupName.Trim();
-                    string groupId = (string)jsonObj[HikeConstants.TO];
+                    string groupId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
                     ConversationListObject cObj;
@@ -1213,13 +1213,13 @@ namespace windows_client
             #region GROUP DISPLAY PIC CHANGE
             else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
             {
-                string groupId = (string)jsonObj[HikeConstants.TO];
-                string from = (string)jsonObj[HikeConstants.FROM];
+                string groupId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                string from = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
                 ConversationListObject cObj;
                 if (!HikeInstantiation.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
                 JToken temp;
-                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out temp);
                 if (temp == null)
                     return;
                 string iconBase64 = temp.ToString();
@@ -1277,8 +1277,8 @@ namespace windows_client
                 */
                 try
                 {
-                    string groupId = (string)jsonObj[HikeConstants.TO];
-                    string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
+                    string groupId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                    string fromMsisdn = (string)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
                     if (gp == null || gp.HasLeft)
@@ -1308,7 +1308,7 @@ namespace windows_client
             {
                 try
                 {
-                    string groupId = (string)jsonObj[HikeConstants.TO];
+                    string groupId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
                     {
@@ -1340,12 +1340,12 @@ namespace windows_client
             {
                 try
                 {
-                    string groupId = (string)jsonObj[HikeConstants.TO];
+                    string groupId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
 
                     if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
                         return;
 
-                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
 
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.MqttMessageTypes.MSISDN_KEYWORD, out jtoken))
@@ -1420,7 +1420,7 @@ namespace windows_client
                             if (ci == null)
                             {
                                 JToken data;
-                                if (jsonObj.TryGetValue(HikeConstants.DATA, out data))
+                                if (jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out data))
                                 {
                                     JToken n;
                                     JObject dobj = data.ToObject<JObject>();
@@ -1486,7 +1486,7 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
                     pubSub.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
@@ -1507,7 +1507,7 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     StatusMessage sm = null;
                     JToken val;
                     string iconBase64 = null;
@@ -1518,7 +1518,7 @@ namespace windows_client
                     val = null;
                     long ts = 0;
 
-                    if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                    if (jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.TIMESTAMP, out val) && val != null)
                     {
                         ts = val.ToObject<long>();
                         long tsCorrection;
@@ -1614,7 +1614,7 @@ namespace windows_client
                 {
                     if (HikeInstantiation.ViewModel.BlockedHashset.Contains(msisdn)) // if this user is blocked simply ignore him 
                         return;
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
                     if (msgId > 0) // delete only if msgId is greater than 0
@@ -1674,7 +1674,7 @@ namespace windows_client
                                                 if (jdata != null)
                                                 {
                                                     JToken val;
-                                                    JObject ddata = jdata[HikeConstants.DATA] as JObject;
+                                                    JObject ddata = jdata[HikeConstants.ServerJsonKeys.DATA] as JObject;
                                                     // profile pic update
                                                     if (ddata.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                                                         co.LastMessage = "\"" + AppResources.Update_Profile_Pic_txt + "\"";
@@ -1709,7 +1709,7 @@ namespace windows_client
             #region SERVER TIMESTAMP
             else if (type == SERVER_TIMESTAMP)
             {
-                long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
+                long timediff = (long)jsonObj[HikeConstants.ServerJsonKeys.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
                 //todo:place this setting in some different file as will be written again and agian
             }
@@ -1719,16 +1719,16 @@ namespace windows_client
             {
                 try
                 {
-                    string subType = (string)jsonObj[HikeConstants.SUB_TYPE];
-                    JObject jsonData = (JObject)jsonObj[HikeConstants.DATA];
+                    string subType = (string)jsonObj[HikeConstants.ServerJsonKeys.SUB_TYPE];
+                    JObject jsonData = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
 
                     //do same for category as well as subcategory
-                    if (subType == HikeConstants.ADD_STICKER || subType == HikeConstants.ADD_CATEGORY)
+                    if (subType == HikeConstants.ServerJsonKeys.ADD_STICKER || subType == HikeConstants.ServerJsonKeys.ADD_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerHelper.UpdateHasMoreMessages(category, true, true);
                     }
-                    else if (subType == HikeConstants.REMOVE_STICKER)
+                    else if (subType == HikeConstants.ServerJsonKeys.REMOVE_STICKER)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         JArray jarray = (JArray)jsonData["stIds"];
@@ -1741,7 +1741,7 @@ namespace windows_client
                         RecentStickerHelper.DeleteSticker(category, listStickers);
 
                     }
-                    else if (subType == HikeConstants.REMOVE_CATEGORY)
+                    else if (subType == HikeConstants.ServerJsonKeys.REMOVE_CATEGORY)
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerHelper.DeleteCategory(category);
@@ -1763,7 +1763,7 @@ namespace windows_client
 
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     var id = (string)data[HikeConstants.PRO_TIP_ID];
                     var header = (string)data[HikeConstants.PRO_TIP_HEADER];
                     var text = (string)data[HikeConstants.PRO_TIP_TEXT];
@@ -1803,7 +1803,7 @@ namespace windows_client
                 try
                 {
                     ConvMessage cm;
-                    var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
+                    var ts = (long)jsonObj[HikeConstants.ServerJsonKeys.TIMESTAMP];
                     if (ts > 0)
                     {
                         long timedifference;
@@ -1811,7 +1811,7 @@ namespace windows_client
                             ts = ts - timedifference;
                     }
 
-                    var to = (string)jsonObj[HikeConstants.TO];
+                    var to = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
 
                     if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
                         GroupManager.Instance.LoadGroupParticipants(to);
@@ -1824,7 +1824,7 @@ namespace windows_client
 
                     var sender = !String.IsNullOrEmpty(to) ? to : msisdn;
 
-                    var data = (JObject)jsonObj[HikeConstants.DATA];
+                    var data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     var bgId = (string)data[HikeConstants.BACKGROUND_ID];
 
                     ChatThemeData bg = null;
@@ -1866,7 +1866,7 @@ namespace windows_client
                     {
                         bool isPush = true;
                         JToken pushJToken;
-                        if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                        if (data.TryGetValue(HikeConstants.ServerJsonKeys.PUSH, out pushJToken))
                             isPush = (Boolean)pushJToken;
 
                         object[] vals;
@@ -1897,8 +1897,8 @@ namespace windows_client
 
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
-                    var devType = (string)data[HikeConstants.DEVICE_TYPE_KEY];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
+                    var devType = (string)data[HikeConstants.ServerJsonKeys.DEVICE_TYPE_KEY];
 
                     if (devType != "windows")
                         return;
@@ -1911,7 +1911,7 @@ namespace windows_client
                     bool isCritical = false;
                     try
                     {
-                        isCritical = (bool)data[HikeConstants.CRITICAL];
+                        isCritical = (bool)data[HikeConstants.ServerJsonKeys.CRITICAL];
                     }
                     catch
                     {
@@ -1929,7 +1929,7 @@ namespace windows_client
                     }
 
                     JObject obj = new JObject();
-                    obj.Add(HikeConstants.CRITICAL, isCritical);
+                    obj.Add(HikeConstants.ServerJsonKeys.CRITICAL, isCritical);
                     obj.Add(HikeConstants.TEXT_UPDATE_MSG, message);
                     obj.Add(HikeConstants.VERSION, version);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
@@ -1950,8 +1950,8 @@ namespace windows_client
 
                 try
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
-                    bool isRegisterPush = (bool)data[HikeConstants.PUSH];
+                    data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
+                    bool isRegisterPush = (bool)data[HikeConstants.ServerJsonKeys.PUSH];
 
                     if (isRegisterPush)
                         PushHelper.Instance.registerPushnotifications(true);
@@ -2015,8 +2015,8 @@ namespace windows_client
             {
                 try
                 {
-                    JToken subtype = jsonObj[HikeConstants.SUB_TYPE];
-                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken subtype = jsonObj[HikeConstants.ServerJsonKeys.SUB_TYPE];
+                    JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     JToken headertext;
 
                     if (!data.TryGetValue(TIPS_HEADER, out headertext))
@@ -2139,7 +2139,7 @@ namespace windows_client
             string ms = null;
             try
             {
-                JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                 ms = (string)data[HikeConstants.MSISDN];
                 try
                 {

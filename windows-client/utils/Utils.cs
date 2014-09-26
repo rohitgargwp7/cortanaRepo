@@ -106,9 +106,9 @@ namespace windows_client.utils
             try
             {
                 JObject upgradeJobj = new JObject();
-                upgradeJobj.Add(HikeConstants.UPGRADE, true);
-                requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
-                requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
+                upgradeJobj.Add(HikeConstants.ServerJsonKeys.UPGRADE, true);
+                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.DATA, upgradeJobj);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
@@ -310,14 +310,14 @@ namespace windows_client.utils
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
             info["_app_version"] = getAppVersion();
-            info[HikeConstants.TAG] = "cbs";
+            info[HikeConstants.ServerJsonKeys.TAG] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
-            info[HikeConstants.OS_VERSION] = getOSVersion();
-            info[HikeConstants.OS_NAME] = "win8";
+            info[HikeConstants.ServerJsonKeys.OS_VERSION] = getOSVersion();
+            info[HikeConstants.ServerJsonKeys.OS_NAME] = "win8";
             JObject infoPacket = new JObject();
-            infoPacket[HikeConstants.DATA] = info;
-            infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
+            infoPacket[HikeConstants.ServerJsonKeys.DATA] = info;
+            infoPacket[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.LOG_EVENT;
             return infoPacket;
         }
 
@@ -553,7 +553,7 @@ namespace windows_client.utils
         public static void RequestServerEpochTime()
         {
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.REQUEST_SERVER_TIME;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
@@ -575,10 +575,10 @@ namespace windows_client.utils
         public static void RequestHikeBot()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
             data.Add(HikeConstants.Extras.SEND_BOT, false);
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 

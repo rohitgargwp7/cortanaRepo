@@ -167,20 +167,20 @@ namespace windows_client.View
 
             if (smsUsersCount == 1)
             {
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
             }
             else
             {
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.INVITE_LIST] = numlist;
-                obj[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.INVITE_LIST] = numlist;
+                obj[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
             if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
@@ -190,7 +190,7 @@ namespace windows_client.View
             }
             else
             {
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
                 HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();
@@ -455,7 +455,7 @@ namespace windows_client.View
             if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
-                string eventGroupId = (string)json[HikeConstants.TO];
+                string eventGroupId = (string)json[HikeConstants.ServerJsonKeys.TO];
                 if (eventGroupId != groupId)
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -601,7 +601,7 @@ namespace windows_client.View
                     cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
                     cm.GroupParticipant = HikeInstantiation.MSISDN;
                     JObject jo = new JObject();
-                    jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
+                    jo[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
                     cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
                     ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
                     if (cobj == null)
@@ -885,10 +885,10 @@ namespace windows_client.View
             JObject data = new JObject();
             data.Add(HikeConstants.MSISDNS, kickOutMsisdns);
             JObject jObj = new JObject();
-            jObj.Add(HikeConstants.TO, groupId);
-            jObj.Add(HikeConstants.FROM, HikeInstantiation.MSISDN);
-            jObj.Add(HikeConstants.DATA, data);
-            jObj.Add(HikeConstants.TYPE, "gck");
+            jObj.Add(HikeConstants.ServerJsonKeys.TO, groupId);
+            jObj.Add(HikeConstants.ServerJsonKeys.FROM, HikeInstantiation.MSISDN);
+            jObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            jObj.Add(HikeConstants.ServerJsonKeys.TYPE, "gck");
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
 
             //GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, gp_obj.Msisdn, groupId);
@@ -929,8 +929,8 @@ namespace windows_client.View
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
-                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.ServerJsonKeys.DATA] = data;
 
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
@@ -971,8 +971,8 @@ namespace windows_client.View
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
-                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                    obj[HikeConstants.ServerJsonKeys.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     if (gp.IsOnHike)
@@ -1041,12 +1041,12 @@ namespace windows_client.View
                 var ts = TimeUtils.getCurrentTimeStamp();
                 var smsString = AppResources.sms_invite_message;
 
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
 
                 if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
@@ -1055,7 +1055,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                    obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
                     HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                     SmsComposeTask smsComposeTask = new SmsComposeTask();

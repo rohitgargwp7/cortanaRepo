@@ -54,7 +54,7 @@ namespace windows_client.utils
             else if (stat == HikeConstants.OK)
             {
                 JToken dataToken, lastSeenToken;
-                obj.TryGetValue(HikeConstants.DATA, out dataToken);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out dataToken);
                 var jObj = JObject.Parse(dataToken.ToString());
                 jObj.TryGetValue(HikeConstants.LASTSEEN, out lastSeenToken);
 

@@ -620,10 +620,10 @@ namespace windows_client.View
             _isStatusUpdatesNotMute = !_isStatusUpdatesNotMute;
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, settingsValue);
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
@@ -816,8 +816,8 @@ namespace windows_client.View
             if (Utils.isGroupConversation(convObj.Msisdn))
             {
                 JObject jObj = new JObject();
-                jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
-                jObj[HikeConstants.TO] = convObj.Msisdn;
+                jObj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
+                jObj[HikeConstants.ServerJsonKeys.TO] = convObj.Msisdn;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
 
@@ -1784,7 +1784,7 @@ namespace windows_client.View
                 }
 
                 var message = (string)obj[HikeConstants.TEXT_UPDATE_MSG];
-                bool isCriticalUpdate = (bool)obj[HikeConstants.CRITICAL];
+                bool isCriticalUpdate = (bool)obj[HikeConstants.ServerJsonKeys.CRITICAL];
 
                 if (isCriticalUpdate)
                     showCriticalUpdateMessage(message);
@@ -1896,8 +1896,8 @@ namespace windows_client.View
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(convObj.Msisdn);
@@ -1966,8 +1966,8 @@ namespace windows_client.View
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 if (isContactListLoaded)
                 {
@@ -1995,18 +1995,18 @@ namespace windows_client.View
             JObject obj = new JObject();
             JObject o = new JObject();
             o["id"] = convObj.Msisdn;
-            obj[HikeConstants.DATA] = o;
+            obj[HikeConstants.ServerJsonKeys.DATA] = o;
 
             if (convObj.IsMute) // GC is muted , request to unmute
             {
-                obj[HikeConstants.TYPE] = "unmute";
+                obj[HikeConstants.ServerJsonKeys.TYPE] = "unmute";
                 HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn].MuteVal = -1;
                 ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
             else // GC is unmute , request to mute
             {
-                obj[HikeConstants.TYPE] = "mute";
+                obj[HikeConstants.ServerJsonKeys.TYPE] = "mute";
                 HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn].MuteVal = 0;
                 ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[convObj.Msisdn], convObj.Msisdn.Replace(":", "_"));
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
@@ -2170,8 +2170,8 @@ namespace windows_client.View
                 JObject data = new JObject();
                 data["id"] = convObj.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
@@ -2256,8 +2256,8 @@ namespace windows_client.View
                 JObject data = new JObject();
                 data["id"] = contactInfo.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                 ConversationListObject cObj = null;
                 if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
@@ -2563,8 +2563,8 @@ namespace windows_client.View
                 UpdateFriendsCounter(); JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(cObj);
@@ -2591,8 +2591,8 @@ namespace windows_client.View
                 JObject data = new JObject();
                 data["id"] = fObj.Msisdn;
                 JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
-                obj[HikeConstants.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 HikeInstantiation.ViewModel.StatusList.Remove(fObj);
                 HikeInstantiation.ViewModel.PendingRequests.Remove(fObj.Msisdn);
@@ -2783,7 +2783,7 @@ namespace windows_client.View
 
             ProTipCount = 0;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
@@ -3294,7 +3294,7 @@ namespace windows_client.View
         {
             //send qos 0 for toggling for stealth mode on server
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
+            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.HIDDEN_MODE_TYPE);
 
             JObject data = new JObject();
 
@@ -3303,7 +3303,7 @@ namespace windows_client.View
             else
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
 
-            hideObj.Add(HikeConstants.DATA, data);
+            hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
 
             Object[] objArr = new object[2];
             objArr[0] = hideObj;
@@ -3330,7 +3330,7 @@ namespace windows_client.View
                 }
 
                 JObject hideObj = new JObject();
-                hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+                hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.STEALTH);
 
                 JObject data = new JObject();
                 JArray msisdn = new JArray();
@@ -3341,7 +3341,7 @@ namespace windows_client.View
                 else
                     data.Add(HikeConstants.CHAT_DISABLED, msisdn);
 
-                hideObj.Add(HikeConstants.DATA, data);
+                hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
             }
         }
@@ -3827,12 +3827,12 @@ namespace windows_client.View
         void SendResetPacketToServer()
         {
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.STEALTH);
 
             JObject data = new JObject();
             data.Add(HikeConstants.RESET, true);
 
-            hideObj.Add(HikeConstants.DATA, data);
+            hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
 

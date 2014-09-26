@@ -62,14 +62,14 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
                 State.Remove(HikeConstants.LOCATION_SEARCH);
-                State.Remove(HikeConstants.ZOOM_LEVEL);
+                State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
             }
             else
             {
                 if (MyMap != null)
-                    State[HikeConstants.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    State[HikeConstants.ZOOM_LEVEL] = 16;
+                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = 16;
             }
 
             base.OnNavigatedFrom(e);
@@ -85,7 +85,7 @@ namespace windows_client.View
             _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
 
             if (HikeInstantiation.IsTombstoneLaunch)
-                MyMap.ZoomLevel = (double)State[HikeConstants.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
 
             if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
                 MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);

@@ -762,13 +762,13 @@ namespace windows_client.View
                 var ts = TimeUtils.getCurrentTimeStamp();
                 var smsString = AppResources.sms_invite_message;
 
-                obj[HikeConstants.TO] = toNum;
-                data[HikeConstants.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.TIMESTAMP] = ts;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
+                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
+                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
+                obj[HikeConstants.ServerJsonKeys.DATA] = data;
+                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
+                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
 
                 HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
@@ -792,8 +792,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             if (!HikeInstantiation.ViewModel.Isfavourite(msisdn))
@@ -1232,8 +1232,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SaveFavourites(cObj);
@@ -1251,8 +1251,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
-            obj[HikeConstants.DATA] = data;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+            obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
             spAddFriendInvite.Visibility = Visibility.Collapsed;

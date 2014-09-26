@@ -748,7 +748,7 @@ namespace windows_client.ViewModel
 
             contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.FWD_TO_MULTIPLE, contactsForForward.Count);
+            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.FWD_TO_MULTIPLE, contactsForForward.Count);
 
             if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
             {
@@ -895,12 +895,12 @@ namespace windows_client.ViewModel
         {
             HikePubSub mPubSub = HikeInstantiation.HikePubSubInstance;
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.TYPE, HikeConstants.STEALTH);
+            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.STEALTH);
             JObject data = new JObject();
             JArray msisdn = new JArray();
             msisdn.Add(cObj.Msisdn);
             data.Add(HikeConstants.CHAT_DISABLED, msisdn);
-            hideObj.Add(HikeConstants.DATA, data);
+            hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
 

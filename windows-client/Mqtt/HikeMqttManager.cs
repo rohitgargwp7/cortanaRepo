@@ -324,7 +324,7 @@ namespace windows_client.Mqtt
                 pbCB = new PublishCB(packet, this, qos, false);
 
             if (mqttConnection != null)
-                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+                mqttConnection.publish(this.topic + HikeConstants.ServerJsonKeys.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB, packet.MessageId > 0 ? (object)packet.MessageId : null);
         }
@@ -346,7 +346,7 @@ namespace windows_client.Mqtt
                 messagesToSend[i] = packets[i].Message;
             }
             if (mqttConnection != null)
-                mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+                mqttConnection.publish(this.topic + HikeConstants.ServerJsonKeys.PUBLISH_TOPIC,
                     messagesToSend, QoS.AT_LEAST_ONCE,
                     messageCallbacks, msgIds);
         }
@@ -355,13 +355,13 @@ namespace windows_client.Mqtt
         {
             bool appConnected = true;
             List<Topic> topics = new List<Topic>();
-            topics.Add(new Topic(this.topic + HikeConstants.APP_TOPIC, QoS.AT_LEAST_ONCE));
-            topics.Add(new Topic(this.topic + HikeConstants.SERVICE_TOPIC, QoS.AT_LEAST_ONCE));
+            topics.Add(new Topic(this.topic + HikeConstants.ServerJsonKeys.APP_TOPIC, QoS.AT_LEAST_ONCE));
+            topics.Add(new Topic(this.topic + HikeConstants.ServerJsonKeys.SERVICE_TOPIC, QoS.AT_LEAST_ONCE));
 
             /* only subscribe to UI events if the app is currently connected */
             if (appConnected)
             {
-                topics.Add(new Topic(this.topic + HikeConstants.UI_TOPIC, QoS.AT_LEAST_ONCE));
+                topics.Add(new Topic(this.topic + HikeConstants.ServerJsonKeys.UI_TOPIC, QoS.AT_LEAST_ONCE));
             }
 
             return topics.ToArray();
@@ -441,9 +441,9 @@ namespace windows_client.Mqtt
         public void mqttPublishToServer(JObject json, int qos)
         {
             JToken data;
-            json.TryGetValue(HikeConstants.TYPE, out data);
+            json.TryGetValue(HikeConstants.ServerJsonKeys.TYPE, out data);
             string objType = data.ToString();
-            json.TryGetValue(HikeConstants.DATA, out data);
+            json.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out data);
             JObject dataObj;
             long msgId;
 
@@ -468,9 +468,9 @@ namespace windows_client.Mqtt
         {
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
-            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
-            obj.Add(HikeConstants.STATUS, "fg");
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.ServerJsonKeys.STATUS, "fg");
             JObject data = new JObject();
 
             if (IsAppStarted)
@@ -478,7 +478,7 @@ namespace windows_client.Mqtt
             else
                 data.Add(HikeConstants.JUSTOPENED, false);
 
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
 
             Object[] objArr = new object[2];
             objArr[0] = obj;

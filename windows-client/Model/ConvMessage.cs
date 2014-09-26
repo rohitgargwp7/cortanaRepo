@@ -127,7 +127,7 @@ namespace windows_client.Model
             if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
                 return ParticipantInfoState.PIN_MESSAGE;
 
-            if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
+            if (obj.TryGetValue(HikeConstants.ServerJsonKeys.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
                 type = null;
@@ -139,7 +139,7 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
-                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out jt))
+                if (obj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
@@ -155,9 +155,9 @@ namespace windows_client.Model
             {
                 bool isRejoin = false;
                 JToken subtype;
-                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+                if (obj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out subtype))
                 {
-                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+                    isRejoin = HikeConstants.ServerJsonKeys.SUBTYPE_REJOIN == (string)subtype;
                 }
                 return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
@@ -1387,14 +1387,14 @@ namespace windows_client.Model
                 if (IsSent)
                 {
                     var metadataObject = JObject.Parse(MetaDataString);
-                    JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
+                    JArray files = metadataObject[HikeConstants.ServerJsonKeys.FILES_DATA].ToObject<JArray>();
                     JObject fileObject = files[0].ToObject<JObject>();
-                    return (String)fileObject[HikeConstants.LOCATION_TITLE];
+                    return (String)fileObject[HikeConstants.ServerJsonKeys.LOCATION_TITLE];
                 }
                 else
                 {
                     var metadataObject = JObject.Parse(MetaDataString);
-                    return (String)metadataObject[HikeConstants.LOCATION_TITLE];
+                    return (String)metadataObject[HikeConstants.ServerJsonKeys.LOCATION_TITLE];
                 }
             }
             catch
@@ -1413,14 +1413,14 @@ namespace windows_client.Model
                 if (IsSent)
                 {
                     var metadataObject = JObject.Parse(MetaDataString);
-                    JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
+                    JArray files = metadataObject[HikeConstants.ServerJsonKeys.FILES_DATA].ToObject<JArray>();
                     JObject fileObject = files[0].ToObject<JObject>();
-                    return (String)fileObject[HikeConstants.LOCATION_ADDRESS];
+                    return (String)fileObject[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS];
                 }
                 else
                 {
                     var metadataObject = JObject.Parse(MetaDataString);
-                    return (String)metadataObject[HikeConstants.LOCATION_ADDRESS];
+                    return (String)metadataObject[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS];
                 }
             }
             catch
@@ -1437,7 +1437,7 @@ namespace windows_client.Model
             try
             {
                 var timeObj = JObject.Parse(this.MetaDataString);
-                var seconds = Convert.ToInt64(timeObj[HikeConstants.FILE_PLAY_TIME].ToString());
+                var seconds = Convert.ToInt64(timeObj[HikeConstants.ServerJsonKeys.FILE_PLAY_TIME].ToString());
                 var durationTimeSpan = TimeSpan.FromSeconds(seconds);
                 return durationTimeSpan.ToString("mm\\:ss");
             }
@@ -1690,9 +1690,9 @@ namespace windows_client.Model
             JArray filesData;
             JObject singleFileInfo;
 
-            data[isHikeMsg ? HikeConstants.HIKE_MESSAGE : HikeConstants.SMS_MESSAGE] = _message;
-            data[HikeConstants.TIMESTAMP] = _timestamp;
-            data[HikeConstants.MESSAGE_ID] = _messageId;
+            data[isHikeMsg ? HikeConstants.ServerJsonKeys.HIKE_MESSAGE : HikeConstants.ServerJsonKeys.SMS_MESSAGE] = _message;
+            data[HikeConstants.ServerJsonKeys.TIMESTAMP] = _timestamp;
+            data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = _messageId;
 
             // Added stealth = true at data layer for convmessage for stealth chat
             if (HikeInstantiation.ViewModel != null && HikeInstantiation.ViewModel.ConvMap != null && HikeInstantiation.ViewModel.ConvMap.ContainsKey(Msisdn) && HikeInstantiation.ViewModel.ConvMap[Msisdn].IsHidden)
@@ -1712,20 +1712,20 @@ namespace windows_client.Model
                         else
                             singleFileInfo = new JObject();
 
-                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
-                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_SIZE] = FileAttachment.FileSize;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
                         {
                             var timeObj = JObject.Parse(this.MetaDataString);
-                            singleFileInfo[HikeConstants.FILE_PLAY_TIME] = timeObj[HikeConstants.FILE_PLAY_TIME];
+                            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_PLAY_TIME] = timeObj[HikeConstants.ServerJsonKeys.FILE_PLAY_TIME];
                         }
 
                         if (FileAttachment.Thumbnail != null)
-                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                     }
                     else
                     {
@@ -1745,19 +1745,19 @@ namespace windows_client.Model
                             singleFileInfo = JObject.Parse(this.MetaDataString);
                         }
 
-                        singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
-                        singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                        singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                        singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_SIZE] = FileAttachment.FileSize;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_KEY] = FileAttachment.FileKey;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_NAME] = FileAttachment.FileName;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.ServerJsonKeys.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.Thumbnail != null)
-                            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                     }
 
                     filesData.Add(singleFileInfo.ToObject<JToken>());
-                    metadata[HikeConstants.FILES_DATA] = filesData;
-                    data[HikeConstants.METADATA] = metadata;
+                    metadata[HikeConstants.ServerJsonKeys.FILES_DATA] = filesData;
+                    data[HikeConstants.ServerJsonKeys.METADATA] = metadata;
                 }
                 catch (Exception e) //Incase  of error receiver will see it as a normal text message with a link (same as sms user)
                 {                   //ideally code should never reach here.
@@ -1770,18 +1770,18 @@ namespace windows_client.Model
             }
             else if (metadataJsonString != null && metadataJsonString.Contains(HikeConstants.STICKER_ID))
             {
-                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
-                obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
+                data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
+                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = NetworkManager.STICKER;
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
             {
-                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
+                data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
             }
 
-            obj[HikeConstants.TO] = _msisdn;
-            obj[HikeConstants.DATA] = data;
+            obj[HikeConstants.ServerJsonKeys.TO] = _msisdn;
+            obj[HikeConstants.ServerJsonKeys.DATA] = data;
 
-            obj[HikeConstants.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
 
             return obj;
         }
@@ -1940,9 +1940,9 @@ namespace windows_client.Model
             try
             {
                 ids.Add(Convert.ToString(_mappedMessageId));
-                obj.Add(HikeConstants.DATA, ids);
-                obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.TO, _msisdn);
+                obj.Add(HikeConstants.ServerJsonKeys.DATA, ids);
+                obj.Add(HikeConstants.ServerJsonKeys.TYPE, NetworkManager.MESSAGE_READ);
+                obj.Add(HikeConstants.ServerJsonKeys.TO, _msisdn);
             }
             catch (Exception ex)
             {
@@ -1962,13 +1962,13 @@ namespace windows_client.Model
                 bool isFileTransfer;
                 JObject metadataObject = null;
                 JToken val = null;
-                obj.TryGetValue(HikeConstants.TO, out val);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.TO, out val);
                 string messageText = String.Empty;
 
                 JToken metadataToken = null;
                 try
                 {
-                    obj[HikeConstants.DATA].ToObject<JObject>().TryGetValue(HikeConstants.METADATA, out metadataToken);
+                    obj[HikeConstants.ServerJsonKeys.DATA].ToObject<JObject>().TryGetValue(HikeConstants.ServerJsonKeys.METADATA, out metadataToken);
                 }
                 catch (Exception ex)
                 {
@@ -1979,10 +1979,10 @@ namespace windows_client.Model
                 {
                     metadataObject = JObject.FromObject(metadataToken);
                     JToken filesToken = null;
-                    isFileTransfer = metadataObject.TryGetValue(HikeConstants.FILES_DATA, out filesToken);
+                    isFileTransfer = metadataObject.TryGetValue(HikeConstants.ServerJsonKeys.FILES_DATA, out filesToken);
                     if (isFileTransfer)
                     {
-                        JArray files = metadataObject[HikeConstants.FILES_DATA].ToObject<JArray>();
+                        JArray files = metadataObject[HikeConstants.ServerJsonKeys.FILES_DATA].ToObject<JArray>();
                         JObject fileObject = files[0].ToObject<JObject>();
 
                         JToken fileName;
@@ -1993,8 +1993,8 @@ namespace windows_client.Model
 
                         int fs = 0;
 
-                        fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
-                        fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+                        fileObject.TryGetValue(HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE, out contentType);
+                        fileObject.TryGetValue(HikeConstants.ServerJsonKeys.FILE_NAME, out fileName);
 
                         // These two conditions check for empty filename received on json packet. This bug was mainly occured on packets received from Android devices
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
@@ -2006,17 +2006,17 @@ namespace windows_client.Model
                         {
                             if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                             {
-                                fileObject.TryGetValue(HikeConstants.CS_NAME, out fileName);
+                                fileObject.TryGetValue(HikeConstants.ServerJsonKeys.CS_NAME, out fileName);
 
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                     fileName = AppResources.ContactTransfer_Text;
                             }
                         }
 
-                        fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
-                        fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                        fileObject.TryGetValue(HikeConstants.ServerJsonKeys.FILE_KEY, out fileKey);
+                        fileObject.TryGetValue(HikeConstants.ServerJsonKeys.FILE_THUMBNAIL, out thumbnail);
 
-                        if (fileObject.TryGetValue(HikeConstants.FILE_SIZE, out fileSize))
+                        if (fileObject.TryGetValue(HikeConstants.ServerJsonKeys.FILE_SIZE, out fileSize))
                             fs = Convert.ToInt32(fileSize.ToString());
 
                         this.HasAttachment = true;
@@ -2031,11 +2031,11 @@ namespace windows_client.Model
                         contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
 
                             JObject locationFile = new JObject();
-                            locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
-                            locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
-                            locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
-                            locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
-                            locationFile[HikeConstants.LOCATION_TITLE] = fileObject[HikeConstants.LOCATION_TITLE];
+                            locationFile[HikeConstants.ServerJsonKeys.LATITUDE] = fileObject[HikeConstants.ServerJsonKeys.LATITUDE];
+                            locationFile[HikeConstants.ServerJsonKeys.LONGITUDE] = fileObject[HikeConstants.ServerJsonKeys.LONGITUDE];
+                            locationFile[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = fileObject[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
+                            locationFile[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS] = fileObject[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS];
+                            locationFile[HikeConstants.ServerJsonKeys.LOCATION_TITLE] = fileObject[HikeConstants.ServerJsonKeys.LOCATION_TITLE];
 
                             this.MetaDataString = locationFile.ToString(Newtonsoft.Json.Formatting.None); // store location data in metadata
                         }
@@ -2060,18 +2060,18 @@ namespace windows_client.Model
                 if (val != null) // represents group message
                 {
                     _msisdn = val.ToString();
-                    _groupParticipant = (string)obj[HikeConstants.FROM];
+                    _groupParticipant = (string)obj[HikeConstants.ServerJsonKeys.FROM];
                 }
                 else
                 {
-                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client or system msg*/
+                    _msisdn = (string)obj[HikeConstants.ServerJsonKeys.FROM]; /*represents msg is coming from another client or system msg*/
                     _groupParticipant = null;
                 }
 
-                JObject data = (JObject)obj[HikeConstants.DATA];
+                JObject data = (JObject)obj[HikeConstants.ServerJsonKeys.DATA];
                 JToken msg;
 
-                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg)) // if sms 
+                if (data.TryGetValue(HikeConstants.ServerJsonKeys.SMS_MESSAGE, out msg)) // if sms 
                 {
                     _message = msg.ToString();
                     _isSms = true;
@@ -2100,7 +2100,7 @@ namespace windows_client.Model
                         if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
                             _message = AppResources.SMS_Works_Only_In_India_Txt;
                         else
-                            _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                            _message = (string)data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE];
                     }
 
                 }
@@ -2110,13 +2110,13 @@ namespace windows_client.Model
                 }
                 JToken isSticker;
                 JToken stickerJson;
-                if (obj.TryGetValue(HikeConstants.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.METADATA, out stickerJson))
+                if (obj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out isSticker) && data.TryGetValue(HikeConstants.ServerJsonKeys.METADATA, out stickerJson))
                 {
                     metadataJsonString = stickerJson.ToString(Newtonsoft.Json.Formatting.None); // metadata for stickers
                     _message = AppResources.Sticker_Txt;
                 }
 
-                long serverTimeStamp = (long)data[HikeConstants.TIMESTAMP];
+                long serverTimeStamp = (long)data[HikeConstants.ServerJsonKeys.TIMESTAMP];
 
                 long timedifference;
                 if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
@@ -2132,7 +2132,7 @@ namespace windows_client.Model
                 /* if we're deserialized an object from json, it's always unread */
                 this.MessageStatus = State.RECEIVED_UNREAD;
                 this._messageId = -1;
-                string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
+                string mappedMsgID = (string)data[HikeConstants.ServerJsonKeys.MESSAGE_ID];
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
             }
             catch (Exception ex)
@@ -2155,26 +2155,26 @@ namespace windows_client.Model
         public ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater)
         {
             // If the message is a group message we get a TO field consisting of the Group ID
-            string toVal = obj[HikeConstants.TO].ToString();
-            this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
-            this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
+            string toVal = obj[HikeConstants.ServerJsonKeys.TO].ToString();
+            this._msisdn = (toVal != null) ? (string)obj[HikeConstants.ServerJsonKeys.TO] : (string)obj[HikeConstants.ServerJsonKeys.FROM]; /*represents msg is coming from another client*/
+            this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.ServerJsonKeys.FROM] : null;
 
             JObject metaDataObj = new JObject();
 
             JToken type;
-            if (obj.TryGetValue(HikeConstants.TYPE, out type))
-                metaDataObj.Add(HikeConstants.TYPE, type);
+            if (obj.TryGetValue(HikeConstants.ServerJsonKeys.TYPE, out type))
+                metaDataObj.Add(HikeConstants.ServerJsonKeys.TYPE, type);
 
             JToken subType;
-            if (obj.TryGetValue(HikeConstants.SUB_TYPE, out subType))
-                metaDataObj.Add(HikeConstants.SUB_TYPE, subType);
+            if (obj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out subType))
+                metaDataObj.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, subType);
 
             this.participantInfoState = fromJSON(metaDataObj);
             this.metadataJsonString = metaDataObj.ToString(Newtonsoft.Json.Formatting.None);
 
             if (this.participantInfoState == ParticipantInfoState.MEMBERS_JOINED || this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                JArray arr = (JArray)obj[HikeConstants.DATA];
+                JArray arr = (JArray)obj[HikeConstants.ServerJsonKeys.DATA];
                 List<GroupParticipant> addedMembers = null;
                 for (int i = 0; i < arr.Count; i++)
                 {
@@ -2234,7 +2234,7 @@ namespace windows_client.Model
             }
             else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
             {
-                this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
+                this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.ServerJsonKeys.DATA] : null;
                 GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
                 this._message = String.Format(AppResources.USER_LEFT, gp.FirstName);
                 gp.HasLeft = true;
@@ -2273,7 +2273,7 @@ namespace windows_client.Model
             {
                 JObject contactInfo = JObject.Parse(metadataJsonString);
                 JToken jt;
-                if (contactInfo.TryGetValue(HikeConstants.CS_NAME, out jt) && jt != null)
+                if (contactInfo.TryGetValue(HikeConstants.ServerJsonKeys.CS_NAME, out jt) && jt != null)
                     name = jt.ToString();
             }
 
@@ -2339,7 +2339,7 @@ namespace windows_client.Model
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
-                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     JToken val;
 
                     // this is to handle profile pic update
@@ -2355,9 +2355,9 @@ namespace windows_client.Model
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_NAME_CHANGE:
-                    grpId = (string)jsonObj[HikeConstants.TO];
-                    from = (string)jsonObj[HikeConstants.FROM];
-                    string grpName = (string)jsonObj[HikeConstants.DATA];
+                    grpId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                    from = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
+                    string grpName = (string)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     if (from == HikeInstantiation.MSISDN)
@@ -2372,18 +2372,18 @@ namespace windows_client.Model
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_PIC_CHANGED:
-                    grpId = (string)jsonObj[HikeConstants.TO];
-                    from = (string)jsonObj[HikeConstants.FROM];
+                    grpId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                    from = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     gp = GroupManager.Instance.GetGroupParticipant(null, from, grpId);
                     this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
-                    jsonObj.Remove(HikeConstants.DATA);
+                    jsonObj.Remove(HikeConstants.ServerJsonKeys.DATA);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.CHAT_BACKGROUND_CHANGED:
-                    grpId = (string)jsonObj[HikeConstants.TO];
-                    from = (string)jsonObj[HikeConstants.FROM];
+                    grpId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                    from = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     if (from == HikeInstantiation.MSISDN)
@@ -2396,8 +2396,8 @@ namespace windows_client.Model
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED:
-                    grpId = (string)jsonObj[HikeConstants.TO];
-                    from = (string)jsonObj[HikeConstants.FROM];
+                    grpId = (string)jsonObj[HikeConstants.ServerJsonKeys.TO];
+                    from = (string)jsonObj[HikeConstants.ServerJsonKeys.FROM];
                     this._groupParticipant = from;
                     this._msisdn = grpId;
                     if (from == HikeInstantiation.MSISDN)

@@ -158,7 +158,7 @@ namespace windows_client.View
                         convMessage.GroupMemberName = gp.FirstName;
                     }
 
-                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.ServerJsonKeys.LONG_MESSAGE))
                     {
                         string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
 

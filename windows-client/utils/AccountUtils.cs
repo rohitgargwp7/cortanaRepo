@@ -494,14 +494,14 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
-                    data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
-                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
-                    data[HikeConstants.APPVERSION] = Utils.getAppVersion();
-                    data[HikeConstants.OS_NAME] = "win8";
-                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
+                    data[HikeConstants.ServerJsonKeys.DEVICE_ID] = Utils.getHashedDeviceId();
+                    data[HikeConstants.ServerJsonKeys.DEVICE_VERSION] = Utils.getDeviceModel();
+                    data[HikeConstants.ServerJsonKeys.APPVERSION] = Utils.getAppVersion();
+                    data[HikeConstants.ServerJsonKeys.OS_NAME] = "win8";
+                    data[HikeConstants.ServerJsonKeys.OS_VERSION] = Utils.getOSVersion();
                     string inviteToken = String.Empty;
                     if (!string.IsNullOrEmpty(inviteToken))
-                        data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;
+                        data[HikeConstants.ServerJsonKeys.INVITE_TOKEN_KEY] = inviteToken;
                     if (pin != null)
                     {
                         data.Add("msisdn", unAuthMSISDN);
@@ -616,17 +616,17 @@ namespace windows_client.utils
                     string uri = (string)vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("dev_token", uri);
-                    data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
+                    data.Add(HikeConstants.ServerJsonKeys.DEVICE_TYPE_KEY, "windows");
                     break;
                 #endregion
                 #region POST INFO ON APP UPDATE
                 case RequestType.POST_INFO_ON_APP_UPDATE:
                     finalCallbackFunction = vars[2] as postResponseFunction;
-                    data[HikeConstants.OS_NAME] = "win8";
-                    data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
-                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
-                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
-                    data[HikeConstants.DEVICE_TYPE_KEY] = "windows";
+                    data[HikeConstants.ServerJsonKeys.OS_NAME] = "win8";
+                    data[HikeConstants.ServerJsonKeys.OS_VERSION] = Utils.getOSVersion();
+                    data[HikeConstants.ServerJsonKeys.DEVICE_VERSION] = Utils.getDeviceModel();
+                    data[HikeConstants.ServerJsonKeys.APP_VERSION] = Utils.getAppVersion();
+                    data[HikeConstants.ServerJsonKeys.DEVICE_TYPE_KEY] = "windows";
                     break;
                 #endregion
                 #region POST STATUS
@@ -649,7 +649,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[4] as parametrisedPostResponseFunction;
                     obj = vars[5];
                     data.Add("dev_token", push_token);
-                    data.Add(HikeConstants.DEVICE_TYPE_KEY, "windows");
+                    data.Add(HikeConstants.ServerJsonKeys.DEVICE_TYPE_KEY, "windows");
                     data.Add(HikeConstants.PREVIEW, on_off);
                     break;
                 #endregion

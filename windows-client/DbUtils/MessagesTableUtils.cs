@@ -404,10 +404,10 @@ namespace windows_client.DbUtils
                 {
                     JObject metaData = new JObject();
 
-                    if (obj.MetaData == null || obj.MetaData.Value<long>(HikeConstants.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
+                    if (obj.MetaData == null || obj.MetaData.Value<long>(HikeConstants.ServerJsonKeys.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
-                        metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
+                        metaData[HikeConstants.ServerJsonKeys.TIMESTAMP] = convMsg.Timestamp;
                         metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
                     }
 

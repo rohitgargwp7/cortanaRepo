@@ -166,10 +166,10 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, (byte)1);
             JObject obj = new JObject();
 
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, 0);
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
@@ -184,10 +184,10 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, (byte)0);
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, -1);
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
@@ -199,10 +199,10 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.STATUS_UPDATE_SETTING, (byte)(listBoxStatusSettings.SelectedIndex + 1));
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.PUSH_SU, listBoxStatusSettings.SelectedIndex);
-            obj.Add(HikeConstants.DATA, data);
+            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 

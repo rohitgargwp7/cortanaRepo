@@ -97,13 +97,13 @@ namespace windows_client.Model
             metadataObject.Add(HikeConstants.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
-            dataObj.Add(HikeConstants.METADATA, metadataObject);
-            dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
-            dataObj.Add(HikeConstants.SUB_TYPE, HikeConstants.ST_UI_EVENT);
+            dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);
+            dataObj.Add(HikeConstants.ServerJsonKeys.TAG, HikeConstants.ServerJsonKeys.TAG_MOBILE);
+            dataObj.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, HikeConstants.ServerJsonKeys.ST_UI_EVENT);
 
             JObject analyticObj = new JObject();
-            analyticObj.Add(HikeConstants.DATA, dataObj);
-            analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            analyticObj.Add(HikeConstants.ServerJsonKeys.DATA, dataObj);
+            analyticObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
@@ -123,13 +123,13 @@ namespace windows_client.Model
             metadataObject.Add(HikeConstants.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
-            dataObj.Add(HikeConstants.METADATA, metadataObject);
-            dataObj.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
-            dataObj.Add(HikeConstants.SUB_TYPE, eventType);
+            dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);
+            dataObj.Add(HikeConstants.ServerJsonKeys.TAG, HikeConstants.ServerJsonKeys.TAG_MOBILE);
+            dataObj.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, eventType);
 
             JObject analyticObj = new JObject();
-            analyticObj.Add(HikeConstants.DATA, dataObj);
-            analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
+            analyticObj.Add(HikeConstants.ServerJsonKeys.DATA, dataObj);
+            analyticObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
@@ -150,13 +150,13 @@ namespace windows_client.Model
             analyticsJson.Add(key, value);
 
             JObject data = new JObject();
-            data.Add(HikeConstants.METADATA, analyticsJson);
-            data.Add(HikeConstants.SUB_TYPE, eventType);
-            data[HikeConstants.TAG] = HikeConstants.TAG_MOBILE;
+            data.Add(HikeConstants.ServerJsonKeys.METADATA, analyticsJson);
+            data.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, eventType);
+            data[HikeConstants.ServerJsonKeys.TAG] = HikeConstants.ServerJsonKeys.TAG_MOBILE;
 
             JObject jsonObj = new JObject();
-            jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
-            jsonObj.Add(HikeConstants.DATA, data);
+            jsonObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
+            jsonObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
