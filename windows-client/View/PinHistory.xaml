@@ -38,12 +38,12 @@
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource PinHistoryContainerStyle}">
-                            <Grid Background="#FFF38F" Margin="0,0" HorizontalAlignment="Stretch">
+                            <Grid Background="#f6ea8a" Margin="0,0" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Rectangle Width="10"  Fill="Brown" Margin="0,0,10,0" />
+                                <Rectangle Width="20"  Fill="#e4be60" Margin="0,0,10,0" />
                                 <Grid Grid.Column="1" Margin="0,10">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
