@@ -2314,12 +2314,15 @@ Download it like asap from http://hike.in!</value>
     <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
   </data>
-
   <data name="Pin_Empty_Msg" xml:space="preserve">
     <value>Pin Can't be Empty</value>
     <comment>Text when user tries to create empty pin</comment>
   </data>
   <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
     <value>Unable to upload file</value>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>Posted a Pin </value>
+    <comment>shared pin text for email conversation</comment>
   </data>
 </root>

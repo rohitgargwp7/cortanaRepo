@@ -1624,6 +1624,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Posted a Pin .
+        /// </summary>
+        public static string EmailConv_PostedPin_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_PostedPin_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shared an AUDIO.
         /// </summary>
         public static string EmailConv_SharedAudio_Txt {
