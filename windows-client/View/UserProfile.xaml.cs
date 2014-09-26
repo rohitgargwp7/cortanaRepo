@@ -326,7 +326,7 @@ namespace windows_client.View
                     InitSelfProfile();
 
                     #region SET PROFILE PIC
-                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SET_PROFILE_PIC))
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SET_PROFILE_PIC))
                     {
                         try
                         {
@@ -336,7 +336,7 @@ namespace windows_client.View
                         {
                             Debug.WriteLine("UserProfile.xaml :: changePhotoAppBarButton_Click, Exception : " + ex.StackTrace);
                         }
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.SET_PROFILE_PIC);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SET_PROFILE_PIC);
                     }
                     #endregion
                 }
@@ -729,7 +729,7 @@ namespace windows_client.View
             string[] statusImageInfo = new string[2];
             statusImageInfo[0] = statusUpdate.Msisdn;
             statusImageInfo[1] = statusUpdate.ServerId;
-            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
@@ -864,7 +864,7 @@ namespace windows_client.View
                 return;
 
             if (co != null)
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = co;
             else
             {
                 ContactInfo contactInfo = null;
@@ -881,7 +881,7 @@ namespace windows_client.View
                     contactInfo = new ContactInfo();
                     contactInfo.Msisdn = msisdn;
                 }
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = contactInfo;
             }
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));

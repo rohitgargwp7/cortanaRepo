@@ -143,7 +143,7 @@ namespace windows_client.View
             {
                 listSelectedItems.Add(picture);
             }
-            PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = listSelectedItems;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.MULTIPLE_IMAGES] = listSelectedItems;
 
             NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
         }
@@ -277,7 +277,7 @@ namespace windows_client.View
             if (fe != null)
             {
                 PhotoItem picture = fe.DataContext as PhotoItem;
-                PhoneApplicationService.Current.State[HikeConstants.MULTIPLE_IMAGES] = new List<PhotoItem>() { picture };
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.MULTIPLE_IMAGES] = new List<PhotoItem>() { picture };
                 NavigationService.Navigate(new Uri("/View/PreviewImages.xaml", UriKind.RelativeOrAbsolute));
             }
         }
@@ -298,7 +298,7 @@ namespace windows_client.View
 
             Object obj;
             //clear multiselect list and update selected items so that if user deleted some items it can be updated
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.MULTIPLE_IMAGES, out obj))
             {
                 List<PhotoItem> listSelectedItems = (List<PhotoItem>)obj;
                 LongListMultiSelector lls = isSingleListSelected ? llsAllPhotos : llsPhotos;
@@ -310,7 +310,7 @@ namespace windows_client.View
                     if (container != null)
                         container.IsSelected = true;
                 }
-                PhoneApplicationService.Current.State.Remove(HikeConstants.MULTIPLE_IMAGES);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.MULTIPLE_IMAGES);
             }
         }
 

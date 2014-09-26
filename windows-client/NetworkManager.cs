@@ -714,7 +714,7 @@ namespace windows_client
                                                 {
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, (string)(socialJToken as JObject)["id"]);
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, (string)(socialJToken as JObject)["token"]);
-                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TW_LOGGED_IN, true);
                                                 }
                                                 socialJToken = null;
                                                 socialObj.TryGetValue(HikeConstants.FACEBOOK, out socialJToken);
@@ -722,7 +722,7 @@ namespace windows_client
                                                 {
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, (string)(socialJToken as JObject)["id"]);
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, (string)(socialJToken as JObject)["token"]);
-                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_LOGGED_IN, true);
                                                 }
                                             }
 

@@ -205,7 +205,7 @@ namespace windows_client.utils
         {
             #region Hidden Mode
             if (IsNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
-                WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+                WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
@@ -350,7 +350,7 @@ namespace windows_client.utils
                 else // new install case
                 {
                     convList = null;
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
                 }
 
                 if (convList == null || convList.Count == 0)
@@ -364,7 +364,7 @@ namespace windows_client.utils
                     {
                         AppSettings[HikeConstants.AppSettings.APP_UPDATE_POSTPENDING] = true;
                         AppSettings[HikeConstants.AppSettings.NEW_UPDATE] = true;
-                        WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
+                        WriteToIsoStorageSettings(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
@@ -407,7 +407,7 @@ namespace windows_client.utils
             #endregion
             #region CHAT_FTUE
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
-                RemoveKeyFromAppSettings(HikeConstants.SHOW_CHAT_FTUE);
+                RemoveKeyFromAppSettings(HikeConstants.AppSettings.SHOW_CHAT_FTUE);
             #endregion
             #region Enter to send
 
@@ -440,7 +440,7 @@ namespace windows_client.utils
         private static List<ConversationListObject> GetConversations()
         {
             List<ConversationListObject> convList = null;
-            AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            AppSettings.TryGetValue<string>(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, out _currentVersion);
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
 

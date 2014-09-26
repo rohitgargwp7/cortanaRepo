@@ -62,16 +62,16 @@ namespace windows_client.View
                 moodListBox.ItemsSource = MoodsInitialiser.Instance.MoodList;
                 isFirstLoad = false;
             }
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE)) // shows page is navigated from social page
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FROM_SOCIAL_PAGE);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE);
 
                 object oo;
                 FreeSMS.SocialState ss = FreeSMS.SocialState.DEFAULT;
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL_STATE, out oo))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.SOCIAL_STATE, out oo))
                 {
                     ss = (FreeSMS.SocialState)oo;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL_STATE);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SOCIAL_STATE);
                 }
                 switch (ss)
                 {
@@ -333,14 +333,14 @@ namespace windows_client.View
         {
             if (!isFacebookPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.FB_LOGGED_IN)) // already logged in
                 {
                     fbButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isFacebookPost = true;
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.FACEBOOK;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -355,7 +355,7 @@ namespace windows_client.View
         {
             if (!isTwitterPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.TW_LOGGED_IN)) // already logged in
                 {
                     twitterButton.Style = (Style)App.Current.Resources["YesButtonStyle"];
                     isTwitterPost = true;
@@ -366,7 +366,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.TWITTER;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }

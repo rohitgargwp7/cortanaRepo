@@ -104,8 +104,8 @@ namespace windows_client
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             // Activate hidden mode when app is launched if setting is true.
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
-                HikeInstantiation.AppSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -124,7 +124,7 @@ namespace windows_client
                 }
 
                 string currentVersion = string.Empty;
-                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, out currentVersion))
                     HikeInstantiation.CurrentVersion = currentVersion;
 
                 HikeInstantiation.InstantiateClasses(false);
@@ -310,7 +310,7 @@ namespace windows_client
 
             // this will get the current version installed already in "_currentVersion"
             string currentVersion;
-            if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+            if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, out currentVersion))
                 HikeInstantiation.CurrentVersion = currentVersion;
 
             HikeInstantiation.LatestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to

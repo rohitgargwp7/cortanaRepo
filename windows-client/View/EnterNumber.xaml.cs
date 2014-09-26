@@ -385,9 +385,9 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.COUNTRY_SELECTED))
             {
-                countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED];
+                countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.COUNTRY_SELECTED];
             }
             else
             {
@@ -454,7 +454,7 @@ namespace windows_client
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
-            PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED] = countryCode;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.COUNTRY_SELECTED] = countryCode;
 
             if (!uri.Contains("View"))
             {

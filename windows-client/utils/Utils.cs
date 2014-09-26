@@ -585,7 +585,7 @@ namespace windows_client.utils
         public static bool ShowNotificationAlert()
         {
             long lastNotificationTime = 0;
-            appSettings.TryGetValue(HikeConstants.LAST_NOTIFICATION_TIME, out lastNotificationTime);
+            appSettings.TryGetValue(HikeConstants.AppSettings.LAST_NOTIFICATION_TIME, out lastNotificationTime);
 
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }

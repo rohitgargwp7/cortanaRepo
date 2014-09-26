@@ -77,7 +77,7 @@ namespace windows_client.View
 
             HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.SMS_SETTING, out _smsCredits);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SHARE_CONTACT))
             {
                 _isContactShared = true;
                 PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
@@ -957,7 +957,7 @@ namespace windows_client.View
             }
             else
             {
-                PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.CONTACT_SELECTED] = contact;
                 NavigationService.GoBack();
             }
         }
@@ -1051,7 +1051,7 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SHARE_CONTACT);
             base.OnRemovedFromJournal(e);
         }
 

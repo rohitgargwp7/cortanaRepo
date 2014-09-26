@@ -253,7 +253,7 @@ namespace windows_client.ViewModel
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.BLACK_THEME))
                 IsDarkMode = true;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
 
@@ -263,7 +263,7 @@ namespace windows_client.ViewModel
         public void LoadCurrentLocation()
         {
 
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 
@@ -287,7 +287,7 @@ namespace windows_client.ViewModel
                         var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
                         var newCoordinate = new GeoCoordinate(latitutde, longitute);
 
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, newCoordinate);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
                     catch (Exception ex)
                     {
@@ -743,18 +743,18 @@ namespace windows_client.ViewModel
 
         public void ForwardMessage(List<ContactInfo> contactsForForward)
         {
-            if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+            if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.FORWARD_MSG))
                 return;
 
             contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
 
             Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.FWD_TO_MULTIPLE, contactsForForward.Count);
 
-            if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
+            if (PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] is string)
             {
                 foreach (var contact in contactsForForward)
                 {
-                    var msg = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    var msg = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG];
 
                     var msisdn = contact.Msisdn;
                     ConvMessage convMessage = new ConvMessage(msg, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
@@ -767,9 +767,9 @@ namespace windows_client.ViewModel
                     HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                 }
             }
-            else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+            else if (PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] is object[])
             {
-                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG];
                 if (attachmentData.Length == 1)
                 {
                     foreach (var contact in contactsForForward)
@@ -842,7 +842,7 @@ namespace windows_client.ViewModel
                     }
                 }
 
-                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.FORWARD_MSG);
             }
         }
 
@@ -1072,8 +1072,8 @@ namespace windows_client.ViewModel
             if (co.IsHidden && !IsHiddenModeActive)
                 return;
 
-            PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IS_CHAT_RELAUNCH] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = co;
             string uri = "/View/NewChatThread.xaml?" + msisdn;
 
             App page = (App)Application.Current;
@@ -1115,7 +1115,7 @@ namespace windows_client.ViewModel
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED);
         }
 
         /// <summary>
@@ -1126,9 +1126,9 @@ namespace windows_client.ViewModel
             IsHiddenModeActive = !IsHiddenModeActive;
 
             if (IsHiddenModeActive)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_ACTIVATED, true);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED, true);
             else
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_ACTIVATED);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED);
 
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();

@@ -218,7 +218,7 @@ namespace windows_client.View
                 return;
             }
             // if group name is changed
-            if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
+            if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD])
             {
                 MessageBoxResult result = MessageBox.Show(string.Format(AppResources.GroupInfo_GrpNameChangedTo_Txt, this.groupNameTxtBox.Text), AppResources.GroupInfo_ChangeGrpName_Txt, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
@@ -236,7 +236,7 @@ namespace windows_client.View
                 else
                 {
                     saveIconButton.IsEnabled = false;
-                    this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                    this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD];
                 }
             }
         }
@@ -265,7 +265,7 @@ namespace windows_client.View
 
         void addIconButton_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = GroupManager.Instance.GetActiveGroupParticiants(groupId);
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.EXISTING_GROUP_MEMBERS] = GroupManager.Instance.GetActiveGroupParticiants(groupId);
             PhoneApplicationService.Current.State["Group_GroupId"] = groupId;
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
@@ -280,8 +280,8 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             removeListeners();
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_ID_FROM_CHATTHREAD);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD);
             base.OnRemovedFromJournal(e);
         }
 
@@ -290,7 +290,7 @@ namespace windows_client.View
             if (ApplicationBar == editGroupNameAppBar)
             {
                 this.Focus();
-                groupNameTextBlock.Text = groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                groupNameTextBlock.Text = groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD];
                 HideTextBox();
                 ApplicationBar = appBar;
                 e.Cancel = true;
@@ -313,8 +313,8 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
-            groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
+            groupId = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_ID_FROM_CHATTHREAD] as string;
+            groupName = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] as string;
 
             gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
@@ -464,7 +464,7 @@ namespace windows_client.View
                     groupName = HikeInstantiation.ViewModel.ConvMap[groupId].NameToShow;
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
                     groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
-                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
             #endregion
@@ -493,7 +493,7 @@ namespace windows_client.View
                     groupNameTxtBox.Text = groupNameTextBlock.Text = groupName;
 
                     groupData.Text = String.Format(AppResources.People_In_Group, _participantList[0].Count() + _participantList[1].Count);
-                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
             #endregion
@@ -640,7 +640,7 @@ namespace windows_client.View
             {
                 //db and ui would be updated after server sends group name change packet 
                 isgroupNameSelfChanged = true;
-                PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupNameTextBlock.Text = groupName;
@@ -653,8 +653,8 @@ namespace windows_client.View
             }
             else
             {
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_NAME_FROM_CHATTHREAD))
-                    groupName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD))
+                    groupName = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD];
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

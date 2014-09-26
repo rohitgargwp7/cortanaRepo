@@ -107,7 +107,7 @@ namespace windows_client.View
         {
             this.locationToggle.Content = AppResources.Off;
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.USE_LOCATION_SETTING, false);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.LOCATION_DEVICE_COORDINATE);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.LOCATION_DEVICE_COORDINATE);
         }
         private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
         {

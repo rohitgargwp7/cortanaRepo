@@ -54,7 +54,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
 
-            PhoneApplicationService.Current.State.Remove(HikeConstants.LOCATION_MAP_COORDINATE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE);
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -82,7 +82,7 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.LOCATION_MAP_COORDINATE] as GeoCoordinate;
+            _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] as GeoCoordinate;
 
             if (HikeInstantiation.IsTombstoneLaunch)
                 MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];

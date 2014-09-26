@@ -28,14 +28,14 @@ namespace windows_client.View
             this.lastSeenTimeStampToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
             value = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
 
-            value = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
+            value = HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
             activateHiddenModeOnExitToggle.IsChecked = value;
             this.activateHiddenModeOnExitToggle.Content = value ? AppResources.On : AppResources.Off;
         }
@@ -89,13 +89,13 @@ namespace windows_client.View
         private void hideChatOnExitToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.On;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
         }
 
         private void hideChatOnExitToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.Off;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.ACTIVATE_HIDDEN_MODE_ON_EXIT);
         }
 
         #region Hidden Mode Settings
@@ -104,7 +104,7 @@ namespace windows_client.View
         {
             Analytics.SendClickEvent(HikeConstants.ANALYTICS_INIT_RESET_HIDDEN_MODE);
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
             HikeInstantiation.ViewModel.ResetHiddenModeTapped();
 
             while (NavigationService.BackStack.Count() > 1)
@@ -129,7 +129,7 @@ namespace windows_client.View
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string password;
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD, out password))
             {
                 HikeInstantiation.ViewModel.Password = password;
                 passwordOverlay.Text = AppResources.Enter_Current_Pwd_Txt;
@@ -166,7 +166,7 @@ namespace windows_client.View
 
                         _tempPassword = null;
                         HikeInstantiation.ViewModel.Password = popup.Password;
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
                     }
                     else
                         MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);

@@ -80,7 +80,7 @@ namespace windows_client.View
         {
             bool defaultSelected = true;
             Object obj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.MULTIPLE_IMAGES, out obj))
             {
                 List<PhotoItem> listSelectedPic = (List<PhotoItem>)obj;
                 foreach (PhotoItem photo in listSelectedPic)
@@ -150,7 +150,7 @@ namespace windows_client.View
         void deleteIcon_Click(object sender, EventArgs e)
         {
             Object obj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.MULTIPLE_IMAGES, out obj))
             {
                 //update counter so that header text can be updated
                 totalCount--;

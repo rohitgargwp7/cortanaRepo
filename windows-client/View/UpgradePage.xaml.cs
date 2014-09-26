@@ -65,7 +65,7 @@ namespace windows_client.View
             App.AppInitialize();
 
             // Upgrade complete, write the current version
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
 
             ManageNavigation();
         }

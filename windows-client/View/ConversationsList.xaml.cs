@@ -94,7 +94,7 @@ namespace windows_client.View
             _refreshBarCount = StatusMsgsTable.GetUnreadCount(HikeConstants.REFRESH_BAR);
             _unreadFriendRequests = StatusMsgsTable.GetUnreadCount(HikeConstants.UNREAD_FRIEND_REQUESTS);
             setNotificationCounter(RefreshBarCount + UnreadFriendRequests + ProTipCount);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.PHONE_ADDRESS_BOOK);
 
             if (PhoneApplicationService.Current.State.ContainsKey("IsStatusPush"))
                 this.Loaded += ConversationsList_Loaded;
@@ -122,9 +122,9 @@ namespace windows_client.View
 
             _firstName = Utils.GetFirstName(_userName);
             string password = HikeInstantiation.ViewModel.Password;
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD, out password);
             HikeInstantiation.ViewModel.Password = password;
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
             HikeInstantiation.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
         }
@@ -221,7 +221,7 @@ namespace windows_client.View
                     {
                         loadingCompleted();
 
-                        if (!appSettings.Contains(HikeConstants.SHOW_CHAT_FTUE))
+                        if (!appSettings.Contains(HikeConstants.AppSettings.SHOW_CHAT_FTUE))
                         {
                             if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE))
                                 ShowAppUpdateAvailableMessage();
@@ -234,7 +234,7 @@ namespace windows_client.View
 
                 #endregion
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
@@ -391,14 +391,14 @@ namespace windows_client.View
 
             HikeInstantiation.MqttManagerInstance.connect();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.IS_NEW_INSTALLATION) || HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.IS_NEW_INSTALLATION))
                     Utils.RequestHikeBot();
                 else
                     Utils.requestAccountInfo();
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.IS_NEW_INSTALLATION);
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
         }
@@ -778,7 +778,7 @@ namespace windows_client.View
             //    return;
             //}
 
-            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
@@ -1151,7 +1151,7 @@ namespace windows_client.View
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
-                    appSettings[HikeConstants.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
+                    appSettings[HikeConstants.AppSettings.LAST_NOTIFICATION_TIME] = DateTime.Now.Ticks;
                 }
             }
             #endregion
@@ -1739,7 +1739,7 @@ namespace windows_client.View
             if (llsConversations.Visibility == Visibility.Collapsed)
                 llsConversations.Visibility = Visibility.Visible;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS))
                 UpdateToolTip(true);
         }
 
@@ -1775,7 +1775,7 @@ namespace windows_client.View
             {
                 JObject obj = JObject.Parse(updateObj);
 
-                var currentVersion = HikeInstantiation.AppSettings[HikeConstants.FILE_SYSTEM_VERSION].ToString();
+                var currentVersion = HikeInstantiation.AppSettings[HikeConstants.AppSettings.FILE_SYSTEM_VERSION].ToString();
                 var version = (string)obj[HikeConstants.VERSION];
                 if (Utils.compareVersion(version, currentVersion) <= 0)
                 {
@@ -2147,7 +2147,7 @@ namespace windows_client.View
                 ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
                 if (obj == null || (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(obj.Msisdn) && HikeInstantiation.ViewModel.ConvMap[obj.Msisdn].IsHidden))
                     return;
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
                 string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
@@ -2233,7 +2233,7 @@ namespace windows_client.View
             else
                 objToSend = c;
             // TODO: Handle this properly
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = objToSend;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = objToSend;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -2642,7 +2642,7 @@ namespace windows_client.View
             {
                 statusImageInfo[0] = statusUpdate.Msisdn;
                 statusImageInfo[1] = statusUpdate.ServerId;
-                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.STATUS_IMAGE_TO_DISPLAY] = statusImageInfo;
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }
@@ -2694,7 +2694,7 @@ namespace windows_client.View
             }
 
             if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(status.Msisdn))
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = HikeInstantiation.ViewModel.ConvMap[status.Msisdn];
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = HikeInstantiation.ViewModel.ConvMap[status.Msisdn];
             else
             {
                 ConversationListObject cFav = HikeInstantiation.ViewModel.GetFav(status.Msisdn);
@@ -2703,7 +2703,7 @@ namespace windows_client.View
                     if (!_isFavListBound)
                         cFav.Avatar = MiscDBUtil.getThumbNailForMsisdn(cFav.Msisdn);
 
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = cFav;
                 }
                 else
                 {
@@ -2714,7 +2714,7 @@ namespace windows_client.View
                         contactInfo.Msisdn = status.Msisdn;
                         contactInfo.OnHike = true;
                     }
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = contactInfo;
                 }
             }
 
@@ -2814,7 +2814,7 @@ namespace windows_client.View
 
         private void ProTipImage_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IMAGE_TO_DISPLAY] = true;
             NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
         }
 
@@ -2837,7 +2837,7 @@ namespace windows_client.View
             //if (ApplicationBar == deleteAppBar)
             //    return;
 
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = convListObj;
 
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -2988,8 +2988,8 @@ namespace windows_client.View
             {
                 if (obj.IsGroupChat)
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
-                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_ID_FROM_CHATTHREAD] = obj.Msisdn;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GROUP_NAME_FROM_CHATTHREAD] = obj.NameToShow;
                     NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
                 }
                 else
@@ -3009,7 +3009,7 @@ namespace windows_client.View
         private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Analytics.SendClickEvent(HikeConstants.FTUE_CARD_GROUP_CHAT_CLICKED);
-            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
@@ -3017,7 +3017,7 @@ namespace windows_client.View
         {
             Analytics.SendClickEvent(HikeConstants.FTUE_CARD_PROFILE_PIC_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
-            PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SET_PROFILE_PIC] = true;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
@@ -3221,7 +3221,7 @@ namespace windows_client.View
             }
             else
             {
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD))
                 {
                     if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
                         Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
@@ -3234,7 +3234,7 @@ namespace windows_client.View
                     if (launchPagePivot.SelectedIndex != 0)
                         launchPagePivot.SelectedIndex = 0;
 
-                    passwordOverlay.Text = HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD) ?
+                    passwordOverlay.Text = HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD) ?
                         AppResources.EnterPassword_Txt : AppResources.EnterNewPassword_Txt;
 
                     passwordOverlay.IsShow = true;
@@ -3243,9 +3243,9 @@ namespace windows_client.View
                 {
                     ToggleHidddenMode();
 
-                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
+                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_COMPLETE)
                     {
-                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS);
 
                         _tipMode = ToolTipMode.DEFAULT;
 
@@ -3261,7 +3261,7 @@ namespace windows_client.View
         /// </summary>
         void ToggleHidddenMode()
         {
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 conversationPageToolTip.IsShow = false;
 
             HikeInstantiation.ViewModel.ToggleHiddenMode();
@@ -3298,7 +3298,7 @@ namespace windows_client.View
 
             JObject data = new JObject();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED))
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, true);
             else
                 data.Add(HikeConstants.HIDDEN_MODE_ENABLED, false);
@@ -3323,7 +3323,7 @@ namespace windows_client.View
             {
                 obj.IsHidden = !obj.IsHidden;
 
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 {
                     _tipMode = ToolTipMode.HIDDEN_MODE_COMPLETE;
                     UpdateToolTip(true);
@@ -3366,7 +3366,7 @@ namespace windows_client.View
                             Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
 
                             HikeInstantiation.ViewModel.Password = popup.Password;
-                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
                             ToggleHidddenMode();
 
                             _tipMode = ToolTipMode.HIDDEN_MODE_STEP2;
@@ -3391,7 +3391,7 @@ namespace windows_client.View
                     ToggleHidddenMode();
                     popup.IsShow = false;
 
-                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
+                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                         UpdateToolTip(false);
                 }
                 else
@@ -3425,7 +3425,7 @@ namespace windows_client.View
         private void ShowHiddenModeResetToolTip()
         {
             long resetTime;
-            if (HikeInstantiation.AppSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            if (HikeInstantiation.AppSettings.TryGetValue<long>(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME, out resetTime))
             {
                 _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
                 if (_resetTimeSeconds > 0)
@@ -3456,7 +3456,7 @@ namespace windows_client.View
         private void UpdateResetHiddenModeTimer()
         {
             long resetTime;
-            if (HikeInstantiation.AppSettings.TryGetValue<long>(HikeConstants.HIDDEN_MODE_RESET_TIME, out resetTime))
+            if (HikeInstantiation.AppSettings.TryGetValue<long>(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME, out resetTime))
             {
                 _resetTimeSeconds = HikeConstants.HIDDEN_MODE_RESET_TIMER - (TimeUtils.getCurrentTimeStamp() - resetTime);
                 if (_resetTimeSeconds <= 0)
@@ -3585,10 +3585,10 @@ namespace windows_client.View
                 if (!conversationPageToolTip.IsShow)
                     conversationPageToolTip.IsShow = true;
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, _tipMode);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS, _tipMode);
             }
-            else if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS))
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS);
+            else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS))
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS);
         }
 
         /// <summary>
@@ -3617,7 +3617,7 @@ namespace windows_client.View
                     else
                         HideTips();
 
-                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME);
 
                     break;
 
@@ -3626,7 +3626,7 @@ namespace windows_client.View
                     HideTips();
 
                     PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
-                    PhoneApplicationService.Current.State[HikeConstants.SET_PROFILE_PIC] = true;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SET_PROFILE_PIC] = true;
                     Analytics.SendClickEvent(HikeConstants.ServerTips.PROFILE_PIC_TIP_TAP_EVENT);
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -3679,7 +3679,7 @@ namespace windows_client.View
 
                     if (mBox == MessageBoxResult.OK)
                     {
-                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME);
 
                         if (_resetTimer != null)
                         {
@@ -3718,7 +3718,7 @@ namespace windows_client.View
 
                     if (mBox1 == MessageBoxResult.OK)
                     {
-                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_RESET_TIME);
+                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_RESET_TIME);
 
                         if (_resetTimer != null)
                         {
@@ -3783,7 +3783,7 @@ namespace windows_client.View
         private void RemoveHiddenModePassword()
         {
             HikeInstantiation.ViewModel.Password = null;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.HIDDEN_MODE_PASSWORD);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.HIDDEN_MODE_PASSWORD);
         }
 
         /// <summary>
@@ -3791,7 +3791,7 @@ namespace windows_client.View
         /// </summary>
         private void ResetHiddenModeToolTip()
         {
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
             UpdateToolTip(true);
         }

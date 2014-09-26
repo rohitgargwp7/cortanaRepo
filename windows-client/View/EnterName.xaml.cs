@@ -36,7 +36,7 @@ namespace windows_client
         {
             InitializeComponent();
 
-            HikeInstantiation.AppSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
+            HikeInstantiation.AppSettings[HikeConstants.AppSettings.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.PAGE_STATE, HikeInstantiation.PageState.SETNAME_SCREEN);
 
             appBar = new ApplicationBar()
@@ -122,7 +122,7 @@ namespace windows_client
 
             nameErrorTxt.Opacity = 0;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
-            HikeInstantiation.AppSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
+            HikeInstantiation.AppSettings[HikeConstants.AppSettings.IS_NEW_INSTALLATION] = true;
 
             progressBar.Opacity = 1;
 
@@ -274,8 +274,8 @@ namespace windows_client
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.COUNTRY_SELECTED);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.COUNTRY_SELECTED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SOCIAL);
             PhoneApplicationService.Current.State.Remove("fromEnterName");
             PhoneApplicationService.Current.State.Remove("fbName");
         }
@@ -324,7 +324,7 @@ namespace windows_client
                 return;
 
             reloadImage = true;
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.FACEBOOK;
             PhoneApplicationService.Current.State["fromEnterName"] = true;
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
@@ -553,7 +553,7 @@ namespace windows_client
 
             try
             {
-                HikeInstantiation.AppSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
+                HikeInstantiation.AppSettings[HikeConstants.AppSettings.IS_NEW_INSTALLATION] = true;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.SHOW_NUDGE_TUTORIAL, true);
 
                 SmileyParser.Instance.initializeSmileyParser();
