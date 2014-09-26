@@ -224,7 +224,7 @@ namespace windows_client.Model
                 NotifyPropertyChanged("MuteMsg");
             }
         }
-
+        [DataMember]
         public long LastReadMsgId
         {
             get
@@ -237,7 +237,7 @@ namespace windows_client.Model
                     _lastReadMsgId = value;
             }
         }
-
+        [DataMember]
         public string ReadByInfo
         {
             get
@@ -857,7 +857,7 @@ namespace windows_client.Model
                 if (_readByInfo == null)
                     writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteStringBytes(_msisdn);
+                    writer.WriteStringBytes(_readByInfo);
 
                 writer.Write(_lastReadMsgId);
 

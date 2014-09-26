@@ -3891,26 +3891,14 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
 
-                //todo:handle vibration
-
-                ////TODO handle vibration for user profile and GC.
-                //if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
-                //    convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
-                //    convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
-                //{
-                //    bool isVibrateEnabled = true;
-                //    App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
-
-                //    if (isVibrateEnabled)
-                //    {
-                //        VibrateController vibrate = VibrateController.Default;
-                //        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                //    }
-                //}
+                bool hasNudge = false;
                 /* Check if this is the same user for which this message is recieved*/
                 if (listConvMessage.Count > 0 && listConvMessage[0].Msisdn == mContactNumber)
                 {
                     long[] msgids = new long[listConvMessage.Count];
+                    JArray ids = new JArray();
+
+                    HideTypingNotification();
 
                     for (int i = 0; i < listConvMessage.Count; i++)
                     {
@@ -3919,17 +3907,17 @@ namespace windows_client.View
 
                         msgids[i] = convMessage.MessageId;
 
-                        //todo:send once
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
                         {
-                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
+                            ids.Add(Convert.ToString(convMessage.MappedMessageId));
                         }
+
                         if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                             updateLastMsgColor(convMessage.Msisdn);
 
-                        // Update UI
-                        HideTypingNotification();
+                        hasNudge = convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.POKE) && !_isMute;
 
+                        // Update UI
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
@@ -3940,7 +3928,7 @@ namespace windows_client.View
                             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                            AddNewMessageToUI(convMessage, false, true);
+                            AddMessageToOcMessages(convMessage, false, true);
                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                                 ShowJumpToBottom(true);
 
@@ -3953,7 +3941,7 @@ namespace windows_client.View
                                         ConvMessage cm = (ConvMessage)vals[2];
                                         if (cm != null)
                                         {
-                                            AddNewMessageToUI(cm, false, true);
+                                            AddMessageToOcMessages(cm, false, true);
                                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                                                 ShowJumpToBottom(true);
                                         }
@@ -3962,6 +3950,25 @@ namespace windows_client.View
                                 catch { }
                             }
                         });
+                    }
+                    if (ids.Count > 0)
+                    {
+                        JObject jobj = new JObject();
+                        jobj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                        jobj.Add(HikeConstants.TO, mContactNumber);
+                        jobj.Add(HikeConstants.DATA, ids);
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, jobj);
+                    }
+                    if (hasNudge)
+                    {
+                        bool isVibrateEnabled = true;
+                        App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+
+                        if (isVibrateEnabled)
+                        {
+                            VibrateController vibrate = VibrateController.Default;
+                            vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                        }
                     }
                     // Update status to received read in db.
                     mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, msgids);
@@ -4095,14 +4102,13 @@ namespace windows_client.View
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
             {
                 object[] vals = (object[])obj;
-                long[] ids = (long[])vals[0];
+                IList<long> ids = (IList<long>)vals[0];
                 string msisdnToCheck = (string)vals[1];
-                string sender = (string)vals[2];
-                if (msisdnToCheck != mContactNumber || ids == null || ids.Length == 0)
+                if (msisdnToCheck != mContactNumber || ids == null || ids.Count == 0)
                     return;
                 long maxId = 0;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
-                for (int i = 0; i < ids.Length; i++)
+                for (int i = 0; i < ids.Count; i++)
                 {
                     try
                     {
@@ -7204,7 +7210,7 @@ namespace windows_client.View
 
             try
             {
-                var msgList = ocMessages.Where(arg=>arg.MessageId==co.LastReadMsgId);
+                var msgList = ocMessages.Where(arg => arg.MessageId == co.LastReadMsgId);
 
                 _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }

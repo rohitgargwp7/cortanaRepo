@@ -99,13 +99,6 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
-            //60
-            //msg = "{\"d\":{\"msgs\":[{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074901,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074902,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074903,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074904,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074905,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074906,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074907,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074908,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074909,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074910,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074911,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074912,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074913,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074914,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074915,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074916,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074917,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074918,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074919,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000000\",\"d\":{\"ts\":1409074920,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074921,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074922,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074923,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074924,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074925,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074926,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074927,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074928,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074929,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074930,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074931,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074932,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074933,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074934,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074936,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074937,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074938,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074939,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074940,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000001\",\"d\":{\"ts\":1409074941,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074942,\"push\":false,\"i\":\"1409074901789\",\"hm\":\"tester :1\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074943,\"push\":false,\"i\":\"1409074901790\",\"hm\":\"tester :2\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074944,\"push\":false,\"i\":\"1409074901791\",\"hm\":\"tester :3\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074945,\"push\":false,\"i\":\"1409074901792\",\"hm\":\"tester :4\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074946,\"push\":false,\"i\":\"1409074901793\",\"hm\":\"tester :5\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074947,\"push\":false,\"i\":\"1409074901794\",\"hm\":\"tester :6\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074948,\"push\":false,\"i\":\"1409074901795\",\"hm\":\"tester :7\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074949,\"push\":false,\"i\":\"1409074901796\",\"hm\":\"tester :8\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074950,\"push\":false,\"i\":\"1409074901797\",\"hm\":\"tester :9\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074951,\"push\":false,\"i\":\"1409074901798\",\"hm\":\"tester :10\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074952,\"push\":false,\"i\":\"1409074901799\",\"hm\":\"tester :11\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074953,\"push\":false,\"i\":\"1409074901800\",\"hm\":\"tester :12\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074954,\"push\":false,\"i\":\"1409074901801\",\"hm\":\"tester :13\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074955,\"push\":false,\"i\":\"1409074901802\",\"hm\":\"tester :14\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074956,\"push\":false,\"i\":\"1409074901803\",\"hm\":\"tester :15\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074957,\"push\":false,\"i\":\"1409074901804\",\"hm\":\"tester :16\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074958,\"push\":false,\"i\":\"1409074901805\",\"hm\":\"tester :17\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074959,\"push\":false,\"i\":\"1409074901806\",\"hm\":\"tester :18\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074960,\"push\":false,\"i\":\"1409074901807\",\"hm\":\"tester :19\"},\"t\":\"m\"},{\"f\":\"+919900000002\",\"d\":{\"ts\":1409074961,\"push\":false,\"i\":\"1409074901808\",\"hm\":\"tester :20\"},\"t\":\"m\"}]},\"t\":\"bm\",\"ts\":1409075011}";
-            if (msg.Contains("poke"))
-                msg = "{\"d\":{\"msgs\":[{\"f\":\"+911111155555\",\"d\":\"15\",\"t\":\"dr\",\"ts\":1410194046},{\"f\":\"+911111155555\",\"d\":\"16\",\"t\":\"dr\",\"ts\":1410194048},{\"f\":\"+911111155555\",\"d\":\"17\",\"t\":\"dr\",\"ts\":1410194049},{\"f\":\"+911111155555\",\"d\":\"18\",\"t\":\"dr\",\"ts\":1410194049},{\"f\":\"+911111155555\",\"d\":\"19\",\"t\":\"dr\",\"ts\":1410194049},{\"f\":\"+911111155555\",\"d\":\"20\",\"t\":\"dr\",\"ts\":1410194050},{\"f\":\"+911111155555\",\"d\":\"21\",\"t\":\"dr\",\"ts\":1410194050},{\"f\":\"+911111155555\",\"d\":\"22\",\"t\":\"dr\",\"ts\":1410194050},{\"f\":\"+911111155555\",\"d\":\"23\",\"t\":\"dr\",\"ts\":1410194050},{\"f\":\"+911111155555\",\"d\":\"24\",\"t\":\"dr\",\"ts\":1410194051},{\"f\":\"+911111155555\",\"d\":\"25\",\"t\":\"dr\",\"ts\":1410194051},{\"f\":\"+911111155555\",\"d\":\"26\",\"t\":\"dr\",\"ts\":1410194051},{\"f\":\"+911111155555\",\"d\":\"27\",\"t\":\"dr\",\"ts\":1410194052},{\"f\":\"+911111155555\",\"d\":\"28\",\"t\":\"dr\",\"ts\":1410194052},{\"f\":\"+911111155555\",\"d\":\"29\",\"t\":\"dr\",\"ts\":1410194052},{\"f\":\"+911111155555\",\"d\":\"30\",\"t\":\"dr\",\"ts\":1410194052},{\"f\":\"+911111155555\",\"d\":\"31\",\"t\":\"dr\",\"ts\":1410194053},{\"f\":\"+911111155555\",\"d\":\"32\",\"t\":\"dr\",\"ts\":1410194053},{\"f\":\"+911111155555\",\"d\":\"33\",\"t\":\"dr\",\"ts\":1410194053},{\"f\":\"+911111155555\",\"d\":\"34\",\"t\":\"dr\",\"ts\":1410194054},{\"f\":\"+911111155555\",\"d\":\"35\",\"t\":\"dr\",\"ts\":1410194054},{\"f\":\"+911111155555\",\"d\":\"36\",\"t\":\"dr\",\"ts\":1410194054},{\"f\":\"+911111155555\",\"d\":\"37\",\"t\":\"dr\",\"ts\":1410194054},{\"f\":\"+911111155555\",\"d\":\"38\",\"t\":\"dr\",\"ts\":1410194055},{\"f\":\"+911111155555\",\"d\":\"39\",\"t\":\"dr\",\"ts\":1410194055},{\"f\":\"+911111155555\",\"d\":\"40\",\"t\":\"dr\",\"ts\":1410194055},{\"f\":\"+911111155555\",\"d\":\"41\",\"t\":\"dr\",\"ts\":1410194056},{\"f\":\"+911111155555\",\"d\":\"42\",\"t\":\"dr\",\"ts\":1410194056},{\"f\":\"+911111155555\",\"d\":\"43\",\"t\":\"dr\",\"ts\":1410194057},{\"f\":\"+911111155555\",\"d\":\"44\",\"t\":\"dr\",\"ts\":1410194057},{\"f\":\"+911111155555\",\"d\":\"45\",\"t\":\"dr\",\"ts\":1410194057},{\"f\":\"+911111155555\",\"d\":\"46\",\"t\":\"dr\",\"ts\":1410194058},{\"f\":\"+911111155555\",\"d\":\"47\",\"t\":\"dr\",\"ts\":1410194058},{\"f\":\"+911111155555\",\"d\":\"48\",\"t\":\"dr\",\"ts\":1410194058},{\"f\":\"+911111155555\",\"d\":\"49\",\"t\":\"dr\",\"ts\":1410194058},{\"f\":\"+911111155555\",\"d\":\"50\",\"t\":\"dr\",\"ts\":1410194059},{\"f\":\"+911111155555\",\"d\":\"51\",\"t\":\"dr\",\"ts\":1410194059},{\"f\":\"+911111155555\",\"d\":\"52\",\"t\":\"dr\",\"ts\":1410194059},{\"f\":\"+911111155555\",\"d\":\"53\",\"t\":\"dr\",\"ts\":1410194060},{\"f\":\"+911111155555\",\"d\":\"54\",\"t\":\"dr\",\"ts\":1410194060},{\"f\":\"+911111155555\",\"d\":\"55\",\"t\":\"dr\",\"ts\":1410194060},{\"f\":\"+911111155555\",\"d\":\"56\",\"t\":\"dr\",\"ts\":1410194060},{\"f\":\"+911111155555\",\"d\":\"57\",\"t\":\"dr\",\"ts\":1410194061},{\"f\":\"+911111155555\",\"d\":\"58\",\"t\":\"dr\",\"ts\":1410194061},{\"f\":\"+911111155555\",\"d\":\"59\",\"t\":\"dr\",\"ts\":1410194061},{\"f\":\"+911111155555\",\"d\":\"60\",\"t\":\"dr\",\"ts\":1410194061},{\"f\":\"+911111155555\",\"d\":\"61\",\"t\":\"dr\",\"ts\":1410194062},{\"f\":\"+911111155555\",\"d\":\"62\",\"t\":\"dr\",\"ts\":1410194062},{\"f\":\"+911111155555\",\"d\":\"63\",\"t\":\"dr\",\"ts\":1410194062},{\"f\":\"+911111155555\",\"d\":\"64\",\"t\":\"dr\",\"ts\":1410194063},{\"f\":\"+911111155555\",\"d\":\"65\",\"t\":\"dr\",\"ts\":1410194063},{\"f\":\"+911111155555\",\"d\":\"66\",\"t\":\"dr\",\"ts\":1410194063},{\"f\":\"+911111155555\",\"d\":\"67\",\"t\":\"dr\",\"ts\":1410194064},{\"f\":\"+911111155555\",\"d\":\"68\",\"t\":\"dr\",\"ts\":1410194064},{\"f\":\"+911111155555\",\"d\":\"69\",\"t\":\"dr\",\"ts\":1410194065},{\"f\":\"+911111155555\",\"d\":\"70\",\"t\":\"dr\",\"ts\":1410194065},{\"f\":\"+911111155555\",\"d\":\"71\",\"t\":\"dr\",\"ts\":1410194066},{\"f\":\"+911111155555\",\"d\":\"72\",\"t\":\"dr\",\"ts\":1410194066},{\"f\":\"+911111155555\",\"d\":\"73\",\"t\":\"dr\",\"ts\":1410194066},{\"f\":\"+911111155555\",\"d\":\"74\",\"t\":\"dr\",\"ts\":1410194067},{\"f\":\"+911111155555\",\"d\":\"75\",\"t\":\"dr\",\"ts\":1410194067},{\"f\":\"+911111155555\",\"d\":\"76\",\"t\":\"dr\",\"ts\":1410194067},{\"f\":\"+911111155555\",\"d\":\"77\",\"t\":\"dr\",\"ts\":1410194068},{\"f\":\"+911111155555\",\"d\":\"78\",\"t\":\"dr\",\"ts\":1410194071},{\"f\":\"+911111155555\",\"d\":\"79\",\"t\":\"dr\",\"ts\":1410194073},{\"f\":\"+911111155555\",\"d\":\"80\",\"t\":\"dr\",\"ts\":1410194073},{\"f\":\"+911111155555\",\"d\":\"81\",\"t\":\"dr\",\"ts\":1410194073},{\"f\":\"+911111155555\",\"d\":\"82\",\"t\":\"dr\",\"ts\":1410194073},{\"f\":\"+911111155555\",\"d\":\"83\",\"t\":\"dr\",\"ts\":1410194073},{\"f\":\"+911111155555\",\"d\":\"84\",\"t\":\"dr\",\"ts\":1410194074},{\"f\":\"+911111155555\",\"d\":\"85\",\"t\":\"dr\",\"ts\":1410194074},{\"f\":\"+911111155555\",\"d\":\"86\",\"t\":\"dr\",\"ts\":1410194074},{\"f\":\"+911111155555\",\"d\":\"87\",\"t\":\"dr\",\"ts\":1410194075},{\"f\":\"+911111155555\",\"d\":\"88\",\"t\":\"dr\",\"ts\":1410194075},{\"f\":\"+911111155555\",\"d\":\"89\",\"t\":\"dr\",\"ts\":1410194075},{\"f\":\"+911111155555\",\"d\":\"90\",\"t\":\"dr\",\"ts\":1410194075},{\"f\":\"+911111155555\",\"d\":\"91\",\"t\":\"dr\",\"ts\":1410194075},{\"f\":\"+911111155555\",\"d\":\"92\",\"t\":\"dr\",\"ts\":1410194076},{\"f\":\"+911111155555\",\"d\":\"93\",\"t\":\"dr\",\"ts\":1410194076},{\"f\":\"+911111155555\",\"d\":\"94\",\"t\":\"dr\",\"ts\":1410194076},{\"f\":\"+911111155555\",\"d\":\"95\",\"t\":\"dr\",\"ts\":1410194076},{\"f\":\"+911111155555\",\"d\":\"96\",\"t\":\"dr\",\"ts\":1410194077},{\"f\":\"+911111155555\",\"d\":\"97\",\"t\":\"dr\",\"ts\":1410194077},{\"f\":\"+911111155555\",\"d\":\"98\",\"t\":\"dr\",\"ts\":1410194078},{\"f\":\"+911111155555\",\"d\":\"99\",\"t\":\"dr\",\"ts\":1410194079},{\"f\":\"+911111155555\",\"d\":\"100\",\"t\":\"dr\",\"ts\":1410194079},{\"f\":\"+911111155555\",\"d\":\"101\",\"t\":\"dr\",\"ts\":1410194086},{\"f\":\"+911111155555\",\"d\":\"102\",\"t\":\"dr\",\"ts\":1410194088}]},\"t\":\"bm\",\"ts\":1410194199}";
-            //40
-
-
             if (string.IsNullOrEmpty(msg))
                 return;
 
@@ -153,13 +146,10 @@ namespace windows_client
                     JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
 
                     Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
-                    Stopwatch stopwtc = Stopwatch.StartNew();
                     for (int i = 0; i < msgs.Count; i++)
                     {
                         ProcessBulkMessageData((JObject)msgs[i], dictBulkData);
                     }
-                    stopwtc.Stop();
-
 
                     if (dictBulkData.Count > 0)
                     {
@@ -174,6 +164,31 @@ namespace windows_client
                                     bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
                                     if (success)
                                     {
+                                        foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
+                                        {
+                                            if (convMessage.StatusUpdateObj != null)
+                                            {
+                                                convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
+                                                StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                            }
+                                            else
+                                            {
+                                                if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+                              || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+                                                {
+                                                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
+                                                }
+                                                else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                                                {
+                                                    FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                                }
+
+                                                if (convMessage.FileAttachment != null)
+                                                {
+                                                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                                                }
+                                            }
+                                        }
                                         ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
                                         ConversationListObject obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
                                         if (obj == null)
@@ -1581,93 +1596,11 @@ namespace windows_client
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
-                // if this user is already blocked simply ignore his status
-                if (App.ViewModel.BlockedHashset.Contains(msisdn))
-                    return;
-
-                JObject data = null;
-                try
+                StatusMessage sm = null;
+                ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                if (cm != null)
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
-                    StatusMessage sm = null;
-                    JToken val;
-                    string iconBase64 = null;
-
-                    if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
-                        iconBase64 = val.ToString();
-
-                    val = null;
-                    long ts = 0;
-
-                    if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
-                    {
-                        ts = val.ToObject<long>();
-                        long tsCorrection;
-
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
-                            ts -= tsCorrection;
-                    }
-
-                    val = null;
-                    string id = null;
-                    JToken idToken;
-
-                    if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
-                        id = idToken.ToString();
-                    #region HANDLE PROFILE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
-                    {
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
-                        idToken = null;
-                        if (iconBase64 != null)
-                        {
-                            byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                                return;
-                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
-                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
-                            UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                        }
-                    }
-                    #endregion
-
-                    #region HANDLE TEXT UPDATE
-                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
-                    {
-                        int moodId = -1;
-                        int tod = 0;
-                        if (data[HikeConstants.MOOD] != null)
-                        {
-                            string moodId_String = data[HikeConstants.MOOD].ToString();
-                            if (!string.IsNullOrEmpty(moodId_String))
-                            {
-                                int.TryParse(moodId_String, out moodId);
-                                moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                try
-                                {
-                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
-                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    tod = 0;
-                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
-                                }
-                            }
-                        }
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                            return;
-                    }
-                    #endregion
-
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
-                    cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {
@@ -1679,12 +1612,8 @@ namespace windows_client
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
                     }
-                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
-                }
+
             }
             #endregion
             #region DELETE STATUS
@@ -2143,21 +2072,6 @@ namespace windows_client
 
                         convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
 
-                        if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
-                       || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
-                        {
-                            convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                        }
-                        else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                        {
-                            FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                        }
-
-                        if (convMessage.FileAttachment != null)
-                        {
-                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        }
-
                         MsisdnBulkData msisdnBulkData;
                         if (!dictBulkData.TryGetValue(convMessage.Msisdn, out msisdnBulkData))
                         {
@@ -2234,10 +2148,10 @@ namespace windows_client
                         msisdn = readBy;
 
                     MsisdnBulkData msisdnBulkData;
-                    if (!dictBulkData.TryGetValue(readBy, out msisdnBulkData))
+                    if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
                     {
-                        msisdnBulkData = new MsisdnBulkData(readBy);
-                        dictBulkData[readBy] = msisdnBulkData;
+                        msisdnBulkData = new MsisdnBulkData(msisdn);
+                        dictBulkData[msisdn] = msisdnBulkData;
                     }
                     for (int i = 0; i < msgIds.Count; i++)
                     {
@@ -2259,6 +2173,25 @@ namespace windows_client
 
                 }
                 #endregion
+                #region STATUS UPDATE
+                else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+                {
+                    string msisdn = (string)jsonObj[HikeConstants.FROM];
+                    StatusMessage sm = null;
+                    ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                    if (cm != null)
+                    {
+                        cm.StatusUpdateObj = sm;//to update after getting message id after storing in db
+                        MsisdnBulkData msisdnBulkData;
+                        if (!dictBulkData.TryGetValue(cm.Msisdn, out msisdnBulkData))
+                        {
+                            msisdnBulkData = new MsisdnBulkData(cm.Msisdn);
+                            dictBulkData[cm.Msisdn] = msisdnBulkData;
+                        }
+                        msisdnBulkData.ListMessages.Add(cm);
+                    }
+                }
+                #endregion
                 else
                 {
                     onMessage(jsonObj.ToString(Newtonsoft.Json.Formatting.None));
@@ -2270,6 +2203,105 @@ namespace windows_client
                 return;
             }
             return;
+        }
+
+        private ConvMessage ProcessStatusUpdate(string msisdn, JObject jsonObj, out StatusMessage sm)
+        {
+            sm = null;
+            // if this user is already blocked simply ignore his status
+            if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                return null;
+
+            JObject data = null;
+            try
+            {
+                data = (JObject)jsonObj[HikeConstants.DATA];
+                JToken val;
+                string iconBase64 = null;
+
+                if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
+                    iconBase64 = val.ToString();
+
+                val = null;
+                long ts = 0;
+
+                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                {
+                    ts = val.ToObject<long>();
+                    long tsCorrection;
+
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                        ts -= tsCorrection;
+                }
+
+                val = null;
+                string id = null;
+                JToken idToken;
+
+                if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
+                    id = idToken.ToString();
+                #region HANDLE PROFILE PIC UPDATE
+                if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                {
+                    sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
+                    idToken = null;
+                    if (iconBase64 != null)
+                    {
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return null;
+                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
+                        jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
+                        UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    }
+                }
+                #endregion
+
+                #region HANDLE TEXT UPDATE
+                else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                {
+                    int moodId = -1;
+                    int tod = 0;
+                    if (data[HikeConstants.MOOD] != null)
+                    {
+                        string moodId_String = data[HikeConstants.MOOD].ToString();
+                        if (!string.IsNullOrEmpty(moodId_String))
+                        {
+                            int.TryParse(moodId_String, out moodId);
+                            moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
+                            try
+                            {
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                tod = 0;
+                                Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                            }
+                        }
+                    }
+                    sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
+                    if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                        return null;
+                }
+                #endregion
+
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
+                cm.Msisdn = msisdn;
+
+                pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
+
+                return cm;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
+            }
+            return null;
         }
 
         private void LoadFavAndPending(bool isFav, string msisdn)

@@ -382,6 +382,12 @@ namespace windows_client.Model
             }
         }
 
+        public StatusMessage StatusUpdateObj
+        {
+            get;
+            set;
+        }
+
         public bool IsInvite
         {
             get

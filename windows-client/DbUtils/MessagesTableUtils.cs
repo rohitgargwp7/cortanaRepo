@@ -134,6 +134,8 @@ namespace windows_client.DbUtils
                         else
                             i++;
                     }
+                    else
+                        i++;
                 }
             }
         }
@@ -547,7 +549,7 @@ namespace windows_client.DbUtils
             IList<long> listUpdatedMsgIds = new List<long>();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
-                IList<ConvMessage> listMessages = DbCompiledQueries.GetUndeliveredMessagesForMsisdn(context, msgID, msisdn).ToList<ConvMessage>();
+                IList<ConvMessage> listMessages = DbCompiledQueries.GetDeliveredUnreadMessagesForMsisdn(context, msgID, msisdn).ToList<ConvMessage>();
                 foreach (var message in listMessages)
                 {
                     if (message != null)
