@@ -1120,7 +1120,7 @@ namespace windows_client.View
                                 {
                                     lastPinConvMsg = MessagesTableUtils.getMessagesForMsgId(metadata.Value<long>(HikeConstants.PINID));
 
-                                    if (lastPinConvMsg != null)
+                                    if (lastPinConvMsg != null && !lastPinConvMsg.IsSent)
                                     {
                                         var gp = GroupManager.Instance.GetGroupParticipant(null, lastPinConvMsg.GroupParticipant, mContactNumber);
                                         lastPinConvMsg.GroupMemberName = gp.FirstName;
@@ -1593,6 +1593,9 @@ namespace windows_client.View
 
                     if (emailConversationMenuItem != null && emailConversationMenuItem.IsEnabled)
                         emailConversationMenuItem.IsEnabled = false;
+
+                    if (isGroupChat && pinHistoryMenuItem != null && pinHistoryMenuItem.IsEnabled)
+                        pinHistoryMenuItem.IsEnabled = false;
 
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
