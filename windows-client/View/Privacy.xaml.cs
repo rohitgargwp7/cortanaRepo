@@ -59,9 +59,9 @@ namespace windows_client.View
             HikeInstantiation.AppSettings.Save();
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, true);
+            data.Add(HikeConstants.ServerJsonKeys.LASTSEENONOFF, true);
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
@@ -72,9 +72,9 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SEEN_SEETING, false);
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.LASTSEENONOFF, false);
+            data.Add(HikeConstants.ServerJsonKeys.LASTSEENONOFF, false);
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
@@ -201,7 +201,7 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.DISPLAY_PIC_FAV_ONLY, true);
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
@@ -215,7 +215,7 @@ namespace windows_client.View
             HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.DISPLAY_PIC_FAV_ONLY);
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.AVATAR, 1);
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);

@@ -250,7 +250,7 @@ namespace windows_client.ViewModel
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.BLACK_THEME))
                 IsDarkMode = true;
 
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.HIDDEN_MODE_ACTIVATED))
@@ -886,7 +886,7 @@ namespace windows_client.ViewModel
         public void ViewMoreMessage_Clicked(object obj)
         {
             Hyperlink hp = obj as Hyperlink;
-            PhoneApplicationService.Current.State[HikeConstants.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.VIEW_MORE_MESSAGE_OBJ] = hp.TargetName;
             var currentPage = ((App)Application.Current).RootFrame.Content as PhoneApplicationPage;
             currentPage.NavigationService.Navigate(new Uri("/View/ViewMessage.xaml", UriKind.Relative));
         }
@@ -895,11 +895,11 @@ namespace windows_client.ViewModel
         {
             HikePubSub mPubSub = HikeInstantiation.HikePubSubInstance;
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.STEALTH);
+            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.STEALTH);
             JObject data = new JObject();
             JArray msisdn = new JArray();
             msisdn.Add(cObj.Msisdn);
-            data.Add(HikeConstants.CHAT_DISABLED, msisdn);
+            data.Add(HikeConstants.ServerJsonKeys.CHAT_DISABLED, msisdn);
             hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
@@ -978,7 +978,7 @@ namespace windows_client.ViewModel
         {
             _isUploading = false;
 
-            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
+            if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 if (group.IsRetried)
                     DeleteGroupImageFromList(group);

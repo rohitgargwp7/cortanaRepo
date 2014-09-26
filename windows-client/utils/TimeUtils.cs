@@ -86,19 +86,6 @@ namespace windows_client.utils
             return String.Format("{0}, {1}", messageTime.ToShortDateString(), messageTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
         }
 
-        public static bool isUpdateTimeElapsed(long timestamp)
-        {
-            long ticks = timestamp * 10000000;
-            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
-            DateTime messageTime = new DateTime(ticks);
-            DateTime now = DateTime.UtcNow;
-            TimeSpan span = now.Subtract(messageTime);
-            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
-                return span.Hours > HikeConstants.CHECK_FOR_UPDATE_TIME;
-            else
-                return span.Minutes > HikeConstants.CHECK_FOR_UPDATE_TIME;
-        }
-
         public static string getRelativeTimeForLastSeen(long timestamp)
         {
             long ticks = timestamp * 10000000;

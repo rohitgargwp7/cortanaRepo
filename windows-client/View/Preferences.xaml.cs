@@ -80,7 +80,7 @@ namespace windows_client.View
             nudgeSettingToggle.IsChecked = value;
             this.nudgeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.BLACK_THEME, out value))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.BLACK_THEME, out value))
                 value = false;
             blackSettingToggle.IsChecked = value;
             this.blackSettingToggle.Content = value ? AppResources.On : AppResources.Off;
@@ -199,7 +199,7 @@ namespace windows_client.View
         private void blackSettingToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.blackSettingToggle.Content = AppResources.On;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.BLACK_THEME, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.BLACK_THEME, true);
             Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 1);
 
             if (!_isPopUpDisplayed)
@@ -212,7 +212,7 @@ namespace windows_client.View
         private void blackSettingToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.blackSettingToggle.Content = AppResources.Off;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.BLACK_THEME);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.BLACK_THEME);
             Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.DARK_MODE_CLICKED, 0);
 
             if (!_isPopUpDisplayed)

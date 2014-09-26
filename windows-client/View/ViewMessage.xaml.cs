@@ -26,9 +26,9 @@ namespace windows_client.View
         void ShowMessage()
         {
             Object messageObj;
-            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.VIEW_MORE_MESSAGE_OBJ, out messageObj))
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.VIEW_MORE_MESSAGE_OBJ, out messageObj))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.VIEW_MORE_MESSAGE_OBJ);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIEW_MORE_MESSAGE_OBJ);
                 SolidColorBrush phoneForeground = new SolidColorBrush((Color)Application.Current.Resources["PhoneForegroundColor"]);
                 string message = (string)messageObj;
                 string tempString = message;

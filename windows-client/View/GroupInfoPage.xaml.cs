@@ -302,10 +302,10 @@ namespace windows_client.View
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED))
             {
                 LoadHighResImage();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_PIC_DOWNLOADED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED);
             }
 
             base.OnNavigatedTo(e);
@@ -591,7 +591,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
                     HikeInstantiation.ViewModel.ConvMap[groupId].Avatar = thumbnailBytes;
                     groupImage.Source = grpImage;
@@ -601,7 +601,7 @@ namespace windows_client.View
                     cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
                     cm.GroupParticipant = HikeInstantiation.MSISDN;
                     JObject jo = new JObject();
-                    jo[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
+                    jo[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_DISPLAY_PIC;
                     cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
                     ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
                     if (cobj == null)
@@ -636,7 +636,7 @@ namespace windows_client.View
 
         private void setName_Callback(JObject obj)
         {
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 //db and ui would be updated after server sends group name change packet 
                 isgroupNameSelfChanged = true;
@@ -764,7 +764,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {
@@ -840,7 +840,7 @@ namespace windows_client.View
                 && HikeInstantiation.ViewModel.ConvMap.ContainsKey(gp.Msisdn) && HikeInstantiation.ViewModel.ConvMap[gp.Msisdn].IsHidden))
                 return;
 
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
@@ -883,7 +883,7 @@ namespace windows_client.View
             JArray kickOutMsisdns = new JArray();
             kickOutMsisdns.Add(gp_obj.Msisdn);
             JObject data = new JObject();
-            data.Add(HikeConstants.MSISDNS, kickOutMsisdns);
+            data.Add(HikeConstants.ServerJsonKeys.MSISDNS, kickOutMsisdns);
             JObject jObj = new JObject();
             jObj.Add(HikeConstants.ServerJsonKeys.TO, groupId);
             jObj.Add(HikeConstants.ServerJsonKeys.FROM, HikeInstantiation.MSISDN);
@@ -929,7 +929,7 @@ namespace windows_client.View
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
-                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.REMOVE_FAVOURITE;
                     obj[HikeConstants.ServerJsonKeys.DATA] = data;
 
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
@@ -971,7 +971,7 @@ namespace windows_client.View
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
-                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                    obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.ServerJsonKeys.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);

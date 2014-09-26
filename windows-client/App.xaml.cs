@@ -252,7 +252,7 @@ namespace windows_client
                         && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
-                        PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                        PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                         mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                     }
                     else
@@ -319,7 +319,7 @@ namespace windows_client
 
             if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.6.5.0", currentVersion) == 1)
             {
-                PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PAGE_TO_NAVIGATE_TO] = targetPage;
                 HikeInstantiation.InstantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
             }
@@ -342,7 +342,7 @@ namespace windows_client
                     && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                     && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                     mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
                 }
                 else
@@ -482,7 +482,7 @@ namespace windows_client
         public void SendAppBgStatusToServer()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.APP_INFO);
             obj.Add(HikeConstants.ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
             obj.Add(HikeConstants.ServerJsonKeys.STATUS, "bg");
 

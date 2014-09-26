@@ -73,7 +73,7 @@ namespace windows_client
         {
             Uri nextPage = null;
 
-            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if (obj == null || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -273,10 +273,10 @@ namespace windows_client
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK)
+            if (stat != HikeConstants.ServerJsonKeys.OK)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

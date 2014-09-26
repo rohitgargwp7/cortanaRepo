@@ -468,15 +468,15 @@ namespace windows_client.Mqtt
         {
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.APP_INFO);
             obj.Add(HikeConstants.ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
             obj.Add(HikeConstants.ServerJsonKeys.STATUS, "fg");
             JObject data = new JObject();
 
             if (IsAppStarted)
-                data.Add(HikeConstants.JUSTOPENED, true);
+                data.Add(HikeConstants.ServerJsonKeys.JUSTOPENED, true);
             else
-                data.Add(HikeConstants.JUSTOPENED, false);
+                data.Add(HikeConstants.ServerJsonKeys.JUSTOPENED, false);
 
             obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
 

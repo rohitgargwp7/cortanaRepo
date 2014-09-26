@@ -59,7 +59,7 @@ namespace windows_client
             }
 
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
-            if (HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if (HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }
@@ -112,7 +112,7 @@ namespace windows_client
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_AND_CONDITIONS, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();

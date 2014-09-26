@@ -82,7 +82,7 @@ namespace windows_client.View
                 _isContactShared = true;
                 PageTitle.Text = (AppResources.ShareContact_Txt).ToLower();
             }
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.OBJ_FROM_BLOCKED_LIST))
             {
                 _frmBlockedList = true;
                 blockedSet = new HashSet<string>();
@@ -1050,7 +1050,7 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.OBJ_FROM_BLOCKED_LIST);
             PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.SHARE_CONTACT);
             base.OnRemovedFromJournal(e);
         }

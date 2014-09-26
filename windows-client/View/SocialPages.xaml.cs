@@ -46,13 +46,13 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.SOCIAL, out sn))
                 socialNetwork = (string)sn;
 
-            if (socialNetwork == HikeConstants.TWITTER)
+            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE] = true;
                 BrowserControl.IsScriptEnabled = false;
                 AuthenticateTwitter();
             }
-            else if (socialNetwork == HikeConstants.FACEBOOK)
+            else if (socialNetwork == HikeConstants.ServerJsonKeys.FACEBOOK)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE] = true;
                 if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
@@ -65,7 +65,7 @@ namespace windows_client.View
             else
             {
                 //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
-                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.REWARDS_TOKEN];
+                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }
@@ -113,12 +113,12 @@ namespace windows_client.View
             HideProgressIndicator();
 
             #region TWITTER
-            if (socialNetwork == HikeConstants.TWITTER)
+            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER)
             {
             }
             #endregion
             #region FACEBOOK
-            else if (socialNetwork == HikeConstants.FACEBOOK) // facebook auth
+            else if (socialNetwork == HikeConstants.ServerJsonKeys.FACEBOOK) // facebook auth
             {
                 FacebookOAuthResult oauthResult;
 
@@ -282,7 +282,7 @@ namespace windows_client.View
             ShowProgressIndicator();
 
             string uri = e.Uri.AbsoluteUri.ToString();
-            if (socialNetwork == HikeConstants.TWITTER && uri.Contains(Social.TwitterSettings.OAuthTokenKey) && uri.Contains(Social.TwitterSettings.OAuthVerifierKey))
+            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER && uri.Contains(Social.TwitterSettings.OAuthTokenKey) && uri.Contains(Social.TwitterSettings.OAuthVerifierKey))
             {
                 try
                 {

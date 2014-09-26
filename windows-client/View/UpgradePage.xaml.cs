@@ -72,7 +72,7 @@ namespace windows_client.View
 
         private void ManageNavigation()
         {
-            string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO];
+            string targetPage = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PAGE_TO_NAVIGATE_TO];
 
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
@@ -88,7 +88,7 @@ namespace windows_client.View
                 if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
 
                     NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
                 }
@@ -151,7 +151,7 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.PAGE_TO_NAVIGATE_TO);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PAGE_TO_NAVIGATE_TO);
         }
 
         /// <summary>

@@ -198,7 +198,7 @@ namespace windows_client.View
 
         private void AddUsers_Tap(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_BLOCKED_LIST] = true;
             NavigationService.Navigate(new Uri("/View/SelectUser.xaml", UriKind.Relative));
         }
 

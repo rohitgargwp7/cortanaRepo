@@ -182,7 +182,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
                     if (userName != name.Text)
                     {
@@ -191,7 +191,7 @@ namespace windows_client.View
                         HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.ACCOUNT_NAME, userName);
 
                         // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
-                        PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED] = userName;
+                        PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED] = userName;
                     }
                     if (shouldSendProfile)
                     {
@@ -233,7 +233,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
 
                     if (userEmail != email.Text)

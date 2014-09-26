@@ -112,13 +112,13 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GO_TO_CONV_VIEW))
-                PhoneApplicationService.Current.State.Remove(HikeConstants.GO_TO_CONV_VIEW);
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.GO_TO_CONV_VIEW))
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.GO_TO_CONV_VIEW);
         }
 
         private void startChat_Click(object sender, RoutedEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.GO_TO_CONV_VIEW] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GO_TO_CONV_VIEW] = true;
             Analytics.SendClickEvent(HikeConstants.START_HIKING);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }

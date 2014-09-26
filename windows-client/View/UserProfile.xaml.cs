@@ -262,7 +262,7 @@ namespace windows_client.View
             {
                 object o;
                 #region USER INFO FROM CONVERSATION PAGE
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE, out o))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_CONVERSATION_PAGE, out o))
                 {
                     ConversationListObject co = (ConversationListObject)o;
                     if (o != null)
@@ -277,7 +277,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER INFO FROM CHAT THREAD
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out o))
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE, out o))
                 {
                     if (o is ConversationListObject)
                     {
@@ -301,7 +301,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER INFO FROM GROUP CHAT
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
                     _groupParticipantObject = o as GroupParticipant;
                     msisdn = _groupParticipantObject.Msisdn;
@@ -321,7 +321,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER OWN PROFILE
-                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE))
                 {
                     InitSelfProfile();
 
@@ -342,7 +342,7 @@ namespace windows_client.View
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_TIMELINE, out o))
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.USERINFO_FROM_TIMELINE, out o))
                 {
                     Object[] objArr = o as Object[];
                     if (objArr != null)
@@ -401,15 +401,15 @@ namespace windows_client.View
             if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
                 LoadHighResImage();
 
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_PIC_DOWNLOADED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED))
             {
                 LoadHighResImage();
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_PIC_DOWNLOADED);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED);
             }
 
             // this is done to update profile name , as soon as it gets updated
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
-                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED))
+                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED];
         }
 
         async void LoadHighResImage()
@@ -519,12 +519,12 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CONVERSATION_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_TIMELINE);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.PROFILE_NAME_CHANGED);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_CONVERSATION_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_CHATTHREAD_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_GROUPCHAT_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.USERINFO_FROM_TIMELINE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED);
             removeListeners();
         }
 
@@ -595,12 +595,12 @@ namespace windows_client.View
         {
             string serverId = null;
             bool uploadSuccess = false;
-            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 uploadSuccess = true;
                 try
                 {
-                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.ServerJsonKeys.STATUS_ID].ToString();
                     //todo:check
                 }
                 catch (Exception ex)
@@ -792,7 +792,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
@@ -1045,7 +1045,7 @@ namespace windows_client.View
 
         public void GetHikeStatus_Callback(JObject obj)
         {
-            if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
+            if (obj != null && HikeConstants.ServerJsonKeys.FAIL != (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 var isOnHike = (bool)obj["onhike"];
                 if (isOnHike)
@@ -1232,7 +1232,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             MiscDBUtil.SaveFavourites();
@@ -1251,7 +1251,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
@@ -1363,7 +1363,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {

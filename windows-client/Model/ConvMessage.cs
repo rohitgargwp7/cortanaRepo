@@ -124,7 +124,7 @@ namespace windows_client.Model
             JToken typeToken = null;
             string type = null;
 
-            if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
+            if (obj.TryGetValue(HikeConstants.NavigationKeys.GC_PIN,out typeToken))
                 return ParticipantInfoState.PIN_MESSAGE;
 
             if (obj.TryGetValue(HikeConstants.ServerJsonKeys.TYPE, out typeToken))
@@ -132,26 +132,26 @@ namespace windows_client.Model
             else
                 type = null;
 
-            if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
+            if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
-            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN_NEW == type)
                 return ParticipantInfoState.MEMBERS_JOINED;
-            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
                 if (obj.TryGetValue(HikeConstants.ServerJsonKeys.SUB_TYPE, out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
-            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.STATUS_UPDATE == type)
                 return ParticipantInfoState.STATUS_UPDATE;
-            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_END == type)
                 return ParticipantInfoState.GROUP_END;
-            else if (HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
                 return ParticipantInfoState.GROUP_JOINED_OR_WAITING;
-            else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.USER_OPT_IN == type)
                 return ParticipantInfoState.USER_OPT_IN;
-            else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.USER_JOIN == type)
             {
                 bool isRejoin = false;
                 JToken subtype;
@@ -161,27 +161,27 @@ namespace windows_client.Model
                 }
                 return isRejoin ? ParticipantInfoState.USER_REJOINED : ParticipantInfoState.USER_JOINED;
             }
-            else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.HIKE_USER == type)
                 return ParticipantInfoState.HIKE_USER;
-            else if (HikeConstants.MqttMessageTypes.SMS_USER == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.SMS_USER == type)
                 return ParticipantInfoState.SMS_USER;
             else if ("credits_gained" == type)
                 return ParticipantInfoState.CREDITS_GAINED;
-            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
                 return ParticipantInfoState.INTERNATIONAL_USER;
-            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_NAME == type)
                 return ParticipantInfoState.GROUP_NAME_CHANGE;
-            else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.DND_USER_IN_GROUP == type)
                 return ParticipantInfoState.DND_USER;
-            else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
                 return ParticipantInfoState.GROUP_PIC_CHANGED;
-            else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+            else if (HikeConstants.ServerJsonKeys.MqttMessageTypes.CHAT_BACKGROUNDS == type)
                 return ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             else  // shows type == null
             {
                 // maybe dead code - handling done for dndnumbers in MessageMetaData.cs
                 JToken jarray;
-                if (obj.TryGetValue(HikeConstants.DND_NUMBERS, out jarray))
+                if (obj.TryGetValue(HikeConstants.ServerJsonKeys.DND_NUMBERS, out jarray))
                 {
                     JArray dndNumbers = (JArray)jarray;
                     if (dndNumbers != null)
@@ -1696,7 +1696,7 @@ namespace windows_client.Model
 
             // Added stealth = true at data layer for convmessage for stealth chat
             if (HikeInstantiation.ViewModel != null && HikeInstantiation.ViewModel.ConvMap != null && HikeInstantiation.ViewModel.ConvMap.ContainsKey(Msisdn) && HikeInstantiation.ViewModel.ConvMap[Msisdn].IsHidden)
-                data[HikeConstants.STEALTH] = true;
+                data[HikeConstants.ServerJsonKeys.STEALTH] = true;
 
             if (HasAttachment)
             {
@@ -1773,7 +1773,7 @@ namespace windows_client.Model
                 data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
                 obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = NetworkManager.STICKER;
             }
-            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.NavigationKeys.GC_PIN))
             {
                 data[HikeConstants.ServerJsonKeys.METADATA] = JObject.Parse(metadataJsonString);
             }
@@ -2179,7 +2179,7 @@ namespace windows_client.Model
                 for (int i = 0; i < arr.Count; i++)
                 {
                     JObject nameMsisdn = (JObject)arr[i];
-                    string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
+                    string msisdn = (string)nameMsisdn[HikeConstants.ServerJsonKeys.MSISDN];
                     if (msisdn == HikeInstantiation.MSISDN)
                         continue;
                     bool onhike = true;
@@ -2201,7 +2201,7 @@ namespace windows_client.Model
                         Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
                     }
 
-                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant((string)nameMsisdn[HikeConstants.ServerJsonKeys.NAME], msisdn, _msisdn);
                     gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
@@ -2343,15 +2343,15 @@ namespace windows_client.Model
                     JToken val;
 
                     // this is to handle profile pic update
-                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
                         this.Message = AppResources.Update_Profile_Pic_txt;
                     else  // status , moods update
                     {
-                        if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                        if (data.TryGetValue(HikeConstants.ServerJsonKeys.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                             this.Message = val.ToString();
                     }
 
-                    data.Remove(HikeConstants.THUMBNAIL);
+                    data.Remove(HikeConstants.ServerJsonKeys.THUMBNAIL);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_NAME_CHANGE:

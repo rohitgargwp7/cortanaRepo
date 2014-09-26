@@ -176,7 +176,7 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(_msisdn);
             });
 
-            PhoneApplicationService.Current.State[HikeConstants.IS_PIC_DOWNLOADED] = true;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.IS_PIC_DOWNLOADED] = true;
         }
 
         private void onStatusImageDownloaded(byte[] fileBytes, object filePath)
