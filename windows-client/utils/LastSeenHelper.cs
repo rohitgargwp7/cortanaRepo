@@ -31,11 +31,11 @@ namespace windows_client.utils
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK)
+            if (stat != HikeConstants.ServerJsonKeys.OK)
             {
                 if (currentRequestCount < maxRequestCount)
                 {
@@ -51,12 +51,12 @@ namespace windows_client.utils
 
                 currentRequestCount++;
             }
-            else if (stat == HikeConstants.OK)
+            else if (stat == HikeConstants.ServerJsonKeys.OK)
             {
                 JToken dataToken, lastSeenToken;
                 obj.TryGetValue(HikeConstants.ServerJsonKeys.DATA, out dataToken);
                 var jObj = JObject.Parse(dataToken.ToString());
-                jObj.TryGetValue(HikeConstants.LASTSEEN, out lastSeenToken);
+                jObj.TryGetValue(HikeConstants.ServerJsonKeys.LASTSEEN, out lastSeenToken);
 
                 if (lastSeenToken != null && UpdateLastSeen != null)
                     UpdateLastSeen(this, new LastSeenEventArgs() { TimeStamp = Convert.ToInt64(lastSeenToken.ToString()), ContactNumber = cNumber });

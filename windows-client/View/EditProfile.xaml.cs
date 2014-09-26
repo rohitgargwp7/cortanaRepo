@@ -182,7 +182,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
                     if (userName != name.Text)
                     {
@@ -233,7 +233,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
 
                     if (userEmail != email.Text)

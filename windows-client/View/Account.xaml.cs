@@ -137,7 +137,7 @@ namespace windows_client.View
 
         private void deleteAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            if (obj == null || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
             {
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -227,7 +227,7 @@ namespace windows_client.View
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.ServerJsonKeys.TWITTER, false);
                 return;
             }
         }
@@ -267,9 +267,9 @@ namespace windows_client.View
             HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
 
             if (isAccountDeleteUnlink)
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.ServerJsonKeys.FACEBOOK, false);
             else
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.ServerJsonKeys.FACEBOOK, false);
         }
     }
 }

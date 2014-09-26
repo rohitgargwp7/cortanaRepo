@@ -510,9 +510,9 @@ namespace windows_client.utils
                 string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.CURRENT_LOCALE, currentLocale);
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
+                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
                 JObject data = new JObject();
-                data.Add(HikeConstants.LOCALE, currentLocale);
+                data.Add(HikeConstants.ServerJsonKeys.LOCALE, currentLocale);
                 obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }

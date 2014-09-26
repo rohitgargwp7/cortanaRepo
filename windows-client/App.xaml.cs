@@ -482,7 +482,7 @@ namespace windows_client
         public void SendAppBgStatusToServer()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.APP_INFO);
             obj.Add(HikeConstants.ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
             obj.Add(HikeConstants.ServerJsonKeys.STATUS, "bg");
 

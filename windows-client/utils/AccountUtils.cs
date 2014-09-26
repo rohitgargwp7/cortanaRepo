@@ -650,7 +650,7 @@ namespace windows_client.utils
                     obj = vars[5];
                     data.Add("dev_token", push_token);
                     data.Add(HikeConstants.ServerJsonKeys.DEVICE_TYPE_KEY, "windows");
-                    data.Add(HikeConstants.PREVIEW, on_off);
+                    data.Add(HikeConstants.ServerJsonKeys.PREVIEW, on_off);
                     break;
                 #endregion
                 #region DEFAULT
@@ -1006,7 +1006,7 @@ namespace windows_client.utils
         {
             try
             {
-                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+                if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                 {
                     return null;
                 }
@@ -1070,7 +1070,7 @@ namespace windows_client.utils
             bool isRefresh = true;
             try
             {
-                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+                if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
                     return null;
 
                 JToken token;
