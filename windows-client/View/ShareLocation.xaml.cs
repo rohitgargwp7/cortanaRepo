@@ -22,6 +22,7 @@ using System.Web;
 using System.Net.NetworkInformation;
 using System.Globalization;
 using System.Linq;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -190,7 +191,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ShareLocation :: ParsePlaces : ParsePlaces , Exception : " + ex.StackTrace);
+                Debug.WriteLine("ShareLocation :: ParsePlaces : ParsePlaces , Exception : " + ex.StackTrace);
             }
 
             return places;
@@ -329,7 +330,7 @@ namespace windows_client.View
             {
                 // Couldn't get current location - location might be disabled in settings
                 //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
-                System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
+                Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
 
                 _isFetchingCurrentLocation = false;
                 HideProgressIndicator();
@@ -844,7 +845,7 @@ namespace windows_client.View
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("Places :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("Places :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

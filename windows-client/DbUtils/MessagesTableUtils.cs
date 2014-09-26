@@ -295,7 +295,7 @@ namespace windows_client.DbUtils
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     string toastText = String.Empty;
- 
+
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
@@ -354,7 +354,7 @@ namespace windows_client.DbUtils
                     return null;
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                Debug.WriteLine(string.Format("Time to add chat msg : {0}", msec1));
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -371,7 +371,7 @@ namespace windows_client.DbUtils
                 ConversationTableUtils.updateConversation(obj);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to update conversation  : {0}", msec);
+                Debug.WriteLine(string.Format("Time to update conversation  : {0}", msec));
             }
             return obj;
         }
@@ -403,45 +403,52 @@ namespace windows_client.DbUtils
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            try
             {
-                ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
-                if (message != null)
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
-                    var msgState = (ConvMessage.State)val;
-
-                    if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
-                        || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
-                        || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
+                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
+                    if (message != null)
                     {
-                        if (msgState == ConvMessage.State.SENT_DELIVERED)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        var msgState = (ConvMessage.State)val;
+
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
+                        {
+                            if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                        }
+
+                        //hack to update db for sent socket write
+                        if ((int)message.MessageStatus < val ||
+                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
+                                    (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
+                        {
+                            if (fromUser == null || fromUser == message.Msisdn)
+                            {
+                                message.MessageStatus = (ConvMessage.State)val;
+                                SubmitWithConflictResolve(context);
+                                Debug.WriteLine("MESSAGE STATUS UPDATE:ID:{0},STATUS:{1}", message.MessageId, message.MessageStatus);
+                                return message.Msisdn;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
                     }
-
-                    //hack to update db for sent socket write
-                    if ((int)message.MessageStatus < val ||
-                            (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
-                                (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
+                    else
                     {
-                        if (fromUser == null || fromUser == message.Msisdn)
-                        {
-                            message.MessageStatus = (ConvMessage.State)val;
-                            SubmitWithConflictResolve(context);
-                            Debug.WriteLine("MESSAGE STATUS UPDATE:ID:{0},STATUS:{1}", message.MessageId, message.MessageStatus);
-                            return message.Msisdn;
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        return null;
                     }
                 }
-                else
-                {
-                    return null;
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MessageTableUtils :: updateMsgStatus, Exception : " + ex.StackTrace);
             }
             return null;
         }
@@ -630,7 +637,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:", ex.Message);
+                    Debug.WriteLine("MessageTableUtils::SaveLongMessage, Exception:" + ex.Message);
                 }
             }
         }
@@ -662,7 +669,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:", ex.Message);
+                    Debug.WriteLine("MessageTableUtils :: ReadLongMessage, Exception:" + ex.Message);
                 }
             }
             return message;

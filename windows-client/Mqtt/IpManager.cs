@@ -58,6 +58,7 @@ namespace windows_client.Mqtt
                 if (count > 0)//todo:check for wifi
                     port = HikeConstants.ServerUrls.ProductionUrls.MQTT_PRODUCTION_XMPP_PORT;
                 if (count < 5)
+
                 {
                     ip = ProductionIps[_random.Next(ProductionIps.Length)];
                     count++;

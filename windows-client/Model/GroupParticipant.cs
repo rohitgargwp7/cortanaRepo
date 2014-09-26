@@ -431,7 +431,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception in property : {0}. Exception : {1}", propertyName, ex.StackTrace);
+                        Debug.WriteLine(string.Format("Exception in property : {0}. Exception : {1}", propertyName, ex.StackTrace));
                     }
                 }
             });

@@ -629,6 +629,7 @@ namespace windows_client.View
 
         #endregion
 
+
         #region CHANGE GROUP NAME
 
         private void setName_Callback(JObject obj)
@@ -741,7 +742,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number " + cInfo.PhoneNo);
                         }
                     }
                     else

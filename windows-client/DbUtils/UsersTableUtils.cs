@@ -28,7 +28,7 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace);
+                    Debug.WriteLine(string.Format("UsersTable :: Block user {0} , Exception : {1}", msisdn, e.StackTrace));
                 }
             }
         }

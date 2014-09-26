@@ -234,6 +234,7 @@ namespace windows_client.utils
                         {
                             using (var reader = new BinaryReader(file))
                             {
+
                                 int imageBytesCount = reader.ReadInt32();
                                 Byte[] imageBytes = reader.ReadBytes(imageBytesCount);
                                 UI_Utils.Instance.createImageFromBytes(imageBytes, image);
