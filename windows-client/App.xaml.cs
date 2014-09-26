@@ -70,8 +70,8 @@ namespace windows_client
             {
                 AccountUtils.Token = (string)HikeInstantiation.AppSettings[HikeConstants.TOKEN_SETTING];
                 string msisdn = string.Empty;
-    
-                if(HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
+
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
                     HikeInstantiation.MSISDN = msisdn;
             }
 
@@ -126,7 +126,7 @@ namespace windows_client
                 string currentVersion = string.Empty;
                 if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
                     HikeInstantiation.CurrentVersion = currentVersion;
-                
+
                 HikeInstantiation.InstantiateClasses(false);
             }
             else
@@ -146,7 +146,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            sendAppBgStatusToServer();
+            SendAppBgStatusToServer();
 
             if (HikeInstantiation.IsViewModelLoaded)
             {
@@ -155,7 +155,7 @@ namespace windows_client
 
                 if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
-                
+
                 ConversationTableUtils.saveConvObjectList();
             }
 
@@ -166,27 +166,25 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            sendAppBgStatusToServer();
+            SendAppBgStatusToServer();
         }
 
-        public static void appInitialize()
+        /// <summary>
+        /// Create Push Channel and listen to network change.
+        /// </summary>
+        public static void AppInitialize()
         {
             DeviceNetworkInformation.NetworkAvailabilityChanged += OnNetworkChange;
+
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
             HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
-            
-            if (isPushEnabled)
-            {
-                PushHelper.Instance.registerPushnotifications(false);
-            }
-            #endregion
-        }
 
-        private void appDeinitialize()
-        {
-            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+            if (isPushEnabled)
+                PushHelper.Instance.registerPushnotifications(false);
+        
+            #endregion
         }
 
         private static void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
@@ -248,9 +246,9 @@ namespace windows_client
                     }
 
                     string msisdn = Utils.GetParamFromUri(targetPage);
-                    bool IsStealth = Utils.IsUriStealth(targetPage);
+                    bool isStealth = Utils.IsUriStealth(targetPage);
 
-                    if ((!IsStealth || (IsStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
+                    if ((!isStealth || (isStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
                         && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
@@ -328,7 +326,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 HikeInstantiation.InstantiateClasses(false);
-                appInitialize();
+                AppInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
                     Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
@@ -357,7 +355,7 @@ namespace windows_client
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
 
                 HikeInstantiation.InstantiateClasses(false);
-                appInitialize();
+                AppInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
                     Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
@@ -369,7 +367,7 @@ namespace windows_client
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 HikeInstantiation.InstantiateClasses(false);
-                appInitialize();
+                AppInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
                     Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
@@ -384,7 +382,7 @@ namespace windows_client
             else
             {
                 HikeInstantiation.InstantiateClasses(false);
-                appInitialize();
+                AppInitialize();
 
                 Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
                 mapper.UriMappings[0].MappedUri = nUri;
@@ -477,26 +475,29 @@ namespace windows_client
         }
 
         #endregion
-         public void sendAppBgStatusToServer()
-         {
-             JObject obj = new JObject();
-             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
-             obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
-             obj.Add(HikeConstants.STATUS, "bg");
- 
-             if (HikeInstantiation.HikePubSubInstance != null)
-             {
-                 Object[] objArr = new object[2];
-                 objArr[0] = obj;
-                 objArr[1] = 0;
-                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
-             }
-         }
+
+        /// <summary>
+        /// Send App Status to server. If app has been sent to bg or has been activated to fg.
+        /// </summary>
+        public void SendAppBgStatusToServer()
+        {
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.APP_INFO);
+            obj.Add(HikeConstants.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(HikeConstants.STATUS, "bg");
+
+            if (HikeInstantiation.HikePubSubInstance != null)
+            {
+                Object[] objArr = new object[2];
+                objArr[0] = obj;
+                objArr[1] = 0;
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
+            }
+        }
 
         public static MediaElement GlobalMediaElement
         {
             get { return Current.Resources["GlobalMedia"] as MediaElement; }
         }
-
     }
 }

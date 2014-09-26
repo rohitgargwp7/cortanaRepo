@@ -62,7 +62,7 @@ namespace windows_client.View
 
         private void UpgradeApp()
         {
-            App.appInitialize();
+            App.AppInitialize();
 
             // Upgrade complete, write the current version
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
