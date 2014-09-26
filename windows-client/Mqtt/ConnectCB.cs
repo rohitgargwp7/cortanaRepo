@@ -33,7 +33,7 @@ namespace windows_client.Mqtt
                 HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();
 
-                HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+                HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.PushNotificationChannelName);
                 if (pushChannel != null)
                 {
                     if (pushChannel.IsShellTileBound)
