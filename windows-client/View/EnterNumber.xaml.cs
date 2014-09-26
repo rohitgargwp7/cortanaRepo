@@ -47,7 +47,7 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             ApplicationBar = appBar;
             this.countryList.ItemsSource = GetGroupedList();
-            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+            if (!HikeInstantiation.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
@@ -343,6 +343,7 @@ namespace windows_client
                 return;
             }
 
+
             string unauthedMSISDN = (string)obj[HikeConstants.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
@@ -360,10 +361,11 @@ namespace windows_client
             }
 
             /*If all well*/
-            App.WriteToIsoStorageSettings(HikeConstants.MSISDN_SETTING, unauthedMSISDN);
+
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.MSISDN_SETTING, unauthedMSISDN);
             
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
-            App.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -407,7 +409,7 @@ namespace windows_client
 
             txtEnterCountry.Text = countryCode;
 
-            if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (HikeInstantiation.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtEnterPhone", out obj))
@@ -478,7 +480,7 @@ namespace windows_client
                 }
             }
             else
-                App.IS_TOMBSTONED = false;
+                HikeInstantiation.IS_TOMBSTONED = false;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

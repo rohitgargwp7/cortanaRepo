@@ -72,8 +72,8 @@ namespace windows_client.DbUtils
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
             int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
+            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             //saveNewConv(obj);
             return obj;
         }
@@ -101,13 +101,13 @@ namespace windows_client.DbUtils
                 else
                 {
                     ContactInfo contactInfo = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                        contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
+                        contactInfo = HikeInstantiation.ViewModel.ContactsCache[convMessage.Msisdn];
                     else
                         contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
-                    if (App.ViewModel.Isfavourite(convMessage.Msisdn))
+                    if (HikeInstantiation.ViewModel.Isfavourite(convMessage.Msisdn))
                         obj.IsFav = true;
                 }
             }
@@ -149,7 +149,7 @@ namespace windows_client.DbUtils
             {
                 if (!Utils.isGroupConversation(from))
                 {
-                    if (from == App.MSISDN)
+                    if (from == HikeInstantiation.MSISDN)
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
                     else
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, obj.NameToShow);
@@ -163,7 +163,7 @@ namespace windows_client.DbUtils
             {
                 if (!Utils.isGroupConversation(from))
                 {
-                    if (from == App.MSISDN)
+                    if (from == HikeInstantiation.MSISDN)
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
                     else
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
@@ -187,8 +187,8 @@ namespace windows_client.DbUtils
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
+            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
@@ -206,7 +206,7 @@ namespace windows_client.DbUtils
                     if (files != null)
                         foreach (string fileName in files)
                             store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, 0); // clear total number of convs
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, 0); // clear total number of convs
                 }
             }
         }
@@ -222,8 +222,8 @@ namespace windows_client.DbUtils
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + msisdn);
 
                     int convs = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs - 1);
+                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs - 1);
                 }
                 catch (Exception ex)
                 {
@@ -234,9 +234,9 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
+                ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
                 saveConvObject(obj, msisdn);
                 //saveConvObjectList();
@@ -251,9 +251,9 @@ namespace windows_client.DbUtils
 
         public static bool updateGroupName(string grpId, string groupName)
         {
-            if (!App.ViewModel.ConvMap.ContainsKey(grpId))
+            if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId))
                 return false;
-            ConversationListObject obj = App.ViewModel.ConvMap[grpId];
+            ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
             string msisdn = grpId.Replace(":", "_");
             saveConvObject(obj, msisdn);
@@ -267,9 +267,9 @@ namespace windows_client.DbUtils
 
             for (int i = 0; i < cn.Count; i++)
             {
-                if (App.ViewModel.ConvMap.ContainsKey(cn[i].Msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(cn[i].Msisdn))
                 {
-                    ConversationListObject obj = App.ViewModel.ConvMap[cn[i].Msisdn]; //update UI
+                    ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[cn[i].Msisdn]; //update UI
                     obj.ContactName = cn[i].Name;
                     obj.IsOnhike = cn[i].OnHike;
                     saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
@@ -282,9 +282,9 @@ namespace windows_client.DbUtils
             if (msisdn == null)
                 return;
             ConversationListObject obj = null;
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                obj = App.ViewModel.ConvMap[msisdn];
+                obj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 if (obj.LastMsgId != id)
                     return;
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
@@ -300,11 +300,11 @@ namespace windows_client.DbUtils
         {
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
-            Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+            Dictionary<string, ConversationListObject> convMap = HikeInstantiation.ViewModel.ConvMap;
 
             if (convMap == null)
             {
-                if (!App.IS_MARKETPLACE)
+                if (!HikeInstantiation.IS_MARKETPLACE)
                     MessageBox.Show("Map is null !!", "TESTING", MessageBoxButton.OK);
                 return;
             }
@@ -391,7 +391,7 @@ namespace windows_client.DbUtils
         {
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
-            Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+            Dictionary<string, ConversationListObject> convMap = HikeInstantiation.ViewModel.ConvMap;
             lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -485,7 +485,7 @@ namespace windows_client.DbUtils
                             if (count > 0)
                             {
                                 bool isLessThanEqualTo_1500 = false;
-                                if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+                                if (Utils.compareVersion(HikeInstantiation.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
 
                                 convList = new List<ConversationListObject>(count);

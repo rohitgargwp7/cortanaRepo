@@ -14,6 +14,7 @@ using windows_client.Languages;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Media;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -49,16 +50,16 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
-            App.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_USER, this);
         }
 
         private void removeListeners()
         {
             try
             {
-                App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
-                App.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_USER, this);
+                HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+                HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_USER, this);
             }
             catch (Exception ex)
             {
@@ -127,7 +128,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
             {
                 shellProgress.IsIndeterminate = true;
                 registerListeners();
@@ -153,7 +154,7 @@ namespace windows_client.View
 
         private ObservableCollection<ContactInfo> FilterUnBlockedUsers(List<ContactInfo> allContactsList)
         {
-            HashSet<string> blockedhashSet = App.ViewModel.BlockedHashset;
+            HashSet<string> blockedhashSet = HikeInstantiation.ViewModel.BlockedHashset;
 
             if (blockedhashSet == null || blockedhashSet.Count == 0)
                 return null;
@@ -166,8 +167,8 @@ namespace windows_client.View
             {
                 ContactInfo c = allContactsList[i];
 
-                if (!App.ViewModel.IsHiddenModeActive &&
-                    App.ViewModel.ConvMap.ContainsKey(c.Msisdn) && App.ViewModel.ConvMap[c.Msisdn].IsHidden)
+                if (!HikeInstantiation.ViewModel.IsHiddenModeActive &&
+                    HikeInstantiation.ViewModel.ConvMap.ContainsKey(c.Msisdn) && HikeInstantiation.ViewModel.ConvMap[c.Msisdn].IsHidden)
                     continue;
                 
                 if (hashBlocked.Contains(c.Msisdn))
@@ -184,8 +185,8 @@ namespace windows_client.View
             {
                 foreach (string msisdn in hashBlocked)
                 {
-                    if (!App.ViewModel.IsHiddenModeActive &&
-                    App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+                    if (!HikeInstantiation.ViewModel.IsHiddenModeActive &&
+                    HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn) && HikeInstantiation.ViewModel.ConvMap[msisdn].IsHidden)
                         continue;
 
                     blockedContacts.Add(new ContactInfo(msisdn, msisdn, false));
@@ -212,8 +213,8 @@ namespace windows_client.View
 
             shellProgress.IsIndeterminate = true;
             
-            App.ViewModel.BlockedHashset.Remove(c.Msisdn);
-            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
+            HikeInstantiation.ViewModel.BlockedHashset.Remove(c.Msisdn);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c);
             
             c.IsSelected = false;
             blockedList.Remove(c);

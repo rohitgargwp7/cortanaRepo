@@ -32,7 +32,7 @@ namespace windows_client.View
 
         public NewGroup()
         {
-            string uid = (string)App.appSettings[HikeConstants.UID_SETTING];
+            string uid = (string)HikeInstantiation.appSettings[HikeConstants.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
 
             InitializeComponent();
@@ -91,7 +91,6 @@ namespace windows_client.View
                     reloadImage = false;
 
                     avatarImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewImageBytes);
-
                     PhoneApplicationService.Current.State[HikeConstants.HAS_CUSTOM_IMAGE] = true;
                 }
                 catch (Exception ex)
@@ -167,11 +166,11 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
             {
                 object obj = null;
 
-                if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
+                if (HikeInstantiation.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
                 {
                     if (State.TryGetValue(HikeConstants.GROUP_NAME, out obj))
                     {
@@ -271,7 +270,7 @@ namespace windows_client.View
                     State["img"] = fullViewImageBytes;
             }
             else
-                App.IS_TOMBSTONED = false;
+                HikeInstantiation.IS_TOMBSTONED = false;
         }
     }
 }

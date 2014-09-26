@@ -75,7 +75,7 @@ namespace windows_client
         }
         private NetworkManager()
         {
-            pubSub = App.HikePubSubInstance;
+            pubSub = HikeInstantiation.HikePubSubInstance;
         }
 
         public static NetworkManager Instance
@@ -172,7 +172,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null && !HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_DOWNLOAD_SETTING))
                     {
                         FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
@@ -208,7 +208,7 @@ namespace windows_client
                     Debug.WriteLine("NetworkManager ::  onMessage :  REQUEST_DISPLAY_PIC, Exception : " + ex.StackTrace);
                 }
 
-                App.ViewModel.AddGroupPicForUpload(grpId);
+                HikeInstantiation.ViewModel.AddGroupPicForUpload(grpId);
             }
             #endregion
             #region START_TYPING
@@ -227,8 +227,8 @@ namespace windows_client
 
                 var number = String.IsNullOrEmpty(sentTo) ? msisdn : sentTo;
 
-                if (App.ViewModel.ConvMap != null && App.ViewModel.ConvMap.ContainsKey(number)
-                    && App.ViewModel.ConvMap[number].IsHidden && !App.ViewModel.IsHiddenModeActive)
+                if (HikeInstantiation.ViewModel.ConvMap != null && HikeInstantiation.ViewModel.ConvMap.ContainsKey(number)
+                    && HikeInstantiation.ViewModel.ConvMap[number].IsHidden && !HikeInstantiation.ViewModel.IsHiddenModeActive)
                     return;
 
                 object[] vals = new object[2];
@@ -252,7 +252,7 @@ namespace windows_client
                     if (lastSeen > 0)
                     {
                         long timedifference;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             lastSeen = lastSeen - timedifference;
                     }
 
@@ -284,7 +284,7 @@ namespace windows_client
                 try
                 {
                     int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                    App.WriteToIsoStorageSettings(HikeConstants.SMS_SETTING, sms_credits);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SMS_SETTING, sms_credits);
                     this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
                 catch (Exception ex)
@@ -408,15 +408,15 @@ namespace windows_client
                     isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
                 }
                 // update contacts cache
-                if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
-                    App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
+                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(uMsisdn))
+                    HikeInstantiation.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
                 GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
                     long lastTimeStamp;
-                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                    if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
                         return;
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
                     // if user is in contact list then only show the joined msg
                     ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
 
@@ -427,11 +427,11 @@ namespace windows_client
                 else
                 {
                     //remove image if stored.
-                    if (App.ViewModel.ConvMap.ContainsKey(uMsisdn))
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(uMsisdn))
                     {
-                        if (App.ViewModel.ConvMap[uMsisdn].Avatar != null)
+                        if (HikeInstantiation.ViewModel.ConvMap[uMsisdn].Avatar != null)
                         {
-                            App.ViewModel.ConvMap[uMsisdn].Avatar = null;
+                            HikeInstantiation.ViewModel.ConvMap[uMsisdn].Avatar = null;
                             this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
@@ -484,11 +484,11 @@ namespace windows_client
                 Stopwatch st = Stopwatch.StartNew();
                 MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
                 st.Stop();
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     try
                     {
-                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                        HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
                         this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
                     catch (Exception ex)
@@ -500,29 +500,29 @@ namespace windows_client
                 {
                     if (msisdn == null)
                         return;
-                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    ConversationListObject c = HikeInstantiation.ViewModel.GetFav(msisdn);
                     if (c != null) // for favourites
                     {
                         c.Avatar = imageBytes;
                     }
                     else
                     {
-                        c = App.ViewModel.GetPending(msisdn);
+                        c = HikeInstantiation.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
                         }
                     }
                 }
-                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
                 {
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
                     // this is done to notify that image is changed so load new one.
-                    App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                    HikeInstantiation.ViewModel.ContactsCache[msisdn].Avatar = null;
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.UpdateUserImageInStatus(msisdn);
+                    HikeInstantiation.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
@@ -540,7 +540,7 @@ namespace windows_client
                 try
                 {
                     int invited = (int)data[HikeConstants.ALL_INVITEE];
-                    App.WriteToIsoStorageSettings(HikeConstants.INVITED, invited);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITED, invited);
                 }
                 catch (Exception ex)
                 {
@@ -549,7 +549,7 @@ namespace windows_client
                 try
                 {
                     int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
-                    App.WriteToIsoStorageSettings(HikeConstants.INVITED_JOINED, invited_joined);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITED_JOINED, invited_joined);
                 }
                 catch (Exception ex)
                 {
@@ -567,7 +567,7 @@ namespace windows_client
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
-                    App.WriteToIsoStorageSettings(HikeConstants.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
                     this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
 
@@ -584,7 +584,7 @@ namespace windows_client
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
                     {
-                        App.appSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
+                        HikeInstantiation.appSettings[HikeConstants.SHOW_POPUP] = null;//to show it is free sms pop up.
                     }
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
@@ -625,7 +625,7 @@ namespace windows_client
                                                         isFav = true; // true for fav , false for pending
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
 
-                                                        if (App.ViewModel.BlockedHashset.Contains(fkkvv.Key)) // if this user is blocked ignore him
+                                                        if (HikeInstantiation.ViewModel.BlockedHashset.Contains(fkkvv.Key)) // if this user is blocked ignore him
                                                             continue;
 
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
@@ -645,8 +645,8 @@ namespace windows_client
                                                                 catch { }
                                                             }
 
-                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+                                                            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                HikeInstantiation.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
 
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
@@ -661,8 +661,8 @@ namespace windows_client
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
 
                                                                 ConversationListObject favObj;
-                                                                if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                                    favObj = App.ViewModel.ConvMap[fkkvv.Key];
+                                                                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                    favObj = HikeInstantiation.ViewModel.ConvMap[fkkvv.Key];
                                                                 else
                                                                 {
                                                                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(fkkvv.Key);
@@ -685,8 +685,8 @@ namespace windows_client
                                                         {
                                                             thrAreFavs = true;
 
-                                                            if (App.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
-                                                                App.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
+                                                            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(fkkvv.Key))
+                                                                HikeInstantiation.ViewModel.ConvMap[fkkvv.Key].IsFav = true;
 
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
@@ -712,17 +712,17 @@ namespace windows_client
                                                 socialObj.TryGetValue(HikeConstants.TWITTER, out socialJToken);
                                                 if (socialJToken != null) // twitter is present in JSON
                                                 {
-                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, (string)(socialJToken as JObject)["id"]);
-                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, (string)(socialJToken as JObject)["token"]);
-                                                    App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, (string)(socialJToken as JObject)["id"]);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, (string)(socialJToken as JObject)["token"]);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
                                                 }
                                                 socialJToken = null;
                                                 socialObj.TryGetValue(HikeConstants.FACEBOOK, out socialJToken);
                                                 if (socialJToken != null) // facebook is present in JSON
                                                 {
-                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, (string)(socialJToken as JObject)["id"]);
-                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, (string)(socialJToken as JObject)["token"]);
-                                                    App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, (string)(socialJToken as JObject)["id"]);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, (string)(socialJToken as JObject)["token"]);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
                                                 }
                                             }
 
@@ -730,16 +730,16 @@ namespace windows_client
 
                                         #endregion
                                         #region REWARDS
-                                        if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
+                                        if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                                         {
                                             if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
                                             {
-                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
                                             }
                                             // whenever this key will come toggle the show rewards thing
                                             if (kkvv.Key == HikeConstants.SHOW_REWARDS)
                                             {
-                                                App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
+                                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
                                                 pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
                                             }
 
@@ -749,7 +749,7 @@ namespace windows_client
                                                 if (ttObj != null)
                                                 {
                                                     int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
-                                                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
                                                     pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
                                                 }
                                             }
@@ -765,10 +765,10 @@ namespace windows_client
                                                 byte[] imageBytes = System.Convert.FromBase64String(iconToken.ToString());
                                                 MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, imageBytes, true);
                                                 object[] vals = new object[3];
-                                                vals[0] = App.MSISDN;
+                                                vals[0] = HikeInstantiation.MSISDN;
                                                 vals[1] = null;
                                                 vals[2] = imageBytes;
-                                                App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                                             }
                                         }
 
@@ -783,11 +783,11 @@ namespace windows_client
 
                                                 if (String.IsNullOrEmpty(val) || Convert.ToBoolean(val))
                                                 {
-                                                    App.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
-                                                    App.appSettings.Save();
+                                                    HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+                                                    HikeInstantiation.appSettings.Save();
                                                 }
                                                 else
-                                                    App.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
+                                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
                                             }
                                             catch { }
                                         }
@@ -815,7 +815,7 @@ namespace windows_client
                                                 {
                                                     isUpdated = true;
 
-                                                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == id)
+                                                    if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber == id)
                                                         pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
                                                 }
                                             }
@@ -831,7 +831,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
+                                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -844,7 +844,7 @@ namespace windows_client
                                 }
 
                                 // save only for Twitter , FB
-                                //App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
+                                //HikeInstantiation.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
                             }// save only tc , invite_token
                             else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                             {
@@ -852,7 +852,7 @@ namespace windows_client
                                 Debug.WriteLine("AI :: Value : " + val);
 
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
-                                    App.WriteToIsoStorageSettings(kv.Key, val);
+                                    HikeInstantiation.WriteToIsoStorageSettings(kv.Key, val);
                             }
                         }
                         catch (Exception ex)
@@ -887,14 +887,14 @@ namespace windows_client
                     Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
-                    if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
+                    if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
                     {
                         if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
-                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
                         rew = null;
                         if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
                         {
-                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
                             pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
                         }
                     }
@@ -910,12 +910,12 @@ namespace windows_client
                             {
                                 if (jArray.Count > 1)
                                 {
-                                    App.appSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
-                                    App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
+                                    HikeInstantiation.appSettings[HikeConstants.STATUS_UPDATE_FIRST_SETTING] = (byte)jArray[0];
+                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_SECOND_SETTING, (byte)jArray[1]);
                                 }
                                 else if (jArray.Count == 1)
                                 {
-                                    App.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
+                                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.STATUS_UPDATE_FIRST_SETTING, (byte)jArray[0]);
                                 }
                             }
                         }
@@ -926,12 +926,13 @@ namespace windows_client
                     }
                     #endregion
                     #region moods zone
+
                     if (data.TryGetValue(HikeConstants.HIDE_CRICKET_MOODS, out rew))
                     {
                         //we are keeping state for hide because by default moods are ON. If server never sends this packet, no
                         //appsetting would ever be stored
                         bool showMoods = rew.ToObject<bool>();
-                        App.WriteToIsoStorageSettings(HikeConstants.HIDE_CRICKET_MOODS, !showMoods);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDE_CRICKET_MOODS, !showMoods);
                     }
                     #endregion
                     #region Invite pop up
@@ -940,9 +941,9 @@ namespace windows_client
                     {
                         JToken jtokenShowFreeInvites;
                         string previousId;
-                        if ((!App.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
+                        if ((!HikeInstantiation.appSettings.TryGetValue(HikeConstants.INVITE_POPUP_UNIQUEID, out previousId) || previousId != ((string)jtokenMessageId)) && data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtokenShowFreeInvites))
                         {
-                            App.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.INVITE_POPUP_UNIQUEID, (string)jtokenMessageId);
                             bool showInvite = (bool)jtokenShowFreeInvites;
 
                             if (showInvite)
@@ -953,7 +954,7 @@ namespace windows_client
                                 popupDataobj[0] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TITLE, out jtoken) ? (string)jtoken : null;
                                 //add text to first place;
                                 popupDataobj[1] = data.TryGetValue(HikeConstants.FREE_INVITE_POPUP_TEXT, out jtoken) ? (string)jtoken : null;
-                                App.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
+                                HikeInstantiation.appSettings[HikeConstants.SHOW_POPUP] = popupDataobj;
                             }
                         }
                     }
@@ -974,7 +975,7 @@ namespace windows_client
                                     ips[i] = (string)jArray[i];
                                 }
 
-                                App.WriteToIsoStorageSettings(HikeConstants.IP_LIST, ips);
+                                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.IP_LIST, ips);
                             }
                         }
                         catch (Exception ex)
@@ -1152,7 +1153,7 @@ namespace windows_client
                 if (obj == null)
                     return;
                 GroupManager.Instance.SaveGroupCache(grpId);
-                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+                //HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                 Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
@@ -1174,7 +1175,7 @@ namespace windows_client
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
                     ConversationListObject cObj;
-                    if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                    if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     {
                         if (cObj.ContactName == groupName || string.IsNullOrEmpty(groupName))//group name is same as previous or empty
                             return;
@@ -1197,7 +1198,7 @@ namespace windows_client
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                            HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = groupName;
                             this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                             this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
                         });
@@ -1215,7 +1216,7 @@ namespace windows_client
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string from = (string)jsonObj[HikeConstants.FROM];
                 ConversationListObject cObj;
-                if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                if (!HikeInstantiation.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
                     return;//if group doesn't exist return
                 JToken temp;
                 jsonObj.TryGetValue(HikeConstants.DATA, out temp);
@@ -1243,13 +1244,13 @@ namespace windows_client
                 if (obj == null)
                     return;
                 MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
-                if (App.ViewModel.ConvMap.ContainsKey(groupId))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         try
                         {
-                            App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
+                            HikeInstantiation.ViewModel.ConvMap[groupId].Avatar = imageBytes;
                             object[] oa = new object[2];
                             oa[0] = cm;
                             oa[1] = obj;
@@ -1341,7 +1342,7 @@ namespace windows_client
                 {
                     string groupId = (string)jsonObj[HikeConstants.TO];
 
-                    if (!App.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
+                    if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))//group doesn't exists
                         return;
 
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
@@ -1357,7 +1358,7 @@ namespace windows_client
                         if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
                         {
                             Object[] objArray = new object[] { groupId, newOwner };
-                            App.ViewModel.GroupOwnerChanged(objArray);
+                            HikeInstantiation.ViewModel.GroupOwnerChanged(objArray);
                         }
                     }
                 }
@@ -1389,7 +1390,7 @@ namespace windows_client
                 try
                 {
                     // if user is blocked simply ignore the request.
-                    if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                    if (HikeInstantiation.ViewModel.BlockedHashset.Contains(msisdn))
                         return;
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.ALREADY_FRIENDS)
@@ -1398,20 +1399,20 @@ namespace windows_client
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS)
                     {
                         StatusMessage sm = new StatusMessage(msisdn, String.Empty, StatusMessage.StatusType.IS_NOW_FRIEND, null, TimeUtils.getCurrentTimeStamp(), -1, false);
-                        App.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
-                        App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.SAVE_STATUS_IN_DB, sm);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     }
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
-                    if (App.ViewModel.Isfavourite(msisdn)) // already favourite
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
+                    if (HikeInstantiation.ViewModel.Isfavourite(msisdn)) // already favourite
                         return;
-                    if (App.ViewModel.IsPending(msisdn))
+                    if (HikeInstantiation.ViewModel.IsPending(msisdn))
                         return;
 
                     try
                     {
                         ConversationListObject favObj;
-                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                            favObj = App.ViewModel.ConvMap[msisdn];
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
+                            favObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                         else
                         {
                             ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
@@ -1432,7 +1433,7 @@ namespace windows_client
                             favObj = new ConversationListObject(msisdn, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                         }
                         // this will ensure there will be one pending request for a particular msisdn
-                        App.ViewModel.PendingRequests[msisdn] = favObj;
+                        HikeInstantiation.ViewModel.PendingRequests[msisdn] = favObj;
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
@@ -1453,7 +1454,7 @@ namespace windows_client
                 try
                 {
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
@@ -1467,11 +1468,11 @@ namespace windows_client
                 try
                 {
                     // if user is blocked ignore his requests
-                    if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                    if (HikeInstantiation.ViewModel.BlockedHashset.Contains(msisdn))
                         return;
 
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
@@ -1487,7 +1488,7 @@ namespace windows_client
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
-                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
                     pubSub.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
                 }
                 catch (Exception e)
@@ -1500,7 +1501,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
                 // if this user is already blocked simply ignore his status
-                if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                if (HikeInstantiation.ViewModel.BlockedHashset.Contains(msisdn))
                     return;
 
                 JObject data = null;
@@ -1522,7 +1523,7 @@ namespace windows_client
                         ts = val.ToObject<long>();
                         long tsCorrection;
 
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
                             ts -= tsCorrection;
                     }
 
@@ -1611,7 +1612,7 @@ namespace windows_client
                 JObject data = null;
                 try
                 {
-                    if (App.ViewModel.BlockedHashset.Contains(msisdn)) // if this user is blocked simply ignore him 
+                    if (HikeInstantiation.ViewModel.BlockedHashset.Contains(msisdn)) // if this user is blocked simply ignore him 
                         return;
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
@@ -1620,9 +1621,9 @@ namespace windows_client
                     {
                         MessagesTableUtils.deleteMessage(msgId);
                         // if conversation from this user exists
-                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
-                            ConversationListObject co = App.ViewModel.ConvMap[msisdn];
+                            ConversationListObject co = HikeInstantiation.ViewModel.ConvMap[msisdn];
                             // if last msg is status update and its of same id which is about to get deleted, then only proceed
                             if (co.IsLastMsgStatusUpdate && co.LastMsgId == msgId)
                             {
@@ -1692,8 +1693,8 @@ namespace windows_client
                                 else // there are no msgs left remove the conversation from db and map
                                 {
                                     ConversationTableUtils.deleteConversation(msisdn);
-                                    pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, App.ViewModel.ConvMap[msisdn]);
-                                    App.ViewModel.ConvMap.Remove(msisdn);
+                                    pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, HikeInstantiation.ViewModel.ConvMap[msisdn]);
+                                    HikeInstantiation.ViewModel.ConvMap.Remove(msisdn);
                                 }
                             }
                         }
@@ -1709,7 +1710,7 @@ namespace windows_client
             else if (type == SERVER_TIMESTAMP)
             {
                 long timediff = (long)jsonObj[HikeConstants.TIMESTAMP] - TimeUtils.getCurrentTimeStamp();
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.TIME_DIFF_EPOCH, timediff);
                 //todo:place this setting in some different file as will be written again and agian
             }
             #endregion
@@ -1806,7 +1807,7 @@ namespace windows_client
                     if (ts > 0)
                     {
                         long timedifference;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             ts = ts - timedifference;
                     }
 
@@ -1904,7 +1905,7 @@ namespace windows_client
 
                     var version = (string)data[HikeConstants.VERSION];
 
-                    if (Utils.compareVersion(version, App.CURRENT_VERSION) <= 0)
+                    if (Utils.compareVersion(version, HikeInstantiation.CURRENT_VERSION) <= 0)
                         return;
 
                     bool isCritical = false;
@@ -1931,7 +1932,7 @@ namespace windows_client
                     obj.Add(HikeConstants.CRITICAL, isCritical);
                     obj.Add(HikeConstants.TEXT_UPDATE_MSG, message);
                     obj.Add(HikeConstants.VERSION, version);
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
 
                     pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, null); // no need of any arguments
                 }
@@ -1971,13 +1972,13 @@ namespace windows_client
                     MiscDBUtil.DeleteImageForMsisdn(msisdn);
                     UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
 
-                    if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
-                        App.ViewModel.ConvMap[msisdn].Avatar = null;
+                        HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = null;
                         this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
 
-                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    ConversationListObject c = HikeInstantiation.ViewModel.GetFav(msisdn);
 
                     if (c != null) // for favourites
                     {
@@ -1985,22 +1986,22 @@ namespace windows_client
                     }
                     else
                     {
-                        c = App.ViewModel.GetPending(msisdn);
+                        c = HikeInstantiation.ViewModel.GetPending(msisdn);
                         if (c != null) // for pending requests
                         {
                             c.Avatar = null;
                         }
                     }
 
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
                     {
                         // this is done to notify that image is changed so load new one.
-                        App.ViewModel.ContactsCache[msisdn].Avatar = null;
+                        HikeInstantiation.ViewModel.ContactsCache[msisdn].Avatar = null;
                     }
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            App.ViewModel.UpdateUserImageInStatus(msisdn);
+                            HikeInstantiation.ViewModel.UpdateUserImageInStatus(msisdn);
                         });
                 }
                 catch (JsonReaderException ex)
@@ -2049,12 +2050,12 @@ namespace windows_client
 
             if (isFav)
             {
-                if (App.ViewModel.Isfavourite(msisdn))
+                if (HikeInstantiation.ViewModel.Isfavourite(msisdn))
                     return;
                 ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    favObj = App.ViewModel.ConvMap[msisdn];
+                    favObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 }
                 else
                 {
@@ -2064,22 +2065,22 @@ namespace windows_client
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.FavList.Add(favObj);
+                    HikeInstantiation.ViewModel.FavList.Add(favObj);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
                     int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                 });
             }
             else // pending case
             {
-                if (App.ViewModel.IsPending(msisdn))
+                if (HikeInstantiation.ViewModel.IsPending(msisdn))
                     return;
                 ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    favObj = App.ViewModel.ConvMap[msisdn];
+                    favObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 }
                 else
                 {
@@ -2087,7 +2088,7 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
-                App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
+                HikeInstantiation.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
             }
         }
@@ -2160,7 +2161,7 @@ namespace windows_client
 
             if (isUserInContactList)
             {
-                if (!isOptInMsg || App.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
+                if (!isOptInMsg || HikeInstantiation.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
                 {
                     object[] vals = null;
                     ConvMessage cm = null;
@@ -2173,7 +2174,7 @@ namespace windows_client
                     if (obj == null)
                     {
                         GroupManager.Instance.SaveGroupCache(cm.Msisdn);
-                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+                        //HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                         return;
                     }
                     if (credits <= 0)
@@ -2257,7 +2258,7 @@ namespace windows_client
         ///  -- > false , if GCJ is come to notify DND status
         //private bool AddGroupmembers(JArray arr, string grpId)
         //{
-        //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
+        //    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
         //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
@@ -2307,7 +2308,7 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+        //            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.GROUPS_CACHE, GroupManager.Instance.GroupCache);
         //        return output;
         //    }
         //    else
@@ -2325,7 +2326,7 @@ namespace windows_client
          */
         private GroupChatState AddGroupmembers(JArray arr, string grpId, List<GroupParticipant> dndList)
         {
-            if (!App.ViewModel.ConvMap.ContainsKey(grpId)) // if its a new group always return true
+            if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId)) // if its a new group always return true
                 return GroupChatState.NEW_GROUP;
             else
             {
@@ -2402,10 +2403,10 @@ namespace windows_client
                 return;
             }
             // To update conversation object , we have to check if ids [] contains last msg id
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                if (ContainsLastMsgId(ids, App.ViewModel.ConvMap[msisdn]))
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[msisdn].LastMsgId, msisdn, status);
+                if (ContainsLastMsgId(ids, HikeInstantiation.ViewModel.ConvMap[msisdn]))
+                    ConversationTableUtils.updateLastMsgStatus(HikeInstantiation.ViewModel.ConvMap[msisdn].LastMsgId, msisdn, status);
             }
             st.Stop();
             long msec = st.ElapsedMilliseconds;

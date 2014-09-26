@@ -4,6 +4,7 @@ using System.Windows;
 using windows_client.DbUtils;
 using Microsoft.Phone.Notification;
 using Microsoft.Phone.Reactive;
+using windows_client.utils;
 
 namespace windows_client.Mqtt
 {
@@ -21,13 +22,15 @@ namespace windows_client.Mqtt
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
                 bool isPresent = false;
-                if (App.appSettings.Contains(HikeConstants.IS_DB_CREATED))
+
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED))
                     isPresent = true;
-                App.ClearAppSettings();
+                HikeInstantiation.ClearAppSettings();
                 if (isPresent)
-                    App.WriteToIsoStorageSettings(HikeConstants.IS_DB_CREATED, true);
+
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
-                App.MqttManagerInstance.disconnectFromBroker(false);
+                HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();
 
                 HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
@@ -39,7 +42,7 @@ namespace windows_client.Mqtt
                         pushChannel.UnbindToShellToast();
                     pushChannel.Close();
                 }
-                App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
             }
             else if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.SERVER_UNAVAILABLE))
             {

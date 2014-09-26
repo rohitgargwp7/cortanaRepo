@@ -215,16 +215,16 @@ namespace windows_client.View
             _lastSeenHelper = new LastSeenHelper();
             _lastSeenHelper.UpdateLastSeen += LastSeenResponseReceived;
 
-            App.ViewModel.RequestLastSeenEvent += RequestLastSeenHandler;
+            HikeInstantiation.ViewModel.RequestLastSeenEvent += RequestLastSeenHandler;
             FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI += FileTransferStatusUpdated;
 
             ocMessages = new ObservableCollection<ConvMessage>();
             lruStickerCache = new LruCache<string, BitmapImage>(10, 0);
 
-            App.ViewModel.ShowTypingNotification += ShowTypingNotification;
-            App.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
+            HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
+            HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            if (!App.appSettings.TryGetValue(HikeConstants.SEND_NUDGE, out isNudgeOn))
+            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
 
             if (isNudgeOn)
@@ -233,7 +233,7 @@ namespace windows_client.View
                 llsMessages.DoubleTap += MessageList_DoubleTap;
             }
 
-            if (App.ViewModel.IsDarkMode)
+            if (HikeInstantiation.ViewModel.IsDarkMode)
                 darkModeLayer.Visibility = Visibility.Visible;
 
             TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
@@ -265,12 +265,12 @@ namespace windows_client.View
             gcPin.IsShow(false,false);
             tipControl.Visibility = Visibility.Visible;
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
             {
-                JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                JObject metadata = HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData;
                 metadata[HikeConstants.PINID] = null;
-                App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[mContactNumber]);
             }
         }
 
@@ -324,7 +324,7 @@ namespace windows_client.View
                     else
                     {
                         long timedifference;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
                             actualTimeStamp = e.TimeStamp - timedifference;
 
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, actualTimeStamp);
@@ -424,7 +424,7 @@ namespace windows_client.View
         private void ManagePage()
         {
             bool isGC = false;
-            mPubSub = App.HikePubSubInstance;
+            mPubSub = HikeInstantiation.HikePubSubInstance;
             initPageBasedOnState();
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -440,10 +440,10 @@ namespace windows_client.View
             bw.DoWork += (s, e) =>
             {
                 // whenever CT is opened , mark last msg as read if received read
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber) && HikeInstantiation.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
-                    App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
+                    HikeInstantiation.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    ConversationTableUtils.updateLastMsgStatus(HikeInstantiation.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
                 }
 
                 Stopwatch st = Stopwatch.StartNew();
@@ -477,10 +477,10 @@ namespace windows_client.View
                     });
 
                 }
-                App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
+                HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
-                App.MqttManagerInstance.connect();
+                HikeInstantiation.MqttManagerInstance.connect();
             };
             emotListRecent.ItemsSource = imagePathsForListRecent;
             emotList0.ItemsSource = imagePathsForList0;
@@ -493,10 +493,10 @@ namespace windows_client.View
             cameraCaptureTask = new CameraCaptureTask();
             cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(HikeInstantiation.ViewModel.ConvMap[mContactNumber].DraftMessage))
             {
                 _isDraftMessage = true;
-                sendMsgTxtbox.Text = App.ViewModel.ConvMap[mContactNumber].DraftMessage;
+                sendMsgTxtbox.Text = HikeInstantiation.ViewModel.ConvMap[mContactNumber].DraftMessage;
                 //change image as text changed event is not raised
                 actionIcon.Source = UI_Utils.Instance.SendMessageImage;
                 _isSendActivated = true;
@@ -509,7 +509,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            App.ViewModel.ResumeBackgroundAudio();//in case of video playback
+            HikeInstantiation.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -529,9 +529,9 @@ namespace windows_client.View
 
             if (isFirstLaunch)
             {
-                if (App.newChatThreadPage != null)
+                if (HikeInstantiation.newChatThreadPage != null)
                 {
-                    App.newChatThreadPage.stickerPallet.Children.Remove(App.newChatThreadPage.pivotStickers);
+                    HikeInstantiation.newChatThreadPage.stickerPallet.Children.Remove(HikeInstantiation.newChatThreadPage.pivotStickers);
                 }
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, ee) =>
@@ -544,7 +544,7 @@ namespace windows_client.View
                     CreateStickerCategories();
                 };
                 bw.RunWorkerAsync();
-                App.newChatThreadPage = this;
+                HikeInstantiation.newChatThreadPage = this;
             }
 
             // Launch states
@@ -557,12 +557,12 @@ namespace windows_client.View
                 if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     string id = msisdn.Replace(":", "_");
                     byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
-                    App.ViewModel.ConvMap[msisdn].Avatar = _avatar;
-                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = App.ViewModel.ConvMap[msisdn];
+                    HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = _avatar;
+                    this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 }
                 else if (Utils.isGroupConversation(msisdn))
                 {
@@ -607,14 +607,14 @@ namespace windows_client.View
             }
             #endregion
             #region TOMBSTONE HANDLING
-            else if (App.IS_TOMBSTONED)
+            else if (HikeInstantiation.IS_TOMBSTONED)
             {
                 if (isFirstLaunch) // if first time launching after tombstone
                 {
                     /* Tombstone case and page is opened from select user page*/
                     Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
                     NetworkManager.turnOffNetworkManager = false;
-                    App.MqttManagerInstance.connect();
+                    HikeInstantiation.MqttManagerInstance.connect();
 
                     /* This is called only when you add more participants to group */
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
@@ -708,9 +708,9 @@ namespace windows_client.View
                 gcPin.PinContentTapped += gcPin_PinContentTapped;
                 #endregion
 
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 {
-                    JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                    JObject metadata = HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData;
 
                     if (metadata != null)
                     {
@@ -719,8 +719,8 @@ namespace windows_client.View
                             metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
                             metadata[HikeConstants.READPIN] = true;
 
-                            App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
-                            ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                            HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                            ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[mContactNumber]);
                         }
                         
                         gcPin.SetUnreadPinCount(metadata.Value<int>(HikeConstants.UNREADPINS));
@@ -753,7 +753,7 @@ namespace windows_client.View
 
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    App.ViewModel.ResumeBackgroundAudio();
+                    HikeInstantiation.ViewModel.ResumeBackgroundAudio();
                     mediaElement.Source = null;
                 }
             }
@@ -765,7 +765,7 @@ namespace windows_client.View
                     {
                         PhoneApplicationService.Current.State[HikeConstants.PLAYER_TIMER] = mediaElement.Position;
                         mediaElement.Pause();
-                        App.ViewModel.ResumeBackgroundAudio();
+                        HikeInstantiation.ViewModel.ResumeBackgroundAudio();
 
                         currentAudioMessage.IsStopped = false;
                         currentAudioMessage.IsPlaying = false;
@@ -776,15 +776,15 @@ namespace windows_client.View
             if (_dt != null)
                 _dt.Stop();
 
-            if (!string.IsNullOrEmpty(mContactNumber) && App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].DraftMessage != sendMsgTxtbox.Text.Trim())
+            if (!string.IsNullOrEmpty(mContactNumber) && HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber) && HikeInstantiation.ViewModel.ConvMap[mContactNumber].DraftMessage != sendMsgTxtbox.Text.Trim())
             {
-                App.ViewModel.ConvMap[mContactNumber].DraftMessage = sendMsgTxtbox.Text.Trim();
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
+                HikeInstantiation.ViewModel.ConvMap[mContactNumber].DraftMessage = sendMsgTxtbox.Text.Trim();
+                ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
                 ConversationTableUtils.saveConvObjectList();
             }
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
-            App.IS_TOMBSTONED = false;
+            HikeInstantiation.IS_TOMBSTONED = false;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -794,7 +794,7 @@ namespace windows_client.View
                 //remove new group pic key
                 PhoneApplicationService.Current.State.Remove(HikeConstants.HAS_CUSTOM_IMAGE);
 
-                App.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
+                HikeInstantiation.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
 
                 base.OnRemovedFromJournal(e);
                 removeListeners();
@@ -803,7 +803,7 @@ namespace windows_client.View
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
                     mediaElement.Stop();
-                    App.ViewModel.ResumeBackgroundAudio();
+                    HikeInstantiation.ViewModel.ResumeBackgroundAudio();
 
                     if (currentAudioMessage != null)
                     {
@@ -834,8 +834,8 @@ namespace windows_client.View
                 stickerPallet.Children.Remove(pivotStickers);
                 StickerPivotHelper.Instance.ClearData();
                 ClearPageResources();
-                if (App.newChatThreadPage == this)
-                    App.newChatThreadPage = null;
+                if (HikeInstantiation.newChatThreadPage == this)
+                    HikeInstantiation.newChatThreadPage = null;
             }
             catch (Exception ex)
             {
@@ -890,7 +890,7 @@ namespace windows_client.View
             {
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 mediaElement.Stop();
-                App.ViewModel.ResumeBackgroundAudio();
+                HikeInstantiation.ViewModel.ResumeBackgroundAudio();
             }
 
             if (!NavigationService.CanGoBack)// if no page to go back in this case back would go to conversation list
@@ -906,7 +906,7 @@ namespace windows_client.View
                 return;
             }
 
-            App.ViewModel.SelectedBackground = null;
+            HikeInstantiation.ViewModel.SelectedBackground = null;
 
             base.OnBackKeyPress(e);
         }
@@ -919,13 +919,13 @@ namespace windows_client.View
 
         public void RemoveEmmaBot()
         {
-            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && App.appSettings.Contains(HikeConstants.AppSettings.REMOVE_EMMA))
+            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.REMOVE_EMMA))
             {
                 ConversationListObject convObj;
-                if (App.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
+                if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
                 {
-                    App.ViewModel.ConvMap.Remove(convObj.Msisdn);
-                    App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+                    HikeInstantiation.ViewModel.ConvMap.Remove(convObj.Msisdn);
+                    HikeInstantiation.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
                     mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
                     mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, convObj);//to update ui of conversation list page
                 }
@@ -969,7 +969,7 @@ namespace windows_client.View
                 }
 
                 isOnHike = convObj.IsOnhike;
-                if (App.IS_TOMBSTONED) // in this case avatar needs to be re calculated
+                if (HikeInstantiation.IS_TOMBSTONED) // in this case avatar needs to be re calculated
                 {
                     convObj.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                 }
@@ -987,7 +987,7 @@ namespace windows_client.View
                 mContactNumber = id;
 
                 mContactName = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME];
-                groupOwner = App.MSISDN;
+                groupOwner = HikeInstantiation.MSISDN;
 
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.HAS_CUSTOM_IMAGE))
                     isDisplayPicSet = true;
@@ -1025,7 +1025,7 @@ namespace windows_client.View
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                     ConversationListObject cobj;
-                    if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
+                    if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
                         IsMute = cobj.IsMute;
                 }
                 mContactNumber = obj.Msisdn;
@@ -1059,7 +1059,7 @@ namespace windows_client.View
                     }
 
                     isOnHike = co.IsOnhike;
-                    if (App.IS_TOMBSTONED || co.Avatar == null) // in this case avatar needs to be re calculated
+                    if (HikeInstantiation.IS_TOMBSTONED || co.Avatar == null) // in this case avatar needs to be re calculated
                     {
                         co.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                     }
@@ -1092,7 +1092,7 @@ namespace windows_client.View
             }
             #endregion
 
-            mUserIsBlocked = groupOwner != null ? App.ViewModel.BlockedHashset.Contains(groupOwner) : App.ViewModel.BlockedHashset.Contains(mContactNumber);
+            mUserIsBlocked = groupOwner != null ? HikeInstantiation.ViewModel.BlockedHashset.Contains(groupOwner) : HikeInstantiation.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
             _isHikeBot = Utils.IsHikeBotMsg(mContactNumber);
@@ -1105,9 +1105,9 @@ namespace windows_client.View
                 openNewPinGrid.Visibility = Visibility.Visible;
 
                 //Checking if GC_Pin is present or not
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 {
-                    JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                    JObject metadata = HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData;
 
                     if (metadata != null)
                     {
@@ -1176,11 +1176,11 @@ namespace windows_client.View
                 this.ApplicationBar = appBar;
 
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                _unreadCount = App.ViewModel.ConvMap[mContactNumber].UnreadCounter;
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                _unreadCount = HikeInstantiation.ViewModel.ConvMap[mContactNumber].UnreadCounter;
 
             chatBackgroundList.ItemsSource = ChatBackgroundHelper.Instance.BackgroundList;
-            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == HikeInstantiation.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
         }
@@ -1232,7 +1232,7 @@ namespace windows_client.View
                     catch (Exception ex)
                     {
                         Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)App.appSettings[HikeConstants.MSISDN_SETTING], false);
+                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.appSettings[HikeConstants.MSISDN_SETTING], false);
                     }
                 }
             }
@@ -1252,12 +1252,12 @@ namespace windows_client.View
                 groupChatEnd();
             else
             {
-                App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
+                HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out mCredits);
                 if (mCredits <= 0)
                 {
                     if (isGroupChat)
                     {
-                        if (App.appSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
+                        if (HikeInstantiation.appSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
                         {
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
@@ -1307,7 +1307,7 @@ namespace windows_client.View
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
-            if (!App.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
             {
                 if (_lastSeenWorker == null)
                 {
@@ -1406,7 +1406,7 @@ namespace windows_client.View
         bool IsSMSOptionAvalable()
         {
             bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
 
             if (!showFreeSMS) // if setting is off return false
                 return showFreeSMS; // == false
@@ -1718,7 +1718,7 @@ namespace windows_client.View
                 updateLastMsgColor(mContactNumber);
                 isPublish = false;
             }
-            if (App.IS_TOMBSTONED) // tombstone , chat thread not created , add GC members.
+            if (HikeInstantiation.IS_TOMBSTONED) // tombstone , chat thread not created , add GC members.
             {
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -1748,10 +1748,10 @@ namespace windows_client.View
 
         private void updateLastMsgColor(string msisdn)
         {
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
-                ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, msisdn, (int)ConvMessage.State.RECEIVED_READ);
+                HikeInstantiation.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                ConversationTableUtils.updateLastMsgStatus(HikeInstantiation.ViewModel.ConvMap[mContactNumber].LastMsgId, msisdn, (int)ConvMessage.State.RECEIVED_READ);
             }
         }
 
@@ -1904,30 +1904,30 @@ namespace windows_client.View
         void blockMenuItem_Click(object sender, EventArgs e)
         {
             ContactInfo cInfo = new ContactInfo(mContactNumber, mContactName, isOnHike);
-            App.ViewModel.BlockedHashset.Add(mContactNumber);
+            HikeInstantiation.ViewModel.BlockedHashset.Add(mContactNumber);
 
-            if (App.ViewModel.FavList != null)
+            if (HikeInstantiation.ViewModel.FavList != null)
             {
-                var list = App.ViewModel.FavList.Where(f => f.Msisdn == mContactNumber).ToList();
+                var list = HikeInstantiation.ViewModel.FavList.Where(f => f.Msisdn == mContactNumber).ToList();
 
                 if (list.Count > 0)
                 {
                     foreach (var co in list)
-                        App.ViewModel.FavList.Remove(co);
+                        HikeInstantiation.ViewModel.FavList.Remove(co);
 
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.DeleteFavourite(mContactNumber);
                     int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - list.Count);
+                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - list.Count);
                 }
             }
 
             userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber, false);
-            App.ViewModel.DeleteImageForMsisdn(mContactNumber);
+            HikeInstantiation.ViewModel.DeleteImageForMsisdn(mContactNumber);
 
             FriendsTableUtils.SetFriendStatus(mContactNumber, FriendsTableUtils.FriendStatusEnum.NOT_SET);
-            App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, cInfo);
 
             mUserIsBlocked = true;
             initBlockUnblockState();
@@ -1984,9 +1984,9 @@ namespace windows_client.View
 
                 ClearChat();
 
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 {
-                    ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
+                    ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[mContactNumber];
                     obj.LastMessage = String.Empty;
                     obj.MessageStatus = ConvMessage.State.UNKNOWN;
                 }
@@ -2000,7 +2000,7 @@ namespace windows_client.View
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
-            if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+            if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
 
             MessageBoxResult mr = MessageBox.Show(AppResources.Leave_Group_Body, AppResources.Leave_Group_Caption, MessageBoxButton.OKCancel);
@@ -2017,16 +2017,16 @@ namespace windows_client.View
             jObj[HikeConstants.TO] = mContactNumber;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
 
-            ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
+            ConversationListObject cObj = HikeInstantiation.ViewModel.ConvMap[mContactNumber];
 
-            App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
+            HikeInstantiation.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
 
-            App.ViewModel.ConvMap.Remove(mContactNumber);
+            HikeInstantiation.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
 
             if (cObj.IsHidden)
-                App.ViewModel.SendRemoveStealthPacket(cObj);
+                HikeInstantiation.ViewModel.SendRemoveStealthPacket(cObj);
 
             if (NavigationService.CanGoBack)
                 NavigationService.GoBack();
@@ -2047,8 +2047,8 @@ namespace windows_client.View
             {
                 IsMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
-                App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
+                HikeInstantiation.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
@@ -2056,8 +2056,8 @@ namespace windows_client.View
             {
                 IsMute = true;
                 obj[HikeConstants.TYPE] = "mute";
-                App.ViewModel.ConvMap[mContactNumber].MuteVal = ocMessages.Count;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
+                HikeInstantiation.ViewModel.ConvMap[mContactNumber].MuteVal = ocMessages.Count;
+                ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
@@ -2072,12 +2072,12 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     infoMenuItem.IsEnabled = true;
-                    App.ViewModel.BlockedHashset.Remove(groupOwner);
+                    HikeInstantiation.ViewModel.BlockedHashset.Remove(groupOwner);
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                 }
                 else
                 {
-                    App.ViewModel.BlockedHashset.Remove(mContactNumber);
+                    HikeInstantiation.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
                     stickersIconButton.IsEnabled = true;
@@ -2111,7 +2111,7 @@ namespace windows_client.View
             {
                 if (!isGroupChat && isOnHike)
                     return;
-                if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
+                if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
                 {
                     long time = TimeUtils.getCurrentTimeStamp();
                     if (isGroupChat)
@@ -2122,7 +2122,7 @@ namespace windows_client.View
                             {
                                 ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                                 convMessage.IsInvite = true;
-                                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                             }
                         }
 
@@ -2130,7 +2130,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                        //HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
                         ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                         convMessage.IsSms = true;
                         convMessage.IsInvite = true;
@@ -2139,7 +2139,7 @@ namespace windows_client.View
                     if (showNoSmsLeftOverlay || isGroupChat)
                         showOverlay(false);
                     if (isGroupChat)
-                        App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
+                        HikeInstantiation.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
                 }
                 else
                 {
@@ -2186,7 +2186,7 @@ namespace windows_client.View
 
                     obj[HikeConstants.SUB_TYPE] = HikeConstants.NO_SMS;
 
-                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                     SmsComposeTask smsComposeTask = new SmsComposeTask();
                     smsComposeTask.To = msisdns;
@@ -2613,7 +2613,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     if (convMessage.IsSent)
-                        convMessage.StatusUpdateImage = UI_Utils.Instance.GetBitmapImage(App.MSISDN);
+                        convMessage.StatusUpdateImage = UI_Utils.Instance.GetBitmapImage(HikeInstantiation.MSISDN);
                     else if (isGroupChat)
                     {
                         var gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
@@ -3125,7 +3125,7 @@ namespace windows_client.View
             ConvMessage convMessage = ((sender as MenuItem).DataContext as ConvMessage);
             var msisdn = convMessage.GroupParticipant;
 
-            if (!App.ViewModel.IsHiddenModeActive && App.ViewModel.ConvMap.ContainsKey(msisdn) && App.ViewModel.ConvMap[msisdn].IsHidden)
+            if (!HikeInstantiation.ViewModel.IsHiddenModeActive && HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn) && HikeInstantiation.ViewModel.ConvMap[msisdn].IsHidden)
                 return;
 
             ConversationListObject co = Utils.GetConvlistObj(msisdn);
@@ -3141,8 +3141,8 @@ namespace windows_client.View
             {
                 ContactInfo cn = null;
 
-                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                    cn = App.ViewModel.ContactsCache[msisdn];
+                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    cn = HikeInstantiation.ViewModel.ContactsCache[msisdn];
                 else
                 {
                     cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
@@ -3151,7 +3151,7 @@ namespace windows_client.View
                         cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
 
                     cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
-                    App.ViewModel.ContactsCache[msisdn] = cn;
+                    HikeInstantiation.ViewModel.ContactsCache[msisdn] = cn;
                 }
 
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
@@ -3225,7 +3225,7 @@ namespace windows_client.View
                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                 currentAudioMessage = null;
                 mediaElement.Stop();
-                App.ViewModel.ResumeBackgroundAudio();
+                HikeInstantiation.ViewModel.ResumeBackgroundAudio();
             }
 
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
@@ -3266,7 +3266,7 @@ namespace windows_client.View
                 UpdateLastSentMessageStatusOnUI();
             }
 
-            ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
+            ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[mContactNumber];
 
             ConvMessage lastMessageBubble = null;
             if (isTypingNotificationActive && ocMessages.Count > 1)
@@ -3338,8 +3338,8 @@ namespace windows_client.View
             else
             {
                 // no message is left, simply remove the object from Conversation list 
-                App.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
-                App.ViewModel.ConvMap.Remove(mContactNumber);
+                HikeInstantiation.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
+                HikeInstantiation.ViewModel.ConvMap.Remove(mContactNumber);
                 // delete from db will be handled by dbconversation listener
                 mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, obj);//to update ui of conversation list page
                 delConv = true;
@@ -3409,7 +3409,7 @@ namespace windows_client.View
 
             if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                App.ViewModel.PauseBackgroundAudio();
+                HikeInstantiation.ViewModel.PauseBackgroundAudio();
                 string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
@@ -3500,7 +3500,7 @@ namespace windows_client.View
             {
                 int index = 0;
 
-                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, out index))
                     emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
                 else
                     emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
@@ -3517,7 +3517,7 @@ namespace windows_client.View
             if (!isStickersLoaded)
             {
                 String category;
-                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
+                if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
                 {
                     if (category == StickerHelper.CATEGORY_RECENT)
                     {
@@ -3722,7 +3722,7 @@ namespace windows_client.View
         {
             try
             {
-                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal || isForceScroll))
+                if (ocMessages.Count > 0 && (!IsMute || _userTappedJumpToBottom || ocMessages.Count < HikeInstantiation.ViewModel.ConvMap[mContactNumber].MuteVal || isForceScroll))
                 {
                     _userTappedJumpToBottom = false;
 
@@ -3745,7 +3745,7 @@ namespace windows_client.View
             //Update UI
             Deployment.Current.Dispatcher.BeginInvoke(new Action<string, bool>(delegate(string lastSeenStatus, bool isShowTip)
             {
-                if (App.newChatThreadPage != null)
+                if (HikeInstantiation.newChatThreadPage != null)
                 {
                     lastSeenTxt.Text = lastSeenStatus;
                     lastSeenPannel.Visibility = Visibility.Visible;
@@ -3882,7 +3882,7 @@ namespace windows_client.View
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (isGroupChat)
-                App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
+                HikeInstantiation.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             showOverlay(false);
         }
 
@@ -3917,7 +3917,7 @@ namespace windows_client.View
 
         private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (!App.appSettings.Contains(HikeConstants.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
             {
                 SendMsg();
             }
@@ -3930,12 +3930,12 @@ namespace windows_client.View
         {
             _hyperlinkedClicked = true;
 
-            App.ViewModel.Hyperlink_Clicked(sender as object[]);
+            HikeInstantiation.ViewModel.Hyperlink_Clicked(sender as object[]);
         }
 
         void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
-            App.ViewModel.ViewMoreMessage_Clicked(sender);
+            HikeInstantiation.ViewModel.ViewMoreMessage_Clicked(sender);
         }
 
         private async void ClearChat()
@@ -3949,10 +3949,10 @@ namespace windows_client.View
             gcPin.IsShow(false, false);
             tipControl.Visibility = Visibility.Visible;
 
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
             {
-                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData = null;
+                ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[mContactNumber]);
             }
         }
 
@@ -3962,7 +3962,7 @@ namespace windows_client.View
 
         void ShowTypingNotification(object sender, object[] vals)
         {
-            if (!App.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -4090,7 +4090,7 @@ namespace windows_client.View
                     convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
                 {
                     bool isVibrateEnabled = true;
-                    App.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
 
                     if (isVibrateEnabled)
                     {
@@ -4125,16 +4125,16 @@ namespace windows_client.View
                             convMessage.GroupMemberName = gp.FirstName;
                             gcPin.UpdateContent(convMessage.GCPinMessageSenderName, convMessage.DispMessage);
 
-                            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
-                                JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
+                                JObject metadata = HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData;
                                 
                                 if (metadata != null)
                                 {
                                     metadata[HikeConstants.UNREADPINS] = metadata.Value<int>(HikeConstants.UNREADPINS) - 1;
                                     metadata[HikeConstants.READPIN] = true;
-                                    App.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
-                                    ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
+                                    HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData = metadata;
+                                    ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[mContactNumber]);
                                 }
                             }
 
@@ -4143,11 +4143,11 @@ namespace windows_client.View
                         }
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                         {
-                            mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
+                            mContactName = HikeInstantiation.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
                             userName.Text = mContactName;
                         }
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
-                            userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
+                            userImage.Source = HikeInstantiation.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                         AddNewMessageToUI(convMessage, false, true);
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
@@ -4431,7 +4431,7 @@ namespace windows_client.View
                     {
                         if (isGroupChat)
                         {
-                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
                                 if (!gp.IsOnHike)
@@ -4469,13 +4469,13 @@ namespace windows_client.View
                     updateChatMetadata();
                     if (!animatedOnce)
                     {
-                        if (App.appSettings.Contains(HikeConstants.Extras.ANIMATED_ONCE))
-                            animatedOnce = (bool)App.appSettings[HikeConstants.Extras.ANIMATED_ONCE];
+                        if (HikeInstantiation.appSettings.Contains(HikeConstants.Extras.ANIMATED_ONCE))
+                            animatedOnce = (bool)HikeInstantiation.appSettings[HikeConstants.Extras.ANIMATED_ONCE];
                         else
                             animatedOnce = false;
                         if (!animatedOnce)
                         {
-                            App.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
+                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
                         }
                     }
 
@@ -4518,7 +4518,7 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                if (!App.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
+                if (!HikeInstantiation.appSettings.Contains(HikeConstants.LAST_SEEN_SEETING))
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
@@ -4579,7 +4579,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    userImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
+                    userImage.Source = HikeInstantiation.ViewModel.ConvMap[msisdn].AvatarImage;
                 });
             }
 
@@ -4633,7 +4633,7 @@ namespace windows_client.View
                 {
                     try
                     {
-                        mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
+                        mContactName = HikeInstantiation.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
                         if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
@@ -4666,7 +4666,7 @@ namespace windows_client.View
                 {
                     try
                     {
-                        mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
+                        mContactName = HikeInstantiation.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
                         if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
@@ -4691,14 +4691,14 @@ namespace windows_client.View
                 if (sender == mContactNumber)
                 {
                     ChatBackgroundHelper.Instance.SetSelectedBackgorundFromMap(sender);
-                    App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+                    HikeInstantiation.ViewModel.LastSelectedBackground = HikeInstantiation.ViewModel.SelectedBackground;
 
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (App.ViewModel.SelectedBackground != null)
+                        if (HikeInstantiation.ViewModel.SelectedBackground != null)
                         {
                             ChangeBackground();
-                            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
+                            chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == HikeInstantiation.ViewModel.SelectedBackground).First();
                         }
                     });
                 }
@@ -4932,7 +4932,7 @@ namespace windows_client.View
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = locationBytes;
-                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
 
@@ -5068,7 +5068,7 @@ namespace windows_client.View
                 vals[2] = filePath;
                 vals[3] = fileSize;
 
-                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
 
@@ -5106,7 +5106,7 @@ namespace windows_client.View
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = bytes;
-                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
 
@@ -5274,7 +5274,7 @@ namespace windows_client.View
             }
             else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                App.ViewModel.PauseBackgroundAudio();
+                HikeInstantiation.ViewModel.PauseBackgroundAudio();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
@@ -5297,7 +5297,7 @@ namespace windows_client.View
                                 {
                                     currentAudioMessage.IsPlaying = false;
                                     mediaElement.Pause();
-                                    App.ViewModel.ResumeBackgroundAudio();
+                                    HikeInstantiation.ViewModel.ResumeBackgroundAudio();
                                 }
                                 else
                                 {
@@ -5306,7 +5306,7 @@ namespace windows_client.View
 
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    App.ViewModel.PauseBackgroundAudio();
+                                    HikeInstantiation.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5320,7 +5320,7 @@ namespace windows_client.View
                                     currentAudioMessage = convMessage;
                                     currentAudioMessage.IsPlaying = true;
                                     currentAudioMessage.IsStopped = false;
-                                    App.ViewModel.PauseBackgroundAudio();
+                                    HikeInstantiation.ViewModel.PauseBackgroundAudio();
                                     mediaElement.Play();
                                 }
                             }
@@ -5330,7 +5330,7 @@ namespace windows_client.View
                             try
                             {
                                 mediaElement.Source = null;
-                                App.ViewModel.PauseBackgroundAudio();
+                                HikeInstantiation.ViewModel.PauseBackgroundAudio();
                                 using (var store = IsolatedStorageFile.GetUserStoreForApplication())
                                 {
                                     if (store.FileExists(fileLocation))
@@ -5391,7 +5391,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                App.ViewModel.PauseBackgroundAudio();
+                                HikeInstantiation.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
                                 currentAudioMessage.IsStopped = false;
                                 currentAudioMessage.IsPlaying = true;
@@ -5435,7 +5435,7 @@ namespace windows_client.View
 
                                 CompositionTarget.Rendering -= CompositionTarget_Rendering;
                                 CompositionTarget.Rendering += CompositionTarget_Rendering;
-                                App.ViewModel.PauseBackgroundAudio();
+                                HikeInstantiation.ViewModel.PauseBackgroundAudio();
                                 mediaElement.Play();
 
                                 if (currentAudioMessage != null)
@@ -5491,7 +5491,7 @@ namespace windows_client.View
                         CompositionTarget.Rendering -= CompositionTarget_Rendering;
                         CompositionTarget.Rendering += CompositionTarget_Rendering;
 
-                        App.ViewModel.PauseBackgroundAudio();
+                        HikeInstantiation.ViewModel.PauseBackgroundAudio();
                         mediaElement.Play();
                     }
                     catch (Exception ex) //Code should never reach here
@@ -5588,7 +5588,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            App.ViewModel.ResumeBackgroundAudio();
+            HikeInstantiation.ViewModel.ResumeBackgroundAudio();
         }
 
         void mediaPlayback_MediaEnded(object sender, RoutedEventArgs e)
@@ -5603,7 +5603,7 @@ namespace windows_client.View
             }
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            App.ViewModel.ResumeBackgroundAudio();
+            HikeInstantiation.ViewModel.ResumeBackgroundAudio();
         }
 
         private void forwardAttachmentMessage()
@@ -5631,11 +5631,11 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
-            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            if (HikeInstantiation.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
                 ContactTransfer();
-            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (HikeInstantiation.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
                 TransferFile();
-            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            if (HikeInstantiation.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
             {
                 shareLocation();
             }
@@ -5744,7 +5744,7 @@ namespace windows_client.View
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
 
             switch (emoticonPivot.SelectedIndex)
             {
@@ -5828,7 +5828,7 @@ namespace windows_client.View
             convMessage.MetaDataString = "{poke:1}";
             sendMsg(convMessage, false);
             bool isVibrateEnabled = true;
-            App.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
             if (isVibrateEnabled)
             {
                 VibrateController vibrate = VibrateController.Default;
@@ -5844,11 +5844,11 @@ namespace windows_client.View
         {
             string msg = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
             ConvMessage cm = new ConvMessage(msg, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
-            cm.GroupParticipant = App.MSISDN;
+            cm.GroupParticipant = HikeInstantiation.MSISDN;
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, App.MSISDN);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, HikeInstantiation.MSISDN);
             if (cobj != null)
             {
                 JObject data = new JObject();
@@ -5856,7 +5856,7 @@ namespace windows_client.View
                 data[HikeConstants.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
 
                 JObject jo = new JObject();
-                jo[HikeConstants.FROM] = App.MSISDN;
+                jo[HikeConstants.FROM] = HikeInstantiation.MSISDN;
                 jo[HikeConstants.TO] = mContactNumber;
                 jo[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
                 jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS;
@@ -5867,7 +5867,7 @@ namespace windows_client.View
                 vs[1] = cobj;
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
 
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jo);
             }
         }
 
@@ -5883,10 +5883,10 @@ namespace windows_client.View
         {
             chatBackgroundPopUp_Closed();
 
-            if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+            if (HikeInstantiation.ViewModel.SelectedBackground.ID != HikeInstantiation.ViewModel.LastSelectedBackground.ID)
             {
-                App.ViewModel.SelectedBackground = App.ViewModel.LastSelectedBackground;
-                chatBackgroundList.SelectedItem = App.ViewModel.SelectedBackground;
+                HikeInstantiation.ViewModel.SelectedBackground = HikeInstantiation.ViewModel.LastSelectedBackground;
+                chatBackgroundList.SelectedItem = HikeInstantiation.ViewModel.SelectedBackground;
                 ChangeBackground();
             }
         }
@@ -5897,12 +5897,12 @@ namespace windows_client.View
             {
                 chatBackgroundPopUp_Closed();
 
-                if (App.ViewModel.SelectedBackground.ID != App.ViewModel.LastSelectedBackground.ID)
+                if (HikeInstantiation.ViewModel.SelectedBackground.ID != HikeInstantiation.ViewModel.LastSelectedBackground.ID)
                 {
-                    ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, App.ViewModel.SelectedBackground.ID);
-                    SendBackgroundChangedPacket(App.ViewModel.SelectedBackground.ID);
+                    ChatBackgroundHelper.Instance.UpdateChatBgMap(mContactNumber, HikeInstantiation.ViewModel.SelectedBackground.ID);
+                    SendBackgroundChangedPacket(HikeInstantiation.ViewModel.SelectedBackground.ID);
 
-                    App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+                    HikeInstantiation.ViewModel.LastSelectedBackground = HikeInstantiation.ViewModel.SelectedBackground;
                 }
             }
             else
@@ -5947,7 +5947,7 @@ namespace windows_client.View
             doneButton.Content = AppResources.AppBar_Done_Btn;
             userHeader.Visibility = Visibility.Collapsed;
 
-            App.ViewModel.LastSelectedBackground = App.ViewModel.SelectedBackground;
+            HikeInstantiation.ViewModel.LastSelectedBackground = HikeInstantiation.ViewModel.SelectedBackground;
 
             openChatBackgroundButton.Opacity = 0;
 
@@ -6032,9 +6032,9 @@ namespace windows_client.View
         {
             if (_isNewPin)
             {
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber)
-                    && App.ViewModel.ConvMap[mContactNumber].MetaData != null
-                    && App.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID].Type != JTokenType.Null)
+                if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(mContactNumber)
+                    && HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData != null
+                    && HikeInstantiation.ViewModel.ConvMap[mContactNumber].MetaData[HikeConstants.PINID].Type != JTokenType.Null)
                 {
                     gcPin.IsShow(false, true);
                     tipControl.Visibility = Visibility.Collapsed;
@@ -6060,10 +6060,10 @@ namespace windows_client.View
         {
             _patternNotLoaded = false;
 
-            if (App.ViewModel.SelectedBackground == null)
+            if (HikeInstantiation.ViewModel.SelectedBackground == null)
                 return;
 
-            LayoutRoot.Background = App.ViewModel.SelectedBackground.BackgroundColor;
+            LayoutRoot.Background = HikeInstantiation.ViewModel.SelectedBackground.BackgroundColor;
 
             if ((isGroupChat && !isGroupAlive) || (!isOnHike && mCredits <= 0))
             {
@@ -6071,7 +6071,7 @@ namespace windows_client.View
                 newPin.Opacity = 0.5;
             }
 
-            if (App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
+            if (HikeInstantiation.ViewModel.SelectedBackground.IsDefault && !HikeInstantiation.ViewModel.IsDarkMode)
             {
                 progressBar.Foreground = UI_Utils.Instance.Black;
                 smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = (SolidColorBrush)App.Current.Resources["HikeDarkGrey"];
@@ -6082,9 +6082,9 @@ namespace windows_client.View
             }
             else
             {
-                progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = App.ViewModel.SelectedBackground.ForegroundColor;
+                progressBar.Foreground = smsCounterTxtBlk.Foreground = txtMsgCharCount.Foreground = txtMsgCount.Foreground = HikeInstantiation.ViewModel.SelectedBackground.ForegroundColor;
                 nudgeBorder.BorderBrush = UI_Utils.Instance.White;
-                nudgeBorder.Background = App.ViewModel.SelectedBackground.HeaderBackground;
+                nudgeBorder.Background = HikeInstantiation.ViewModel.SelectedBackground.HeaderBackground;
                 nudgeImage.Source = UI_Utils.Instance.NudgeSent;
                 nudgeText.Foreground = UI_Utils.Instance.White;
             }
@@ -6098,9 +6098,9 @@ namespace windows_client.View
             chatBackground.Opacity = 1;
             headerBackground.Background = UI_Utils.Instance.Transparent;
 
-            if (App.ViewModel.SelectedBackground.IsDefault)
+            if (HikeInstantiation.ViewModel.SelectedBackground.IsDefault)
             {
-                headerBackground.Background = App.ViewModel.SelectedBackground.HeaderBackground;
+                headerBackground.Background = HikeInstantiation.ViewModel.SelectedBackground.HeaderBackground;
                 chatBackground.Source = null;
                 return;
             }
@@ -6115,14 +6115,14 @@ namespace windows_client.View
         {
             await Task.Delay(1);
 
-            if (App.ViewModel.SelectedBackground == null)
+            if (HikeInstantiation.ViewModel.SelectedBackground == null)
                 return;
 
-            var bg = ChatBackgroundHelper.Instance.ChatBgCache.GetObject(App.ViewModel.SelectedBackground.ID);
+            var bg = ChatBackgroundHelper.Instance.ChatBgCache.GetObject(HikeInstantiation.ViewModel.SelectedBackground.ID);
 
             if (bg != null)
             {
-                if (App.ViewModel.SelectedBackground.IsTile)
+                if (HikeInstantiation.ViewModel.SelectedBackground.IsTile)
                 {
                     _tileBitmap = bg;
                     GenerateTileBackground();
@@ -6138,7 +6138,7 @@ namespace windows_client.View
                 return;
             }
 
-            _tileBitmap = new BitmapImage(new Uri(App.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
+            _tileBitmap = new BitmapImage(new Uri(HikeInstantiation.ViewModel.SelectedBackground.ImagePath, UriKind.Relative))
             {
                 CreateOptions = BitmapCreateOptions.None
             };
@@ -6151,10 +6151,10 @@ namespace windows_client.View
             //handle delay creation of bitmap image
             _tileBitmap.ImageOpened += (s, e) =>
             {
-                if (App.ViewModel.SelectedBackground == null)
+                if (HikeInstantiation.ViewModel.SelectedBackground == null)
                     return;
 
-                if (App.ViewModel.SelectedBackground.IsTile)
+                if (HikeInstantiation.ViewModel.SelectedBackground.IsTile)
                 {
                     GenerateTileBackground();
                 }
@@ -6165,7 +6165,7 @@ namespace windows_client.View
                     chatBackground.Source = _tileBitmap;
                 }
 
-                ChatBackgroundHelper.Instance.ChatBgCache.AddObject(App.ViewModel.SelectedBackground.ID, _tileBitmap);
+                ChatBackgroundHelper.Instance.ChatBgCache.AddObject(HikeInstantiation.ViewModel.SelectedBackground.ID, _tileBitmap);
 
                 PostChangeBackgroundOperations();
             };
@@ -6200,7 +6200,7 @@ namespace windows_client.View
 
         private void PostChangeBackgroundOperations()
         {
-            _patternNotLoaded = !App.ViewModel.SelectedBackground.IsTile || _tileBitmap.PixelWidth == 0 ? true : false;
+            _patternNotLoaded = !HikeInstantiation.ViewModel.SelectedBackground.IsTile || _tileBitmap.PixelWidth == 0 ? true : false;
 
             headerBackground.Background = UI_Utils.Instance.Black10;
         }
@@ -6210,11 +6210,11 @@ namespace windows_client.View
             if ((sender as ListBox).SelectedItem != null)
             {
                 var chatBg = (sender as ListBox).SelectedItem as ChatBackground;
-                if (chatBg != null && chatBg != App.ViewModel.SelectedBackground)
+                if (chatBg != null && chatBg != HikeInstantiation.ViewModel.SelectedBackground)
                 {
                     try
                     {
-                        App.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
+                        HikeInstantiation.ViewModel.SelectedBackground = ChatBackgroundHelper.Instance.BackgroundList.Where(b => b.ID == chatBg.ID).First();
                         ChangeBackground();
                     }
                     catch
@@ -6381,7 +6381,7 @@ namespace windows_client.View
                 }
             });
 
-            App.ViewModel.UpdateNameOnSaveContact(contactInfo);
+            HikeInstantiation.ViewModel.UpdateNameOnSaveContact(contactInfo);
         }
 
         #region Orientation Handling
@@ -6549,7 +6549,7 @@ namespace windows_client.View
                 {
                     lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
                 });
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
 
@@ -7051,7 +7051,7 @@ namespace windows_client.View
                 {
                     currentAudioMessage.IsPlaying = false;
                     mediaElement.Pause();
-                    App.ViewModel.ResumeBackgroundAudio();
+                    HikeInstantiation.ViewModel.ResumeBackgroundAudio();
                 }
             }
 
@@ -7508,7 +7508,7 @@ namespace windows_client.View
                 obj.Add(HikeConstants.TO, message.Msisdn);
                 obj.Add(HikeConstants.DATA, data);
 
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
             else
             {
@@ -7548,7 +7548,7 @@ namespace windows_client.View
                 obj.Add(HikeConstants.TO, message.Msisdn);
                 obj.Add(HikeConstants.DATA, data);
 
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
                 ConversationTableUtils.updateLastMsgStatus(convMsgList.Last().MessageId, convMsgList.Last().Msisdn, (int)ConvMessage.State.FORCE_SMS_SENT_CONFIRMED);
             }

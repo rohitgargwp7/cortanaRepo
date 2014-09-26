@@ -105,7 +105,7 @@ namespace windows_client.Model
         {
             get
             {
-                return App.MSISDN == Msisdn ? Visibility.Visible : Visibility.Collapsed;
+                return HikeInstantiation.MSISDN == Msisdn ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

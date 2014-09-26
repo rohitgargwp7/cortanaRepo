@@ -2158,7 +2158,7 @@ namespace windows_client.utils
 
         public BitmapImage getDefaultAvatar(string msisdn, bool isHighRes)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
             if (Utils.IsHikeBotMsg(msisdn))
@@ -2468,7 +2468,7 @@ namespace windows_client.utils
 
         private BitmapImage GetBitmap(string msisdn, bool saveInCache)
         {
-            if (msisdn == App.MSISDN)
+            if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
             if (_bitMapImageCache.ContainsKey(msisdn))
                 return _bitMapImageCache[msisdn];

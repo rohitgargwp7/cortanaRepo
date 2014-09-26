@@ -20,10 +20,11 @@ namespace windows_client.View
         {
             InitializeComponent();
             initpageBasedOnState();
-            App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
 
             bool showFreeSMS = true;
-            App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -44,7 +45,8 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Visible;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
+
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -52,14 +54,15 @@ namespace windows_client.View
             freeSMSGrid.Visibility = Visibility.Collapsed;
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, false);
+
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             try
             {
-                App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
+                HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
             }
             catch (Exception ex)
             {
@@ -100,7 +103,8 @@ namespace windows_client.View
         private void initializeCredits()
         {
             int creditsRemaining = 0;
-            App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
+
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 

@@ -42,12 +42,12 @@ namespace windows_client.utils.ServerTips
                             string chatPageTipId = string.Empty;
                             string mainPageTipId = string.Empty;
 
-                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, out mainPageTipId);
+                            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, out mainPageTipId);
 
                             if (!String.IsNullOrEmpty(mainPageTipId))
                                 ConversationPageTip = ReadTipFromFile(mainPageTipId);
 
-                            App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out chatPageTipId);
+                            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out chatPageTipId);
 
                             if (!String.IsNullOrEmpty(chatPageTipId))
                                 ChatScreenTip = ReadTipFromFile(chatPageTipId);
@@ -120,14 +120,14 @@ namespace windows_client.utils.ServerTips
                         RemoveTip(ChatScreenTip.TipId);
 
                     ChatScreenTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, id);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, id);
                 }
                 else
                 {
                     if (ConversationPageTip != null)
                         RemoveTip(ConversationPageTip.TipId);
                     ConversationPageTip = tempTip;
-                    App.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, id);
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, id);
                 }
 
                 WriteTipToFile(tempTip);
@@ -286,16 +286,16 @@ namespace windows_client.utils.ServerTips
                 }
 
                 string tempId;
-                App.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out tempId);
+                HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out tempId);
 
                 if (tempId == id)
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
+                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
                     ChatScreenTip = null;
                 }
                 else
                 {
-                    App.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
+                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
                     ConversationPageTip = null;
                 }
             }
@@ -314,8 +314,8 @@ namespace windows_client.utils.ServerTips
 
             ClearOldTips();
 
-            App.appSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
-            App.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
+            HikeInstantiation.appSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
+            HikeInstantiation.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
         }
 
         /// <summary>

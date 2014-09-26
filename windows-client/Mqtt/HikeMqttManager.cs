@@ -46,7 +46,7 @@ namespace windows_client.Mqtt
         public HikeMqttManager()
         {
             //logger = NLog.LogManager.GetCurrentClassLogger();
-            pubSub = App.HikePubSubInstance;
+            pubSub = HikeInstantiation.HikePubSubInstance;
             pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
         }
 
@@ -90,9 +90,9 @@ namespace windows_client.Mqtt
 
         private bool init()
         {
-            App.appSettings.TryGetValue<string>(HikeConstants.TOKEN_SETTING, out password);
-            App.appSettings.TryGetValue<string>(HikeConstants.UID_SETTING, out topic);
-            App.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out clientId);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.TOKEN_SETTING, out password);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.UID_SETTING, out topic);
+            HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
                 clientId += string.Format(":{0}:{1}", API_VERSION, AUTO_SUBSCRIBE);//: Api version : Auto subscribe(true/false)
@@ -484,7 +484,7 @@ namespace windows_client.Mqtt
             objArr[0] = obj;
             objArr[1] = 0;
 
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, objArr);
         }
 
         IDisposable scheduledConnect = null;

@@ -235,12 +235,12 @@ namespace windows_client.utils
 
                 if (bg != null)
                 {
-                    App.ViewModel.SelectedBackground = bg;
+                    HikeInstantiation.ViewModel.SelectedBackground = bg;
                     return;
                 }
             }
 
-            App.ViewModel.SelectedBackground = BackgroundList.Where(b => b.IsDefault == true).First();
+            HikeInstantiation.ViewModel.SelectedBackground = BackgroundList.Where(b => b.IsDefault == true).First();
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace windows_client.utils
         /// </summary>
         void LoadDefaultBackgrounds()
         {
-            if (App.appSettings.Contains(HikeConstants.BLACK_THEME))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.BLACK_THEME))
             {
                 BackgroundList.Add(new ChatBackground()
                 {

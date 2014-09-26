@@ -14,6 +14,7 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -27,7 +28,7 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            mPubSub = App.HikePubSubInstance;
+            mPubSub = HikeInstantiation.HikePubSubInstance;
             RegisterListeners();
         }
 
@@ -113,9 +114,9 @@ namespace windows_client.View
         {
             base.OnNavigatingFrom(e);
 
-            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn))
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(_grpMsisdn))
             {
-                JObject metadata = App.ViewModel.ConvMap[_grpMsisdn].MetaData;
+                JObject metadata = HikeInstantiation.ViewModel.ConvMap[_grpMsisdn].MetaData;
 
                 if (metadata != null)
                 {
@@ -123,8 +124,8 @@ namespace windows_client.View
                     metadata[HikeConstants.READPIN] = true;
                 }
 
-                App.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+                HikeInstantiation.ViewModel.ConvMap[_grpMsisdn].MetaData = metadata;
+                ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[_grpMsisdn]);
             }
         }
 
@@ -167,10 +168,10 @@ namespace windows_client.View
                 }
             }
 
-            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && App.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && HikeInstantiation.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
             {
-                App.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+                HikeInstantiation.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
+                ConversationTableUtils.updateConversation(HikeInstantiation.ViewModel.ConvMap[_grpMsisdn]);
             }
         }
     }

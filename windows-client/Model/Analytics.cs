@@ -5,6 +5,7 @@ using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -104,8 +105,8 @@ namespace windows_client.Model
             analyticObj.Add(HikeConstants.DATA, dataObj);
             analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
 
-            if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+            if (HikeInstantiation.HikePubSubInstance != null)
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
 
         /// <summary>
@@ -130,8 +131,8 @@ namespace windows_client.Model
             analyticObj.Add(HikeConstants.DATA, dataObj);
             analyticObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
 
-            if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
+            if (HikeInstantiation.HikePubSubInstance != null)
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
         }
 
         /// <summary>
@@ -157,8 +158,8 @@ namespace windows_client.Model
             jsonObj.Add(HikeConstants.TYPE, HikeConstants.LOG_EVENT);
             jsonObj.Add(HikeConstants.DATA, data);
 
-            if (App.HikePubSubInstance != null)
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
+            if (HikeInstantiation.HikePubSubInstance != null)
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
         }
     }
 }

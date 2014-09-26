@@ -255,7 +255,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (App.ViewModel.Isfavourite(_msisdn))
+                if (HikeInstantiation.ViewModel.Isfavourite(_msisdn))
                     return true;
                 return false;
             }
@@ -282,7 +282,7 @@ namespace windows_client.Model
             // it should not be shown for self
             get
             {
-                if (_msisdn == App.MSISDN)
+                if (_msisdn == HikeInstantiation.MSISDN)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }
@@ -306,7 +306,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (IsInAddressBook || Msisdn == App.MSISDN)
+                if (IsInAddressBook || Msisdn == HikeInstantiation.MSISDN)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }

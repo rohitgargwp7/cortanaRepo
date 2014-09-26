@@ -11,7 +11,6 @@ using System.Diagnostics;
 using windows_client.Misc;
 using windows_client.Languages;
 using Microsoft.Phone.Shell;
-using windows_client.Constants;
 
 namespace windows_client.utils
 {
@@ -158,13 +157,13 @@ namespace windows_client.utils
 
                             if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                             {
-                                if (convMsg.IsSent || convMsg.Msisdn == App.MSISDN)
+                                if (convMsg.IsSent || convMsg.Msisdn == HikeInstantiation.MSISDN)
                                 {
                                     messageSender = AppResources.You_Txt;
                                 }
                                 else if (isGroupChat)
                                 {
-                                    if (convMsg.GroupParticipant == App.MSISDN)
+                                    if (convMsg.GroupParticipant == HikeInstantiation.MSISDN)
                                         messageSender = AppResources.You_Txt;
                                     else if (!groupChatParticipantInfo.TryGetValue(convMsg.GroupParticipant, out messageSender))
                                         messageSender = convMsg.GroupParticipant;

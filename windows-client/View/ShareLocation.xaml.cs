@@ -610,17 +610,19 @@ namespace windows_client.View
 
                 _isLocationEnabled = false;
             }
-            else if (App.appSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
+
+            else if (HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
-                    App.appSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
-                    App.appSettings.Save();
+
+                    HikeInstantiation.appSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
+                    HikeInstantiation.appSettings.Save();
                     _isLocationEnabled = true;
 
-                    if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !App.IS_TOMBSTONED)
+                    if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IS_TOMBSTONED)
                         GetCurrentCoordinate();
                 }
             }
@@ -628,13 +630,13 @@ namespace windows_client.View
             {
                 _isLocationEnabled = true;
 
-                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !App.IS_TOMBSTONED)
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IS_TOMBSTONED)
                     GetCurrentCoordinate();
             }
 
-            App.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
-            if (App.IS_TOMBSTONED)
+            if (HikeInstantiation.IS_TOMBSTONED)
             {
                 _isDefaultLocationCall = false;
 
@@ -723,7 +725,7 @@ namespace windows_client.View
             }
 
             if (_myCoordinate != null)
-                App.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }

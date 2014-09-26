@@ -154,7 +154,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Constants\HikeConstants.cs" />
     <Compile Include="Controls\MyRichTextBox.cs" />
     <Compile Include="Controls\Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
@@ -234,6 +233,7 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="utils\HikeInstantiation.cs" />
     <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\EmailHelper.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />

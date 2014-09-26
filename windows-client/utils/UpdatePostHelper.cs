@@ -45,7 +45,8 @@ namespace windows_client.utils
         public void PostAppInfo()
         {
             bool isAppUpdatePostPending = true;
-            App.appSettings.TryGetValue<bool>(HikeConstants.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
+
+            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
             if (isAppUpdatePostPending)
                 AccountUtils.postUpdateInfo(postUpdateInfo_Callback);
         }
@@ -73,7 +74,8 @@ namespace windows_client.utils
             }
             else if (stat == HikeConstants.OK)
             {
-                App.RemoveKeyFromAppSettings(HikeConstants.APP_UPDATE_POSTPENDING);
+
+                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.APP_UPDATE_POSTPENDING);
                 if (httpPostScheduled != null)
                 {
                     httpPostScheduled.Dispose();

@@ -21,13 +21,13 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-            App.createDatabaseAsync();
+            HikeInstantiation.createDatabaseAsync();
 
             // if addbook is not scanned and state is not scanning
-            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+            if (!HikeInstantiation.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
-            if (!App.IS_MARKETPLACE)
+            if (!HikeInstantiation.IS_MARKETPLACE)
             {
                 serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
                 welcomePivot.Tap -= ChangeEnvironment;
@@ -67,8 +67,9 @@ namespace windows_client
             else
             {
                 utils.Utils.savedAccountCredentials(obj);
-                if (App.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
-                    App.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
+
+                if (HikeInstantiation.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
+                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -88,7 +89,7 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            if (App.IS_TOMBSTONED)
+            if (HikeInstantiation.IS_TOMBSTONED)
             {
                 if (this.State.ContainsKey("NetworkErrorTxtBlk.Opacity"))
                     NetworkErrorTxtBlk.Opacity = (int)this.State["NetworkErrorTxtBlk.Opacity"];
@@ -105,7 +106,7 @@ namespace windows_client
                 this.State["NetworkErrorTxtBlk.Opacity"] = (int)NetworkErrorTxtBlk.Opacity;
             }
             else
-                App.IS_TOMBSTONED = false;
+                HikeInstantiation.IS_TOMBSTONED = false;
         }
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -152,8 +153,8 @@ namespace windows_client
         {
             getStartedButton.Opacity = 0;
 
-            if (!App.IS_MARKETPLACE) // this is done to save the server info
-                App.appSettings.Save();
+            if (!HikeInstantiation.IS_MARKETPLACE) // this is done to save the server info
+                HikeInstantiation.appSettings.Save();
 
             #region SERVER INFO
             string env = AccountUtils.AppEnvironment.ToString();
@@ -175,9 +176,10 @@ namespace windows_client
 
             try
             {
-                if (App.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
+
+                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED)) // if db is created then only delete tables.
                     MiscDBUtil.clearDatabase();
-                //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+                //HikeInstantiation.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }
             catch (Exception ex)
             {
@@ -199,7 +201,7 @@ namespace windows_client
         /// <param name="e">Default sys gen</param>
         private void ChangeEnvironment(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (!App.IS_MARKETPLACE)
+            if (!HikeInstantiation.IS_MARKETPLACE)
             {
                 if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
                 {
@@ -216,7 +218,7 @@ namespace windows_client
                     AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
                     serverTxtBlk.Text = "QA Staging";
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
             }
         }
     }

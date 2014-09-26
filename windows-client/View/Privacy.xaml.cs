@@ -22,20 +22,20 @@ namespace windows_client.View
             InitializeComponent();
 
             bool value = true;
-            if (!App.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
+            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.LAST_SEEN_SEETING, out value))
                 value = true;
             lastSeenTimeStampToggle.IsChecked = value;
             this.lastSeenTimeStampToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Nobody_Txt;
 
             // dont show reset and change password option if any tooltip is being shown on home screen
-            if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
+            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
                 hiddenModeGrid.Visibility = Visibility.Visible;
 
-            value = App.appSettings.TryGetValue(HikeConstants.DISPLAY_PIC_FAV_ONLY, out value);
+            value = HikeInstantiation.appSettings.TryGetValue(HikeConstants.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
             this.profilePictureToggle.Content = value ? AppResources.Favorites_Txt : AppResources.Everyone_Txt;
 
-            value = App.appSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
+            value = HikeInstantiation.appSettings.TryGetValue(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, out value);
             activateHiddenModeOnExitToggle.IsChecked = value;
             this.activateHiddenModeOnExitToggle.Content = value ? AppResources.On : AppResources.Off;
         }
@@ -55,28 +55,28 @@ namespace windows_client.View
         private void lastSeenTimeStampToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Favorites_Txt;
-            App.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
-            App.appSettings.Save();
+            HikeInstantiation.appSettings.Remove(HikeConstants.LAST_SEEN_SEETING);
+            HikeInstantiation.appSettings.Save();
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.LASTSEENONOFF, true);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         private void lastSeenTimeStampToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.lastSeenTimeStampToggle.Content = AppResources.Nobody_Txt;
-            App.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.LAST_SEEN_SEETING, false);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.LASTSEENONOFF, false);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         private void hideChatOnExitToggle_Loaded(object sender, RoutedEventArgs e)
@@ -89,13 +89,13 @@ namespace windows_client.View
         private void hideChatOnExitToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.On;
-            App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
         }
 
         private void hideChatOnExitToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.Off;
-            App.RemoveKeyFromAppSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT);
         }
 
         #region Hidden Mode Settings
@@ -104,8 +104,8 @@ namespace windows_client.View
         {
             Analytics.SendClickEvent(HikeConstants.ANALYTICS_INIT_RESET_HIDDEN_MODE);
 
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
-            App.ViewModel.ResetHiddenModeTapped();
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
+            HikeInstantiation.ViewModel.ResetHiddenModeTapped();
 
             while (NavigationService.BackStack.Count() > 1)
                 NavigationService.RemoveBackEntry();
@@ -129,9 +129,9 @@ namespace windows_client.View
         private void ChangePassword_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             string password;
-            if (App.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
+            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.HIDDEN_MODE_PASSWORD, out password))
             {
-                App.ViewModel.Password = password;
+                HikeInstantiation.ViewModel.Password = password;
                 passwordOverlay.Text = AppResources.Enter_Current_Pwd_Txt;
                 passwordOverlay.Password = String.Empty;
                 passwordOverlay.IsShow = true;
@@ -150,7 +150,7 @@ namespace windows_client.View
                 {
                     _isChangePassword = false;
 
-                    if (App.ViewModel.Password == popup.Password)
+                    if (HikeInstantiation.ViewModel.Password == popup.Password)
                     {
                         popup.Text = AppResources.EnterNewPassword_PasswordChange_Txt;
                         popup.Password = String.Empty;
@@ -165,8 +165,8 @@ namespace windows_client.View
                         Analytics.SendClickEvent(HikeConstants.ANALYTICS_PWD_CHANGE_HIDDEN_MODE);
 
                         _tempPassword = null;
-                        App.ViewModel.Password = popup.Password;
-                        App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, App.ViewModel.Password);
+                        HikeInstantiation.ViewModel.Password = popup.Password;
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
                     }
                     else
                         MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.Password_Mismatch_Txt, MessageBoxButton.OK);
@@ -198,28 +198,28 @@ namespace windows_client.View
         private void profilePictureToggle_Checked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Favorites_Txt;
-            App.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY, true);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
         }
 
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
         {
             this.profilePictureToggle.Content = AppResources.Everyone_Txt;
-            App.RemoveKeyFromAppSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY);
+            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.DISPLAY_PIC_FAV_ONLY);
 
             JObject obj = new JObject();
             obj.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
             data.Add(HikeConstants.AVATAR, 1);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
     }
 }

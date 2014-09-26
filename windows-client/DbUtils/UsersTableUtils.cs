@@ -7,6 +7,7 @@ using windows_client.View;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -128,7 +129,7 @@ namespace windows_client.DbUtils
         {
             using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
-                var users = from user in context.users where user.OnHike == true && user.Msisdn != App.MSISDN select user;
+                var users = from user in context.users where user.OnHike == true && user.Msisdn != HikeInstantiation.MSISDN select user;
                 return users.Count();
             }
         }
@@ -277,14 +278,14 @@ namespace windows_client.DbUtils
             bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
             {
-                //using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
+                //using (HikeChatsDb chats = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
                         context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
-                        if (App.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
-                            ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
+                            ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
                             ConversationTableUtils.saveConvObject(obj, obj.Msisdn);
                             //ConversationTableUtils.saveConvObjectList();

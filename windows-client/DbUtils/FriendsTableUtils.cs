@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -104,8 +105,8 @@ namespace windows_client.DbUtils
                                 writer.Flush();
                                 writer.Close();
                             }
-                            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                                App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
+                            if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                HikeInstantiation.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
                         }
                     }
                 }
@@ -198,9 +199,9 @@ namespace windows_client.DbUtils
 
         public static FriendStatusEnum GetFriendStatus(string msisdn)
         {
-            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
             {
-                ContactInfo ci = App.ViewModel.ContactsCache[msisdn];
+                ContactInfo ci = HikeInstantiation.ViewModel.ContactsCache[msisdn];
                 if (ci.FriendStatus == FriendsTableUtils.FriendStatusEnum.NOT_SET)
                     ci.FriendStatus = FriendsTableUtils.GetFriendStatusFromFile(msisdn);
                 return ci.FriendStatus;
@@ -470,8 +471,8 @@ namespace windows_client.DbUtils
                                 writer.Flush();
                                 writer.Close();
                             }
-                            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                                App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatusDb;
+                            if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                HikeInstantiation.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatusDb;
                         }
                     }
                 }

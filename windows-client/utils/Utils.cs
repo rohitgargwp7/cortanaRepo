@@ -29,9 +29,10 @@ namespace windows_client.utils
 
         public static void savedAccountCredentials(JObject obj)
         {
-            App.MSISDN = (string)obj["msisdn"];
+            HikeInstantiation.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
-            appSettings[HikeConstants.MSISDN_SETTING] = App.MSISDN;
+
+            appSettings[HikeConstants.MSISDN_SETTING] = HikeInstantiation.MSISDN;
             appSettings[HikeConstants.UID_SETTING] = (string)obj["uid"];
             appSettings[HikeConstants.TOKEN_SETTING] = (string)obj["token"];
             appSettings[HikeConstants.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
@@ -108,7 +109,7 @@ namespace windows_client.utils
                 upgradeJobj.Add(HikeConstants.UPGRADE, true);
                 requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
                 requestAccountInfo.Add(HikeConstants.DATA, upgradeJobj);
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
             {
@@ -376,23 +377,23 @@ namespace windows_client.utils
             else if (msisdn.StartsWith("0"))
             {
                 string country_code = null;
-                App.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code);
                 return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
-                App.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code2);
+                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.COUNTRY_CODE_SETTING, out country_code2);
                 return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
             }
         }
 
         public static ConversationListObject GetConvlistObj(string msisdn)
         {
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                return App.ViewModel.ConvMap[msisdn];
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
+                return HikeInstantiation.ViewModel.ConvMap[msisdn];
             else
-                return App.ViewModel.GetFav(msisdn);
+                return HikeInstantiation.ViewModel.GetFav(msisdn);
         }
 
         public static bool IsHikeBotMsg(string msisdn)
@@ -421,35 +422,35 @@ namespace windows_client.utils
             }
         }
 
-        public static Uri LoadPageUri(App.PageState pageState)
+        public static Uri LoadPageUri(HikeInstantiation.PageState pageState)
         {
             Uri nUri = null;
 
             switch (pageState)
             {
-                case App.PageState.WELCOME_SCREEN:
+                case HikeInstantiation.PageState.WELCOME_SCREEN:
                     nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                     break;
-                case App.PageState.PHONE_SCREEN:
-                    App.createDatabaseAsync();
+                case HikeInstantiation.PageState.PHONE_SCREEN:
+                    HikeInstantiation.createDatabaseAsync();
                     nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
                     break;
-                case App.PageState.PIN_SCREEN:
-                    App.createDatabaseAsync();
+                case HikeInstantiation.PageState.PIN_SCREEN:
+                    HikeInstantiation.createDatabaseAsync();
                     nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
                     break;
-                case App.PageState.SETNAME_SCREEN:
-                    App.createDatabaseAsync();
+                case HikeInstantiation.PageState.SETNAME_SCREEN:
+                    HikeInstantiation.createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
                     break;
-                case App.PageState.TUTORIAL_SCREEN_STATUS:
-                case App.PageState.TUTORIAL_SCREEN_STICKERS:
+                case HikeInstantiation.PageState.TUTORIAL_SCREEN_STATUS:
+                case HikeInstantiation.PageState.TUTORIAL_SCREEN_STICKERS:
                     nUri = new Uri("/View/TutorialScreen.xaml", UriKind.Relative);
                     break;
-                case App.PageState.CONVLIST_SCREEN:
+                case HikeInstantiation.PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                     break;
-                case App.PageState.UPGRADE_SCREEN:
+                case HikeInstantiation.PageState.UPGRADE_SCREEN:
                     nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
                     break;
                 default:
@@ -553,7 +554,7 @@ namespace windows_client.utils
         {
             JObject obj = new JObject();
             obj[HikeConstants.TYPE] = HikeConstants.REQUEST_SERVER_TIME;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         public static string ConvertToStorageSizeString(long sizeInBytes)
@@ -578,7 +579,7 @@ namespace windows_client.utils
             JObject data = new JObject();
             data.Add(HikeConstants.Extras.SEND_BOT, false);
             obj.Add(HikeConstants.DATA, data);
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         public static bool ShowNotificationAlert()

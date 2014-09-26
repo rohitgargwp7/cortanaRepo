@@ -44,7 +44,7 @@ namespace windows_client.View
 
             _backgroundWorker.RunWorkerCompleted += (ss, ee) =>
             {
-                if (App.IS_MARKETPLACE)
+                if (HikeInstantiation.IS_MARKETPLACE)
                 {
                     UpgradeApp();
                 }
@@ -65,7 +65,7 @@ namespace windows_client.View
             App.appInitialize();
 
             // Upgrade complete, write the current version
-            App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, App.LATEST_VERSION);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, HikeInstantiation.LATEST_VERSION);
 
             ManageNavigation();
         }
@@ -76,16 +76,16 @@ namespace windows_client.View
 
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
-                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
-                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
                     NavigationService.Navigate(nUri);
                     return;
                 }
 
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
-                if (!App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                if (!HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -102,9 +102,9 @@ namespace windows_client.View
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("isStatus"))// STATUS PUSH NOTIFICATION CASE
             {
-                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
-                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
                     NavigationService.Navigate(nUri);
                     return;
                 }
@@ -118,9 +118,9 @@ namespace windows_client.View
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
-                if (App.PageStateVal != App.PageState.CONVLIST_SCREEN)
+                if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
-                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
                     NavigationService.Navigate(nUri);
                     return;
                 }
@@ -132,7 +132,7 @@ namespace windows_client.View
             }
             else
             {
-                if (App.PageStateVal == App.PageState.CONVLIST_SCREEN)
+                if (HikeInstantiation.PageStateVal == HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
                     App page = (App)Application.Current;
                     ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -142,7 +142,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    Uri nUri = Utils.LoadPageUri(App.PageStateVal);
+                    Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
                     NavigationService.Navigate(nUri);
                 }
             }
@@ -161,10 +161,10 @@ namespace windows_client.View
         /// <param name="e"></param>
         void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Utils.compareVersion(App.LATEST_VERSION, App.CURRENT_VERSION) == 1) // shows this is update
+            if (Utils.compareVersion(HikeInstantiation.LATEST_VERSION, HikeInstantiation.CURRENT_VERSION) == 1) // shows this is update
             {
-                App.appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
+                HikeInstantiation.appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE
                 // If app info is already sent to server , this function will automatically handle.
@@ -172,15 +172,15 @@ namespace windows_client.View
                 #endregion
 
                 #region Post App Locale
-                App.PostLocaleInfo();
+                HikeInstantiation.PostLocaleInfo();
                 #endregion
             }
 
             // If current version is less than equal to 1.5.0.0 then upgrade DB.
-            if (Utils.compareVersion("1.5.0.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("1.5.0.0", HikeInstantiation.CURRENT_VERSION) == 1)
                 MqttDBUtils.MqttDbUpdateToLatestVersion();
 
-            if (Utils.compareVersion("2.5.3.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.5.3.0", HikeInstantiation.CURRENT_VERSION) == 1)
             {
                 UpgradeContactsDBForPhoneKind();
 
@@ -198,12 +198,12 @@ namespace windows_client.View
                 }
             }
 
-            if (Utils.compareVersion("2.6.0.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.6.0.0", HikeInstantiation.CURRENT_VERSION) == 1)
             {
                 HandleEmptyGroupName();
             }
 
-            if (Utils.compareVersion("2.6.5.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.6.5.0", HikeInstantiation.CURRENT_VERSION) == 1)
             {
                 ReShuffleStickerCategories();
 
@@ -244,8 +244,8 @@ namespace windows_client.View
 
             // Change last selected category to recent
             String category;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
+            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
         }
 
         /// <summary>
@@ -266,11 +266,11 @@ namespace windows_client.View
                     var list = hike_contacts_by_id[id];
                     foreach (var contactInfo in list)
                     {
-                        if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
+                        if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn)) // update convlist
                         {
                             try
                             {
-                                var cObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                                var cObj = HikeInstantiation.ViewModel.ConvMap[contactInfo.Msisdn];
                                 if (cObj.ContactName != contactInfo.Name)
                                 {
                                     cObj.ContactName = contactInfo.Name;
@@ -290,7 +290,7 @@ namespace windows_client.View
                         }
                         else // fav and pending case
                         {
-                            ConversationListObject c = App.ViewModel.GetFav(contactInfo.Msisdn);
+                            ConversationListObject c = HikeInstantiation.ViewModel.GetFav(contactInfo.Msisdn);
 
                             if (c != null && c.ContactName != contactInfo.Name) // this user is in favs
                             {
@@ -300,7 +300,7 @@ namespace windows_client.View
                             }
                             else
                             {
-                                c = App.ViewModel.GetPending(contactInfo.Msisdn);
+                                c = HikeInstantiation.ViewModel.GetPending(contactInfo.Msisdn);
                                 if (c != null && c.ContactName != contactInfo.Name)
                                 {
                                     c.ContactName = contactInfo.Name;
@@ -383,9 +383,9 @@ namespace windows_client.View
             bool groupEmptyNameFound = false;
 
             // Conv map is initialised in app.xaml.cs
-            if (App.ViewModel.ConvMap.Count > 0)
+            if (HikeInstantiation.ViewModel.ConvMap.Count > 0)
             {
-                foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
+                foreach (ConversationListObject convObj in HikeInstantiation.ViewModel.ConvMap.Values)
                 {
                     if (convObj.IsGroupChat && string.IsNullOrEmpty(convObj.ContactName))
                     {

@@ -50,7 +50,7 @@ namespace windows_client.utils
             string userName;
             BitmapImage userProfileThumbnail = null;
 
-            if (App.MSISDN == status.Msisdn)
+            if (HikeInstantiation.MSISDN == status.Msisdn)
             {
                 userName = AppResources.Me_Txt;
                 userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
@@ -63,7 +63,7 @@ namespace windows_client.utils
                 {
                     userName = co.NameToShow;
 
-                    if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn) && co.Avatar != null)
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(status.Msisdn) && co.Avatar != null)
                         userProfileThumbnail = co.AvatarImage;
                     else
                         userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
@@ -72,8 +72,8 @@ namespace windows_client.utils
                 {
                     ContactInfo cn = null;
 
-                    if (App.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
-                        cn = App.ViewModel.ContactsCache[status.Msisdn];
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
+                        cn = HikeInstantiation.ViewModel.ContactsCache[status.Msisdn];
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
@@ -82,7 +82,7 @@ namespace windows_client.utils
                             cn = new ContactInfo(status.Msisdn, null, true);
 
                         cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
-                        App.ViewModel.ContactsCache[status.Msisdn] = cn;
+                        HikeInstantiation.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
 
                     userName = (cn != null && !string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
@@ -135,7 +135,7 @@ namespace windows_client.utils
                 else
                     StatusMsgsTable.SaveLastStatusMessage(status.Message, status.MoodId);
                 
-                App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
             else
             {

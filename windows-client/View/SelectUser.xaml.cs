@@ -74,7 +74,8 @@ namespace windows_client.View
 
             enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
 
-            App.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
+
+            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -307,9 +308,9 @@ namespace windows_client.View
                     defaultContact.Msisdn = num;
                     defaultContact.ContactListLabel = _charsEntered.Length >= 1 && _charsEntered.Length <= 15 ? num : AppResources.SelectUser_EnterValidNo_Txt;
 
-                    if (!App.ViewModel.IsHiddenModeActive
-                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
-                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                    if (!HikeInstantiation.ViewModel.IsHiddenModeActive
+                        && HikeInstantiation.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && HikeInstantiation.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
                         defaultContact.IsSelected = false;
                     else
                         defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
@@ -455,9 +456,9 @@ namespace windows_client.View
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
 
-                    if (!App.ViewModel.IsHiddenModeActive
-                        && App.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
-                        && App.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
+                    if (!HikeInstantiation.ViewModel.IsHiddenModeActive
+                        && HikeInstantiation.ViewModel.ConvMap.ContainsKey(defaultContact.Msisdn)
+                        && HikeInstantiation.ViewModel.ConvMap[defaultContact.Msisdn].IsHidden)
                         defaultContact.IsSelected = false;
                     else
                         defaultContact.IsSelected = _frmBlockedList && IsUserBlocked(defaultContact);
@@ -582,7 +583,7 @@ namespace windows_client.View
             ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
-            App.MqttManagerInstance.disconnectFromBroker(false);
+            HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
 
             /*
@@ -607,7 +608,7 @@ namespace windows_client.View
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
-                App.MqttManagerInstance.connect();
+                HikeInstantiation.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
                 scanningComplete();
                 _canGoBack = true;
@@ -639,12 +640,12 @@ namespace windows_client.View
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, cinfo.Msisdn);
                     hikeIds.Add(dCn);
                     deletedContacts.Add(cinfo);
-                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
+                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
                         {
                             // here we are removing name so that Msisdn will be shown instead of Name
-                            App.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
+                            HikeInstantiation.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
                         }
                         catch (Exception e)
                         {
@@ -654,11 +655,11 @@ namespace windows_client.View
                     else // if this contact is in favourite or pending and not in convMap update this also
                     {
                         ConversationListObject obj;
-                        obj = App.ViewModel.GetFav(cinfo.Msisdn);
+                        obj = HikeInstantiation.ViewModel.GetFav(cinfo.Msisdn);
 
                         if (obj == null) // this msisdn is not in favs , check in pending
                         {
-                            obj = App.ViewModel.GetPending(cinfo.Msisdn);
+                            obj = HikeInstantiation.ViewModel.GetPending(cinfo.Msisdn);
 
                             if (obj != null)
                             {
@@ -674,8 +675,8 @@ namespace windows_client.View
                         }
                     }
 
-                    if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
-                        App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
+                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
+                        HikeInstantiation.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
                     GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
                 }
@@ -705,7 +706,7 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = false;//denotes deleted contact
                 obj[1] = deletedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
             if (updatedContacts != null && updatedContacts.Count > 0)
@@ -715,13 +716,13 @@ namespace windows_client.View
                 Object[] obj = new object[2];
                 obj[0] = true;//denotes updated/added contact
                 obj[1] = updatedContacts;
-                App.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADDRESSBOOK_UPDATED, obj);
             }
 
-            App.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
+            HikeInstantiation.ViewModel.DeleteImageForDeletedContacts(deletedContacts, updatedContacts);
 
             _allContactsList = UsersTableUtils.getAllContactsByGroup();
-            App.MqttManagerInstance.connect();
+            HikeInstantiation.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
             _completeGroupedContactList = GetGroupedList(_allContactsList);
@@ -787,11 +788,11 @@ namespace windows_client.View
             {
                 ContactInfo cInfo = allContactsList[i];
 
-                if (cInfo.Msisdn == App.MSISDN) // don't show own number in any chat.
+                if (cInfo.Msisdn == HikeInstantiation.MSISDN) // don't show own number in any chat.
                     continue;
 
-                if (!App.ViewModel.IsHiddenModeActive &&
-                    App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                if (!HikeInstantiation.ViewModel.IsHiddenModeActive &&
+                    HikeInstantiation.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && HikeInstantiation.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     continue;
 
                 cInfo.CheckBoxVisibility = _frmBlockedList ? Visibility.Visible : Visibility.Collapsed;
@@ -886,8 +887,8 @@ namespace windows_client.View
             {
                 int oldSmsCount = _smsUserCount;
 
-                if (cInfo != null && !App.ViewModel.IsHiddenModeActive
-                    && App.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && App.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
+                if (cInfo != null && !HikeInstantiation.ViewModel.IsHiddenModeActive
+                    && HikeInstantiation.ViewModel.ConvMap.ContainsKey(cInfo.Msisdn) && HikeInstantiation.ViewModel.ConvMap[cInfo.Msisdn].IsHidden)
                     return;
 
                 if (_isContactShared)
@@ -898,7 +899,8 @@ namespace windows_client.View
                         string searchNumber = cInfo.Msisdn;
                         string country_code = null;
 
-                        if (App.appSettings.TryGetValue(HikeConstants.COUNTRY_CODE_SETTING, out country_code))
+
+                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.COUNTRY_CODE_SETTING, out country_code))
                             searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;
@@ -962,7 +964,7 @@ namespace windows_client.View
 
         bool IsUserBlocked(ContactInfo cInfo)
         {
-            if (App.ViewModel.BlockedHashset.Contains(cInfo.Msisdn))
+            if (HikeInstantiation.ViewModel.BlockedHashset.Contains(cInfo.Msisdn))
                 return true;
             else
                 return false;
@@ -990,26 +992,26 @@ namespace windows_client.View
                     ci.Name = ci.Msisdn;
                 }
 
-                App.ViewModel.BlockedHashset.Add(ci.Msisdn);
+                HikeInstantiation.ViewModel.BlockedHashset.Add(ci.Msisdn);
 
-                if (App.ViewModel.FavList != null)
+                if (HikeInstantiation.ViewModel.FavList != null)
                 {
                     ConversationListObject co = new ConversationListObject();
                     co.Msisdn = ci.Msisdn;
-                    if (App.ViewModel.FavList.Remove(co))
+                    if (HikeInstantiation.ViewModel.FavList.Remove(co))
                     {
                         MiscDBUtil.SaveFavourites();
                         MiscDBUtil.DeleteFavourite(ci.Msisdn);
                         int count = 0;
-                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                        HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     }
                 }
 
-                App.ViewModel.DeleteImageForMsisdn(ci.Msisdn);
+                HikeInstantiation.ViewModel.DeleteImageForMsisdn(ci.Msisdn);
 
                 FriendsTableUtils.SetFriendStatus(ci.Msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
-                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
             }
             else // unblock request
             {
@@ -1018,8 +1020,8 @@ namespace windows_client.View
                 if (ci.Msisdn == string.Empty)
                     ci.Msisdn = ci.Name;
 
-                App.ViewModel.BlockedHashset.Remove(ci.Msisdn);
-                App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
+                HikeInstantiation.ViewModel.BlockedHashset.Remove(ci.Msisdn);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
             }
         }
 

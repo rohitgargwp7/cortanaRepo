@@ -5,6 +5,7 @@ using System.Data.Linq;
 using System.Diagnostics;
 using System;
 using Microsoft.Phone.Data.Linq;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {

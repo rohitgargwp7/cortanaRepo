@@ -235,7 +235,8 @@ namespace windows_client.FileTransfers
                     fileInfo.StatusChanged += File_StatusChanged;
                     fileInfo.CheckIfComplete();
                 }
-                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!App.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+
+                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
@@ -277,7 +278,7 @@ namespace windows_client.FileTransfers
             if (UpdateTaskStatusOnUI != null)
                 UpdateTaskStatusOnUI(null, new FileTransferSatatusChangedEventArgs(fInfo, true));
 
-            App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, fInfo);
         }
 
         Boolean BeginThreadTask(FileInfoBase fileInfo)
@@ -289,7 +290,8 @@ namespace windows_client.FileTransfers
 
         public void PopulatePreviousTasks()
         {
-            if (!App.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING))
+
+            if (!HikeInstantiation.appSettings.Contains(HikeConstants.AUTO_RESUME_SETTING))
             {
                 BackgroundWorker worker = new BackgroundWorker();
 
@@ -514,7 +516,7 @@ namespace windows_client.FileTransfers
                 UpdateTaskStatusOnUI(null, e);
 
             if (e.IsStateChanged)
-                App.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
 
             if (e.FileInfo.FileState != FileTransferState.STARTED && e.FileInfo.FileState != FileTransferState.COMPLETED)
                 TaskMap.Remove(e.FileInfo.MessageId);

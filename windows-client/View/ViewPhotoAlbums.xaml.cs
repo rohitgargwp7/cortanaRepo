@@ -291,7 +291,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             SystemTray.IsVisible = false;
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
             {
                 BindAlbums();
             }
@@ -316,7 +316,7 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
-            App.ViewModel.ClearMFtImageCache();
+            HikeInstantiation.ViewModel.ClearMFtImageCache();
             base.OnRemovedFromJournal(e);
         }
 
@@ -341,7 +341,7 @@ namespace windows_client.View
             }
             else
                 //go back and cleat thumbnail cache
-                App.ViewModel.ClearMFtImageCache();
+                HikeInstantiation.ViewModel.ClearMFtImageCache();
             base.OnBackKeyPress(e);
         }
 

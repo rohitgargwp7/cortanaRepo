@@ -46,9 +46,9 @@ namespace windows_client.Controls
             llsStickerCategory.SelectedItem = null;
             if (sticker == null)
                 return;
-            if (App.newChatThreadPage != null)
+            if (HikeInstantiation.newChatThreadPage != null)
             {
-                App.newChatThreadPage.SendSticker(sticker);
+                HikeInstantiation.newChatThreadPage.SendSticker(sticker);
             }
         }
 
@@ -113,9 +113,9 @@ namespace windows_client.Controls
                 ShowLoadingStickers();
 
             StickerCategory stickerCategory;
-            if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null)
+            if (HikeInstantiation.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null)
             {
-                App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
+                HikeInstantiation.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
             }
         }
 
@@ -143,7 +143,7 @@ namespace windows_client.Controls
                 {
                     StickerCategory stickerCategory;
                     //if download message is shown that means user has not yet requested download
-                    if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null && !stickerCategory.ShowDownloadMessage && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
+                    if (HikeInstantiation.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null && !stickerCategory.ShowDownloadMessage && stickerCategory.HasMoreStickers && !stickerCategory.IsDownLoading)
                     {
                         if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                         {
@@ -152,7 +152,7 @@ namespace windows_client.Controls
                         }
                         else
                             ShowLoadingStickers();
-                        App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
+                        HikeInstantiation.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
                     }
                 }
             }

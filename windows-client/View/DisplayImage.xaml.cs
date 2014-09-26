@@ -38,7 +38,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || App.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
             {
                 //TODO - use constants rather hard coded strings - MG
 
@@ -61,15 +61,15 @@ namespace windows_client.View
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     _msisdn = (string)profilePicTapped[0];
 
-                    if (!App.IS_TOMBSTONED && Utils.isGroupConversation(_msisdn))
-                        FileImage.Source = App.ViewModel.ConvMap[_msisdn].AvatarImage;
+                    if (!HikeInstantiation.IS_TOMBSTONED && Utils.isGroupConversation(_msisdn))
+                        FileImage.Source = HikeInstantiation.ViewModel.ConvMap[_msisdn].AvatarImage;
                     else
                     {
                         string grpId = _msisdn.Replace(":", "_");
                         FileImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
                     }
 
-                    if (_msisdn == App.MSISDN)
+                    if (_msisdn == HikeInstantiation.MSISDN)
                         _msisdn = HikeConstants.MY_PROFILE_PIC;
 
                     string filePath = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
@@ -86,7 +86,7 @@ namespace windows_client.View
                         if (!Utils.isGroupConversation(_msisdn))
                         {
                             if (_msisdn == HikeConstants.MY_PROFILE_PIC)
-                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + App.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + HikeInstantiation.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
                             else
                                 AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + _msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
                         }

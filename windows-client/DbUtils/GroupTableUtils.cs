@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using windows_client.Model;
 using System.Linq;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {

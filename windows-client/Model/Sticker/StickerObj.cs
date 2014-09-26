@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using windows_client.Misc;
+using windows_client.utils;
 using windows_client.ViewModel;
 
 namespace windows_client.Model.Sticker
@@ -66,7 +67,7 @@ namespace windows_client.Model.Sticker
             {
                 if (_isHighRes)
                 {
-                    BitmapImage stickerImage = App.newChatThreadPage != null ? App.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id) : null;
+                    BitmapImage stickerImage = HikeInstantiation.newChatThreadPage != null ? HikeInstantiation.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id) : null;
                     if (stickerImage == null)
                     {
                         stickerImage = new BitmapImage();

@@ -11,6 +11,7 @@ using windows_client.Languages;
 using windows_client.Model;
 using windows_client.Misc;
 using Microsoft.Phone.Data.Linq;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -88,6 +89,7 @@ namespace windows_client.DbUtils
         public static List<StatusMessage> GetUnReadStatusMsgsForMsisdn(string msisdn, int count)
         {
             List<StatusMessage> res;
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetUnReadStatusMsgsForMsisdn(context, msisdn, count).ToList<StatusMessage>();
@@ -108,6 +110,7 @@ namespace windows_client.DbUtils
         public static List<StatusMessage> GetPaginatedStatusMsgsForTimeline(long lastStatusId, int count)
         {
             List<StatusMessage> res;
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetPaginatedStatusMsgsForTimeline(context, lastStatusId, count).ToList<StatusMessage>();
@@ -119,6 +122,7 @@ namespace windows_client.DbUtils
         public static List<StatusMessage> GetUnReadStatusMsgs(int count)
         {
             List<StatusMessage> res;
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetUnReadStatusMsgs(context, count).ToList<StatusMessage>();
@@ -129,6 +133,7 @@ namespace windows_client.DbUtils
         public static StatusMessage GetUserLastStatusMsg(string msisdn)
         {
             List<StatusMessage> res;
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetFirstTextStatusUpdate(context, msisdn).ToList<StatusMessage>();
@@ -138,6 +143,7 @@ namespace windows_client.DbUtils
 
         public static void DeleteAllStatusMsgs()
         {
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 try
@@ -156,6 +162,7 @@ namespace windows_client.DbUtils
         {
             if (string.IsNullOrEmpty(id))
                 return -1;
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 try
@@ -176,6 +183,7 @@ namespace windows_client.DbUtils
 
         public static void UpdateMsgId(StatusMessage sm)
         {
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 StatusMessage smsg = DbCompiledQueries.GetStatusMsgForStatusId(context, sm.StatusId).FirstOrDefault();
@@ -288,6 +296,7 @@ namespace windows_client.DbUtils
 
         public static void MessagesDbUpdateToLatestVersion()
         {
+
             using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
             {
                 DatabaseSchemaUpdater schemaUpdater = context.CreateDatabaseSchemaUpdater();
