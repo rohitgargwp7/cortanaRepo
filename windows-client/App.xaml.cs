@@ -103,8 +103,6 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            HikeInstantiation.IsAppLaunched = true;
-
             // Activate hidden mode when app is launched if setting is true.
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
                 HikeInstantiation.AppSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
@@ -114,7 +112,6 @@ namespace windows_client
         // This code will not execute when the application is first launched 
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            HikeInstantiation.IsAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             HikeInstantiation.IsTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
 
             if (HikeInstantiation.IsTombstoneLaunch)

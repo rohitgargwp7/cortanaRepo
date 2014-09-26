@@ -304,23 +304,6 @@ namespace windows_client.utils
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
-            #region DBCONVERSATION LISTENER
-            st.Reset();
-            st.Start();
-            if (HikeInstantiation.DbListener == null)
-                HikeInstantiation.DbListener = new DbConversationListener();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
-            #endregion
-            #region NETWORK MANAGER
-            st.Reset();
-            st.Start();
-            HikeInstantiation.NetworkManagerInstance = NetworkManager.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
-            #endregion
             #region MQTT MANAGER
             st.Reset();
             st.Start();
@@ -334,22 +317,6 @@ namespace windows_client.utils
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
-            #endregion
-            #region UI UTILS
-            st.Reset();
-            st.Start();
-            HikeInstantiation.UI_UtilsInstance = UI_Utils.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
-            #endregion
-            #region ANALYTICS
-            st.Reset();
-            st.Start();
-            HikeInstantiation.AnalyticsInstance = Analytics.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
             #endregion
             #region PUSH HELPER
             st.Reset();
