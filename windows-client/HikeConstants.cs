@@ -5,6 +5,7 @@ namespace windows_client
 {
     public class HikeConstants
     {
+        #region ServerJson Keys
         public static class ServerJsonKeys
         {
             public static readonly string MESSAGE = "msg";
@@ -206,6 +207,7 @@ namespace windows_client
                 public static readonly string MSISDN_KEYWORD = "msisdn";
             }
         }
+        #endregion
 
         public static readonly string PushNotificationChannelName = "HikeApp";
 
@@ -333,6 +335,7 @@ namespace windows_client
         }
         #endregion
 
+        #region Analytics Keys
         public static class AnalyticsKeys
         {
             //Analytic Events
@@ -380,14 +383,18 @@ namespace windows_client
             public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
             public static readonly string ANALYTICS_ENTER_TO_SEND = "entr_2_snd";
         }
+        #endregion
 
+        #region Extra Constants
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
             public static readonly string SEND_BOT = "sendbot";
             public static readonly string IfModifiedSince = "30";
         }
+        #endregion
 
+        #region AppSetting Keys
         public static class AppSettingsKeys
         {
             public static readonly string PAGE_STATE = "page_State";
@@ -490,7 +497,9 @@ namespace windows_client
 
 
         }
+        #endregion
 
+        #region NokiaHere Constants
         public static class NokiaHere
         {
             public static readonly string SEARCH = "search";
@@ -505,14 +514,18 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
-        
+        #endregion
+
+        #region DB Strings
         public static class DBStrings
         {
             public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
             public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
             public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         }
-        
+        #endregion
+
+        #region Navigation Keys
         public class NavigationKeys
         {
             public static readonly string GROUP_NAME = "groupName";
@@ -542,7 +555,7 @@ namespace windows_client
             public static readonly string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
             public static readonly string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
             public static readonly string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
-            
+
             /// <summary>
             /// Use key whenever relaunching chat thread from chat thread page to clear back stack
             /// </summary>
@@ -570,7 +583,9 @@ namespace windows_client
             public static readonly string PROFILE_NAME_CHANGED = "ProfileNameChanged";
             public static readonly string IS_PIC_DOWNLOADED = "isPicDownloaded";
         }
+        #endregion
 
+        #region Server URLs
         public static class ServerUrls
         {
             public static readonly string APP_ENVIRONMENT_SETTING = "appEnv";
@@ -613,7 +628,9 @@ namespace windows_client
                 public static readonly string STICKER_URL = "http://staging.im.hike.in/s/";
             }
         }
+        #endregion
 
+        #region Server Tips related constants
         public static class ServerTips
         {
             public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
@@ -630,7 +647,9 @@ namespace windows_client
 
 
         }
+        #endregion
 
+        #region EmailConversation Constants
         public static class EmailConversation
         {
             public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
@@ -638,5 +657,6 @@ namespace windows_client
             public static readonly string CONV_MSG_DISP_FMT = "{0}- {1}: {2}"; //datetime- name: msg (format to display conversation)
             public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
         }
+        #endregion
     }
 }
