@@ -678,7 +678,7 @@ namespace windows_client.utils
             if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.ANALYTICS_ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.ANALYTICS_ENTER_TO_SEND, enterToSend);
         }
     }
 }

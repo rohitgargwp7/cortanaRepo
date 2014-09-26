@@ -102,7 +102,7 @@ namespace windows_client.View
 
         private void ResetHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.ANALYTICS_INIT_RESET_HIDDEN_MODE);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ANALYTICS_INIT_RESET_HIDDEN_MODE);
 
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_RESET_TIME, TimeUtils.getCurrentTimeStamp());
             HikeInstantiation.ViewModel.ResetHiddenModeTapped();
@@ -162,7 +162,7 @@ namespace windows_client.View
                 {
                     if (_tempPassword.Equals(popup.Password))
                     {
-                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_PWD_CHANGE_HIDDEN_MODE);
+                        Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ANALYTICS_PWD_CHANGE_HIDDEN_MODE);
 
                         _tempPassword = null;
                         HikeInstantiation.ViewModel.Password = popup.Password;
