@@ -323,7 +323,7 @@ namespace windows_client.View
             GroupManager.Instance.LoadGroupParticipants(groupId);
             groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
-            if (!HikeInstantiation.IS_TOMBSTONED && HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
+            if (!HikeInstantiation.IsTombstoneLaunch && HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
                 groupImage.Source = HikeInstantiation.ViewModel.ConvMap[groupId].AvatarImage;
             else
             {
@@ -363,7 +363,7 @@ namespace windows_client.View
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
 
-            GroupParticipant self = new GroupParticipant(groupId, (string)HikeInstantiation.appSettings[HikeConstants.ACCOUNT_NAME], HikeInstantiation.MSISDN, true);
+            GroupParticipant self = new GroupParticipant(groupId, (string)HikeInstantiation.AppSettings[HikeConstants.ACCOUNT_NAME], HikeInstantiation.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
 
@@ -374,7 +374,7 @@ namespace windows_client.View
                     gp.IsOwner = true;
 
 
-                if (gi.GroupOwner == (string)HikeInstantiation.appSettings[HikeConstants.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;
@@ -389,7 +389,7 @@ namespace windows_client.View
                 GroupParticipant gp = smsUsersList[i];
 
 
-                if (gi.GroupOwner == (string)HikeInstantiation.appSettings[HikeConstants.MSISDN_SETTING]) // if this user is owner
+                if (gi.GroupOwner == (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING]) // if this user is owner
                     gp.RemoveFromGroup = Visibility.Visible;
                 else
                     gp.RemoveFromGroup = Visibility.Collapsed;
@@ -813,8 +813,8 @@ namespace windows_client.View
                 {
                     string gpName = GroupManager.Instance.defaultGroupName(groupId);
                     groupNameTxtBox.Text = groupNameTextBlock.Text = gpName;
-                    if (HikeInstantiation.newChatThreadPage != null)
-                        HikeInstantiation.newChatThreadPage.userName.Text = gpName;
+                    if (HikeInstantiation.NewChatThreadPageObj != null)
+                        HikeInstantiation.NewChatThreadPageObj.userName.Text = gpName;
                     if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(groupId))
                         HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
@@ -937,7 +937,7 @@ namespace windows_client.View
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.DeleteFavourite(gp.Msisdn);
                     int count = 0;
-                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
@@ -966,7 +966,7 @@ namespace windows_client.View
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
                     int count = 0;
-                    HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;

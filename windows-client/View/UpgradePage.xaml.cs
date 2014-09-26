@@ -44,7 +44,7 @@ namespace windows_client.View
 
             _backgroundWorker.RunWorkerCompleted += (ss, ee) =>
             {
-                if (HikeInstantiation.IS_MARKETPLACE)
+                if (HikeInstantiation.IsMarketplace)
                 {
                     UpgradeApp();
                 }
@@ -65,7 +65,7 @@ namespace windows_client.View
             App.appInitialize();
 
             // Upgrade complete, write the current version
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, HikeInstantiation.LATEST_VERSION);
+            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
 
             ManageNavigation();
         }
@@ -85,7 +85,7 @@ namespace windows_client.View
 
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
-                if (!HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -161,9 +161,9 @@ namespace windows_client.View
         /// <param name="e"></param>
         void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Utils.compareVersion(HikeInstantiation.LATEST_VERSION, HikeInstantiation.CURRENT_VERSION) == 1) // shows this is update
+            if (Utils.compareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
             {
-                HikeInstantiation.appSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
+                HikeInstantiation.AppSettings[HikeConstants.APP_UPDATE_POSTPENDING] = true;
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE
@@ -177,10 +177,10 @@ namespace windows_client.View
             }
 
             // If current version is less than equal to 1.5.0.0 then upgrade DB.
-            if (Utils.compareVersion("1.5.0.0", HikeInstantiation.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("1.5.0.0", HikeInstantiation.CurrentVersion) == 1)
                 MqttDBUtils.MqttDbUpdateToLatestVersion();
 
-            if (Utils.compareVersion("2.5.3.0", HikeInstantiation.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.5.3.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 UpgradeContactsDBForPhoneKind();
 
@@ -198,12 +198,12 @@ namespace windows_client.View
                 }
             }
 
-            if (Utils.compareVersion("2.6.0.0", HikeInstantiation.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.6.0.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 HandleEmptyGroupName();
             }
 
-            if (Utils.compareVersion("2.6.5.0", HikeInstantiation.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.6.5.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 ReShuffleStickerCategories();
 
@@ -244,7 +244,7 @@ namespace windows_client.View
 
             // Change last selected category to recent
             String category;
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
         }
 

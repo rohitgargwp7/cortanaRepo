@@ -66,19 +66,19 @@ namespace windows_client
             }
 
             /* Load App token if its there*/
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.TOKEN_SETTING))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)HikeInstantiation.appSettings[HikeConstants.TOKEN_SETTING];
+                AccountUtils.Token = (string)HikeInstantiation.AppSettings[HikeConstants.TOKEN_SETTING];
                 string msisdn = string.Empty;
     
-                if(HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
+                if(HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn))
                     HikeInstantiation.MSISDN = msisdn;
             }
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
             {
                 AccountUtils.DebugEnvironment tmpEnv;
-                HikeInstantiation.appSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                HikeInstantiation.AppSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
                 AccountUtils.AppEnvironment = tmpEnv;
             }
 
@@ -106,8 +106,8 @@ namespace windows_client
             HikeInstantiation.IsAppLaunched = true;
 
             // Activate hidden mode when app is launched if setting is true.
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
-                HikeInstantiation.appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                HikeInstantiation.AppSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -115,22 +115,22 @@ namespace windows_client
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             HikeInstantiation.IsAppLaunched = false; // this means app is activated, could be tombstone or dormant state
-            HikeInstantiation.IS_TOMBSTONED = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
+            HikeInstantiation.IsTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
 
-            if (HikeInstantiation.IS_TOMBSTONED)
+            if (HikeInstantiation.IsTombstoneLaunch)
             {
                 HikeInstantiation.PageState pageStateVal;
-                if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+                if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
                 {
                     HikeInstantiation.PageStateVal = pageStateVal;
                     HikeInstantiation.IsNewInstall = false;
                 }
 
                 string currentVersion = string.Empty;
-                if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
-                    HikeInstantiation.CURRENT_VERSION = currentVersion;
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+                    HikeInstantiation.CurrentVersion = currentVersion;
                 
-                HikeInstantiation.instantiateClasses(false);
+                HikeInstantiation.InstantiateClasses(false);
             }
             else
             {
@@ -151,10 +151,10 @@ namespace windows_client
             NetworkManager.turnOffNetworkManager = true;
             sendAppBgStatusToServer();
 
-            if (HikeInstantiation.IS_VIEWMODEL_LOADED)
+            if (HikeInstantiation.IsViewModelLoaded)
             {
                 int convs = 0;
-                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
 
                 if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
@@ -178,7 +178,7 @@ namespace windows_client
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
             
             if (isPushEnabled)
             {
@@ -202,7 +202,7 @@ namespace windows_client
                 {
                     HikeInstantiation.MqttManagerInstance.connect();
                     bool isPushEnabled = true;
-                    HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
 
                     if (isPushEnabled)
                     {
@@ -235,7 +235,7 @@ namespace windows_client
 
             HikeInstantiation.PageState pageStateVal;
 
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
                 HikeInstantiation.PageStateVal = pageStateVal;
 
 
@@ -254,7 +254,7 @@ namespace windows_client
                     bool IsStealth = Utils.IsUriStealth(targetPage);
 
                     if ((!IsStealth || (IsStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
-                        && !HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                        && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -304,7 +304,7 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
 
             HikeInstantiation.PageState pageStateVal;
-            if (HikeInstantiation.appSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.PAGE_STATE, out pageStateVal))
             {
                 HikeInstantiation.PageStateVal = pageStateVal;
                 HikeInstantiation.IsNewInstall = false;
@@ -315,22 +315,22 @@ namespace windows_client
 
             // this will get the current version installed already in "_currentVersion"
             string currentVersion;
-            if (HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
-                HikeInstantiation.CURRENT_VERSION = currentVersion;
+            if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out currentVersion))
+                HikeInstantiation.CurrentVersion = currentVersion;
 
-            HikeInstantiation.LATEST_VERSION = Utils.getAppVersion(); // this will get the new version we are upgrading to
+            HikeInstantiation.LatestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
 
             if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.6.5.0", currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
-                HikeInstantiation.instantiateClasses(true);
+                HikeInstantiation.InstantiateClasses(true);
                 mapper.UriMappings[0].MappedUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
-                HikeInstantiation.instantiateClasses(false);
+                HikeInstantiation.InstantiateClasses(false);
                 appInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
@@ -344,7 +344,7 @@ namespace windows_client
                 bool IsStealth = Utils.IsUriStealth(targetPage);
 
                 if ((!IsStealth || (IsStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
-                    && !HikeInstantiation.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
+                    && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE_AVAILABLE)
                     && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -359,7 +359,7 @@ namespace windows_client
             {
                 PhoneApplicationService.Current.State["IsStatusPush"] = true;
 
-                HikeInstantiation.instantiateClasses(false);
+                HikeInstantiation.InstantiateClasses(false);
                 appInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
@@ -371,7 +371,7 @@ namespace windows_client
             }
             else if (targetPage != null && targetPage.Contains("ConversationsList.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
-                HikeInstantiation.instantiateClasses(false);
+                HikeInstantiation.InstantiateClasses(false);
                 appInitialize();
                 if (HikeInstantiation.PageStateVal != HikeInstantiation.PageState.CONVLIST_SCREEN)
                 {
@@ -386,7 +386,7 @@ namespace windows_client
             }
             else
             {
-                HikeInstantiation.instantiateClasses(false);
+                HikeInstantiation.InstantiateClasses(false);
                 appInitialize();
 
                 Uri nUri = Utils.LoadPageUri(HikeInstantiation.PageStateVal);
@@ -405,10 +405,10 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
 
-            if (HikeInstantiation.IS_VIEWMODEL_LOADED)
+            if (HikeInstantiation.IsViewModelLoaded)
             {
                 int convs = 0;
-                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                 if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
                 ConversationTableUtils.saveConvObjectList();
@@ -423,7 +423,7 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            if (!HikeInstantiation.IS_MARKETPLACE)
+            if (!HikeInstantiation.IsMarketplace)
             {
                 //Running on a device / emulator without debugging
                 e.Handled = true;
@@ -435,10 +435,10 @@ namespace windows_client
                     //(RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
             }
-            if (HikeInstantiation.IS_VIEWMODEL_LOADED)
+            if (HikeInstantiation.IsViewModelLoaded)
             {
                 int convs = 0;
-                HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                 if (convs != 0 && HikeInstantiation.ViewModel.ConvMap.Count == 0)
                     return;
                 ConversationTableUtils.saveConvObjectList();

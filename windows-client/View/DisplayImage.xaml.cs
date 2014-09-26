@@ -38,7 +38,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 //TODO - use constants rather hard coded strings - MG
 
@@ -61,7 +61,7 @@ namespace windows_client.View
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     _msisdn = (string)profilePicTapped[0];
 
-                    if (!HikeInstantiation.IS_TOMBSTONED && Utils.isGroupConversation(_msisdn))
+                    if (!HikeInstantiation.IsTombstoneLaunch && Utils.isGroupConversation(_msisdn))
                         FileImage.Source = HikeInstantiation.ViewModel.ConvMap[_msisdn].AvatarImage;
                     else
                     {

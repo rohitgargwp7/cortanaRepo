@@ -611,18 +611,18 @@ namespace windows_client.View
                 _isLocationEnabled = false;
             }
 
-            else if (HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
 
-                    HikeInstantiation.appSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
-                    HikeInstantiation.appSettings.Save();
+                    HikeInstantiation.AppSettings.Remove(HikeConstants.USE_LOCATION_SETTING);
+                    HikeInstantiation.AppSettings.Save();
                     _isLocationEnabled = true;
 
-                    if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IS_TOMBSTONED)
+                    if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IsTombstoneLaunch)
                         GetCurrentCoordinate();
                 }
             }
@@ -630,13 +630,13 @@ namespace windows_client.View
             {
                 _isLocationEnabled = true;
 
-                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IS_TOMBSTONED)
+                if (e.NavigationMode != System.Windows.Navigation.NavigationMode.New && (_myCoordinate == null || _places == null) && !HikeInstantiation.IsTombstoneLaunch)
                     GetCurrentCoordinate();
             }
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
-            if (HikeInstantiation.IS_TOMBSTONED)
+            if (HikeInstantiation.IsTombstoneLaunch)
             {
                 _isDefaultLocationCall = false;
 

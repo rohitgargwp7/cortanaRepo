@@ -35,7 +35,7 @@ namespace windows_client.View
         {
             bool isPushEnabled = true;
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
             if (isPushEnabled)
                 this.pushNotifications.Content = AppResources.On;
@@ -44,7 +44,7 @@ namespace windows_client.View
 
             bool isVibrateEnabled = true;
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.VIBRATE_PREF, out isVibrateEnabled);
             this.vibrate.IsChecked = isVibrateEnabled;
             if (isVibrateEnabled)
                 this.vibrate.Content = AppResources.On;
@@ -53,7 +53,7 @@ namespace windows_client.View
 
             bool isHikeJingleEnabled = true;
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.HIKEJINGLE_PREF, out isHikeJingleEnabled);
             this.hikeJingle.IsChecked = isHikeJingleEnabled;
             if (isHikeJingleEnabled)
                 this.hikeJingle.Content = AppResources.On;
@@ -65,7 +65,7 @@ namespace windows_client.View
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
             byte firstSetting;
 
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -74,7 +74,7 @@ namespace windows_client.View
             }
 
 
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -84,7 +84,7 @@ namespace windows_client.View
 
             byte statusSettingsValue;
 
-            if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue))
+            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.STATUS_UPDATE_SETTING, out statusSettingsValue))
             {
                 if (statusSettingsValue > 0)
                 {
@@ -108,7 +108,7 @@ namespace windows_client.View
 
             bool hideMessagePreview = true;
 
-            if (!HikeInstantiation.appSettings.TryGetValue(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING, out hideMessagePreview))
+            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.HIDE_MESSAGE_PREVIEW_SETTING, out hideMessagePreview))
                 hideMessagePreview = true;
 
             hideMessageToggle.IsChecked = hideMessagePreview;
@@ -257,8 +257,8 @@ namespace windows_client.View
             _canGoBack = false;
 
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.LATEST_PUSH_TOKEN))  // added check if there is no push token
-                pushToken = (string)HikeInstantiation.appSettings[HikeConstants.LATEST_PUSH_TOKEN];
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.LATEST_PUSH_TOKEN))  // added check if there is no push token
+                pushToken = (string)HikeInstantiation.AppSettings[HikeConstants.LATEST_PUSH_TOKEN];
 
             AccountUtils.postHideMessagePreview(pushToken, currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
         }

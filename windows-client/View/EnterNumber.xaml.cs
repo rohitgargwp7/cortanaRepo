@@ -47,7 +47,7 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             ApplicationBar = appBar;
             this.countryList.ItemsSource = GetGroupedList();
-            if (!HikeInstantiation.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+            if (!HikeInstantiation.AppSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
@@ -409,7 +409,7 @@ namespace windows_client
 
             txtEnterCountry.Text = countryCode;
 
-            if (HikeInstantiation.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (HikeInstantiation.IsTombstoneLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtEnterPhone", out obj))
@@ -480,7 +480,7 @@ namespace windows_client
                 }
             }
             else
-                HikeInstantiation.IS_TOMBSTONED = false;
+                HikeInstantiation.IsTombstoneLaunch = false;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

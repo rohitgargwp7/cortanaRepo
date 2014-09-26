@@ -67,7 +67,7 @@ namespace windows_client.Model.Sticker
             {
                 if (_isHighRes)
                 {
-                    BitmapImage stickerImage = HikeInstantiation.newChatThreadPage != null ? HikeInstantiation.newChatThreadPage.lruStickerCache.GetObject(_category + "_" + Id) : null;
+                    BitmapImage stickerImage = HikeInstantiation.NewChatThreadPageObj != null ? HikeInstantiation.NewChatThreadPageObj.lruStickerCache.GetObject(_category + "_" + Id) : null;
                     if (stickerImage == null)
                     {
                         stickerImage = new BitmapImage();

@@ -36,10 +36,10 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
         }
@@ -81,7 +81,7 @@ namespace windows_client.View
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 LogoutFb(true);
 
             DeleteLocalStorage();
@@ -149,7 +149,7 @@ namespace windows_client.View
                 });
                 return;
             }
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
                 LogoutFb(true);
             DeleteLocalStorage();
         }
@@ -163,7 +163,7 @@ namespace windows_client.View
             HikeViewModel.ClearStickerHelperInstance();
 
             HikeInstantiation.ClearAppSettings();
-            HikeInstantiation.appSettings[HikeConstants.IS_DB_CREATED] = true;
+            HikeInstantiation.AppSettings[HikeConstants.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);

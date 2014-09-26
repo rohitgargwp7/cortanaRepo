@@ -23,7 +23,7 @@ namespace windows_client.Mqtt
             {
                 bool isPresent = false;
 
-                if (HikeInstantiation.appSettings.Contains(HikeConstants.IS_DB_CREATED))
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.IS_DB_CREATED))
                     isPresent = true;
                 HikeInstantiation.ClearAppSettings();
                 if (isPresent)

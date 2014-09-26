@@ -69,7 +69,7 @@ namespace windows_client.View
         {
             if (!isTwitterPost)
             {
-                if (HikeInstantiation.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
                 {
                     isTwitterPost = true;
                     sendInvite();
@@ -94,7 +94,7 @@ namespace windows_client.View
         {
             if (!isFacebookPost)
             {
-                if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
                 {
                     isFacebookPost = true;
                     sendInvite();
@@ -152,16 +152,16 @@ namespace windows_client.View
                 {
                     case FreeSMS.SocialState.FB_LOGIN:
                         JObject oj = new JObject();
-                        oj["id"] = (string)HikeInstantiation.appSettings[HikeConstants.AppSettings.FB_USER_ID];
-                        oj["token"] = (string)HikeInstantiation.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
+                        oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_USER_ID];
+                        oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
                         oj["post"] = false;//so that hike promotional post is not posted on fb
                         AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.FACEBOOK, true);
                         break;
 
                     case FreeSMS.SocialState.TW_LOGIN:
                         JObject ojj = new JObject();
-                        ojj["id"] = (string)HikeInstantiation.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)HikeInstantiation.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
+                        ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+                        ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
                         ojj["post"] = false;
                         AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.TWITTER, true);
                         break;

@@ -50,7 +50,7 @@ namespace windows_client.utils
                         {
                             instance = new ProTipHelper();
                             string id = String.Empty;
-                            HikeInstantiation.appSettings.TryGetValue(HikeConstants.PRO_TIP, out id);
+                            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.PRO_TIP, out id);
 
                             if (!String.IsNullOrEmpty(id))
                                 ReadProTipFromFile(id);
@@ -220,7 +220,7 @@ namespace windows_client.utils
 
             ClearOldProTips();
 
-            HikeInstantiation.appSettings.Remove(HikeConstants.PRO_TIP);
+            HikeInstantiation.AppSettings.Remove(HikeConstants.PRO_TIP);
             HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.PRO_TIP_COUNT);
         }
 

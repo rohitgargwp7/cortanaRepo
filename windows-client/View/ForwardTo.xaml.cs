@@ -76,10 +76,10 @@ namespace windows_client.View
             InitializeComponent();
 
 
-            HikeInstantiation.appSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
             _showSmsContacts = _isFreeSmsOn ? true : false;
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
 
             object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj))
@@ -1279,7 +1279,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 // Get a dictionary of query string keys and values.
                 IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;

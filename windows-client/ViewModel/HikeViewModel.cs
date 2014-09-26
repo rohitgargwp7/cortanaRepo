@@ -232,7 +232,7 @@ namespace windows_client.ViewModel
 
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
-            HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
 
             if (count != _favList.Count) // values are not loaded, move to backup plan
             {
@@ -250,10 +250,10 @@ namespace windows_client.ViewModel
             ChatBackgroundHelper.Instance.Instantiate();
             FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.BLACK_THEME))
                 IsDarkMode = true;
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
 
@@ -263,7 +263,7 @@ namespace windows_client.ViewModel
         public void LoadCurrentLocation()
         {
 
-            if (!HikeInstantiation.appSettings.Contains(HikeConstants.USE_LOCATION_SETTING) && !HikeInstantiation.appSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
+            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 
@@ -429,8 +429,8 @@ namespace windows_client.ViewModel
                         }//if already at zero, do nothing
 
                         if (showPush &&
-                            ((HikeInstantiation.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
-                            || (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber != mObj.Msisdn)))
+                            ((HikeInstantiation.NewChatThreadPageObj == null && mObj.IsHidden && !IsHiddenModeActive)
+                            || (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber != mObj.Msisdn)))
                         {
                             if (mObj.IsMute) // of msg is for muted forwardedMessage, ignore msg
                                 return;
@@ -761,8 +761,8 @@ namespace windows_client.ViewModel
                     convMessage.IsSms = !contact.OnHike;
                     convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
 
-                    if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber == msisdn)
-                        HikeInstantiation.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+                    if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber == msisdn)
+                        HikeInstantiation.NewChatThreadPageObj.AddNewMessageToUI(convMessage, false);
 
                     HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                 }
@@ -780,8 +780,8 @@ namespace windows_client.ViewModel
                         convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
                         convMessage.MetaDataString = attachmentData[0] as string;
 
-                        if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber == msisdn)
-                            HikeInstantiation.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+                        if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber == msisdn)
+                            HikeInstantiation.NewChatThreadPageObj.AddNewMessageToUI(convMessage, false);
 
                         HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, convMessage);
                     }
@@ -832,8 +832,8 @@ namespace windows_client.ViewModel
                             convMessage.Message = AppResources.UnknownFile_txt;
                         }
 
-                        if (HikeInstantiation.newChatThreadPage != null && HikeInstantiation.newChatThreadPage.mContactNumber == msisdn)
-                            HikeInstantiation.newChatThreadPage.AddNewMessageToUI(convMessage, false);
+                        if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber == msisdn)
+                            HikeInstantiation.NewChatThreadPageObj.AddNewMessageToUI(convMessage, false);
 
                         object[] vals = new object[2];
                         vals[0] = convMessage;

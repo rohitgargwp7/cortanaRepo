@@ -42,12 +42,12 @@ namespace windows_client.utils.ServerTips
                             string chatPageTipId = string.Empty;
                             string mainPageTipId = string.Empty;
 
-                            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, out mainPageTipId);
+                            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ServerTips.CONV_PAGE_TIP_ID, out mainPageTipId);
 
                             if (!String.IsNullOrEmpty(mainPageTipId))
                                 ConversationPageTip = ReadTipFromFile(mainPageTipId);
 
-                            HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out chatPageTipId);
+                            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out chatPageTipId);
 
                             if (!String.IsNullOrEmpty(chatPageTipId))
                                 ChatScreenTip = ReadTipFromFile(chatPageTipId);
@@ -286,7 +286,7 @@ namespace windows_client.utils.ServerTips
                 }
 
                 string tempId;
-                HikeInstantiation.appSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out tempId);
+                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID, out tempId);
 
                 if (tempId == id)
                 {
@@ -314,8 +314,8 @@ namespace windows_client.utils.ServerTips
 
             ClearOldTips();
 
-            HikeInstantiation.appSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
-            HikeInstantiation.appSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
+            HikeInstantiation.AppSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
+            HikeInstantiation.AppSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
         }
 
         /// <summary>

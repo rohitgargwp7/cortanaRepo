@@ -75,7 +75,7 @@ namespace windows_client.View
             enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
 
 
-            HikeInstantiation.appSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -900,7 +900,7 @@ namespace windows_client.View
                         string country_code = null;
 
 
-                        if (HikeInstantiation.appSettings.TryGetValue(HikeConstants.COUNTRY_CODE_SETTING, out country_code))
+                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.COUNTRY_CODE_SETTING, out country_code))
                             searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;
@@ -1003,7 +1003,7 @@ namespace windows_client.View
                         MiscDBUtil.SaveFavourites();
                         MiscDBUtil.DeleteFavourite(ci.Msisdn);
                         int count = 0;
-                        HikeInstantiation.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                         HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     }
                 }

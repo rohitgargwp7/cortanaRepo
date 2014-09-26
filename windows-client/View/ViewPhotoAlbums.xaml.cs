@@ -291,7 +291,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             SystemTray.IsVisible = false;
 
-            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IS_TOMBSTONED)
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 BindAlbums();
             }

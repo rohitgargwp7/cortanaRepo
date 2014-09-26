@@ -39,7 +39,7 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             ApplicationBar = appBar;
-            if (!HikeInstantiation.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+            if (!HikeInstantiation.AppSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
@@ -62,7 +62,7 @@ namespace windows_client
             }
             txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
-            string unAuthMsisdn = (string)HikeInstantiation.appSettings[HikeConstants.MSISDN_SETTING];
+            string unAuthMsisdn = (string)HikeInstantiation.AppSettings[HikeConstants.MSISDN_SETTING];
             pinErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -176,7 +176,7 @@ namespace windows_client
             callMeButton.Content = timerValue > 0 ? String.Format(AppResources.EnterPin_CallMe_Btn_Timer, (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00")) : AppResources.EnterPin_CallMe_Btn;
             callMeButton.IsEnabled = timerValue == 0;
 
-            if (HikeInstantiation.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (HikeInstantiation.IsTombstoneLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtBxEnterPin", out obj))
@@ -234,7 +234,7 @@ namespace windows_client
                     this.State.Remove("callMe.Opacity");
             }
             else
-                HikeInstantiation.IS_TOMBSTONED = false;
+                HikeInstantiation.IsTombstoneLaunch = false;
         }
 
         private void enableCallMeOption(object sender, EventArgs e)
@@ -261,7 +261,7 @@ namespace windows_client
             {
                 string msisdn;
 
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
                 MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
             }

@@ -57,7 +57,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.FROM_SOCIAL_PAGE] = true;
                 if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
                     fromEnterName = true;
-                if (HikeInstantiation.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
+                if (HikeInstantiation.AppSettings.Contains(HikeConstants.FB_LOGGED_IN))
                     LogoutFb();
                 else
                     LogInFb();
@@ -65,7 +65,7 @@ namespace windows_client.View
             else
             {
                 //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
-                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
+                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }

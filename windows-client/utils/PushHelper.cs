@@ -111,7 +111,7 @@ namespace windows_client.utils
             else
             {
 
-                HikeInstantiation.appSettings.TryGetValue<string>(HikeConstants.LATEST_PUSH_TOKEN, out pushToken);
+                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.LATEST_PUSH_TOKEN, out pushToken);
                 _latestPushToken = pushToken;
             }
 
@@ -234,7 +234,7 @@ namespace windows_client.utils
         private void postTokenToServer()
         {
 
-            if (HikeInstantiation.appSettings.Contains(HikeConstants.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
+            if (HikeInstantiation.AppSettings.Contains(HikeConstants.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
 
