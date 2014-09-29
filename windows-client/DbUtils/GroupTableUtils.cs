@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using windows_client.Model;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -113,6 +114,61 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 return DbCompiledQueries.GetAllGroupInfo(context).ToList();
+            }
+        }
+
+        public static void UpdateReadBy(string groupId, long lastMessageId, JArray readByArray)
+        {
+            if (string.IsNullOrEmpty(groupId) || readByArray == null || readByArray.Count == 0)
+                return;
+
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (gi == null || gi.LastReadMessageId > lastMessageId)
+                    return;
+
+                if (gi.LastReadMessageId == lastMessageId)
+                {
+                    for (int i = 0; i < readByArray.Count; i++)
+                    {
+                        if (!gi.ReadByArray.Contains(readByArray[i]))
+                            gi.ReadByArray.Add(readByArray[i]);
+                    }
+                }
+                else
+                {
+                    gi.LastReadMessageId = lastMessageId;
+                    gi.ReadByArray = readByArray;
+                }
+                gi.ReadByInfo = gi.ReadByArray.ToString();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        public static void UpdateReadBy(string groupId, long lastMessageId, string readBy)
+        {
+            if (string.IsNullOrEmpty(groupId) || string.IsNullOrEmpty(readBy))
+                return;
+
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (gi == null || gi.LastReadMessageId > lastMessageId)
+                    return;
+
+                if (gi.LastReadMessageId == lastMessageId)
+                {
+                    if (!gi.ReadByArray.Contains(readBy))
+                        gi.ReadByArray.Add(readBy);
+                }
+                else
+                {
+                    gi.LastReadMessageId = lastMessageId;
+                    gi.ReadByArray = new JArray() { readBy };
+                }
+                gi.ReadByInfo = gi.ReadByArray.ToString();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 

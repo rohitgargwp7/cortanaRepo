@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using System.Data.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.Model
 {
@@ -21,10 +22,12 @@ namespace windows_client.Model
         string _groupName;
         string _groupOwner;
         bool _groupAlive;
+        string _readByInfo;
+        long _lastReadMessageId;
 
         public GroupInfo() { }
 
-        public GroupInfo(string grpId,string grpName,string grpOwner,bool isGrpAlive)
+        public GroupInfo(string grpId, string grpName, string grpOwner, bool isGrpAlive)
         {
             _groupId = grpId;
             _groupName = grpName;
@@ -104,6 +107,62 @@ namespace windows_client.Model
                     _groupAlive = value;
                     NotifyPropertyChanged("GroupAlive");
                 }
+            }
+        }
+         
+        [Column]
+        public long LastReadMessageId
+        {
+            get
+            {
+                return _lastReadMessageId;
+            }
+            set
+            {
+                if (_lastReadMessageId != value)
+                {
+                    NotifyPropertyChanging("LastReadMessageId");
+                    _lastReadMessageId = value;
+                }
+            }
+        }
+
+        [Column(CanBeNull = true)]
+        public string ReadByInfo
+        {
+            get
+            {
+                return _readByInfo;
+            }
+            set
+            {
+                if (_readByInfo != value)
+                {
+                    NotifyPropertyChanging("ReadByInfo");
+                    _readByInfo = value;
+                }
+            }
+        }
+
+        JArray _readByArray;
+        public JArray ReadByArray
+        {
+            get
+            {
+                if (_readByArray == null)
+                {
+                    if (String.IsNullOrEmpty(_readByInfo))
+                        return null;
+                    else
+                        _readByArray = JArray.Parse(_readByInfo);
+                }
+
+                return _readByArray;
+            }
+            set
+            {
+                if (value != _readByArray)
+                    _readByArray = value;
             }
         }
 

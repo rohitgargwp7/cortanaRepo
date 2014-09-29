@@ -1305,7 +1305,9 @@ namespace windows_client.DbUtils
         {
             Stopwatch st = Stopwatch.StartNew();
             IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, msgID, status);
-            ConversationTableUtils.updateLastMsgReadStatus(msgID, msisdn, readByArray); // update conversationObj, null is already checked in the function
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
+            if (Utils.isGroupConversation(msisdn))
+                GroupTableUtils.UpdateReadBy(msisdn, lastReadMessageId, readByArray);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);

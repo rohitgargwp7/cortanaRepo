@@ -35,13 +35,10 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFirstMsg = false; // not used anywhere
         private long _lastMsgId;
-        private long _lastReadMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
         private string _draftMessage;
-        private string _readByInfo;
-        private JArray _readByArray;
         #endregion
 
         #region Properties
@@ -222,55 +219,6 @@ namespace windows_client.Model
                 NotifyPropertyChanged("UnreadCircleVisibility");
                 NotifyPropertyChanged("MuteIconImage");
                 NotifyPropertyChanged("MuteMsg");
-            }
-        }
-        [DataMember]
-        public long LastReadMsgId
-        {
-            get
-            {
-                return _lastReadMsgId;
-            }
-            set
-            {
-                if (_lastReadMsgId != value)
-                    _lastReadMsgId = value;
-            }
-        }
-        [DataMember]
-        public string ReadByInfo
-        {
-            get
-            {
-                return _readByInfo;
-            }
-            set
-            {
-                if (_readByInfo != value)
-                {
-                    _readByInfo = value;
-                }
-            }
-        }
-
-        public JArray ReadByArray
-        {
-            get
-            {
-                if (_readByArray == null)
-                {
-                    if (String.IsNullOrEmpty(_readByInfo))
-                        return null;
-                    else
-                        _readByArray = JArray.Parse(_readByInfo);
-                }
-
-                return _readByArray;
-            }
-            set
-            {
-                if (value != _readByArray)
-                    _readByArray = value;
             }
         }
 
@@ -854,13 +802,6 @@ namespace windows_client.Model
 
                 writer.Write(_isHidden);
 
-                if (_readByInfo == null)
-                    writer.WriteStringBytes("*@N@*");
-                else
-                    writer.WriteStringBytes(_readByInfo);
-
-                writer.Write(_lastReadMsgId);
-
             }
             catch (Exception ex)
             {
@@ -967,27 +908,6 @@ namespace windows_client.Model
                 catch
                 {
                     _isHidden = false;
-                }
-                //todo:check upgrade
-                try
-                {
-                    count = reader.ReadInt32();
-                    _readByInfo = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_readByInfo == "*@N@*")
-                        _readByInfo = null;
-                }
-                catch
-                {
-                    _readByInfo = null;
-                }
-
-                try
-                {
-                    _lastReadMsgId = reader.ReadInt64();
-                }
-                catch
-                {
-                    _lastReadMsgId = 0;
                 }
             }
             catch (Exception ex)

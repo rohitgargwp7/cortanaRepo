@@ -300,33 +300,6 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void updateLastMsgReadStatus(long lastReadMessageId, string msisdn, JArray readByArray)
-        {
-            if (msisdn == null)
-                return;
-            ConversationListObject obj = null;
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-            {
-                obj = App.ViewModel.ConvMap[msisdn];
-                if (obj.LastMsgId == lastReadMessageId && obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
-                {
-                    obj.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                }
-
-                if (obj.LastReadMsgId == lastReadMessageId)
-                {
-                    //check for duplicacy
-                    obj.ReadByArray.Add(readByArray);
-                }
-                else if (obj.LastReadMsgId < lastReadMessageId)
-                {
-                    obj.ReadByArray = readByArray;
-                    obj.LastReadMsgId = lastReadMessageId;
-                }
-                saveConvObject(obj, msisdn.Replace(":", "_"));
-            }
-        }
-
         public static void saveConvObjectList()
         {
             int convs = 0;

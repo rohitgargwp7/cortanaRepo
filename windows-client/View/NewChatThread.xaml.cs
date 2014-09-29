@@ -122,6 +122,7 @@ namespace windows_client.View
         private bool _isHikeBot = false;
         private LastSeenHelper _lastSeenHelper;
         Boolean _isSendAllAsSMSVisible = false;
+        private GroupInfo _groupInfo;
 
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> sent message bubble mapping
 
@@ -172,7 +173,6 @@ namespace windows_client.View
         }
 
         ConvMessage _lastUnDeliveredMessage = null, _tap2SendAsSMSMessage = null;
-
         public LruCache<string, BitmapImage> lruStickerCache;
 
         public Dictionary<string, List<ConvMessage>> dictDownloadingSticker = new Dictionary<string, List<ConvMessage>>();
@@ -873,7 +873,6 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
 
@@ -887,11 +886,12 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(mContactNumber);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                    if (gi != null)
-                        groupOwner = gi.GroupOwner;
-                    if (gi != null && !gi.GroupAlive)
-                        isGroupAlive = false;
+                    _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    if (_groupInfo != null)
+                    {
+                        groupOwner = _groupInfo.GroupOwner;
+                        isGroupAlive = _groupInfo.GroupAlive;
+                    }
                     IsMute = convObj.IsMute;
                 }
 
@@ -954,11 +954,12 @@ namespace windows_client.View
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
                     isGroupChat = true;
                     BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
-                    gi = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
-                    if (gi != null)
-                        groupOwner = gi.GroupOwner;
-                    if (gi != null && !gi.GroupAlive)
-                        isGroupAlive = false;
+                    _groupInfo = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
+                    if (_groupInfo != null)
+                    {
+                        groupOwner = _groupInfo.GroupOwner;
+                        isGroupAlive = _groupInfo.GroupAlive;
+                    }
                     ConversationListObject cobj;
                     if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
                         IsMute = cobj.IsMute;
@@ -1385,8 +1386,8 @@ namespace windows_client.View
 
             if (!isNewgroup)
             {
-                GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                if (gif != null && string.IsNullOrEmpty(gif.GroupName)) // set groupname if not alreay set
+                _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                if (_groupInfo != null && string.IsNullOrEmpty(_groupInfo.GroupName)) // set groupname if not alreay set
                 {
                     mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
                     ConversationTableUtils.updateGroupName(mContactNumber, mContactName); // update DB and UI
@@ -4106,6 +4107,11 @@ namespace windows_client.View
                 string msisdnToCheck = (string)vals[1];
                 if (msisdnToCheck != mContactNumber || ids == null || ids.Count == 0)
                     return;
+
+                JArray readByArray = null;
+                if (isGroupChat)
+                    readByArray = (JArray)vals[2];
+
                 long maxId = 0;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Count; i++)
@@ -4131,6 +4137,28 @@ namespace windows_client.View
                     {
                         Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED_READ Exception : " + ex.StackTrace);
                         continue;
+                    }
+                }
+
+                if (isGroupChat && readByArray != null)
+                {
+                    if (_groupInfo == null)
+                        _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    if (_groupInfo != null)
+                    {
+                        if (_groupInfo.LastReadMessageId == maxId)
+                        {
+                            for (int i = 0; i < readByArray.Count; i++)
+                            {
+                                if (!_groupInfo.ReadByArray.Contains(readByArray[i]))
+                                    _groupInfo.ReadByArray.Add(readByArray[i]);
+                            }
+                        }
+                        else
+                        {
+                            _groupInfo.LastReadMessageId = maxId;
+                            _groupInfo.ReadByArray = readByArray;
+                        }
                     }
                 }
 
@@ -7202,15 +7230,15 @@ namespace windows_client.View
         {
             if (!isGroupChat || !isGroupAlive)
                 return;
-
-            ConversationListObject co;
-            if (!App.ViewModel.ConvMap.TryGetValue(mContactNumber, out co))
+            if (_groupInfo == null)
+                _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
+            if (_groupInfo == null)
                 return;
             _lastReceivedSentMessage = null;
 
             try
             {
-                var msgList = ocMessages.Where(arg => arg.MessageId == co.LastReadMsgId);
+                var msgList = ocMessages.Where(arg => arg.MessageId == _groupInfo.LastReadMessageId);
 
                 _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }
@@ -7235,7 +7263,7 @@ namespace windows_client.View
                         _readByMessage.MessageStatus = ConvMessage.State.UNKNOWN;
                     }
 
-                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, co.ReadByArray, _activeUsers, mContactNumber);
+                    var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _groupInfo.ReadByArray, _activeUsers, mContactNumber);
 
                     if (String.IsNullOrEmpty(msg))
                         return;
