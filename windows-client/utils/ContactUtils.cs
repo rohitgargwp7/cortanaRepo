@@ -332,19 +332,20 @@ namespace windows_client.utils
         }
 
 
-        public static ContactInfo GetContactInfo(string msisdn)
+        public static ContactInfo GetContactInfo(string msisdn, out bool isContactNotFoundInContactsCache)
         {
             ContactInfo contactInfo = null;
+            isContactNotFoundInContactsCache = false;
 
             if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
                 contactInfo = App.ViewModel.ContactsCache[msisdn];
             else
             {
                 contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                isContactNotFoundInContactsCache = true;
 
                 if (contactInfo != null)
                     App.ViewModel.ContactsCache[msisdn] = contactInfo;
-
             }
 
             return contactInfo;
@@ -360,9 +361,10 @@ namespace windows_client.utils
                 inAddressBook = true;
             else
             {
-                ContactInfo cinfo = ContactUtils.GetContactInfo(msisdn);
+                bool isContactNotFoundInContactsCache = false;
+                ContactInfo cinfo = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
 
-                if (cinfo != null && cinfo.Name != null)
+                if (cinfo != null && (isContactNotFoundInContactsCache || cinfo.Name != null))
                     inAddressBook = true;
             }
 

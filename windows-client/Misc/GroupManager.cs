@@ -78,9 +78,10 @@ namespace windows_client.Misc
             var isInAdressBook = false;
             ContactInfo cInfo = null;
 
-            cInfo = ContactUtils.GetContactInfo(msisdn);
+            bool isContactNotFoundInContactsCache = false;
+            cInfo = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
 
-            if (cInfo != null && cInfo.Name != null)
+            if (cInfo != null && (isContactNotFoundInContactsCache || cInfo.Name != null))
                 isInAdressBook = true;
 
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);

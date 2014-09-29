@@ -70,7 +70,8 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn);
+                    bool isContactNotFoundInContactsCache = false;
+                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn, out isContactNotFoundInContactsCache);
                     
                     if (cn == null)
                     {
@@ -78,7 +79,9 @@ namespace windows_client.utils
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
 
-                    cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+                    if(isContactNotFoundInContactsCache)
+                        cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+
                     userName = (cn != null && !string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
