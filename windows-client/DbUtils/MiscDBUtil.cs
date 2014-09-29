@@ -17,6 +17,10 @@ using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
 using Newtonsoft.Json.Linq;
+using System.Windows.Resources;
+using System.Windows;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace windows_client.DbUtils
 {
@@ -165,7 +169,7 @@ namespace windows_client.DbUtils
             msisdn = msisdn.Replace(":", "_");
             serverId = serverId.Replace(":", "_");
             string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-            storeFileInIsolatedStorage(fullFilePath, imageBytes);
+            StoreFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
         public static byte[] GetProfilePicUpdateForID(string msisdn, string serverId)
@@ -665,11 +669,16 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void storeFileInIsolatedStorage(string filePath, byte[] imagebytes)
+        /// <summary>
+        /// Save bytes in Isolated Storage
+        /// </summary>
+        /// <param name="filePath">file path where bytes need to be saved</param>
+        /// <param name="dataBytes">file bytes</param>
+        public static void StoreFileInIsolatedStorage(string filePath, byte[] dataBytes)
         {
             filePath = filePath.Replace(":", "_");
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
-            if (imagebytes != null)
+            if (dataBytes != null)
             {
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -687,31 +696,54 @@ namespace windows_client.DbUtils
                     {
                         using (BinaryWriter writer = new BinaryWriter(fileStream))
                         {
-                            writer.Write(imagebytes, 0, imagebytes.Length);
+                            writer.Write(dataBytes, 0, dataBytes.Length);
                         }
                     }
                 }
             }
         }
 
-        public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
-            sourceFilePath = sourceFilePath.Replace(":", "_");
-            destinationFilePath = destinationFilePath.Replace(":", "_");
-            string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
             string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
+            string destinationFileName = destinationFilePath.Substring(destinationFilePath.LastIndexOf("/") + 1);
 
+            string absoulutePath = null;
+
+            try
+            {
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!isoStore.DirectoryExists(destinationFileDirectory))
+                        isoStore.CreateDirectory(destinationFileDirectory);
+
+                    using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(destinationFilePath, FileMode.CreateNew, isoStore))
+                    {
+                        absoulutePath = output.Name;
+                    }
+                }
+
+                File.Copy(sourceFilePath, absoulutePath, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception at MiscDBUtils::CopyFileInIsolatedStorage" + ex.StackTrace);
+            }
+        }
+
+        public static int GetFileSize(string filePath)
+        {
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
+                if (myIsolatedStorage.FileExists(filePath))
                 {
-                    return;
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        return Convert.ToInt32(fileStream.Length);
+                    }
                 }
-                if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
-                {
-                    myIsolatedStorage.CreateDirectory(destinationFileDirectory);
-                }
-                myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+                else
+                    return 0;
             }
         }
 

@@ -526,7 +526,7 @@ namespace windows_client.View
 
                     defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
 
-                    charsEntered = (isPlus ? "+" : "") + charsEntered;
+                    charsEntered = (isPlus ? "+" : String.Empty) + charsEntered;
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;

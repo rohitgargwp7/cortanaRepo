@@ -268,7 +268,7 @@ namespace windows_client.View
                     {
                         string[] nameValue = item.Split('=');
                         if (nameValue[0].Contains("?"))
-                            nameValue[0] = nameValue[0].Replace("?", "");
+                            nameValue[0] = nameValue[0].Replace("?", String.Empty);
                         nameValueCollection.Add(nameValue[0], System.Net.HttpUtility.UrlDecode(nameValue[1]));
                     }
                 }

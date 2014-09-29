@@ -164,12 +164,22 @@ namespace windows_client
                                 bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
                                 if (success)
                                 {
+                                    ConversationListObject obj;
+                                    bool updateConversation = false;
                                     foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
                                     {
                                         if (convMessage.StatusUpdateObj != null)
                                         {
                                             convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
                                             StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                        }
+                                        else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                                        {
+                                            if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out obj))
+                                            {
+                                                MessagesTableUtils.ProcessConversationMetadata(convMessage, obj);
+                                                updateConversation = true;
+                                            }
                                         }
                                         else
                                         {
@@ -190,15 +200,17 @@ namespace windows_client
                                         }
                                     }
                                     ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
-                                    ConversationListObject obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
+                                    obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
                                     if (obj == null)
                                         continue;
 
                                     if (msisdnBulkData.ListMessages.Count > 1)
                                     {
                                         obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
-                                        ConversationTableUtils.updateConversation(obj);
+                                        updateConversation = true;
                                     }
+                                    if (updateConversation)
+                                        ConversationTableUtils.updateConversation(obj);
 
                                     object[] vals = new object[3];
 
@@ -250,6 +262,7 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
@@ -296,7 +309,7 @@ namespace windows_client
             #region REQUEST_DISPLAY_PIC
             else if (REQUEST_DISPLAY_PIC == type)
             {
-                string grpId = "";
+                string grpId = String.Empty;
                 try
                 {
                     grpId = (string)jsonObj[HikeConstants.TO];
@@ -312,7 +325,7 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
-                string sentTo = "";
+                string sentTo = String.Empty;
                 try
                 {
                     // If not null then this is group id
@@ -929,7 +942,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -1779,24 +1792,24 @@ namespace windows_client
                     var header = (string)data[HikeConstants.PRO_TIP_HEADER];
                     var text = (string)data[HikeConstants.PRO_TIP_TEXT];
 
-                    var imageUrl = "";
+                    var imageUrl = String.Empty;
                     try
                     {
                         imageUrl = (string)data[HikeConstants.PRO_TIP_IMAGE];
                     }
                     catch
                     {
-                        imageUrl = "";
+                        imageUrl = String.Empty;
                     }
 
-                    var base64Image = "";
+                    var base64Image = String.Empty;
                     try
                     {
                         base64Image = (string)data[HikeConstants.THUMBNAIL];
                     }
                     catch
                     {
-                        base64Image = "";
+                        base64Image = String.Empty;
                     }
 
                     ProTipHelper.Instance.AddProTip(id, header, text, imageUrl, base64Image);
@@ -1929,7 +1942,7 @@ namespace windows_client
                         isCritical = false;
                     }
 
-                    var message = "";
+                    var message = String.Empty;
                     try
                     {
                         message = (string)data[HikeConstants.TEXT_UPDATE_MSG];

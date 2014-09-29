@@ -52,7 +52,7 @@ namespace windows_client
 
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
-        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
+        public static readonly string DISPLAY_PIC_FAV_ONLY = "dpFavorites";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -364,6 +364,10 @@ namespace windows_client
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             _isAppLaunched = true;
+
+            // Activate hidden mode whne app is launched if setting is true.
+            if (appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -771,7 +775,7 @@ namespace windows_client
             #endregion
             #region IN APP TIPS
 
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 App.appSettings.Remove(App.TIP_MARKED_KEY);
                 App.appSettings.Remove(App.TIP_SHOW_KEY);
@@ -974,8 +978,7 @@ namespace windows_client
 
             #endregion
             #region Auto Save Media Key Removal
-            //TODO: Update market release build here when we release build for the first time from here
-            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.8.0.0") < 0)
+            if (!isNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
             }

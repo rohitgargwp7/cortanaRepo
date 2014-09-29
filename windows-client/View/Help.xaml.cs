@@ -52,9 +52,6 @@ namespace windows_client.View
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            EmailComposeTask contactUsMail = new EmailComposeTask();
-            contactUsMail.To = "support@hike.in";
-            contactUsMail.Subject = AppResources.Help_EmailSubject;
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             StringBuilder emailBodyText = new StringBuilder();
             emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
@@ -62,15 +59,7 @@ namespace windows_client.View
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
                 "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
-            contactUsMail.Body = emailBodyText.ToString();
-            try
-            {
-                contactUsMail.Show();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HElp.xaml ::  ContactUs_Tap , Exception : " + ex.StackTrace);
-            }
+            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(), HikeConstants.CONTACT_US_EMAIL);
         }
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
