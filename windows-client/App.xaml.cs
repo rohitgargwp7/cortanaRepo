@@ -20,6 +20,8 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using FileTransfer;
+using CommonLibrary.Utils;
 
 namespace windows_client
 {
@@ -77,9 +79,9 @@ namespace windows_client
 
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
             {
-                AccountUtils.DebugEnvironment tmpEnv;
-                HikeInstantiation.AppSettings.TryGetValue<AccountUtils.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
-                AccountUtils.AppEnvironment = tmpEnv;
+                ConnectionUtility.DebugEnvironment tmpEnv;
+                HikeInstantiation.AppSettings.TryGetValue<ConnectionUtility.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                ConnectionUtility.AppEnvironment = tmpEnv;
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
@@ -204,8 +206,8 @@ namespace windows_client
                         PushHelper.Instance.registerPushnotifications(false);
                     }
 
-                    FileTransfers.FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
-                    FileTransfers.FileTransferManager.Instance.StartTask();
+                    FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
+                    FileTransferManager.Instance.StartTask();
 
                     //upload pending group images when network reconnects
                     if (HikeInstantiation.ViewModel.PendingRequests.Count > 0)

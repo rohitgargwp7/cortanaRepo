@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
+using FileTransfer;
 
 namespace windows_client.ViewModel
 {
@@ -248,7 +249,8 @@ namespace windows_client.ViewModel
             MiscDBUtil.LoadPendingUploadPicRequests();
 
             ChatBackgroundHelper.Instance.Instantiate();
-            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+            FileTransferManager.Instance.PopulatePreviousTasks();
+            FileTransferManager.Instance.TriggerPubSub += Instance_TriggerPubSub;
 
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME))
                 IsDarkMode = true;
@@ -257,12 +259,17 @@ namespace windows_client.ViewModel
                 IsHiddenModeActive = true;
         }
 
+        void Instance_TriggerPubSub(object sender, FileTransferSatatusChangedEventArgs e)
+        {
+            if (e.IsStateChanged)
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.FILE_STATE_CHANGED, e.FileInfo);
+        }
+
         /// <summary>
         /// called on app start, app resume from tombstone state and when user turn on location sharing in app settings
         /// </summary>
         public void LoadCurrentLocation()
         {
-
             if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();

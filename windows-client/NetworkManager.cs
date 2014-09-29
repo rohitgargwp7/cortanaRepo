@@ -15,6 +15,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
+using FileTransfer;
 
 namespace windows_client
 {
@@ -174,13 +175,12 @@ namespace windows_client
                     }
                     else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
                     {
-                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                        FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     }
 
                     if (convMessage.FileAttachment != null)
-                    {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    }
+                    
                     object[] vals = new object[3];
 
                     vals[0] = convMessage;

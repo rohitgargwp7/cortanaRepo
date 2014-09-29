@@ -35,6 +35,7 @@ using System.Windows.Threading;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using windows_client.utils.ServerTips;
+using FileTransfer;
 
 namespace windows_client.View
 {
@@ -2073,7 +2074,7 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObjectList();
             }
 
-            if (FileTransfers.FileTransferManager.Instance.IsBusy())
+            if (FileTransferManager.Instance.IsBusy())
             {
                 var result = MessageBox.Show(AppResources.FileTransfer_InProgress_Msg, AppResources.FileTransfer_InProgress, MessageBoxButton.OKCancel);
 

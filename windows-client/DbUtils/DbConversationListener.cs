@@ -15,10 +15,11 @@ using windows_client.Misc;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System.Text;
-using windows_client.FileTransfers;
+using FileTransfer;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
@@ -147,7 +148,7 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, convMessage.FileAttachment.FileKey);
+                        FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, convMessage.FileAttachment.FileKey);
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
@@ -194,7 +195,7 @@ namespace windows_client.DbUtils
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
+                        FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
@@ -392,12 +393,23 @@ namespace windows_client.DbUtils
                             state = Attachment.AttachmentState.PAUSED;
                         else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
                             state = Attachment.AttachmentState.MANUAL_PAUSED;
-                        else if (fInfo.FileState == FileTransferState.FAILED)
+                        else if (fInfo.FileState == FileTransferState.FAILED || fInfo.FileState == FileTransferState.FAILED_SIZE_EXCEEDED)
                         {
                             state = Attachment.AttachmentState.FAILED;
 
                             if (fInfo is FileUploader)
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                            else
+                            {
+                                if (fInfo.FileState == FileTransferState.FAILED_SIZE_EXCEEDED)
+                                {
+                                    fInfo.FileState = FileTransferState.FAILED;
+                                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                    {
+                                        MessageBox.Show(AppResources.Memory_Limit_Reached_Download_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                                    });
+                                }
+                            }
                         }
                         else if (fInfo.FileState == FileTransferState.STARTED)
                             state = Attachment.AttachmentState.STARTED;
@@ -460,32 +472,32 @@ namespace windows_client.DbUtils
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.AUDIO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
 

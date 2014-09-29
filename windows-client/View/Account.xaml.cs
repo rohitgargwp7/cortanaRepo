@@ -21,9 +21,10 @@ using windows_client.Controls;
 using Facebook;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
-using windows_client.FileTransfers;
 using Microsoft.Phone.Shell;
 using windows_client.Model;
+using FileTransfer;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -131,7 +132,7 @@ namespace windows_client.View
                 progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
                 canGoBack = false;
 
-                AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
+                AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), ConnectionUtility.BASE + "/account");
             }
         }
 
@@ -172,7 +173,7 @@ namespace windows_client.View
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
-            AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+            ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.STAGING;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

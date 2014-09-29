@@ -12,6 +12,7 @@ using windows_client.DbUtils;
 using System.Diagnostics;
 using windows_client.Languages;
 using windows_client.Model;
+using CommonLibrary.Utils;
 
 
 namespace windows_client
@@ -33,9 +34,9 @@ namespace windows_client
                 welcomePivot.Tap -= ChangeEnvironment;
                 welcomePivot.Tap += ChangeEnvironment;
 
-                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+                if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.PRODUCTION)
                     serverTxtBlk.Text = "Production";
-                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                else if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.DEV)
                     serverTxtBlk.Text = "Staging 2";
                 else
                     serverTxtBlk.Text = "QA Staging";
@@ -157,12 +158,12 @@ namespace windows_client
                 HikeInstantiation.AppSettings.Save();
 
             #region SERVER INFO
-            string env = AccountUtils.AppEnvironment.ToString();
+            string env = ConnectionUtility.AppEnvironment.ToString();
             Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + AccountUtils.HOST);
-            Debug.WriteLine("PORT : " + AccountUtils.PORT);
-            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            Debug.WriteLine("HOST : " + ConnectionUtility.HOST);
+            Debug.WriteLine("PORT : " + ConnectionUtility.PORT);
+            Debug.WriteLine("MQTT HOST : " + ConnectionUtility.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + ConnectionUtility.MQTT_PORT);
             #endregion
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
@@ -203,22 +204,23 @@ namespace windows_client
         {
             if (!HikeInstantiation.IsMarketplace)
             {
-                if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.STAGING)
+                if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.STAGING)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.DEV;
+                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.DEV;
                     serverTxtBlk.Text = "Staging 2";
                 }
-                else if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.DEV)
+                else if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.DEV)
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.PRODUCTION;
+                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.PRODUCTION;
                     serverTxtBlk.Text = "Production";
                 }
                 else
                 {
-                    AccountUtils.AppEnvironment = AccountUtils.DebugEnvironment.STAGING;
+                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.STAGING;
                     serverTxtBlk.Text = "QA Staging";
                 }
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, AccountUtils.AppEnvironment);
+
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, ConnectionUtility.AppEnvironment);
             }
         }
     }

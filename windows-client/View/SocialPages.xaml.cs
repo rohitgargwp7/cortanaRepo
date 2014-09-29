@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Misc;
 using Hammock.Web;
 using Hammock.Authentication.OAuth;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -65,7 +66,7 @@ namespace windows_client.View
             else
             {
                 //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
-                string url = "http://" + AccountUtils.HOST + ":" + AccountUtils.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
+                string url = "http://" + ConnectionUtility.HOST + ":" + ConnectionUtility.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }
