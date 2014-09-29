@@ -1,17 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using windows_client.Languages;
 using windows_client.Model;
-using windows_client.Misc;
 using Microsoft.Phone.Data.Linq;
-using windows_client.utils;
+using CommonLibrary.Lib;
 
 namespace windows_client.DbUtils
 {

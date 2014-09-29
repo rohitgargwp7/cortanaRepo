@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary
 {
-    public class HikeInstantiation
+    public class HikeInitManager
     {
         public static bool IsMarketplace = false; // change this to toggle debugging
     }

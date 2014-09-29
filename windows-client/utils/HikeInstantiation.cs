@@ -20,16 +20,16 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using CommonLibrary;
 namespace windows_client.utils
 {
-    public class HikeInstantiation
+    public class HikeInstantiation : HikeInitManager
     {
         public static readonly IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
 
         #region DATA
 
         public static bool IsViewModelLoaded = false;
-        public static bool IsMarketplace = false; // change this to toggle debugging
         public static NewChatThread NewChatThreadPageObj = null;
         public static string MSISDN;
 
@@ -459,7 +459,7 @@ namespace windows_client.utils
                  * 1. Read from individual files.
                  * 2. Overite old files as they are written in a wrong format
                  */
-                convList = ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
+                convList = ConversationTableUtils.GetAllConversations_Ver1000(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 HikeInstantiation.AppSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 

@@ -24,7 +24,7 @@ namespace CommonLibrary.Utils
         {
             get
             {
-                if (HikeInstantiation.IsMarketplace)
+                if (HikeInitManager.IsMarketplace)
                     return DebugEnvironment.PRODUCTION;
                 else
                     return _appEnvironment;

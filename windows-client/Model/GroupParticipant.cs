@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using windows_client.utils;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
 using System.Runtime.Serialization;
+using CommonLibrary.Lib;
 
 namespace windows_client.Model
 {

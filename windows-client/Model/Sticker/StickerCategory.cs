@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CommonLibrary.Lib;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,16 +6,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using windows_client.Misc;
-using windows_client.Model.Sticker;
 using windows_client.utils;
-using windows_client.ViewModel;
 
 namespace windows_client.Model.Sticker
 {

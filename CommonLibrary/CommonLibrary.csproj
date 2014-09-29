@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants\HikeConstants.cs" />
-    <Compile Include="HikeInstantiation.cs" />
+    <Compile Include="HikeInitManager.cs" />
     <Compile Include="Lib\IBinarySerializable.cs" />
     <Compile Include="Lib\MD5.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,7 +92,9 @@
     <Compile Include="Utils\ConnectionUtility.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <ProjectExtensions />

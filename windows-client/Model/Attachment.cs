@@ -1,11 +1,9 @@
-﻿using System.IO.IsolatedStorage;
-using System.Runtime.Serialization;
-using windows_client.Misc;
+﻿using System.Runtime.Serialization;
 using System.IO;
 using System;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
+using CommonLibrary.Lib;
 
 namespace windows_client.Model
 {

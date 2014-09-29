@@ -5,13 +5,13 @@ using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
-using windows_client.Controls;
 using System.Diagnostics;
 using System.Text;
 using windows_client.Misc;
 using windows_client.Languages;
 using System.IO.IsolatedStorage;
 using System.IO;
+using CommonLibrary.Lib;
 
 namespace windows_client.DbUtils
 {

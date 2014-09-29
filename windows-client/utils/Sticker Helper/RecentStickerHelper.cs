@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using windows_client.Model.Sticker;
 using windows_client.ViewModel;
-using windows_client.Misc;
+using CommonLibrary.Lib;
 
 namespace windows_client.utils.Sticker_Helper
 {

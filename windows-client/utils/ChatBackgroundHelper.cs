@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using windows_client.Model;
-using Newtonsoft.Json.Linq;
-using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using System.IO;
-using windows_client.Misc;
 using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
+using CommonLibrary.Lib;
 
 namespace windows_client.utils
 {
