@@ -2325,4 +2325,8 @@ Download it like asap from http://hike.in!</value>
     <value>no pins</value>
     <comment>In case of 0 pins in Pin History</comment>
   </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>Posted a Pin </value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
 </root>

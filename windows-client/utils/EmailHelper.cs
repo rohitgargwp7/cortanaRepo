@@ -153,9 +153,11 @@ namespace windows_client.utils
 
                                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                                     messageText = "\"" + messageText + "\"";
+                                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                                    messageText = AppResources.EmailConv_PostedPin_Txt + "-\"" + messageText + "\"";
                             }
 
-                            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                             {
                                 if (convMsg.IsSent || convMsg.Msisdn == App.MSISDN)
                                 {

@@ -2866,7 +2866,7 @@ namespace windows_client.View
                 image.SetSource(e.ChosenPhoto);
                 try
                 {
-                    SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                    SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.CAMERA);
                 }
                 catch (Exception ex)
                 {
@@ -2880,7 +2880,7 @@ namespace windows_client.View
             }
         }
 
-        private bool SendImage(BitmapImage image, string fileName)
+        private bool SendImage(BitmapImage image, string fileName, Attachment.AttachemntSource source)
         {
             if (!isGroupChat || isGroupAlive)
             {
@@ -2928,7 +2928,7 @@ namespace windows_client.View
                 ConvMessage convMessage = new ConvMessage(String.Empty, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, fileBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, source, fileBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
 
@@ -4861,8 +4861,6 @@ namespace windows_client.View
             }
         }
 
-
-
         private void PauseResume_Tapped(object sender, RoutedEventArgs e)
         {
             _uploadProgressBarIsTapped = true;
@@ -4924,7 +4922,7 @@ namespace windows_client.View
                     MetaDataString = locationJSONString
                 };
 
-                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, locationBytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.OTHER, locationBytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
@@ -4948,6 +4946,7 @@ namespace windows_client.View
             byte[] thumbnail = null;
             string filePath = null;
             int fileSize = 0;
+            Attachment.AttachemntSource source = Attachment.AttachemntSource.CAMERA;
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
@@ -4959,6 +4958,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED_DURATION);
                 }
 
+                source = Attachment.AttachemntSource.CAMERA;
                 fileSize = fileBytes.Length;
                 isAudio = true;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
@@ -4973,10 +4973,10 @@ namespace windows_client.View
                     return;
                 }
 
+                source = Attachment.AttachemntSource.CAMERA;
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
                 filePath = HikeConstants.TEMP_VIDEO_NAME;
                 isAudio = false;
-                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, false);
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
             }
@@ -5010,8 +5010,8 @@ namespace windows_client.View
                     Debug.WriteLine("NewChatThread :: AudioFileTransfer , Exception : " + ex.StackTrace);
                 }
 
+                source = Attachment.AttachemntSource.GALLERY;
                 isAudio = false;
-                Analytics.SendAnalyticsEvent(HikeConstants.ST_FILE_TRANSFER, HikeConstants.FT_VIDEO_FILE, true);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_SHARED);
             }
 
@@ -5037,7 +5037,7 @@ namespace windows_client.View
                 if (isAudio)
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, fileSize);
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, source, fileSize);
                     convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_AUDIO;
 
                     var fileInfo = new JObject();
@@ -5055,7 +5055,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
-                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, fileSize);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, source, fileSize);
                     convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_VIDEO;
                     convMessage.Message = AppResources.Video_Txt;
                 }
@@ -5096,7 +5096,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
 
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, bytes.Length);
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.OTHER, bytes.Length);
                 convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
@@ -5121,7 +5121,7 @@ namespace windows_client.View
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
 
-                    if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString()))
+                    if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.GALLERY))
                         break;
 
                     pic.Pic.Dispose();
@@ -5626,7 +5626,8 @@ namespace windows_client.View
                     {
                         Debug.WriteLine("Chat Thread :: Exception : " + ex.StackTrace);
                     }
-                    SendImage(bitmap, token);
+
+                    SendImage(bitmap, token, Attachment.AttachemntSource.FORWARDED);
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
