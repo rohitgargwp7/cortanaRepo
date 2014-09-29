@@ -389,7 +389,7 @@ namespace windows_client
             }
             else
             {
-                string ISORegion = "";
+                string ISORegion = String.Empty;
                 string countryCodeName = CultureInfo.CurrentCulture.Name;
 
                 try

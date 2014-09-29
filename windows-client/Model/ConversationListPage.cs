@@ -16,6 +16,7 @@ using System.Text;
 using windows_client.Languages;
 using windows_client.Controls;
 using windows_client.DbUtils;
+using Newtonsoft.Json;
 
 namespace windows_client.Model
 {
@@ -75,6 +76,7 @@ namespace windows_client.Model
                     _lastMessage = value;
                     _toastText = value;
                     NotifyPropertyChanged("LastMessage");
+                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -108,7 +110,6 @@ namespace windows_client.Model
                 if (_timeStamp != value)
                 {
                     _timeStamp = value;
-                    NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                     NotifyPropertyChanged("TimeStampVisibility");
                     NotifyPropertyChanged("MuteIconTimeStampVisibility");
@@ -248,7 +249,7 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
             }
         }
-        
+
         public Visibility MuteIconVisibility
         {
             get
@@ -412,6 +413,14 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility EmailChatMenuVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
         public string FormattedTimeStamp
         {
             get
@@ -456,6 +465,33 @@ namespace windows_client.Model
                     _isSelected = value;
                     NotifyPropertyChanged("ConvImage");
                 }
+            }
+        }
+
+        [DataMember]
+        public string _metadata {get;set;} //stores the latest pin info
+        JObject metadata = null;
+
+        public JObject MetaData
+        {
+            get
+            {
+                try
+                {
+                    if (metadata == null)
+                        metadata = JObject.Parse(_metadata);
+                    
+                    return metadata;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {               
+                metadata = value;
+                _metadata = (value == null) ? null : value.ToString(Newtonsoft.Json.Formatting.None);
             }
         }
 
@@ -709,7 +745,7 @@ namespace windows_client.Model
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
-            this.LastMessage = lastMessage; 
+            this.LastMessage = lastMessage;
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;
@@ -801,6 +837,11 @@ namespace windows_client.Model
                     writer.WriteStringBytes(_draftMessage);
 
                 writer.Write(_isHidden);
+
+                if (_metadata == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_metadata);
             }
             catch (Exception ex)
             {
@@ -907,6 +948,18 @@ namespace windows_client.Model
                 catch
                 {
                     _isHidden = false;
+                }
+
+                try
+                {
+                    count = reader.ReadInt32();
+                    _metadata = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (_metadata == "*@N@*")
+                        _metadata = null;
+                }
+                catch
+                {
+                    _metadata = null;
                 }
             }
             catch (Exception ex)
