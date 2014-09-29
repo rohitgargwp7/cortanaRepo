@@ -182,12 +182,6 @@
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
-    <Compile Include="FileTransfers\FileDownloader.cs" />
-    <Compile Include="FileTransfers\FileInfoBase.cs" />
-    <Compile Include="FileTransfers\FileTransferManager.cs" />
-    <Compile Include="FileTransfers\FileUploader.cs" />
-    <Compile Include="FileTransfers\FileTransferState.cs" />
-    <Compile Include="FileTransfers\FileTransferSatatusChangedEventArgs.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Languages\AppResources.Designer.cs">
@@ -1157,6 +1151,14 @@
     <Content Include="View\images\typing.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj">
+      <Project>{230CE6E8-77F4-4A39-876F-41BAC647FBB6}</Project>
+      <Name>CommonLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileTransfer\FileTransfer.csproj">
+      <Project>{57BE909D-CAE2-40A7-A07F-88A31973C195}</Project>
+      <Name>FileTransfer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
       <Name>RPALApiComponent</Name>

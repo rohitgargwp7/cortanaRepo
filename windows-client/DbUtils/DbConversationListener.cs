@@ -15,58 +15,56 @@ using windows_client.Misc;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System.Text;
-using windows_client.FileTransfers;
+using FileTransfer;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
     public class DbConversationListener : HikePubSub.Listener
     {
-        private HikePubSub mPubSub;
-
         /* Register all the listeners*/
         public DbConversationListener()
         {
-            mPubSub = HikeInstantiation.HikePubSubInstance;
             registerListeners();
         }
 
         public void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.MESSAGE_SENT, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_DELETED, this);
-            mPubSub.addListener(HikePubSub.BLOCK_USER, this);
-            mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
-            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-            mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
-            mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
-            mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
-            mPubSub.addListener(HikePubSub.DELETE_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.ATTACHMENT_SENT, this);
-            mPubSub.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
-            mPubSub.addListener(HikePubSub.SAVE_STATUS_IN_DB, this);
-            mPubSub.addListener(HikePubSub.FILE_STATE_CHANGED, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.MESSAGE_SENT, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELETED, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.GROUP_LEFT, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.DELETE_CONVERSATION, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.ATTACHMENT_SENT, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.SAVE_STATUS_IN_DB, this);
+            HikeInstantiation.HikePubSubInstance.addListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
         private void removeListeners()
         {
-            mPubSub.removeListener(HikePubSub.MESSAGE_SENT, this);
-            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
-            mPubSub.removeListener(HikePubSub.MESSAGE_DELETED, this);
-            mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
-            mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
-            mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-            mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
-            mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
-            mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
-            mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION, this);
-            mPubSub.removeListener(HikePubSub.ATTACHMENT_SENT, this);
-            mPubSub.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);
-            mPubSub.removeListener(HikePubSub.SAVE_STATUS_IN_DB, this);
-            mPubSub.removeListener(HikePubSub.FILE_STATE_CHANGED, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_SENT, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_DELETED, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_USER, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.GROUP_LEFT, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.DELETE_CONVERSATION, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.ATTACHMENT_SENT, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.SAVE_STATUS_IN_DB, this);
+            HikeInstantiation.HikePubSubInstance.removeListener(HikePubSub.FILE_STATE_CHANGED, this);
         }
 
         /// <summary>
@@ -112,10 +110,10 @@ namespace windows_client.DbUtils
                     UpdateConvListForSentMessage(convMessage, convObj);
 
                     if (!isNewGroup)
-                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
                 });
                 //if (!isNewGroup)
-                //    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+                //    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
             }
             #endregion
             #region FORWARD_ATTACHMENT
@@ -147,7 +145,7 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                     if (FileTransferManager.Instance.IsTransferPossible())
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, convMessage.FileAttachment.FileKey);
+                        FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, convMessage.FileAttachment.FileKey);
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
                 });
@@ -194,7 +192,7 @@ namespace windows_client.DbUtils
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
+                        FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
@@ -249,7 +247,7 @@ namespace windows_client.DbUtils
                     msisdn = (string)obj;
                 UsersTableUtils.block(msisdn);
                 JObject blockObj = blockUnblockSerialize("b", msisdn);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, blockObj);
             }
             #endregion
             #region UNBLOCK_USER
@@ -262,7 +260,7 @@ namespace windows_client.DbUtils
                     msisdn = (string)obj;
                 UsersTableUtils.unblock(msisdn);
                 JObject unblockObj = blockUnblockSerialize("ub", msisdn);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
             #endregion
             #region ADD_OR_UPDATE_PROFILE
@@ -310,7 +308,7 @@ namespace windows_client.DbUtils
                 string groupOwner = (string)obj;
                 UsersTableUtils.block(groupOwner);
                 JObject blockObj = blockUnblockSerialize("b", groupOwner);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, blockObj);
             }
             #endregion
             #region UNBLOCK GROUP OWNER
@@ -319,7 +317,7 @@ namespace windows_client.DbUtils
                 string groupOwner = (string)obj;
                 UsersTableUtils.unblock(groupOwner);
                 JObject unblockObj = blockUnblockSerialize("ub", groupOwner);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
             #endregion
             #region DELETE CONVERSATION
@@ -392,12 +390,23 @@ namespace windows_client.DbUtils
                             state = Attachment.AttachmentState.PAUSED;
                         else if (fInfo.FileState == FileTransferState.MANUAL_PAUSED)
                             state = Attachment.AttachmentState.MANUAL_PAUSED;
-                        else if (fInfo.FileState == FileTransferState.FAILED)
+                        else if (fInfo.FileState == FileTransferState.FAILED || fInfo.FileState == FileTransferState.FAILED_SIZE_EXCEEDED)
                         {
                             state = Attachment.AttachmentState.FAILED;
 
                             if (fInfo is FileUploader)
                                 convMessage.MessageStatus = ConvMessage.State.SENT_FAILED;
+                            else
+                            {
+                                if (fInfo.FileState == FileTransferState.FAILED_SIZE_EXCEEDED)
+                                {
+                                    fInfo.FileState = FileTransferState.FAILED;
+                                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                    {
+                                        MessageBox.Show(AppResources.Memory_Limit_Reached_Download_Body, AppResources.Memory_Limit_Reached_Header, MessageBoxButton.OK);
+                                    });
+                                }
+                            }
                         }
                         else if (fInfo.FileState == FileTransferState.STARTED)
                             state = Attachment.AttachmentState.STARTED;
@@ -460,32 +469,32 @@ namespace windows_client.DbUtils
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.AUDIO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
 

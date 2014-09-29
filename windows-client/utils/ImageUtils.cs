@@ -21,7 +21,7 @@ namespace windows_client.utils
 
         #endregion
 
-        private Dictionary<string, BitmapImage> _bitMapImageCache = null;
+        private Dictionary<string, BitmapImage> _bitMapImageCache = new Dictionary<string, BitmapImage>();
 
         private static volatile UI_Utils instance = null;
 
@@ -43,11 +43,6 @@ namespace windows_client.utils
                 }
                 return instance;
             }
-        }
-
-        private UI_Utils()
-        {
-            _bitMapImageCache = new Dictionary<string, BitmapImage>();
         }
 
         #region public  properties

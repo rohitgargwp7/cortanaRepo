@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using Microsoft.Phone.Controls;
 using windows_client.Model.Sticker;
+using CommonLibrary.Utils;
 
 namespace windows_client.Model
 {
@@ -1894,7 +1895,7 @@ namespace windows_client.Model
         public String GetMessageForServer()
         {
             if (StickerObj != null)
-                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + AccountUtils.GetStickerUrl + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
+                return String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Sticker_Txt) + ConnectionUtility.GetStickerUrl + StickerObj.Category + "/" + StickerObj.Id.Substring(0, StickerObj.Id.IndexOf("_"));
 
             string message = Message;
 
@@ -1903,31 +1904,31 @@ namespace windows_client.Model
 
             if (FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                     "/" + FileAttachment.FileKey;
             }
             else
-                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + AccountUtils.FILE_TRANSFER_BASE_URL +
+                message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
                         "/" + FileAttachment.FileKey;
 
             return message;

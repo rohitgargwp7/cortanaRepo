@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonLibrary.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,8 +53,8 @@ namespace windows_client.Mqtt
         public void GetIpAndPort(out string ip, out  int port)
         {
             ip = string.Empty;
-            port = AccountUtils.MQTT_PORT;
-            if (AccountUtils.AppEnvironment == AccountUtils.DebugEnvironment.PRODUCTION)
+            port = ConnectionUtility.MQTT_PORT;
+            if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.PRODUCTION)
             {
                 //try for port 8080 once and if it fails then fallback to xmpp (5222)
                 if (count > 0)//todo:check for wifi
@@ -65,12 +66,12 @@ namespace windows_client.Mqtt
                 }
                 else
                 {
-                    ip = AccountUtils.MQTT_HOST;
+                    ip = ConnectionUtility.MQTT_HOST;
                     count = 0;
                 }
             }
             else
-                ip = AccountUtils.MQTT_HOST;
+                ip = ConnectionUtility.MQTT_HOST;
         }
 
         public void ResetIp()

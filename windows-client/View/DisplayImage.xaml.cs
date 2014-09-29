@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Media;
 using windows_client.Languages;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -87,12 +88,12 @@ namespace windows_client.View
                         if (!Utils.isGroupConversation(_msisdn))
                         {
                             if (_msisdn == HikeConstants.MY_PROFILE_PIC)
-                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + HikeInstantiation.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                                AccountUtils.createGetRequest(ConnectionUtility.BASE + "/account/avatar/" + HikeInstantiation.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
                             else
-                                AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + _msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
+                                AccountUtils.createGetRequest(ConnectionUtility.BASE + "/account/avatar/" + _msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
                         }
                         else
-                            AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + _msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
+                            AccountUtils.createGetRequest(ConnectionUtility.BASE + "/group/" + _msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
@@ -134,7 +135,7 @@ namespace windows_client.View
                         string serverId = statusImageInfo[1].Replace(":", "_");
                         string fullFilePath = MiscDBUtil.STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
                         loadingProgress.Opacity = 1;
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
+                        AccountUtils.createGetRequest(ConnectionUtility.BASE + "/user/status/" + statusImageInfo[1] + "?only_image=true",
                             onStatusImageDownloaded, true, fullFilePath);
                     }
                 }

@@ -15,168 +15,14 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
     public class AccountUtils
     {
-        #region Environment enum
-        public enum DebugEnvironment
-        {
-            STAGING,
-            DEV,
-            PRODUCTION
-        }
-        #endregion
-
-        private static DebugEnvironment _appEnvironment;
-
-        public static DebugEnvironment AppEnvironment
-        {
-            get
-            {
-                if (HikeInstantiation.IsMarketplace)
-                    return DebugEnvironment.PRODUCTION;
-                else
-                    return _appEnvironment;
-            }
-            set
-            {
-                _appEnvironment = value;
-            }
-        }
-
-        #region MQTT RELATED
-
-        public static string MQTT_HOST
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_HOST;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.MQTT_HOST;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.MQTT_HOST;
-            }
-        }
-
-        public static int MQTT_PORT
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.MQTT_PORT;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.MQTT_PORT;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.MQTT_PORT;
-            }
-        }
-
-        #endregion
-
-        public static string FILE_TRANSFER_BASE
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
-                else
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
-            }
-        }
-
-        public static string FILE_TRANSFER_BASE_URL
-        {
-            get
-            {
-                return FILE_TRANSFER_BASE + "/user/ft";
-            }
-        }
-
-        public static string PARTIAL_FILE_TRANSFER_BASE_URL
-        {
-            get
-            {
-                return FILE_TRANSFER_BASE + "/user/pft/";
-            }
-        }
-
-        public static string HOST
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.HOST;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.HOST;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.HOST;
-            }
-        }
-
-        public static int PORT
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.PORT;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.PORT;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.PORT;
-            }
-        }
-
-        public static string BASE
-        {
-            get
-            {
-                return "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
-            }
-        }
-
-        public static string AVATAR_BASE
-        {
-            get
-            {
-                return "http://" + HOST + ":" + Convert.ToString(PORT);
-            }
-        }
-
-        public static string GetUpdateUrl
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.UPDATE_URL;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.UPDATE_URL;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.UPDATE_URL;
-            }
-        }
-
-        public static string GetStickerUrl
-        {
-            get
-            {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return HikeConstants.ServerUrls.ProductionUrls.STICKER_URL;
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return HikeConstants.ServerUrls.DevUrls.STICKER_URL;
-                else
-                    return HikeConstants.ServerUrls.StagingUrls.STICKER_URL;
-            }
-        }
-
-        public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
-
         public static string mToken = null;
-        private static string uid = null;
+        private static string uid = null;  
 
         public class AccountInfo
         {
@@ -243,7 +89,7 @@ namespace windows_client.utils
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -253,7 +99,7 @@ namespace windows_client.utils
 
         public static void postAddressBook(Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/addressbook")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -264,7 +110,7 @@ namespace windows_client.utils
 
         public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update_or_add, JArray ids_to_delete, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/addressbook")) as HttpWebRequest;
             AddToken(req);
             req.Method = "PATCH";
             req.ContentType = "application/json";
@@ -274,7 +120,7 @@ namespace windows_client.utils
 
         public static void invite(string phone_no, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/invite")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/invite")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -284,7 +130,7 @@ namespace windows_client.utils
 
         public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate?digits=4")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/validate?digits=4")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -293,7 +139,7 @@ namespace windows_client.utils
 
         public static void postForCallMe(string msisdn, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/pin-call")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/pin-call")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -302,7 +148,7 @@ namespace windows_client.utils
 
         public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/name")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/name")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -312,7 +158,7 @@ namespace windows_client.utils
 
         public static void setGroupName(string name, string grpId, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + string.Format("/group/{0}/name", grpId))) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + string.Format("/group/{0}/name", grpId))) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -322,7 +168,7 @@ namespace windows_client.utils
 
         public static void setProfile(JObject obj, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/profile")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -332,7 +178,7 @@ namespace windows_client.utils
 
         public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account")) as HttpWebRequest;
             AddToken(req);
             req.Method = "DELETE";
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
@@ -346,7 +192,7 @@ namespace windows_client.utils
         }
         public static void unlinkAccount(postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/unlink")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/unlink")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
@@ -356,9 +202,9 @@ namespace windows_client.utils
         {
             Uri requestUri;
             if (!String.IsNullOrEmpty(groupId))
-                requestUri = new Uri(BASE + "/group/" + groupId + "/avatar");
+                requestUri = new Uri(ConnectionUtility.BASE + "/group/" + groupId + "/avatar");
             else
-                requestUri = new Uri(BASE + "/account/avatar");
+                requestUri = new Uri(ConnectionUtility.BASE + "/account/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
@@ -371,7 +217,7 @@ namespace windows_client.utils
         public static void updateGroupIcon(byte[] buffer, postPicUploadResponseFunction finalCallbackFunction, GroupPic group)
         {
             Uri requestUri;
-            requestUri = new Uri(BASE + "/group/" + group.GroupId + "/avatar");
+            requestUri = new Uri(ConnectionUtility.BASE + "/group/" + group.GroupId + "/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
@@ -383,7 +229,7 @@ namespace windows_client.utils
 
         public static void postPushNotification(string uri, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/device")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/device")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -392,7 +238,7 @@ namespace windows_client.utils
 
         public static void postUpdateInfo(postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/update")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/update")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -401,7 +247,7 @@ namespace windows_client.utils
 
         public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/status")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -410,7 +256,7 @@ namespace windows_client.utils
 
         public static void postHideMessagePreview(string push_token, bool on_off, parametrisedPostResponseFunction finalCallbackFunction, Object obj)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/device")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/device")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -419,7 +265,7 @@ namespace windows_client.utils
 
         public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/stickers")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -431,7 +277,7 @@ namespace windows_client.utils
             if (convMessage == null || convMessage.StickerObj == null)
                 return;
 
-            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", ConnectionUtility.BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             AddToken(req);
@@ -442,7 +288,7 @@ namespace windows_client.utils
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
             AddToken(req);
 
             if (isPost)
@@ -460,7 +306,7 @@ namespace windows_client.utils
 
         public static void SocialInvite(JObject obj, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/spread")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/spread")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -469,7 +315,7 @@ namespace windows_client.utils
 
         public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = Environment.TickCount.ToString();
@@ -670,7 +516,7 @@ namespace windows_client.utils
 
         public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
@@ -682,7 +528,7 @@ namespace windows_client.utils
             HttpWebRequest request = null;
             if (isRelativeUrl)
             {
-                request = (HttpWebRequest)HttpWebRequest.Create(BASE + requestUrl);
+                request = (HttpWebRequest)HttpWebRequest.Create(ConnectionUtility.BASE + requestUrl);
             }
             else
             {

@@ -20,6 +20,7 @@ using System.Windows.Resources;
 using System.Windows;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using FileTransfer;
 
 namespace windows_client.DbUtils
 {
@@ -771,7 +772,7 @@ namespace windows_client.DbUtils
                 }
             }
 
-            FileTransfers.FileTransferManager.Instance.DeleteTask(messageId.ToString());
+            FileTransferManager.Instance.DeleteTask(messageId.ToString());
         }
 
         /// <summary>
@@ -794,7 +795,7 @@ namespace windows_client.DbUtils
                         string[] fileNames = store.GetFileNames(attachmentPaths[0] + "/*");
                         foreach (string fileName in fileNames)
                         {
-                            FileTransfers.FileTransferManager.Instance.DeleteTask(fileName);
+                            FileTransferManager.Instance.DeleteTask(fileName);
                         }
                     }
 

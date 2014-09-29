@@ -55,7 +55,6 @@ namespace windows_client.View
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-
             if (_size > HikeConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);

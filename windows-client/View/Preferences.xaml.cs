@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
 using windows_client.Model;
+using FileTransfer;
 
 namespace windows_client.View
 {
@@ -138,7 +139,7 @@ namespace windows_client.View
         {
             this.autoResumeToggle.Content = AppResources.On;
             HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING);
-            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
+            FileTransferManager.Instance.PopulatePreviousTasks();
         }
 
         private void autoResumeToggle_Unchecked(object sender, RoutedEventArgs e)
