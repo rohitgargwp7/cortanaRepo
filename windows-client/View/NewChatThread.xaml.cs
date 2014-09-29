@@ -1040,13 +1040,13 @@ namespace windows_client.View
 
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                    lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                    lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                 else
                     lastSeenTxt.Text = String.Empty;
 
-                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 sendMsgTxtbox.Hint = hintText = ON_GROUP_TEXT;
             }
@@ -1154,7 +1154,7 @@ namespace windows_client.View
                     {
                         if (App.appSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
                         {
-                            foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                            foreach (GroupParticipant gp in GroupManager.Instance.GroupParticpantsCache[mContactNumber])
                             {
                                 if (!gp.IsOnHike)
                                 {
@@ -1276,7 +1276,7 @@ namespace windows_client.View
                 this.ApplicationBar = appBar;
             });
 
-            ContactUtils.UpdateGroupCacheWithContactOnHike(mContactNumber, true);
+            ContactUtils.UpdateGroupParticpantsCacheWithContactOnHike(mContactNumber, true);
         }
 
         public void GetHikeStatus_Callback(JObject obj)
@@ -1307,9 +1307,9 @@ namespace windows_client.View
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
-                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
+                if (GroupManager.Instance.GroupParticpantsCache != null && GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
                 {
-                    showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupCache[mContactNumber]
+                    showFreeSMS = (from groupParticipant in GroupManager.Instance.GroupParticpantsCache[mContactNumber]
                                    where groupParticipant.Msisdn.Contains(HikeConstants.INDIA_COUNTRY_CODE)
                                    select groupParticipant).Count() == 0 ? false : true;
                 }
@@ -1337,7 +1337,7 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
 
-                GroupManager.Instance.GroupCache[mContactNumber] = l;
+                GroupManager.Instance.GroupParticpantsCache[mContactNumber] = l;
             }
             else // existing group so just add members
             {
@@ -1345,7 +1345,7 @@ namespace windows_client.View
                 {
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
-                    List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
+                    List<GroupParticipant> gl = GroupManager.Instance.GroupParticpantsCache[mContactNumber];
 
                     if (gl == null)
                         gl = new List<GroupParticipant>();
@@ -1366,7 +1366,7 @@ namespace windows_client.View
                     if (addNewparticipant)
                     {
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
-                        GroupManager.Instance.GroupCache[mContactNumber].Add(gp);
+                        GroupManager.Instance.GroupParticpantsCache[mContactNumber].Add(gp);
                     }
 
                     gp.IsInAddressBook = contactsForGroup[i].IsInAddressBook;
@@ -1377,9 +1377,9 @@ namespace windows_client.View
             if (usersToAdd.Count == 0)
                 return;
 
-            GroupManager.Instance.GroupCache[mContactNumber].Sort();
+            GroupManager.Instance.GroupParticpantsCache[mContactNumber].Sort();
             usersToAdd.Sort();
-            GroupManager.Instance.SaveGroupCache(mContactNumber);
+            GroupManager.Instance.SaveGroupParticpantsCache(mContactNumber);
 
             groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
 
@@ -1406,7 +1406,7 @@ namespace windows_client.View
             }
             else
             {
-                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
 
                 ConvMessage cm = new ConvMessage(groupCreateJson, true, true);
                 cm.CurrentOrientation = this.Orientation;
@@ -1978,7 +1978,7 @@ namespace windows_client.View
                     long time = TimeUtils.getCurrentTimeStamp();
                     if (isGroupChat)
                     {
-                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupParticpantsCache[mContactNumber])
                         {
                             if (!gp.IsOnHike)
                             {
@@ -2013,7 +2013,7 @@ namespace windows_client.View
 
                     if (isGroupChat)
                     {
-                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupParticpantsCache[mContactNumber])
                         {
                             if (!gp.IsOnHike)
                             {
@@ -4205,7 +4205,7 @@ namespace windows_client.View
                         if (isGroupChat)
                         {
                             App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
-                            foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                            foreach (GroupParticipant gp in GroupManager.Instance.GroupParticpantsCache[mContactNumber])
                             {
                                 if (!gp.IsOnHike)
                                 {
@@ -4396,8 +4396,8 @@ namespace windows_client.View
                 if (mContactNumber != cm.Msisdn)
                     return;
 
-                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -4406,8 +4406,8 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                         else
                             lastSeenTxt.Text = String.Empty;
                     }
@@ -4429,8 +4429,8 @@ namespace windows_client.View
                 if (eventGroupId != mContactNumber)
                     return;
 
-                if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                    _activeUsers = GroupManager.Instance.GroupCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
+                if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                    _activeUsers = GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(g => g.HasLeft == false && g.IsOnHike == true).Count();
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -4439,8 +4439,8 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
 
-                        if (GroupManager.Instance.GroupCache.ContainsKey(mContactNumber))
-                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
+                        if (GroupManager.Instance.GroupParticpantsCache.ContainsKey(mContactNumber))
+                            lastSeenTxt.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupParticpantsCache[mContactNumber].Where(gp => gp.HasLeft == false).Count() + 1);
                         else
                             lastSeenTxt.Text = String.Empty;
                     }

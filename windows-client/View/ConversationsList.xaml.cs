@@ -3031,9 +3031,9 @@ namespace windows_client.View
             if (convListObj.IsGroupChat)
             {
                 GroupManager.Instance.LoadGroupParticipants(searchBy);
-                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
+                if (GroupManager.Instance.GroupParticpantsCache != null && GroupManager.Instance.GroupParticpantsCache.ContainsKey(searchBy))
                 {
-                    var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
+                    var a = (GroupManager.Instance.GroupParticpantsCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
                     if (a.Count() > 0)
                     {
                         GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();

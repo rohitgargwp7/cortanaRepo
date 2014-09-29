@@ -167,7 +167,7 @@ namespace windows_client.DbUtils
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
-                GroupManager.Instance.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                GroupManager.Instance.GroupParticpantsCache.TryGetValue(convMsg.Msisdn, out existingMembers);
                 if (existingMembers == null)
                     return null;
 

@@ -1057,7 +1057,7 @@ namespace windows_client.View
                     });
                     FriendsTableUtils.SetJoiningTime(msisdn, time);
 
-                    ContactUtils.UpdateGroupCacheWithContactOnHike(msisdn, true);
+                    ContactUtils.UpdateGroupParticpantsCacheWithContactOnHike(msisdn, true);
                 }
                 else
                 {

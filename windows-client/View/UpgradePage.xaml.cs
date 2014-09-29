@@ -253,7 +253,7 @@ namespace windows_client.View
         /// </summary>
         private void HandleContactNamesOnUpgrade()
         {
-            GroupManager.Instance.LoadGroupCache();
+            GroupManager.Instance.LoadGroupParticpantsCache();
 
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -309,11 +309,11 @@ namespace windows_client.View
                             }
                         }
 
-                        if (GroupManager.Instance.GroupCache != null)
+                        if (GroupManager.Instance.GroupParticpantsCache != null)
                         {
-                            foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                            foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                             {
-                                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                                 for (int i = 0; i < l.Count; i++)
                                 {
                                     if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
@@ -335,16 +335,16 @@ namespace windows_client.View
 
             var contactList = UsersTableUtils.getAllContacts();
 
-            foreach (var id in GroupManager.Instance.GroupCache.Keys)
+            foreach (var id in GroupManager.Instance.GroupParticpantsCache.Keys)
             {
-                var grp = GroupManager.Instance.GroupCache[id];
+                var grp = GroupManager.Instance.GroupParticpantsCache[id];
                 foreach (var participant in grp)
                 {
                     participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
                 }
             }
 
-            GroupManager.Instance.SaveGroupCache();
+            GroupManager.Instance.SaveGroupParticpantsCache();
         }
 
         /// <summary>

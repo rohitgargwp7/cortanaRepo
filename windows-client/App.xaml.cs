@@ -805,8 +805,8 @@ namespace windows_client
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
-                GroupManager.Instance.SaveGroupCache();
+                GroupManager.Instance.GroupParticpantsCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupParticpantsCache();
                 RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 

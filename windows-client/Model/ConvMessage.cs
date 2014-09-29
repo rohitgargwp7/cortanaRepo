@@ -2146,14 +2146,14 @@ namespace windows_client.Model
                     }
                 }
                 if (!isSelfGenerated) // when I am group owner chache is already sorted
-                    GroupManager.Instance.GroupCache[toVal].Sort();
+                    GroupManager.Instance.GroupParticpantsCache[toVal].Sort();
                 if (addedLater)
                 {
                     addedMembers.Sort();
                     this._message = GetMsgText(addedMembers, false);
                 }
                 else
-                    this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
+                    this._message = GetMsgText(GroupManager.Instance.GroupParticpantsCache[toVal], true);
 
                 this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }

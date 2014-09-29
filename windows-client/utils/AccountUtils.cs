@@ -1140,7 +1140,7 @@ namespace windows_client.utils
 
                 if (isRefresh)
                 {
-                    GroupManager.Instance.LoadGroupCache();
+                    GroupManager.Instance.LoadGroupParticpantsCache();
                     List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                     for (int i = 0; i < gl.Count; i++)
                     {
@@ -1213,7 +1213,7 @@ namespace windows_client.utils
                                     }
                                 }
 
-                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo, true);
+                                GroupManager.Instance.RefreshGroupParticpantsCache(cn, allGroupsInfo, true);
                             }
 
                             server_contacts.Add(cn);
