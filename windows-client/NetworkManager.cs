@@ -65,18 +65,12 @@ namespace windows_client
 
         public static bool turnOffNetworkManager = true;
 
-        private HikePubSub pubSub;
-
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private object lockObj = new object();
         public enum GroupChatState
         {
             ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE, KICKEDOUT_USER_ADDED
-        }
-        private NetworkManager()
-        {
-            pubSub = HikeInstantiation.HikePubSubInstance;
         }
 
         public static NetworkManager Instance
@@ -186,7 +180,7 @@ namespace windows_client
                     vals[0] = convMessage;
                     vals[1] = obj;
                     vals[2] = isPush;
-                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception ex)
                 {
@@ -235,7 +229,7 @@ namespace windows_client
                 vals[0] = msisdn;
                 vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
@@ -273,7 +267,7 @@ namespace windows_client
                 vals[1] = lastSeen;
 
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.LAST_SEEN, vals);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.LAST_SEEN, vals);
 
                 return;
             }
@@ -285,7 +279,7 @@ namespace windows_client
                 {
                     int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.ServerJsonKeys.DATA]);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SMS_SETTING, sms_credits);
-                    this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
                 catch (Exception ex)
                 {
@@ -309,7 +303,7 @@ namespace windows_client
                     msgID = -1;
                     return;
                 }
-                this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
                 MiscDBUtil.UpdateDBsMessageStatus(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
             #endregion
@@ -339,7 +333,7 @@ namespace windows_client
                 object[] vals = new object[2];
                 vals[0] = msgID;
                 vals[1] = msisdnToCheck;
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_DELIVERED, vals);
                 MiscDBUtil.UpdateDBsMessageStatus(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
@@ -380,7 +374,7 @@ namespace windows_client
                 vals[1] = msisdnToCheck;
                 vals[2] = msisdn;
                 updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
             }
             #endregion
             #region USER_JOINED USER_LEFT
@@ -432,7 +426,7 @@ namespace windows_client
                         if (HikeInstantiation.ViewModel.ConvMap[uMsisdn].Avatar != null)
                         {
                             HikeInstantiation.ViewModel.ConvMap[uMsisdn].Avatar = null;
-                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
                         }
                     }
 
@@ -464,7 +458,7 @@ namespace windows_client
                 if (joined && jsonObj.TryGetValue(HikeConstants.ServerJsonKeys.TIMESTAMP, out jt))
                     ts = jt.ToObject<long>();
                 FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
-                this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
+                HikeInstantiation.HikePubSubInstance.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             #endregion
             #region ICON
@@ -489,7 +483,7 @@ namespace windows_client
                     try
                     {
                         HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
                     catch (Exception ex)
                     {
@@ -568,7 +562,7 @@ namespace windows_client
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
-                    this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
 
             }
@@ -672,7 +666,7 @@ namespace windows_client
                                                                     favObj = new ConversationListObject(fkkvv.Key, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(fkkvv.Key) : null);
                                                                 }
 
-                                                                this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                                                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_TO_PENDING, favObj);
                                                             }
                                                             else // pending is false
                                                             {
@@ -696,7 +690,7 @@ namespace windows_client
                                                     }
 
                                                     if (thrAreFavs)
-                                                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                                                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                                                 });
                                             }
                                         }
@@ -740,7 +734,7 @@ namespace windows_client
                                             if (kkvv.Key == HikeConstants.ServerJsonKeys.SHOW_REWARDS)
                                             {
                                                 HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
-                                                pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.REWARDS_TOGGLE, true);
                                             }
 
                                             if (kkvv.Key == HikeConstants.ServerJsonKeys.MqttMessageTypes.REWARDS)
@@ -750,7 +744,7 @@ namespace windows_client
                                                 {
                                                     int rew_val = (int)ttObj[HikeConstants.ServerJsonKeys.REWARDS_VALUE];
                                                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.REWARDS_VALUE, rew_val);
-                                                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.REWARDS_CHANGED, rew_val);
                                                 }
                                             }
                                         }
@@ -816,7 +810,7 @@ namespace windows_client
                                                     isUpdated = true;
 
                                                     if (HikeInstantiation.NewChatThreadPageObj != null && HikeInstantiation.NewChatThreadPageObj.mContactNumber == id)
-                                                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
+                                                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.CHAT_BACKGROUND_REC, id);
                                                 }
                                             }
 
@@ -866,7 +860,7 @@ namespace windows_client
                     {
                         string tc = it.ToString().Trim();
                         Debug.WriteLine("Account Info :: TOTAL_CREDITS_PER_MONTH : " + tc);
-                        this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                     }
                 }
                 catch (Exception e)
@@ -895,7 +889,7 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.ServerJsonKeys.SHOW_REWARDS, out rew))
                         {
                             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.SHOW_REWARDS, rew.ToObject<bool>());
-                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, true);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.REWARDS_TOGGLE, true);
                         }
                     }
                     #endregion
@@ -1049,7 +1043,7 @@ namespace windows_client
                                 hasCustomBg = (bool)custom;
 
                             if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.ServerJsonKeys.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
+                                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
                         }
                     }
                     catch (Exception ex)
@@ -1126,7 +1120,7 @@ namespace windows_client
                 {
                     GroupTableUtils.SetGroupAlive(grpId);
                     convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
-                    this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.GROUP_ALIVE, grpId);
                 }
                 #endregion
                 #region ADD NEW MEMBERS TO EXISTING GROUP
@@ -1160,8 +1154,8 @@ namespace windows_client
                 vals[0] = convMessage;
                 vals[1] = obj;
 
-                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
             }
             #endregion
             #region GROUP_CHAT_NAME CHANGE
@@ -1199,8 +1193,8 @@ namespace windows_client
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = groupName;
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                            this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
                         });
                     }
                 }
@@ -1255,8 +1249,8 @@ namespace windows_client
                             oa[0] = cm;
                             oa[1] = obj;
 
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
-                            this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, oa);
+                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
                         }
                         catch (Exception ex)
                         {
@@ -1294,8 +1288,8 @@ namespace windows_client
                     vals[0] = convMsg;
                     vals[1] = cObj;
 
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
                 }
                 catch (Exception e)
                 {
@@ -1324,8 +1318,8 @@ namespace windows_client
                         vals[0] = convMessage;
                         vals[1] = cObj;
 
-                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                        this.pubSub.publish(HikePubSub.GROUP_END, groupId);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.GROUP_END, groupId);
                     }
                 }
                 catch (Exception e)
@@ -1381,7 +1375,7 @@ namespace windows_client
                 object[] vals = new object[2];
                 vals[0] = cm;
                 vals[1] = obj;
-                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
             #region ADD FAVOURITES
@@ -1435,7 +1429,7 @@ namespace windows_client
                         // this will ensure there will be one pending request for a particular msisdn
                         HikeInstantiation.ViewModel.PendingRequests[msisdn] = favObj;
                         MiscDBUtil.SavePendingRequests();
-                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
                     catch (Exception e)
                     {
@@ -1489,7 +1483,7 @@ namespace windows_client
                     data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
                     int rewards_val = (int)data[HikeConstants.ServerJsonKeys.REWARDS_VALUE];
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerJsonKeys.REWARDS_VALUE, rewards_val);
-                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
                 }
                 catch (Exception e)
                 {
@@ -1594,11 +1588,11 @@ namespace windows_client
                         vals[0] = cm;
                         vals[1] = null; // always send null as we dont want any activity on conversation page
 
-                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
                     }
-                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
                 catch (Exception e)
                 {
@@ -1693,7 +1687,7 @@ namespace windows_client
                                 else // there are no msgs left remove the conversation from db and map
                                 {
                                     ConversationTableUtils.deleteConversation(msisdn);
-                                    pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, HikeInstantiation.ViewModel.ConvMap[msisdn]);
+                                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.DELETE_STATUS_AND_CONV, HikeInstantiation.ViewModel.ConvMap[msisdn]);
                                     HikeInstantiation.ViewModel.ConvMap.Remove(msisdn);
                                 }
                             }
@@ -1875,12 +1869,12 @@ namespace windows_client
                         vals[1] = obj;
                         vals[2] = isPush;
 
-                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
                     {
-                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
                     }
                 }
                 catch (Exception ex)
@@ -1934,7 +1928,7 @@ namespace windows_client
                     obj.Add(HikeConstants.ServerJsonKeys.VERSION, version);
                     HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.NEW_UPDATE_AVAILABLE, obj.ToString(Newtonsoft.Json.Formatting.None));
 
-                    pubSub.publish(HikePubSub.APP_UPDATE_AVAILABLE, null); // no need of any arguments
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.APP_UPDATE_AVAILABLE, null); // no need of any arguments
                 }
                 catch (Exception ex)
                 {
@@ -1975,7 +1969,7 @@ namespace windows_client
                     if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
                     {
                         HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = null;
-                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_PROFILE_ICON, msisdn);
                     }
 
                     ConversationListObject c = HikeInstantiation.ViewModel.GetFav(msisdn);
@@ -2195,7 +2189,7 @@ namespace windows_client
                     vals[0] = cm;
                     vals[1] = obj;
 
-                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
             }
             // UPDATE group cache
@@ -2241,7 +2235,7 @@ namespace windows_client
                         values[0] = convMsg;
                         values[1] = co;
 
-                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
+                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, values);
                     }
                     else
                         gp.IsOnHike = true;

@@ -313,7 +313,7 @@ namespace windows_client
                 public static readonly string MSISDN_KEYWORD = "msisdn";
             }
         }
-        
+
         public static class ToastConstants
         {
             public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
@@ -482,8 +482,6 @@ namespace windows_client
             public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
             public static readonly string SHOW_POPUP = "show_popup";
             public static readonly string BLACK_THEME = "black_theme";
-
-
         }
 
         public static class NokiaHere
@@ -568,6 +566,13 @@ namespace windows_client
             public static readonly string LOCATION_SEARCH = "locationSearch";
             public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
             public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+
+            public static readonly string VIDEO_SIZE = "videoSize";
+            public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";
+            public static readonly string MAX_VIDEO_PLAYING_TIME = "maxPlayingTime";
+            public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
+            public static readonly string VIDEO_RESOLUTION = "videoResolution";
+            public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
         }
 
         public static class ServerUrls

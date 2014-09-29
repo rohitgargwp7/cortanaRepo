@@ -141,6 +141,8 @@ namespace windows_client.utils
             }
         }
 
+        public static DbConversationListener DbConversationListenerInstance;
+
         #endregion
 
         #region PAGE STATE
@@ -431,6 +433,7 @@ namespace windows_client.utils
                 HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.AUTO_SAVE_MEDIA);
             }
             #endregion
+            DbConversationListenerInstance = new DbConversationListener();
         }
 
         /// <summary>
