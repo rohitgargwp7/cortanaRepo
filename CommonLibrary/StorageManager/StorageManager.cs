@@ -43,7 +43,7 @@ namespace CommonLibrary.StorageManager
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                return store.AvailableFreeSpace > size + HikeConstants.APP_MIN_FREE_SIZE;
+                return store.AvailableFreeSpace > size + FTBasedConstants.APP_MIN_FREE_SIZE;
             }
         }
     }

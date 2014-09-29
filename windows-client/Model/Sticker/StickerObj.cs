@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommonLibrary.Lib;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using windows_client.Misc;
 using windows_client.utils;
 using windows_client.ViewModel;
 
 namespace windows_client.Model.Sticker
 {
-    public class StickerObj : IBinarySerializable,INotifyPropertyChanged
+    public class StickerObj : IBinarySerializable, INotifyPropertyChanged
     {
         private string _id;
         private string _category;

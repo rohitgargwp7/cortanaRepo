@@ -1,12 +1,6 @@
-﻿using CommonLibrary.Utils;
-using Microsoft.Phone.Controls;
+﻿using CommonLibrary.Constants;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using windows_client.DbUtils;
@@ -119,7 +113,7 @@ namespace windows_client.utils
         public void DeleteMyStatus(BaseStatusUpdate sb)
         {
             AccountUtils.deleteStatus(new AccountUtils.parametrisedPostResponseFunction(deleteStatus_Callback),
-                ConnectionUtility.BASE + "/user/status/" + sb.ServerId, sb);
+                ServerUrls.BASE + "/user/status/" + sb.ServerId, sb);
         }
 
         private void deleteStatus_Callback(JObject jObj, Object obj)

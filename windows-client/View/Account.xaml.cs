@@ -1,30 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
-using System.Windows.Media.Imaging;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using Microsoft.Phone.Notification;
 using windows_client.Languages;
 using windows_client.DbUtils;
 using windows_client.Controls;
-using Facebook;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
-using Microsoft.Phone.Shell;
 using windows_client.Model;
 using FileTransfer;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -132,7 +119,7 @@ namespace windows_client.View
                 progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
                 canGoBack = false;
 
-                AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), ConnectionUtility.BASE + "/account");
+                AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), ServerUrls.BASE + "/account");
             }
         }
 
@@ -173,7 +160,7 @@ namespace windows_client.View
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
-            ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.STAGING;
+            ServerUrls.AppEnvironment = ServerUrls.DebugEnvironment.STAGING;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

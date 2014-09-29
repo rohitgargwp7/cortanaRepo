@@ -122,7 +122,7 @@ namespace FileTransfer
             FileState = (FileTransferState)reader.ReadInt32();
 
 
-            if (FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
+            if (FileTransferManager.AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -221,8 +221,8 @@ namespace FileTransfer
             {
                 HttpClient httpClient = new HttpClient();
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(ConnectionUtility.FILE_TRANSFER_BASE_URL + "/" + FileKey));
-                request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(ServerUrls.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+                request.Headers.Add(FTBasedConstants.IfModifiedSince, DateTime.UtcNow.ToString());
 
                 HttpResponseMessage response = await httpClient.SendAsync(request);
 
@@ -245,18 +245,18 @@ namespace FileTransfer
 
         public static void AddToken(HttpWebRequest req)
         {
-            if (FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.TOKEN_SETTING) 
-                && FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
-                req.Headers["Cookie"] = "user=" + FileTransferManager.AppSettings[HikeConstants.AppSettingsKeys.TOKEN_SETTING] 
-                    + ";UID=" + (string)FileTransferManager.AppSettings[HikeConstants.AppSettingsKeys.UID_SETTING];
+            if (FileTransferManager.AppSettings.Contains(AppSettingsKeys.TOKEN_SETTING) 
+                && FileTransferManager.AppSettings.Contains(AppSettingsKeys.UID_SETTING))
+                req.Headers["Cookie"] = "user=" + FileTransferManager.AppSettings[AppSettingsKeys.TOKEN_SETTING] 
+                    + ";UID=" + (string)FileTransferManager.AppSettings[AppSettingsKeys.UID_SETTING];
         }
 
         private void GetWritingIndexFromServer()
         {
-            var req = HttpWebRequest.Create(new Uri(ConnectionUtility.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(ServerUrls.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
 
-            if (!FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
+            if (!FileTransferManager.AppSettings.Contains(AppSettingsKeys.UID_SETTING))
             {
                 Delete();
                 return;
@@ -277,8 +277,8 @@ namespace FileTransfer
         {
             if (SuccessObj != null)
             {
-                var jData = SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
-                var fileKey = jData[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
+                var jData = SuccessObj[ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                var fileKey = jData[ServerJsonKeys.FILE_KEY].ToString();
                 var result = await CheckForCRC(fileKey);
 
                 if (result)
@@ -355,8 +355,8 @@ namespace FileTransfer
                     // check for successful upload
                     if (SuccessObj != null)
                     {
-                        var jData = SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
-                        var fileKey = jData[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
+                        var jData = SuccessObj[ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                        var fileKey = jData[ServerJsonKeys.FILE_KEY].ToString();
                         var result = await CheckForCRC(fileKey);
 
                         if (result)
@@ -424,10 +424,10 @@ namespace FileTransfer
 
         void BeginUploadPostRequest()
         {
-            var req = HttpWebRequest.Create(new Uri(ConnectionUtility.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(ServerUrls.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
 
 
-            if (!FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING))
+            if (!FileTransferManager.AppSettings.Contains(AppSettingsKeys.UID_SETTING))
             {
                 Delete();
                 return;
@@ -491,7 +491,7 @@ namespace FileTransfer
             String res = "--" + _boundary + "\r\n";
 
             // keep ct empty since we are not sure about content type for images and video
-            var ct = ContentType.Contains(HikeConstants.IMAGE) || ContentType.Contains(HikeConstants.VIDEO) ? String.Empty : ContentType;
+            var ct = ContentType.Contains(FTBasedConstants.IMAGE) || ContentType.Contains(FTBasedConstants.VIDEO) ? String.Empty : ContentType;
             res += "Content-Disposition: form-data; name=\"file\"; filename=\"" + FileName + "\"\r\n" + "Content-Type: " + ct + "\r\n\r\n";
 
             return res;
@@ -639,7 +639,7 @@ namespace FileTransfer
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
 
 
-                if (FileState == FileTransferState.STARTED || (!FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
+                if (FileState == FileTransferState.STARTED || (!FileTransferManager.AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
             else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload

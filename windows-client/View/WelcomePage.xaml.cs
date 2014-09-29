@@ -2,17 +2,14 @@
 using System.Windows;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
-using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
-using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
 using windows_client.DbUtils;
 using System.Diagnostics;
-using windows_client.Languages;
 using windows_client.Model;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 
 namespace windows_client
@@ -34,9 +31,9 @@ namespace windows_client
                 welcomePivot.Tap -= ChangeEnvironment;
                 welcomePivot.Tap += ChangeEnvironment;
 
-                if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.PRODUCTION)
+                if (ServerUrls.AppEnvironment == ServerUrls.DebugEnvironment.PRODUCTION)
                     serverTxtBlk.Text = "Production";
-                else if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.DEV)
+                else if (ServerUrls.AppEnvironment == ServerUrls.DebugEnvironment.DEV)
                     serverTxtBlk.Text = "Staging 2";
                 else
                     serverTxtBlk.Text = "QA Staging";
@@ -158,12 +155,12 @@ namespace windows_client
                 HikeInstantiation.AppSettings.Save();
 
             #region SERVER INFO
-            string env = ConnectionUtility.AppEnvironment.ToString();
+            string env = ServerUrls.AppEnvironment.ToString();
             Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + ConnectionUtility.HOST);
-            Debug.WriteLine("PORT : " + ConnectionUtility.PORT);
-            Debug.WriteLine("MQTT HOST : " + ConnectionUtility.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + ConnectionUtility.MQTT_PORT);
+            Debug.WriteLine("HOST : " + ServerUrls.HOST);
+            Debug.WriteLine("PORT : " + ServerUrls.PORT);
+            Debug.WriteLine("MQTT HOST : " + ServerUrls.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + ServerUrls.MQTT_PORT);
             #endregion
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
@@ -204,23 +201,23 @@ namespace windows_client
         {
             if (!HikeInstantiation.IsMarketplace)
             {
-                if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.STAGING)
+                if (ServerUrls.AppEnvironment == ServerUrls.DebugEnvironment.STAGING)
                 {
-                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.DEV;
+                    ServerUrls.AppEnvironment = ServerUrls.DebugEnvironment.DEV;
                     serverTxtBlk.Text = "Staging 2";
                 }
-                else if (ConnectionUtility.AppEnvironment == ConnectionUtility.DebugEnvironment.DEV)
+                else if (ServerUrls.AppEnvironment == ServerUrls.DebugEnvironment.DEV)
                 {
-                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.PRODUCTION;
+                    ServerUrls.AppEnvironment = ServerUrls.DebugEnvironment.PRODUCTION;
                     serverTxtBlk.Text = "Production";
                 }
                 else
                 {
-                    ConnectionUtility.AppEnvironment = ConnectionUtility.DebugEnvironment.STAGING;
+                    ServerUrls.AppEnvironment = ServerUrls.DebugEnvironment.STAGING;
                     serverTxtBlk.Text = "QA Staging";
                 }
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, ConnectionUtility.AppEnvironment);
+                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, ServerUrls.AppEnvironment);
             }
         }
     }

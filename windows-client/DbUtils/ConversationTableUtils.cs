@@ -22,7 +22,7 @@ namespace windows_client.DbUtils
         private static object readWriteLock = new object();
         /* This function gets all the conversations shown on the message list page*/
 
-        public static List<ConversationListObject> getAllConversations()
+        public static List<ConversationListObject> GetAllConversations_Ver1000()
         {
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -559,7 +559,6 @@ namespace windows_client.DbUtils
                 return false;
             }
         }
-
 
         /* Handle old versions*/
         public static void deleteAllConversationsOld()

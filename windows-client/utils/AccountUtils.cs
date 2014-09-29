@@ -10,12 +10,9 @@ using SharpCompress.Compressor.Deflate;
 using SharpCompress.Compressor;
 using System.Text;
 using System.Diagnostics;
-using System.Windows.Media.Imaging;
-using windows_client.Controls;
-using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -89,7 +86,7 @@ namespace windows_client.utils
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -99,7 +96,7 @@ namespace windows_client.utils
 
         public static void postAddressBook(Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/addressbook")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/addressbook")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -110,7 +107,7 @@ namespace windows_client.utils
 
         public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update_or_add, JArray ids_to_delete, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/addressbook")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/addressbook")) as HttpWebRequest;
             AddToken(req);
             req.Method = "PATCH";
             req.ContentType = "application/json";
@@ -120,7 +117,7 @@ namespace windows_client.utils
 
         public static void invite(string phone_no, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/invite")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/user/invite")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -130,7 +127,7 @@ namespace windows_client.utils
 
         public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/validate?digits=4")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/validate?digits=4")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -139,7 +136,7 @@ namespace windows_client.utils
 
         public static void postForCallMe(string msisdn, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/pin-call")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/pin-call")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -148,7 +145,7 @@ namespace windows_client.utils
 
         public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/name")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/name")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -158,7 +155,7 @@ namespace windows_client.utils
 
         public static void setGroupName(string name, string grpId, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + string.Format("/group/{0}/name", grpId))) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + string.Format("/group/{0}/name", grpId))) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -168,7 +165,7 @@ namespace windows_client.utils
 
         public static void setProfile(JObject obj, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/profile")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/profile")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -178,7 +175,7 @@ namespace windows_client.utils
 
         public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account")) as HttpWebRequest;
             AddToken(req);
             req.Method = "DELETE";
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
@@ -192,7 +189,7 @@ namespace windows_client.utils
         }
         public static void unlinkAccount(postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/unlink")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/unlink")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
@@ -202,9 +199,9 @@ namespace windows_client.utils
         {
             Uri requestUri;
             if (!String.IsNullOrEmpty(groupId))
-                requestUri = new Uri(ConnectionUtility.BASE + "/group/" + groupId + "/avatar");
+                requestUri = new Uri(ServerUrls.BASE + "/group/" + groupId + "/avatar");
             else
-                requestUri = new Uri(ConnectionUtility.BASE + "/account/avatar");
+                requestUri = new Uri(ServerUrls.BASE + "/account/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
@@ -217,7 +214,7 @@ namespace windows_client.utils
         public static void updateGroupIcon(byte[] buffer, postPicUploadResponseFunction finalCallbackFunction, GroupPic group)
         {
             Uri requestUri;
-            requestUri = new Uri(ConnectionUtility.BASE + "/group/" + group.GroupId + "/avatar");
+            requestUri = new Uri(ServerUrls.BASE + "/group/" + group.GroupId + "/avatar");
 
             HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             AddToken(req);
@@ -229,7 +226,7 @@ namespace windows_client.utils
 
         public static void postPushNotification(string uri, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/device")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/device")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -238,7 +235,7 @@ namespace windows_client.utils
 
         public static void postUpdateInfo(postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/update")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/update")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -247,7 +244,7 @@ namespace windows_client.utils
 
         public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/status")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/user/status")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -256,7 +253,7 @@ namespace windows_client.utils
 
         public static void postHideMessagePreview(string push_token, bool on_off, parametrisedPostResponseFunction finalCallbackFunction, Object obj)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/device")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/device")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -265,7 +262,7 @@ namespace windows_client.utils
 
         public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/stickers")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/stickers")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -277,7 +274,7 @@ namespace windows_client.utils
             if (convMessage == null || convMessage.StickerObj == null)
                 return;
 
-            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", ConnectionUtility.BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
+            string requestUrl = string.Format("{0}/stickers?catId={1}&stId={2}&resId={3}", ServerUrls.BASE, convMessage.StickerObj.Category, convMessage.StickerObj.Id, resId);
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             AddToken(req);
@@ -288,7 +285,7 @@ namespace windows_client.utils
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
             AddToken(req);
 
             if (isPost)
@@ -306,7 +303,7 @@ namespace windows_client.utils
 
         public static void SocialInvite(JObject obj, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/spread")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/spread")) as HttpWebRequest;
             AddToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -315,7 +312,7 @@ namespace windows_client.utils
 
         public static void LastSeenRequest(postResponseFunction finalCallbackFunction, string userNumber)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/user/lastseen/" + userNumber)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = Environment.TickCount.ToString();
@@ -516,7 +513,7 @@ namespace windows_client.utils
 
         public static void GetOnhikeDate(string msisdn, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ConnectionUtility.BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
@@ -528,7 +525,7 @@ namespace windows_client.utils
             HttpWebRequest request = null;
             if (isRelativeUrl)
             {
-                request = (HttpWebRequest)HttpWebRequest.Create(ConnectionUtility.BASE + requestUrl);
+                request = (HttpWebRequest)HttpWebRequest.Create(ServerUrls.BASE + requestUrl);
             }
             else
             {

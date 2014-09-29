@@ -82,7 +82,7 @@ namespace FileTransfer
 
             FileState = (FileTransferState)reader.ReadInt32();
 
-            if (FileTransferManager.AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
+            if (FileTransferManager.AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING) && FileState == FileTransferState.STARTED)
                 FileState = FileTransferState.PAUSED;
 
             TotalBytes = reader.ReadInt32();
@@ -157,7 +157,7 @@ namespace FileTransfer
 
         public override void Start(object obj)
         {
-            var req = HttpWebRequest.Create(new Uri(ConnectionUtility.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
+            var req = HttpWebRequest.Create(new Uri(ServerUrls.FILE_TRANSFER_BASE_URL + "/" + FileName)) as HttpWebRequest;
             req.AllowReadStreamBuffering = false;
             req.Method = "GET";
             req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();

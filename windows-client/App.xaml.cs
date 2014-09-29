@@ -4,24 +4,17 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.DbUtils;
-using windows_client.Model;
-using System.IO.IsolatedStorage;
 using windows_client.utils;
 using windows_client.ViewModel;
-using windows_client.Mqtt;
 using windows_client.View;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.ComponentModel;
 using windows_client.Misc;
-using System.Net.NetworkInformation;
 using Microsoft.Phone.Net.NetworkInformation;
-using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using FileTransfer;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 namespace windows_client
 {
@@ -79,9 +72,9 @@ namespace windows_client
 
             if (HikeInstantiation.AppSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
             {
-                ConnectionUtility.DebugEnvironment tmpEnv;
-                HikeInstantiation.AppSettings.TryGetValue<ConnectionUtility.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
-                ConnectionUtility.AppEnvironment = tmpEnv;
+                ServerUrls.DebugEnvironment tmpEnv;
+                HikeInstantiation.AppSettings.TryGetValue<ServerUrls.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                ServerUrls.AppEnvironment = tmpEnv;
             }
 
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);

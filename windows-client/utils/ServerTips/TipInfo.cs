@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using windows_client.Controls;
-using System.Windows;
-using System.ComponentModel;
-using System.Windows.Media;
-using windows_client.utils;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
 using windows_client.Model;
 using System.IO;
-using windows_client.Misc;
+using CommonLibrary.Lib;
 
 namespace windows_client.utils.ServerTips
 {
-    class TipInfo
+    class TipInfo : IBinarySerializable
     {
 
         public string HeaderText { get; set; }
