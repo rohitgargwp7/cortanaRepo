@@ -118,7 +118,7 @@ namespace windows_client.utils
 
         private void deleteStatus_Callback(JObject jObj, Object obj)
         {
-            if (jObj != null && HikeConstants.ServerJsonKeys.OK == (string)jObj[HikeConstants.ServerJsonKeys.STAT] && obj != null && obj is BaseStatusUpdate)
+            if (jObj != null && ServerJsonKeys.OK == (string)jObj[ServerJsonKeys.STAT] && obj != null && obj is BaseStatusUpdate)
             {
                 BaseStatusUpdate sb = obj as BaseStatusUpdate;
                 StatusMsgsTable.DeleteStatusMsg(sb.ServerId);

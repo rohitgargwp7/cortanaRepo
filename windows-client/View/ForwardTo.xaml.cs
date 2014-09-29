@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -19,12 +18,11 @@ using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.ComponentModel;
-using System.Windows.Media.Imaging;
-using windows_client.ViewModel;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Text;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -76,10 +74,10 @@ namespace windows_client.View
             InitializeComponent();
 
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.SHOW_FREE_SMS_SETTING, out _isFreeSmsOn);
             _showSmsContacts = _isFreeSmsOn ? true : false;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out _smsCredits);
 
             object obj;
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.FORWARD_MSG, out obj))
@@ -91,7 +89,7 @@ namespace windows_client.View
                 {
                     object[] attachmentForwardMessage = (object[])obj;
                     if (attachmentForwardMessage.Length == 6
-                        && ((string)attachmentForwardMessage[0]).Contains(HikeConstants.CONTACT))
+                        && ((string)attachmentForwardMessage[0]).Contains(FTBasedConstants.CONTACT))
                     {
                         _showSmsContacts = false;
                         _isContactShared = true;

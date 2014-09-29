@@ -46,7 +46,7 @@ namespace windows_client.View
                     object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
                     _messsageId = (long)fileTapped[0];
                     _msisdn = (string)fileTapped[1];
-                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + Convert.ToString(_messsageId);
+                    string filePath = FTBasedConstants.FILES_BYTE_LOCATION + "/" + _msisdn + "/" + Convert.ToString(_messsageId);
                     byte[] filebytes;
 
                     MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
@@ -69,7 +69,7 @@ namespace windows_client.View
                     if (_msisdn == HikeInstantiation.MSISDN)
                         _msisdn = HikeConstants.MY_PROFILE_PIC;
 
-                    string filePath = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+                    string filePath = _msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX;
                     //check if image is already stored
                     byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                     if (fullViewBytes != null && fullViewBytes.Length > 0)
@@ -78,7 +78,7 @@ namespace windows_client.View
                     }
                     else if (MiscDBUtil.HasCustomProfileImage(_msisdn))
                     {
-                        fileName = _msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+                        fileName = _msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
                         if (!Utils.isGroupConversation(_msisdn))
                         {
@@ -390,7 +390,7 @@ namespace windows_client.View
         private void picSaveButton_Click(object sender, EventArgs e)
         {
             string tempName = Convert.ToString(_messsageId);
-            string sourceFile = HikeConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
+            string sourceFile = FTBasedConstants.FILES_BYTE_LOCATION + "/" + _msisdn.Replace(":", "_") + "/" + tempName;
             string absoluteFilePath = Utils.GetAbsolutePath(sourceFile);
             string targetFileName = tempName + "_" + TimeUtils.getCurrentTimeStamp() + ".jpg";
             bool isSaveSuccessful = false;

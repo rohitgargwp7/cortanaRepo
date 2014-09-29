@@ -3,7 +3,6 @@ using System.Windows;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
-using System.IO.IsolatedStorage;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
@@ -12,8 +11,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using windows_client.Languages;
 using System.Windows.Controls;
-using System.Windows.Input;
 using windows_client.Model;
+using CommonLibrary.Constants;
 
 namespace windows_client
 {
@@ -344,7 +343,7 @@ namespace windows_client
             }
 
 
-            string unauthedMSISDN = (string)obj[HikeConstants.AppSettingsKeys.MSISDN_SETTING];
+            string unauthedMSISDN = (string)obj[AppSettingsKeys.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -362,10 +361,10 @@ namespace windows_client
 
             /*If all well*/
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.MSISDN_SETTING, unauthedMSISDN);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.MSISDN_SETTING, unauthedMSISDN);
             
             string digits = countryCode.Substring(countryCode.IndexOf('+'));
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.COUNTRY_CODE_SETTING, countryCode.Substring(countryCode.IndexOf('+')));
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

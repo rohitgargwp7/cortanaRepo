@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿using CommonLibrary.Constants;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Tasks;
-using System.Windows.Media.Imaging;
-using Microsoft.Phone.Shell;
-using windows_client.Model;
 using Microsoft.Phone.Net.NetworkInformation;
-using windows_client.utils;
-using windows_client.Languages;
-using System.Text;
+using Microsoft.Phone.Tasks;
+using System;
 using System.Diagnostics;
+using System.Text;
+using windows_client.Languages;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -39,7 +27,7 @@ namespace windows_client.View
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.FAQS_LINK, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(ServerUrls.FAQS_LINK, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();
@@ -52,20 +40,20 @@ namespace windows_client.View
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string msisdn = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING];
+            string msisdn = (string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING];
             StringBuilder emailBodyText = new StringBuilder();
             emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
                 "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
                 "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
-            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(), HikeConstants.ServerUrls.CONTACT_US_EMAIL);
+            EmailHelper.SendEmail(AppResources.Help_EmailSubject, emailBodyText.ToString(), ServerUrls.CONTACT_US_EMAIL);
         }
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();
@@ -97,7 +85,7 @@ namespace windows_client.View
         private void SystemHealth_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.SYSTEM_HEALTH_LINK, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(ServerUrls.SYSTEM_HEALTH_LINK, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();

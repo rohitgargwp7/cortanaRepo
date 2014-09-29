@@ -6,11 +6,9 @@ using System.Windows;
 using Microsoft.Phone.Reactive;
 using System;
 using windows_client.DbUtils;
-using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
-using System.Windows.Controls;
 using windows_client.Languages;
 using windows_client.utils;
 using Windows.Devices.Geolocation;
@@ -18,20 +16,18 @@ using Windows.Foundation;
 using System.Device.Location;
 using Newtonsoft.Json.Linq;
 using System.Linq;
-using windows_client.Misc;
-using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Xna.Framework.Media;
-using System.Web;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
 using FileTransfer;
+using CommonLibrary.Constants;
 
 namespace windows_client.ViewModel
 {
@@ -252,10 +248,10 @@ namespace windows_client.ViewModel
             FileTransferManager.Instance.PopulatePreviousTasks();
             FileTransferManager.Instance.TriggerPubSub += Instance_TriggerPubSub;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.BLACK_THEME))
                 IsDarkMode = true;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDDEN_MODE_ACTIVATED))
                 IsHiddenModeActive = true;
         }
 
@@ -270,7 +266,7 @@ namespace windows_client.ViewModel
         /// </summary>
         public void LoadCurrentLocation()
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE))
+            if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.USE_LOCATION_SETTING) && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.LOCATION_DEVICE_COORDINATE))
             {
                 BackgroundWorker getCoordinateWorker = new BackgroundWorker();
 
@@ -294,7 +290,7 @@ namespace windows_client.ViewModel
                         var longitute = Math.Round(currentPosition.Coordinate.Longitude, 6);
                         var newCoordinate = new GeoCoordinate(latitutde, longitute);
 
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, newCoordinate);
+                        HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LOCATION_DEVICE_COORDINATE, newCoordinate);
                     }
                     catch (Exception ex)
                     {
@@ -324,12 +320,12 @@ namespace windows_client.ViewModel
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                    if (store.DirectoryExists(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION))
                     {
-                        string[] fileNames = store.GetFileNames(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/*");
+                        string[] fileNames = store.GetFileNames(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION + "/*");
                         foreach (string fileName in fileNames)
                         {
-                            store.DeleteFile(HikeConstants.FILE_TRANSFER_TEMP_LOCATION + "/" + fileName);
+                            store.DeleteFile(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION + "/" + fileName);
                         }
                     }
                 }
@@ -755,7 +751,7 @@ namespace windows_client.ViewModel
 
             contactsForForward = contactsForForward.Distinct(new ContactInfo.MsisdnComparer()).ToList();
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.AnalyticsKeys.FWD_TO_MULTIPLE, contactsForForward.Count);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_UI_EVENT, HikeConstants.AnalyticsKeys.FWD_TO_MULTIPLE, contactsForForward.Count);
 
             if (PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FORWARD_MSG] is string)
             {
@@ -799,7 +795,7 @@ namespace windows_client.ViewModel
                     string sourceMsisdn = (string)attachmentData[1];
                     long messageId = (long)attachmentData[2];
                     string metaDataString = (string)attachmentData[3];
-                    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
+                    string sourceFilePath = FTBasedConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn.Replace(":", "_") + "/" + messageId;
 
                     foreach (var contact in contactsForForward)
                     {
@@ -815,21 +811,21 @@ namespace windows_client.ViewModel
                         convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                        if (contentType.Contains(HikeConstants.IMAGE))
+                        if (contentType.Contains(FTBasedConstants.IMAGE))
                             convMessage.Message = AppResources.Image_Txt;
-                        else if (contentType.Contains(HikeConstants.AUDIO))
+                        else if (contentType.Contains(FTBasedConstants.AUDIO))
                         {
                             convMessage.Message = AppResources.Audio_Txt;
                             convMessage.MetaDataString = metaDataString;
                         }
-                        else if (contentType.Contains(HikeConstants.VIDEO))
+                        else if (contentType.Contains(FTBasedConstants.VIDEO))
                             convMessage.Message = AppResources.Video_Txt;
-                        else if (contentType.Contains(HikeConstants.LOCATION))
+                        else if (contentType.Contains(FTBasedConstants.LOCATION))
                         {
                             convMessage.Message = AppResources.Location_Txt;
                             convMessage.MetaDataString = metaDataString;
                         }
-                        else if (contentType.Contains(HikeConstants.CT_CONTACT))
+                        else if (contentType.Contains(FTBasedConstants.CT_CONTACT))
                         {
                             convMessage.Message = AppResources.ContactTransfer_Text;
                             convMessage.MetaDataString = metaDataString;
@@ -902,12 +898,12 @@ namespace windows_client.ViewModel
         {
             HikePubSub mPubSub = HikeInstantiation.HikePubSubInstance;
             JObject hideObj = new JObject();
-            hideObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.STEALTH);
+            hideObj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.STEALTH);
             JObject data = new JObject();
             JArray msisdn = new JArray();
             msisdn.Add(cObj.Msisdn);
-            data.Add(HikeConstants.ServerJsonKeys.CHAT_DISABLED, msisdn);
-            hideObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            data.Add(ServerJsonKeys.CHAT_DISABLED, msisdn);
+            hideObj.Add(ServerJsonKeys.DATA, data);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, hideObj);
         }
 
@@ -985,7 +981,7 @@ namespace windows_client.ViewModel
         {
             _isUploading = false;
 
-            if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj == null || ServerJsonKeys.OK != (string)obj[ServerJsonKeys.STAT])
             {
                 if (group.IsRetried)
                     DeleteGroupImageFromList(group);
@@ -1122,7 +1118,7 @@ namespace windows_client.ViewModel
         public void ResetHiddenMode()
         {
             IsHiddenModeActive = false;
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
         }
 
         /// <summary>
@@ -1133,9 +1129,9 @@ namespace windows_client.ViewModel
             IsHiddenModeActive = !IsHiddenModeActive;
 
             if (IsHiddenModeActive)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED, true);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_MODE_ACTIVATED, true);
             else
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
 
             foreach (var conv in MessageListPageCollection)
                 conv.HiddenModeToggled();

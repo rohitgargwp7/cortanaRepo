@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommonLibrary.Lib;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -45,7 +46,7 @@ namespace windows_client.utils
                         {
                             instance = new ProTipHelper();
                             string id = String.Empty;
-                            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.PRO_TIP, out id);
+                            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.PRO_TIP, out id);
 
                             if (!String.IsNullOrEmpty(id))
                                 ReadProTipFromFile(id);
@@ -62,7 +63,7 @@ namespace windows_client.utils
 
             CurrentProTip = new ProTip(id, header, body, imageUrl, base64Image);
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.PRO_TIP, id);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PRO_TIP, id);
 
             WriteProTipToFile();
 
@@ -215,8 +216,8 @@ namespace windows_client.utils
 
             ClearOldProTips();
 
-            HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.PRO_TIP);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.PRO_TIP_COUNT);
+            HikeInstantiation.AppSettings.Remove(AppSettingsKeys.PRO_TIP);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.PRO_TIP_COUNT);
         }
 
         public void ClearOldProTips()

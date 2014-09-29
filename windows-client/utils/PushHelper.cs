@@ -7,6 +7,7 @@ using Microsoft.Phone.Reactive;
 using Microsoft.Phone.Shell;
 using System.Linq;
 using windows_client.Model;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -105,13 +106,13 @@ namespace windows_client.utils
             if (forcePushToken)//have to push token to server forcefully
             {
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LATEST_PUSH_TOKEN, string.Empty);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LATEST_PUSH_TOKEN, string.Empty);
                 _latestPushToken = string.Empty;
             }
             else
             {
 
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.LATEST_PUSH_TOKEN, out pushToken);
+                HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.LATEST_PUSH_TOKEN, out pushToken);
                 _latestPushToken = pushToken;
             }
 
@@ -172,7 +173,7 @@ namespace windows_client.utils
 
             if (string.IsNullOrEmpty(pushToken))
             {
-                Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.NULL_PUSH_TOKEN);
+                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.NULL_PUSH_TOKEN);
             }
             else
                 LatestPushToken = pushToken;
@@ -182,7 +183,7 @@ namespace windows_client.utils
         {
             try
             {
-                Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.EXCEPTION_PUSH_TOKEN, (int)e.ErrorType);
+                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.EXCEPTION_PUSH_TOKEN, (int)e.ErrorType);
             }
             catch (InvalidCastException ex)
             {
@@ -203,11 +204,11 @@ namespace windows_client.utils
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
+                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.ServerJsonKeys.OK)
+            if (stat != ServerJsonKeys.OK)
             {
                 if (scheduler == null)
                 {
@@ -218,10 +219,10 @@ namespace windows_client.utils
                 if (pollingTime > maxPollingTime)
                     pollingTime = minPollingTime;
             }
-            else if (stat == HikeConstants.ServerJsonKeys.OK)
+            else if (stat == ServerJsonKeys.OK)
             {
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LATEST_PUSH_TOKEN, _latestPushToken);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LATEST_PUSH_TOKEN, _latestPushToken);
                 if (httpPostScheduled != null)
                 {
                     httpPostScheduled.Dispose();
@@ -234,7 +235,7 @@ namespace windows_client.utils
         private void postTokenToServer()
         {
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.UID_SETTING) && !string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
 

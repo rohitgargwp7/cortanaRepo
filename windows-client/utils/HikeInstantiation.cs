@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using windows_client.DbUtils;
 using windows_client.Model;
 using System.IO.IsolatedStorage;
-using windows_client.utils;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 using windows_client.View;
@@ -14,13 +9,10 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using windows_client.Misc;
-using System.Net.NetworkInformation;
-using Microsoft.Phone.Net.NetworkInformation;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
-using System.Windows.Controls;
-using System.Windows.Media;
 using CommonLibrary;
+using CommonLibrary.Constants;
 namespace windows_client.utils
 {
     public class HikeInstantiation : HikeInitManager
@@ -207,11 +199,11 @@ namespace windows_client.utils
         {
             #region Hidden Mode
             if (IsNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
-                WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+                WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.CONTACTS_TO_SHOW);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACTS_TO_SHOW);
             #endregion
             #region ProTips 2.3.0.0
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
@@ -219,17 +211,17 @@ namespace windows_client.utils
                 try
                 {
                     var proTip = new ProTip();
-                    HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.PRO_TIP, out proTip);
+                    HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.PRO_TIP, out proTip);
 
                     if (proTip != null)
                     {
-                        HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.PRO_TIP);
-                        HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.PRO_TIP] = proTip._id;
+                        HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.PRO_TIP);
+                        HikeInstantiation.AppSettings[AppSettingsKeys.PRO_TIP] = proTip._id;
                     }
                 }
                 catch { }
 
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.PRO_TIP_DISMISS_TIME);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.PRO_TIP_DISMISS_TIME);
                 ProTipHelper.Instance.ClearOldProTips();
             }
             #endregion
@@ -240,13 +232,13 @@ namespace windows_client.utils
                 try
                 {
                     byte value;
-                    if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING, out value))
+                    if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.LAST_SEEN_SEETING, out value))
                     {
-                        HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING);
+                        HikeInstantiation.AppSettings.Remove(AppSettingsKeys.LAST_SEEN_SEETING);
                         HikeInstantiation.AppSettings.Save();
 
                         if (value <= 0)
-                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING, false);
+                            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LAST_SEEN_SEETING, false);
                     }
                 }
                 catch (InvalidCastException ex)
@@ -260,9 +252,9 @@ namespace windows_client.utils
 
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
-                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.TIP_MARKED_KEY);
-                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.TIP_SHOW_KEY);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.CHAT_THREAD_COUNT_KEY);
+                HikeInstantiation.AppSettings.Remove(AppSettingsKeys.TIP_MARKED_KEY);
+                HikeInstantiation.AppSettings.Remove(AppSettingsKeys.TIP_SHOW_KEY);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CHAT_THREAD_COUNT_KEY);
             }
 
             #endregion
@@ -281,20 +273,20 @@ namespace windows_client.utils
                 if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
                     || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
                 {
-                    RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.SHOW_STATUS_UPDATES_TUTORIAL);
+                    RemoveKeyFromAppSettings(AppSettingsKeys.SHOW_STATUS_UPDATES_TUTORIAL);
                     ps = PageState.CONVLIST_SCREEN;
-                    RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.SHOW_BASIC_TUTORIAL);
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.PAGE_STATE, ps);
+                    RemoveKeyFromAppSettings(AppSettingsKeys.SHOW_BASIC_TUTORIAL);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PAGE_STATE, ps);
                 }
             }
             #endregion
             #region GROUP CACHE
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.GROUPS_CACHE];
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.AppSettings[AppSettingsKeys.GROUPS_CACHE];
                 GroupManager.Instance.SaveGroupCache();
-                RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.GROUPS_CACHE);
+                RemoveKeyFromAppSettings(AppSettingsKeys.GROUPS_CACHE);
             }
 
             #endregion
@@ -336,7 +328,7 @@ namespace windows_client.utils
             #region RATE MY APP
             if (IsNewInstall)
             {
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.APP_LAUNCH_COUNT, 1);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.APP_LAUNCH_COUNT, 1);
             }
             #endregion
             #region VIEW MODEL
@@ -352,7 +344,7 @@ namespace windows_client.utils
                 else // new install case
                 {
                     convList = null;
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
                 }
 
                 if (convList == null || convList.Count == 0)
@@ -364,9 +356,9 @@ namespace windows_client.utils
                 {
                     if (!initInUpgradePage)
                     {
-                        AppSettings[HikeConstants.AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
-                        AppSettings[HikeConstants.AppSettingsKeys.NEW_UPDATE] = true;
-                        WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, _latestVersion);
+                        AppSettings[AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
+                        AppSettings[AppSettingsKeys.NEW_UPDATE] = true;
+                        WriteToIsoStorageSettings(AppSettingsKeys.FILE_SYSTEM_VERSION, _latestVersion);
                         if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
@@ -378,8 +370,8 @@ namespace windows_client.utils
                 IsViewModelLoaded = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
-                if (IsNewInstall && !AppSettings.Contains(HikeConstants.AppSettingsKeys.PRO_TIP_COUNT))
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.PRO_TIP_COUNT, 1);
+                if (IsNewInstall && !AppSettings.Contains(AppSettingsKeys.PRO_TIP_COUNT))
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PRO_TIP_COUNT, 1);
             }
             #endregion
             #region POST APP INFO ON UPDATE
@@ -391,7 +383,7 @@ namespace windows_client.utils
             #endregion
             #region HIKE BOT
             if (IsNewInstall)
-                WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.REMOVE_EMMA, true);
+                WriteToIsoStorageSettings(AppSettingsKeys.REMOVE_EMMA, true);
             else if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
             {
                 if (_viewModel != null)
@@ -409,7 +401,7 @@ namespace windows_client.utils
             #endregion
             #region CHAT_FTUE
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
-                RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.SHOW_CHAT_FTUE);
+                RemoveKeyFromAppSettings(AppSettingsKeys.SHOW_CHAT_FTUE);
             #endregion
             #region Enter to send
 
@@ -417,8 +409,8 @@ namespace windows_client.utils
             {
                 if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
                 {
-                    AppSettings[HikeConstants.AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.ENTER_TO_SEND, false);
+                    AppSettings[AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.ENTER_TO_SEND, false);
                 }
                 else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)
                 {
@@ -430,7 +422,7 @@ namespace windows_client.utils
             #region Auto Save Media Key Removal
             if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
             {
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.AUTO_SAVE_MEDIA);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_SAVE_MEDIA);
             }
             #endregion
             DbConversationListenerInstance = new DbConversationListener();
@@ -443,14 +435,14 @@ namespace windows_client.utils
         private static List<ConversationListObject> GetConversations()
         {
             List<ConversationListObject> convList = null;
-            AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, out _currentVersion);
+            AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out _currentVersion);
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
 
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
             if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
-                WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_NUDGE_TUTORIAL, true);
+                WriteToIsoStorageSettings(AppSettingsKeys.SHOW_NUDGE_TUTORIAL, true);
             }
 
             if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
@@ -463,8 +455,8 @@ namespace windows_client.utils
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 HikeInstantiation.AppSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = (convList != null) ? convList.Count : 0;
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
-                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
+                HikeInstantiation.AppSettings[AppSettingsKeys.COUNTRY_CODE_SETTING] = HikeConstants.INDIA_COUNTRY_CODE;
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
             else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
@@ -478,11 +470,11 @@ namespace windows_client.utils
                 HikeInstantiation.AppSettings[HikeViewModel.NUMBER_OF_CONVERSATIONS] = convList != null ? convList.Count : 0;
 
                 string country_code = null;
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
                 if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
                 else
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, false);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
 
@@ -507,16 +499,16 @@ namespace windows_client.utils
         public static void PostLocaleInfo()
         {
             string savedLocale;
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.CURRENT_LOCALE, out savedLocale) ||
+            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CURRENT_LOCALE, out savedLocale) ||
                 savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
             {
                 string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.CURRENT_LOCALE, currentLocale);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CURRENT_LOCALE, currentLocale);
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+                obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
                 JObject data = new JObject();
-                data.Add(HikeConstants.ServerJsonKeys.LOCALE, currentLocale);
-                obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+                data.Add(ServerJsonKeys.LOCALE, currentLocale);
+                obj.Add(ServerJsonKeys.DATA, data);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
@@ -526,7 +518,7 @@ namespace windows_client.utils
         /// </summary>
         public static void CreateDatabaseAsync()
         {
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED)) // shows db are created
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED)) // shows db are created
                 return;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -547,13 +539,13 @@ namespace windows_client.utils
                         {
                             store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
                         }
-                        if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
+                        if (!store.DirectoryExists(FTBasedConstants.SHARED_FILE_LOCATION))
                         {
-                            store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
+                            store.CreateDirectory(FTBasedConstants.SHARED_FILE_LOCATION);
                         }
-                        if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                        if (!store.DirectoryExists(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION))
                         {
-                            store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                            store.CreateDirectory(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION);
                         }
                     }
                     // Create the database if it does not exist.
@@ -575,7 +567,7 @@ namespace windows_client.utils
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
-                    WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.IS_DB_CREATED, true);
+                    WriteToIsoStorageSettings(AppSettingsKeys.IS_DB_CREATED, true);
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
@@ -583,7 +575,7 @@ namespace windows_client.utils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
-                    RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.IS_DB_CREATED);
+                    RemoveKeyFromAppSettings(AppSettingsKeys.IS_DB_CREATED);
                 }
 
             };
@@ -678,10 +670,10 @@ namespace windows_client.utils
         public static void SendEnterToSendStatusToServer()
         {
             bool enterToSend;
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ENTER_TO_SEND, out enterToSend))
+            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.ANALYTICS_ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.ANALYTICS_ENTER_TO_SEND, enterToSend);
         }
     }
 }

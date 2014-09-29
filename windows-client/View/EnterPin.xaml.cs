@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using windows_client.Languages;
 using System.Windows.Media;
+using CommonLibrary.Constants;
 
 namespace windows_client
 {
@@ -62,7 +63,7 @@ namespace windows_client
             }
             txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
-            string unAuthMsisdn = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING];
+            string unAuthMsisdn = (string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING];
             pinErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -73,7 +74,7 @@ namespace windows_client
         {
             Uri nextPage = null;
 
-            if (obj == null || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj == null || ServerJsonKeys.FAIL == (string)obj[ServerJsonKeys.STAT])
             {
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -114,7 +115,7 @@ namespace windows_client
             if (isNextClicked)
                 return;
 
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.MSISDN_SETTING);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.MSISDN_SETTING);
 
             if (NavigationService.CanGoBack)
             {
@@ -261,7 +262,7 @@ namespace windows_client
             {
                 string msisdn;
 
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.MSISDN_SETTING, out msisdn);
+                HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
                 MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
             }
@@ -273,10 +274,10 @@ namespace windows_client
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
+                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.ServerJsonKeys.OK)
+            if (stat != ServerJsonKeys.OK)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

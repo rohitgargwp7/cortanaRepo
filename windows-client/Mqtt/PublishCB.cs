@@ -3,6 +3,7 @@ using mqtttest.Client;
 using windows_client.Model;
 using windows_client.DbUtils;
 using Newtonsoft.Json.Linq;
+using CommonLibrary.Constants;
 
 namespace windows_client.Mqtt
 {
@@ -32,8 +33,8 @@ namespace windows_client.Mqtt
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {
                     JObject obj = new JObject();
-                    obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.SERVER_REPORT;
-                    obj[HikeConstants.ServerJsonKeys.DATA] = Convert.ToString(packet.MessageId);
+                    obj[ServerJsonKeys.TYPE] = NetworkManager.SERVER_REPORT;
+                    obj[ServerJsonKeys.DATA] = Convert.ToString(packet.MessageId);
                     NetworkManager.Instance.onMessage(obj.ToString());
                 }
             }

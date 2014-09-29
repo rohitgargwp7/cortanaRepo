@@ -2,11 +2,9 @@
 using System.Windows;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
-using System.IO.IsolatedStorage;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
-using System.Text;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
@@ -19,6 +17,7 @@ using windows_client.DbUtils;
 using Microsoft.Phone.Tasks;
 using System.ComponentModel;
 using System.Windows.Navigation;
+using CommonLibrary.Constants;
 
 namespace windows_client
 {
@@ -36,8 +35,8 @@ namespace windows_client
         {
             InitializeComponent();
 
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.PAGE_STATE, HikeInstantiation.PageState.SETNAME_SCREEN);
+            HikeInstantiation.AppSettings[AppSettingsKeys.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PAGE_STATE, HikeInstantiation.PageState.SETNAME_SCREEN);
 
             appBar = new ApplicationBar()
             {
@@ -97,7 +96,7 @@ namespace windows_client
             nameErrorTxt.Opacity = 0;
 
             ac_name = txtBxEnterName.Text.Trim();
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, ac_name);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.ACCOUNT_NAME, ac_name);
 
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
@@ -122,14 +121,14 @@ namespace windows_client
 
             nameErrorTxt.Opacity = 0;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.IS_NEW_INSTALLATION] = true;
+            HikeInstantiation.AppSettings[AppSettingsKeys.IS_NEW_INSTALLATION] = true;
 
             progressBar.Opacity = 1;
 
             JObject obj = new JObject();
 
-            obj.Add(HikeConstants.ServerJsonKeys.NAME, (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.ACCOUNT_NAME]);
-            obj.Add(HikeConstants.AppSettingsKeys.SCREEN, "signup");
+            obj.Add(ServerJsonKeys.NAME, (string)HikeInstantiation.AppSettings[AppSettingsKeys.ACCOUNT_NAME]);
+            obj.Add(AppSettingsKeys.SCREEN, "signup");
 
             bool isScanned;
             if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || (HikeInstantiation.AppSettings.TryGetValue(ContactUtils.IS_ADDRESS_BOOK_SCANNED, out isScanned) && isScanned))
@@ -196,7 +195,7 @@ namespace windows_client
                 }
 
                 object obj = null;
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, out obj))
+                if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ACCOUNT_NAME, out obj))
                 {
                     txtBxEnterName.Text = (string)obj;
                     txtBxEnterName.Select(txtBxEnterName.Text.Length, 0);
@@ -259,12 +258,12 @@ namespace windows_client
                         catch (Exception ex)
                         {
                             Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
-                            avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING], true);
+                            avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING], true);
                         }
                     }
                     else
                     {
-                        string myMsisdn = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING];
+                        string myMsisdn = (string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING];
                         avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(myMsisdn, true);
                     }
                 }
@@ -324,7 +323,7 @@ namespace windows_client
                 return;
 
             reloadImage = true;
-            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
+            PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = ServerJsonKeys.FACEBOOK;
             PhoneApplicationService.Current.State["fromEnterName"] = true;
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
@@ -421,12 +420,12 @@ namespace windows_client
             int count = 1;
             // waiting for DB to be created
 
-            while (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED) && count <= 120)
+            while (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED) && count <= 120)
             {
                 Thread.Sleep(500);
                 count++;
             }
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED)) // if DB is not created for so long
+            if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED)) // if DB is not created for so long
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -469,7 +468,7 @@ namespace windows_client
 
         private void setProfile_Callback(JObject obj)
         {
-            if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj == null || ServerJsonKeys.OK != (string)obj[ServerJsonKeys.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -509,7 +508,7 @@ namespace windows_client
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj == null || HikeConstants.ServerJsonKeys.OK != (string)obj[HikeConstants.ServerJsonKeys.STAT])
+                if (obj == null || ServerJsonKeys.OK != (string)obj[ServerJsonKeys.STAT])
                 {
                     progressBar.Opacity = 0;
                     MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
@@ -541,23 +540,23 @@ namespace windows_client
 
             string country_code = null;
 
-            HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
+            HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
 
             if (string.IsNullOrEmpty(country_code) || country_code == HikeConstants.INDIA_COUNTRY_CODE)
-                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING] = true;
+                HikeInstantiation.AppSettings[AppSettingsKeys.SHOW_FREE_SMS_SETTING] = true;
             else
-                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING] = false;
+                HikeInstantiation.AppSettings[AppSettingsKeys.SHOW_FREE_SMS_SETTING] = false;
 
             nameErrorTxt.Opacity = 0;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
 
             try
             {
-                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.IS_NEW_INSTALLATION] = true;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_NUDGE_TUTORIAL, true);
+                HikeInstantiation.AppSettings[AppSettingsKeys.IS_NEW_INSTALLATION] = true;
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_NUDGE_TUTORIAL, true);
 
                 SmileyParser.Instance.initializeSmileyParser();
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.PAGE_STATE, HikeInstantiation.PageState.CONVLIST_SCREEN);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PAGE_STATE, HikeInstantiation.PageState.CONVLIST_SCREEN);
 
                 App page = (App)Application.Current;
                 ((UriMapper)(page.RootFrame.UriMapper)).UriMappings[0].MappedUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);

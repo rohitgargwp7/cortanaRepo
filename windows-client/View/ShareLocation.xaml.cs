@@ -9,10 +9,8 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using Microsoft.Phone.Maps.Controls;
-using Microsoft.Phone.Maps.Services;
 using Windows.Devices.Geolocation;
 using System.Collections.Generic;
-using System.Windows.Shapes;
 using Newtonsoft.Json;
 using windows_client.utils;
 using System.ComponentModel;
@@ -22,6 +20,7 @@ using System.Web;
 using System.Net.NetworkInformation;
 using System.Globalization;
 using System.Linq;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -403,17 +402,17 @@ namespace windows_client.View
 
             var title = _selectedPlace == null || _selectedPlace.title.Contains(AppResources.Location_Txt) || _selectedPlace.title.Contains(AppResources.My_Location_Text) ? String.Empty : _selectedPlace.title;
 
-            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_NAME] = HikeConstants.ServerJsonKeys.LOCATION_FILENAME;
-            singleFileInfo[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE] = HikeConstants.ServerJsonKeys.LOCATION_CONTENT_TYPE;
-            singleFileInfo[HikeConstants.ServerJsonKeys.LATITUDE] = _selectedCoordinate.Latitude;
-            singleFileInfo[HikeConstants.ServerJsonKeys.LONGITUDE] = _selectedCoordinate.Longitude;
-            singleFileInfo[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
-            singleFileInfo[HikeConstants.ServerJsonKeys.LOCATION_TITLE] = title;
-            singleFileInfo[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
+            singleFileInfo[ServerJsonKeys.FILE_NAME] = ServerJsonKeys.LOCATION_FILENAME;
+            singleFileInfo[ServerJsonKeys.FILE_CONTENT_TYPE] = ServerJsonKeys.LOCATION_CONTENT_TYPE;
+            singleFileInfo[ServerJsonKeys.LATITUDE] = _selectedCoordinate.Latitude;
+            singleFileInfo[ServerJsonKeys.LONGITUDE] = _selectedCoordinate.Longitude;
+            singleFileInfo[ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
+            singleFileInfo[ServerJsonKeys.LOCATION_TITLE] = title;
+            singleFileInfo[ServerJsonKeys.LOCATION_ADDRESS] = _selectedPlace == null || _selectedPlace.vicinity == null ? String.Empty : _selectedPlace.vicinity;
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
-            metadata[HikeConstants.ServerJsonKeys.FILES_DATA] = filesData;
+            metadata[ServerJsonKeys.FILES_DATA] = filesData;
 
             object[] locationDetails = new object[2];
             locationDetails[0] = metadata;
@@ -611,14 +610,14 @@ namespace windows_client.View
                 _isLocationEnabled = false;
             }
 
-            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING, out _isLocationEnabled))
+            else if (HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.USE_LOCATION_SETTING, out _isLocationEnabled))
             {
                 var result = MessageBox.Show(AppResources.ShareLocation_LocationSettingsNotEnabled_Txt, AppResources.Location_Disabled_Heading, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
 
-                    HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.USE_LOCATION_SETTING);
+                    HikeInstantiation.AppSettings.Remove(AppSettingsKeys.USE_LOCATION_SETTING);
                     HikeInstantiation.AppSettings.Save();
                     _isLocationEnabled = true;
 
@@ -634,7 +633,7 @@ namespace windows_client.View
                     GetCurrentCoordinate();
             }
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.LOCATION_DEVICE_COORDINATE, out _myCoordinate);
 
             if (HikeInstantiation.IsTombstoneLaunch)
             {
@@ -645,7 +644,7 @@ namespace windows_client.View
                 _resultString = (String)State[HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT];
                 _selectedIndex = (Int32)State[HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX];
 
-                MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[ServerJsonKeys.ZOOM_LEVEL];
 
                 _selectedCoordinate = _customCoordinate == null ? _myCoordinate : _customCoordinate;
                 PlacesGrid.Visibility = NetworkInterface.GetIsNetworkAvailable() ? PlacesGrid.Visibility = Visibility.Visible : PlacesGrid.Visibility = Visibility.Collapsed;
@@ -706,7 +705,7 @@ namespace windows_client.View
             {
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE);
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_SEARCH);
-                State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
+                State.Remove(ServerJsonKeys.ZOOM_LEVEL);
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT);
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX);
             }
@@ -716,16 +715,16 @@ namespace windows_client.View
                 State[HikeConstants.NavigationKeys.LOCATION_SEARCH] = _searchString;
 
                 if (MyMap != null)
-                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = 16;
+                    State[ServerJsonKeys.ZOOM_LEVEL] = 16;
 
                 State[HikeConstants.NavigationKeys.LOCATION_PLACE_SEARCH_RESULT] = _resultString;
                 State[HikeConstants.NavigationKeys.LOCATION_SELECTED_INDEX] = _selectedIndex;
             }
 
             if (_myCoordinate != null)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LOCATION_DEVICE_COORDINATE, _myCoordinate);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LOCATION_DEVICE_COORDINATE, _myCoordinate);
 
             base.OnNavigatedFrom(e);
         }

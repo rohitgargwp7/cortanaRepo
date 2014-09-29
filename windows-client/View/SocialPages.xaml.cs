@@ -39,18 +39,18 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.NavigationKeys.SOCIAL, out sn))
                 socialNetwork = (string)sn;
 
-            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER)
+            if (socialNetwork == ServerJsonKeys.TWITTER)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE] = true;
                 BrowserControl.IsScriptEnabled = false;
                 AuthenticateTwitter();
             }
-            else if (socialNetwork == HikeConstants.ServerJsonKeys.FACEBOOK)
+            else if (socialNetwork == ServerJsonKeys.FACEBOOK)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.FROM_SOCIAL_PAGE] = true;
                 if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
                     fromEnterName = true;
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.FB_LOGGED_IN))
                     LogoutFb();
                 else
                     LogInFb();
@@ -58,7 +58,7 @@ namespace windows_client.View
             else
             {
                 //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
-                string url = "http://" + ServerUrls.HOST + ":" + ServerUrls.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
+                string url = "http://" + ServerUrls.HOST + ":" + ServerUrls.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[ServerJsonKeys.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }
@@ -90,9 +90,9 @@ namespace windows_client.View
         {
             await BrowserControl.ClearCookiesAsync();
 
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_USER_ID);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_ACCESS_TOKEN);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_USER_ID);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_LOGGED_IN);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGOUT;
@@ -106,12 +106,12 @@ namespace windows_client.View
             HideProgressIndicator();
 
             #region TWITTER
-            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER)
+            if (socialNetwork == ServerJsonKeys.TWITTER)
             {
             }
             #endregion
             #region FACEBOOK
-            else if (socialNetwork == HikeConstants.ServerJsonKeys.FACEBOOK) // facebook auth
+            else if (socialNetwork == ServerJsonKeys.FACEBOOK) // facebook auth
             {
                 FacebookOAuthResult oauthResult;
 
@@ -159,8 +159,8 @@ namespace windows_client.View
 
                 var result = (IDictionary<string, object>)e.GetResultData();
                 string id = (string)result["id"];
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN, accessToken);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_USER_ID, id);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.FB_ACCESS_TOKEN, accessToken);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.FB_USER_ID, id);
                 if (fromEnterName)
                 {
                     string profilePictureUrl = string.Format("https://graph.facebook.com/{0}/picture?height={1}&width={1}", id, HikeConstants.PROFILE_PICS_SIZE);
@@ -197,7 +197,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.FB_LOGGED_IN, true);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL_STATE] = FreeSMS.SocialState.FB_LOGIN;
@@ -275,7 +275,7 @@ namespace windows_client.View
             ShowProgressIndicator();
 
             string uri = e.Uri.AbsoluteUri.ToString();
-            if (socialNetwork == HikeConstants.ServerJsonKeys.TWITTER && uri.Contains(Social.TwitterSettings.OAuthTokenKey) && uri.Contains(Social.TwitterSettings.OAuthVerifierKey))
+            if (socialNetwork == ServerJsonKeys.TWITTER && uri.Contains(Social.TwitterSettings.OAuthTokenKey) && uri.Contains(Social.TwitterSettings.OAuthVerifierKey))
             {
                 try
                 {
@@ -329,9 +329,9 @@ namespace windows_client.View
                 StreamReader reader = new StreamReader(e.Response);
                 string strResponse = reader.ReadToEnd();
                 var parameters = GetQueryParameters(strResponse);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN, parameters["oauth_token"]);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET, parameters["oauth_token_secret"]);
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TW_LOGGED_IN, true);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.TWITTER_TOKEN, parameters["oauth_token"]);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.TWITTER_TOKEN_SECRET, parameters["oauth_token_secret"]);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.TW_LOGGED_IN, true);
                 Dispatcher.BeginInvoke(() =>
                 {
                     PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.TW_LOGIN;

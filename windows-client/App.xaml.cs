@@ -61,19 +61,19 @@ namespace windows_client
             }
 
             /* Load App token if its there*/
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.TOKEN_SETTING))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TOKEN_SETTING];
+                AccountUtils.Token = (string)HikeInstantiation.AppSettings[AppSettingsKeys.TOKEN_SETTING];
                 string msisdn = string.Empty;
 
-                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.MSISDN_SETTING, out msisdn))
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.MSISDN_SETTING, out msisdn))
                     HikeInstantiation.MSISDN = msisdn;
             }
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING))
+            if (HikeInstantiation.AppSettings.Contains(ServerUrls.APP_ENVIRONMENT_SETTING))
             {
                 ServerUrls.DebugEnvironment tmpEnv;
-                HikeInstantiation.AppSettings.TryGetValue<ServerUrls.DebugEnvironment>(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
+                HikeInstantiation.AppSettings.TryGetValue<ServerUrls.DebugEnvironment>(ServerUrls.APP_ENVIRONMENT_SETTING, out tmpEnv);
                 ServerUrls.AppEnvironment = tmpEnv;
             }
 
@@ -99,8 +99,8 @@ namespace windows_client
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             // Activate hidden mode when app is launched if setting is true.
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.ACTIVATE_HIDDEN_MODE_ON_EXIT))
-                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                HikeInstantiation.AppSettings.Remove(AppSettingsKeys.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -112,14 +112,14 @@ namespace windows_client
             if (HikeInstantiation.IsTombstoneLaunch)
             {
                 HikeInstantiation.PageState pageStateVal;
-                if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettingsKeys.PAGE_STATE, out pageStateVal))
+                if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(AppSettingsKeys.PAGE_STATE, out pageStateVal))
                 {
                     HikeInstantiation.PageStateVal = pageStateVal;
                     HikeInstantiation.IsNewInstall = false;
                 }
 
                 string currentVersion = string.Empty;
-                if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion))
+                if (HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion))
                     HikeInstantiation.CurrentVersion = currentVersion;
 
                 HikeInstantiation.InstantiateClasses(false);
@@ -174,7 +174,7 @@ namespace windows_client
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
 
             if (isPushEnabled)
                 PushHelper.Instance.registerPushnotifications(false);
@@ -192,7 +192,7 @@ namespace windows_client
                 {
                     HikeInstantiation.MqttManagerInstance.connect();
                     bool isPushEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
 
                     if (isPushEnabled)
                     {
@@ -225,7 +225,7 @@ namespace windows_client
 
             HikeInstantiation.PageState pageStateVal;
 
-            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettingsKeys.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(AppSettingsKeys.PAGE_STATE, out pageStateVal))
                 HikeInstantiation.PageStateVal = pageStateVal;
 
 
@@ -244,7 +244,7 @@ namespace windows_client
                     bool isStealth = Utils.IsUriStealth(targetPage);
 
                     if ((!isStealth || (isStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
-                        && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.NEW_UPDATE_AVAILABLE)
+                        && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
                         && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -294,7 +294,7 @@ namespace windows_client
             RootFrame.UriMapper = mapper;
 
             HikeInstantiation.PageState pageStateVal;
-            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(HikeConstants.AppSettingsKeys.PAGE_STATE, out pageStateVal))
+            if (HikeInstantiation.AppSettings.TryGetValue<HikeInstantiation.PageState>(AppSettingsKeys.PAGE_STATE, out pageStateVal))
             {
                 HikeInstantiation.PageStateVal = pageStateVal;
                 HikeInstantiation.IsNewInstall = false;
@@ -305,7 +305,7 @@ namespace windows_client
 
             // this will get the current version installed already in "_currentVersion"
             string currentVersion;
-            if (HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion))
+            if (HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion))
                 HikeInstantiation.CurrentVersion = currentVersion;
 
             HikeInstantiation.LatestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
@@ -334,7 +334,7 @@ namespace windows_client
                 bool IsStealth = Utils.IsUriStealth(targetPage);
 
                 if ((!IsStealth || (IsStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
-                    && !HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.NEW_UPDATE_AVAILABLE)
+                    && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
                     && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -477,9 +477,9 @@ namespace windows_client
         public void SendAppBgStatusToServer()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.APP_INFO);
-            obj.Add(HikeConstants.ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
-            obj.Add(HikeConstants.ServerJsonKeys.STATUS, "bg");
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.APP_INFO);
+            obj.Add(ServerJsonKeys.TIMESTAMP, TimeUtils.getCurrentTimeStamp());
+            obj.Add(ServerJsonKeys.STATUS, "bg");
 
             if (HikeInstantiation.HikePubSubInstance != null)
             {

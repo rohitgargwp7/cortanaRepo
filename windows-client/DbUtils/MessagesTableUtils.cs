@@ -12,6 +12,7 @@ using windows_client.Languages;
 using System.IO.IsolatedStorage;
 using System.IO;
 using CommonLibrary.Lib;
+using CommonLibrary.Constants;
 
 namespace windows_client.DbUtils
 {
@@ -346,7 +347,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                         {
                             toastText = GetToastNotification(convMsg);
                             toastText = gp != null ? (gp.FirstName + " - " + toastText) : toastText;
@@ -360,7 +361,7 @@ namespace windows_client.DbUtils
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
-                        else if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        else if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                             toastText = GetToastNotification(convMsg);
 
                         obj.ToastText = toastText;
@@ -404,10 +405,10 @@ namespace windows_client.DbUtils
                 {
                     JObject metaData = new JObject();
 
-                    if (obj.MetaData == null || obj.MetaData.Value<long>(HikeConstants.ServerJsonKeys.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
+                    if (obj.MetaData == null || obj.MetaData.Value<long>(ServerJsonKeys.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
-                        metaData[HikeConstants.ServerJsonKeys.TIMESTAMP] = convMsg.Timestamp;
+                        metaData[ServerJsonKeys.TIMESTAMP] = convMsg.Timestamp;
                         metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
                     }
 
@@ -455,15 +456,15 @@ namespace windows_client.DbUtils
                 toastText = HikeConstants.ToastConstants.TOAST_FOR_STICKER;
             else if (convMsg.FileAttachment != null)
             {
-                if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                if (convMsg.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_PHOTO;
-                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                else if (convMsg.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_AUDIO;
-                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                else if (convMsg.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_VIDEO;
-                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                else if (convMsg.FileAttachment.ContentType.Contains(FTBasedConstants.CONTACT))
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_CONTACT;
-                else if (convMsg.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                else if (convMsg.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_LOCATION;
                 else
                     toastText = HikeConstants.ToastConstants.TOAST_FOR_FILE;

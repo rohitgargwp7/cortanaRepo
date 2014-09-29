@@ -1,26 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Tasks;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Shell;
 using windows_client.Languages;
-using System.Diagnostics;
 using windows_client.utils;
-using Newtonsoft.Json.Linq;
-using windows_client.Model;
-using windows_client.DbUtils;
 using System.Net.NetworkInformation;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -69,14 +56,14 @@ namespace windows_client.View
         {
             if (!isTwitterPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.TW_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.TW_LOGGED_IN)) // already logged in
                 {
                     isTwitterPost = true;
                     sendInvite();
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.ServerJsonKeys.TWITTER;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = ServerJsonKeys.TWITTER;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -94,14 +81,14 @@ namespace windows_client.View
         {
             if (!isFacebookPost)
             {
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN)) // already logged in
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.FB_LOGGED_IN)) // already logged in
                 {
                     isFacebookPost = true;
                     sendInvite();
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = HikeConstants.ServerJsonKeys.FACEBOOK;
+                    PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = ServerJsonKeys.FACEBOOK;
                     NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 }
             }
@@ -152,18 +139,18 @@ namespace windows_client.View
                 {
                     case FreeSMS.SocialState.FB_LOGIN:
                         JObject oj = new JObject();
-                        oj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.FB_USER_ID];
-                        oj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN];
+                        oj["id"] = (string)HikeInstantiation.AppSettings[AppSettingsKeys.FB_USER_ID];
+                        oj["token"] = (string)HikeInstantiation.AppSettings[AppSettingsKeys.FB_ACCESS_TOKEN];
                         oj["post"] = false;//so that hike promotional post is not posted on fb
-                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), HikeConstants.ServerJsonKeys.FACEBOOK, true);
+                        AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), ServerJsonKeys.FACEBOOK, true);
                         break;
 
                     case FreeSMS.SocialState.TW_LOGIN:
                         JObject ojj = new JObject();
-                        ojj["id"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TWITTER_TOKEN]; ;
-                        ojj["token"] = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET];
+                        ojj["id"] = (string)HikeInstantiation.AppSettings[AppSettingsKeys.TWITTER_TOKEN]; ;
+                        ojj["token"] = (string)HikeInstantiation.AppSettings[AppSettingsKeys.TWITTER_TOKEN_SECRET];
                         ojj["post"] = false;
-                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), HikeConstants.ServerJsonKeys.TWITTER, true);
+                        AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), ServerJsonKeys.TWITTER, true);
                         break;
                 }
             }
@@ -196,26 +183,26 @@ namespace windows_client.View
                         SystemTray.ProgressIndicator.IsIndeterminate = false;
                 });
 
-            if (isFacebookPost && obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (isFacebookPost && obj != null && ServerJsonKeys.OK == (string)obj[ServerJsonKeys.STAT])
             {
-                status = (string)obj[HikeConstants.ServerJsonKeys.FACEBOOK];
+                status = (string)obj[ServerJsonKeys.FACEBOOK];
                 isFacebookPost = false;
             }
 
-            if (isTwitterPost && obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (isTwitterPost && obj != null && ServerJsonKeys.OK == (string)obj[ServerJsonKeys.STAT])
             {
-                status = (string)obj[HikeConstants.ServerJsonKeys.TWITTER];
+                status = (string)obj[ServerJsonKeys.TWITTER];
                 isTwitterPost = false;
             }
 
-            if (status.Equals(HikeConstants.ServerJsonKeys.NO_TOKEN) || status.Equals(HikeConstants.ServerJsonKeys.INVALID_TOKEN))
+            if (status.Equals(ServerJsonKeys.NO_TOKEN) || status.Equals(ServerJsonKeys.INVALID_TOKEN))
             {
-                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = isTwitterPost ? HikeConstants.ServerJsonKeys.TWITTER : HikeConstants.ServerJsonKeys.FACEBOOK;
+                PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SOCIAL] = isTwitterPost ? ServerJsonKeys.TWITTER : ServerJsonKeys.FACEBOOK;
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
                 return;
             }
 
-            if (status.Equals(HikeConstants.ServerJsonKeys.FAILURE))
+            if (status.Equals(ServerJsonKeys.FAILURE))
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

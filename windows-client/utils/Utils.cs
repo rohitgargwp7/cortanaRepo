@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -30,14 +31,14 @@ namespace windows_client.utils
             HikeInstantiation.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
 
-            appSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING] = HikeInstantiation.MSISDN;
-            appSettings[HikeConstants.AppSettingsKeys.UID_SETTING] = (string)obj["uid"];
-            appSettings[HikeConstants.AppSettingsKeys.TOKEN_SETTING] = (string)obj["token"];
-            appSettings[HikeConstants.AppSettingsKeys.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
-            appSettings[HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED] = (bool)true;
-            appSettings[HikeConstants.AppSettingsKeys.VIBRATE_PREF] = (bool)true;
-            appSettings[HikeConstants.AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
-            appSettings[HikeConstants.AppSettingsKeys.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
+            appSettings[AppSettingsKeys.MSISDN_SETTING] = HikeInstantiation.MSISDN;
+            appSettings[AppSettingsKeys.UID_SETTING] = (string)obj["uid"];
+            appSettings[AppSettingsKeys.TOKEN_SETTING] = (string)obj["token"];
+            appSettings[AppSettingsKeys.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
+            appSettings[AppSettingsKeys.IS_PUSH_ENABLED] = (bool)true;
+            appSettings[AppSettingsKeys.VIBRATE_PREF] = (bool)true;
+            appSettings[AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
+            appSettings[AppSettingsKeys.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
 
@@ -104,9 +105,9 @@ namespace windows_client.utils
             try
             {
                 JObject upgradeJobj = new JObject();
-                upgradeJobj.Add(HikeConstants.ServerJsonKeys.UPGRADE, true);
-                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
-                requestAccountInfo.Add(HikeConstants.ServerJsonKeys.DATA, upgradeJobj);
+                upgradeJobj.Add(ServerJsonKeys.UPGRADE, true);
+                requestAccountInfo.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                requestAccountInfo.Add(ServerJsonKeys.DATA, upgradeJobj);
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
             }
             catch (Exception e)
@@ -308,14 +309,14 @@ namespace windows_client.utils
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
             info["_app_version"] = getAppVersion();
-            info[HikeConstants.ServerJsonKeys.TAG] = "cbs";
+            info[ServerJsonKeys.TAG] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
-            info[HikeConstants.ServerJsonKeys.OS_VERSION] = getOSVersion();
-            info[HikeConstants.ServerJsonKeys.OS_NAME] = "win8";
+            info[ServerJsonKeys.OS_VERSION] = getOSVersion();
+            info[ServerJsonKeys.OS_NAME] = "win8";
             JObject infoPacket = new JObject();
-            infoPacket[HikeConstants.ServerJsonKeys.DATA] = info;
-            infoPacket[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.LOG_EVENT;
+            infoPacket[ServerJsonKeys.DATA] = info;
+            infoPacket[ServerJsonKeys.TYPE] = ServerJsonKeys.LOG_EVENT;
             return infoPacket;
         }
 
@@ -375,13 +376,13 @@ namespace windows_client.utils
             else if (msisdn.StartsWith("0"))
             {
                 string country_code = null;
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
+                HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code);
                 return ((country_code == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code) + msisdn.Substring(1));
             }
             else
             {
                 string country_code2 = null;
-                HikeInstantiation.AppSettings.TryGetValue<string>(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code2);
+                HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code2);
                 return (country_code2 == null ? HikeConstants.INDIA_COUNTRY_CODE : country_code2) + msisdn;
             }
         }
@@ -551,7 +552,7 @@ namespace windows_client.utils
         public static void RequestServerEpochTime()
         {
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.REQUEST_SERVER_TIME;
+            obj[ServerJsonKeys.TYPE] = ServerJsonKeys.REQUEST_SERVER_TIME;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
@@ -573,17 +574,17 @@ namespace windows_client.utils
         public static void RequestHikeBot()
         {
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
             JObject data = new JObject();
             data.Add(HikeConstants.Extras.SEND_BOT, false);
-            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         public static bool ShowNotificationAlert()
         {
             long lastNotificationTime = 0;
-            appSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_NOTIFICATION_TIME, out lastNotificationTime);
+            appSettings.TryGetValue(AppSettingsKeys.LAST_NOTIFICATION_TIME, out lastNotificationTime);
 
             return lastNotificationTime == 0 || ((DateTime.Now.Ticks - lastNotificationTime) / TimeSpan.TicksPerMillisecond > MIN_TIME_BETWEEN_NOTIFICATIONS);
         }

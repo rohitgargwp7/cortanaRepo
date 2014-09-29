@@ -12,10 +12,10 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
-using windows_client.ViewModel;
 using System.Threading;
 using System.Diagnostics;
 using Microsoft.Phone.Tasks;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -219,20 +219,20 @@ namespace windows_client.View
 
             if (SelectedContacts.Count == 1)
             {
-                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
-                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
-                obj[HikeConstants.ServerJsonKeys.DATA] = data;
-                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
+                obj[ServerJsonKeys.TO] = toNum;
+                data[ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[ServerJsonKeys.TIMESTAMP] = ts;
+                obj[ServerJsonKeys.DATA] = data;
+                obj[ServerJsonKeys.TYPE] = NetworkManager.INVITE;
             }
             else
             {
-                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.ServerJsonKeys.INVITE_LIST] = numlist;
-                obj[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
-                obj[HikeConstants.ServerJsonKeys.DATA] = data;
-                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                data[ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[ServerJsonKeys.INVITE_LIST] = numlist;
+                obj[ServerJsonKeys.TIMESTAMP] = ts;
+                obj[ServerJsonKeys.DATA] = data;
+                obj[ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
             }
 
             if (HikeInstantiation.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian open sms client
@@ -243,7 +243,7 @@ namespace windows_client.View
             }
             else
             {
-                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
+                obj[ServerJsonKeys.SUB_TYPE] = ServerJsonKeys.NO_SMS;
                 HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
                 SmsComposeTask smsComposeTask = new SmsComposeTask();

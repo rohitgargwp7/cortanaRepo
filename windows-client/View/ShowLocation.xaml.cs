@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Device.Location;
-using Windows.Devices.Geolocation;
 using Microsoft.Phone.Maps.Controls;
-using Microsoft.Phone.Maps.Services;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using windows_client.Languages;
-using Windows.Foundation;
 using windows_client.utils;
-using System.Globalization;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -62,14 +54,14 @@ namespace windows_client.View
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
                 State.Remove(HikeConstants.NavigationKeys.LOCATION_SEARCH);
-                State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
+                State.Remove(ServerJsonKeys.ZOOM_LEVEL);
             }
             else
             {
                 if (MyMap != null)
-                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
+                    State[ServerJsonKeys.ZOOM_LEVEL] = MyMap.ZoomLevel;
                 else
-                    State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL] = 16;
+                    State[ServerJsonKeys.ZOOM_LEVEL] = 16;
             }
 
             base.OnNavigatedFrom(e);
@@ -85,7 +77,7 @@ namespace windows_client.View
             _locationCoordinate = PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] as GeoCoordinate;
 
             if (HikeInstantiation.IsTombstoneLaunch)
-                MyMap.ZoomLevel = (double)State[HikeConstants.ServerJsonKeys.ZOOM_LEVEL];
+                MyMap.ZoomLevel = (double)State[ServerJsonKeys.ZOOM_LEVEL];
 
             if (e.NavigationMode == NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
                 MyMap.SetView(_locationCoordinate, 16, MapAnimationKind.Parabolic);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CommonLibrary.Constants;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.Model
 {
@@ -13,10 +14,10 @@ namespace windows_client.Model
 
         public MessageMetadata(JObject metadata)
         {
-            this.newUser = (string)metadata[HikeConstants.ServerJsonKeys.NEW_USER] == "true";
-            this.dndNumbers = (JArray)metadata[HikeConstants.ServerJsonKeys.DND_NUMBERS];
+            this.newUser = (string)metadata[ServerJsonKeys.NEW_USER] == "true";
+            this.dndNumbers = (JArray)metadata[ServerJsonKeys.DND_NUMBERS];
             this.participantInfoState = ConvMessage.fromJSON(metadata);
-            this.dndMissedCallNumber = (string)metadata[HikeConstants.ServerJsonKeys.METADATA_DND];
+            this.dndMissedCallNumber = (string)metadata[ServerJsonKeys.METADATA_DND];
             this.json = metadata;
         }
 

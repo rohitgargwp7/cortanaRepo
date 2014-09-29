@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -19,10 +18,9 @@ using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.ComponentModel;
-using System.Windows.Media.Imaging;
 using windows_client.ViewModel;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -75,7 +73,7 @@ namespace windows_client.View
             enterNameTxt.Hint = AppResources.SelectUser_TxtBoxHint_Txt;
 
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out _smsCredits);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out _smsCredits);
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.NavigationKeys.SHARE_CONTACT))
             {
@@ -900,7 +898,7 @@ namespace windows_client.View
                         string country_code = null;
 
 
-                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code))
+                        if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.COUNTRY_CODE_SETTING, out country_code))
                             searchNumber = searchNumber.Replace(country_code, String.Empty);
 
                         contactInfoObj = cInfo;
