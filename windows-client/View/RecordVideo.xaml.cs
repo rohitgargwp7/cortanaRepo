@@ -387,16 +387,16 @@ namespace windows_client.View
             {
                 object obj;
 
-                if (State.TryGetValue(HikeConstants.VIDEO_SIZE, out obj))
+                if (State.TryGetValue(HikeConstants.NavigationKeys.VIDEO_SIZE, out obj))
                     txtSize.Text = (string)obj;
 
-                if (State.TryGetValue(HikeConstants.IS_PRIMARY_CAM, out obj))
+                if (State.TryGetValue(HikeConstants.NavigationKeys.IS_PRIMARY_CAM, out obj))
                     isPrimaryCam = (bool)obj;
 
-                if (State.TryGetValue(HikeConstants.VIDEO_RESOLUTION, out obj))
+                if (State.TryGetValue(HikeConstants.NavigationKeys.VIDEO_RESOLUTION, out obj))
                     selectedResolution = (Resolution)obj;
 
-                if (State.TryGetValue(HikeConstants.VIDEO_THUMBNAIL, out obj))
+                if (State.TryGetValue(HikeConstants.NavigationKeys.VIDEO_THUMBNAIL, out obj))
                     thumbnail = (byte[])obj;
 
                 SetCameraDevices(false);
@@ -418,7 +418,7 @@ namespace windows_client.View
 
                 if (thumbnail != null)
                 {
-                    if (State.TryGetValue(HikeConstants.VIDEO_FRAME_BYTES, out obj))
+                    if (State.TryGetValue(HikeConstants.NavigationKeys.VIDEO_FRAME_BYTES, out obj))
                         _snapshotByte = (byte[])obj;
 
                     var ms = new MemoryStream(_snapshotByte);
@@ -426,7 +426,7 @@ namespace windows_client.View
                     bmi.SetSource(ms);
                     snapshotThumbnail.Source = bmi;
 
-                    if (State.TryGetValue(HikeConstants.MAX_VIDEO_PLAYING_TIME, out obj))
+                    if (State.TryGetValue(HikeConstants.NavigationKeys.MAX_VIDEO_PLAYING_TIME, out obj))
                         maxPlayingTime = (Int32)obj;
 
                     addOrRemoveAppBarButton(sendIconButton, true);
@@ -451,12 +451,12 @@ namespace windows_client.View
 
             if (!_isGoingBack)
             {
-                State[HikeConstants.VIDEO_SIZE] = txtSize.Text;
-                State[HikeConstants.VIDEO_THUMBNAIL] = thumbnail;
-                State[HikeConstants.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
-                State[HikeConstants.IS_PRIMARY_CAM] = isPrimaryCam;
-                State[HikeConstants.VIDEO_RESOLUTION] = selectedResolution;
-                State[HikeConstants.VIDEO_FRAME_BYTES] = _snapshotByte;
+                State[HikeConstants.NavigationKeys.VIDEO_SIZE] = txtSize.Text;
+                State[HikeConstants.NavigationKeys.VIDEO_THUMBNAIL] = thumbnail;
+                State[HikeConstants.NavigationKeys.MAX_VIDEO_PLAYING_TIME] = maxPlayingTime;
+                State[HikeConstants.NavigationKeys.IS_PRIMARY_CAM] = isPrimaryCam;
+                State[HikeConstants.NavigationKeys.VIDEO_RESOLUTION] = selectedResolution;
+                State[HikeConstants.NavigationKeys.VIDEO_FRAME_BYTES] = _snapshotByte;
             }
 
             // Dispose of camera and media objects.
