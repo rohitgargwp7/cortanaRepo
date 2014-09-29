@@ -83,13 +83,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Constants\HikeConstants.cs" />
+    <Compile Include="Constants\AppSettingsKeys.cs" />
+    <Compile Include="Constants\ServerJsonKeys.cs" />
+    <Compile Include="Constants\ServerUrls.cs" />
+    <Compile Include="Constants\FTBasedConstants.cs" />
     <Compile Include="HikeInitManager.cs" />
     <Compile Include="Lib\IBinarySerializable.cs" />
     <Compile Include="Lib\MD5.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
-    <Compile Include="Utils\ConnectionUtility.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
   <ItemGroup>

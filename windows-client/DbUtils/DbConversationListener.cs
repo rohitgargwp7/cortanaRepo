@@ -1,25 +1,17 @@
-﻿using System.IO;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using System.Windows;
-using System.Windows.Navigation;
 using System;
 using System.Linq;
-using System.Data.Linq;
-using System.ComponentModel;
 using windows_client.utils;
 using windows_client.View;
-using windows_client.Controls;
-using System.Threading;
 using windows_client.Misc;
 using windows_client.Languages;
-using Microsoft.Phone.Controls;
 using System.Text;
 using FileTransfer;
 using System.Diagnostics;
-using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.DbUtils
 {
@@ -469,32 +461,32 @@ namespace windows_client.DbUtils
 
                                 if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.AUDIO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
                                 else
                                 {
-                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + ConnectionUtility.FILE_TRANSFER_BASE_URL +
+                                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.UnknownFile_txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
 

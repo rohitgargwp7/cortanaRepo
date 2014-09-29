@@ -3,27 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Facebook;
-using System.IO.IsolatedStorage;
-using System.Runtime.Serialization;
 using windows_client.utils;
-using Newtonsoft.Json.Linq;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using windows_client.Languages;
 using System.Diagnostics;
 using windows_client.DbUtils;
 using System.Windows.Media.Imaging;
 using windows_client.Misc;
 using Hammock.Web;
 using Hammock.Authentication.OAuth;
-using CommonLibrary.Utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -66,7 +58,7 @@ namespace windows_client.View
             else
             {
                 //  string url = (AccountUtils.IsProd ? "http://hike.in/" : "http://staging.im.hike.in:8080/") + "rewards/wp7/" + (string)HikeInstantiation.appSettings[HikeConstants.REWARDS_TOKEN];
-                string url = "http://" + ConnectionUtility.HOST + ":" + ConnectionUtility.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
+                string url = "http://" + ServerUrls.HOST + ":" + ServerUrls.PORT + "/rewards/wp7/" + (string)HikeInstantiation.AppSettings[HikeConstants.ServerJsonKeys.REWARDS_TOKEN];
                 Uri page = new Uri(url);
                 BrowserControl.Navigate(page);
             }

@@ -230,7 +230,7 @@ namespace FileTransfer
                     fileInfo.CheckIfComplete();
                 }
 
-                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
+                else if (fileInfo.FileState != FileTransferState.MANUAL_PAUSED && (!AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING) || fileInfo.FileState != FileTransferState.PAUSED))
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
@@ -287,7 +287,7 @@ namespace FileTransfer
 
         public void PopulatePreviousTasks()
         {
-            if (!AppSettings.Contains(HikeConstants.AppSettingsKeys.AUTO_RESUME_SETTING))
+            if (!AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING))
             {
                 BackgroundWorker worker = new BackgroundWorker();
 

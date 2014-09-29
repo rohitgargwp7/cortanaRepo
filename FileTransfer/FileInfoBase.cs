@@ -50,7 +50,7 @@ namespace FileTransfer
             get
             {
                 if (String.IsNullOrEmpty(_filePath))
-                    _filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+                    _filePath = FTBasedConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
 
                 return _filePath;
             }
@@ -151,7 +151,7 @@ namespace FileTransfer
         /// <returns>true if md5 matches else false</returns>
         protected async Task<bool> CheckForCRC(string key)
         {
-            if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
+            if (TotalBytes > FTBasedConstants.FILE_MAX_SIZE)
                 return true;
 
             // Calculate md5 by parts
@@ -165,8 +165,8 @@ namespace FileTransfer
                 {
                     HttpClient httpClient = new HttpClient();
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(ConnectionUtility.FILE_TRANSFER_BASE_URL + "/" + key));
-                    request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(ServerUrls.FILE_TRANSFER_BASE_URL + "/" + key));
+                    request.Headers.Add(FTBasedConstants.IfModifiedSince, DateTime.UtcNow.ToString());
 
                     HttpResponseMessage response = await httpClient.SendAsync(request);
 
@@ -181,8 +181,8 @@ namespace FileTransfer
             {
                 try
                 {
-                    var jData = (this as FileUploader).SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
-                    result = jData[HikeConstants.ServerJsonKeys.MD5_ORIGINAL].ToString();
+                    var jData = (this as FileUploader).SuccessObj[ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                    result = jData[ServerJsonKeys.MD5_ORIGINAL].ToString();
                 }
                 catch
                 {
