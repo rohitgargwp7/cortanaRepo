@@ -182,10 +182,10 @@ namespace windows_client
 
                         ContactInfo contactInfo = null;
 
-                        if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                            contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
+                        if (App.ViewModel.ContactsCache.ContainsKey(sendersMsisdn))
+                            contactInfo = App.ViewModel.ContactsCache[sendersMsisdn];
                         else
-                            contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                            contactInfo = UsersTableUtils.getContactInfoFromMSISDN(sendersMsisdn);
 
                         if (contactInfo != null)
                             FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
