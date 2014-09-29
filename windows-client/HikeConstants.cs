@@ -305,13 +305,6 @@ namespace windows_client
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
 
-        public static readonly string VIDEO_SIZE = "videoSize";
-        public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";
-        public static readonly string MAX_VIDEO_PLAYING_TIME = "maxPlayingTime";
-        public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
-        public static readonly string VIDEO_RESOLUTION = "videoResolution";
-        public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
-
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
         public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
@@ -585,6 +578,13 @@ namespace windows_client
             public static readonly string LOCATION_SEARCH = "locationSearch";
             public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
             public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+
+            public static readonly string VIDEO_SIZE = "videoSize";
+            public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";
+            public static readonly string MAX_VIDEO_PLAYING_TIME = "maxPlayingTime";
+            public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
+            public static readonly string VIDEO_RESOLUTION = "videoResolution";
+            public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
         }
         #endregion
 
