@@ -139,7 +139,7 @@ namespace windows_client.View
         {
             if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
-                Debug.WriteLine("Delete Account", "Could not delete account !!");
+                Debug.WriteLine("Delete Account"+ "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Delete_Account_Failed, AppResources.Delete_Account_Heading, MessageBoxButton.OKCancel);

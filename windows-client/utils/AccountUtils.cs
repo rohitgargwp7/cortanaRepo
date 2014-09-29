@@ -1232,9 +1232,6 @@ namespace windows_client.utils
                 if (isPendingSaved)
                     MiscDBUtil.SavePendingRequests();
 
-                Debug.WriteLine("Total contacts with no msisdn : {0}", count);
-                Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-
                 return server_contacts;
             }
 

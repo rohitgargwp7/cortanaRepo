@@ -802,6 +802,8 @@ namespace windows_client.View
         /// <param name="sendHiddenToggledPacket">send hidden mode toggled packet to server</param>
         void DeleteConversation(ConversationListObject convObj, bool sendHiddenChatToogledPacket)
         {
+
+            Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Long Press delete convlist,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
             // Remove entry from map for UI.
             App.ViewModel.ConvMap.Remove(convObj.Msisdn);
 
@@ -819,6 +821,8 @@ namespace windows_client.View
                 jObj[HikeConstants.TO] = convObj.Msisdn;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             }
+            else
+                Debug.WriteLine(string.Format("Not group so no gcl ,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
 
             mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
 

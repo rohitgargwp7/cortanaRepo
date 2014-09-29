@@ -989,7 +989,7 @@ namespace windows_client.Model
                     _playProgressBarValue = 0;
                 }
 
-                Debug.WriteLine(_playProgressBarValue);
+                Debug.WriteLine(_playProgressBarValue.ToString());
 
                 NotifyPropertyChanged("PlayProgressBarValue");
             }

@@ -34,6 +34,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0" Margin="0,20,0,0" Tap="Notifications_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
@@ -117,6 +118,15 @@
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
                         <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_HelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
                         <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SubtitleHelpSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="7" Margin="0,20,0,25" Tap="ViewLogs_tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Name="gridLogs">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="Mqtt Preferences"/>
                     </StackPanel>
                 </Grid>
             </Grid>

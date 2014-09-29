@@ -424,7 +424,7 @@ namespace windows_client.View
                 loadMessages(INITIAL_FETCH_COUNT, true);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
+                Debug.WriteLine(string.Format("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec));
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -859,6 +859,7 @@ namespace windows_client.View
                 ConversationListObject convObj;
                 if (App.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
                 {
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Removed emma bot,msisdn:{0}, name:{1}", convObj.Msisdn, convObj.ContactName));
                     App.ViewModel.ConvMap.Remove(convObj.Msisdn);
                     App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
                     mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
@@ -1036,6 +1037,8 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Chat thread opened for groupid:{0}, gpname,{1}", mContactNumber, mContactName));
+
                 chatThemeTipTxt.Text = AppResources.ChatThemeMessage_GrpMessage;
 
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
@@ -1450,7 +1453,7 @@ namespace windows_client.View
             }
             catch (Exception e)
             {
-                Debug.WriteLine("ConvMessage", "invalid json message", e);
+                Debug.WriteLine("ConvMessage" + "invalid json message" + e.Message);
             }
             return obj;
         }
@@ -1884,6 +1887,7 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection.Remove(cObj); // removed from observable collection
 
             App.ViewModel.ConvMap.Remove(mContactNumber);
+            Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:user left group,msisdn:{0}, name:{1}", cObj.Msisdn, cObj.ContactName));
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
 
@@ -3148,6 +3152,8 @@ namespace windows_client.View
             }
             else
             {
+                Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:No message left,msisdn:{0}, name:{1}", obj.Msisdn, obj.ContactName));
+
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
@@ -5934,7 +5940,7 @@ namespace windows_client.View
                         else
                         {
                             duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                            Debug.WriteLine(string.Format("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo));
                         }
                     }
                     else
@@ -5946,8 +5952,8 @@ namespace windows_client.View
                 }
             }
 
-            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            Debug.WriteLine(string.Format("Total duplicate contacts : {0}", duplicates));
+            Debug.WriteLine(string.Format("Total contacts with no phone number : {0}", count));
 
             return contactListMap;
         }

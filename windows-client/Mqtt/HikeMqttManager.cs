@@ -119,6 +119,8 @@ namespace windows_client.Mqtt
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
 
                 Debug.WriteLine("Disconnect from Broker Called");
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::disconnectFromBroker, Explicitly called");
+
                 if (mqttConnection != null)
                     mqttConnection.disconnect();
 
@@ -148,6 +150,7 @@ namespace windows_client.Mqtt
                         {
                             return;
                         }
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("connection req. clientId:{0}, password:{1},uid:{2},  ", clientId, password, uid));
                         mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
                         mqttConnection.OnSocketWriteCompleted += mqttConnection_OnSocketWriteCompleted;
                     }
@@ -238,9 +241,9 @@ namespace windows_client.Mqtt
                 listTopics.Add(topics[i].Name);
                 listQos.Add(topics[i].qos);
             }
+
             if (mqttConnection != null)
                 mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
-
         }
 
         /*
@@ -309,6 +312,8 @@ namespace windows_client.Mqtt
                 {
                     try
                     {
+                        var str = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
+                        MQttLogging.LogWriter.Instance.WriteToLog("Unsent Message, write to db:: " + str + " : TimeStatmp:" + packet.Timestamp);
                         MqttDBUtils.addSentMessage(packet);
                     }
                     catch (Exception ex)
@@ -342,6 +347,8 @@ namespace windows_client.Mqtt
             long[] msgIds = new long[packets.Count];
             for (int i = 0; i < packets.Count; i++)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Message read from db for retry,Packet: " + System.Text.Encoding.UTF8.GetString(packets[i].Message, 0, packets[i].Message.Length));
+
                 messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
                 messagesToSend[i] = packets[i].Message;
             }
@@ -412,6 +419,8 @@ namespace windows_client.Mqtt
             try
             {
                 String receivedMessage = Utils.IsGZipHeader(body) ? AccountUtils.GZipDecompress(body) : Encoding.UTF8.GetString(body, 0, body.Length);
+                MQttLogging.LogWriter.Instance.WriteToLog(string.Format("recieved gunzipped :{0}", receivedMessage));
+
                 NetworkManager.Instance.onMessage(receivedMessage);
             }
             catch (Exception ex)

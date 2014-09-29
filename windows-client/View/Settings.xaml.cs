@@ -11,6 +11,7 @@ using windows_client.Model;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Microsoft.Phone.Tasks;
 using windows_client.Languages;
 using windows_client.Controls;
 using Microsoft.Phone.Net.NetworkInformation;
@@ -27,10 +28,12 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
-
             int creditsRemaining = 0;
             App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
+
+            if (AccountUtils.AppEnvironment != AccountUtils.DebugEnvironment.PRODUCTION)
+                gridLogs.Visibility = Visibility.Collapsed;
         }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -349,5 +352,12 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
+
+        private void ViewLogs_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/MqttPreferences.xaml", UriKind.Relative));
+        }
+
+       
     }
 }

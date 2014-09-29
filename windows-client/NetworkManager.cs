@@ -140,98 +140,98 @@ namespace windows_client
             #region BULK MESSAGE
             if (BULK_MESSAGES == type)
             {
-                try
+                //try
+                //{
+                var jData = (JObject)jsonObj[HikeConstants.DATA];
+                JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+
+                Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
+                for (int i = 0; i < msgs.Count; i++)
                 {
-                    var jData = (JObject)jsonObj[HikeConstants.DATA];
-                    JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+                    ProcessBulkMessageData((JObject)msgs[i], dictBulkData);
+                }
 
-                    Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
-                    for (int i = 0; i < msgs.Count; i++)
+                if (dictBulkData.Count > 0)
+                {
+                    foreach (MsisdnBulkData msisdnBulkData in dictBulkData.Values)
                     {
-                        ProcessBulkMessageData((JObject)msgs[i], dictBulkData);
-                    }
-
-                    if (dictBulkData.Count > 0)
-                    {
-                        foreach (MsisdnBulkData msisdnBulkData in dictBulkData.Values)
+                        if (msisdnBulkData.ListMessages.Count > 0)
                         {
+                            MessagesTableUtils.FilterDuplicateMessage(msisdnBulkData.ListMessages);
+                            //after filtering it may be zero
                             if (msisdnBulkData.ListMessages.Count > 0)
                             {
-                                MessagesTableUtils.FilterDuplicateMessage(msisdnBulkData.ListMessages);
-                                //after filtering it may be zero
-                                if (msisdnBulkData.ListMessages.Count > 0)
+                                bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
+                                if (success)
                                 {
-                                    bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
-                                    if (success)
+                                    foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
                                     {
-                                        foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
+                                        if (convMessage.StatusUpdateObj != null)
                                         {
-                                            if (convMessage.StatusUpdateObj != null)
+                                            convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
+                                            StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                        }
+                                        else
+                                        {
+                                            if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+                          || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                                             {
-                                                convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
-                                                StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                                convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                                             }
-                                            else
+                                            else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                                             {
-                                                if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
-                              || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
-                                                {
-                                                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                                                }
-                                                else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                                                {
-                                                    FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                                                }
+                                                FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                            }
 
-                                                if (convMessage.FileAttachment != null)
-                                                {
-                                                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                                                }
+                                            if (convMessage.FileAttachment != null)
+                                            {
+                                                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                                             }
                                         }
-                                        ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
-                                        ConversationListObject obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
-                                        if (obj == null)
-                                            continue;
+                                    }
+                                    ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+                                    ConversationListObject obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
+                                    if (obj == null)
+                                        continue;
 
-                                        if (msisdnBulkData.ListMessages.Count > 1)
-                                        {
-                                            obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
-                                            ConversationTableUtils.updateConversation(obj);
-                                        }
-
-                                        object[] vals = new object[3];
-
-                                        vals[0] = msisdnBulkData.ListMessages;
-                                        vals[1] = obj;
-                                        vals[2] = false;
-                                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                                    if (msisdnBulkData.ListMessages.Count > 1)
+                                    {
+                                        obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
+                                        ConversationTableUtils.updateConversation(obj);
                                     }
 
+                                    object[] vals = new object[3];
+
+                                    vals[0] = msisdnBulkData.ListMessages;
+                                    vals[1] = obj;
+                                    vals[2] = false;
+                                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                                 }
-                            }
-                            if (msisdnBulkData.LastDeliveredMsgId > 0)
-                            {
-                                object[] vals = new object[2];
-                                vals[0] = MiscDBUtil.UpdateBulkMessageDBsDeliveredStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastDeliveredMsgId, (int)ConvMessage.State.SENT_DELIVERED);
-                                vals[1] = msisdnBulkData.Msisdn;
-                                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
-                            }
-                            if (msisdnBulkData.LastReadMsgId > 0)
-                            {
-                                object[] vals = new object[2];
-                                vals[0] = MiscDBUtil.UpdateBulkMessageDBsReadStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastReadMsgId, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdnBulkData.LastReadMsgId, msisdnBulkData.ReadByArray);
-                                vals[1] = msisdnBulkData.Msisdn;
-                                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
 
                             }
                         }
+                        if (msisdnBulkData.LastDeliveredMsgId > 0)
+                        {
+                            object[] vals = new object[2];
+                            vals[0] = MiscDBUtil.UpdateBulkMessageDBsDeliveredStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastDeliveredMsgId, (int)ConvMessage.State.SENT_DELIVERED);
+                            vals[1] = msisdnBulkData.Msisdn;
+                            this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
+                        }
+                        if (msisdnBulkData.LastReadMsgId > 0)
+                        {
+                            object[] vals = new object[2];
+                            vals[0] = MiscDBUtil.UpdateBulkMessageDBsReadStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastReadMsgId, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdnBulkData.LastReadMsgId, msisdnBulkData.ReadByArray);
+                            vals[1] = msisdnBulkData.Msisdn;
+                            this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+                //}
             }
             #endregion
             #region MESSAGE
@@ -398,7 +398,7 @@ namespace windows_client
                 try
                 {
                     msgID = long.Parse(id);
-                    Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
+                    // Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
                 catch (Exception ex)
                 {
@@ -428,7 +428,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
+                    Debug.WriteLine(string.Format("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace));
                     msgID = -1;
                     return;
                 }
@@ -463,7 +463,7 @@ namespace windows_client
                 }
                 if (msgIds == null || msgIds.Count == 0)
                 {
-                    Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
+                    Debug.WriteLine("NETWORK MANAGER" + "Update Error : Message id Array is empty or null . Check problem");
                     return;
                 }
 
@@ -622,7 +622,7 @@ namespace windows_client
                     App.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
+                Debug.WriteLine(string.Format("Time to save image for msisdn {0} : {1}", msisdn, msec));
             }
             #endregion
             #region INVITE_INFO
@@ -677,7 +677,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString()));
                     JToken jtoken;
                     if (data.TryGetValue(HikeConstants.SHOW_FREE_INVITES, out jtoken) && (bool)jtoken)
                     {
@@ -788,7 +788,7 @@ namespace windows_client
                                                             FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         }
 
-                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        Logging.LogWriter.Instance.WriteToLog(string.Format("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav));
                                                         LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                     }
 
@@ -981,7 +981,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json :" + jsonObj.ToString());
                     #region rewards zone
                     JToken rew;
                     if (App.MSISDN.Contains(HikeConstants.INDIA_COUNTRY_CODE))//for non indian dont show rewards
@@ -1118,6 +1118,7 @@ namespace windows_client
                 try
                 {
                     grpId = jsonObj[HikeConstants.TO].ToString();
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat join recieved for group:{0}, json:{1}", grpId, jsonObj.ToString()));
                 }
                 catch (Exception ex)
                 {
@@ -1250,7 +1251,7 @@ namespace windows_client
                     return;
                 GroupManager.Instance.SaveGroupCache(grpId);
                 //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-                Debug.WriteLine("NetworkManager", "Group is new");
+                //Logging.LogWriter.Instance.WriteToLog("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
                 vals[0] = convMessage;
@@ -1268,6 +1269,8 @@ namespace windows_client
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     groupName = groupName.Trim();
                     string groupId = (string)jsonObj[HikeConstants.TO];
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat name change recieved for group:{0}, json:{1}", groupId, jsonObj.ToString()));
+
                     //no self check as server will send packet of group name change if changed by self
                     //we need to use this in case of self name change and unlink account
                     ConversationListObject cObj;
@@ -1310,6 +1313,8 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
+                Logging.LogWriter.Instance.WriteToLog(string.Format("Group pic change recieved for group:{0}, json:{1}", groupId, jsonObj.ToString()));
+
                 string from = (string)jsonObj[HikeConstants.FROM];
                 ConversationListObject cObj;
                 if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
@@ -1374,6 +1379,8 @@ namespace windows_client
                 try
                 {
                     string groupId = (string)jsonObj[HikeConstants.TO];
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat left recieved for group:{0}, json:{1}", groupId, jsonObj.ToString()));
+
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupManager.Instance.LoadGroupParticipants(groupId);
                     GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
@@ -1405,6 +1412,8 @@ namespace windows_client
                 try
                 {
                     string groupId = (string)jsonObj[HikeConstants.TO];
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("Group Chat end recieved for group:{0}, json:{1}", groupId, jsonObj.ToString()));
+
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
                     {
@@ -1705,6 +1714,7 @@ namespace windows_client
                                     ConversationTableUtils.deleteConversation(msisdn);
                                     pubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, App.ViewModel.ConvMap[msisdn]);
                                     App.ViewModel.ConvMap.Remove(msisdn);
+                                    Logging.LogWriter.Instance.WriteToLog(string.Format("CONVERSATION DELETION:Remove status so delete convlist for msisdn:{0}", msisdn));
                                 }
                             }
                         }
@@ -1802,7 +1812,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: ProTip, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Debug.WriteLine(string.Format("Network Manager:: ProTip, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
 
@@ -1895,7 +1905,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Debug.WriteLine(string.Format("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
             #endregion
@@ -1948,7 +1958,7 @@ namespace windows_client
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    Debug.WriteLine(string.Format("Network Manager:: APP UPDATE, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace));
                 }
             }
 
@@ -2324,8 +2334,12 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,BEfore Dispatcher :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,inside Dispatcher :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                     App.ViewModel.FavList.Add(favObj);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(favObj);
@@ -2349,7 +2363,11 @@ namespace windows_client
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,save pending before setting:MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
+                Logging.LogWriter.Instance.WriteToLog(string.Format("LOAD FAV AND PENDING,save pending after setting :MSISDN {0} ; isFav : {1}", msisdn, isFav));
+
                 MiscDBUtil.SavePendingRequests();
             }
         }
@@ -2660,7 +2678,7 @@ namespace windows_client
                 {
                     idsString = string.Format("{0}, {1}", idsString, id.ToString());
                 }
-                Debug.WriteLine("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status);
+                Debug.WriteLine(string.Format("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status));
                 return;
             }
             // To update conversation object , we have to check if ids [] contains last msg id
@@ -2677,7 +2695,7 @@ namespace windows_client
             }
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
+            Debug.WriteLine(string.Format("Time to update msg status DELIVERED READ : {0}", msec));
         }
 
 
