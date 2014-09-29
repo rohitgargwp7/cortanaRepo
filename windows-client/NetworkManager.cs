@@ -181,15 +181,11 @@ namespace windows_client
                         else
                             sendersMsisdn = convMessage.Msisdn;
 
-                        ContactInfo contactInfo = null;
+                        bool isInAddressBook = ContactUtils.CheckUserInAddressBook(sendersMsisdn);
 
-                        if (App.ViewModel.ContactsCache.ContainsKey(sendersMsisdn))
-                            contactInfo = App.ViewModel.ContactsCache[sendersMsisdn];
-                        else
-                            contactInfo = UsersTableUtils.getContactInfoFromMSISDN(sendersMsisdn);
-
-                        if (contactInfo != null)
+                        if (isInAddressBook)
                             FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                    
                     }
 
                     if (convMessage.FileAttachment != null)

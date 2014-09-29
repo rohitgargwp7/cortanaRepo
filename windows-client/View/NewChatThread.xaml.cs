@@ -3142,21 +3142,15 @@ namespace windows_client.View
             }
             else
             {
-                ContactInfo cn = null;
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
 
-                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                    cn = App.ViewModel.ContactsCache[msisdn];
-                else
+                if (cn == null)
                 {
-                    cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-
-                    if (cn == null)
-                        cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
-
-                    cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+                    cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
                     App.ViewModel.ContactsCache[msisdn] = cn;
                 }
 
+                cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
             }
             PhoneApplicationService.Current.State[HikeConstants.IS_CHAT_RELAUNCH] = true;

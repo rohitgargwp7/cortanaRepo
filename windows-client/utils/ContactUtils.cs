@@ -330,5 +330,43 @@ namespace windows_client.utils
                 }
             }
         }
+
+
+        public static ContactInfo GetContactInfo(string msisdn)
+        {
+            ContactInfo contactInfo = null;
+
+            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                contactInfo = App.ViewModel.ContactsCache[msisdn];
+            else
+            {
+                contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
+                if (contactInfo != null)
+                    App.ViewModel.ContactsCache[msisdn] = contactInfo;
+
+            }
+
+            return contactInfo;
+        }
+
+
+        public static bool CheckUserInAddressBook(string msisdn)
+        {
+            bool inAddressBook = false;
+            ConversationListObject convObj;
+
+            if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
+                inAddressBook = true;
+            else
+            {
+                ContactInfo cinfo = ContactUtils.GetContactInfo(msisdn);
+
+                if (cinfo != null && cinfo.Name != null)
+                    inAddressBook = true;
+            }
+
+            return inAddressBook;
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using windows_client.DbUtils;
 using windows_client.Languages;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.Misc
 {
@@ -77,20 +78,10 @@ namespace windows_client.Misc
             var isInAdressBook = false;
             ContactInfo cInfo = null;
 
-            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-            {
-                cInfo = App.ViewModel.ContactsCache[msisdn];
+            cInfo = ContactUtils.GetContactInfo(msisdn);
 
-                if (cInfo.Name != null)
-                    isInAdressBook = true;
-            }
-            else
-            {
-                cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-
-                if (cInfo != null)
-                    isInAdressBook = true;
-            }
+            if (cInfo != null && cInfo.Name != null)
+                isInAdressBook = true;
 
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             gp.IsInAddressBook = isInAdressBook;
