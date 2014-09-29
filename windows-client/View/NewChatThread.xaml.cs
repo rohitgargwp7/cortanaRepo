@@ -3943,20 +3943,17 @@ namespace windows_client.View
 
         private async void ClearChat()
         {
+            gcPin.IsShow(false, false);
+            tipControl.Visibility = Visibility.Visible;
+
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
+
             await Task.Delay(1);
 
             MessagesTableUtils.deleteAllMessagesForMsisdn(mContactNumber);
             MiscDBUtil.deleteMsisdnData(mContactNumber);
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
-
-            gcPin.IsShow(false, false);
-            tipControl.Visibility = Visibility.Visible;
-
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-            {
-                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
-            }
         }
 
         #endregion

@@ -50,11 +50,11 @@ namespace windows_client.DbUtils
         /// </summary>
         /// <param name="msisdn">msisdn of group</param>
         /// <returns>list of pins</returns>
-        public static List<ConvMessage> getPinMessagesForMsisdn(string msisdn)
+        public static List<ConvMessage> getPinMessagesForMsisdn(string msisdn,long lastmessageId,int count)
         {
             using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                List<ConvMessage> res = DbCompiledQueries.GetPinMessagesForMsisdn(chatsDbContext, msisdn).ToList<ConvMessage>();
+                List<ConvMessage> res = DbCompiledQueries.GetPinMessagesForMsisdnForPaging(chatsDbContext, msisdn, lastmessageId, count).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -68,7 +68,6 @@ namespace windows_client.DbUtils
                 res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
             }
-
         }
 
         public static List<ConvMessage> getAllMessages()
@@ -79,7 +78,6 @@ namespace windows_client.DbUtils
                 res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
             }
-
         }
 
         /* Adds a chat message to message Table.*/
@@ -407,8 +405,14 @@ namespace windows_client.DbUtils
                     {
                         metaData[HikeConstants.PINID] = convMsg.MessageId;
                         metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
-                        metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
                     }
+                    else
+                    {
+                        metaData[HikeConstants.PINID] = obj.MetaData[HikeConstants.PINID];
+                        metaData[HikeConstants.TIMESTAMP] = obj.MetaData[HikeConstants.TIMESTAMP];
+                    }
+
+                    metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
 
                     if (obj.MetaData == null) //check for "should unread counter be increased??"
                         metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread

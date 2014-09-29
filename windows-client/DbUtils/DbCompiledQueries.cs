@@ -228,19 +228,19 @@ namespace windows_client.DbUtils
         }
 
         /// <summary>
-        /// Db Call for retrieving pin history of any Group
+        /// Db Call for retrieving pin history of any Group parts by parts
         /// </summary>
-        public static Func<HikeChatsDb,string, IQueryable<ConvMessage>> GetPinMessagesForMsisdn
+        public static Func<HikeChatsDb, string, long, int, IQueryable<ConvMessage>> GetPinMessagesForMsisdnForPaging
         {
             get
             {
-                Func<HikeChatsDb, string, IQueryable<ConvMessage>> q =
-                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
-                ((HikeChatsDb hdc, string myMsisdn) =>
-                    from o in hdc.messages
-                    where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1")
+                Func<HikeChatsDb, string, long, int, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, long, int, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, string myMsisdn,long lastmessageId,int count) =>
+                    (from o in hdc.messages
+                    where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1") && o.MessageId < lastmessageId
                     orderby o.Timestamp descending
-                    select o);
+                    select o).Take(count));
                 return q;
             }
         }

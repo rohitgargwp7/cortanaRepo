@@ -11,6 +11,8 @@
     d:DesignHeight="100" d:DesignWidth="480" >
 
     <UserControl.Resources>
+        
+        <!--Style for making bg transparent of textbox while typing-->
         <Style x:Key="newPinStyle" TargetType="toolkit:PhoneTextBox">
             <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyNormal}"/>
             <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
