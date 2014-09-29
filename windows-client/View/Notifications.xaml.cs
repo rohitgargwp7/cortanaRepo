@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Notification;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using System.Net.NetworkInformation;
 using windows_client.Controls;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -35,7 +28,7 @@ namespace windows_client.View
         {
             bool isPushEnabled = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
             if (isPushEnabled)
                 this.pushNotifications.Content = AppResources.On;
@@ -44,7 +37,7 @@ namespace windows_client.View
 
             bool isVibrateEnabled = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
             this.vibrate.IsChecked = isVibrateEnabled;
             if (isVibrateEnabled)
                 this.vibrate.Content = AppResources.On;
@@ -53,7 +46,7 @@ namespace windows_client.View
 
             bool isHikeJingleEnabled = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.HIKEJINGLE_PREF, out isHikeJingleEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.HIKEJINGLE_PREF, out isHikeJingleEnabled);
             this.hikeJingle.IsChecked = isHikeJingleEnabled;
             if (isHikeJingleEnabled)
                 this.hikeJingle.Content = AppResources.On;
@@ -65,7 +58,7 @@ namespace windows_client.View
             listSettingsValue.Add(AppResources.Settings_StatusUpdate_Immediate_Txt);
             byte firstSetting;
 
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.STATUS_UPDATE_FIRST_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -74,7 +67,7 @@ namespace windows_client.View
             }
 
 
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.STATUS_UPDATE_SECOND_SETTING, out firstSetting) && firstSetting > 0)
             {
                 if (firstSetting == 1)
                     listSettingsValue.Add(AppResources.Settings_StatusUpdate_Every1Hour_txt);
@@ -84,7 +77,7 @@ namespace windows_client.View
 
             byte statusSettingsValue;
 
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.STATUS_UPDATE_SETTING, out statusSettingsValue))
+            if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.STATUS_UPDATE_SETTING, out statusSettingsValue))
             {
                 if (statusSettingsValue > 0)
                 {
@@ -108,7 +101,7 @@ namespace windows_client.View
 
             bool hideMessagePreview = true;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING, out hideMessagePreview))
+            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING, out hideMessagePreview))
                 hideMessagePreview = true;
 
             hideMessageToggle.IsChecked = hideMessagePreview;
@@ -119,7 +112,7 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED, true);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_PUSH_ENABLED, true);
             PushHelper.Instance.registerPushnotifications(false);
         }
 
@@ -127,7 +120,7 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.Off;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.IS_PUSH_ENABLED, false);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_PUSH_ENABLED, false);
             PushHelper.Instance.closePushnotifications();
         }
 
@@ -135,27 +128,27 @@ namespace windows_client.View
         {
             this.vibrate.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.VIBRATE_PREF, true);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.VIBRATE_PREF, true);
         }
 
         private void hikeJingle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.hikeJingle.Content = AppResources.Off;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIKEJINGLE_PREF, false);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIKEJINGLE_PREF, false);
         }
         private void hikeJingle_Checked(object sender, RoutedEventArgs e)
         {
             this.hikeJingle.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIKEJINGLE_PREF, true);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIKEJINGLE_PREF, true);
         }
 
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
             this.vibrate.Content = AppResources.Off;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.VIBRATE_PREF, false);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.VIBRATE_PREF, false);
         }
         private void statusUpdateNotification_Checked(object sender, RoutedEventArgs e)
         {
@@ -163,13 +156,13 @@ namespace windows_client.View
             if (showStatusUpdatesSettings)
                 listBoxStatusSettings.Visibility = Visibility.Visible;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)1);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)1);
             JObject obj = new JObject();
 
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.ServerJsonKeys.PUSH_SU, 0);
-            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            data.Add(ServerJsonKeys.PUSH_SU, 0);
+            obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
@@ -181,13 +174,13 @@ namespace windows_client.View
             listBoxStatusSettings.Visibility = Visibility.Collapsed;
             listBoxStatusSettings.SelectedIndex = 0;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)0);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)0);
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.ServerJsonKeys.PUSH_SU, -1);
-            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            data.Add(ServerJsonKeys.PUSH_SU, -1);
+            obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
@@ -196,13 +189,13 @@ namespace windows_client.View
         private void lpkStatusSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)(listBoxStatusSettings.SelectedIndex + 1));
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)(listBoxStatusSettings.SelectedIndex + 1));
 
             JObject obj = new JObject();
-            obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.ServerJsonKeys.PUSH_SU, listBoxStatusSettings.SelectedIndex);
-            obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            data.Add(ServerJsonKeys.PUSH_SU, listBoxStatusSettings.SelectedIndex);
+            obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
@@ -257,8 +250,8 @@ namespace windows_client.View
             _canGoBack = false;
 
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LATEST_PUSH_TOKEN))  // added check if there is no push token
-                pushToken = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.LATEST_PUSH_TOKEN];
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.LATEST_PUSH_TOKEN))  // added check if there is no push token
+                pushToken = (string)HikeInstantiation.AppSettings[AppSettingsKeys.LATEST_PUSH_TOKEN];
 
             AccountUtils.postHideMessagePreview(pushToken, currentStatus, new AccountUtils.parametrisedPostResponseFunction(postHideMessagePreview_Callback), currentStatus);   
         }
@@ -272,12 +265,12 @@ namespace windows_client.View
             if (obj!=null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
+                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
 
-            if (stat != HikeConstants.ServerJsonKeys.OK)
+            if (stat != ServerJsonKeys.OK)
             {
                 message = AppResources.Oops_Something_Wrong_Txt;
                 preventCheckedState(currentlyChecked);
@@ -288,7 +281,7 @@ namespace windows_client.View
                 if (!currentlyChecked)
                 {
 
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING, false);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING, false);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         hideMessageToggle.Content = AppResources.Off;
@@ -297,7 +290,7 @@ namespace windows_client.View
                 else
                 {
 
-                    HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING);
+                    HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         hideMessageToggle.Content = AppResources.On;

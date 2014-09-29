@@ -1,16 +1,13 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.Diagnostics;
 using Microsoft.Phone.Shell;
-using Newtonsoft.Json.Linq;
 using windows_client.Languages;
-using System.Windows.Documents;
 using windows_client.Model;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -24,7 +21,7 @@ namespace windows_client.View
 
             bool showFreeSMS = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             this.showFreeSMSToggle.IsChecked = showFreeSMS;
             if (showFreeSMS)
             {
@@ -46,7 +43,7 @@ namespace windows_client.View
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             this.showFreeSMSToggle.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
         }
 
         private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -55,7 +52,7 @@ namespace windows_client.View
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             this.showFreeSMSToggle.Content = AppResources.Off;
 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, false);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, false);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -104,7 +101,7 @@ namespace windows_client.View
         {
             int creditsRemaining = 0;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out creditsRemaining);
             creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
         }
 

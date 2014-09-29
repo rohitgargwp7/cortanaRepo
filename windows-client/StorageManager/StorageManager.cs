@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommonLibrary.Constants;
+using System;
 using System.IO.IsolatedStorage;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace windows_client.StorageManager
 {
@@ -42,7 +39,7 @@ namespace windows_client.StorageManager
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                return store.AvailableFreeSpace > size + HikeConstants.APP_MIN_FREE_SIZE;
+                return store.AvailableFreeSpace > size + FTBasedConstants.APP_MIN_FREE_SIZE;
             }
         }
     }

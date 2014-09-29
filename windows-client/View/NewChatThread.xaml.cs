@@ -225,7 +225,7 @@ namespace windows_client.View
             HikeInstantiation.ViewModel.ShowTypingNotification += ShowTypingNotification;
             HikeInstantiation.ViewModel.AutohideTypingNotification += AutoHidetypingNotification;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SEND_NUDGE, out isNudgeOn))
+            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SEND_NUDGE, out isNudgeOn))
                 isNudgeOn = true;
 
             if (isNudgeOn)
@@ -325,7 +325,7 @@ namespace windows_client.View
                     else
                     {
                         long timedifference;
-                        if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.TIME_DIFF_EPOCH, out timedifference))
+                        if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.TIME_DIFF_EPOCH, out timedifference))
                             actualTimeStamp = e.TimeStamp - timedifference;
 
                         FriendsTableUtils.SetFriendLastSeenTSToFile(mContactNumber, actualTimeStamp);
@@ -478,7 +478,7 @@ namespace windows_client.View
                     });
 
                 }
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out mCredits);
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
                 HikeInstantiation.MqttManagerInstance.connect();
@@ -920,7 +920,7 @@ namespace windows_client.View
 
         public void RemoveEmmaBot()
         {
-            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.REMOVE_EMMA))
+            if (_isHikeBot && mContactNumber == HikeConstants.FTUE_HIKEBOT_MSISDN && HikeInstantiation.AppSettings.Contains(AppSettingsKeys.REMOVE_EMMA))
             {
                 ConversationListObject convObj;
                 if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(mContactNumber, out convObj))
@@ -1233,7 +1233,7 @@ namespace windows_client.View
                     catch (Exception ex)
                     {
                         Debug.WriteLine("NewChatThread ::  HandleNewGroup , Exception : " + ex.StackTrace);
-                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.MSISDN_SETTING], false);
+                        userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar((string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING], false);
                     }
                 }
             }
@@ -1253,12 +1253,12 @@ namespace windows_client.View
                 groupChatEnd();
             else
             {
-                HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out mCredits);
+                HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out mCredits);
                 if (mCredits <= 0)
                 {
                     if (isGroupChat)
                     {
-                        if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY))
+                        if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY))
                         {
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
@@ -1308,7 +1308,7 @@ namespace windows_client.View
         BackgroundWorker _lastSeenWorker;
         private void GetUserLastSeen()
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING))
+            if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.LAST_SEEN_SEETING))
             {
                 if (_lastSeenWorker == null)
                 {
@@ -1390,7 +1390,7 @@ namespace windows_client.View
 
         public void GetHikeStatus_Callback(JObject obj)
         {
-            if (obj != null && HikeConstants.ServerJsonKeys.FAIL != (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj != null && ServerJsonKeys.FAIL != (string)obj[ServerJsonKeys.STAT])
             {
                 var isonhike = (bool)obj["onhike"];
                 if (isonhike != isOnHike)
@@ -1407,7 +1407,7 @@ namespace windows_client.View
         bool IsSMSOptionAvalable()
         {
             bool showFreeSMS = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.SHOW_FREE_SMS_SETTING, out showFreeSMS);
 
             if (!showFreeSMS) // if setting is off return false
                 return showFreeSMS; // == false
@@ -1490,7 +1490,7 @@ namespace windows_client.View
             usersToAdd.Sort();
             GroupManager.Instance.SaveGroupCache(mContactNumber);
 
-            groupCreateJson = createGroupJsonPacket(HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
+            groupCreateJson = createGroupJsonPacket(ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
 
             if (!isNewgroup)
             {
@@ -1529,32 +1529,32 @@ namespace windows_client.View
             JObject obj = new JObject();
             try
             {
-                obj[HikeConstants.ServerJsonKeys.TYPE] = type;
-                obj[HikeConstants.ServerJsonKeys.TO] = mContactNumber;
-                if (type == (HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN))
+                obj[ServerJsonKeys.TYPE] = type;
+                obj[ServerJsonKeys.TO] = mContactNumber;
+                if (type == (ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN))
                 {
                     JArray array = new JArray();
                     for (int i = 0; i < usersToAdd.Count; i++)
                     {
                         JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.ServerJsonKeys.NAME] = usersToAdd[i].Name;
-                        nameMsisdn[HikeConstants.ServerJsonKeys.MSISDN] = usersToAdd[i].Msisdn;
+                        nameMsisdn[ServerJsonKeys.NAME] = usersToAdd[i].Name;
+                        nameMsisdn[ServerJsonKeys.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
 
-                    obj[HikeConstants.ServerJsonKeys.DATA] = array;
+                    obj[ServerJsonKeys.DATA] = array;
                 }
                 Debug.WriteLine("GROUP JSON : " + obj.ToString());
 
                 if (isNewGroup)
                 {
                     JObject metaData = new JObject();
-                    metaData.Add(HikeConstants.ServerJsonKeys.NAME, mContactName);
+                    metaData.Add(ServerJsonKeys.NAME, mContactName);
 
                     if (isDisplayPicSet)
-                        metaData.Add(HikeConstants.ServerJsonKeys.REQUEST_DISPLAY_PIC, true);
+                        metaData.Add(ServerJsonKeys.REQUEST_DISPLAY_PIC, true);
 
-                    obj.Add(HikeConstants.ServerJsonKeys.METADATA, metaData);
+                    obj.Add(ServerJsonKeys.METADATA, metaData);
                 }
             }
             catch (Exception e)
@@ -1713,9 +1713,9 @@ namespace windows_client.View
             if (isPublish)
             {
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.ServerJsonKeys.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.ServerJsonKeys.TO, mContactNumber);
-                obj.Add(HikeConstants.ServerJsonKeys.DATA, ids);
+                obj.Add(ServerJsonKeys.TYPE, NetworkManager.MESSAGE_READ);
+                obj.Add(ServerJsonKeys.TO, mContactNumber);
+                obj.Add(ServerJsonKeys.DATA, ids);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
@@ -2017,8 +2017,8 @@ namespace windows_client.View
             * 4. GoBack
             */
             JObject jObj = new JObject();
-            jObj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_LEAVE;
-            jObj[HikeConstants.ServerJsonKeys.TO] = mContactNumber;
+            jObj[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_LEAVE;
+            jObj[ServerJsonKeys.TO] = mContactNumber;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
 
             ConversationListObject cObj = HikeInstantiation.ViewModel.ConvMap[mContactNumber];
@@ -2046,11 +2046,11 @@ namespace windows_client.View
             JObject obj = new JObject();
             JObject o = new JObject();
             o["id"] = mContactNumber;
-            obj[HikeConstants.ServerJsonKeys.DATA] = o;
+            obj[ServerJsonKeys.DATA] = o;
             if (IsMute) // GC is muted , request to unmute
             {
                 IsMute = false;
-                obj[HikeConstants.ServerJsonKeys.TYPE] = "unmute";
+                obj[ServerJsonKeys.TYPE] = "unmute";
                 HikeInstantiation.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
                 ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
@@ -2059,7 +2059,7 @@ namespace windows_client.View
             else // GC is unmute , request to mute
             {
                 IsMute = true;
-                obj[HikeConstants.ServerJsonKeys.TYPE] = "mute";
+                obj[ServerJsonKeys.TYPE] = "mute";
                 HikeInstantiation.ViewModel.ConvMap[mContactNumber].MuteVal = ocMessages.Count;
                 ConversationTableUtils.saveConvObject(HikeInstantiation.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
@@ -2143,7 +2143,7 @@ namespace windows_client.View
                     if (showNoSmsLeftOverlay || isGroupChat)
                         showOverlay(false);
                     if (isGroupChat)
-                        HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
+                        HikeInstantiation.AppSettings.Remove(AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
                 }
                 else
                 {
@@ -2172,23 +2172,23 @@ namespace windows_client.View
 
                     if (!isGroupChat)
                     {
-                        obj[HikeConstants.ServerJsonKeys.TO] = msisdns;
-                        data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
-                        data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
-                        data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
-                        obj[HikeConstants.ServerJsonKeys.DATA] = data;
-                        obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
+                        obj[ServerJsonKeys.TO] = msisdns;
+                        data[ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                        data[ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                        data[ServerJsonKeys.TIMESTAMP] = ts;
+                        obj[ServerJsonKeys.DATA] = data;
+                        obj[ServerJsonKeys.TYPE] = NetworkManager.INVITE;
                     }
                     else
                     {
-                        data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
-                        data[HikeConstants.ServerJsonKeys.INVITE_LIST] = numlist;
-                        obj[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
-                        obj[HikeConstants.ServerJsonKeys.DATA] = data;
-                        obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
+                        data[ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                        data[ServerJsonKeys.INVITE_LIST] = numlist;
+                        obj[ServerJsonKeys.TIMESTAMP] = ts;
+                        obj[ServerJsonKeys.DATA] = data;
+                        obj[ServerJsonKeys.TYPE] = NetworkManager.MULTIPLE_INVITE;
                     }
 
-                    obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
+                    obj[ServerJsonKeys.SUB_TYPE] = ServerJsonKeys.NO_SMS;
 
                     HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
@@ -2308,7 +2308,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.ServerJsonKeys.LONG_MESSAGE))
+                        if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(ServerJsonKeys.LONG_MESSAGE))
                         {
                             string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
                             if (message.Length > 0)
@@ -2556,14 +2556,14 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
-                    JObject data = (JObject)jsonObj[HikeConstants.ServerJsonKeys.DATA];
+                    JObject data = (JObject)jsonObj[ServerJsonKeys.DATA];
                     JToken val;
                     #region HANDLE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                    if (data.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
                         try
                         {
-                            string serverId = (string)jsonObj[HikeConstants.ServerJsonKeys.PROFILE_PIC_ID];
+                            string serverId = (string)jsonObj[ServerJsonKeys.PROFILE_PIC_ID];
                             byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, serverId);
                             convMessage.StatusUpdateImage = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             ocMessages.Insert(insertPosition, convMessage);
@@ -2577,7 +2577,7 @@ namespace windows_client.View
                     #endregion
                     #region HANDLE TEXT UPDATE
                     val = null;
-                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    if (data.TryGetValue(ServerJsonKeys.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
                         try
                         {
@@ -2930,7 +2930,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.NOT_STARTED, source, fileBytes.Length);
-                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
+                convMessage.FileAttachment.ContentType = FTBasedConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
 
                 AddNewMessageToUI(convMessage, false);
@@ -2968,7 +2968,7 @@ namespace windows_client.View
             {
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
                 JObject metaData = new JObject();
-                metaData[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
+                metaData[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
 
@@ -3285,15 +3285,15 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
                         obj.LastMessage = AppResources.Image_Txt;
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
                         obj.LastMessage = AppResources.Audio_Txt;
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
                         obj.LastMessage = AppResources.Video_Txt;
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT))
                         obj.LastMessage = AppResources.ContactTransfer_Text;
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                         obj.LastMessage = AppResources.Location_Txt;
                     else
                         obj.LastMessage = AppResources.UnknownFile_txt;
@@ -3311,11 +3311,11 @@ namespace windows_client.View
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
 
-                    JObject data = JObject.Parse(lastMessageBubble.MetaDataString)[HikeConstants.ServerJsonKeys.DATA] as JObject;
+                    JObject data = JObject.Parse(lastMessageBubble.MetaDataString)[ServerJsonKeys.DATA] as JObject;
                     JToken val;
 
                     // Profile Pic update
-                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                    if (data.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
                         obj.LastMessage = "\"" + AppResources.Update_Profile_Pic_txt + "\"";
                     }
@@ -3409,11 +3409,11 @@ namespace windows_client.View
         {
             ConvMessage msg = (sender as MenuItem).DataContext as ConvMessage;
 
-            if (msg.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+            if (msg.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
             {
                 HikeInstantiation.ViewModel.PauseBackgroundAudio();
                 string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
-                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
+                string fileLocation = FTBasedConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(msg.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
             else
@@ -3502,7 +3502,7 @@ namespace windows_client.View
             {
                 int index = 0;
 
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, out index))
+                if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, out index))
                     emoticonPivot.SelectedIndex = index == 0 && imagePathsForListRecent.Count == 0 ? 1 : index;
                 else
                     emoticonPivot.SelectedIndex = imagePathsForListRecent.Count > 0 ? 0 : 1;
@@ -3519,7 +3519,7 @@ namespace windows_client.View
             if (!isStickersLoaded)
             {
                 String category;
-                if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category))
+                if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category))
                 {
                     if (category == StickerHelper.CATEGORY_RECENT)
                     {
@@ -3884,7 +3884,7 @@ namespace windows_client.View
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (isGroupChat)
-                HikeInstantiation.AppSettings.Remove(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
+                HikeInstantiation.AppSettings.Remove(AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY);
             showOverlay(false);
         }
 
@@ -3919,7 +3919,7 @@ namespace windows_client.View
 
         private void MsgCharTapped(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
+            if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.ENTER_TO_SEND) && (e.Key == Key.Enter || e.PlatformKeyCode == 0x0A))
             {
                 SendMsg();
             }
@@ -3964,7 +3964,7 @@ namespace windows_client.View
 
         void ShowTypingNotification(object sender, object[] vals)
         {
-            if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
+            if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.LAST_SEEN_SEETING) && !isGroupChat && _lastUpdatedLastSeenTimeStamp != 0)
             {
                 var fStatus = FriendsTableUtils.GetFriendStatus(mContactNumber);
 
@@ -4010,8 +4010,8 @@ namespace windows_client.View
                 JObject obj = new JObject();
                 try
                 {
-                    obj.Add(HikeConstants.ServerJsonKeys.TYPE, NetworkManager.START_TYPING);
-                    obj.Add(HikeConstants.ServerJsonKeys.TO, mContactNumber);
+                    obj.Add(ServerJsonKeys.TYPE, NetworkManager.START_TYPING);
+                    obj.Add(ServerJsonKeys.TO, mContactNumber);
                 }
                 catch (Exception ex)
                 {
@@ -4088,11 +4088,11 @@ namespace windows_client.View
 
                 //TODO handle vibration for user profile and GC.
                 if ((convMessage.Msisdn == mContactNumber && (convMessage.MetaDataString != null &&
-                    convMessage.MetaDataString.Contains(HikeConstants.POKE))) &&
+                    convMessage.MetaDataString.Contains(FTBasedConstants.POKE))) &&
                     convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE && !_isMute)
                 {
                     bool isVibrateEnabled = true;
-                    HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
+                    HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
 
                     if (isVibrateEnabled)
                     {
@@ -4433,7 +4433,7 @@ namespace windows_client.View
                     {
                         if (isGroupChat)
                         {
-                            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY, true);
+                            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_GROUP_CHAT_OVERLAY, true);
                             foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
                                 if (!gp.IsOnHike)
@@ -4520,7 +4520,7 @@ namespace windows_client.View
 
             else if (HikePubSub.LAST_SEEN == type && !isGroupChat)
             {
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.LAST_SEEN_SEETING))
+                if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.LAST_SEEN_SEETING))
                 {
                     object[] vals = (object[])obj;
                     string fromMsisdn = (string)vals[0];
@@ -4657,7 +4657,7 @@ namespace windows_client.View
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
-                string eventGroupId = (string)json[HikeConstants.ServerJsonKeys.TO];
+                string eventGroupId = (string)json[ServerJsonKeys.TO];
                 if (eventGroupId != mContactNumber)
                     return;
 
@@ -4774,8 +4774,8 @@ namespace windows_client.View
                             convMessage.FileAttachment.FileKey = fileUploader.FileKey;
                         else
                         {
-                            JObject data = fileUploader.SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
-                            convMessage.FileAttachment.FileKey = data[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
+                            JObject data = fileUploader.SuccessObj[ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                            convMessage.FileAttachment.FileKey = data[ServerJsonKeys.FILE_KEY].ToString();
                         }
 
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
@@ -4909,7 +4909,7 @@ namespace windows_client.View
                 byte[] imageThumbnail = null;
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
-                var fileData = locationJSON[HikeConstants.ServerJsonKeys.FILES_DATA][0];
+                var fileData = locationJSON[ServerJsonKeys.FILES_DATA][0];
 
                 string locationJSONString = locationJSON.ToString();
 
@@ -4921,12 +4921,12 @@ namespace windows_client.View
                     return;
                 }
 
-                var place = (String)fileData[HikeConstants.ServerJsonKeys.LOCATION_TITLE];
-                var vicinity = (String)fileData[HikeConstants.ServerJsonKeys.LOCATION_ADDRESS];
-                var fileName = (String)fileData[HikeConstants.ServerJsonKeys.FILE_NAME];
+                var place = (String)fileData[ServerJsonKeys.LOCATION_TITLE];
+                var vicinity = (String)fileData[ServerJsonKeys.LOCATION_ADDRESS];
+                var fileName = (String)fileData[ServerJsonKeys.FILE_NAME];
 
                 if (String.IsNullOrEmpty(fileName))
-                    fileName = HikeConstants.ServerJsonKeys.LOCATION_FILENAME;
+                    fileName = ServerJsonKeys.LOCATION_FILENAME;
 
                 ConvMessage convMessage = new ConvMessage(AppResources.Location_Txt, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation)
                 {
@@ -4936,7 +4936,7 @@ namespace windows_client.View
                 };
 
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.OTHER, locationBytes.Length);
-                convMessage.FileAttachment.ContentType = HikeConstants.ServerJsonKeys.LOCATION_CONTENT_TYPE;
+                convMessage.FileAttachment.ContentType = ServerJsonKeys.LOCATION_CONTENT_TYPE;
 
                 AddNewMessageToUI(convMessage, false);
 
@@ -5034,7 +5034,7 @@ namespace windows_client.View
                 return;
             }
 
-            if (fileSize > HikeConstants.FILE_MAX_SIZE)
+            if (fileSize > FTBasedConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 return;
@@ -5051,16 +5051,16 @@ namespace windows_client.View
                 {
                     fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp3";
                     convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, source, fileSize);
-                    convMessage.FileAttachment.ContentType = HikeConstants.ServerJsonKeys.FILE_TYPE_AUDIO;
+                    convMessage.FileAttachment.ContentType = ServerJsonKeys.FILE_TYPE_AUDIO;
 
                     var fileInfo = new JObject();
-                    fileInfo[HikeConstants.ServerJsonKeys.FILE_NAME] = convMessage.FileAttachment.FileName;
-                    fileInfo[HikeConstants.ServerJsonKeys.FILE_KEY] = convMessage.FileAttachment.FileKey;
-                    fileInfo[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE] = convMessage.FileAttachment.ContentType;
-                    fileInfo[HikeConstants.ServerJsonKeys.FILE_PLAY_TIME] = _recordedDuration.ToString();
+                    fileInfo[ServerJsonKeys.FILE_NAME] = convMessage.FileAttachment.FileName;
+                    fileInfo[ServerJsonKeys.FILE_KEY] = convMessage.FileAttachment.FileKey;
+                    fileInfo[ServerJsonKeys.FILE_CONTENT_TYPE] = convMessage.FileAttachment.ContentType;
+                    fileInfo[ServerJsonKeys.FILE_PLAY_TIME] = _recordedDuration.ToString();
 
                     if (convMessage.FileAttachment.Thumbnail != null)
-                        fileInfo[HikeConstants.ServerJsonKeys.FILE_THUMBNAIL] = System.Convert.ToBase64String(convMessage.FileAttachment.Thumbnail);
+                        fileInfo[ServerJsonKeys.FILE_THUMBNAIL] = System.Convert.ToBase64String(convMessage.FileAttachment.Thumbnail);
 
                     convMessage.MetaDataString = fileInfo.ToString(Newtonsoft.Json.Formatting.None);
                     convMessage.Message = AppResources.Audio_Txt;
@@ -5069,7 +5069,7 @@ namespace windows_client.View
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString() + ".mp4";
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, source, fileSize);
-                    convMessage.FileAttachment.ContentType = HikeConstants.ServerJsonKeys.FILE_TYPE_VIDEO;
+                    convMessage.FileAttachment.ContentType = ServerJsonKeys.FILE_TYPE_VIDEO;
                     convMessage.Message = AppResources.Video_Txt;
                 }
 
@@ -5110,7 +5110,7 @@ namespace windows_client.View
                 convMessage.HasAttachment = true;
 
                 convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.OTHER, bytes.Length);
-                convMessage.FileAttachment.ContentType = HikeConstants.CT_CONTACT;
+                convMessage.FileAttachment.ContentType = FTBasedConstants.CT_CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
                 convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
 
@@ -5172,7 +5172,7 @@ namespace windows_client.View
             {
                 if (convMessage.FileAttachment != null)
                 {
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION) || convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT))
                         displayAttachment(convMessage);
                     else
                         PauseTransfer(convMessage); // only pause for files and not for location/contacts
@@ -5216,25 +5216,25 @@ namespace windows_client.View
                     }
 
                     // Uploads
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                    if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
                     {
                         convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
-                    else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                    else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
                     {
                         convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
                     }
-                    else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                     {
                         byte[] locationInfoBytes = null;
-                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                        MiscDBUtil.readFileFromIsolatedStorage(FTBasedConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                             convMessage.MessageId, out locationInfoBytes);
                         string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
                         convMessage.MetaDataString = locationInfoString;
                     }
-                    else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                    else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
                     {
                         convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                             "/" + convMessage.FileAttachment.FileKey;
@@ -5248,10 +5248,10 @@ namespace windows_client.View
                     {
                         int length = 0;
 
-                        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                             length = Encoding.UTF8.GetBytes(convMessage.MetaDataString).Length;
                         else
-                            length = MiscDBUtil.GetFileSize(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId);
+                            length = MiscDBUtil.GetFileSize(FTBasedConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + convMessage.MessageId);
 
                         convMessage.ChangingState = transferPlaced = FileTransferManager.Instance.UploadFile(mContactNumber, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, length, string.Empty);
                     }
@@ -5277,7 +5277,7 @@ namespace windows_client.View
 
             string contactNumberOrGroupId = mContactNumber.Replace(":", "_");
 
-            if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+            if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
             {
                 object[] fileTapped = new object[2];
                 fileTapped[0] = convMessage.MessageId;
@@ -5285,15 +5285,15 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
             {
                 HikeInstantiation.ViewModel.PauseBackgroundAudio();
-                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
+                string fileLocation = FTBasedConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
                 Utils.PlayFileInMediaPlayer(fileLocation);
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
             {
-                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
+                string fileLocation = FTBasedConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(convMessage.MessageId);
 
                 if (mediaElement != null)
                 {
@@ -5513,7 +5513,7 @@ namespace windows_client.View
                     }
                 }
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
             {
                 try
                 {
@@ -5530,8 +5530,8 @@ namespace windows_client.View
                         locationJSON = JObject.Parse(convMessage.MetaDataString);
                     }
 
-                    double latitude = double.Parse(locationJSON[HikeConstants.ServerJsonKeys.LATITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
-                    double longitude = double.Parse(locationJSON[HikeConstants.ServerJsonKeys.LONGITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
+                    double latitude = double.Parse(locationJSON[ServerJsonKeys.LATITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
+                    double longitude = double.Parse(locationJSON[ServerJsonKeys.LONGITUDE].ToString(Newtonsoft.Json.Formatting.None), CultureInfo.InvariantCulture);
 
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LOCATION_MAP_COORDINATE] = new GeoCoordinate(latitude, longitude);
 
@@ -5543,7 +5543,7 @@ namespace windows_client.View
                 }
                 return;
             }
-            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT))
             {
                 JObject contactInfoJobject = JObject.Parse(convMessage.MetaDataString);
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
@@ -5553,7 +5553,7 @@ namespace windows_client.View
             else
             {
                 //default file type
-                LaunchFile(HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId, Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.FileName);
+                LaunchFile(FTBasedConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId, Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.FileName);
             }
         }
 
@@ -5563,7 +5563,7 @@ namespace windows_client.View
             {
                 string root = ApplicationData.Current.LocalFolder.Path;
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + folderpath);
-                StorageFolder tempfolder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                StorageFolder tempfolder = await StorageFolder.GetFolderFromPathAsync(root + @"\" + FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION);
                 StorageFile isolatedstorageFile = await folder.GetFileAsync(filePath);
                 StorageFile isolatedstorageFileCopy = await isolatedstorageFile.CopyAsync(tempfolder, originalFileName, NameCollisionOption.ReplaceExisting);
                 bool success = await Windows.System.Launcher.LaunchFileAsync(isolatedstorageFileCopy);
@@ -5757,7 +5757,7 @@ namespace windows_client.View
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LAST_SELECTED_EMOTICON_CATEGORY, emoticonPivot.SelectedIndex);
 
             switch (emoticonPivot.SelectedIndex)
             {
@@ -5841,7 +5841,7 @@ namespace windows_client.View
             convMessage.MetaDataString = "{poke:1}";
             sendMsg(convMessage, false);
             bool isVibrateEnabled = true;
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.VIBRATE_PREF, out isVibrateEnabled);
             if (isVibrateEnabled)
             {
                 VibrateController vibrate = VibrateController.Default;
@@ -5865,15 +5865,15 @@ namespace windows_client.View
             if (cobj != null)
             {
                 JObject data = new JObject();
-                data[HikeConstants.ServerJsonKeys.BACKGROUND_ID] = bgId;
-                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
+                data[ServerJsonKeys.BACKGROUND_ID] = bgId;
+                data[ServerJsonKeys.MESSAGE_ID] = TimeUtils.getCurrentTimeStamp().ToString();
 
                 JObject jo = new JObject();
-                jo[HikeConstants.ServerJsonKeys.FROM] = HikeInstantiation.MSISDN;
-                jo[HikeConstants.ServerJsonKeys.TO] = mContactNumber;
-                jo[HikeConstants.ServerJsonKeys.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
-                jo[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.CHAT_BACKGROUNDS;
-                jo[HikeConstants.ServerJsonKeys.DATA] = data;
+                jo[ServerJsonKeys.FROM] = HikeInstantiation.MSISDN;
+                jo[ServerJsonKeys.TO] = mContactNumber;
+                jo[ServerJsonKeys.TIMESTAMP] = TimeUtils.getCurrentTimeStamp().ToString();
+                jo[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.CHAT_BACKGROUNDS;
+                jo[ServerJsonKeys.DATA] = data;
 
                 object[] vs = new object[2];
                 vs[0] = cm;
@@ -6329,7 +6329,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if ((obj == null) || ServerJsonKeys.FAIL == (string)obj[ServerJsonKeys.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {
@@ -6562,7 +6562,7 @@ namespace windows_client.View
                 {
                     lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
                 });
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[pivotStickers.SelectedIndex].Category);
             }
         }
 
@@ -6687,7 +6687,7 @@ namespace windows_client.View
                 convMessage = obj as ConvMessage;
             else
                 return;
-            if ((json == null) || HikeConstants.ServerJsonKeys.FAIL == (string)json[HikeConstants.ServerJsonKeys.STAT])
+            if ((json == null) || ServerJsonKeys.FAIL == (string)json[ServerJsonKeys.STAT])
             {
                 if (stickerCategory != null)
                 {
@@ -7507,19 +7507,19 @@ namespace windows_client.View
             {
                 JArray messageArr = new JArray();
                 JObject fmsg = new JObject();
-                fmsg.Add(HikeConstants.ServerJsonKeys.HIKE_MESSAGE, message.GetMessageForServer());
-                fmsg.Add(HikeConstants.ServerJsonKeys.MESSAGE_ID, message.MessageId);
+                fmsg.Add(ServerJsonKeys.HIKE_MESSAGE, message.GetMessageForServer());
+                fmsg.Add(ServerJsonKeys.MESSAGE_ID, message.MessageId);
                 messageArr.Add(fmsg);
 
                 JObject data = new JObject();
-                data.Add(HikeConstants.ServerJsonKeys.COUNT, 1);
-                data.Add(HikeConstants.ServerJsonKeys.MESSAGE_ID, message.MessageId);
-                data.Add(HikeConstants.ServerJsonKeys.FORCE_SMS_MESSAGE, messageArr);
+                data.Add(ServerJsonKeys.COUNT, 1);
+                data.Add(ServerJsonKeys.MESSAGE_ID, message.MessageId);
+                data.Add(ServerJsonKeys.FORCE_SMS_MESSAGE, messageArr);
 
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.FORCE_SMS);
-                obj.Add(HikeConstants.ServerJsonKeys.TO, message.Msisdn);
-                obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+                obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.FORCE_SMS);
+                obj.Add(ServerJsonKeys.TO, message.Msisdn);
+                obj.Add(ServerJsonKeys.DATA, data);
 
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
@@ -7541,8 +7541,8 @@ namespace windows_client.View
                 foreach (var msg in convMsgList)
                 {
                     fmsg = new JObject();
-                    fmsg.Add(HikeConstants.ServerJsonKeys.HIKE_MESSAGE, msg.GetMessageForServer());
-                    fmsg.Add(HikeConstants.ServerJsonKeys.MESSAGE_ID, msg.MessageId);
+                    fmsg.Add(ServerJsonKeys.HIKE_MESSAGE, msg.GetMessageForServer());
+                    fmsg.Add(ServerJsonKeys.MESSAGE_ID, msg.MessageId);
                     messageArr.Add(fmsg);
 
                     msg.MessageStatus = ConvMessage.State.FORCE_SMS_SENT_CONFIRMED;
@@ -7552,14 +7552,14 @@ namespace windows_client.View
                 message = convMsgList.Last();
 
                 JObject data = new JObject();
-                data.Add(HikeConstants.ServerJsonKeys.COUNT, convMsgList.Count);
-                data.Add(HikeConstants.ServerJsonKeys.MESSAGE_ID, message.MessageId);
-                data.Add(HikeConstants.ServerJsonKeys.FORCE_SMS_MESSAGE, messageArr);
+                data.Add(ServerJsonKeys.COUNT, convMsgList.Count);
+                data.Add(ServerJsonKeys.MESSAGE_ID, message.MessageId);
+                data.Add(ServerJsonKeys.FORCE_SMS_MESSAGE, messageArr);
 
                 JObject obj = new JObject();
-                obj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.MqttMessageTypes.FORCE_SMS);
-                obj.Add(HikeConstants.ServerJsonKeys.TO, message.Msisdn);
-                obj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+                obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.FORCE_SMS);
+                obj.Add(ServerJsonKeys.TO, message.Msisdn);
+                obj.Add(ServerJsonKeys.DATA, data);
 
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 

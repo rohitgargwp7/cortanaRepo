@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
@@ -12,10 +8,10 @@ using Microsoft.Phone.Tasks;
 using windows_client.Languages;
 using System.Windows.Media;
 using windows_client.utils;
-using Microsoft.Phone.Net.NetworkInformation;
 using System.IO;
 using windows_client.DbUtils;
 using System.Diagnostics;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -32,7 +28,7 @@ namespace windows_client.View
 
         public NewGroup()
         {
-            string uid = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.UID_SETTING];
+            string uid = (string)HikeInstantiation.AppSettings[AppSettingsKeys.UID_SETTING];
             mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
 
             InitializeComponent();

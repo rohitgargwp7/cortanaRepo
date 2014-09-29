@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
-using Microsoft.Phone.Tasks;
-using System.Windows.Resources;
-using System.Diagnostics;
 using windows_client.Languages;
-using System.Windows.Media.Imaging;
-using System.IO;
 using System.Windows.Media;
-using Windows.Storage;
-using Windows.Storage.FileProperties;
 using windows_client.Model;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -55,7 +45,7 @@ namespace windows_client.View
 
         void shareVideo_Click(object sender, EventArgs e)
         {
-            if (_size > HikeConstants.FILE_MAX_SIZE)
+            if (_size > FTBasedConstants.FILE_MAX_SIZE)
             {
                 MessageBox.Show(AppResources.CT_FileSizeExceed_Text, AppResources.CT_FileSizeExceed_Caption_Text, MessageBoxButton.OK);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.NavigationKeys.VIDEO_SHARED);

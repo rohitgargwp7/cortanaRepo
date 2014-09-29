@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.Model;
@@ -15,6 +11,7 @@ using windows_client.Misc;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -158,7 +155,7 @@ namespace windows_client.View
                         convMessage.GroupMemberName = gp.FirstName;
                     }
 
-                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.ServerJsonKeys.LONG_MESSAGE))
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(ServerJsonKeys.LONG_MESSAGE))
                     {
                         string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
 

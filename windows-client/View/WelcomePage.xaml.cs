@@ -57,7 +57,7 @@ namespace windows_client
             }
 
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
-            if (HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (ServerJsonKeys.FAIL == (string)obj[ServerJsonKeys.STAT])
             {
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }
@@ -67,7 +67,7 @@ namespace windows_client
                 utils.Utils.savedAccountCredentials(obj);
 
                 if (HikeInstantiation.MSISDN.StartsWith(HikeConstants.INDIA_COUNTRY_CODE))
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.COUNTRY_CODE_SETTING, HikeConstants.INDIA_COUNTRY_CODE);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
@@ -110,7 +110,7 @@ namespace windows_client
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
-            webBrowserTask.Uri = new Uri(HikeConstants.ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(ServerUrls.TERMS_AND_CONDITIONS, UriKind.Absolute);
             try
             {
                 webBrowserTask.Show();
@@ -175,7 +175,7 @@ namespace windows_client
             try
             {
 
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED)) // if db is created then only delete tables.
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED)) // if db is created then only delete tables.
                     MiscDBUtil.clearDatabase();
                 //HikeInstantiation.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }
@@ -217,7 +217,7 @@ namespace windows_client
                     serverTxtBlk.Text = "QA Staging";
                 }
 
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.ServerUrls.APP_ENVIRONMENT_SETTING, ServerUrls.AppEnvironment);
+                HikeInstantiation.WriteToIsoStorageSettings(ServerUrls.APP_ENVIRONMENT_SETTING, ServerUrls.AppEnvironment);
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using Microsoft.Phone.Tasks;
+﻿using CommonLibrary.Constants;
+using Microsoft.Phone.Tasks;
 using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Device.Location;
 using System.Linq;
-using System.Text;
 
 namespace windows_client.Model
 {
@@ -34,75 +34,75 @@ namespace windows_client.Model
             JObject jobject = new JObject();
 
             if (!string.IsNullOrEmpty(name))
-                jobject[HikeConstants.ServerJsonKeys.CS_NAME] = name;
+                jobject[ServerJsonKeys.CS_NAME] = name;
 
             JArray jarray = new JArray();
 
             if (!string.IsNullOrEmpty(mobileNumber))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_MOBILE_KEY] = mobileNumber;
+                jobj[ServerJsonKeys.CS_MOBILE_KEY] = mobileNumber;
                 jarray.Add(jobj);
             }
             if (!string.IsNullOrEmpty(homePhone))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_HOME_KEY] = homePhone;
+                jobj[ServerJsonKeys.CS_HOME_KEY] = homePhone;
                 jarray.Add(jobj);
             }
             if (!string.IsNullOrEmpty(workPhone))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_WORK_KEY] = workPhone;
+                jobj[ServerJsonKeys.CS_WORK_KEY] = workPhone;
                 jarray.Add(jobj);
             }
             if (jarray.Count() > 0)
             {
-                jobject[HikeConstants.ServerJsonKeys.CS_PHONE_NUMBERS] = jarray;
+                jobject[ServerJsonKeys.CS_PHONE_NUMBERS] = jarray;
             }
             jarray = new JArray();
             if (!string.IsNullOrEmpty(personalEmail))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_HOME_KEY] = personalEmail;
+                jobj[ServerJsonKeys.CS_HOME_KEY] = personalEmail;
                 jarray.Add(jobj);
             }
 
             if (!string.IsNullOrEmpty(workEmail))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_WORK_KEY] = workEmail;
+                jobj[ServerJsonKeys.CS_WORK_KEY] = workEmail;
                 jarray.Add(jobj);
             }
             if (!string.IsNullOrEmpty(otherEmail))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_OTHERS_KEY] = otherEmail;
+                jobj[ServerJsonKeys.CS_OTHERS_KEY] = otherEmail;
                 jarray.Add(jobj);
             }
             if (jarray.Count() > 0)
             {
-                jobject[HikeConstants.ServerJsonKeys.CS_EMAILS] = jarray;
+                jobject[ServerJsonKeys.CS_EMAILS] = jarray;
             }
 
             jarray = new JArray();
             if (!string.IsNullOrEmpty(homeAddress))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_HOME_KEY] = homeAddress;
+                jobj[ServerJsonKeys.CS_HOME_KEY] = homeAddress;
                 jarray.Add(jobj);
             }
 
             if (!string.IsNullOrEmpty(workAddress))
             {
                 JObject jobj = new JObject();
-                jobj[HikeConstants.ServerJsonKeys.CS_WORK_KEY] = workAddress;
+                jobj[ServerJsonKeys.CS_WORK_KEY] = workAddress;
                 jarray.Add(jobj);
             }
 
             if (jarray.Count() > 0)
             {
-                jobject[HikeConstants.ServerJsonKeys.CS_ADDRESSES] = jarray;
+                jobject[ServerJsonKeys.CS_ADDRESSES] = jarray;
             }
 
             return jobject;
@@ -226,12 +226,12 @@ namespace windows_client.Model
         {
             ContactCompleteDetails con = new ContactCompleteDetails();
             JToken jt;
-            if (jsonOnj.TryGetValue(HikeConstants.ServerJsonKeys.CS_NAME, out jt) && jt != null)
+            if (jsonOnj.TryGetValue(ServerJsonKeys.CS_NAME, out jt) && jt != null)
                 con.name = jt.ToString();
 
             KeyValuePair<string, JToken> kv;
 
-            if (jsonOnj.TryGetValue(HikeConstants.ServerJsonKeys.CS_PHONE_NUMBERS, out jt) && jt != null && jt is JArray)
+            if (jsonOnj.TryGetValue(ServerJsonKeys.CS_PHONE_NUMBERS, out jt) && jt != null && jt is JArray)
             {
                 JArray phoneNumbers = (JArray)jt;
 
@@ -243,15 +243,15 @@ namespace windows_client.Model
                     {
                         kv = keyVals.Current;
 
-                        if (string.IsNullOrEmpty(con.mobileNumber) && kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_MOBILE_KEY.ToLower()))
+                        if (string.IsNullOrEmpty(con.mobileNumber) && kv.Key.ToLower().Contains(ServerJsonKeys.CS_MOBILE_KEY.ToLower()))
                         {
                             con.mobileNumber = kv.Value.ToString();
                         }
-                        else if (string.IsNullOrEmpty(con.homePhone) && kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_HOME_KEY.ToLower()))
+                        else if (string.IsNullOrEmpty(con.homePhone) && kv.Key.ToLower().Contains(ServerJsonKeys.CS_HOME_KEY.ToLower()))
                         {
                             con.homePhone = kv.Value.ToString();
                         }
-                        else if (string.IsNullOrEmpty(con.workPhone) && kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_WORK_KEY.ToLower()))
+                        else if (string.IsNullOrEmpty(con.workPhone) && kv.Key.ToLower().Contains(ServerJsonKeys.CS_WORK_KEY.ToLower()))
                         {
                             con.workPhone = kv.Value.ToString();
                         }
@@ -283,7 +283,7 @@ namespace windows_client.Model
             }
 
 
-            if (jsonOnj.TryGetValue(HikeConstants.ServerJsonKeys.CS_EMAILS, out jt) && jt != null && jt is JArray)
+            if (jsonOnj.TryGetValue(ServerJsonKeys.CS_EMAILS, out jt) && jt != null && jt is JArray)
             {
                 JArray emails = (JArray)jt;
 
@@ -294,19 +294,19 @@ namespace windows_client.Model
                     {
                         kv = keyVals.Current;
 
-                        if (kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_WORK_KEY.ToLower()))
+                        if (kv.Key.ToLower().Contains(ServerJsonKeys.CS_WORK_KEY.ToLower()))
                             con.workEmail = kv.Value.ToString();
 
-                        else if (kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_HOME_KEY.ToLower()))
+                        else if (kv.Key.ToLower().Contains(ServerJsonKeys.CS_HOME_KEY.ToLower()))
                             con.personalEmail = kv.Value.ToString();
 
-                        else if (kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_OTHERS_KEY.ToLower()))
+                        else if (kv.Key.ToLower().Contains(ServerJsonKeys.CS_OTHERS_KEY.ToLower()))
                             con.otherEmail = kv.Value.ToString();
                     }
                 }
             }
 
-            if (jsonOnj.TryGetValue(HikeConstants.ServerJsonKeys.CS_ADDRESSES, out jt) && jt != null && jt is JArray)
+            if (jsonOnj.TryGetValue(ServerJsonKeys.CS_ADDRESSES, out jt) && jt != null && jt is JArray)
             {
                 JArray addressess = (JArray)jt;
 
@@ -316,10 +316,10 @@ namespace windows_client.Model
                     while (keyVals.MoveNext())
                     {
                         kv = keyVals.Current;
-                        if (kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_WORK_KEY.ToLower()))
+                        if (kv.Key.ToLower().Contains(ServerJsonKeys.CS_WORK_KEY.ToLower()))
                             con.workAddress = kv.Value.ToString();
 
-                        else if (kv.Key.ToLower().Contains(HikeConstants.ServerJsonKeys.CS_HOME_KEY.ToLower()))
+                        else if (kv.Key.ToLower().Contains(ServerJsonKeys.CS_HOME_KEY.ToLower()))
                             con.homeAddress = kv.Value.ToString();
                     }
                 }

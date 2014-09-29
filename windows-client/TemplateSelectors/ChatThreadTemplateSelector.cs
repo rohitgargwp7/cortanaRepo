@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommonLibrary.Constants;
 using System.Windows;
 using windows_client.Controls;
 using windows_client.Model;
@@ -154,17 +150,17 @@ namespace windows_client.TemplateSelectors
                 {
                     if (convMesssage.IsSent)
                     {
-                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
+                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(FTBasedConstants.POKE))
                             return DtSentBubbleNudge;
                         if (convMesssage.StickerObj != null)
                             return DtSentSticker;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT))
                             return DtSentBubbleContact;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
                             return DtSentBubbleAudioFile;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                             return DtSentBubbleLocation;
-                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE)))
+                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE)))
                             return DtSentBubbleFile;
                         else if (convMesssage.FileAttachment != null)
                             return DtSentBubbleUnknownFile;
@@ -173,17 +169,17 @@ namespace windows_client.TemplateSelectors
                     }
                     else
                     {
-                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(HikeConstants.POKE))
+                        if (convMesssage.MetaDataString != null && convMesssage.MetaDataString.Contains(FTBasedConstants.POKE))
                             return DtRecievedBubbleNudge;
                         if (convMesssage.StickerObj != null)
                             return DtRecievedSticker;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT))
                             return DtRecievedBubbleContact;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
                             return DtRecievedBubbleAudioFile;
-                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        else if (convMesssage.FileAttachment != null && convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                             return DtRecievedBubbleLocation;
-                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE)))
+                        else if (convMesssage.FileAttachment != null && (convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO) || convMesssage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE)))
                             return DtRecievedBubbleFile;
                         else if (convMesssage.FileAttachment != null)
                             return DtRecievedBubbleUnknownFile;

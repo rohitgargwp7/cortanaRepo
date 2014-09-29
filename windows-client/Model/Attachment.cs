@@ -4,6 +4,7 @@ using System;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using CommonLibrary.Lib;
+using CommonLibrary.Constants;
 
 namespace windows_client.Model
 {
@@ -202,9 +203,9 @@ namespace windows_client.Model
                         _thumbnailImage = UI_Utils.Instance.createImageFromBytes(Thumbnail);
                     else
                     {
-                        if (ContentType.Contains(HikeConstants.VIDEO))
+                        if (ContentType.Contains(FTBasedConstants.VIDEO))
                             return UI_Utils.Instance.Video_Default;
-                        else if (ContentType.Contains(HikeConstants.IMAGE))
+                        else if (ContentType.Contains(FTBasedConstants.IMAGE))
                             return UI_Utils.Instance.Image_Default;
                     }
                 }

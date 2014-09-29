@@ -1,10 +1,9 @@
 ﻿using System;
 using mqtttest.Client;
-using System.Windows;
 using windows_client.DbUtils;
 using Microsoft.Phone.Notification;
-using Microsoft.Phone.Reactive;
 using windows_client.utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.Mqtt
 {
@@ -23,12 +22,12 @@ namespace windows_client.Mqtt
             {
                 bool isPresent = false;
 
-                if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.IS_DB_CREATED))
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED))
                     isPresent = true;
                 HikeInstantiation.ClearAppSettings();
                 if (isPresent)
 
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.IS_DB_CREATED, true);
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 HikeInstantiation.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();

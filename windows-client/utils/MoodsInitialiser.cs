@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CommonLibrary.Constants;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
 
@@ -169,10 +167,10 @@ namespace windows_client.utils
             try
             {
                 JObject metaData = JObject.Parse(metadataJson);
-                JObject data = (JObject)metaData[HikeConstants.ServerJsonKeys.DATA];
-                if (data[HikeConstants.ServerJsonKeys.MOOD] != null)
+                JObject data = (JObject)metaData[ServerJsonKeys.DATA];
+                if (data[ServerJsonKeys.MOOD] != null)
                 {
-                    string moodId_String = data[HikeConstants.ServerJsonKeys.MOOD].ToString();
+                    string moodId_String = data[ServerJsonKeys.MOOD].ToString();
                     if (!string.IsNullOrEmpty(moodId_String))
                     {
                         int.TryParse(moodId_String, out moodId);

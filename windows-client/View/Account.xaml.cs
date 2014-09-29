@@ -24,10 +24,10 @@ namespace windows_client.View
         {
             InitializeComponent();
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.FB_LOGGED_IN))
                 gridFB.Visibility = Visibility.Visible;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.TW_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
         }
@@ -69,7 +69,7 @@ namespace windows_client.View
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.FB_LOGGED_IN))
                 LogoutFb(true);
 
             DeleteLocalStorage();
@@ -125,7 +125,7 @@ namespace windows_client.View
 
         private void deleteAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj == null || ServerJsonKeys.FAIL == (string)obj[ServerJsonKeys.STAT])
             {
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -137,7 +137,7 @@ namespace windows_client.View
                 });
                 return;
             }
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.FB_LOGGED_IN))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.FB_LOGGED_IN))
                 LogoutFb(true);
             DeleteLocalStorage();
         }
@@ -151,11 +151,11 @@ namespace windows_client.View
             HikeViewModel.ClearStickerHelperInstance();
 
             HikeInstantiation.ClearAppSettings();
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.IS_DB_CREATED] = true;
+            HikeInstantiation.AppSettings[AppSettingsKeys.IS_DB_CREATED] = true;
 
             //so that on signing up again user can see these tutorials 
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.REMOVE_EMMA, true);
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.REMOVE_EMMA, true);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
@@ -212,10 +212,10 @@ namespace windows_client.View
             else
             {
                 shellProgress.IsIndeterminate = true;
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TWITTER_TOKEN_SECRET);
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.TW_LOGGED_IN);
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.ServerJsonKeys.TWITTER, false);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.TWITTER_TOKEN);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.TWITTER_TOKEN_SECRET);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.TW_LOGGED_IN);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), ServerJsonKeys.TWITTER, false);
                 return;
             }
         }
@@ -250,14 +250,14 @@ namespace windows_client.View
               {
                   await (new WebBrowser()).ClearCookiesAsync();
               }));
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_ACCESS_TOKEN);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_USER_ID);
-            HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.FB_LOGGED_IN);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_ACCESS_TOKEN);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_USER_ID);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.FB_LOGGED_IN);
 
             if (isAccountDeleteUnlink)
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.ServerJsonKeys.FACEBOOK, false);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), ServerJsonKeys.FACEBOOK, false);
             else
-                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.ServerJsonKeys.FACEBOOK, false);
+                AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), ServerJsonKeys.FACEBOOK, false);
         }
     }
 }

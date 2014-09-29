@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using windows_client.Model;
 using windows_client.utils;
-using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using windows_client.Languages;
 using windows_client.Controls;
@@ -19,6 +14,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using windows_client.DbUtils;
 using Microsoft.Phone.UserData;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -30,7 +26,7 @@ namespace windows_client.View
 
             int creditsRemaining = 0;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.SMS_SETTING, out creditsRemaining);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out creditsRemaining);
             smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 

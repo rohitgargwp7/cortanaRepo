@@ -124,7 +124,7 @@ namespace windows_client.DbUtils
                     UpdateConvListForSentMessage(convMessage, convObj);
 
                     byte[] fileBytes;
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.LOCATION))
                         fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
                     else
                         MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
@@ -132,7 +132,7 @@ namespace windows_client.DbUtils
                     if (fileBytes == null)
                         return;
 
-                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+                    MiscDBUtil.StoreFileInIsolatedStorage(FTBasedConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
                     convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                     MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
@@ -168,9 +168,9 @@ namespace windows_client.DbUtils
 
                 //send attachment message (new attachment - upload case)
                 if (fileBytes == null || fileBytes.Length == 0)
-                    MiscDBUtil.CopyFileInIsolatedStorage(filePath, HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
+                    MiscDBUtil.CopyFileInIsolatedStorage(filePath, FTBasedConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
                 else
-                    MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
+                    MiscDBUtil.StoreFileInIsolatedStorage(FTBasedConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
 
                 convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -416,13 +416,13 @@ namespace windows_client.DbUtils
                         {
                             if (fInfo.FileState == FileTransferState.COMPLETED && FileTransferManager.Instance.TaskMap.ContainsKey(fInfo.MessageId))
                             {
-                                if (fInfo.ContentType.Contains(HikeConstants.VIDEO) || fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                if (fInfo.ContentType.Contains(FTBasedConstants.VIDEO) || fInfo.ContentType.Contains(FTBasedConstants.IMAGE))
                                 {
                                     string targetFileName = fInfo.MessageId + "_" + TimeUtils.getCurrentTimeStamp();
 
-                                    if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
+                                    if (fInfo.ContentType.Contains(FTBasedConstants.VIDEO))
                                         targetFileName = targetFileName + ".mp4";
-                                    else if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                    else if (fInfo.ContentType.Contains(FTBasedConstants.IMAGE))
                                         targetFileName = targetFileName + ".jpg";
 
                                     string sourceFile = fInfo.FilePath;
@@ -448,38 +448,38 @@ namespace windows_client.DbUtils
                                 }
                                 else
                                 {
-                                    JObject data = (fInfo as FileUploader).SuccessObj[HikeConstants.ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
-                                    fileKey = data[HikeConstants.ServerJsonKeys.FILE_KEY].ToString();
+                                    JObject data = (fInfo as FileUploader).SuccessObj[ServerJsonKeys.FILE_RESPONSE_DATA].ToObject<JObject>();
+                                    fileKey = data[ServerJsonKeys.FILE_KEY].ToString();
 
                                     //send the content type which is sent by server
-                                    fInfo.ContentType = data[HikeConstants.ServerJsonKeys.FILE_CONTENT_TYPE].ToString();
+                                    fInfo.ContentType = data[ServerJsonKeys.FILE_CONTENT_TYPE].ToString();
 
                                     JToken fs;
-                                    if (data.TryGetValue(HikeConstants.ServerJsonKeys.FILE_SIZE, out fs))
+                                    if (data.TryGetValue(ServerJsonKeys.FILE_SIZE, out fs))
                                         fileSize = Convert.ToInt32(fs.ToString());
                                 }
 
-                                if (fInfo.ContentType.Contains(HikeConstants.IMAGE))
+                                if (fInfo.ContentType.Contains(FTBasedConstants.IMAGE))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
-                                else if (fInfo.ContentType.Contains(HikeConstants.AUDIO))
+                                else if (fInfo.ContentType.Contains(FTBasedConstants.AUDIO))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
-                                else if (fInfo.ContentType.Contains(HikeConstants.VIDEO))
+                                else if (fInfo.ContentType.Contains(FTBasedConstants.VIDEO))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
-                                else if (fInfo.ContentType.Contains(HikeConstants.CT_CONTACT))
+                                else if (fInfo.ContentType.Contains(FTBasedConstants.CT_CONTACT))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.ContactTransfer_Text) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
                                 }
-                                else if (fInfo.ContentType.Contains(HikeConstants.LOCATION))
+                                else if (fInfo.ContentType.Contains(FTBasedConstants.LOCATION))
                                 {
                                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + ServerUrls.FILE_TRANSFER_BASE_URL +
                                         "/" + fileKey;
@@ -548,8 +548,8 @@ namespace windows_client.DbUtils
         private JObject blockUnblockSerialize(string type, string msisdn)
         {
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = type;
-            obj[HikeConstants.ServerJsonKeys.DATA] = msisdn;
+            obj[ServerJsonKeys.TYPE] = type;
+            obj[ServerJsonKeys.DATA] = msisdn;
             return obj;
         }
 

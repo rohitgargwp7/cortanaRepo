@@ -8,6 +8,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using System.Windows.Media.Imaging;
 using CommonLibrary.Lib;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -245,7 +246,7 @@ namespace windows_client.utils
         /// </summary>
         void LoadDefaultBackgrounds()
         {
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME))
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.BLACK_THEME))
             {
                 BackgroundList.Add(new ChatBackground()
                 {

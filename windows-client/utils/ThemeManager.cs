@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommonLibrary.Constants;
 using System.Windows;
-using System.Windows.Media;
 
 namespace windows_client.utils.ThemeManager
 {
@@ -45,7 +40,7 @@ namespace windows_client.utils.ThemeManager
         {
             get
             {
-                return HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.BLACK_THEME);
+                return HikeInstantiation.AppSettings.Contains(AppSettingsKeys.BLACK_THEME);
             }
         }
     }

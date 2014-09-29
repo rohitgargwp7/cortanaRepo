@@ -1,9 +1,7 @@
-﻿using Microsoft.Phone.Reactive;
+﻿using CommonLibrary.Constants;
+using Microsoft.Phone.Reactive;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace windows_client.utils
 {
@@ -46,7 +44,7 @@ namespace windows_client.utils
         {
             bool isAppUpdatePostPending = true;
 
-            HikeInstantiation.AppSettings.TryGetValue<bool>(HikeConstants.AppSettingsKeys.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.APP_UPDATE_POSTPENDING, out isAppUpdatePostPending);
             if (isAppUpdatePostPending)
                 AccountUtils.postUpdateInfo(postUpdateInfo_Callback);
         }
@@ -57,11 +55,11 @@ namespace windows_client.utils
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue(HikeConstants.ServerJsonKeys.STAT, out statusToken);
+                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.ServerJsonKeys.OK)
+            if (stat != ServerJsonKeys.OK)
             {
                 if (scheduler == null)
                 {
@@ -72,10 +70,10 @@ namespace windows_client.utils
                 if (pollingTime > maxPollingTime)
                     pollingTime = minPollingTime;
             }
-            else if (stat == HikeConstants.ServerJsonKeys.OK)
+            else if (stat == ServerJsonKeys.OK)
             {
 
-                HikeInstantiation.RemoveKeyFromAppSettings(HikeConstants.AppSettingsKeys.APP_UPDATE_POSTPENDING);
+                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.APP_UPDATE_POSTPENDING);
                 if (httpPostScheduled != null)
                 {
                     httpPostScheduled.Dispose();

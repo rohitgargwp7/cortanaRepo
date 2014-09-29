@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using System.Net.NetworkInformation;
-using System.Threading;
 using System.Text.RegularExpressions;
 using windows_client.Languages;
 using System.Diagnostics;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -37,7 +31,7 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.GENDER, out userGender);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.GENDER, out userGender);
 
             if (userGender == "m" || userGender == "f")
             {
@@ -72,13 +66,13 @@ namespace windows_client.View
         private void prepopulate()
         {
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, out userName);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ACCOUNT_NAME, out userName);
             name.Text = string.IsNullOrWhiteSpace(userName) ? string.Empty : userName;
 
             phone.Text = HikeInstantiation.MSISDN;
 
-            if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.EMAIL))
-                userEmail = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.EMAIL];
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.EMAIL))
+                userEmail = (string)HikeInstantiation.AppSettings[AppSettingsKeys.EMAIL];
             email.Text = userEmail;
 
             if (userGender == "m")
@@ -122,7 +116,7 @@ namespace windows_client.View
             {
                 if (ValidateEmail(email.Text)) // check if email is valid
                 {
-                    obj[HikeConstants.AppSettingsKeys.EMAIL] = email.Text;
+                    obj[AppSettingsKeys.EMAIL] = email.Text;
                     shouldSendProfile = true;
                 }
                 else //if email is not valid
@@ -136,7 +130,7 @@ namespace windows_client.View
             // if gender is changed
             if (genderIndex != genderListPicker.SelectedIndex)
             {
-                obj[HikeConstants.AppSettingsKeys.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
+                obj[AppSettingsKeys.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
                 shouldSendProfile = true;
             }
 
@@ -182,13 +176,13 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+                if (obj != null && ServerJsonKeys.OK == (string)obj[ServerJsonKeys.STAT])
                 {
                     if (userName != name.Text)
                     {
                         userName = name.Text;
                         HikeInstantiation.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, userName);
+                        HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.ACCOUNT_NAME, userName);
 
                         // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
                         PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PROFILE_NAME_CHANGED] = userName;
@@ -233,20 +227,20 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+                if (obj != null && ServerJsonKeys.OK == (string)obj[ServerJsonKeys.STAT])
                 {
 
                     if (userEmail != email.Text)
                     {
                         userEmail = email.Text;
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.EMAIL, email.Text);
+                        HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.EMAIL, email.Text);
                     }
 
                     if (genderIndex != genderListPicker.SelectedIndex)
                     {
                         genderIndex = genderListPicker.SelectedIndex;
                         string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : "f");
-                        HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.GENDER, gender);
+                        HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.GENDER, gender);
 
                         if (genderListPicker.Items.Count == 3) // if select is there remove it
                         {
@@ -272,8 +266,8 @@ namespace windows_client.View
                 {
                     MakeFieldsReadOnly(false);
 
-                    if (HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.EMAIL))
-                        email.Text = (string)HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.EMAIL];
+                    if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.EMAIL))
+                        email.Text = (string)HikeInstantiation.AppSettings[AppSettingsKeys.EMAIL];
 
                     shellProgress.IsIndeterminate = false;
                     

@@ -19,11 +19,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.Phone.UserData;
 using System.ComponentModel;
-using windows_client.Misc;
-using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Threading.Tasks;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -595,12 +593,12 @@ namespace windows_client.View
         {
             string serverId = null;
             bool uploadSuccess = false;
-            if (obj != null && HikeConstants.ServerJsonKeys.OK == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj != null && ServerJsonKeys.OK == (string)obj[ServerJsonKeys.STAT])
             {
                 uploadSuccess = true;
                 try
                 {
-                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.ServerJsonKeys.STATUS_ID].ToString();
+                    serverId = obj["status"].ToObject<JObject>()[ServerJsonKeys.STATUS_ID].ToString();
                     //todo:check
                 }
                 catch (Exception ex)
@@ -762,13 +760,13 @@ namespace windows_client.View
                 var ts = TimeUtils.getCurrentTimeStamp();
                 var smsString = AppResources.sms_invite_message;
 
-                obj[HikeConstants.ServerJsonKeys.TO] = toNum;
-                data[HikeConstants.ServerJsonKeys.MESSAGE_ID] = ts.ToString();
-                data[HikeConstants.ServerJsonKeys.HIKE_MESSAGE] = smsString;
-                data[HikeConstants.ServerJsonKeys.TIMESTAMP] = ts;
-                obj[HikeConstants.ServerJsonKeys.DATA] = data;
-                obj[HikeConstants.ServerJsonKeys.TYPE] = NetworkManager.INVITE;
-                obj[HikeConstants.ServerJsonKeys.SUB_TYPE] = HikeConstants.ServerJsonKeys.NO_SMS;
+                obj[ServerJsonKeys.TO] = toNum;
+                data[ServerJsonKeys.MESSAGE_ID] = ts.ToString();
+                data[ServerJsonKeys.HIKE_MESSAGE] = smsString;
+                data[ServerJsonKeys.TIMESTAMP] = ts;
+                obj[ServerJsonKeys.DATA] = data;
+                obj[ServerJsonKeys.TYPE] = NetworkManager.INVITE;
+                obj[ServerJsonKeys.SUB_TYPE] = ServerJsonKeys.NO_SMS;
 
                 HikeInstantiation.MqttManagerInstance.mqttPublishToServer(obj);
 
@@ -792,8 +790,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.ServerJsonKeys.DATA] = data;
+            obj[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
+            obj[ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             if (!HikeInstantiation.ViewModel.Isfavourite(msisdn))
@@ -950,7 +948,7 @@ namespace windows_client.View
 
             string name;
 
-            HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.ACCOUNT_NAME, out name);
+            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ACCOUNT_NAME, out name);
 
             if (name != null)
             {
@@ -1045,7 +1043,7 @@ namespace windows_client.View
 
         public void GetHikeStatus_Callback(JObject obj)
         {
-            if (obj != null && HikeConstants.ServerJsonKeys.FAIL != (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if (obj != null && ServerJsonKeys.FAIL != (string)obj[ServerJsonKeys.STAT])
             {
                 var isOnHike = (bool)obj["onhike"];
                 if (isOnHike)
@@ -1232,8 +1230,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.ServerJsonKeys.DATA] = data;
+            obj[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.ADD_FAVOURITE;
+            obj[ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SaveFavourites(cObj);
@@ -1251,8 +1249,8 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.ServerJsonKeys.TYPE] = HikeConstants.ServerJsonKeys.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
-            obj[HikeConstants.ServerJsonKeys.DATA] = data;
+            obj[ServerJsonKeys.TYPE] = ServerJsonKeys.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
+            obj[ServerJsonKeys.DATA] = data;
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
@@ -1363,7 +1361,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || HikeConstants.ServerJsonKeys.FAIL == (string)obj[HikeConstants.ServerJsonKeys.STAT])
+            if ((obj == null) || ServerJsonKeys.FAIL == (string)obj[ServerJsonKeys.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {

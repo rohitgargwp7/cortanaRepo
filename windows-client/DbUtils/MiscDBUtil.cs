@@ -1,10 +1,8 @@
 ﻿using windows_client.Model;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
 using System;
 using windows_client.Misc;
@@ -16,11 +14,8 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
-using System.Windows.Resources;
-using System.Windows;
-using Windows.Storage;
-using Windows.Storage.Streams;
 using FileTransfer;
+using CommonLibrary.Constants;
 
 namespace windows_client.DbUtils
 {
@@ -144,7 +139,7 @@ namespace windows_client.DbUtils
             DeletePendingRequests();
             ProTipHelper.Instance.ClearProTips();
 
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
+            HikeInstantiation.AppSettings[AppSettingsKeys.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
             #endregion
             #region DELETE CATEGORIES, RECENT STICKERS
             StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
@@ -153,9 +148,9 @@ namespace windows_client.DbUtils
             #endregion
             #region RESET IN APP TIPS
 
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.CHAT_THREAD_COUNT_KEY] = 0;
-            HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.TIP_MARKED_KEY] = 0;
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
+            HikeInstantiation.AppSettings[AppSettingsKeys.CHAT_THREAD_COUNT_KEY] = 0;
+            HikeInstantiation.AppSettings[AppSettingsKeys.TIP_MARKED_KEY] = 0;
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
             #endregion
             #region RESET CHAT THEMES
             ChatBackgroundHelper.Instance.Clear();
@@ -329,8 +324,8 @@ namespace windows_client.DbUtils
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
-                            store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
+                        if (isUpdated && store.FileExists(FileName + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX))
+                            store.DeleteFile(FileName + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX);
 
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
@@ -355,7 +350,7 @@ namespace windows_client.DbUtils
             if (imageBytes == null)
                 return;
             msisdn = msisdn.Replace(":", "_");
-            string FileName = THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
+            string FileName = THUMBNAILS + "\\" + msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX;
             lock (lockObj)
             {
                 try
@@ -447,9 +442,9 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    if (store.FileExists(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX)) // Check if file exists
+                    if (store.FileExists(THUMBNAILS + "\\" + msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX)) // Check if file exists
                     {
-                        using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX, FileMode.Open, FileAccess.Read))
+                        using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX, FileMode.Open, FileAccess.Read))
                         {
                             data = new byte[isfs.Length];
                             isfs.Read(data, 0, data.Length);
@@ -479,8 +474,8 @@ namespace windows_client.DbUtils
                 if (store.FileExists(THUMBNAILS + "\\" + msisdn))
                     store.DeleteFile(THUMBNAILS + "\\" + msisdn);
 
-                if (store.FileExists(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
-                    store.DeleteFile(THUMBNAILS + "\\" + msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
+                if (store.FileExists(THUMBNAILS + "\\" + msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX))
+                    store.DeleteFile(THUMBNAILS + "\\" + msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX);
             }
         }
 
@@ -513,7 +508,7 @@ namespace windows_client.DbUtils
                 try
                 {
                     msisdn = msisdn.Replace(":", "_");
-                    string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                    string fileDirectory = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn;
                     string fileName = fileDirectory + "/" + messageId;
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
@@ -549,7 +544,7 @@ namespace windows_client.DbUtils
 
             lock (attachmentLock)
             {
-                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                string fileDirectory = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn;
                 Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -585,7 +580,7 @@ namespace windows_client.DbUtils
 
             lock (attachmentLock)
             {
-                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                string fileDirectory = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn;
 
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -618,7 +613,7 @@ namespace windows_client.DbUtils
             lock (attachmentLock)
             {
                 msisdn = msisdn.Replace(":", "_");
-                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                string fileDirectory = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn;
                 Attachment attachment = null;
 
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -758,8 +753,8 @@ namespace windows_client.DbUtils
         public static void deleteMessageData(string msisdn, long messageId)
         {
             msisdn = msisdn.Replace(":", "_");
-            string attachmentObjectPath = HikeConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
-            string attachmentFileBytes = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
+            string attachmentObjectPath = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
+            string attachmentFileBytes = FTBasedConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
 
             lock (attachmentLock)
             {
@@ -783,8 +778,8 @@ namespace windows_client.DbUtils
         {
             msisdn = msisdn.Replace(":", "_");
             string[] attachmentPaths = new string[2];
-            attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
+            attachmentPaths[0] = FTBasedConstants.FILES_ATTACHMENT + "/" + msisdn;
+            attachmentPaths[1] = FTBasedConstants.FILES_BYTE_LOCATION + "/" + msisdn;
 
             lock (attachmentLock)
             {
@@ -820,8 +815,8 @@ namespace windows_client.DbUtils
         public static void DeleteAllAttachmentData()
         {
             string[] attachmentPaths = new string[2];
-            attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT;
-            attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION;
+            attachmentPaths[0] = FTBasedConstants.FILES_ATTACHMENT;
+            attachmentPaths[1] = FTBasedConstants.FILES_BYTE_LOCATION;
 
             lock (attachmentLock)
             {

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using windows_client.Misc;
-using System.IO;
-using System.IO.IsolatedStorage;
-using System.Diagnostics;
 using windows_client.utils;
+using CommonLibrary.Constants;
 
 namespace windows_client.Model
 {
@@ -44,13 +40,13 @@ namespace windows_client.Model
             metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
-            dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);
-            dataObj.Add(HikeConstants.ServerJsonKeys.TAG, HikeConstants.ServerJsonKeys.TAG_MOBILE);
-            dataObj.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, HikeConstants.ServerJsonKeys.ST_UI_EVENT);
+            dataObj.Add(ServerJsonKeys.METADATA, metadataObject);
+            dataObj.Add(ServerJsonKeys.TAG, ServerJsonKeys.TAG_MOBILE);
+            dataObj.Add(ServerJsonKeys.SUB_TYPE, ServerJsonKeys.ST_UI_EVENT);
 
             JObject analyticObj = new JObject();
-            analyticObj.Add(HikeConstants.ServerJsonKeys.DATA, dataObj);
-            analyticObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
+            analyticObj.Add(ServerJsonKeys.DATA, dataObj);
+            analyticObj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.LOG_EVENT);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
@@ -70,13 +66,13 @@ namespace windows_client.Model
             metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
-            dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);
-            dataObj.Add(HikeConstants.ServerJsonKeys.TAG, HikeConstants.ServerJsonKeys.TAG_MOBILE);
-            dataObj.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, eventType);
+            dataObj.Add(ServerJsonKeys.METADATA, metadataObject);
+            dataObj.Add(ServerJsonKeys.TAG, ServerJsonKeys.TAG_MOBILE);
+            dataObj.Add(ServerJsonKeys.SUB_TYPE, eventType);
 
             JObject analyticObj = new JObject();
-            analyticObj.Add(HikeConstants.ServerJsonKeys.DATA, dataObj);
-            analyticObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
+            analyticObj.Add(ServerJsonKeys.DATA, dataObj);
+            analyticObj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.LOG_EVENT);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticObj);
@@ -97,13 +93,13 @@ namespace windows_client.Model
             analyticsJson.Add(key, value);
 
             JObject data = new JObject();
-            data.Add(HikeConstants.ServerJsonKeys.METADATA, analyticsJson);
-            data.Add(HikeConstants.ServerJsonKeys.SUB_TYPE, eventType);
-            data[HikeConstants.ServerJsonKeys.TAG] = HikeConstants.ServerJsonKeys.TAG_MOBILE;
+            data.Add(ServerJsonKeys.METADATA, analyticsJson);
+            data.Add(ServerJsonKeys.SUB_TYPE, eventType);
+            data[ServerJsonKeys.TAG] = ServerJsonKeys.TAG_MOBILE;
 
             JObject jsonObj = new JObject();
-            jsonObj.Add(HikeConstants.ServerJsonKeys.TYPE, HikeConstants.ServerJsonKeys.LOG_EVENT);
-            jsonObj.Add(HikeConstants.ServerJsonKeys.DATA, data);
+            jsonObj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.LOG_EVENT);
+            jsonObj.Add(ServerJsonKeys.DATA, data);
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);

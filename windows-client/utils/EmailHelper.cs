@@ -1,7 +1,6 @@
 ﻿using Microsoft.Phone.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,7 +9,7 @@ using windows_client.DbUtils;
 using System.Diagnostics;
 using windows_client.Misc;
 using windows_client.Languages;
-using Microsoft.Phone.Shell;
+using CommonLibrary.Constants;
 
 namespace windows_client.utils
 {
@@ -128,22 +127,22 @@ namespace windows_client.utils
                                 if (attachment != null)
                                     contentType = attachment.ContentType;
 
-                                if (contentType.Contains(HikeConstants.IMAGE))
+                                if (contentType.Contains(FTBasedConstants.IMAGE))
                                     messageText = AppResources.EmailConv_SharedImage_Txt;
-                                else if (contentType.Contains(HikeConstants.AUDIO))
+                                else if (contentType.Contains(FTBasedConstants.AUDIO))
                                     messageText = AppResources.EmailConv_SharedAudio_Txt;
-                                else if (contentType.Contains(HikeConstants.VIDEO))
+                                else if (contentType.Contains(FTBasedConstants.VIDEO))
                                     messageText = AppResources.EmailConv_SharedVideo_Txt;
-                                else if (contentType.Contains(HikeConstants.CT_CONTACT))
+                                else if (contentType.Contains(FTBasedConstants.CT_CONTACT))
                                     messageText = AppResources.EmailConv_SharedContact_Txt;
-                                else if (contentType.Contains(HikeConstants.LOCATION))
+                                else if (contentType.Contains(FTBasedConstants.LOCATION))
                                     messageText = AppResources.EmailConv_SharedLocation_Txt;
                                 else
                                     messageText = AppResources.EmailConv_SharedFile_Txt;
                             }
                             else
                             {
-                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains(HikeConstants.ServerJsonKeys.LONG_MESSAGE))
+                                if (convMsg.MetaDataString != null && convMsg.MetaDataString.Contains(ServerJsonKeys.LONG_MESSAGE))
                                 {
                                     string message = MessagesTableUtils.ReadLongMessageFile(convMsg.Timestamp, convMsg.Msisdn);
                                     messageText = message;

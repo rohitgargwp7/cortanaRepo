@@ -11,9 +11,6 @@ using System.Windows.Navigation;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
-using Newtonsoft.Json.Linq;
-using System.Net.NetworkInformation;
-using windows_client.Languages;
 using Microsoft.Phone.Data.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.Misc;
@@ -21,6 +18,7 @@ using System.Diagnostics;
 using windows_client.utils.Sticker_Helper;
 using windows_client.ViewModel;
 using windows_client.Model.Sticker;
+using CommonLibrary.Constants;
 
 namespace windows_client.View
 {
@@ -65,7 +63,7 @@ namespace windows_client.View
             App.AppInitialize();
 
             // Upgrade complete, write the current version
-            HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.FILE_SYSTEM_VERSION, HikeInstantiation.LatestVersion);
 
             ManageNavigation();
         }
@@ -85,7 +83,7 @@ namespace windows_client.View
 
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
-                if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.NEW_UPDATE_AVAILABLE)
+                if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
                 && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
@@ -163,8 +161,8 @@ namespace windows_client.View
         {
             if (Utils.compareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
             {
-                HikeInstantiation.AppSettings[HikeConstants.AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.NEW_UPDATE, true);
+                HikeInstantiation.AppSettings[AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.NEW_UPDATE, true);
 
                 #region POST APP INFO ON UPDATE
                 // If app info is already sent to server , this function will automatically handle.
@@ -191,9 +189,9 @@ namespace windows_client.View
                 // This folder should be created for launching file async(unknown file type).
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
+                    if (!store.DirectoryExists(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION))
                     {
-                        store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
+                        store.CreateDirectory(FTBasedConstants.FILE_TRANSFER_TEMP_LOCATION);
                     }
                 }
             }
@@ -244,8 +242,8 @@ namespace windows_client.View
 
             // Change last selected category to recent
             String category;
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
-                HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
+            if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, out category) && category == StickerHelper.CATEGORY_ANGRY)
+                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.LAST_SELECTED_STICKER_CATEGORY, StickerHelper.CATEGORY_RECENT);
         }
 
         /// <summary>

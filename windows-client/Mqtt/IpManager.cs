@@ -12,7 +12,7 @@ namespace windows_client.Mqtt
         {
             string[] iplist = null;
 
-            if (HikeInstantiation.AppSettings.TryGetValue(HikeConstants.AppSettingsKeys.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
+            if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.IP_LIST, out iplist) && iplist != null && iplist.Length > 0)
             {
                 ProductionIps = iplist;
             }
@@ -54,7 +54,7 @@ namespace windows_client.Mqtt
             {
                 //try for port 8080 once and if it fails then fallback to xmpp (5222)
                 if (count > 0)//todo:check for wifi
-                    port = HikeConstants.ServerUrls.ProductionUrls.MQTT_PRODUCTION_XMPP_PORT;
+                    port = ServerUrls.ProductionUrls.MQTT_PRODUCTION_XMPP_PORT;
                 if (count < 5)
                 {
                     ip = ProductionIps[_random.Next(ProductionIps.Length)];
