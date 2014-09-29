@@ -406,7 +406,7 @@ namespace windows_client.View
         /// </summary>
         private void UpgradeConvMessageDBForReadBy()
         {
-            using (HikeChatsDb db = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
+            using (HikeChatsDb db = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
             {
                 if (db.DatabaseExists())
                 {
@@ -442,7 +442,7 @@ namespace windows_client.View
 
             StatusMsgsTable.MessagesDbUpdateToLatestVersion();
 
-            using (HikeUsersDb db = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
+            using (HikeUsersDb db = new HikeUsersDb(HikeConstants.DBStrings.UsersDBConnectionstring))
             {
                 if (db.DatabaseExists())
                 {

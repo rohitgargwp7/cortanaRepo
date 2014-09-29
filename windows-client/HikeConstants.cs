@@ -5,6 +5,7 @@ namespace windows_client
 {
     public class HikeConstants
     {
+        #region ServerJson Keys
         public static class ServerJsonKeys
         {
             public static readonly string MESSAGE = "msg";
@@ -206,7 +207,9 @@ namespace windows_client
                 public static readonly string MSISDN_KEYWORD = "msisdn";
             }
         }
+        #endregion
 
+        #region All Uncategorized constants
         public static readonly string PushNotificationChannelName = "HikeApp";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
@@ -284,10 +287,6 @@ namespace windows_client
 
         public static readonly string MY_PROFILE_PIC = "my_profile_pic";
 
-        public static readonly string LOCATION_SEARCH = "locationSearch";
-        public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
-        public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
-
         public static readonly string UNREAD_UPDATES = "urUp";
         public static readonly string UNREAD_FRIEND_REQUESTS = "urFr";
         public static readonly string REFRESH_BAR = "refBar";
@@ -317,65 +316,84 @@ namespace windows_client
         public static readonly int APP_MIN_FREE_SIZE = 20971520;
         public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
 
+        #endregion
+
         #region TOAST CONSTANTS
-        public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
-        public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
-        public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
-        public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
-        public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
-        public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
-        public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
-        public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
-        public static readonly string TOAST_FOR_FILE = "Sent you a file";
-        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+        public static class ToastConstants
+        {
+            public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
+            public static readonly string TOAST_FOR_MESSAGE = "Sent you a message";
+            public static readonly string TOAST_FOR_STICKER = "Sent you a sticker";
+            public static readonly string TOAST_FOR_PHOTO = "Sent you a photo";
+            public static readonly string TOAST_FOR_AUDIO = "Sent you an audio";
+            public static readonly string TOAST_FOR_VIDEO = "Sent you a video";
+            public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
+            public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
+            public static readonly string TOAST_FOR_FILE = "Sent you a file";
+            public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+        }
         #endregion
 
-        #region ANALYTICS EVENTS KEYS
+        #region Analytics Keys
+        public static class AnalyticsKeys
+        {
+            //Analytic Events
+            public static readonly string STICKER_TIP_TAP_EVENT = "StickerTClick";
+            public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
+            public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
+            public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";
+            public static readonly string STATUS_TIP_TAP_EVENT = "atomicStatusTClick";
+            public static readonly string INVITE_TIP_TAP_EVENT = "atomicAppInvFreeSmsTClick";
+            public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
+            public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
 
-        public static readonly string INVITE_FRIENDS_FROM_POPUP_FREE_SMS = "inviteFriendsFromPopupFreeSMS";
-        public static readonly string INVITE_FRIENDS_FROM_POPUP_REWARDS = "inviteFriendsFromPopupRewards";
-        public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
-        public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
-        public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
-        public static readonly string START_HIKING = "startHiking";
-        public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
-        public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
-        public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
-        public static readonly string FTUE_CARD_SEE_ALL_CLICKED = "ftueCardSeeAllClicked";
-        public static readonly string FTUE_CARD_START_CHAT_CLICKED = "ftueCardStartChatClicked";
-        public static readonly string FTUE_CARD_LAST_SEEN_CLICKED = "ftueCardLastSeenClicked";
-        public static readonly string FTUE_CARD_GROUP_CHAT_CLICKED = "ftueCardGroupChatClicked";
-        public static readonly string FTUE_CARD_PROFILE_PIC_CLICKED = "ftueCardProfilePicClicked";
-        public static readonly string FTUE_CARD_POST_STATUS_CLICKED = "ftueCardPostStatusClicked";
-        public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
-        public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
-        public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
+            public static readonly string INVITE_FRIENDS_FROM_POPUP_FREE_SMS = "inviteFriendsFromPopupFreeSMS";
+            public static readonly string INVITE_FRIENDS_FROM_POPUP_REWARDS = "inviteFriendsFromPopupRewards";
+            public static readonly string INVITE_SMS_SCREEN_FROM_INVITE = "inviteSMSScreenFromInvite";
+            public static readonly string INVITE_SMS_SCREEN_FROM_CREDIT = "inviteSMSScreenFromCredit";
+            public static readonly string SELECT_ALL_INVITE = "selectAllInvite";
+            public static readonly string START_HIKING = "startHiking";
+            public static readonly string FTUE_TUTORIAL_STICKER_VIEWED = "ftueTutorialStickerViewed";
+            public static readonly string FTUE_TUTORIAL_CBG_VIEWED = "ftueTutorialCbgViewed";
+            public static readonly string FTUE_SET_PROFILE_IMAGE = "ftueSetProfileImage";
+            public static readonly string FTUE_CARD_SEE_ALL_CLICKED = "ftueCardSeeAllClicked";
+            public static readonly string FTUE_CARD_START_CHAT_CLICKED = "ftueCardStartChatClicked";
+            public static readonly string FTUE_CARD_LAST_SEEN_CLICKED = "ftueCardLastSeenClicked";
+            public static readonly string FTUE_CARD_GROUP_CHAT_CLICKED = "ftueCardGroupChatClicked";
+            public static readonly string FTUE_CARD_PROFILE_PIC_CLICKED = "ftueCardProfilePicClicked";
+            public static readonly string FTUE_CARD_POST_STATUS_CLICKED = "ftueCardPostStatusClicked";
+            public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
+            public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
+            public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
 
-        public static readonly string EVENT_TYPE = "et";
-        public static readonly string EVENT_KEY = "ek";
-        public static readonly string EVENT_TYPE_CLICK = "click";
+            public static readonly string EVENT_TYPE = "et";
+            public static readonly string EVENT_KEY = "ek";
+            public static readonly string EVENT_TYPE_CLICK = "click";
 
-        public static readonly string PRO_TIPS_DISMISSED = "tip_id";
-        public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
-        public static readonly string NULL_PUSH_TOKEN = "npt";
-        public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
+            public static readonly string PRO_TIPS_DISMISSED = "tip_id";
+            public static readonly string FWD_TO_MULTIPLE = "fwdToMul";
+            public static readonly string NULL_PUSH_TOKEN = "npt";
+            public static readonly string EXCEPTION_PUSH_TOKEN = "expt";
 
-        public static readonly string ANALYTICS_TAP_HI_WHILE_TIP = "quickSetupClick";
-        public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
-        public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
-        public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
-        public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
-        public static readonly string ANALYTICS_ENTER_TO_SEND = "entr_2_snd";
-
+            public static readonly string ANALYTICS_TAP_HI_WHILE_TIP = "quickSetupClick";
+            public static readonly string ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION = "stlthFtueDone";
+            public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
+            public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
+            public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
+            public static readonly string ANALYTICS_ENTER_TO_SEND = "entr_2_snd";
+        }
         #endregion
 
+        #region Extra Constants
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
             public static readonly string SEND_BOT = "sendbot";
             public static readonly string IfModifiedSince = "30";
         }
+        #endregion
 
+        #region AppSetting Keys
         public static class AppSettingsKeys
         {
             public static readonly string PAGE_STATE = "page_State";
@@ -478,7 +496,9 @@ namespace windows_client
 
 
         }
+        #endregion
 
+        #region NokiaHere Constants
         public static class NokiaHere
         {
             public static readonly string SEARCH = "search";
@@ -493,11 +513,18 @@ namespace windows_client
             public static readonly string CGEN_GPS = "gps";
             public static readonly string CGEN_MAP = "map";
         }
+        #endregion
 
-        public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
-        public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
-        public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
+        #region DB Strings
+        public static class DBStrings
+        {
+            public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
+            public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
+            public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
+        }
+        #endregion
 
+        #region Navigation Keys
         public class NavigationKeys
         {
             public static readonly string GROUP_NAME = "groupName";
@@ -527,7 +554,7 @@ namespace windows_client
             public static readonly string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
             public static readonly string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
             public static readonly string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
-            
+
             /// <summary>
             /// Use key whenever relaunching chat thread from chat thread page to clear back stack
             /// </summary>
@@ -554,8 +581,14 @@ namespace windows_client
             public static readonly string GC_PIN = "pin";
             public static readonly string PROFILE_NAME_CHANGED = "ProfileNameChanged";
             public static readonly string IS_PIC_DOWNLOADED = "isPicDownloaded";
-        }
 
+            public static readonly string LOCATION_SEARCH = "locationSearch";
+            public static readonly string LOCATION_SELECTED_INDEX = "locationSelectedPlace";
+            public static readonly string LOCATION_PLACE_SEARCH_RESULT = "locationPlaceSearchResult";
+        }
+        #endregion
+
+        #region Server URLs
         public static class ServerUrls
         {
             public static readonly string APP_ENVIRONMENT_SETTING = "appEnv";
@@ -598,7 +631,9 @@ namespace windows_client
                 public static readonly string STICKER_URL = "http://staging.im.hike.in/s/";
             }
         }
+        #endregion
 
+        #region Server Tips related constants
         public static class ServerTips
         {
             public static readonly string CHAT_SCREEN_TIP_ID = "chtScrTipId";
@@ -613,17 +648,11 @@ namespace windows_client
             public const string INVITATION_TIPS = "inv";
             public const string STATUS_UPDATE_TIPS = "stts";
 
-            //Analytic Events
-            public static readonly string STICKER_TIP_TAP_EVENT = "StickerTClick";
-            public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
-            public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
-            public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";
-            public static readonly string STATUS_TIP_TAP_EVENT = "atomicStatusTClick";
-            public static readonly string INVITE_TIP_TAP_EVENT = "atomicAppInvFreeSmsTClick";
-            public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
-            public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
-        }
 
+        }
+        #endregion
+
+        #region EmailConversation Constants
         public static class EmailConversation
         {
             public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
@@ -631,5 +660,6 @@ namespace windows_client
             public static readonly string CONV_MSG_DISP_FMT = "{0}- {1}: {2}"; //datetime- name: msg (format to display conversation)
             public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
         }
+        #endregion
     }
 }

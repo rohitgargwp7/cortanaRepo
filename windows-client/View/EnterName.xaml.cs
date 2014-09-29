@@ -75,7 +75,7 @@ namespace windows_client
         {
             try
             {
-                Analytics.SendClickEvent(HikeConstants.FTUE_SET_PROFILE_IMAGE);
+                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_SET_PROFILE_IMAGE);
                 photoChooserTask.Show();
                 nextIconButton.IsEnabled = false;
                 txtBxEnterName.IsEnabled = false;

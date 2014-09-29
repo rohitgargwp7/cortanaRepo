@@ -93,8 +93,8 @@ namespace windows_client.Model
                 return;
 
             JObject metadataObject = new JObject();
-            metadataObject.Add(HikeConstants.EVENT_TYPE, HikeConstants.EVENT_TYPE_CLICK);
-            metadataObject.Add(HikeConstants.EVENT_KEY, key);
+            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_TYPE, HikeConstants.AnalyticsKeys.EVENT_TYPE_CLICK);
+            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
             dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);
@@ -120,7 +120,7 @@ namespace windows_client.Model
                 return;
 
             JObject metadataObject = new JObject();
-            metadataObject.Add(HikeConstants.EVENT_KEY, key);
+            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
             dataObj.Add(HikeConstants.ServerJsonKeys.METADATA, metadataObject);

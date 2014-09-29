@@ -197,7 +197,7 @@ namespace windows_client.View
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
             if (_isSelectAllChecked)
-                Analytics.SendClickEvent(HikeConstants.SELECT_ALL_INVITE);
+                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.SELECT_ALL_INVITE);
 
             string msisdns = string.Empty, toNum = String.Empty;
             JObject obj = new JObject();

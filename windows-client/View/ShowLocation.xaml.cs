@@ -61,7 +61,7 @@ namespace windows_client.View
         {
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.Back)
             {
-                State.Remove(HikeConstants.LOCATION_SEARCH);
+                State.Remove(HikeConstants.NavigationKeys.LOCATION_SEARCH);
                 State.Remove(HikeConstants.ServerJsonKeys.ZOOM_LEVEL);
             }
             else

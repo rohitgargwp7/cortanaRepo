@@ -788,7 +788,7 @@ namespace windows_client.View
             //    return;
             //}
 
-            Analytics.SendClickEvent(HikeConstants.NEW_CHAT_FROM_TOP_BAR);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.NEW_CHAT_FROM_TOP_BAR);
 
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
@@ -2780,7 +2780,7 @@ namespace windows_client.View
 
             ProTipCount = 0;
 
-            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
+            Analytics.SendAnalyticsEvent(HikeConstants.ServerJsonKeys.ST_UI_EVENT, HikeConstants.AnalyticsKeys.PRO_TIPS_DISMISSED, ProTipHelper.CurrentProTip._id);
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (ss, ee) =>
@@ -2942,9 +2942,9 @@ namespace windows_client.View
         void customOverlay_LeftClicked(object sender, EventArgs e)
         {
             if (showFreeMessageOverlay)
-                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_FREE_SMS);
+                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.INVITE_FRIENDS_FROM_POPUP_FREE_SMS);
             else
-                Analytics.SendClickEvent(HikeConstants.INVITE_FRIENDS_FROM_POPUP_REWARDS);
+                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.INVITE_FRIENDS_FROM_POPUP_REWARDS);
 
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
@@ -2954,14 +2954,14 @@ namespace windows_client.View
 
         private void DefaultStatus_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_POST_STATUS_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_POST_STATUS_CLICKED);
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
 
         private void SeeAllButton_Click(object sender, RoutedEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_SEE_ALL_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_SEE_ALL_CLICKED);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 
@@ -2973,7 +2973,7 @@ namespace windows_client.View
             if (c == null)
                 return;
 
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_START_CHAT_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_START_CHAT_CLICKED);
 
             StartNewChatWithSelectContact(c);
         }
@@ -2999,20 +2999,20 @@ namespace windows_client.View
 
         private void GoToInvite_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_INVITE_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_INVITE_CLICKED);
             NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
         }
 
         private void GoToGroup_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_GROUP_CHAT_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_GROUP_CHAT_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/NewGroup.xaml", UriKind.Relative));
         }
 
         private void GoToProfile_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.FTUE_CARD_PROFILE_PIC_CLICKED);
+            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_CARD_PROFILE_PIC_CLICKED);
             PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE] = null;
             PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SET_PROFILE_PIC] = true;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
@@ -3221,9 +3221,9 @@ namespace windows_client.View
                 if (!HikeInstantiation.AppSettings.Contains(HikeConstants.AppSettingsKeys.HIDDEN_MODE_PASSWORD))
                 {
                     if (_tipMode == ToolTipMode.HIDDEN_MODE_GETSTARTED)
-                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_TIP);
+                        Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ANALYTICS_TAP_HI_WHILE_TIP);
                     else
-                        Analytics.SendClickEvent(HikeConstants.ANALYTICS_TAP_HI_WHILE_NO_TIP);
+                        Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ANALYTICS_TAP_HI_WHILE_NO_TIP);
                 }
 
                 if (!HikeInstantiation.ViewModel.IsHiddenModeActive)
@@ -3361,7 +3361,7 @@ namespace windows_client.View
                     {
                         if (_tempPassword.Equals(popup.Password))
                         {
-                            Analytics.SendClickEvent(HikeConstants.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
+                            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ANALYTICS_HIDDEN_MODE_PASSWORD_CONFIRMATION);
 
                             HikeInstantiation.ViewModel.Password = popup.Password;
                             HikeInstantiation.WriteToIsoStorageSettings(HikeConstants.AppSettingsKeys.HIDDEN_MODE_PASSWORD, HikeInstantiation.ViewModel.Password);
@@ -3625,7 +3625,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE] = null;
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.SET_PROFILE_PIC] = true;
-                    Analytics.SendClickEvent(HikeConstants.ServerTips.PROFILE_PIC_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.PROFILE_PIC_TIP_TAP_EVENT);
 
                     NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
                     break;
@@ -3636,7 +3636,7 @@ namespace windows_client.View
 
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.USERINFO_FROM_PROFILE] = null;
 
-                    Analytics.SendClickEvent(HikeConstants.ServerTips.STATUS_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.STATUS_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/PostStatus.xaml", UriKind.Relative));
                     break;
 
@@ -3644,7 +3644,7 @@ namespace windows_client.View
 
                     HideTips();
 
-                    Analytics.SendClickEvent(HikeConstants.ServerTips.INVITE_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.INVITE_TIP_TAP_EVENT);
                     NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
                     break;
 
@@ -3652,7 +3652,7 @@ namespace windows_client.View
 
                     HideTips();
 
-                    Analytics.SendClickEvent(HikeConstants.ServerTips.FAVOURITE_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FAVOURITE_TIP_TAP_EVENT);
                     launchPagePivot.SelectedIndex = 1;
 
                     break;

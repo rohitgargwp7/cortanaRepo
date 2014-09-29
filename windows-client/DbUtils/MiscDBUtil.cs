@@ -59,7 +59,7 @@ namespace windows_client.DbUtils
             FriendsTableUtils.DeleteAllFriends();
             MessagesTableUtils.DeleteAllLongMessages();
 
-            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             HikeInstantiation.ViewModel.ClearBLockedHashSet();
             HikeInstantiation.ViewModel.ContactsCache.Clear();
 
-            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.DBStrings.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
@@ -115,7 +115,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region DELETE MQTTPERSISTED MESSAGES
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.MqttDBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 try

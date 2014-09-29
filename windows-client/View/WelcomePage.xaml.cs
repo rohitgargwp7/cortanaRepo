@@ -137,14 +137,14 @@ namespace windows_client
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
 
-                    Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_STICKER_VIEWED);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_TUTORIAL_STICKER_VIEWED);
                     break;
                 case 2:
                     p1.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p2.Fill = (SolidColorBrush)App.Current.Resources["HikeGrey"];
                     p3.Fill = (SolidColorBrush)App.Current.Resources["HikeBlue"];
 
-                    Analytics.SendClickEvent(HikeConstants.FTUE_TUTORIAL_CBG_VIEWED);
+                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_TUTORIAL_CBG_VIEWED);
                     break;
             }
         }
