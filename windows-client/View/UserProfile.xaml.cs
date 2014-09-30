@@ -867,8 +867,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
             else
             {
-                bool isInAddressBook = false; // Don't serve any purpose here
-                ContactInfo cn = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
 
                 if (contactInfo == null)
                 {
@@ -1196,8 +1195,7 @@ namespace windows_client.View
             }
             else
             {
-                bool isInAddressBook = false; // Don't serve any purpose here
-                ContactInfo cn = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(msisdn, nameToShow, onHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
             }

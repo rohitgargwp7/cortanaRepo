@@ -3142,8 +3142,7 @@ namespace windows_client.View
             }
             else
             {
-                bool isInAddressBook = false; // Don't serve any purpose here
-                ContactInfo cn = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
 
                 if (cn == null)
                 {

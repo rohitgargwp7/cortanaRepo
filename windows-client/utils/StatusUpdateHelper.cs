@@ -70,8 +70,7 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    bool isInAddressBook = false;
-                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn, out isInAddressBook);
+                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn);
                     
                     if (cn == null)
                     {

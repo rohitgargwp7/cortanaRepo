@@ -100,8 +100,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    bool isInAddressBook = false; //Don't serve any purpose here.
-                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn,out isInAddressBook);
+                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                     if (App.ViewModel.Isfavourite(convMessage.Msisdn))
