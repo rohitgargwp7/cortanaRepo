@@ -41,6 +41,7 @@ namespace windows_client.Model
         private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
+        private string _readByInfo;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -123,7 +124,7 @@ namespace windows_client.Model
             JToken typeToken = null;
             string type = null;
 
-            if (obj.TryGetValue(HikeConstants.GC_PIN,out typeToken))
+            if (obj.TryGetValue(HikeConstants.GC_PIN, out typeToken))
                 return ParticipantInfoState.PIN_MESSAGE;
 
             if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
@@ -372,6 +373,22 @@ namespace windows_client.Model
             }
         }
 
+        [Column(CanBeNull = true)]
+        public string ReadByInfo
+        {
+            get
+            {
+                return _readByInfo;
+            }
+            set
+            {
+                if (_readByInfo != value)
+                {
+                    NotifyPropertyChanging("ReadByInfo");
+                    _readByInfo = value;
+                }
+            }
+        }
         public Attachment FileAttachment
         {
             get
@@ -499,7 +516,7 @@ namespace windows_client.Model
                 if (this.GroupMemberName == null)
                     return this.GroupParticipant;
                 else
-                    return this.GroupMemberName;    
+                    return this.GroupMemberName;
             }
         }
 
@@ -776,7 +793,7 @@ namespace windows_client.Model
             get
             {
                 return FileAttachment != null && MessageStatus == State.SENT_FAILED &&
-                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED 
+                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED
                     || FileAttachment.FileState == Attachment.AttachmentState.CANCELED) ?
                     Visibility.Visible : Visibility.Collapsed;
             }

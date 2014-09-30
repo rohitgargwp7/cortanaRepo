@@ -7629,8 +7629,10 @@ namespace windows_client.View
                     var msg = Utils.GetMessageStatus(_lastReceivedSentMessage.MessageStatus, _groupInfo.ReadByArray, _activeUsers, mContactNumber);
 
                     if (String.IsNullOrEmpty(msg))
+                    {
+                        Debug.WriteLine("empty status,readbyarray:" + _groupInfo.ReadByArray);
                         return;
-
+                    }
                     _readByMessage.Message = msg;
 
                     ocMessages.Remove(_readByMessage);

@@ -22,8 +22,8 @@ namespace windows_client.Model
         string _groupName;
         string _groupOwner;
         bool _groupAlive;
-        string _readByInfo;
-        long _lastReadMessageId;
+        string _readByDetails;
+        long? _lastReadMessageId;
 
         public GroupInfo() { }
 
@@ -109,13 +109,13 @@ namespace windows_client.Model
                 }
             }
         }
-         
-        [Column]
-        public long LastReadMessageId
+
+        [Column(CanBeNull = true)]
+        public long? LastReadMessageId
         {
             get
             {
-                return _lastReadMessageId;
+                return _lastReadMessageId ?? 0;
             }
             set
             {
@@ -128,18 +128,18 @@ namespace windows_client.Model
         }
 
         [Column(CanBeNull = true)]
-        public string ReadByInfo
+        public string ReadByDetails
         {
             get
             {
-                return _readByInfo;
+                return _readByDetails;
             }
             set
             {
-                if (_readByInfo != value)
+                if (_readByDetails != value)
                 {
                     NotifyPropertyChanging("ReadByInfo");
-                    _readByInfo = value;
+                    _readByDetails = value;
                 }
             }
         }
@@ -151,10 +151,10 @@ namespace windows_client.Model
             {
                 if (_readByArray == null)
                 {
-                    if (String.IsNullOrEmpty(_readByInfo))
+                    if (String.IsNullOrEmpty(_readByDetails))
                         return null;
                     else
-                        _readByArray = JArray.Parse(_readByInfo);
+                        _readByArray = JArray.Parse(_readByDetails);
                 }
 
                 return _readByArray;
