@@ -79,6 +79,15 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Creates new conversation object and add it to db
+        /// </summary>
+        /// <param name="convMessage">Message to be added in conversation</param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">false if messsage already persisted or to be persisted later</param>
+        /// <param name="imageBytes">Avatar image bytes</param>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, bool persistMessage, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;

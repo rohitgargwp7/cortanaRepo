@@ -117,7 +117,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void UpdateReadBy(string groupId, long lastMessageId, JArray readByArray)
+        /// <summary>
+        /// Update read by and last read message id for particular group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="lastReadMessageId"></param>
+        /// <param name="readByArray"></param>
+        public static void UpdateReadBy(string groupId, long lastReadMessageId, JArray readByArray)
         {
             if (string.IsNullOrEmpty(groupId) || readByArray == null || readByArray.Count == 0)
                 return;
@@ -125,10 +131,10 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
-                if (gi == null || gi.LastReadMessageId > lastMessageId)
+                if (gi == null || gi.LastReadMessageId > lastReadMessageId)
                     return;
 
-                if (gi.LastReadMessageId == lastMessageId)
+                if (gi.LastReadMessageId == lastReadMessageId)
                 {
                     for (int i = 0; i < readByArray.Count; i++)
                     {
@@ -138,7 +144,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    gi.LastReadMessageId = lastMessageId;
+                    gi.LastReadMessageId = lastReadMessageId;
                     gi.ReadByArray = readByArray;
                 }
                 gi.ReadByInfo = gi.ReadByArray.ToString();
@@ -146,6 +152,12 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// Update read by and last read message id for particular group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="lastMessageId"></param>
+        /// <param name="readBy"></param>
         public static void UpdateReadBy(string groupId, long lastMessageId, string readBy)
         {
             if (string.IsNullOrEmpty(groupId) || string.IsNullOrEmpty(readBy))

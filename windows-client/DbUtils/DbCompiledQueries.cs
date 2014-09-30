@@ -302,6 +302,10 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+
+        /// <summary>
+        /// Get all messages which are sent but not delivered for msisdn for maximum msg id
+        /// </summary>
         public static Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> GetUndeliveredMessagesForMsisdn
         {
             get
@@ -310,12 +314,15 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
                      ((HikeChatsDb hdc, long id, string msisdn) =>
                          from o in hdc.messages
-                         where o.MessageId <= id && o.Msisdn == msisdn && o.MessageStatus < ConvMessage.State.SENT_DELIVERED
+                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus==ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                          select o);
                 return q;
             }
         }
 
+        /// <summary>
+        /// Get all messages which are sent or delivered but nor read for msisdn for maximum msg id
+        /// </summary>
         public static Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> GetDeliveredUnreadMessagesForMsisdn
         {
             get
@@ -324,7 +331,7 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
                      ((HikeChatsDb hdc, long id, string msisdn) =>
                          from o in hdc.messages
-                         where o.MessageId <= id && o.Msisdn == msisdn && o.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ
+                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.SENT_DELIVERED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
                          select o);
                 return q;
             }

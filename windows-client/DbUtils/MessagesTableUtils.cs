@@ -111,6 +111,12 @@ namespace windows_client.DbUtils
             return true;
         }
 
+
+        /// <summary>
+        /// Insert messages at once
+        /// </summary>
+        /// <param name="listMessages">list of non duplicate messages</param>
+        /// <returns></returns>
         public static bool BulkInsertMessage(IList<ConvMessage> listMessages)
         {
             if (listMessages == null || listMessages.Count == 0)
@@ -131,6 +137,10 @@ namespace windows_client.DbUtils
             return true;
         }
 
+        /// <summary>
+        /// Removes duplicate messages from the list of messages passed
+        /// </summary>
+        /// <param name="listConvMessage"></param>
         public static void FilterDuplicateMessage(List<ConvMessage> listConvMessage)
         {
             if (listConvMessage == null || listConvMessage.Count == 0)
@@ -216,6 +226,15 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// updates conversationlist according to paricipant info and update db
+        /// </summary>
+        /// <param name="convMsg"></param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">if message persistence is already handled then pass false</param>
+        /// <param name="imageBytes"></param>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, bool persistMessage = true, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
@@ -471,6 +490,12 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+
+        /// <summary>
+        /// Updates metadata related to pin for conversation object 
+        /// </summary>
+        /// <param name="convMsg">PinMessge</param>
+        /// <param name="obj">Conversation List object</param>
         public static void ProcessConversationMetadata(ConvMessage convMsg, ConversationListObject obj)
         {
             JObject metaData = new JObject();
