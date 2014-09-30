@@ -544,7 +544,7 @@ namespace windows_client.View
                    //db maximum version 3
                     if (version < 4)
                     {
-                        dbUpdater.AddColumn<GroupInfo>("ReadByDetails");
+                        dbUpdater.AddColumn<GroupInfo>("ReadByInfo");
                         dbUpdater.AddColumn<GroupInfo>("LastReadMessageId");
                         dbUpdater.DatabaseSchemaVersion = 4;
 

@@ -448,6 +448,10 @@ namespace windows_client.View
 
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+
+                if (isGroupChat && isGroupAlive && _groupInfo == null)
+                    _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
+
                 loadMessages(INITIAL_FETCH_COUNT, true);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -7591,12 +7595,9 @@ namespace windows_client.View
 
         void UpdateLastSentMessageStatusOnUI()
         {
-            if (!isGroupChat || !isGroupAlive)
+            if (!isGroupChat || !isGroupAlive || _groupInfo == null)//group info is populated in manage page
                 return;
-            if (_groupInfo == null)
-                _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
-            if (_groupInfo == null)
-                return;
+
             _lastReceivedSentMessage = null;
 
             try

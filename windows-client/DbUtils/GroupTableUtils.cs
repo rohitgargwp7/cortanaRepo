@@ -141,7 +141,7 @@ namespace windows_client.DbUtils
                     gi.LastReadMessageId = lastMessageId;
                     gi.ReadByArray = readByArray;
                 }
-                gi.ReadByDetails = gi.ReadByArray.ToString();
+                gi.ReadByInfo = gi.ReadByArray.ToString();
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
@@ -167,7 +167,7 @@ namespace windows_client.DbUtils
                     gi.LastReadMessageId = lastMessageId;
                     gi.ReadByArray = new JArray() { readBy };
                 }
-                gi.ReadByDetails = gi.ReadByArray.ToString();
+                gi.ReadByInfo = gi.ReadByArray.ToString();
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }

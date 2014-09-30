@@ -130,19 +130,6 @@ namespace windows_client.DbUtils
             }
             return true;
         }
-        public static bool IsMessageDuplicate(ConvMessage convMessage)
-        {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
-            {
-                if (convMessage.MappedMessageId > 0)
-                {
-                    IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
-                    ConvMessage cm = qq.FirstOrDefault();
-                    return cm != null;
-                }
-            }
-            return true;
-        }
 
         public static void FilterDuplicateMessage(List<ConvMessage> listConvMessage)
         {
