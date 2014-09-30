@@ -174,7 +174,16 @@ namespace windows_client
                     }
                     else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
                     {
-                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                        string sendersMsisdn = String.Empty;
+
+                        if (obj.IsGroupChat)
+                            sendersMsisdn = convMessage.GroupParticipant;
+                        else
+                            sendersMsisdn = convMessage.Msisdn;
+
+                        if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
+                            FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                    
                     }
 
                     if (convMessage.FileAttachment != null)
