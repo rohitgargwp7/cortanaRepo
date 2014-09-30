@@ -619,7 +619,7 @@ namespace windows_client.ViewModel
                 }
             }
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            ContactUtils.UpdateGroupParticpantsCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         /// <summary>
@@ -798,14 +798,15 @@ namespace windows_client.ViewModel
                     foreach (var contact in contactsForForward)
                     {
                         var msisdn = contact.Msisdn;
-                        ConvMessage convMessage = new ConvMessage("", msisdn,
+                        ConvMessage convMessage = new ConvMessage(String.Empty, msisdn,
                           TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !contact.OnHike;
                         convMessage.HasAttachment = true;
                         convMessage.FileAttachment = new Attachment();
                         convMessage.FileAttachment.ContentType = contentType;
-                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[4];
-                        convMessage.FileAttachment.FileName = (string)attachmentData[5];
+                        convMessage.FileAttachment.FileKey = (string)attachmentData[4];
+                        convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
+                        convMessage.FileAttachment.FileName = (string)attachmentData[6];
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))
@@ -835,7 +836,7 @@ namespace windows_client.ViewModel
                         if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == msisdn)
                             App.newChatThreadPage.AddNewMessageToUI(convMessage, false);
 
-                        object[] vals = new object[3];
+                        object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
@@ -850,18 +851,9 @@ namespace windows_client.ViewModel
         {
             var regexType = (SmileyParser.RegexType)objArray[0];
             var target = (string)objArray[1];
+
             if (regexType == SmileyParser.RegexType.EMAIL)
-            {
-                var task = new EmailComposeTask() { To = target };
-                try
-                {
-                    task.Show();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("HikeViewModel:: Hyperlink_Clicked : " + ex.StackTrace);
-                }
-            }
+                EmailHelper.SendEmail(string.Empty, string.Empty, target);
             else if (regexType == SmileyParser.RegexType.URL)
             {
                 var task = new WebBrowserTask() { URL = target };
@@ -877,9 +869,9 @@ namespace windows_client.ViewModel
             else if (regexType == SmileyParser.RegexType.PHONE_NO)
             {
                 var phoneCallTask = new PhoneCallTask();
-                var targetPhoneNumber = target.Replace("-", "");
+                var targetPhoneNumber = target.Replace("-", String.Empty);
                 targetPhoneNumber = targetPhoneNumber.Trim();
-                targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+                targetPhoneNumber = targetPhoneNumber.Replace(" ", String.Empty);
                 phoneCallTask.PhoneNumber = targetPhoneNumber;
                 try
                 {

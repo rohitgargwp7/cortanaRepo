@@ -855,13 +855,14 @@ namespace finalmqtt.Client
         {
             try
             {
+                if (mqttListener != null)
+                    mqttListener.onPublish(msg.getTopic(), msg.getData());
+
                 String receivedMessage = Encoding.UTF8.GetString(msg.getData(), 0, msg.getData().Length);
 
                 MQttLogging.LogWriter.Instance.WriteToLog(string.Format("recieved : MQttID:{0} ,Message:{1}", msg.getMessageId(), receivedMessage));
 
                 sendAcknowledement(msg);
-                if (mqttListener != null)
-                    mqttListener.onPublish(msg.getTopic(), msg.getData());
             }
             catch (Exception ex)
             {

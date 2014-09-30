@@ -164,12 +164,22 @@ namespace windows_client
                                 bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
                                 if (success)
                                 {
+                                    ConversationListObject obj;
+                                    bool updateConversation = false;
                                     foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
                                     {
                                         if (convMessage.StatusUpdateObj != null)
                                         {
                                             convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
                                             StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                        }
+                                        else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                                        {
+                                            if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out obj))
+                                            {
+                                                MessagesTableUtils.ProcessConversationMetadata(convMessage, obj);
+                                                updateConversation = true;
+                                            }
                                         }
                                         else
                                         {
@@ -190,15 +200,17 @@ namespace windows_client
                                         }
                                     }
                                     ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
-                                    ConversationListObject obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
+                                    obj = MessagesTableUtils.addChatMessage(lastMessage, false, false);
                                     if (obj == null)
                                         continue;
 
                                     if (msisdnBulkData.ListMessages.Count > 1)
                                     {
                                         obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
-                                        ConversationTableUtils.updateConversation(obj);
+                                        updateConversation = true;
                                     }
+                                    if (updateConversation)
+                                        ConversationTableUtils.updateConversation(obj);
 
                                     object[] vals = new object[3];
 
@@ -219,9 +231,10 @@ namespace windows_client
                         }
                         if (msisdnBulkData.LastReadMsgId > 0)
                         {
-                            object[] vals = new object[2];
+                            object[] vals = new object[3];
                             vals[0] = MiscDBUtil.UpdateBulkMessageDBsReadStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastReadMsgId, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdnBulkData.LastReadMsgId, msisdnBulkData.ReadByArray);
                             vals[1] = msisdnBulkData.Msisdn;
+                            vals[2] = msisdnBulkData.ReadByArray;
                             this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
 
                         }
@@ -249,6 +262,7 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
@@ -295,7 +309,7 @@ namespace windows_client
             #region REQUEST_DISPLAY_PIC
             else if (REQUEST_DISPLAY_PIC == type)
             {
-                string grpId = "";
+                string grpId = String.Empty;
                 try
                 {
                     grpId = (string)jsonObj[HikeConstants.TO];
@@ -311,7 +325,7 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
-                string sentTo = "";
+                string sentTo = String.Empty;
                 try
                 {
                     // If not null then this is group id
@@ -475,7 +489,7 @@ namespace windows_client
                 object[] vals = new object[3];
                 vals[0] = ids;
                 vals[1] = msisdnToCheck;
-                vals[2] = msisdn;
+                vals[2] = new JArray() { msisdn };
                 updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
             }
@@ -507,7 +521,7 @@ namespace windows_client
                 // update contacts cache
                 if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
                     App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
-                GroupManager.Instance.LoadGroupCache();
+                GroupManager.Instance.LoadGroupParticpantsCache();
                 if (joined)
                 {
                     long lastTimeStamp;
@@ -535,12 +549,12 @@ namespace windows_client
 
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
-                    if (GroupManager.Instance.GroupCache != null)
+                    if (GroupManager.Instance.GroupParticpantsCache != null)
                     {
-                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                        foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                         {
                             bool shouldSave = false;
-                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                            List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                             for (int i = 0; i < l.Count; i++)
                             {
                                 if (l[i].Msisdn == uMsisdn)
@@ -550,7 +564,7 @@ namespace windows_client
                                 }
                             }
                             if (shouldSave)
-                                GroupManager.Instance.SaveGroupCache(key);
+                                GroupManager.Instance.SaveGroupParticpantsCache(key);
                         }
                     }
                 }
@@ -928,7 +942,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -1207,7 +1221,7 @@ namespace windows_client
                     }
                     else
                     {
-                        GroupManager.Instance.SaveGroupCache(grpId);
+                        GroupManager.Instance.SaveGroupParticpantsCache(grpId);
                         return;
                     }
                 }
@@ -1249,9 +1263,10 @@ namespace windows_client
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
                 if (obj == null)
                     return;
-                GroupManager.Instance.SaveGroupCache(grpId);
-                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-                //Logging.LogWriter.Instance.WriteToLog("NetworkManager", "Group is new");
+
+                GroupManager.Instance.SaveGroupParticpantsCache(grpId);
+                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
+                Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
                 vals[0] = convMessage;
@@ -1388,7 +1403,7 @@ namespace windows_client
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
-                    GroupManager.Instance.SaveGroupCache(groupId);
+                    GroupManager.Instance.SaveGroupParticpantsCache(groupId);
                     ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
                     if (cObj == null)
                         return;
@@ -1788,24 +1803,24 @@ namespace windows_client
                     var header = (string)data[HikeConstants.PRO_TIP_HEADER];
                     var text = (string)data[HikeConstants.PRO_TIP_TEXT];
 
-                    var imageUrl = "";
+                    var imageUrl = String.Empty;
                     try
                     {
                         imageUrl = (string)data[HikeConstants.PRO_TIP_IMAGE];
                     }
                     catch
                     {
-                        imageUrl = "";
+                        imageUrl = String.Empty;
                     }
 
-                    var base64Image = "";
+                    var base64Image = String.Empty;
                     try
                     {
                         base64Image = (string)data[HikeConstants.THUMBNAIL];
                     }
                     catch
                     {
-                        base64Image = "";
+                        base64Image = String.Empty;
                     }
 
                     ProTipHelper.Instance.AddProTip(id, header, text, imageUrl, base64Image);
@@ -1836,7 +1851,7 @@ namespace windows_client
                     if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
                         GroupManager.Instance.LoadGroupParticipants(to);
 
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
                     {
                         Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
                         return;
@@ -1861,7 +1876,7 @@ namespace windows_client
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
                         {
                             //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
                             cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
@@ -1938,7 +1953,7 @@ namespace windows_client
                         isCritical = false;
                     }
 
-                    var message = "";
+                    var message = String.Empty;
                     try
                     {
                         message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
@@ -2166,16 +2181,14 @@ namespace windows_client
                     for (int i = 0; i < msgIds.Count; i++)
                     {
                         long msgID = Int64.Parse(msgIds[i].ToString());
-                        //todo:dont do for 1:1
                         if (msgID > msisdnBulkData.LastReadMsgId)
                         {
-                            msisdnBulkData.ReadByArray = new JArray();
-                            msisdnBulkData.ReadByArray.Add(readBy);
                             msisdnBulkData.LastReadMsgId = msgID;
+                            if (Utils.isGroupConversation(msisdn))
+                                msisdnBulkData.ReadByArray = new JArray() { readBy };//if new msg id is greater than existing msg id then create new readby array
                         }
-                        else if (msgID == msisdnBulkData.LastReadMsgId)
+                        else if (msgID == msisdnBulkData.LastReadMsgId && Utils.isGroupConversation(msisdn))
                         {
-                            //check for null
                             if (!msisdnBulkData.ReadByArray.Contains(readBy))
                                 msisdnBulkData.ReadByArray.Add(readBy);
                         }
@@ -2452,8 +2465,8 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
                     {
-                        GroupManager.Instance.SaveGroupCache(cm.Msisdn);
-                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+                        GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
+                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
                         return;
                     }
                     if (credits <= 0)
@@ -2478,9 +2491,9 @@ namespace windows_client
                 }
             }
             // UPDATE group cache
-            foreach (string key in GroupManager.Instance.GroupCache.Keys)
+            foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
             {
-                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                 GroupParticipant gp = l.Find(x => x.Msisdn == ms);
                 if (gp != null)
                 {
@@ -2494,7 +2507,7 @@ namespace windows_client
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
                         if (co == null)
                         {
-                            GroupManager.Instance.SaveGroupCache();
+                            GroupManager.Instance.SaveGroupParticpantsCache();
                             return;
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
@@ -2508,7 +2521,7 @@ namespace windows_client
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
                             if (co == null)
                             {
-                                GroupManager.Instance.SaveGroupCache();
+                                GroupManager.Instance.SaveGroupParticpantsCache();
                                 return;
                             }
                             values = new object[3];
@@ -2527,7 +2540,7 @@ namespace windows_client
                     gp.HasOptIn = true;
                 }
             }
-            GroupManager.Instance.SaveGroupCache();
+            GroupManager.Instance.SaveGroupParticpantsCache();
         }
 
         #region OLD ADD GROUPMEMBERS LOGIC
@@ -2540,7 +2553,7 @@ namespace windows_client
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
-        //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
+        //        GroupManager.Instance.GroupParticpantsCache.TryGetValue(grpId, out l);
         //        if (l == null)
         //            return true;
 
@@ -2587,7 +2600,7 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
         //        return output;
         //    }
         //    else
@@ -2670,34 +2683,34 @@ namespace windows_client
             if (ids == null || ids.Length == 0)
                 return;
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-            if (msisdn == null)
-            {
-                string idsString = string.Empty;
-                foreach (long id in ids)
-                {
-                    idsString = string.Format("{0}, {1}", idsString, id.ToString());
-                }
-                Debug.WriteLine(string.Format("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status));
-                return;
-            }
+
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);//msisdn would be null for multiple read by
+
             // To update conversation object , we have to check if ids [] contains last msg id
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (App.ViewModel.ConvMap.ContainsKey(fromUser))
             {
-                ConversationListObject co = App.ViewModel.ConvMap[msisdn];
+                ConversationListObject co = App.ViewModel.ConvMap[fromUser];
+                bool containsMessageId = false;
                 long maxReadId = 0;
                 for (int i = 0; i < ids.Length; i++)
                 {
                     if (ids[i] > maxReadId)
                         maxReadId = ids[i];
+                    if (co.LastMsgId == ids[i])
+                        containsMessageId = true;
                 }
-                ConversationTableUtils.updateLastMsgReadStatus(maxReadId, msisdn, new JArray() { sender });
+
+                if (containsMessageId)
+                    ConversationTableUtils.updateLastMsgStatus(co.LastMsgId, msisdn, status);//if msisdn null then conversastionlistObj is alreadyUpdated
+
+                if (Utils.isGroupConversation(fromUser))
+                    GroupTableUtils.UpdateReadBy(fromUser, maxReadId, sender);
+
             }
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine(string.Format("Time to update msg status DELIVERED READ : {0}", msec));
         }
-
 
     }
 }

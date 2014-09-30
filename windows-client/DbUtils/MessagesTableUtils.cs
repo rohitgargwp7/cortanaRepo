@@ -31,6 +31,34 @@ namespace windows_client.DbUtils
             }
         }
 
+        /// <summary>
+        /// DB Call to retrieve message by MessageID
+        /// </summary>
+        /// <param name="lastMessageId">message ID</param>
+        /// <returns>ConvMessage</returns>
+        public static ConvMessage getMessagesForMsgId(long lastMessageId)
+        {
+            using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConvMessage res = DbCompiledQueries.GetMessagesForMsgId(chatsDbContext, lastMessageId).FirstOrDefault<ConvMessage>();
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Db Call to retrieve pin history for a group
+        /// </summary>
+        /// <param name="msisdn">msisdn of group</param>
+        /// <returns>list of pins</returns>
+        public static List<ConvMessage> getPinMessagesForMsisdn(string msisdn)
+        {
+            using (HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                List<ConvMessage> res = DbCompiledQueries.GetPinMessagesForMsisdn(chatsDbContext, msisdn).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
+
         /* This queries messages table and get the last message for given msisdn*/
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
@@ -83,6 +111,12 @@ namespace windows_client.DbUtils
             return true;
         }
 
+
+        /// <summary>
+        /// Insert messages at once
+        /// </summary>
+        /// <param name="listMessages">list of non duplicate messages</param>
+        /// <returns></returns>
         public static bool BulkInsertMessage(IList<ConvMessage> listMessages)
         {
             if (listMessages == null || listMessages.Count == 0)
@@ -102,20 +136,11 @@ namespace windows_client.DbUtils
             }
             return true;
         }
-        public static bool IsMessageDuplicate(ConvMessage convMessage)
-        {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
-            {
-                if (convMessage.MappedMessageId > 0)
-                {
-                    IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
-                    ConvMessage cm = qq.FirstOrDefault();
-                    return cm != null;
-                }
-            }
-            return true;
-        }
 
+        /// <summary>
+        /// Removes duplicate messages from the list of messages passed
+        /// </summary>
+        /// <param name="listConvMessage"></param>
         public static void FilterDuplicateMessage(List<ConvMessage> listConvMessage)
         {
             if (listConvMessage == null || listConvMessage.Count == 0)
@@ -167,7 +192,7 @@ namespace windows_client.DbUtils
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
-                GroupManager.Instance.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                GroupManager.Instance.GroupParticpantsCache.TryGetValue(convMsg.Msisdn, out existingMembers);
                 if (existingMembers == null)
                     return null;
 
@@ -201,11 +226,22 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// updates conversationlist according to paricipant info and update db
+        /// </summary>
+        /// <param name="convMsg"></param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">if message persistence is already handled then pass false</param>
+        /// <param name="imageBytes"></param>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, bool persistMessage = true, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
                 return null;
+
             ConversationListObject obj = null;
+
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
@@ -348,7 +384,8 @@ namespace windows_client.DbUtils
                 }
                 #endregion
                 #region NO_INFO
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
+                    || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     string toastText = String.Empty;
 
@@ -356,8 +393,17 @@ namespace windows_client.DbUtils
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                        toastText = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
-                        obj.LastMessage = toastText;
+
+                        if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                        {
+                            toastText = gp != null ? (gp.FirstName + " " + HikeConstants.TOAST_FOR_PIN + " - " + convMsg.Message) : convMsg.Message;
+                            obj.LastMessage = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                        }
+                        else
+                        {
+                            toastText = gp != null ? (gp.FirstName + " - " + convMsg.Message) : convMsg.Message;
+                            obj.LastMessage = toastText;
+                        }
 
                         if (obj.IsHidden)
                             toastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
@@ -404,7 +450,7 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMsg.Message;
                 #endregion
 
-                if (persistMessage)
+                if (persistMessage)//persistance will be handled in bulk packet
                 {
                     Stopwatch st1 = Stopwatch.StartNew();
                     bool success = addMessage(convMsg);
@@ -414,6 +460,14 @@ namespace windows_client.DbUtils
 
                     long msec1 = st1.ElapsedMilliseconds;
                     Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                   
+                    #region GCPIN_MESSAGE
+                    //Not included with other 'ifs' because we need pinID which we will get after inserting in DB
+                    if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                    {
+                        ProcessConversationMetadata(convMsg, obj);
+                    }
+                    #endregion
                 }
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -436,11 +490,43 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+
+        /// <summary>
+        /// Updates metadata related to pin for conversation object 
+        /// </summary>
+        /// <param name="convMsg">PinMessge</param>
+        /// <param name="obj">Conversation List object</param>
+        public static void ProcessConversationMetadata(ConvMessage convMsg, ConversationListObject obj)
+        {
+            JObject metaData = new JObject();
+
+            if (obj.MetaData == null || obj.MetaData.Value<long>(HikeConstants.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
+            {
+                metaData[HikeConstants.PINID] = convMsg.MessageId;
+                metaData[HikeConstants.TIMESTAMP] = convMsg.Timestamp;
+                metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
+            }
+
+            if (obj.MetaData == null) //check for "should unread counter be increased??"
+                metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
+            else
+                metaData[HikeConstants.UNREADPINS] = (convMsg.IsSent) ? obj.MetaData.Value<int>(HikeConstants.UNREADPINS) : obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
+
+            obj.MetaData = metaData;
+        }
+
+        /// <summary>
+        /// Creates in-app toast string while Message Preview is off
+        /// </summary>
+        /// <param name="convMsg"></param>
+        /// <returns></returns>
         private static string GetToastNotification(ConvMessage convMsg)
         {
             string toastText = HikeConstants.TOAST_FOR_MESSAGE;
 
-            if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
+            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                toastText = HikeConstants.TOAST_FOR_PIN;
+            else if (!String.IsNullOrEmpty(convMsg.MetaDataString) && convMsg.MetaDataString.Contains(HikeConstants.STICKER_ID))
                 toastText = HikeConstants.TOAST_FOR_STICKER;
             else if (convMsg.FileAttachment != null)
             {

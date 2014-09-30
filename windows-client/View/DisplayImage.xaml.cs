@@ -182,7 +182,7 @@ namespace windows_client.View
         {
             if (fileBytes != null && fileBytes.Length > 0)
             {
-                MiscDBUtil.storeFileInIsolatedStorage(filePath as string, fileBytes);
+                MiscDBUtil.StoreFileInIsolatedStorage(filePath as string, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     loadingProgress.Opacity = 0;

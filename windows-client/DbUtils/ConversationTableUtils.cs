@@ -79,6 +79,15 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Creates new conversation object and add it to db
+        /// </summary>
+        /// <param name="convMessage">Message to be added in conversation</param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">false if messsage already persisted or to be persisted later</param>
+        /// <param name="imageBytes">Avatar image bytes</param>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, bool persistMessage, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;
@@ -297,33 +306,6 @@ namespace windows_client.DbUtils
                     saveConvObject(obj, msisdn.Replace(":", "_"));
                     //saveConvObjectList();
                 }
-            }
-        }
-
-        public static void updateLastMsgReadStatus(long lastReadMessageId, string msisdn, JArray readByArray)
-        {
-            if (msisdn == null)
-                return;
-            ConversationListObject obj = null;
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-            {
-                obj = App.ViewModel.ConvMap[msisdn];
-                if (obj.LastMsgId == lastReadMessageId && obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
-                {
-                    obj.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                }
-
-                if (obj.LastReadMsgId == lastReadMessageId)
-                {
-                    //check for duplicacy
-                    obj.ReadByArray.Add(readByArray);
-                }
-                else if (obj.LastReadMsgId < lastReadMessageId)
-                {
-                    obj.ReadByArray = readByArray;
-                    obj.LastReadMsgId = lastReadMessageId;
-                }
-                saveConvObject(obj, msisdn.Replace(":", "_"));
             }
         }
 

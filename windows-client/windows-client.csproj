@@ -161,6 +161,9 @@
     <Compile Include="Controls\PasswordPopUpUC.xaml.cs">
       <DependentUpon>PasswordPopUpUC.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PinUC.xaml.cs">
+      <DependentUpon>PinUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\StickerPivotItem.xaml.cs">
       <DependentUpon>StickerPivotItem.xaml</DependentUpon>
@@ -232,6 +235,8 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="utils\MD5.cs" />
+    <Compile Include="utils\EmailHelper.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />
     <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
@@ -242,7 +247,6 @@
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ChatBackgroundHelper.cs" />
     <Compile Include="utils\LruCache.cs" />
-    <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\Sticker Helper\RecentStickerHelper.cs" />
     <Compile Include="utils\Sticker Helper\StickerPivotHelper.cs" />
     <Compile Include="utils\ContactUtils.cs" />
@@ -273,6 +277,9 @@
     <Compile Include="View\MqttPreferences.xaml.cs" />
     <Compile Include="View\NewGroup.xaml.cs">
       <DependentUpon>NewGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PinHistory.xaml.cs">
+      <DependentUpon>PinHistory.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Preferences.xaml.cs">
       <DependentUpon>Preferences.xaml</DependentUpon>
@@ -385,6 +392,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\PinUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\StickerPivotItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -414,6 +425,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\NewGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PinHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -681,6 +696,8 @@
     <Content Include="View\images\MediaPlayIconBig.png" />
     <Content Include="View\images\MediaPlayIconSmall.png" />
     <Content Include="View\images\menu_camcorder_icon.png" />
+    <Content Include="View\images\Pins\cross.png" />
+    <Content Include="View\images\pin_icon.png" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\retry_icon.png" />
     <Content Include="View\images\ServerTips\attachments.png" />

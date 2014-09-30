@@ -574,7 +574,7 @@ namespace windows_client.View
                         fullViewImageBytes = msSmallImage.ToArray();
                     }
                     //send image to server here and insert in db after getting response
-                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), String.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -1057,7 +1057,7 @@ namespace windows_client.View
                     });
                     FriendsTableUtils.SetJoiningTime(msisdn, time);
 
-                    ContactUtils.UpdateGroupCacheWithContactOnHike(msisdn, true);
+                    ContactUtils.UpdateGroupParticpantsCacheWithContactOnHike(msisdn, true);
                 }
                 else
                 {

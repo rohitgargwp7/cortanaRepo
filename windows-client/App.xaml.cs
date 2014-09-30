@@ -52,7 +52,7 @@ namespace windows_client
 
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
-        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
+        public static readonly string DISPLAY_PIC_FAV_ONLY = "dpFavorites";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -370,6 +370,10 @@ namespace windows_client
             MQttLogging.LogWriter.Instance.WriteToLog("APP LAUNCHED");
 
             _isAppLaunched = true;
+
+            // Activate hidden mode whne app is launched if setting is true.
+            if (appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -571,7 +575,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.5.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -821,8 +825,8 @@ namespace windows_client
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
-                GroupManager.Instance.SaveGroupCache();
+                GroupManager.Instance.GroupParticpantsCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupParticpantsCache();
                 RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 

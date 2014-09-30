@@ -44,6 +44,18 @@ namespace windows_client.FileTransfers
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
 
+        string _filePath = null;
+        public string FilePath
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_filePath))
+                    _filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
+
+                return _filePath;
+            }
+        }
+
         public FileInfoBase()
         {
         }
@@ -132,27 +144,18 @@ namespace windows_client.FileTransfers
                 return false;
         }
 
+        /// <summary>
+        /// Check for CRC
+        /// </summary>
+        /// <param name="key">file key for which head call needs to be made</param>
+        /// <returns>true if md5 matches else false</returns>
         protected async Task<bool> CheckForCRC(string key)
         {
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
-            string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + Msisdn.Replace(":", "_") + "/" + MessageId;
-            byte[] bytes;
-            MiscDBUtil.readFileFromIsolatedStorage(filePath, out bytes);
-
-            if (bytes == null || bytes.Length == 0)
-                return false;
-
-            String md5 = string.Empty;
-            try
-            {
-                md5 = MD5CryptoServiceProvider.GetMd5String(bytes);
-            }
-            catch
-            {
-                return false;
-            }
+            // Calculate md5 by parts
+            String md5 = Utils.GetMD5Hash(FilePath);
 
             string result = String.Empty;
 
@@ -162,7 +165,8 @@ namespace windows_client.FileTransfers
                 {
                     HttpClient httpClient = new HttpClient();
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + key));
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + key));
+                    request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
 
                     HttpResponseMessage response = await httpClient.SendAsync(request);
 
@@ -186,7 +190,7 @@ namespace windows_client.FileTransfers
                 }
             }
 
-            return md5 == result;
+            return md5.Equals(result, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

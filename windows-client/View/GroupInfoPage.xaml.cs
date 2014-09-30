@@ -150,9 +150,9 @@ namespace windows_client.View
             JObject data = new JObject();
             int i;
             int smsUsersCount = 0;
-            for (i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
+            for (i = 0; i < GroupManager.Instance.GroupParticpantsCache[groupId].Count; i++)
             {
-                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
+                GroupParticipant gp = GroupManager.Instance.GroupParticpantsCache[groupId][i];
                 if (!gp.IsOnHike)
                 {
                     msisdns += gp.Msisdn + ";";
@@ -321,7 +321,7 @@ namespace windows_client.View
                 return;
 
             GroupManager.Instance.LoadGroupParticipants(groupId);
-            groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
+            groupData.Text = String.Format(AppResources.People_In_Group, GroupManager.Instance.GroupParticpantsCache[groupId].Where(gp => gp.HasLeft == false).Count() + 1);
 
             if (!App.IS_TOMBSTONED && App.ViewModel.ConvMap.ContainsKey(groupId))
                 groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
@@ -361,7 +361,7 @@ namespace windows_client.View
             _participantList = CreateGroups();
 
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
-            List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
+            List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupParticpantsCache[groupId], hikeUsersList);
             GroupParticipant self = new GroupParticipant(groupId, (string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
@@ -892,7 +892,7 @@ namespace windows_client.View
             //GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, gp_obj.Msisdn, groupId);
             //gp.HasLeft = true;
             //gp.IsUsed = false;
-            //GroupManager.Instance.SaveGroupCache(groupId);
+            //GroupManager.Instance.SaveGroupParticpantsCache(groupId);
 
             //groupMembersOC.Remove(gp_obj);
 

@@ -16,6 +16,7 @@ using System.Text;
 using windows_client.Languages;
 using windows_client.Controls;
 using windows_client.DbUtils;
+using Newtonsoft.Json;
 
 namespace windows_client.Model
 {
@@ -35,13 +36,10 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFirstMsg = false; // not used anywhere
         private long _lastMsgId;
-        private long _lastReadMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
         private string _draftMessage;
-        private string _readByInfo;
-        private JArray _readByArray;
         #endregion
 
         #region Properties
@@ -78,6 +76,7 @@ namespace windows_client.Model
                     _lastMessage = value;
                     _toastText = value;
                     NotifyPropertyChanged("LastMessage");
+                    NotifyPropertyChanged("EmailChatMenuVisibility");
                 }
             }
         }
@@ -111,7 +110,6 @@ namespace windows_client.Model
                 if (_timeStamp != value)
                 {
                     _timeStamp = value;
-                    NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                     NotifyPropertyChanged("TimeStampVisibility");
                     NotifyPropertyChanged("MuteIconTimeStampVisibility");
@@ -222,55 +220,6 @@ namespace windows_client.Model
                 NotifyPropertyChanged("UnreadCircleVisibility");
                 NotifyPropertyChanged("MuteIconImage");
                 NotifyPropertyChanged("MuteMsg");
-            }
-        }
-        [DataMember]
-        public long LastReadMsgId
-        {
-            get
-            {
-                return _lastReadMsgId;
-            }
-            set
-            {
-                if (_lastReadMsgId != value)
-                    _lastReadMsgId = value;
-            }
-        }
-        [DataMember]
-        public string ReadByInfo
-        {
-            get
-            {
-                return _readByInfo;
-            }
-            set
-            {
-                if (_readByInfo != value)
-                {
-                    _readByInfo = value;
-                }
-            }
-        }
-
-        public JArray ReadByArray
-        {
-            get
-            {
-                if (_readByArray == null)
-                {
-                    if (String.IsNullOrEmpty(_readByInfo))
-                        return null;
-                    else
-                        _readByArray = JArray.Parse(_readByInfo);
-                }
-
-                return _readByArray;
-            }
-            set
-            {
-                if (value != _readByArray)
-                    _readByArray = value;
             }
         }
 
@@ -464,6 +413,14 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility EmailChatMenuVisibility
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LastMessage) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
         public string FormattedTimeStamp
         {
             get
@@ -508,6 +465,33 @@ namespace windows_client.Model
                     _isSelected = value;
                     NotifyPropertyChanged("ConvImage");
                 }
+            }
+        }
+
+        [DataMember]
+        public string _metadata {get;set;} //stores the latest pin info
+        JObject metadata = null;
+
+        public JObject MetaData
+        {
+            get
+            {
+                try
+                {
+                    if (metadata == null)
+                        metadata = JObject.Parse(_metadata);
+                    
+                    return metadata;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {               
+                metadata = value;
+                _metadata = (value == null) ? null : value.ToString(Newtonsoft.Json.Formatting.None);
             }
         }
 
@@ -854,13 +838,10 @@ namespace windows_client.Model
 
                 writer.Write(_isHidden);
 
-                if (_readByInfo == null)
+                if (_metadata == null)
                     writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteStringBytes(_readByInfo);
-
-                writer.Write(_lastReadMsgId);
-
+                    writer.WriteStringBytes(_metadata);
             }
             catch (Exception ex)
             {
@@ -968,26 +949,17 @@ namespace windows_client.Model
                 {
                     _isHidden = false;
                 }
-                //todo:check upgrade
-                try
-                {
-                    count = reader.ReadInt32();
-                    _readByInfo = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                    if (_readByInfo == "*@N@*")
-                        _readByInfo = null;
-                }
-                catch
-                {
-                    _readByInfo = null;
-                }
 
                 try
                 {
-                    _lastReadMsgId = reader.ReadInt64();
+                    count = reader.ReadInt32();
+                    _metadata = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                    if (_metadata == "*@N@*")
+                        _metadata = null;
                 }
                 catch
                 {
-                    _lastReadMsgId = 0;
+                    _metadata = null;
                 }
             }
             catch (Exception ex)
