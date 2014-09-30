@@ -141,7 +141,7 @@
             </StackPanel>
         </Grid>
 
-        <local:PinUC x:Name="gcPin" LostFocus="gcPin_LostFocus" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="66" MaxHeight="80" VerticalAlignment="Top" />
+        <local:PinUC x:Name="gcPin" LostFocus="gcPin_LostFocus" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="66" MaxHeight="85" VerticalAlignment="Top" />
 
         <Grid x:Name="tipControl" Grid.Row="1" Margin="0,-1,0,0" Canvas.ZIndex="1">
             <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="{StaticResource TipGreen}" VerticalAlignment="Top" />
@@ -1172,7 +1172,6 @@
                                                     </Grid>
                                                     <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
                                                                  LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"  />
-                                                    
                                                 </Grid>
                                             </Grid>
                                         </Grid>

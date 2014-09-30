@@ -1972,7 +1972,7 @@ private copy.
     <Style x:Key="PinHistoryContainerStyle" TargetType="Border">
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Margin" Value="0,20,0,0"/>
-        <Setter Property="BorderBrush" Value="{StaticResource HikeCardStrokeBrush}"/>
+        <Setter Property="BorderBrush" Value="#e2d779"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
     </Style>

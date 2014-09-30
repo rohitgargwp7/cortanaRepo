@@ -3694,7 +3694,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to no pins.
+        ///   Looks up a localized string similar to no pins yet.
         /// </summary>
         public static string No_Pins_Yet {
             get {

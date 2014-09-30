@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -51,7 +52,7 @@
                                     <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#92872c"></TextBlock>
                                     <TextBlock  Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#92872c" HorizontalAlignment="Right"></TextBlock>
                                 </Grid>
-                                <TextBlock Margin="25,4,25,18.75" Grid.Row="1" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap"></TextBlock>
+                                <local:MyRichTextBox Margin="20,4,25,18.75" Grid.Row="1" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -59,12 +60,10 @@
             </phone:LongListSelector>
             
             <Grid x:Name="nopinImage" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-                <Border CornerRadius="2" BorderThickness="1" BorderBrush="#C8C8C8">
-                    <StackPanel Orientation="Horizontal" Background="#C8C8C8">
-                        <Image Source="/View/images/pin_icon.png" Height="25" Width="25" Margin="12.5,12.5" VerticalAlignment="Center"></Image>
-                        <TextBlock FontSize="25" Text="no pins" Foreground="White" Margin="0,0,12.5,0" VerticalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                </Border>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/View/images/Pins/pin_gray.png" Height="25" Width="25" Margin="12.5,12.5" VerticalAlignment="Center"></Image>
+                    <TextBlock FontSize="30" Text="{Binding Path= LocalizedResources.No_Pins_Yet, Source={StaticResource LocalizedStrings}}" Foreground="#aaaaaa" Margin="0,0,12.5,0" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>
