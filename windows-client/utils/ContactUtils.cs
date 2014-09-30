@@ -348,7 +348,6 @@ namespace windows_client.utils
             else
             {
                 contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                isInAddressBook = true;
 
                 if (contactInfo != null)
                 {
