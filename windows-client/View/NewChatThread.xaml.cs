@@ -82,6 +82,7 @@ namespace windows_client.View
         private JObject groupCreateJson = null;
         private bool _isNewPin = false;
         private ConvMessage lastPinConvMsg;
+        private bool _isOnPage = true;
 
         bool isDisplayPicSet = false;
 
@@ -509,6 +510,8 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
+            _isOnPage = true;
+
             App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
@@ -735,6 +738,8 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            _isOnPage = false;
 
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
@@ -4125,7 +4130,7 @@ namespace windows_client.View
                             convMessage.GroupMemberName = gp.FirstName;
                             gcPin.UpdateContent(convMessage.GCPinMessageSenderName, convMessage.DispMessage);
 
-                            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if ( _isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
                                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
                                 
