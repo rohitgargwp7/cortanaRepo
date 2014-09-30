@@ -70,17 +70,14 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    bool isContactNotFoundInContactsCache = false;
-                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn, out isContactNotFoundInContactsCache);
+                    bool isInAddressBook = false;
+                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn, out isInAddressBook);
                     
                     if (cn == null)
                     {
                         cn = new ContactInfo(status.Msisdn, null, true);
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
-
-                    if(isContactNotFoundInContactsCache)
-                        cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
 
                     userName = (cn != null && !string.IsNullOrWhiteSpace(cn.Name)) ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);

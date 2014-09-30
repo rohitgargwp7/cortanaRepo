@@ -3142,17 +3142,14 @@ namespace windows_client.View
             }
             else
             {
-                bool isContactNotFoundInContactsCache = false; // Don't serve any purpose here
-                ContactInfo cn = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
+                bool isInAddressBook = false; // Don't serve any purpose here
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
 
                 if (cn == null)
                 {
                     cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
                     App.ViewModel.ContactsCache[msisdn] = cn;
                 }
-
-                if (isContactNotFoundInContactsCache)
-                    cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
 
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = cn;
             }

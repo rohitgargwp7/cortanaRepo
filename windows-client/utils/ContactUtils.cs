@@ -332,20 +332,29 @@ namespace windows_client.utils
         }
 
 
-        public static ContactInfo GetContactInfo(string msisdn, out bool isContactNotFoundInContactsCache)
+        public static ContactInfo GetContactInfo(string msisdn, out bool isInAddressBook)
         {
             ContactInfo contactInfo = null;
-            isContactNotFoundInContactsCache = false;
+            isInAddressBook = false;
 
             if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            {
                 contactInfo = App.ViewModel.ContactsCache[msisdn];
+
+                if (contactInfo.Name != null)
+                    isInAddressBook = true;
+
+            }
             else
             {
                 contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                isContactNotFoundInContactsCache = true;
+                isInAddressBook = true;
 
                 if (contactInfo != null)
+                {
+                    isInAddressBook = true;
                     App.ViewModel.ContactsCache[msisdn] = contactInfo;
+                }
             }
 
             return contactInfo;
@@ -356,17 +365,12 @@ namespace windows_client.utils
         {
             bool inAddressBook = false;
             ConversationListObject convObj;
+            ContactInfo cinfo;
 
             if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
                 inAddressBook = true;
             else
-            {
-                bool isContactNotFoundInContactsCache = false;
-                ContactInfo cinfo = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
-
-                if (cinfo != null && (isContactNotFoundInContactsCache || cinfo.Name != null))
-                    inAddressBook = true;
-            }
+                cinfo = ContactUtils.GetContactInfo(msisdn, out inAddressBook);
 
             return inAddressBook;
         }

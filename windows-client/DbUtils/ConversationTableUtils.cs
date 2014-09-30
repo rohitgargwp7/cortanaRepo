@@ -100,8 +100,8 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    bool isContactNotFoundInContactsCache = false; //Don't serve any purpose here.
-                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn,out isContactNotFoundInContactsCache);
+                    bool isInAddressBook = false; //Don't serve any purpose here.
+                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn,out isInAddressBook);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                     if (App.ViewModel.Isfavourite(convMessage.Msisdn))

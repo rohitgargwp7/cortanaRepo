@@ -75,15 +75,10 @@ namespace windows_client.Misc
                 }
             }
 
-            var isInAdressBook = false;
             ContactInfo cInfo = null;
+            bool isInAdressBook = false;
 
-            bool isContactNotFoundInContactsCache = false;
-            cInfo = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
-
-            if (cInfo != null && (isContactNotFoundInContactsCache || cInfo.Name != null))
-                isInAdressBook = true;
-
+            cInfo = ContactUtils.GetContactInfo(msisdn, out isInAdressBook);
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             gp.IsInAddressBook = isInAdressBook;
 

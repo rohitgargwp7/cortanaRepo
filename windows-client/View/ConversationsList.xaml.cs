@@ -443,8 +443,8 @@ namespace windows_client.View
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
                 {
-                    bool isContactNotFoundInContactsCache = false; // Don't serve any purpose here
-                    cn = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
+                    bool isInAddressBook = false; // Don't serve any purpose here
+                    cn = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
 
                     if (cn != null)
                         cl.Add(cn);
@@ -1558,8 +1558,8 @@ namespace windows_client.View
                 else
                 {
                     string msisdn = obj as string;
-                    bool isContactNotFoundInContactsCache = false;//Don't serve any purpose here
-                    c = ContactUtils.GetContactInfo(msisdn, out isContactNotFoundInContactsCache);
+                    bool isInAddressBook = false;//Don't serve any purpose here
+                    c = ContactUtils.GetContactInfo(msisdn, out isInAddressBook);
                 }
 
                 // ignore if not onhike or not in addressbook
@@ -2530,8 +2530,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    bool isContactNotFoundInContactsCache = false; // Don't serve any purpose here
-                    cn = ContactUtils.GetContactInfo(fObj.Msisdn, out isContactNotFoundInContactsCache);
+                    bool isInAddressBook = false; // Don't serve any purpose here
+                    cn = ContactUtils.GetContactInfo(fObj.Msisdn, out isInAddressBook);
                     bool onHike = cn != null ? cn.OnHike : true; // by default only hike user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
