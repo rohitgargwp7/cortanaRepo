@@ -181,9 +181,7 @@ namespace windows_client
                         else
                             sendersMsisdn = convMessage.Msisdn;
 
-                        bool isInAddressBook = ContactUtils.CheckUserInAddressBook(sendersMsisdn);
-
-                        if (isInAddressBook)
+                        if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
                             FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
                     
                     }
