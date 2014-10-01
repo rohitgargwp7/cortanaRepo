@@ -2019,6 +2019,7 @@ namespace windows_client.View
             if (convObj == null)
                 return;
 
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_LONGPRESS, convObj.Msisdn);
             EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.ContactName, convObj.IsGroupChat);
         }
 

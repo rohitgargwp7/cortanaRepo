@@ -54,8 +54,10 @@ namespace windows_client.Controls
         {
             if (grid == null)
                 return;//not checked for text, as only perf bar required to show in some case
+
             if (isShown)
                 return;//so that if grid is already shown then can not be called again until hiding
+
             Grid.SetRow(overlayrectangle, 0);
             Grid.SetRowSpan(overlayrectangle, grid.RowDefinitions.Count);
             overlayrectangle.Visibility = Visibility.Visible;

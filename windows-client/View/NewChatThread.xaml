@@ -141,7 +141,7 @@
             </StackPanel>
         </Grid>
 
-        <local:PinUC x:Name="gcPin" LostFocus="gcPin_LostFocus" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="66" MaxHeight="80" VerticalAlignment="Top" />
+        <local:PinUC x:Name="gcPin" LostFocus="gcPin_LostFocus" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="66" MaxHeight="85" VerticalAlignment="Top" />
 
         <Grid x:Name="tipControl" Grid.Row="1" Margin="0,-1,0,0" Canvas.ZIndex="1">
             <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="{StaticResource TipGreen}" VerticalAlignment="Top" />
@@ -1154,27 +1154,26 @@
                                                 
                                                 <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
 
-                                            <Grid Grid.Column="1" Margin="12,0,12,5" VerticalAlignment="Center" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                    </Grid.RowDefinitions>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*" />
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" VerticalAlignment="Top">
-                                                            <Run Text="{Binding GCPinMessageSenderName}" />
-                                                            <Run Text="posted a pin" />
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Column="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top" HorizontalAlignment="Right" />
+                                                <Grid Grid.Column="1" Margin="17,10,12,5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" VerticalAlignment="Top">
+                                                                <Run Text="{Binding GCPinMessageSenderName}" />
+                                                                <Run Text="posted a pin" />
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Column="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top" HorizontalAlignment="Right" />
+                                                        </Grid>
+                                                        <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
+                                                                     LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"  />
                                                     </Grid>
-                                                    <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
-                                                                 LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"  />
-                                                    
                                                 </Grid>
-                                            </Grid>
                                         </Grid>
                                     </DataTemplate>
                                 </templateSelector:ChatThreadTemplateSelector.DtGCPin>

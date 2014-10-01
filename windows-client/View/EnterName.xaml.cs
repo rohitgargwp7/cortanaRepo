@@ -552,6 +552,7 @@ namespace windows_client
                 App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
 
                 SmileyParser.Instance.initializeSmileyParser();
+                App.PageStateVal = App.PageState.CONVLIST_SCREEN;
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
 
                 App page = (App)Application.Current;

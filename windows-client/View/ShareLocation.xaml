@@ -43,7 +43,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <toolkit:PhoneTextBox Style="{StaticResource PhoneTextBoxWithWhiteBackground}" x:Name="SearchTextBox" Hint="{Binding Path= LocalizedResources.Search_Hint_Txt, Source={StaticResource LocalizedStrings}}" 
-                                      GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus_1" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown" Margin="12"/>
+                                      GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus" ActionIcon="/View/images/search_icon.png" ActionIconTapped="SearchAction_Tap" KeyDown="SearchTextBox_KeyDown" Margin="12"/>
                 <ListBox x:Name="PlacesList" Foreground="{StaticResource HikeFGBrush}" Grid.Row="1" SelectionChanged="PlacesList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

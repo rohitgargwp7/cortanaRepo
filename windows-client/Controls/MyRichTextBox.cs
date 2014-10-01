@@ -36,6 +36,9 @@ namespace windows_client.Controls
         public static readonly DependencyProperty GroupMemberMsisdnProperty =
                     DependencyProperty.Register("GroupMemberMsisdn", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String)));
 
+        public static readonly DependencyProperty IsPinProperty =
+                    DependencyProperty.Register("IsPin", typeof(Boolean), typeof(MyRichTextBox), new PropertyMetadata(default(Boolean)));
+    
         private string lastText = string.Empty;
         public string Text
         {
@@ -121,6 +124,18 @@ namespace windows_client.Controls
             }
         }
 
+        public Boolean IsPin
+        {
+            get
+            {
+                return (Boolean)GetValue(IsPinProperty);
+            }
+            set
+            {
+                SetValue(IsPinProperty, value);
+            }
+        }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -161,14 +176,18 @@ namespace windows_client.Controls
             if (!String.IsNullOrEmpty(GroupMemberName))
             {
                 groupMemberName = new Run();
-                groupMemberName.FontWeight = FontWeights.SemiBold;
                 groupMemberName.FontSize = this.FontSize;
                 groupMemberName.FontFamily = new FontFamily("Segoe WP SemiLight");
+
+                if (IsPin)
+                    groupMemberName.Foreground = UI_Utils.Instance.PinSenderColor;
+                else
+                    groupMemberName.FontWeight = FontWeights.SemiBold;
 
                 if (!String.IsNullOrEmpty(GroupMemberMsisdn) && !GroupMemberMsisdn.Contains(GroupMemberName))
                     groupMemberName.Text = String.Format("{0} {1}- ", GroupMemberName, GroupMemberMsisdn);
                 else
-                    groupMemberName.Text = String.Format("{0} - ", GroupMemberName);
+                    groupMemberName.Text = String.Format((IsPin) ? "{0}: " : "{0} - ", GroupMemberName);
             }
 
             var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(groupMemberName, text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(groupMemberName,text);

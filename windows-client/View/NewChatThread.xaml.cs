@@ -82,6 +82,7 @@ namespace windows_client.View
         private JObject groupCreateJson = null;
         private bool _isNewPin = false;
         private ConvMessage lastPinConvMsg;
+        private bool _isOnPage = true;
 
         bool isDisplayPicSet = false;
 
@@ -509,6 +510,8 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
 
+            _isOnPage = true;
+
             App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
             if (e.NavigationMode == NavigationMode.Back)
@@ -735,6 +738,8 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            _isOnPage = false;
 
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
@@ -1888,6 +1893,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT,HikeConstants.ANALYTICS_EMAIL,HikeConstants.ANALYTICS_EMAIL_MENU,mContactNumber);
             EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
@@ -3937,20 +3943,17 @@ namespace windows_client.View
 
         private async void ClearChat()
         {
+            gcPin.IsShow(false, false);
+            tipControl.Visibility = Visibility.Visible;
+
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
+
             await Task.Delay(1);
 
             MessagesTableUtils.deleteAllMessagesForMsisdn(mContactNumber);
             MiscDBUtil.deleteMsisdnData(mContactNumber);
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
-
-            gcPin.IsShow(false, false);
-            tipControl.Visibility = Visibility.Visible;
-
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-            {
-                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
-            }
         }
 
         #endregion
@@ -4154,7 +4157,7 @@ namespace windows_client.View
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
 
-                            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if ( _isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
                                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
 
