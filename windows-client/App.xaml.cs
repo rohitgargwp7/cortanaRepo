@@ -132,6 +132,11 @@ namespace windows_client
             {
                 return ps;
             }
+            set
+            {
+                if (ps != value)
+                    ps = value;
+            }
         }
 
         public static bool IsAppLaunched
