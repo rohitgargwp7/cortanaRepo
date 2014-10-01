@@ -180,7 +180,7 @@ namespace windows_client.Controls
                 groupMemberName.FontFamily = new FontFamily("Segoe WP SemiLight");
 
                 if (IsPin)
-                    groupMemberName.Foreground = new SolidColorBrush(Color.FromArgb(255, 146, 135, 44)); //#92872C
+                    groupMemberName.Foreground = UI_Utils.Instance.PinSenderColor;
                 else
                     groupMemberName.FontWeight = FontWeights.SemiBold;
 

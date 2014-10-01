@@ -1954,8 +1954,8 @@ private copy.
 
     <Style x:Key="UnreadPinCounterContainerStyle" TargetType="Border">
         <Setter Property="Background" Value="#e65939"/>
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="MinWidth" Value="30"/>
+        <Setter Property="Height" Value="27"/>
+        <Setter Property="MinWidth" Value="27"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="2"/>
     </Style>
