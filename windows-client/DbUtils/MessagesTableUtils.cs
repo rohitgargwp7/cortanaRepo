@@ -452,15 +452,10 @@ namespace windows_client.DbUtils
 
                 if (persistMessage)//persistance will be handled in bulk packet
                 {
-                    Stopwatch st1 = Stopwatch.StartNew();
                     bool success = addMessage(convMsg);
                     if (!success)
                         return null;
-                    st1.Stop();
 
-                    long msec1 = st1.ElapsedMilliseconds;
-                    Debug.WriteLine("Time to add chat msg : {0}", msec1);
-                   
                     #region GCPIN_MESSAGE
                     //Not included with other 'ifs' because we need pinID which we will get after inserting in DB
                     if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
@@ -481,11 +476,7 @@ namespace windows_client.DbUtils
                 }
 
                 obj.LastMsgId = convMsg.MessageId;
-                Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             return obj;
         }

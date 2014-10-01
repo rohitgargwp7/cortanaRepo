@@ -184,7 +184,6 @@ namespace windows_client.DbUtils
                 }
             }
 
-            Stopwatch st1 = Stopwatch.StartNew();
             if (persistMessage)
             {
                 bool success = MessagesTableUtils.addMessage(convMessage);
@@ -192,19 +191,12 @@ namespace windows_client.DbUtils
                     return null;
             }
             obj.LastMsgId = convMessage.MessageId;
-            st1.Stop();
-            long msec1 = st1.ElapsedMilliseconds;
-            Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-            Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
 
             return obj;
         }
@@ -312,7 +304,6 @@ namespace windows_client.DbUtils
         public static void saveConvObjectList()
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
 
             if (convMap == null)
@@ -395,15 +386,11 @@ namespace windows_client.DbUtils
                     store.Dispose();
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         public static void saveNewConv(ConversationListObject obj)
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
             lock (readWriteLock)
             {
@@ -431,9 +418,6 @@ namespace windows_client.DbUtils
                     store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         /// <summary>

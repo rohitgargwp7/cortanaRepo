@@ -592,9 +592,7 @@ namespace windows_client
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
-                Stopwatch st = Stopwatch.StartNew();
                 MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
-                st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     try
@@ -635,8 +633,6 @@ namespace windows_client
                 {
                     App.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
             #endregion
             #region INVITE_INFO
@@ -2663,7 +2659,6 @@ namespace windows_client
         {
             if (ids == null || ids.Length == 0)
                 return;
-            Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);//msisdn would be null for multiple read by
 
             // To update conversation object , we have to check if ids [] contains last msg id
@@ -2687,9 +2682,6 @@ namespace windows_client
                     GroupTableUtils.UpdateReadBy(fromUser, maxReadId, sender);
 
             }
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
         }
 
     }

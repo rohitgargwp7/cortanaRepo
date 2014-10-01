@@ -446,16 +446,12 @@ namespace windows_client.View
                     ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
                 }
 
-                Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
 
                 if (isGroupChat && isGroupAlive && _groupInfo == null)
                     _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
 
                 loadMessages(INITIAL_FETCH_COUNT, true);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
