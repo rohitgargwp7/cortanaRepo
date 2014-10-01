@@ -412,6 +412,9 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
+        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
+
+
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
 
