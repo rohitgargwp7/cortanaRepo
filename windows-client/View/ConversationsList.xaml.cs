@@ -443,14 +443,7 @@ namespace windows_client.View
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        cn = App.ViewModel.ContactsCache[msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
-                        if (cn != null)
-                            App.ViewModel.ContactsCache[msisdn] = cn;
-                    }
+                    cn = ContactUtils.GetContactInfo(msisdn);
 
                     if (cn != null)
                         cl.Add(cn);
@@ -1564,10 +1557,7 @@ namespace windows_client.View
                 else
                 {
                     string msisdn = obj as string;
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        c = App.ViewModel.ContactsCache[msisdn];
-                    else
-                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    c = ContactUtils.GetContactInfo(msisdn);
                 }
 
                 // ignore if not onhike or not in addressbook
@@ -2538,15 +2528,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                        if (cn != null)
-                            App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
-                    }
-                    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                    cn = ContactUtils.GetContactInfo(fObj.Msisdn);
+                    bool onHike = cn != null ? cn.OnHike : true; // by default only hike user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
 

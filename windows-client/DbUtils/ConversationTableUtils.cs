@@ -110,11 +110,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    ContactInfo contactInfo = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                        contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
-                    else
-                        contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                     if (App.ViewModel.Isfavourite(convMessage.Msisdn))
