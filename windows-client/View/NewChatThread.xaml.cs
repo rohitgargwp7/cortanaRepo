@@ -5870,7 +5870,7 @@ namespace windows_client.View
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, true, null, App.MSISDN);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, App.MSISDN);
             if (cobj != null)
             {
                 JObject data = new JObject();

@@ -230,7 +230,7 @@ namespace windows_client.DbUtils
         /// <summary>
         /// Db Call for retrieving pin history of any Group
         /// </summary>
-        public static Func<HikeChatsDb,string, IQueryable<ConvMessage>> GetPinMessagesForMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<ConvMessage>> GetPinMessagesForMsisdn
         {
             get
             {
@@ -314,7 +314,7 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
                      ((HikeChatsDb hdc, long id, string msisdn) =>
                          from o in hdc.messages
-                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus==ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE || o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
                          select o);
                 return q;
             }
@@ -331,7 +331,7 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
                      ((HikeChatsDb hdc, long id, string msisdn) =>
                          from o in hdc.messages
-                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.SENT_DELIVERED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                         where o.MessageId <= id && o.Msisdn == msisdn && (o.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE || o.MessageStatus == ConvMessage.State.SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.SENT_DELIVERED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || o.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
                          select o);
                 return q;
             }

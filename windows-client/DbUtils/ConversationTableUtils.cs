@@ -88,7 +88,7 @@ namespace windows_client.DbUtils
         /// <param name="imageBytes">Avatar image bytes</param>
         /// <param name="from"></param>
         /// <returns></returns>
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, bool persistMessage, byte[] imageBytes, string from = "")
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -180,12 +180,6 @@ namespace windows_client.DbUtils
                 }
             }
 
-            if (persistMessage)
-            {
-                bool success = MessagesTableUtils.addMessage(convMessage);
-                if (!success)
-                    return null;
-            }
             obj.LastMsgId = convMessage.MessageId;
 
             //saveNewConv(obj);
