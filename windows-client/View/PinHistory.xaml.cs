@@ -22,6 +22,11 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private string _grpMsisdn;
         ObservableCollection<ConvMessage> _pinMessages;
+        long _lastMessageId = -1;                   // The ID of last Pin which was loaded into memory from DB
+        private const int INITIAL_FETCH_COUNT = 31; // Initially 31 pins would be loaded into memory
+        private const int SUB_FETCH_COUNT = 21;     // After that, 21 pins would be loaded into memory
+        bool _hasMoreMessages = false;              // To avoid multiple DB calls returning empty list
+        bool _isFirstLaunch = true;                 // For avoiding loading messages, everytime app is suspended and resumed (No Tombstoning)
 
         public PinHistory()
         {
@@ -29,6 +34,7 @@ namespace windows_client.View
 
             mPubSub = App.HikePubSubInstance;
             RegisterListeners();
+            _pinMessages = new ObservableCollection<ConvMessage>();
         }
 
         private void RegisterListeners()
@@ -51,14 +57,13 @@ namespace windows_client.View
                         {
                             try
                             {
-                                if (_pinMessages == null)
+                                if (_pinMessages==null || _pinMessages.Count == 0)
                                 {
-                                    _pinMessages = new ObservableCollection<ConvMessage>();
-                                    pinLongList.ItemsSource = _pinMessages;
                                     pinLongList.Visibility = Visibility.Visible;
                                     nopinImage.Visibility = Visibility.Collapsed;
                                 }
-                                _pinMessages.Insert(0, convMessage);
+
+                                _pinMessages.Insert(0, convMessage); //Insert an Element into OC in UI thread to reflect the changes.
 
                                 if (_pinMessages.Count > 0)
                                     pinLongList.ScrollTo(_pinMessages[0]);
@@ -93,12 +98,17 @@ namespace windows_client.View
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
             progressBar.Visibility = Visibility.Visible;
+            progressBar.IsIndeterminate = true;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
             bw.DoWork += (s, ev) =>
                 {
-                    loadPinMessages();
+                    if (_isFirstLaunch)
+                    {
+                        LoadPinMessages(INITIAL_FETCH_COUNT);
+                        _isFirstLaunch = false;
+                    }
                 };
             bw.RunWorkerAsync();
         }
@@ -130,7 +140,7 @@ namespace windows_client.View
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (_pinMessages == null)
+            if (_pinMessages == null || _pinMessages.Count==0)
             {
                 nopinImage.Visibility = Visibility.Visible;
                 pinLongList.Visibility = Visibility.Collapsed;
@@ -140,38 +150,63 @@ namespace windows_client.View
             pinLongList.ItemsSource = _pinMessages;
         }
 
-        public void loadPinMessages()
+        public void LoadPinMessages(int messageFetchCount)
         {
-            List<ConvMessage> pinMessages = MessagesTableUtils.getPinMessagesForMsisdn(_grpMsisdn);
+            List<ConvMessage> pinMessages = MessagesTableUtils.getPinMessagesForMsisdn(_grpMsisdn, _lastMessageId < 0 ? long.MaxValue : _lastMessageId, messageFetchCount);
 
-            if (pinMessages != null)
+            if (pinMessages != null && pinMessages.Count > 0)
             {
-                _pinMessages = new ObservableCollection<ConvMessage>(pinMessages);
-                GroupParticipant gp;
-
-                foreach (ConvMessage convMessage in _pinMessages)
+                _lastMessageId = pinMessages[pinMessages.Count - 1].MessageId;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (!convMessage.IsSent)
-                    {
-                        gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                        convMessage.GroupMemberName = gp.FirstName;
-                    }
+                    AddMessagesToPinOC(pinMessages);
+                });
 
-                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
-                    {
-                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                _hasMoreMessages = true;
 
-                        if (message.Length > 0)
-                            convMessage.Message = message;
-                    }
-                }
+                if (pinMessages.Count < messageFetchCount)
+                    _hasMoreMessages = false;
             }
+            else
+                _hasMoreMessages = false;
+        }
 
-            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn) && App.ViewModel.ConvMap[_grpMsisdn].MetaData != null)
+        private void AddMessagesToPinOC(List<ConvMessage> pinMessages)
+        {
+            GroupParticipant gp;
+
+            foreach (ConvMessage convMessage in pinMessages)
             {
-                App.ViewModel.ConvMap[_grpMsisdn].MetaData[HikeConstants.UNREADPINS] = 0;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+                if (!convMessage.IsSent)
+                {
+                    gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
+                    convMessage.GroupMemberName = gp.FirstName;
+                }
+
+                if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                {
+                    string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+
+                    if (message.Length > 0)
+                        convMessage.Message = message;
+                }
+
+                _pinMessages.Add(convMessage);
             }
+        }
+
+        private void pinLongList_ItemRealized(object sender, ItemRealizationEventArgs e)
+        {
+            if (_hasMoreMessages && pinLongList.ItemsSource != null && pinLongList.ItemsSource.Count > 0)
+                if (e.ItemKind == LongListSelectorItemKind.Item && (e.Container.Content as ConvMessage).Equals(pinLongList.ItemsSource[pinLongList.ItemsSource.Count - 1]))
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += (s, ev) =>
+                    {
+                        LoadPinMessages(SUB_FETCH_COUNT);
+                    };
+                    bw.RunWorkerAsync();
+                }
         }
     }
 }
