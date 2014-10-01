@@ -7594,7 +7594,7 @@ namespace windows_client.View
 
             try
             {
-                var msgList = ocMessages.Where(arg => arg.MessageId == _groupInfo.LastReadMessageId);
+                var msgList = ocMessages.Where(arg => arg.MessageId == _groupInfo.LastReadMessageId && arg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO);
 
                 _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }
