@@ -3946,7 +3946,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin Can&apos;t be Empty.
+        ///   Looks up a localized string similar to pin can&apos;t be empty.
         /// </summary>
         public static string Pin_Empty_Msg {
             get {

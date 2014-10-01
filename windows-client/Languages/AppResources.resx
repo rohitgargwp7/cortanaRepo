@@ -2315,7 +2315,7 @@ Download it like asap from http://hike.in!</value>
     <comment>when there is no message</comment>
   </data>
   <data name="Pin_Empty_Msg" xml:space="preserve">
-    <value>Pin Can't be Empty</value>
+    <value>pin can't be empty</value>
     <comment>Text when user tries to create empty pin</comment>
   </data>
   <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">

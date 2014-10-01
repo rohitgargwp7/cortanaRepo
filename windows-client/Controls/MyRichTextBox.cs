@@ -180,21 +180,14 @@ namespace windows_client.Controls
                 groupMemberName.FontFamily = new FontFamily("Segoe WP SemiLight");
 
                 if (IsPin)
-                {
-                    Color colour = new Color();   //#92872C                 
-                    colour.A = 255;               //Transperancy
-                    colour.R = 146;
-                    colour.G = 135;
-                    colour.B = 44;
-                    groupMemberName.Foreground = new SolidColorBrush(colour);
-                }
+                    groupMemberName.Foreground = new SolidColorBrush(Color.FromArgb(255, 146, 135, 44)); //#92872C
                 else
                     groupMemberName.FontWeight = FontWeights.SemiBold;
 
                 if (!String.IsNullOrEmpty(GroupMemberMsisdn) && !GroupMemberMsisdn.Contains(GroupMemberName))
                     groupMemberName.Text = String.Format("{0} {1}- ", GroupMemberName, GroupMemberMsisdn);
                 else
-                    groupMemberName.Text = (IsPin) ? String.Format("{0}: ", GroupMemberName) : String.Format("{0} - ", GroupMemberName);
+                    groupMemberName.Text = String.Format((IsPin) ? "{0}: " : "{0} - ", GroupMemberName);
             }
 
             var paragraph = LinkifyAll ? SmileyParser.Instance.LinkifyAllPerTextBlock(groupMemberName, text, TextForeground, new SmileyParser.ViewMoreLinkClickedDelegate(viewMore_CallBack), new SmileyParser.HyperLinkClickedDelegate(hyperlink_CallBack)) : SmileyParser.Instance.LinkifyEmoticons(groupMemberName,text);

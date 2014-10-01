@@ -239,7 +239,7 @@ namespace windows_client.DbUtils
                 ((HikeChatsDb hdc, string myMsisdn,long lastmessageId,int count) =>
                     (from o in hdc.messages
                     where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1") && o.MessageId < lastmessageId
-                    orderby o.Timestamp descending
+                    orderby o.MessageId descending
                     select o).Take(count));
                 return q;
             }

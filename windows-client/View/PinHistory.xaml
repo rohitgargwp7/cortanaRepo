@@ -43,7 +43,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <Grid Margin="25,18.75,25,0">
+                                <Grid Margin="25,13,25,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
@@ -52,7 +52,9 @@
                                     <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#92872c"></TextBlock>
                                     <TextBlock  Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#92872c" HorizontalAlignment="Right"></TextBlock>
                                 </Grid>
-                                <local:MyRichTextBox Margin="20,4,25,18.75" Grid.Row="1" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
+                                <!--<Border  BorderBrush="Brown" BorderThickness="1" >-->
+                                    <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
+                                <!--</Border>-->
                             </Grid>
                         </Border>
                     </DataTemplate>

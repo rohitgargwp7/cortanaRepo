@@ -98,6 +98,7 @@ namespace windows_client.View
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
             progressBar.Visibility = Visibility.Visible;
+            progressBar.IsIndeterminate = true;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -197,8 +198,15 @@ namespace windows_client.View
         private void pinLongList_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
             if (_hasMoreMessages && pinLongList.ItemsSource != null && pinLongList.ItemsSource.Count > 0)
-                if (e.ItemKind == LongListSelectorItemKind.Item && (e.Container.Content as ConvMessage).Equals(pinLongList.ItemsSource[pinLongList.ItemsSource.Count-1]))
-                    LoadPinMessages(SUB_FETCH_COUNT);
+                if (e.ItemKind == LongListSelectorItemKind.Item && (e.Container.Content as ConvMessage).Equals(pinLongList.ItemsSource[pinLongList.ItemsSource.Count - 1]))
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += (s, ev) =>
+                    {
+                        LoadPinMessages(SUB_FETCH_COUNT);
+                    };
+                    bw.RunWorkerAsync();
+                }
         }
     }
 }
