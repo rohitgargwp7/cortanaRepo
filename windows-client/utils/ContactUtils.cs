@@ -21,8 +21,6 @@ namespace windows_client.utils
     {
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static bool isABScanning;
-        private static Stopwatch st;
-        private static Stopwatch st2;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
@@ -58,7 +56,6 @@ namespace windows_client.utils
 
         public static void getContacts(contacts_Callback callback)
         {
-            st = Stopwatch.StartNew();
             Debug.WriteLine("Contact Scanning started .....");
             ContactState = ContactScanState.ADDBOOK_SCANNING;
             Contacts cons = new Contacts();
@@ -79,10 +76,6 @@ namespace windows_client.utils
             try
             {
                 Debug.WriteLine("Contact Scanning Completed ...... ");
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to scan contacts from phone : {0}", msec);
-
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
@@ -280,16 +273,16 @@ namespace windows_client.utils
             }
         }
 
-        public static void UpdateGroupCacheWithContactOnHike(string number, bool status)
+        public static void UpdateGroupParticpantsCacheWithContactOnHike(string number, bool status)
         {
-            GroupManager.Instance.LoadGroupCache();
+            GroupManager.Instance.LoadGroupParticpantsCache();
 
-            if (GroupManager.Instance.GroupCache != null)
+            if (GroupManager.Instance.GroupParticpantsCache != null)
             {
-                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                 {
                     bool shouldSave = false;
-                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                     for (int i = 0; i < l.Count; i++)
                     {
                         if (l[i].Msisdn == number)
@@ -300,21 +293,21 @@ namespace windows_client.utils
                     }
 
                     if (shouldSave)
-                        GroupManager.Instance.SaveGroupCache(key);
+                        GroupManager.Instance.SaveGroupParticpantsCache(key);
                 }
             }
         }
 
-        public static void UpdateGroupCacheWithContactName(string number, string name)
+        public static void UpdateGroupParticpantsCacheWithContactName(string number, string name)
         {
-            GroupManager.Instance.LoadGroupCache();
+            GroupManager.Instance.LoadGroupParticpantsCache();
 
-            if (GroupManager.Instance.GroupCache != null)
+            if (GroupManager.Instance.GroupParticpantsCache != null)
             {
-                foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                 {
                     bool shouldSave = false;
-                    List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                    List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                     for (int i = 0; i < l.Count; i++)
                     {
                         if (l[i].Msisdn == number)
@@ -326,7 +319,7 @@ namespace windows_client.utils
                     }
 
                     if (shouldSave)
-                        GroupManager.Instance.SaveGroupCache(key);
+                        GroupManager.Instance.SaveGroupParticpantsCache(key);
                 }
             }
         }

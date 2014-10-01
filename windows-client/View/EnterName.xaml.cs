@@ -451,11 +451,7 @@ namespace windows_client
                 // if addressbook is null, then also user should be able to move inside app.
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
-                Stopwatch st = Stopwatch.StartNew();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add addressbook {0}", msec);
                 UsersTableUtils.addBlockList(blockList);
             }
             catch (Exception e)

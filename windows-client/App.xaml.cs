@@ -566,7 +566,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.5.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -814,40 +814,24 @@ namespace windows_client
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
-                GroupManager.Instance.SaveGroupCache();
+                GroupManager.Instance.GroupParticpantsCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupParticpantsCache();
                 RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 
             #endregion
             #region PUBSUB
-            Stopwatch st = Stopwatch.StartNew();
             if (App.HikePubSubInstance == null)
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
             #region DBCONVERSATION LISTENER
-            st.Reset();
-            st.Start();
             if (App.DbListener == null)
                 App.DbListener = new DbConversationListener();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
             #endregion
             #region NETWORK MANAGER
-            st.Reset();
-            st.Start();
             App.NetworkManagerInstance = NetworkManager.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
             #endregion
             #region MQTT MANAGER
-            st.Reset();
-            st.Start();
             if (App.MqttManagerInstance == null)
                 App.MqttManagerInstance = new HikeMqttManager();
             if (ps == PageState.CONVLIST_SCREEN)
@@ -855,32 +839,12 @@ namespace windows_client
                 NetworkManager.turnOffNetworkManager = true;
                 App.MqttManagerInstance.connect();
             }
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
             #endregion
             #region UI UTILS
-            st.Reset();
-            st.Start();
             App.UI_UtilsInstance = UI_Utils.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
             #endregion
             #region ANALYTICS
-            st.Reset();
-            st.Start();
             App.AnalyticsInstance = Analytics.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
-            #endregion
-            #region PUSH HELPER
-            st.Reset();
-            st.Start();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
             #region SMILEY
             if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
@@ -927,9 +891,6 @@ namespace windows_client
                     }
                 }
 
-                st.Stop();
-                msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
@@ -1027,7 +988,6 @@ namespace windows_client
                         }
                     }
                     // Create the database if it does not exist.
-                    Stopwatch st = Stopwatch.StartNew();
                     using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
@@ -1046,9 +1006,6 @@ namespace windows_client
                             db.CreateDatabase();
                     }
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-                    st.Stop();
-                    long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
                 catch (Exception ex)
                 {

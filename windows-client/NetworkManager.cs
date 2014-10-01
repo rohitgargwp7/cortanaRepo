@@ -23,6 +23,8 @@ namespace windows_client
         /* message read by recipient */
         public static readonly string MESSAGE_READ = "mr";
 
+        public static readonly string BULK_MESSAGES = "bm";
+
         public static readonly string MESSAGE = "m";
 
         public static readonly string SMS_CREDITS = "sc";
@@ -135,9 +137,14 @@ namespace windows_client
                 Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
                 return;
             }
-
+            #region BULK MESSAGE
+            if (BULK_MESSAGES == type)
+            {
+                ProcessBulkPacket(jsonObj);
+            }
+            #endregion
             #region MESSAGE
-            if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
+            else if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
                 try
                 {
@@ -183,7 +190,7 @@ namespace windows_client
 
                         if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
                             FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                    
+
                     }
 
                     if (convMessage.FileAttachment != null)
@@ -387,7 +394,7 @@ namespace windows_client
                 object[] vals = new object[3];
                 vals[0] = ids;
                 vals[1] = msisdnToCheck;
-                vals[2] = msisdn;
+                vals[2] = new JArray() { msisdn };
                 updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
             }
@@ -419,7 +426,7 @@ namespace windows_client
                 // update contacts cache
                 if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
                     App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
-                GroupManager.Instance.LoadGroupCache();
+                GroupManager.Instance.LoadGroupParticpantsCache();
                 if (joined)
                 {
                     long lastTimeStamp;
@@ -447,12 +454,12 @@ namespace windows_client
 
                     MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
 
-                    if (GroupManager.Instance.GroupCache != null)
+                    if (GroupManager.Instance.GroupParticpantsCache != null)
                     {
-                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                        foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                         {
                             bool shouldSave = false;
-                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                            List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                             for (int i = 0; i < l.Count; i++)
                             {
                                 if (l[i].Msisdn == uMsisdn)
@@ -462,7 +469,7 @@ namespace windows_client
                                 }
                             }
                             if (shouldSave)
-                                GroupManager.Instance.SaveGroupCache(key);
+                                GroupManager.Instance.SaveGroupParticpantsCache(key);
                         }
                     }
                 }
@@ -490,9 +497,7 @@ namespace windows_client
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
-                Stopwatch st = Stopwatch.StartNew();
                 MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
-                st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     try
@@ -533,8 +538,6 @@ namespace windows_client
                 {
                     App.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
             #endregion
             #region INVITE_INFO
@@ -1118,7 +1121,7 @@ namespace windows_client
                     }
                     else
                     {
-                        GroupManager.Instance.SaveGroupCache(grpId);
+                        GroupManager.Instance.SaveGroupParticpantsCache(grpId);
                         return;
                     }
                 }
@@ -1160,8 +1163,8 @@ namespace windows_client
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
                 if (obj == null)
                     return;
-                GroupManager.Instance.SaveGroupCache(grpId);
-                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+                GroupManager.Instance.SaveGroupParticpantsCache(grpId);
+                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
                 Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
@@ -1293,7 +1296,7 @@ namespace windows_client
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
-                    GroupManager.Instance.SaveGroupCache(groupId);
+                    GroupManager.Instance.SaveGroupParticpantsCache(groupId);
                     ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
                     if (cObj == null)
                         return;
@@ -1508,93 +1511,11 @@ namespace windows_client
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
-                // if this user is already blocked simply ignore his status
-                if (App.ViewModel.BlockedHashset.Contains(msisdn))
-                    return;
-
-                JObject data = null;
-                try
+                StatusMessage sm = null;
+                ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                if (cm != null)
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
-                    StatusMessage sm = null;
-                    JToken val;
-                    string iconBase64 = null;
-
-                    if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
-                        iconBase64 = val.ToString();
-
-                    val = null;
-                    long ts = 0;
-
-                    if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
-                    {
-                        ts = val.ToObject<long>();
-                        long tsCorrection;
-
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
-                            ts -= tsCorrection;
-                    }
-
-                    val = null;
-                    string id = null;
-                    JToken idToken;
-
-                    if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
-                        id = idToken.ToString();
-                    #region HANDLE PROFILE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
-                    {
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
-                        idToken = null;
-                        if (iconBase64 != null)
-                        {
-                            byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                                return;
-                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
-                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
-                            UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                        }
-                    }
-                    #endregion
-
-                    #region HANDLE TEXT UPDATE
-                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
-                    {
-                        int moodId = -1;
-                        int tod = 0;
-                        if (data[HikeConstants.MOOD] != null)
-                        {
-                            string moodId_String = data[HikeConstants.MOOD].ToString();
-                            if (!string.IsNullOrEmpty(moodId_String))
-                            {
-                                int.TryParse(moodId_String, out moodId);
-                                moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                try
-                                {
-                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
-                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    tod = 0;
-                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
-                                }
-                            }
-                        }
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                            return;
-                    }
-                    #endregion
-
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
-                    cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {
@@ -1606,12 +1527,8 @@ namespace windows_client
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
                     }
-                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
-                }
+
             }
             #endregion
             #region DELETE STATUS
@@ -1824,7 +1741,7 @@ namespace windows_client
                     if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
                         GroupManager.Instance.LoadGroupParticipants(to);
 
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
+                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
                     {
                         Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
                         return;
@@ -1849,7 +1766,7 @@ namespace windows_client
 
                     if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
                     {
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
+                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
                         {
                             //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
                             cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
@@ -2051,6 +1968,375 @@ namespace windows_client
             #endregion
         }
 
+
+        /// <summary>
+        /// Process bulk packet
+        /// </summary>
+        /// <param name="jsonObj"></param>
+        private void ProcessBulkPacket(JObject jsonObj)
+        {
+            //try
+            //{
+            var jData = (JObject)jsonObj[HikeConstants.DATA];
+            JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+
+            Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
+            for (int i = 0; i < msgs.Count; i++)
+            {
+                ProcessBulkIndividualMsg((JObject)msgs[i], dictBulkData);
+            }
+
+            if (dictBulkData.Count > 0)
+            {
+                foreach (MsisdnBulkData msisdnBulkData in dictBulkData.Values)
+                {
+                    if (msisdnBulkData.ListMessages.Count > 0)
+                    {
+                        MessagesTableUtils.FilterDuplicateMessage(msisdnBulkData.ListMessages);
+                        //after filtering it may be zero
+                        if (msisdnBulkData.ListMessages.Count > 0)
+                        {
+                            bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
+                            if (success)
+                            {
+                                ConversationListObject obj;
+                                bool updateConversation = false;
+                                foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
+                                {
+                                    if (convMessage.StatusUpdateObj != null)
+                                    {
+                                        convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
+                                        StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                    }
+                                    else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                                    {
+                                        if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out obj))
+                                        {
+                                            MessagesTableUtils.ProcessConversationMetadata(convMessage, obj);
+                                            updateConversation = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+                      || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+                                        {
+                                            convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
+                                        }
+                                        else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+                                        {
+                                            FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                        }
+
+                                        if (convMessage.FileAttachment != null)
+                                        {
+                                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                                        }
+                                    }
+                                }
+                                ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+                                obj = MessagesTableUtils.UpdateConversationList(lastMessage, false);
+                                if (obj == null)
+                                    continue;
+
+                                if (msisdnBulkData.ListMessages.Count > 1)
+                                {
+                                    obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
+                                    updateConversation = true;
+                                }
+                                if (updateConversation)
+                                    ConversationTableUtils.updateConversation(obj);
+
+                                object[] vals = new object[3];
+
+                                vals[0] = msisdnBulkData.ListMessages;
+                                vals[1] = obj;
+                                vals[2] = false;
+                                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                            }
+
+                        }
+                    }
+                    if (msisdnBulkData.LastDeliveredMsgId > 0)
+                    {
+                        object[] vals = new object[2];
+                        vals[0] = MiscDBUtil.UpdateBulkMessageDBsDeliveredStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastDeliveredMsgId);
+                        vals[1] = msisdnBulkData.Msisdn;
+                        this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
+                    }
+                    if (msisdnBulkData.LastReadMsgId > 0)
+                    {
+                        object[] vals = new object[3];
+                        vals[0] = MiscDBUtil.UpdateBulkMessageDBsReadStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastReadMsgId, msisdnBulkData.LastReadMsgId, msisdnBulkData.ReadByArray);
+                        vals[1] = msisdnBulkData.Msisdn;
+                        vals[2] = msisdnBulkData.ReadByArray;
+                        this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+
+                    }
+                }
+            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+            //}
+        }
+
+        /// <summary>
+        /// Processes individual packets in bulk packets
+        /// </summary>
+        /// <param name="jsonObj"></param>
+        /// <param name="dictBulkData"></param>
+        private void ProcessBulkIndividualMsg(JObject jsonObj, Dictionary<string, MsisdnBulkData> dictBulkData)
+        {
+
+            if (jsonObj == null)
+                return;
+            try
+            {
+                string type = (string)jsonObj[HikeConstants.TYPE];
+
+                if (type == MESSAGE)
+                {
+                    try
+                    {
+                        ConvMessage convMessage = new ConvMessage(jsonObj);
+                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                            GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
+
+                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                        MessagesTableUtils.UpdateConvMessageText(convMessage, string.Empty);
+
+                        MsisdnBulkData msisdnBulkData;
+                        if (!dictBulkData.TryGetValue(convMessage.Msisdn, out msisdnBulkData))
+                        {
+                            msisdnBulkData = new MsisdnBulkData(convMessage.Msisdn);
+                            dictBulkData[convMessage.Msisdn] = msisdnBulkData;
+                        }
+                        msisdnBulkData.ListMessages.Add(convMessage);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
+                        return;
+                    }
+
+                }
+                #region DELIVERY_REPORT
+                else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
+                {
+
+                    try
+                    {
+                        string id = (string)jsonObj[HikeConstants.DATA];
+                        string msisdn;
+                        JToken msisdnToken;
+                        jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                        if (msisdnToken != null)
+                            msisdn = msisdnToken.ToString();
+                        else
+                            msisdn = (string)jsonObj[HikeConstants.FROM];
+                        long msgID = Int64.Parse(id);
+                        MsisdnBulkData msisdnBulkData;
+                        if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
+                        {
+                            msisdnBulkData = new MsisdnBulkData(msisdn);
+                            dictBulkData[msisdn] = msisdnBulkData;
+                        }
+                        msisdnBulkData.LastDeliveredMsgId = msgID > msisdnBulkData.LastDeliveredMsgId ? msgID : msisdnBulkData.LastDeliveredMsgId;
+                    }
+                    catch (FormatException e)
+                    {
+                        Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
+                        return;
+                    }
+                }
+                #endregion
+                #region MESSAGE_READ
+                else if (MESSAGE_READ == type) // Message read by recipient
+                {
+                    JArray msgIds = null;
+
+                    try
+                    {
+                        msgIds = (JArray)jsonObj["d"];
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE_READ, Exception : " + ex.StackTrace);
+                        return;
+                    }
+                    if (msgIds == null || msgIds.Count == 0)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
+                        return;
+                    }
+
+                    string readBy = (string)jsonObj[HikeConstants.FROM];
+                    string msisdn;
+                    JToken msisdnToken;
+                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    if (msisdnToken != null)
+                        msisdn = msisdnToken.ToString();
+                    else
+                        msisdn = readBy;
+
+                    MsisdnBulkData msisdnBulkData;
+                    if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
+                    {
+                        msisdnBulkData = new MsisdnBulkData(msisdn);
+                        dictBulkData[msisdn] = msisdnBulkData;
+                    }
+                    for (int i = 0; i < msgIds.Count; i++)
+                    {
+                        long msgID = Int64.Parse(msgIds[i].ToString());
+                        if (msgID > msisdnBulkData.LastReadMsgId)
+                        {
+                            msisdnBulkData.LastReadMsgId = msgID;
+                            if (Utils.isGroupConversation(msisdn))
+                                msisdnBulkData.ReadByArray = new JArray() { readBy };//if new msg id is greater than existing msg id then create new readby array
+                        }
+                        else if (msgID == msisdnBulkData.LastReadMsgId && Utils.isGroupConversation(msisdn))
+                        {
+                            if (!msisdnBulkData.ReadByArray.Contains(readBy))
+                                msisdnBulkData.ReadByArray.Add(readBy);
+                        }
+                    }
+
+                }
+                #endregion
+                #region STATUS UPDATE
+                else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+                {
+                    string msisdn = (string)jsonObj[HikeConstants.FROM];
+                    StatusMessage sm = null;
+                    ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                    if (cm != null)
+                    {
+                        cm.StatusUpdateObj = sm;//to update after getting message id after storing in db
+                        MsisdnBulkData msisdnBulkData;
+                        if (!dictBulkData.TryGetValue(cm.Msisdn, out msisdnBulkData))
+                        {
+                            msisdnBulkData = new MsisdnBulkData(cm.Msisdn);
+                            dictBulkData[cm.Msisdn] = msisdnBulkData;
+                        }
+                        msisdnBulkData.ListMessages.Add(cm);
+                    }
+                }
+                #endregion
+                else
+                {
+                    onMessage(jsonObj.ToString(Newtonsoft.Json.Formatting.None));
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.WriteLine("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
+                return;
+            }
+            return;
+        }
+
+        private ConvMessage ProcessStatusUpdate(string msisdn, JObject jsonObj, out StatusMessage sm)
+        {
+            sm = null;
+            // if this user is already blocked simply ignore his status
+            if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                return null;
+
+            JObject data = null;
+            try
+            {
+                data = (JObject)jsonObj[HikeConstants.DATA];
+                JToken val;
+                string iconBase64 = null;
+
+                if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
+                    iconBase64 = val.ToString();
+
+                val = null;
+                long ts = 0;
+
+                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                {
+                    ts = val.ToObject<long>();
+                    long tsCorrection;
+
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                        ts -= tsCorrection;
+                }
+
+                val = null;
+                string id = null;
+                JToken idToken;
+
+                if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
+                    id = idToken.ToString();
+                #region HANDLE PROFILE PIC UPDATE
+                if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                {
+                    sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
+                    idToken = null;
+                    if (iconBase64 != null)
+                    {
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return null;
+                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
+                        jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
+                        UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    }
+                }
+                #endregion
+
+                #region HANDLE TEXT UPDATE
+                else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                {
+                    int moodId = -1;
+                    int tod = 0;
+                    if (data[HikeConstants.MOOD] != null)
+                    {
+                        string moodId_String = data[HikeConstants.MOOD].ToString();
+                        if (!string.IsNullOrEmpty(moodId_String))
+                        {
+                            int.TryParse(moodId_String, out moodId);
+                            moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
+                            try
+                            {
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                tod = 0;
+                                Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                            }
+                        }
+                    }
+                    sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
+                    if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                        return null;
+                }
+                #endregion
+
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
+                cm.Msisdn = msisdn;
+
+                pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
+
+                return cm;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
+            }
+            return null;
+        }
+
         private void LoadFavAndPending(bool isFav, string msisdn)
         {
             if (msisdn == null)
@@ -2181,8 +2467,8 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
                     {
-                        GroupManager.Instance.SaveGroupCache(cm.Msisdn);
-                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+                        GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
+                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
                         return;
                     }
                     if (credits <= 0)
@@ -2207,9 +2493,9 @@ namespace windows_client
                 }
             }
             // UPDATE group cache
-            foreach (string key in GroupManager.Instance.GroupCache.Keys)
+            foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
             {
-                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                 GroupParticipant gp = l.Find(x => x.Msisdn == ms);
                 if (gp != null)
                 {
@@ -2223,7 +2509,7 @@ namespace windows_client
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
                         if (co == null)
                         {
-                            GroupManager.Instance.SaveGroupCache();
+                            GroupManager.Instance.SaveGroupParticpantsCache();
                             return;
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
@@ -2237,7 +2523,7 @@ namespace windows_client
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
                             if (co == null)
                             {
-                                GroupManager.Instance.SaveGroupCache();
+                                GroupManager.Instance.SaveGroupParticpantsCache();
                                 return;
                             }
                             values = new object[3];
@@ -2256,7 +2542,7 @@ namespace windows_client
                     gp.HasOptIn = true;
                 }
             }
-            GroupManager.Instance.SaveGroupCache();
+            GroupManager.Instance.SaveGroupParticpantsCache();
         }
 
         #region OLD ADD GROUPMEMBERS LOGIC
@@ -2269,7 +2555,7 @@ namespace windows_client
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
-        //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
+        //        GroupManager.Instance.GroupParticpantsCache.TryGetValue(grpId, out l);
         //        if (l == null)
         //            return true;
 
@@ -2316,7 +2602,7 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
         //        return output;
         //    }
         //    else
@@ -2398,37 +2684,30 @@ namespace windows_client
         {
             if (ids == null || ids.Length == 0)
                 return;
-            Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status, sender);
-            if (msisdn == null)
-            {
-                string idsString = string.Empty;
-                foreach (long id in ids)
-                {
-                    idsString = string.Format("{0}, {1}", idsString, id.ToString());
-                }
-                Debug.WriteLine("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status);
-                return;
-            }
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);//msisdn would be null for multiple read by
+
             // To update conversation object , we have to check if ids [] contains last msg id
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            if (App.ViewModel.ConvMap.ContainsKey(fromUser))
             {
-                if (ContainsLastMsgId(ids, App.ViewModel.ConvMap[msisdn]))
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[msisdn].LastMsgId, msisdn, status);
+                ConversationListObject co = App.ViewModel.ConvMap[fromUser];
+                bool containsMessageId = false;
+                long maxReadId = 0;
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    if (ids[i] > maxReadId)
+                        maxReadId = ids[i];
+                    if (co.LastMsgId == ids[i])
+                        containsMessageId = true;
+                }
+
+                if (containsMessageId)
+                    ConversationTableUtils.updateLastMsgStatus(co.LastMsgId, msisdn, status);//if msisdn null then conversastionlistObj is alreadyUpdated
+
+                if (Utils.isGroupConversation(fromUser))
+                    GroupTableUtils.UpdateReadBy(fromUser, maxReadId, sender);
+
             }
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
         }
 
-        private bool ContainsLastMsgId(long[] ids, ConversationListObject co)
-        {
-            for (int i = 0; i < ids.Length; i++)
-            {
-                if (ids[i] == co.LastMsgId)
-                    return true;
-            }
-            return false;
-        }
     }
 }

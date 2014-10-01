@@ -825,6 +825,33 @@ namespace windows_client.utils
             return sb.ToString();
         }
 
+        public static string GZipDecompress(byte[] byteArray)
+        {
+            if (byteArray == null || byteArray.Length == 0)
+                return string.Empty;
+
+            //Prepare for decompress
+            MemoryStream ms = new MemoryStream(byteArray);
+            GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
+
+            //Decompress
+            byte[] buffer = StreamToByteArray(gzip);
+
+            //Transform byte[] unzip data to string
+            StringBuilder sb = new StringBuilder();
+
+            //Read the number of bytes GZipStream red and do not a for each bytes in resultByteArray;
+            for (int i = 0; i < buffer.Length; i++)
+                sb.Append((char)buffer[i]);
+
+            gzip.Close();
+            ms.Close();
+
+            gzip.Dispose();
+            ms.Dispose();
+
+            return sb.ToString();
+        }
         public static byte[] StreamToByteArray(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];
@@ -1114,7 +1141,7 @@ namespace windows_client.utils
 
                 if (isRefresh)
                 {
-                    GroupManager.Instance.LoadGroupCache();
+                    GroupManager.Instance.LoadGroupParticpantsCache();
                     List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                     for (int i = 0; i < gl.Count; i++)
                     {
@@ -1187,7 +1214,7 @@ namespace windows_client.utils
                                     }
                                 }
 
-                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo, true);
+                                GroupManager.Instance.RefreshGroupParticpantsCache(cn, allGroupsInfo, true);
                             }
 
                             server_contacts.Add(cn);
