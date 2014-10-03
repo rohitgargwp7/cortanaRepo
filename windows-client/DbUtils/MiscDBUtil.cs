@@ -16,6 +16,7 @@ using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
 using FileTransfer;
 using CommonLibrary.Constants;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -1300,13 +1301,38 @@ namespace windows_client.DbUtils
         /// <param name="status"></param>
         public static void UpdateDBsMessageStatus(string fromUser, long msgID, int status)
         {
-            Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
             ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
+
+        /// <summary>
+        /// Update delivered status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateBulkMessageDBsDeliveredStatus(string msisdn, long msgID)
+        {
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgDeliveredStatus(msisdn, msgID);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, (int)ConvMessage.State.SENT_DELIVERED); // update conversationObj, null is already checked in the function
+            return listUpdatedMsgIds;
+        }
+
+        /// <summary>
+        /// Update read status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateBulkMessageDBsReadStatus(string msisdn, long msgID, long lastReadMessageId, JArray readByArray)
+        {
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, msgID);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, (int)ConvMessage.State.SENT_DELIVERED_READ); // update conversationObj, null is already checked in the function
+            if (Utils.isGroupConversation(msisdn))
+                GroupTableUtils.UpdateReadBy(msisdn, lastReadMessageId, readByArray);
+            return listUpdatedMsgIds;
+        }
+
         #endregion
     }
 }

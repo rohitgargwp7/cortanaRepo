@@ -87,12 +87,26 @@ namespace windows_client.View
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.On;
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+
+            JObject obj = new JObject();
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.HIDDEN_AUTO_SWITCH, 1);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         private void hideChatOnExitToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             this.activateHiddenModeOnExitToggle.Content = AppResources.Off;
             HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.ACTIVATE_HIDDEN_MODE_ON_EXIT);
+
+            JObject obj = new JObject();
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.HIDDEN_AUTO_SWITCH, 0);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
 
         #region Hidden Mode Settings

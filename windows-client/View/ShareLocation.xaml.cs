@@ -318,10 +318,10 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
-                    shareIconButton.IsEnabled = true;
-
                     DrawMapMarkers();
                     MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+
+                    shareIconButton.IsEnabled = true;
                 });
             }
             catch (Exception ex)
@@ -335,9 +335,9 @@ namespace windows_client.View
                 {
                     Dispatcher.BeginInvoke(() =>
                     {
-                        shareIconButton.IsEnabled = true;
                         DrawMapMarkers();
                         MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                        shareIconButton.IsEnabled = true;
                     });
                 }
             }
@@ -653,7 +653,6 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 else if (_selectedCoordinate != null)
                 {
-                    shareIconButton.IsEnabled = true;
                     DrawMapMarkers();
                     SearchTextBox.Text = _searchString;
 
@@ -670,6 +669,8 @@ namespace windows_client.View
                         loadingPlaces.IsIndeterminate = true;
                         PopulatePlaces(JObject.Parse(_resultString), _selectedIndex);
                     }
+
+                    shareIconButton.IsEnabled = true;
                 }
             }
             else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _isLocationEnabled)
@@ -734,7 +735,7 @@ namespace windows_client.View
             shareIconButton.IsEnabled = false;
         }
 
-        private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             shareIconButton.IsEnabled = true;
         }

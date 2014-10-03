@@ -284,8 +284,8 @@ namespace windows_client.utils
 
             if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.AppSettings[AppSettingsKeys.GROUPS_CACHE];
-                GroupManager.Instance.SaveGroupCache();
+                GroupManager.Instance.GroupParticpantsCache = (Dictionary<string, List<GroupParticipant>>)HikeInstantiation.AppSettings[AppSettingsKeys.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupParticpantsCache();
                 RemoveKeyFromAppSettings(AppSettingsKeys.GROUPS_CACHE);
             }
 

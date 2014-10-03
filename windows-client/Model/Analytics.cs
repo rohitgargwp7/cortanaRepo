@@ -2,6 +2,11 @@
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using CommonLibrary.Constants;
+using windows_client.Misc;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -103,6 +108,33 @@ namespace windows_client.Model
 
             if (HikeInstantiation.HikePubSubInstance != null)
                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
+        }
+
+        public static void SendAnalyticsEvent(string subtype, string eventType, string eventKey, string msisdn)
+        {
+            if (String.IsNullOrEmpty(subtype) || String.IsNullOrEmpty(eventType) || String.IsNullOrEmpty(eventKey) || String.IsNullOrEmpty(msisdn))
+                return;
+
+            JObject metadata = new JObject();
+            metadata.Add(HikeConstants.AnalyticsKeys.EVENT_TYPE, eventType);
+            metadata.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, eventKey);
+            metadata.Add(HikeConstants.NokiaHere.CONTEXT, msisdn);
+
+            long ts = TimeUtils.getCurrentTimeStamp();
+
+            JObject data = new JObject();
+            data.Add(ServerJsonKeys.SUB_TYPE, subtype);
+            data.Add(HikeConstants.CLIENT_TIMESTAMP, ts);
+            data.Add(ServerJsonKeys.METADATA, metadata);
+            data.Add(ServerJsonKeys.TAG, ServerJsonKeys.TAG_MOBILE);
+            data.Add(ServerJsonKeys.MESSAGE_ID, ts);
+
+            JObject analyticsJson = new JObject();
+            analyticsJson.Add(ServerJsonKeys.DATA,data);
+            analyticsJson.Add(ServerJsonKeys.TYPE, ServerJsonKeys.LOG_EVENT);
+
+            if (HikeInstantiation.HikePubSubInstance != null)
+                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticsJson);
         }
     }
 }

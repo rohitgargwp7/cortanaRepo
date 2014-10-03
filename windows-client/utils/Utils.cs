@@ -736,6 +736,12 @@ namespace windows_client.utils
             return result;
         }
 
+        public static bool IsGZipHeader(byte[] arr)
+        {
+            return arr.Length >= 2 &&
+                arr[0] == 31 &&
+                arr[1] == 139;
+        }
 
 
         /// <summary>

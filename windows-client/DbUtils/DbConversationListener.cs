@@ -290,7 +290,7 @@ namespace windows_client.DbUtils
                 MiscDBUtil.DeleteImageForMsisdn(groupId);
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
-                GroupManager.Instance.GroupCache.Remove(groupId);
+                GroupManager.Instance.GroupParticpantsCache.Remove(groupId);
                 GroupManager.Instance.DeleteGroup(groupId);
             }
             #endregion
@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
                 if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
                 {
                     GroupTableUtils.deleteGroupWithId(convMsisdn); // remove entry from Group Table
-                    GroupManager.Instance.GroupCache.Remove(convMsisdn);
+                    GroupManager.Instance.GroupParticpantsCache.Remove(convMsisdn);
                     GroupManager.Instance.DeleteGroup(convMsisdn); // delete the group file
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
@@ -560,7 +560,7 @@ namespace windows_client.DbUtils
         /// <param name="status"></param>
         private void updateDbBatch(long[] ids, int status)
         {
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status, null);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
             ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
         }
     }

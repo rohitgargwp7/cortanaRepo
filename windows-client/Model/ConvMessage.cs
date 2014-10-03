@@ -37,7 +37,6 @@ namespace windows_client.Model
         private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
-        private string _readByInfo;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -369,43 +368,12 @@ namespace windows_client.Model
             }
         }
 
+        //to be used for upgrading users
         [Column(CanBeNull = true)]
         public string ReadByInfo
         {
-            get
-            {
-                return _readByInfo;
-            }
-            set
-            {
-                if (_readByInfo != value)
-                {
-                    NotifyPropertyChanging("ReadByInfo");
-                    _readByInfo = value;
-                }
-            }
-        }
-
-        JArray _readByArray;
-        public JArray ReadByArray
-        {
-            get
-            {
-                if (_readByArray == null)
-                {
-                    if (String.IsNullOrEmpty(_readByInfo))
-                        return null;
-                    else
-                        _readByArray = JArray.Parse(_readByInfo);
-                }
-
-                return _readByArray;
-            }
-            set
-            {
-                if (value != _readByArray)
-                    _readByArray = value;
-            }
+            get;
+            set;
         }
 
         public Attachment FileAttachment
@@ -422,6 +390,12 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SdrImage");
                 }
             }
+        }
+
+        public StatusMessage StatusUpdateObj
+        {
+            get;
+            set;
         }
 
         public bool IsInvite
@@ -529,7 +503,7 @@ namespace windows_client.Model
                 if (this.GroupMemberName == null)
                     return this.GroupParticipant;
                 else
-                    return this.GroupMemberName;    
+                    return this.GroupMemberName;
             }
         }
 
@@ -806,7 +780,7 @@ namespace windows_client.Model
             get
             {
                 return FileAttachment != null && MessageStatus == State.SENT_FAILED &&
-                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED 
+                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED
                     || FileAttachment.FileState == Attachment.AttachmentState.CANCELED) ?
                     Visibility.Visible : Visibility.Collapsed;
             }
@@ -2212,14 +2186,14 @@ namespace windows_client.Model
                     }
                 }
                 if (!isSelfGenerated) // when I am group owner chache is already sorted
-                    GroupManager.Instance.GroupCache[toVal].Sort();
+                    GroupManager.Instance.GroupParticpantsCache[toVal].Sort();
                 if (addedLater)
                 {
                     addedMembers.Sort();
                     this._message = GetMsgText(addedMembers, false);
                 }
                 else
-                    this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
+                    this._message = GetMsgText(GroupManager.Instance.GroupParticpantsCache[toVal], true);
 
                 this._message = this._message.Replace(";", String.Empty);// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }

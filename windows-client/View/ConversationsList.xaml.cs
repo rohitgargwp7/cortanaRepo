@@ -436,14 +436,7 @@ namespace windows_client.View
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
                 {
-                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        cn = HikeInstantiation.ViewModel.ContactsCache[msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
-                        if (cn != null)
-                            HikeInstantiation.ViewModel.ContactsCache[msisdn] = cn;
-                    }
+                    cn = ContactUtils.GetContactInfo(msisdn);
 
                     if (cn != null)
                         cl.Add(cn);
@@ -1558,10 +1551,7 @@ namespace windows_client.View
                 else
                 {
                     string msisdn = obj as string;
-                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        c = HikeInstantiation.ViewModel.ContactsCache[msisdn];
-                    else
-                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    c = ContactUtils.GetContactInfo(msisdn);
                 }
 
                 // ignore if not onhike or not in addressbook
@@ -2023,6 +2013,7 @@ namespace windows_client.View
             if (convObj == null)
                 return;
 
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_LONGPRESS, convObj.Msisdn);
             EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.ContactName, convObj.IsGroupChat);
         }
 
@@ -2532,15 +2523,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                        cn = HikeInstantiation.ViewModel.ContactsCache[fObj.Msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                        if (cn != null)
-                            HikeInstantiation.ViewModel.ContactsCache[fObj.Msisdn] = cn;
-                    }
-                    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                    cn = ContactUtils.GetContactInfo(fObj.Msisdn);
+                    bool onHike = cn != null ? cn.OnHike : true; // by default only hike user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
 
@@ -3035,9 +3019,9 @@ namespace windows_client.View
             if (convListObj.IsGroupChat)
             {
                 GroupManager.Instance.LoadGroupParticipants(searchBy);
-                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
+                if (GroupManager.Instance.GroupParticpantsCache != null && GroupManager.Instance.GroupParticpantsCache.ContainsKey(searchBy))
                 {
-                    var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
+                    var a = (GroupManager.Instance.GroupParticpantsCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
                     if (a.Count() > 0)
                     {
                         GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();

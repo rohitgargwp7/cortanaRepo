@@ -208,6 +208,7 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
+    <Compile Include="Model\MsisdnBulkData.cs" />
     <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
@@ -684,6 +685,7 @@
     <Content Include="View\images\MediaPlayIconSmall.png" />
     <Content Include="View\images\menu_camcorder_icon.png" />
     <Content Include="View\images\Pins\cross.png" />
+    <Content Include="View\images\Pins\pin_gray.png" />
     <Content Include="View\images\pin_icon.png" />
     <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\retry_icon.png" />
