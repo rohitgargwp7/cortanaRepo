@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:local="clr-namespace:windows_client.Controls"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -11,12 +12,14 @@
     d:DesignHeight="100" d:DesignWidth="480" >
 
     <UserControl.Resources>
+        
+        <!--Style for making bg transparent of textbox while typing-->
         <Style x:Key="newPinStyle" TargetType="toolkit:PhoneTextBox">
             <Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilyNormal}"/>
             <Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#B0A75A"/>
-            <Setter Property="CaretBrush" Value="#B0A75A"/>
+            <Setter Property="Foreground" Value="#645e2d"/>
+            <Setter Property="CaretBrush" Value="#645e2d"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="SelectionBackground" Value="{StaticResource HikeBlue}"/>
             <Setter Property="SelectionForeground" Value="{StaticResource PhoneTextBoxSelectionForegroundBrush}"/>
@@ -71,7 +74,7 @@
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentElement">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#B0A75A"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#645e2d"/>
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
@@ -84,7 +87,7 @@
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentElement">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#B0A75A"/>
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="#645e2d"/>
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
@@ -175,26 +178,25 @@
         
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="#FFF38F" RenderTransformOrigin="0.5,0.0">
+    <Border BorderThickness="0,0,0,1" BorderBrush="#e2d779">
+    <Grid x:Name="LayoutRoot" Background="#FFF38F" RenderTransformOrigin="0.5,0.0" Opacity="1">
     	<Grid.RenderTransform>
     		<CompositeTransform/>
     	</Grid.RenderTransform>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Image x:Name="leftIcon" Source="../View/images/pattern.png" Height="50" Width="50" VerticalAlignment="Center" />
-        <TextBlock Grid.Column="1" Tap="pinContent_Tap" x:Name="pinContent" VerticalAlignment="Center" LineHeight="30" TextWrapping="Wrap" MaxHeight="60" TextTrimming="WordEllipsis">
-            <Run x:Name="pinContactName"  Foreground="#B0A75A" FontSize="24" />
-            <Run Foreground="#B0A75A" FontSize="24" Text=":"/>
-            <Run x:Name="pinTxt" Foreground="#867f40" FontSize="24" />
-        </TextBlock>
-        <toolkit:PhoneTextBox  FontSize="24" Grid.Column="1" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
-        <Border Grid.Column="2" x:Name="notificationCountGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
+
+        <local:MyRichTextBox FontWeight="Normal" IsPin="True" Margin="16,8,0,10" Tap="pinContent_Tap" x:Name="pinContent" Foreground="#645e2d" FontSize="22" MaxLines="2"/>
+        <toolkit:PhoneTextBox Margin="16,0,0,0" FontSize="22" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
+        <Border Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="1" x:Name="notificationCountGrid" HorizontalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
             <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}"/>
         </Border>
-        <Image Grid.Column="3" x:Name="rightIcon" Source="/View/images/Pins/cross.png" Tap="rightIcon_Tap" Height="16" Width="16" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="15,0" />
-    </Grid>
+        <Grid Grid.Column="2" Tap="rightIcon_Tap">
+            <Image Margin="15,0,18.75,0" VerticalAlignment="Center" Grid.Column="2" x:Name="rightIcon" Source="/View/images/Pins/cross.png" Height="16" Width="16" HorizontalAlignment="Right" />
+        </Grid>
+        </Grid>
+    </Border>
 </UserControl>

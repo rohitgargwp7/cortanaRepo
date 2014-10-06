@@ -312,7 +312,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.6.5.0", currentVersion) == 1)
+            if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.8.0.1", currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PAGE_TO_NAVIGATE_TO] = targetPage;
                 HikeInstantiation.InstantiateClasses(true);

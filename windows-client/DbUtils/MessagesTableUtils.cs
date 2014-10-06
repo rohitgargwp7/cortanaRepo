@@ -51,11 +51,11 @@ namespace windows_client.DbUtils
         /// </summary>
         /// <param name="msisdn">msisdn of group</param>
         /// <returns>list of pins</returns>
-        public static List<ConvMessage> getPinMessagesForMsisdn(string msisdn)
+        public static List<ConvMessage> getPinMessagesForMsisdn(string msisdn, long lastmessageId, int count)
         {
             using (HikeChatsDb chatsDbContext = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
             {
-                List<ConvMessage> res = DbCompiledQueries.GetPinMessagesForMsisdn(chatsDbContext, msisdn).ToList<ConvMessage>();
+                List<ConvMessage> res = DbCompiledQueries.GetPinMessagesForMsisdnForPaging(chatsDbContext, msisdn, lastmessageId, count).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -69,7 +69,6 @@ namespace windows_client.DbUtils
                 res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
             }
-
         }
 
         public static List<ConvMessage> getAllMessages()
@@ -80,7 +79,6 @@ namespace windows_client.DbUtils
                 res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
             }
-
         }
 
         /* Adds a chat message to message Table.*/
@@ -113,6 +111,59 @@ namespace windows_client.DbUtils
             return true;
         }
 
+
+        /// <summary>
+        /// Insert messages at once
+        /// </summary>
+        /// <param name="listMessages">list of non duplicate messages</param>
+        /// <returns></returns>
+        public static bool BulkInsertMessage(IList<ConvMessage> listMessages)
+        {
+            if (listMessages == null || listMessages.Count == 0)
+                return false;
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            {
+                context.messages.InsertAllOnSubmit(listMessages);
+                try
+                {
+                    context.SubmitChanges();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Removes duplicate messages from the list of messages passed
+        /// </summary>
+        /// <param name="listConvMessage"></param>
+        public static void FilterDuplicateMessage(List<ConvMessage> listConvMessage)
+        {
+            if (listConvMessage == null || listConvMessage.Count == 0)
+                return;
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
+            {
+                for (int i = 0; i < listConvMessage.Count; )
+                {
+                    ConvMessage convMessage = listConvMessage[i];
+                    if (convMessage.MappedMessageId > 0)
+                    {
+                        IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
+                        ConvMessage cm = qq.FirstOrDefault();
+                        if (cm != null)
+                            listConvMessage.RemoveAt(i);
+                        else
+                            i++;
+                    }
+                    else
+                        i++;
+                }
+            }
+        }
         private static void SaveLongMessage(ConvMessage convMessage)
         {
             if (convMessage.Message.Length > 4000)
@@ -141,7 +192,7 @@ namespace windows_client.DbUtils
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
-                GroupManager.Instance.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                GroupManager.Instance.GroupParticpantsCache.TryGetValue(convMsg.Msisdn, out existingMembers);
                 if (existingMembers == null)
                     return null;
 
@@ -176,6 +227,30 @@ namespace windows_client.DbUtils
         }
 
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, byte[] imageBytes = null, string from = "")
+        {
+            UpdateConvMessageText(convMsg, from);
+            if (addMessage(convMsg))
+            {
+                ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, imageBytes, from);
+                if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                {
+                    ProcessConversationMetadata(convMsg, cobj);
+                    ConversationTableUtils.updateConversation(cobj);
+                }
+                return cobj;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// updates conversationlist according to paricipant info and update conversation file
+        /// </summary>
+        /// <param name="convMsg"></param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="imageBytes"></param>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public static ConversationListObject UpdateConversationList(ConvMessage convMsg, bool isNewGroup, byte[] imageBytes = null, string from = "")
         {
             if (convMsg == null)
                 return null;
@@ -309,7 +384,7 @@ namespace windows_client.DbUtils
                     }
                     convMsg.Message = obj.LastMessage;
                 }
-                #endregion\
+                #endregion
                 #region GROUP NAME/PIC CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
@@ -389,37 +464,6 @@ namespace windows_client.DbUtils
                 else
                     obj.LastMessage = convMsg.Message;
                 #endregion
-                Stopwatch st1 = Stopwatch.StartNew();
-                bool success = addMessage(convMsg);
-
-                if (!success)
-                    return null;
-
-                st1.Stop();
-                long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
-
-                #region GCPIN_MESSAGE
-                //Not included with other 'ifs' because we need pinID which we will get after inserting in DB
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
-                {
-                    JObject metaData = new JObject();
-
-                    if (obj.MetaData == null || obj.MetaData.Value<long>(ServerJsonKeys.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
-                    {
-                        metaData[HikeConstants.PINID] = convMsg.MessageId;
-                        metaData[ServerJsonKeys.TIMESTAMP] = convMsg.Timestamp;
-                        metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
-                    }
-
-                    if (obj.MetaData == null) //check for "should unread counter be increased??"
-                        metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
-                    else
-                        metaData[HikeConstants.UNREADPINS] = (convMsg.IsSent) ? obj.MetaData.Value<int>(HikeConstants.UNREADPINS) : obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
-
-                    obj.MetaData = metaData;
-                }
-                #endregion
 
                 if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -432,13 +476,108 @@ namespace windows_client.DbUtils
                 }
 
                 obj.LastMsgId = convMsg.MessageId;
-                Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             return obj;
+        }
+
+
+        /// <summary>
+        /// Updates Conversation Message display text on basis of conditions 
+        /// </summary>
+        /// <param name="convMsg">ConvMessage to be updated</param>
+        /// <param name="from"></param>
+        public static void UpdateConvMessageText(ConvMessage convMsg, string from)
+        {
+            string nameToShow;
+            if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
+                nameToShow = HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn].NameToShow;
+            else if (Utils.IsHikeBotMsg(convMsg.Msisdn))
+                nameToShow = Utils.GetHikeBotName(convMsg.Msisdn);
+            else
+            {
+                ContactInfo contactInfo = ContactUtils.GetContactInfo(convMsg.Msisdn);
+                nameToShow = contactInfo == null ? string.Empty : contactInfo.Name;
+            }
+
+            #region USER_OPT_IN
+            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
+            {
+                if (Utils.isGroupConversation(convMsg.Msisdn))
+                {
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, convMsg.Msisdn);
+                    convMsg.Message = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
+                }
+                else
+                {
+                    convMsg.Message = String.Format(AppResources.USER_OPTED_IN_MSG, nameToShow);
+                }
+            }
+            #endregion
+            #region Chat Background Changed
+            else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
+            {
+                if (!Utils.isGroupConversation(from))
+                {
+                    if (from == HikeInstantiation.MSISDN)
+                        convMsg.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
+                    else
+                        convMsg.Message = string.Format(AppResources.ChatBg_Changed_Text, nameToShow);
+                }
+            }
+            #endregion
+            #region DND_USER
+            else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
+            {
+                convMsg.Message = string.Format(AppResources.DND_USER, nameToShow);
+            }
+            #endregion
+            #region USER_JOINED
+            else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
+            {
+                string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
+                if (Utils.isGroupConversation(convMsg.Msisdn))
+                {
+                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, convMsg.Msisdn);
+                    convMsg.Message = string.Format(msgtext, gp.FirstName);
+                }
+                else // 1-1 chat
+                {
+                    convMsg.Message = string.Format(msgtext, nameToShow);
+                }
+            }
+            #endregion
+
+        }
+
+        /// <summary>
+        /// Updates metadata related to pin for conversation object 
+        /// </summary>
+        /// <param name="convMsg">PinMessge</param>
+        /// <param name="obj">Conversation List object</param>
+        public static void ProcessConversationMetadata(ConvMessage convMsg, ConversationListObject obj)
+        {
+            JObject metaData = new JObject();
+
+            if (obj.MetaData == null || obj.MetaData.Value<long>(ServerJsonKeys.TIMESTAMP) < convMsg.Timestamp) //latest pin wins
+            {
+                metaData[HikeConstants.PINID] = convMsg.MessageId;
+                metaData[ServerJsonKeys.TIMESTAMP] = convMsg.Timestamp;
+            }
+            else
+            {
+                metaData[HikeConstants.PINID] = obj.MetaData[HikeConstants.PINID];
+                metaData[ServerJsonKeys.TIMESTAMP] = obj.MetaData[ServerJsonKeys.TIMESTAMP];
+            }
+
+            metaData[HikeConstants.READPIN] = (convMsg.IsSent) ? true : false;
+
+            if (obj.MetaData == null) //check for "should unread counter be increased??"
+                metaData[HikeConstants.UNREADPINS] = convMsg.IsSent ? 0 : 1; //if I pinned 0 unread
+            else
+                metaData[HikeConstants.UNREADPINS] = (convMsg.IsSent) ? obj.MetaData.Value<int>(HikeConstants.UNREADPINS) : obj.MetaData.Value<int>(HikeConstants.UNREADPINS) + 1;
+
+            obj.MetaData = metaData;
         }
 
         /// <summary>
@@ -518,13 +657,62 @@ namespace windows_client.DbUtils
             return null;
         }
 
+        public static IList<long> updateBulkMsgDeliveredStatus(string msisdn, long msgID)
+        {
+            IList<long> listUpdatedMsgIds = new List<long>();
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            {
+                IList<ConvMessage> listMessages = DbCompiledQueries.GetUndeliveredMessagesForMsisdn(context, msgID, msisdn).ToList<ConvMessage>();
+                foreach (var message in listMessages)
+                {
+                    if (message != null)
+                    {
+                        ConvMessage.State newMessageState = ConvMessage.State.SENT_DELIVERED;
+
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED)
+                            newMessageState = ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+
+                        message.MessageStatus = newMessageState;
+                        listUpdatedMsgIds.Add(message.MessageId);
+                    }
+                }
+                if (listUpdatedMsgIds.Count > 0)
+                    SubmitWithConflictResolve(context);
+            }
+            return listUpdatedMsgIds;
+        }
+
+        public static IList<long> updateBulkMsgReadStatus(string msisdn, long msgID)
+        {
+            IList<long> listUpdatedMsgIds = new List<long>();
+            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            {
+                IList<ConvMessage> listMessages = DbCompiledQueries.GetDeliveredUnreadMessagesForMsisdn(context, msgID, msisdn).ToList<ConvMessage>();
+                foreach (var message in listMessages)
+                {
+                    if (message != null)
+                    {
+                        ConvMessage.State newMessageState = ConvMessage.State.SENT_DELIVERED_READ;
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                            newMessageState = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+
+                        message.MessageStatus = newMessageState;
+                        listUpdatedMsgIds.Add(message.MessageId);
+                    }
+                }
+                if (listUpdatedMsgIds.Count > 0)
+                    SubmitWithConflictResolve(context);
+            }
+            return listUpdatedMsgIds;
+        }
+
         /// <summary>
         /// Thread safe function to update msg status
         /// </summary>
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(string fromUser, long[] ids, int status, string sender)
+        public static string updateAllMsgStatus(string fromUser, long[] ids, int status)
         {
             bool shouldSubmit = false;
             string msisdn = null;
@@ -571,32 +759,6 @@ namespace windows_client.DbUtils
 
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
-
-                shouldSubmit = false;
-
-                //todo look for a solution to prevent exception while comiting two column changes
-
-                if (sender != null)
-                {
-                    foreach (var message in messageList)
-                    {
-                        if (message != null && message.IsSent)
-                        {
-                            if (message.ReadByArray == null)
-                                message.ReadByArray = new JArray();
-
-                            if (!message.ReadByArray.Contains(sender))
-                            {
-                                message.ReadByArray.Add(sender);
-                                message.ReadByInfo = message.ReadByArray.ToString();
-                                shouldSubmit = true;
-                            }
-                        }
-                    }
-
-                    if (shouldSubmit)
-                        SubmitWithConflictResolve(context);
-                }
             }
 
             messageList.Clear();

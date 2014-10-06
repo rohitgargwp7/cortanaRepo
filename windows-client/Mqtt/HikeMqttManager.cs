@@ -22,7 +22,7 @@ namespace windows_client.Mqtt
         public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
         public bool IsAppStarted = true; // false for resume
-        private const int API_VERSION = 2;
+        private const int API_VERSION = 3;
         private const bool AUTO_SUBSCRIBE = true;
         //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
         //Later, on we should be using singleton so, static won't be required
@@ -409,8 +409,15 @@ namespace windows_client.Mqtt
 
         public void onPublish(String topic, byte[] body)
         {
-            String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
-            NetworkManager.Instance.onMessage(receivedMessage);
+            try
+            {
+                String receivedMessage = Utils.IsGZipHeader(body) ? AccountUtils.GZipDecompress(body) : Encoding.UTF8.GetString(body, 0, body.Length);
+                NetworkManager.Instance.onMessage(receivedMessage);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HikeMqttManager::obPublish:Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         public void onEventReceived(string type, object obj)

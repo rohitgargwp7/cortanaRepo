@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -33,42 +34,39 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
             
-            <phone:LongListSelector x:Name="pinLongList" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}"
-   Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
+            <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource PinHistoryContainerStyle}">
-                            <Grid Background="#f6ea8a" Margin="0,0" HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Rectangle Width="20"  Fill="#e4be60" Margin="0,0,10,0" />
-                                <Grid Grid.Column="1" Margin="0,10">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                    
-                                        <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#B0A75A"></TextBlock>
-                                        <TextBlock Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#B0A75A" HorizontalAlignment="Right" Margin="0,0,25,0"></TextBlock>
-                                    </Grid>
-                                
-                                    <TextBlock Grid.Row="1" Text="{Binding DispMessage}" Foreground="#867f40" TextWrapping="Wrap" Margin="0,0,25,0"></TextBlock>
+                            <Grid Background="#f6ea8a" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid Margin="25,13,25,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#92872c"></TextBlock>
+                                    <TextBlock  Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#92872c" HorizontalAlignment="Right"></TextBlock>
                                 </Grid>
+                                <!--<Border  BorderBrush="Brown" BorderThickness="1" >-->
+                                    <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
+                                <!--</Border>-->
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
             
-            <Image x:Name="nopinImage" Source="/View/images/noResult.png" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
-            
+            <Grid x:Name="nopinImage" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/View/images/Pins/pin_gray.png" Height="25" Width="25" Margin="12.5,12.5" VerticalAlignment="Center"></Image>
+                    <TextBlock FontSize="30" Text="{Binding Path= LocalizedResources.No_Pins_Yet, Source={StaticResource LocalizedStrings}}" Foreground="#aaaaaa" Margin="0,0,12.5,0" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 

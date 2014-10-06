@@ -369,7 +369,7 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    isInAddressBook = CheckUserInAddressBook();
+                    isInAddressBook = ContactUtils.CheckUserInAddressBook(msisdn);
                 };
                 bw.RunWorkerCompleted += delegate
                 {
@@ -865,21 +865,15 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = co;
             else
             {
-                ContactInfo contactInfo = null;
-                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
-                    contactInfo = HikeInstantiation.ViewModel.ContactsCache[msisdn];
-                else
-                {
-                    contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    if (contactInfo != null)
-                        HikeInstantiation.ViewModel.ContactsCache[msisdn] = contactInfo;
-                }
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
+
                 if (contactInfo == null)
                 {
                     contactInfo = new ContactInfo();
                     contactInfo.Msisdn = msisdn;
                 }
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.OBJ_FROM_STATUSPAGE] = contactInfo;
+
             }
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -1056,7 +1050,7 @@ namespace windows_client.View
                     });
                     FriendsTableUtils.SetJoiningTime(msisdn, time);
 
-                    ContactUtils.UpdateGroupCacheWithContactOnHike(msisdn, true);
+                    ContactUtils.UpdateGroupParticpantsCacheWithContactOnHike(msisdn, true);
                 }
                 else
                 {
@@ -1200,14 +1194,7 @@ namespace windows_client.View
             }
             else
             {
-                ContactInfo cn = null;
-                if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(msisdn))
-                    cn = HikeInstantiation.ViewModel.ContactsCache[msisdn];
-                else
-                {
-                    cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    HikeInstantiation.ViewModel.ContactsCache[msisdn] = cn;
-                }
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(msisdn, nameToShow, onHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
             }
@@ -1446,26 +1433,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        private bool CheckUserInAddressBook()
-        {
-            bool inAddressBook = false;
-            ConversationListObject convObj;
-            ContactInfo cinfo;
-            if (HikeInstantiation.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
-            {
-                inAddressBook = true;
-            }
-            else if (HikeInstantiation.ViewModel.ContactsCache.TryGetValue(msisdn, out cinfo) && cinfo.Name != null)
-            {
-                inAddressBook = true;
-            }
-            else if (UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null)
-            {
-                inAddressBook = true;
-            }
-            return inAddressBook;
-        }
 
         private void GestureListener_Tap(object sender, GestureEventArgs e)
         {

@@ -65,18 +65,12 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    ContactInfo cn = null;
 
-                    if (HikeInstantiation.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
-                        cn = HikeInstantiation.ViewModel.ContactsCache[status.Msisdn];
-                    else
+                    ContactInfo cn = ContactUtils.GetContactInfo(status.Msisdn);
+                    
+                    if (cn == null)
                     {
-                        cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
-
-                        if (cn == null)
-                            cn = new ContactInfo(status.Msisdn, null, true);
-
-                        cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+                        cn = new ContactInfo(status.Msisdn, null, true);
                         HikeInstantiation.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
 

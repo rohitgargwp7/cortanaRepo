@@ -112,8 +112,8 @@ namespace windows_client.Controls
         {
             if (!String.IsNullOrWhiteSpace(contact) && !String.IsNullOrWhiteSpace(message))
             {
-                pinContactName.Text = contact;
-                pinTxt.Text = message;
+                pinContent.GroupMemberName = contact;
+                pinContent.Text = message;
             }
         }
 
