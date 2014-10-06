@@ -2464,7 +2464,6 @@ namespace windows_client
                     if (obj == null)
                     {
                         GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
-                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
                         return;
                     }
                     if (credits <= 0)
