@@ -1546,6 +1546,14 @@ namespace windows_client.Model
             }
         }
 
+        public double BorderBGOpacity
+        {
+            get
+            {
+                return (App.ViewModel.SelectedBackground!=null && App.ViewModel.SelectedBackground.IsDefault) ? 0.1 : 0.2;
+            }
+        }
+
         public SolidColorBrush ChatForegroundColor
         {
             get

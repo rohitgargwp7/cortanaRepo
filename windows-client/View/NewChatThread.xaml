@@ -1145,7 +1145,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtGCPin>
                                     <DataTemplate>
                                         <Grid Margin="0,10" HorizontalAlignment="Stretch">
-                                            <Border Background="Black" Opacity="0.2"/>
+                                        <Border Background="Black" Opacity="{Binding BorderBGOpacity}"/>
                                             <Grid Margin="5,10">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1154,7 +1154,7 @@
                                                 
                                                 <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
 
-                                                <Grid Grid.Column="1" Margin="17,10,12,5" VerticalAlignment="Top" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
+                                                <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>

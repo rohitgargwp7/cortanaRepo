@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide private chats on app exit.
+        /// </summary>
+        public static string Activate_HiddenMode_on_Exit {
+            get {
+                return ResourceManager.GetString("Activate_HiddenMode_on_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add.
         /// </summary>
         public static string Add_AppBar_Txt {
@@ -2713,7 +2722,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hide chat.
+        ///   Looks up a localized string similar to mark chat as hidden.
         /// </summary>
         public static string Hide_Txt {
             get {
@@ -5395,7 +5404,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unhide chat.
+        ///   Looks up a localized string similar to mark chat as visible.
         /// </summary>
         public static string Unhide_Txt {
             get {
@@ -5539,7 +5548,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just joined hike, say &apos;Hi&apos; :).
+        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
         /// </summary>
         public static string USER_JOINED_HIKE {
             get {
@@ -5566,7 +5575,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is back on hike. Say hi :).
+        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
         /// </summary>
         public static string USER_REJOINED_HIKE_TXT {
             get {

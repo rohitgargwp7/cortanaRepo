@@ -167,36 +167,40 @@
 
         <!-- Opening and closing animations-->
         <Storyboard x:Name="openPinAnimation">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="LayoutRoot">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="LayoutRootBorder">
         		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
         		<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
         	</DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="closePinAnimation">
-            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="LayoutRoot" d:IsOptimized="True"/>
+            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="LayoutRootBorder" d:IsOptimized="True"/>
         </Storyboard>
         
     </UserControl.Resources>
 
-    <Border BorderThickness="0,0,0,1" BorderBrush="#e2d779">
-    <Grid x:Name="LayoutRoot" Background="#FFF38F" RenderTransformOrigin="0.5,0.0" Opacity="1">
-    	<Grid.RenderTransform>
-    		<CompositeTransform/>
-    	</Grid.RenderTransform>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <Border BorderThickness="0,0,0,1" BorderBrush="#e2d779" RenderTransformOrigin="0.5,0.0" x:Name="LayoutRootBorder">
+        <Border.RenderTransform>
+            <CompositeTransform/>
+        </Border.RenderTransform>
+        <Grid x:Name="LayoutRoot" Background="#FFF38F" RenderTransformOrigin="0.5,0.0">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <local:MyRichTextBox FontWeight="Normal" IsPin="True" Margin="16,8,0,10" Tap="pinContent_Tap" x:Name="pinContent" Foreground="#645e2d" FontSize="22" MaxLines="2"/>
-        <toolkit:PhoneTextBox Margin="16,0,0,0" FontSize="22" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
-        <Border Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="1" x:Name="notificationCountGrid" HorizontalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
-            <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}"/>
-        </Border>
-        <Grid Grid.Column="2" Tap="rightIcon_Tap">
-            <Image Margin="15,0,18.75,0" VerticalAlignment="Center" Grid.Column="2" x:Name="rightIcon" Source="/View/images/Pins/cross.png" Height="16" Width="16" HorizontalAlignment="Right" />
-        </Grid>
+                <local:MyRichTextBox FontWeight="Normal" IsPin="True" VerticalAlignment="Center" Margin="16,8,0,10" Tap="pinContent_Tap" x:Name="pinContent" Foreground="#645e2d" FontSize="22" MaxLines="2"/>
+                <toolkit:PhoneTextBox Margin="16,0,0,0" InputScope="Text" FontSize="22" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
+                <Border Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="1" x:Name="notificationCountGrid" HorizontalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
+                    <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}"/>
+                </Border>
+            
+                <!--<Border Grid.Column="2" Tap="rightIcon_Tap" BorderThickness="1" BorderBrush="BurlyWood" >-->
+                <Grid Grid.Column="2" Tap="rightIcon_Tap">
+                    <Image Margin="30,0,30,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" x:Name="rightIcon" Source="/View/images/Pins/cross.png" Height="16" Width="16" />
+                </Grid>
+                <!--</Border>-->
         </Grid>
     </Border>
 </UserControl>
