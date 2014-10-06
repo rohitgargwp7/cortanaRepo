@@ -9,6 +9,7 @@ namespace CommonLibrary.Constants
     public static class ServerJsonKeys
     {
         public static readonly string MESSAGE = "msg";
+        public static readonly string MESSAGES = "msgs";
         public static readonly string UI_TOPIC = "/u";
         public static readonly string APP_TOPIC = "/a";
         public static readonly string SERVICE_TOPIC = "/s";

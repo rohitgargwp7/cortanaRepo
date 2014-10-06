@@ -105,5 +105,7 @@ namespace CommonLibrary.Constants
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
         public static readonly string BLACK_THEME = "black_theme";
+
+        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
     }
 }

@@ -124,7 +124,7 @@ namespace windows_client.Model
 
             JObject data = new JObject();
             data.Add(ServerJsonKeys.SUB_TYPE, subtype);
-            data.Add(HikeConstants.CLIENT_TIMESTAMP, ts);
+            data.Add(HikeConstants.AnalyticsKeys.CLIENT_TIMESTAMP, ts);
             data.Add(ServerJsonKeys.METADATA, metadata);
             data.Add(ServerJsonKeys.TAG, ServerJsonKeys.TAG_MOBILE);
             data.Add(ServerJsonKeys.MESSAGE_ID, ts);
