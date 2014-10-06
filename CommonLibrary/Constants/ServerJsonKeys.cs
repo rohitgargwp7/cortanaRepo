@@ -24,6 +24,7 @@ namespace CommonLibrary.Constants
         public static readonly string SUBTYPE_REJOIN = "ru";
         public static readonly string TAG = "tag";
         public static readonly string UPGRADE = "upgrade";
+        public static readonly string CLIENT_TIMESTAMP = "cts";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";

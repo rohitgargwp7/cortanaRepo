@@ -159,7 +159,7 @@ namespace windows_client
             public static readonly string ANALYTICS_EMAIL = "email";
             public static readonly string ANALYTICS_EMAIL_MENU = "menu";
             public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
-            public static readonly string CLIENT_TIMESTAMP = "cts";
+            
         }
 
         public static class Extras
