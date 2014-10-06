@@ -295,7 +295,7 @@ namespace windows_client.DbUtils
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     string toastText = String.Empty;
- 
+
                     //convMsg.GroupParticipant is null means message sent by urself
                     if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
                     {
@@ -403,46 +403,54 @@ namespace windows_client.DbUtils
 
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
+            try
             {
-                ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
-                if (message != null)
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
                 {
-                    var msgState = (ConvMessage.State)val;
-
-                    if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
-                        || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
-                        || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
+                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
+                    if (message != null)
                     {
-                        if (msgState == ConvMessage.State.SENT_DELIVERED)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                        else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
-                            val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
-                    }
+                        var msgState = (ConvMessage.State)val;
 
-                    //hack to update db for sent socket write
-                    if ((int)message.MessageStatus < val ||
-                            (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
-                                (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
-                    {
-                        if (fromUser == null || fromUser == message.Msisdn)
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                            || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                         {
-                            message.MessageStatus = (ConvMessage.State)val;
-                            SubmitWithConflictResolve(context);
-                            Debug.WriteLine("MESSAGE STATUS UPDATE:ID:{0},STATUS:{1}", message.MessageId, message.MessageStatus);
-                            return message.Msisdn;
+                            if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
                         }
-                        else
+
+                        //hack to update db for sent socket write
+                        if ((int)message.MessageStatus < val ||
+                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
+                                    (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
                         {
-                            return null;
+                            if (fromUser == null || fromUser == message.Msisdn)
+                            {
+                                message.MessageStatus = (ConvMessage.State)val;
+                                SubmitWithConflictResolve(context);
+                                Debug.WriteLine("MESSAGE STATUS UPDATE:ID:{0},STATUS:{1}", message.MessageId, message.MessageStatus);
+                                return message.Msisdn;
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    return null;
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MessagetableUtils::updateMsgStatus,messagestatus:{0},exception:{1},stacktrace:{2}", val, ex.Message, ex.StackTrace);
+            }
+
             return null;
         }
 
