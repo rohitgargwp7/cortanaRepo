@@ -212,7 +212,7 @@ namespace windows_client.View
                 DeleteAngryStickerCategory();
             }
             
-            if (Utils.compareVersion("2.8.1.0", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.8.0.1", App.CURRENT_VERSION) == 1)
             {
                 UpgradeGroupInfoForReadBy();
             }

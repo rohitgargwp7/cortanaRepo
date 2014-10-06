@@ -103,7 +103,7 @@ namespace windows_client.DbUtils
                     isNewGroup = false;
                 }
 
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup,true, imageBytes);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup, imageBytes);
                 if (convObj == null)
                     return;
 
@@ -126,7 +126,7 @@ namespace windows_client.DbUtils
                 string sourceFilePath = (string)vals[1];
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false,true);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
                 convMessage.MessageId = convMessage.MessageId;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -170,7 +170,7 @@ namespace windows_client.DbUtils
                     fileSize = (int)vals[3]; // Initiallize for Video/Audio Sharing
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false,true);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
 
                 // in case of db failure convObj returned will be null
                 if (convObj == null)

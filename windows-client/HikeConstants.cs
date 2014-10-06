@@ -413,6 +413,9 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
+        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
+
+
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
 
@@ -452,6 +455,8 @@ namespace windows_client
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
         public static readonly string TAG_MOBILE = "wp8";
+        public static readonly string CLIENT_TIMESTAMP = "cts";
+        public static readonly string CONTEXT = "ctx";
 
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
@@ -464,6 +469,10 @@ namespace windows_client
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
+
+        public static readonly string ANALYTICS_EMAIL           = "email";
+        public static readonly string ANALYTICS_EMAIL_MENU      = "menu";
+        public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
 
         #endregion
 

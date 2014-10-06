@@ -3694,6 +3694,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to no pins yet.
+        /// </summary>
+        public static string No_Pins_Yet {
+            get {
+                return ResourceManager.GetString("No_Pins_Yet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No stickers downloaded in this category.
         /// </summary>
         public static string No_Stickers_Downloaded_Txt {
@@ -3937,7 +3946,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin Can&apos;t be Empty.
+        ///   Looks up a localized string similar to pin can&apos;t be empty.
         /// </summary>
         public static string Pin_Empty_Msg {
             get {

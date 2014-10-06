@@ -41,7 +41,6 @@ namespace windows_client.Model
         private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
-        private string _readByInfo;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -373,22 +372,14 @@ namespace windows_client.Model
             }
         }
 
+        //to be used for upgrading users
         [Column(CanBeNull = true)]
         public string ReadByInfo
         {
-            get
-            {
-                return _readByInfo;
-            }
-            set
-            {
-                if (_readByInfo != value)
-                {
-                    NotifyPropertyChanging("ReadByInfo");
-                    _readByInfo = value;
-                }
-            }
+            get;
+            set;
         }
+
         public Attachment FileAttachment
         {
             get

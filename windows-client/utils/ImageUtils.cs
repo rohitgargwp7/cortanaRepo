@@ -315,6 +315,19 @@ namespace windows_client.utils
             }
         }
 
+        private SolidColorBrush pinSenderColor;
+        public SolidColorBrush PinSenderColor
+        {
+            get
+            {
+                if (pinSenderColor == null)
+                    pinSenderColor = new SolidColorBrush(Color.FromArgb(255, 146, 135, 44)); //#92872C
+
+                return pinSenderColor;
+            }
+        }
+        
+
         #endregion
 
         #region Standard Colors

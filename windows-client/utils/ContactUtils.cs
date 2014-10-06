@@ -21,8 +21,6 @@ namespace windows_client.utils
     {
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static bool isABScanning;
-        private static Stopwatch st;
-        private static Stopwatch st2;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
@@ -58,7 +56,6 @@ namespace windows_client.utils
 
         public static void getContacts(contacts_Callback callback)
         {
-            st = Stopwatch.StartNew();
             Debug.WriteLine("Contact Scanning started .....");
             ContactState = ContactScanState.ADDBOOK_SCANNING;
             Contacts cons = new Contacts();
@@ -79,9 +76,6 @@ namespace windows_client.utils
             try
             {
                 Debug.WriteLine("Contact Scanning Completed ...... ");
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine(string.Format("Time to scan contacts from phone : {0}", msec));
 
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
@@ -329,6 +323,42 @@ namespace windows_client.utils
                         GroupManager.Instance.SaveGroupParticpantsCache(key);
                 }
             }
+        }
+
+
+        public static ContactInfo GetContactInfo(string msisdn)
+        {
+            ContactInfo contactInfo = null;
+
+            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                contactInfo = App.ViewModel.ContactsCache[msisdn];
+            else
+            {
+                contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
+                if (contactInfo != null)
+                    App.ViewModel.ContactsCache[msisdn] = contactInfo;
+            }
+
+            return contactInfo;
+        }
+
+
+        public static bool CheckUserInAddressBook(string msisdn)
+        {
+            bool inAddressBook = false;
+            ConversationListObject convObj;
+            ContactInfo cinfo;
+
+            if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) && (convObj.ContactName != null))
+                inAddressBook = true;
+            else if (App.ViewModel.ContactsCache.TryGetValue(msisdn, out cinfo) && cinfo.Name != null)		
+                inAddressBook = true;		
+            else if (UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null)		
+                inAddressBook = true;		
+
+            return inAddressBook;
+
         }
     }
 }

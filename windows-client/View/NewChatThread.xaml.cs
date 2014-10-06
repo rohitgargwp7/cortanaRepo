@@ -82,6 +82,7 @@ namespace windows_client.View
         private JObject groupCreateJson = null;
         private bool _isNewPin = false;
         private ConvMessage lastPinConvMsg;
+        private bool _isOnPage = true;
 
         bool isDisplayPicSet = false;
 
@@ -446,16 +447,12 @@ namespace windows_client.View
                     ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[mContactNumber].LastMsgId, mContactNumber, (int)ConvMessage.State.RECEIVED_READ);
                 }
 
-                Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
 
                 if (isGroupChat && isGroupAlive && _groupInfo == null)
                     _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
 
                 loadMessages(INITIAL_FETCH_COUNT, true);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine(string.Format("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec));
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -512,6 +509,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            _isOnPage = true;
 
             App.ViewModel.ResumeBackgroundAudio();//in case of video playback
 
@@ -739,6 +738,8 @@ namespace windows_client.View
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+
+            _isOnPage = false;
 
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
@@ -1894,6 +1895,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT,HikeConstants.ANALYTICS_EMAIL,HikeConstants.ANALYTICS_EMAIL_MENU,mContactNumber);
             EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
@@ -3150,18 +3152,11 @@ namespace windows_client.View
             }
             else
             {
-                ContactInfo cn = null;
+                ContactInfo cn = ContactUtils.GetContactInfo(msisdn);
 
-                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                    cn = App.ViewModel.ContactsCache[msisdn];
-                else
+                if (cn == null)
                 {
-                    cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-
-                    if (cn == null)
-                        cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
-
-                    cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
+                    cn = new ContactInfo(msisdn, convMessage.GroupMemberName, true);
                     App.ViewModel.ContactsCache[msisdn] = cn;
                 }
 
@@ -3953,20 +3948,17 @@ namespace windows_client.View
 
         private async void ClearChat()
         {
+            gcPin.IsShow(false, false);
+            tipControl.Visibility = Visibility.Visible;
+
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
+
             await Task.Delay(1);
 
             MessagesTableUtils.deleteAllMessagesForMsisdn(mContactNumber);
             MiscDBUtil.deleteMsisdnData(mContactNumber);
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
-
-            gcPin.IsShow(false, false);
-            tipControl.Visibility = Visibility.Visible;
-
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-            {
-                App.ViewModel.ConvMap[mContactNumber].MetaData = null;
-                ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
-            }
         }
 
         #endregion
@@ -4170,7 +4162,7 @@ namespace windows_client.View
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
 
-                            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if ( _isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
                                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
 
@@ -5886,7 +5878,7 @@ namespace windows_client.View
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
             cm.MetaDataString = "{\"t\":\"cbg\"}";
 
-            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, true, null, App.MSISDN);
+            ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false, null, App.MSISDN);
             if (cobj != null)
             {
                 JObject data = new JObject();
@@ -7607,7 +7599,7 @@ namespace windows_client.View
 
             try
             {
-                var msgList = ocMessages.Where(arg => arg.MessageId == _groupInfo.LastReadMessageId);
+                var msgList = ocMessages.Where(arg => arg.MessageId == _groupInfo.LastReadMessageId && arg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO);
 
                 _lastReceivedSentMessage = msgList != null && msgList.Count() > 0 ? msgList.Last() : null;
             }
