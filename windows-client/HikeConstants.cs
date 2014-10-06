@@ -95,13 +95,6 @@ namespace windows_client
 
         #endregion
 
-        public static readonly string MESSAGES = "msgs";
-        public static readonly string ANALYTICS_EMAIL = "email";
-        public static readonly string ANALYTICS_EMAIL_MENU = "menu";
-        public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
-        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
-        public static readonly string CLIENT_TIMESTAMP = "cts";
-
         public static class ToastConstants
         {
             public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
@@ -162,6 +155,11 @@ namespace windows_client
             public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
             public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
             public static readonly string ANALYTICS_ENTER_TO_SEND = "entr_2_snd";
+
+            public static readonly string ANALYTICS_EMAIL = "email";
+            public static readonly string ANALYTICS_EMAIL_MENU = "menu";
+            public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
+            
         }
 
         public static class Extras

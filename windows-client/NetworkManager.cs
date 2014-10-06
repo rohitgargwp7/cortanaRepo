@@ -1973,7 +1973,7 @@ namespace windows_client
             //try
             //{
             var jData = (JObject)jsonObj[ServerJsonKeys.DATA];
-            JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+            JArray msgs = (JArray)jData[ServerJsonKeys.MESSAGES];
 
             Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
             for (int i = 0; i < msgs.Count; i++)

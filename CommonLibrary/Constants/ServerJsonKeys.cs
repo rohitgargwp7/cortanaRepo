@@ -9,6 +9,7 @@ namespace CommonLibrary.Constants
     public static class ServerJsonKeys
     {
         public static readonly string MESSAGE = "msg";
+        public static readonly string MESSAGES = "msgs";
         public static readonly string UI_TOPIC = "/u";
         public static readonly string APP_TOPIC = "/a";
         public static readonly string SERVICE_TOPIC = "/s";
@@ -23,6 +24,7 @@ namespace CommonLibrary.Constants
         public static readonly string SUBTYPE_REJOIN = "ru";
         public static readonly string TAG = "tag";
         public static readonly string UPGRADE = "upgrade";
+        public static readonly string CLIENT_TIMESTAMP = "cts";
 
         public static readonly string ADD_STICKER = "addStk";
         public static readonly string ADD_CATEGORY = "addCat";
