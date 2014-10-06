@@ -13,6 +13,7 @@ namespace windows_client
 
         public static readonly string TYPE = "t";
         public static readonly string DATA = "d";
+        public static readonly string MESSAGES = "msgs";
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
         public static readonly string SUB_TYPE = "st";
@@ -411,6 +412,9 @@ namespace windows_client
         public static readonly string SHOW_FREE_INVITES = "show_free_invites";
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
+
+        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
+
 
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";

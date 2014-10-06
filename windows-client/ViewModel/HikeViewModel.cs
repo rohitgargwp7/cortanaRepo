@@ -617,7 +617,7 @@ namespace windows_client.ViewModel
                 }
             }
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            ContactUtils.UpdateGroupParticpantsCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         /// <summary>

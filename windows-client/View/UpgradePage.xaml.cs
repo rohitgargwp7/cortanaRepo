@@ -211,7 +211,12 @@ namespace windows_client.View
 
                 DeleteAngryStickerCategory();
             }
-
+            
+            if (Utils.compareVersion("2.8.0.1", App.CURRENT_VERSION) == 1)
+            {
+                UpgradeGroupInfoForReadBy();
+            }
+            
             Thread.Sleep(2000);
         }
 
@@ -253,7 +258,7 @@ namespace windows_client.View
         /// </summary>
         private void HandleContactNamesOnUpgrade()
         {
-            GroupManager.Instance.LoadGroupCache();
+            GroupManager.Instance.LoadGroupParticpantsCache();
 
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -309,11 +314,11 @@ namespace windows_client.View
                             }
                         }
 
-                        if (GroupManager.Instance.GroupCache != null)
+                        if (GroupManager.Instance.GroupParticpantsCache != null)
                         {
-                            foreach (string key in GroupManager.Instance.GroupCache.Keys)
+                            foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
                             {
-                                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                                List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                                 for (int i = 0; i < l.Count; i++)
                                 {
                                     if (l[i].Msisdn == contactInfo.Msisdn && l[i].Name != contactInfo.Name)
@@ -335,16 +340,16 @@ namespace windows_client.View
 
             var contactList = UsersTableUtils.getAllContacts();
 
-            foreach (var id in GroupManager.Instance.GroupCache.Keys)
+            foreach (var id in GroupManager.Instance.GroupParticpantsCache.Keys)
             {
-                var grp = GroupManager.Instance.GroupCache[id];
+                var grp = GroupManager.Instance.GroupParticpantsCache[id];
                 foreach (var participant in grp)
                 {
                     participant.IsInAddressBook = contactList == null ? false : contactList.Where(c => c.Msisdn == participant.Msisdn).Count() > 0 ? true : false;
                 }
             }
 
-            GroupManager.Instance.SaveGroupCache();
+            GroupManager.Instance.SaveGroupParticpantsCache();
         }
 
         /// <summary>
@@ -424,7 +429,7 @@ namespace windows_client.View
                         {
                             dbUpdater.Execute();
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             Debug.WriteLine("db not upgrade in v 2.5.3.0");
                         }
@@ -522,6 +527,38 @@ namespace windows_client.View
             }
 
             _contactSyncInProgress.Set();
+        }
+
+        /// <summary>
+        /// Update DB for read by and last read message. Add column to GroupInfo
+        /// </summary>
+        private void UpgradeGroupInfoForReadBy()
+        {
+            using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                {
+                    DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
+                    int version = dbUpdater.DatabaseSchemaVersion;
+
+                   //db maximum version 3
+                    if (version < 4)
+                    {
+                        dbUpdater.AddColumn<GroupInfo>("ReadByInfo");
+                        dbUpdater.AddColumn<GroupInfo>("LastReadMessageId");
+                        dbUpdater.DatabaseSchemaVersion = 4;
+
+                        try
+                        {
+                            dbUpdater.Execute();
+                        }
+                        catch(Exception ex)
+                        {
+                            Debug.WriteLine("group info db not upgraded. ex:{0}", ex.Message);
+                        }
+                    }
+                }
+            }
         }
     }
 

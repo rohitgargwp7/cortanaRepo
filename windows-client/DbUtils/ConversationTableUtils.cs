@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -78,6 +79,15 @@ namespace windows_client.DbUtils
             return obj;
         }
 
+        /// <summary>
+        /// Creates new conversation object and add it to db
+        /// </summary>
+        /// <param name="convMessage">Message to be added in conversation</param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">false if messsage already persisted or to be persisted later</param>
+        /// <param name="imageBytes">Avatar image bytes</param>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
         {
             ConversationListObject obj = null;
@@ -100,11 +110,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    ContactInfo contactInfo = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                        contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
-                    else
-                        contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                     if (App.ViewModel.Isfavourite(convMessage.Msisdn))
@@ -174,24 +180,13 @@ namespace windows_client.DbUtils
                 }
             }
 
-            Stopwatch st1 = Stopwatch.StartNew();
-            bool success = MessagesTableUtils.addMessage(convMessage);
-            if (!success)
-                return null;
             obj.LastMsgId = convMessage.MessageId;
-            st1.Stop();
-            long msec1 = st1.ElapsedMilliseconds;
-            Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-            Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
 
             return obj;
         }
@@ -299,7 +294,6 @@ namespace windows_client.DbUtils
         public static void saveConvObjectList()
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
 
             if (convMap == null)
@@ -382,15 +376,11 @@ namespace windows_client.DbUtils
                     store.Dispose();
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         public static void saveNewConv(ConversationListObject obj)
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
             lock (readWriteLock)
             {
@@ -418,9 +408,6 @@ namespace windows_client.DbUtils
                     store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         /// <summary>
