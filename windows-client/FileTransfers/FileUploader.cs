@@ -417,6 +417,8 @@ namespace windows_client.FileTransfers
             }
         }
 
+        DateTime fileTimeStamp;
+
         void BeginUploadPostRequest()
         {
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
@@ -500,6 +502,9 @@ namespace windows_client.FileTransfers
             byte[] dataBytes = (byte[])vars[1];
             postStream.Write(dataBytes, 0, dataBytes.Length);
             postStream.Close();
+
+            fileTimeStamp = DateTime.Now;
+
             req.BeginGetResponse(UploadPostResponseCallback, new object[] { req });
         }
 
@@ -560,6 +565,8 @@ namespace windows_client.FileTransfers
             }
             finally
             {
+                TimeSpan dif = DateTime.Now.Subtract(fileTimeStamp);
+                Logging.LogWriter.Instance.WriteToLog("File " + Id + ", Chunk size" + BlockSize + " bytes, Upload time :" + dif.TotalSeconds + "sec");
                 ProcessUploadPostResponse(data, responseCode);
             }
         }
