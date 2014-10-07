@@ -1578,6 +1578,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("MessageTextForeGround");
             NotifyPropertyChanged("PauseResumeImage");
             NotifyPropertyChanged("ChatForegroundColor");
+            NotifyPropertyChanged("BorderBGOpacity");
             NotifyPropertyChanged("BorderBackgroundColor");
             NotifyPropertyChanged("BubbleBackGroundColor");
             NotifyPropertyChanged("SdrImage");

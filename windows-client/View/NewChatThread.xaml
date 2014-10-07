@@ -1144,7 +1144,7 @@
                             </templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtGCPin>
                                     <DataTemplate>
-                                        <Grid Margin="0,10" HorizontalAlignment="Stretch">
+                                    <Grid Margin="0,10" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
                                         <Border Background="Black" Opacity="{Binding BorderBGOpacity}"/>
                                             <Grid Margin="5,10">
                                                 <Grid.ColumnDefinitions>
@@ -1154,7 +1154,7 @@
                                                 
                                                 <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
 
-                                                <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
+                                                <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="Auto"/>

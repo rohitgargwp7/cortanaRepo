@@ -192,7 +192,7 @@
 
                 <local:MyRichTextBox FontWeight="Normal" IsPin="True" VerticalAlignment="Center" Margin="16,8,0,10" Tap="pinContent_Tap" x:Name="pinContent" Foreground="#645e2d" FontSize="22" MaxLines="2"/>
                 <toolkit:PhoneTextBox Margin="16,0,0,0" InputScope="Text" FontSize="22" LostFocus="newPinTextBox_LostFocus" VerticalAlignment="Center" x:Name="newPinTextBox" GotFocus="newPinTextBox_GotFocus" Foreground="#867140" Background="#FFF38F" BorderThickness="0" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource newPinStyle}"/>
-                <Border Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="1" x:Name="notificationCountGrid" HorizontalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
+                <Border Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" x:Name="notificationCountGrid" HorizontalAlignment="Center" Style="{StaticResource UnreadPinCounterContainerStyle}">
                     <TextBlock x:Name="notificationCountTxtBlk" Style="{StaticResource UnreadCounterTextBlock}"/>
                 </Border>
             
