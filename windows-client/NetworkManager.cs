@@ -141,6 +141,7 @@ namespace windows_client
             if (BULK_MESSAGES == type)
             {
                 ProcessBulkPacket(jsonObj);
+                Debug.WriteLine("Bulk packet processed completely");
             }
             #endregion
             #region MESSAGE
@@ -203,6 +204,7 @@ namespace windows_client
                     vals[1] = obj;
                     vals[2] = isPush;
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    Debug.WriteLine("Message processed completely");
                 }
                 catch (Exception ex)
                 {
@@ -225,6 +227,7 @@ namespace windows_client
                 }
 
                 App.ViewModel.AddGroupPicForUpload(grpId);
+                Debug.WriteLine("RDP packet processed completely");
             }
             #endregion
             #region START_TYPING
@@ -252,6 +255,7 @@ namespace windows_client
                 vals[1] = sentTo;
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
+                Debug.WriteLine("ST processed completely");
                 return;
             }
             #endregion
@@ -290,6 +294,7 @@ namespace windows_client
 
                 if (msisdn != null)
                     this.pubSub.publish(HikePubSub.LAST_SEEN, vals);
+                Debug.WriteLine("LAST SEEN processed completely");
 
                 return;
             }
@@ -307,6 +312,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage :  SMS_CREDITS, Exception : " + ex.StackTrace);
                 }
+                Debug.WriteLine("SMS Credits processed completely");
             }
             #endregion
             #region SERVER_REPORT
@@ -327,6 +333,7 @@ namespace windows_client
                 }
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
                 MiscDBUtil.UpdateDBsMessageStatus(null, msgID, (int)ConvMessage.State.SENT_CONFIRMED);
+                Debug.WriteLine("Server report processed completely");
             }
             #endregion
             #region DELIVERY_REPORT
@@ -357,6 +364,7 @@ namespace windows_client
                 vals[1] = msisdnToCheck;
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
                 MiscDBUtil.UpdateDBsMessageStatus(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
+                Debug.WriteLine("DElivery report processed completely");
             }
             #endregion
             #region MESSAGE_READ
@@ -397,6 +405,7 @@ namespace windows_client
                 vals[2] = new JArray() { msisdn };
                 updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+                Debug.WriteLine("Message read report processed completely");
             }
             #endregion
             #region USER_JOINED USER_LEFT
@@ -481,6 +490,7 @@ namespace windows_client
                     ts = jt.ToObject<long>();
                 FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
+                Debug.WriteLine("UJ/RUJ/UL processed completely");
             }
             #endregion
             #region ICON
@@ -538,6 +548,7 @@ namespace windows_client
                 {
                     App.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
+                Debug.WriteLine("IC packet processed completely");
             }
             #endregion
             #region INVITE_INFO
@@ -886,6 +897,7 @@ namespace windows_client
                     Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception " + e.StackTrace);
                     return;
                 }
+                Debug.WriteLine("AccountInfo packet processed completely");
 
             }
             #endregion
@@ -1000,6 +1012,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG , Exception : " + ex.StackTrace);
                 }
+                Debug.WriteLine("Account Config packet processed completely");
 
             }
             #endregion
@@ -1175,6 +1188,7 @@ namespace windows_client
 
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
+                Debug.WriteLine("GCJ packet processed completely");
             }
             #endregion
             #region GROUP_CHAT_NAME CHANGE
@@ -1223,6 +1237,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
                 }
+                Debug.WriteLine("GCN packet processed completely");
             }
             #endregion
             #region GROUP DISPLAY PIC CHANGE
@@ -1281,6 +1296,7 @@ namespace windows_client
                         }
                     });
                 }
+                Debug.WriteLine("Group Picture packet processed completely");
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -1320,6 +1336,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCL packet : " + e.StackTrace);
                 }
+                Debug.WriteLine("GCL packet processed completely");
             }
             #endregion
             #region GROUP_CHAT_END
@@ -1353,6 +1370,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
                 }
+                Debug.WriteLine("GCE packet processed completely");
             }
             #endregion
 
@@ -1387,6 +1405,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GOC packet : " + e.StackTrace);
                 }
+                Debug.WriteLine("GOC packet processed completely");
             }
             #endregion
 
@@ -1467,6 +1486,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
                 }
+                Debug.WriteLine("AF packet processed completely");
             }
             #endregion
             #region POSTPONE FRIEND REQUEST
@@ -1481,6 +1501,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
                 }
+                Debug.WriteLine("PF packet processed completely");
             }
             #endregion
             #region REMOVE FAVOURITES
@@ -1499,6 +1520,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
                 }
+                Debug.WriteLine("RF packet processed completely");
             }
             #endregion
             #region REWARDS VALUE CHANGED
@@ -1538,6 +1560,7 @@ namespace windows_client
                         StatusMsgsTable.UpdateMsgId(sm);
                     }
                 }
+                Debug.WriteLine("Status update packet processed completely");
 
             }
             #endregion
@@ -1640,6 +1663,7 @@ namespace windows_client
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
+                Debug.WriteLine("Delete status update packet processed completely");
             }
             #endregion
             #region SERVER TIMESTAMP
