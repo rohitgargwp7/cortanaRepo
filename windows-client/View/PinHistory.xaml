@@ -32,13 +32,13 @@
                                         VerticalContentAlignment="Center" FontSize="24" 
                                         HorizontalAlignment="Stretch" Height="10"
                                         HorizontalContentAlignment="Center" 
-                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
+                                        IsEnabled="True"/>
             
             <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource PinHistoryContainerStyle}">
-                            <Grid Background="#f6ea8a" HorizontalAlignment="Stretch">
+                            <Grid Background="#fff38f" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
@@ -52,9 +52,7 @@
                                     <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#92872c"></TextBlock>
                                     <TextBlock  Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#92872c" HorizontalAlignment="Right"></TextBlock>
                                 </Grid>
-                                <!--<Border  BorderBrush="Brown" BorderThickness="1" >-->
-                                    <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
-                                <!--</Border>-->
+                                <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextForeground="#645e2d" TextWrapping="Wrap" ViewMoreClicked="ViewMoreMessage_Clicked" LinkifyAll="True" />
                             </Grid>
                         </Border>
                     </DataTemplate>

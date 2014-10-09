@@ -511,6 +511,14 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinSenderPostedAPin
+        {
+            get
+            {
+                return String.Format(AppResources.Posted_A_Pin_Txt, GCPinMessageSenderName);
+            }
+        }
+
         public string DirectTimeStampStr
         {
             get

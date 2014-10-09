@@ -98,7 +98,6 @@ namespace windows_client.View
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
             progressBar.Visibility = Visibility.Visible;
-            progressBar.IsIndeterminate = true;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -153,10 +152,29 @@ namespace windows_client.View
         public void LoadPinMessages(int messageFetchCount)
         {
             List<ConvMessage> pinMessages = MessagesTableUtils.getPinMessagesForMsisdn(_grpMsisdn, _lastMessageId < 0 ? long.MaxValue : _lastMessageId, messageFetchCount);
+            GroupParticipant gp;
 
             if (pinMessages != null && pinMessages.Count > 0)
             {
                 _lastMessageId = pinMessages[pinMessages.Count - 1].MessageId;
+
+                foreach (ConvMessage convMessage in pinMessages)
+                {
+                    if (!convMessage.IsSent)
+                    {
+                        gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
+                        convMessage.GroupMemberName = gp.FirstName;
+                    }
+
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                    {
+                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+
+                        if (message.Length > 0)
+                            convMessage.Message = message;
+                    }
+                }
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     AddMessagesToPinOC(pinMessages);
@@ -173,24 +191,8 @@ namespace windows_client.View
 
         private void AddMessagesToPinOC(List<ConvMessage> pinMessages)
         {
-            GroupParticipant gp;
-
             foreach (ConvMessage convMessage in pinMessages)
             {
-                if (!convMessage.IsSent)
-                {
-                    gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                    convMessage.GroupMemberName = gp.FirstName;
-                }
-
-                if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
-                {
-                    string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
-
-                    if (message.Length > 0)
-                        convMessage.Message = message;
-                }
-
                 _pinMessages.Add(convMessage);
             }
         }
@@ -207,6 +209,11 @@ namespace windows_client.View
                     };
                     bw.RunWorkerAsync();
                 }
+        }
+
+        private void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
         }
     }
 }

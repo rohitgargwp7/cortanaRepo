@@ -81,6 +81,7 @@ namespace windows_client.View
         private bool showNoSmsLeftOverlay = false;
         private JObject groupCreateJson = null;
         private bool _isNewPin = false;
+        private bool _isPinAlter = true;            //this value is that state of Pin doesn't change while tapping header
         private ConvMessage lastPinConvMsg;
         private bool _isOnPage = true;
 
@@ -257,8 +258,16 @@ namespace windows_client.View
 
         private void gcPin_LostFocus(object sender, EventArgs e)
         {
-            if (_isNewPin)
-                NewPin_Close();
+            if (_isPinAlter)
+            {
+                if (_isNewPin)
+                    NewPin_Close();
+            }
+            else
+            {
+                _isPinAlter = true;
+                gcPin.newPinTextBox.Focus();
+            }
         }
 
         void gcPin_RightIconClicked(object sender, EventArgs e)
@@ -1195,7 +1204,15 @@ namespace windows_client.View
         {
             if (lastPinConvMsg != null)
             {
-                gcPin.UpdateContent(lastPinConvMsg.GCPinMessageSenderName, lastPinConvMsg.DispMessage);
+                if (!String.IsNullOrEmpty(lastPinConvMsg.MetaDataString) && lastPinConvMsg.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                {
+                    string message = MessagesTableUtils.ReadLongMessageFile(lastPinConvMsg.Timestamp, lastPinConvMsg.Msisdn);
+
+                    if (message.Length > 0)
+                        lastPinConvMsg.Message = message;
+                }
+
+                gcPin.UpdateContent(lastPinConvMsg.GCPinMessageSenderName, lastPinConvMsg.Message);
                 gcPin.IsShow(false, true);
             }
         }
@@ -2632,6 +2649,13 @@ namespace windows_client.View
                         convMessage.StatusUpdateImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
                     }
 
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                    {
+                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                        if (message.Length > 0)
+                            convMessage.Message = message;
+                    }
+
                     ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
 
@@ -3301,13 +3325,13 @@ namespace windows_client.View
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
-                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                    || lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     obj.LastMessage = lastMessageBubble.Message;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.Timestamp;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
-
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -3346,6 +3370,20 @@ namespace windows_client.View
                 // delete from db will be handled by dbconversation listener
                 mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, obj);//to update ui of conversation list page
                 delConv = true;
+            }
+
+            if (msg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+            {
+                if (obj.MetaData != null && obj.MetaData[HikeConstants.PINID] != null 
+                    && obj.MetaData.Value<long>(HikeConstants.PINID) == msg.MessageId)
+                {
+                    gcPin.IsShow(false, false);
+                    tipControl.Visibility = Visibility.Visible;
+
+                    JObject metadata = obj.MetaData;
+                    metadata[HikeConstants.PINID] = null;
+                    obj.MetaData = metadata;
+                }
             }
 
             object[] o = new object[3];
@@ -5901,7 +5939,10 @@ namespace windows_client.View
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 CancelBackgroundChange();
             else
+            {
+                gcPin.EmptyPinText();
                 NewPin_Close();
+            }
         }
 
         private void CancelBackgroundChange()
@@ -6025,8 +6066,11 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 SendPinMsg(convMessage);
 
+                gcPin.EmptyPinText();
+
                 tipControl.Visibility = Visibility.Collapsed;
                 gcPin.IsShow(false, true, true);
+                _isNewPin = false;
 
                 chatThemeHeader.Visibility = Visibility.Collapsed;
                 userHeader.Visibility = Visibility.Visible;
@@ -6071,6 +6115,7 @@ namespace windows_client.View
                 }
 
                 _isNewPin = false;
+                _isPinAlter = true;
 
                 userHeader.Visibility = Visibility.Visible;
                 chatThemeHeader.Visibility = Visibility.Collapsed;
@@ -7649,11 +7694,6 @@ namespace windows_client.View
         }
         #endregion
 
-        private void newPinCancel_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NewPin_Close();
-        }
-
         #region SERVER TIPS
 
         void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
@@ -7799,5 +7839,10 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/PinHistory.xaml", UriKind.Relative));
         }
 
+        private void chatThemeHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_isNewPin)
+                _isPinAlter = false;
+        }
     }
 }

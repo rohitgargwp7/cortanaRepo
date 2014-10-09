@@ -167,8 +167,16 @@ namespace windows_client.DbUtils
             if (convMessage.Message.Length > 4000)
             {
                 SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
-                convMessage.Message = string.Empty;
-                convMessage.MetaDataString = "{lm:true}";
+                convMessage.Message = String.Empty;
+                
+                if (String.IsNullOrEmpty(convMessage.MetaDataString))
+                    convMessage.MetaDataString = "{lm:true}";
+                else
+                {
+                    JObject metaData = JObject.Parse(convMessage.MetaDataString);
+                    metaData[HikeConstants.LONG_MESSAGE] = "true";
+                    convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
+                }
             }
         }
 
