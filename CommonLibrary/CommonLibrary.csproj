@@ -83,19 +83,107 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Constants\AnalyticsKeys.cs" />
     <Compile Include="Constants\AppSettingsKeys.cs" />
+    <Compile Include="Constants\HikeConstants.cs" />
     <Compile Include="Constants\ServerJsonKeys.cs" />
     <Compile Include="Constants\ServerUrls.cs" />
     <Compile Include="Constants\FTBasedConstants.cs" />
+    <Compile Include="DbUtils\ConversationTableUtils.cs" />
+    <Compile Include="DbUtils\DbCompiledQueries.cs" />
+    <Compile Include="DbUtils\FriendsTableUtils.cs" />
+    <Compile Include="DbUtils\GroupTableUtils.cs" />
+    <Compile Include="DbUtils\MessagesTableUtils.cs" />
+    <Compile Include="DbUtils\MiscDBUtil.cs" />
+    <Compile Include="DbUtils\MqttDBUtils.cs" />
+    <Compile Include="DbUtils\StatusMsgsTable.cs" />
+    <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="HikeInitManager.cs" />
+    <Compile Include="Languages\AppResources.Designer.cs">
+      <DependentUpon>AppResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Languages\LocalizedStrings.cs" />
+    <Compile Include="Lib\HikePubSub.cs" />
     <Compile Include="Lib\IBinarySerializable.cs" />
     <Compile Include="Lib\MD5.cs" />
+    <Compile Include="Misc\GroupManager.cs" />
+    <Compile Include="Misc\NetworkManager.cs" />
+    <Compile Include="Model\PageState.cs" />
+    <Compile Include="Utils\RecentStickerHelper.cs" />
+    <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\ContactInfo.cs" />
+    <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="Model\ConvMessage.cs" />
+    <Compile Include="Model\GroupInfo.cs" />
+    <Compile Include="Model\GroupParticipant.cs" />
+    <Compile Include="Model\GroupPic.cs" />
+    <Compile Include="Model\HikeDataContext.cs" />
+    <Compile Include="Model\HikePacket.cs" />
+    <Compile Include="Model\MessageMetadata.cs" />
+    <Compile Include="Model\Blocked.cs" />
+    <Compile Include="Model\MsisdnBulkData.cs" />
+    <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\Sticker\StickerCategory.cs" />
+    <Compile Include="Model\Sticker\StickerObj.cs" />
+    <Compile Include="Model\ToolTipMode.cs" />
+    <Compile Include="Mqtt\ConnectCB.cs" />
+    <Compile Include="Mqtt\HikeMqttManager.cs" />
+    <Compile Include="Mqtt\IpManager.cs" />
+    <Compile Include="Mqtt\PublishCB.cs" />
+    <Compile Include="Mqtt\SubscribeCB.cs" />
+    <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StorageManager\StorageManager.cs" />
+    <Compile Include="Misc\StorageManager.cs" />
+    <Compile Include="Lib\BlockingQueue.cs" />
+    <Compile Include="Utils\ChatBackgroundHelper.cs" />
+    <Compile Include="Misc\HikeInstantiation.cs" />
+    <Compile Include="Lib\LruCache.cs" />
+    <Compile Include="Utils\ProTipHelper.cs" />
+    <Compile Include="Model\TipInfo.cs" />
+    <Compile Include="Misc\TipManager.cs" />
+    <Compile Include="Utils\StatusUpdateHelper.cs" />
+    <Compile Include="Utils\StickerHelper.cs" />
+    <Compile Include="Utils\TimeUtils.cs" />
     <Compile Include="Utils\Utility.cs" />
+    <Compile Include="ViewModel\HikeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Reference Include="finalmqtt">
+      <HintPath>..\finalmqtt\finalmqtt\Bin\Release\finalmqtt.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress.WP7">
+      <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.es.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.hi.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.pt-BR.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\AppResources.ru.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

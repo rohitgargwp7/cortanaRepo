@@ -174,6 +174,8 @@ namespace CommonLibrary.Constants
         public static readonly string FREE_INVITE_POPUP_TITLE = "free_invite_popup_title";
         public static readonly string FREE_INVITE_POPUP_TEXT = "free_invite_popup_text";
 
+        public static readonly string GC_PIN = "pin";
+
         public static class MqttMessageTypes
         {
             public static readonly string BLOCK_INTERNATIONAL_USER = "bis";

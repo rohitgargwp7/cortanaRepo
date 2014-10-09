@@ -21,6 +21,7 @@ using System.Net.NetworkInformation;
 using System.Globalization;
 using System.Linq;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -794,7 +795,7 @@ namespace windows_client.View
             source = new BitmapImage(new Uri("/view/images/MyLocation.png", UriKind.Relative));
 
             if (!String.IsNullOrEmpty(icon))
-                ImageLoader.Load(source as BitmapImage, new Uri(icon), null, Utils.ConvertUrlToFileName(icon), true);
+                ImageLoader.Load(source as BitmapImage, new Uri(icon), null, Utility.ConvertUrlToFileName(icon), true);
 
             return source;
         }

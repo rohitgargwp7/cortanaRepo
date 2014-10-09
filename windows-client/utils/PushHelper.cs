@@ -173,7 +173,7 @@ namespace windows_client.utils
 
             if (string.IsNullOrEmpty(pushToken))
             {
-                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.NULL_PUSH_TOKEN);
+                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, AnalyticsKeys.NULL_PUSH_TOKEN);
             }
             else
                 LatestPushToken = pushToken;
@@ -183,7 +183,7 @@ namespace windows_client.utils
         {
             try
             {
-                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, HikeConstants.AnalyticsKeys.EXCEPTION_PUSH_TOKEN, (int)e.ErrorType);
+                Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_NETWORK_EVENT, AnalyticsKeys.EXCEPTION_PUSH_TOKEN, (int)e.ErrorType);
             }
             catch (InvalidCastException ex)
             {

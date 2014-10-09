@@ -190,7 +190,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.On;
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.BLACK_THEME, true);
-            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.DARK_MODE_CLICKED, 1);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, AnalyticsKeys.DARK_MODE_CLICKED, 1);
 
             if (!_isPopUpDisplayed)
             {
@@ -203,7 +203,7 @@ namespace windows_client.View
         {
             this.blackSettingToggle.Content = AppResources.Off;
             HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.BLACK_THEME);
-            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.DARK_MODE_CLICKED, 0);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, AnalyticsKeys.DARK_MODE_CLICKED, 0);
 
             if (!_isPopUpDisplayed)
             {

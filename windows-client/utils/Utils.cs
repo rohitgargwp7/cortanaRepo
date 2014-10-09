@@ -18,6 +18,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
@@ -40,21 +41,6 @@ namespace windows_client.utils
             appSettings[AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
             appSettings[AppSettingsKeys.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
-        }
-
-        public static bool isGroupConversation(string msisdn)
-        {
-            if (msisdn == HikeConstants.MY_PROFILE_PIC)
-                return false;
-            return !msisdn.StartsWith("+");
-        }
-
-        public static string ConvertUrlToFileName(string url)
-        {
-            var restrictedCharaters = new[] { '/', '\\', '*', '"', '|', '<', '>', ':', '?', '.' };
-            url = restrictedCharaters.Aggregate(url, (current, restrictedCharater) => current.Replace(restrictedCharater, '_'));
-
-            return url;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -116,66 +102,6 @@ namespace windows_client.utils
             }
         }
 
-        public static string[] splitUserJoinedMessage(string msg)
-        {
-            if (string.IsNullOrWhiteSpace(msg))
-                return null;
-            char[] delimiters = new char[] { ',' };
-            return msg.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public static void TellAFriend()
-        {
-
-        }
-
-        /// <summary>
-        /// -1 if v1 less v2
-        /// 0 if v1 equal v2
-        /// 1 is v1 greater v2
-        /// </summary>
-        /// <param name="version1"></param>
-        /// <param name="version2"></param>
-        /// <returns></returns>
-        public static int compareVersion(string version1, string version2)
-        {
-            if (String.IsNullOrEmpty(version1) && String.IsNullOrEmpty(version2))
-                return 0;
-            else if (String.IsNullOrEmpty(version1))
-                return -1;
-            else if (String.IsNullOrEmpty(version2))
-                return 1;
-
-            string[] version1_parts = version1.Split('.');
-            string[] version2_parts = version2.Split('.');
-            int i;
-            int min = version1_parts.Length < version2_parts.Length ? version1_parts.Length : version2_parts.Length;
-            for (i = 0; i < min && version1_parts[i] == version2_parts[i]; i++) ;
-
-            int v1, v2;
-            if (version1_parts.Length == version2_parts.Length)
-            {
-                if (i == version2_parts.Length)
-                    return 0;
-                v1 = Convert.ToInt32(version1_parts[i]);
-                v2 = Convert.ToInt32(version2_parts[i]);
-            }
-            else if (version1_parts.Length > version2_parts.Length)
-            {
-                v2 = 0;
-                v1 = Convert.ToInt32(version1_parts[i]);
-            }
-            else
-            {
-                v1 = 0;
-                v2 = Convert.ToInt32(version2_parts[i]);
-            }
-            if (v1 > v2)
-                return 1;
-            return -1;
-
-        }
-
         public static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
         {
             int maxHeight, maxWidth;
@@ -200,51 +126,6 @@ namespace windows_client.utils
                 adjustedWidth = maxWidth;
                 adjustedHeight = (height * adjustedWidth) / width;
             }
-        }
-
-        public static string getAppVersion()
-        {
-            Uri manifest = new Uri("WMAppManifest.xml", UriKind.Relative);
-            var si = Application.GetResourceStream(manifest);
-            if (si != null)
-            {
-                using (StreamReader sr = new StreamReader(si.Stream))
-                {
-                    bool haveApp = false;
-                    while (!sr.EndOfStream)
-                    {
-                        string line = sr.ReadLine();
-                        if (!haveApp)
-                        {
-                            int i = line.IndexOf("AppPlatformVersion=\"", StringComparison.InvariantCulture);
-                            if (i >= 0)
-                            {
-                                haveApp = true;
-                                line = line.Substring(i + 20);
-                                int z = line.IndexOf("\"");
-                                if (z >= 0)
-                                {
-                                    // if you're interested in the app plat version at all                        
-                                    // AppPlatformVersion = line.Substring(0, z);                      
-                                }
-                            }
-                        }
-
-                        int y = line.IndexOf("Version=\"", StringComparison.InvariantCulture);
-                        if (y >= 0)
-                        {
-                            int z = line.IndexOf("\"", y + 9, StringComparison.InvariantCulture);
-                            if (z >= 0)
-                            {
-                                // We have the version, no need to read on.                      
-                                return line.Substring(y + 9, z - y - 9);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return "Unknown";
         }
 
         public static string getOSVersion()
@@ -308,7 +189,7 @@ namespace windows_client.utils
         {
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
-            info["_app_version"] = getAppVersion();
+            info["_app_version"] = Utility.GetAppVersion();
             info[ServerJsonKeys.TAG] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getHashedDeviceId();
@@ -395,32 +276,6 @@ namespace windows_client.utils
                 return HikeInstantiation.ViewModel.GetFav(msisdn);
         }
 
-        public static bool IsHikeBotMsg(string msisdn)
-        {
-            return msisdn.Contains("hike");
-        }
-
-        public static string GetHikeBotName(string msisdn)
-        {
-            if (string.IsNullOrEmpty(msisdn))
-                return string.Empty;
-            switch (msisdn)
-            {
-                case HikeConstants.FTUE_HIKEBOT_MSISDN:
-                    return "Emma from hike";
-                case HikeConstants.FTUE_TEAMHIKE_MSISDN:
-                    return "team hike";
-                case HikeConstants.FTUE_GAMING_MSISDN:
-                    return "Games on hike";
-                case HikeConstants.FTUE_HIKE_DAILY_MSISDN:
-                    return "hike daily";
-                case HikeConstants.FTUE_HIKE_SUPPORT_MSISDN:
-                    return "hike support";
-                default:
-                    return string.Empty;
-            }
-        }
-
         public static Uri LoadPageUri(HikeInstantiation.PageState pageState)
         {
             Uri nUri = null;
@@ -494,6 +349,7 @@ namespace windows_client.utils
 
         private static Resolutions currentResolution = Resolutions.Default;
         private static Resolutions palleteResolution = Resolutions.Default;
+
         private static bool IsWvga
         {
             get
@@ -735,14 +591,6 @@ namespace windows_client.utils
             }
             return result;
         }
-
-        public static bool IsGZipHeader(byte[] arr)
-        {
-            return arr.Length >= 2 &&
-                arr[0] == 31 &&
-                arr[1] == 139;
-        }
-
 
         /// <summary>
         /// It creates a file in Hike directory under Pictures folder.

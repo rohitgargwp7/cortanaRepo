@@ -18,6 +18,7 @@ using Microsoft.Phone.Tasks;
 using System.ComponentModel;
 using System.Windows.Navigation;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client
 {
@@ -35,7 +36,7 @@ namespace windows_client
         {
             InitializeComponent();
 
-            HikeInstantiation.AppSettings[AppSettingsKeys.FILE_SYSTEM_VERSION] = Utils.getAppVersion();// new install so write version
+            HikeInstantiation.AppSettings[AppSettingsKeys.FILE_SYSTEM_VERSION] = Utility.GetAppVersion();// new install so write version
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PAGE_STATE, HikeInstantiation.PageState.SETNAME_SCREEN);
 
             appBar = new ApplicationBar()
@@ -74,7 +75,7 @@ namespace windows_client
         {
             try
             {
-                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.FTUE_SET_PROFILE_IMAGE);
+                Analytics.SendClickEvent(AnalyticsKeys.FTUE_SET_PROFILE_IMAGE);
                 photoChooserTask.Show();
                 nextIconButton.IsEnabled = false;
                 txtBxEnterName.IsEnabled = false;

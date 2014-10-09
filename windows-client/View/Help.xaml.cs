@@ -1,4 +1,5 @@
 ﻿using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
@@ -21,7 +22,7 @@ namespace windows_client.View
             else
                 madeInIndia.Source = UI_Utils.Instance.MadeInIndiaWhite;
 
-            applicationVersion.Text = string.Format(AppResources.Help_AppVersionTitle, utils.Utils.getAppVersion());
+            applicationVersion.Text = string.Format(AppResources.Help_AppVersionTitle, Utility.GetAppVersion());
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -42,7 +43,7 @@ namespace windows_client.View
         {
             string msisdn = (string)HikeInstantiation.AppSettings[AppSettingsKeys.MSISDN_SETTING];
             StringBuilder emailBodyText = new StringBuilder();
-            emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
+            emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utility.GetAppVersion()).Append(
                 "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
                 Append(msisdn).Append("\n").Append(
                 AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(

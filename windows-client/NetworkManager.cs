@@ -16,6 +16,7 @@ using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
 using FileTransfer;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client
 {
@@ -154,7 +155,7 @@ namespace windows_client
                     {
                         convMessage = new ConvMessage(jsonObj);
 
-                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                        if (Utility.IsGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
                     catch (Exception ex)
@@ -481,7 +482,7 @@ namespace windows_client
             else if (ICON == type)
             {
                 // donot do anything if its a GC as it will be handled in DP packet
-                if (Utils.isGroupConversation(msisdn))
+                if (Utility.IsGroupConversation(msisdn))
                     return;
 
                 JToken temp;
@@ -1733,10 +1734,10 @@ namespace windows_client
 
                     var to = (string)jsonObj[ServerJsonKeys.TO];
 
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
+                    if (!String.IsNullOrEmpty(to) && Utility.IsGroupConversation(to))
                         GroupManager.Instance.LoadGroupParticipants(to);
 
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
+                    if (!String.IsNullOrEmpty(to) && Utility.IsGroupConversation(to) && !GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
                     {
                         Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
                         return;
@@ -1825,7 +1826,7 @@ namespace windows_client
 
                     var version = (string)data[ServerJsonKeys.VERSION];
 
-                    if (Utils.compareVersion(version, HikeInstantiation.CurrentVersion) <= 0)
+                    if (Utility.CompareVersion(version, HikeInstantiation.CurrentVersion) <= 0)
                         return;
 
                     bool isCritical = false;
@@ -2022,7 +2023,7 @@ namespace windows_client
                                         {
                                             string sendersMsisdn = String.Empty;
 
-                                            if (Utils.isGroupConversation(convMessage.Msisdn))
+                                            if (Utility.IsGroupConversation(convMessage.Msisdn))
                                                 sendersMsisdn = convMessage.GroupParticipant;
                                             else
                                                 sendersMsisdn = convMessage.Msisdn;
@@ -2104,7 +2105,7 @@ namespace windows_client
                     try
                     {
                         ConvMessage convMessage = new ConvMessage(jsonObj);
-                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                        if (Utility.IsGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
 
                         convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
@@ -2197,10 +2198,10 @@ namespace windows_client
                         if (msgID > msisdnBulkData.LastReadMsgId)
                         {
                             msisdnBulkData.LastReadMsgId = msgID;
-                            if (Utils.isGroupConversation(msisdn))
+                            if (Utility.IsGroupConversation(msisdn))
                                 msisdnBulkData.ReadByArray = new JArray() { readBy };//if new msg id is greater than existing msg id then create new readby array
                         }
-                        else if (msgID == msisdnBulkData.LastReadMsgId && Utils.isGroupConversation(msisdn))
+                        else if (msgID == msisdnBulkData.LastReadMsgId && Utility.IsGroupConversation(msisdn))
                         {
                             if (!msisdnBulkData.ReadByArray.Contains(readBy))
                                 msisdnBulkData.ReadByArray.Add(readBy);
@@ -2706,7 +2707,7 @@ namespace windows_client
                 if (containsMessageId)
                     ConversationTableUtils.updateLastMsgStatus(co.LastMsgId, msisdn, status);//if msisdn null then conversastionlistObj is alreadyUpdated
 
-                if (Utils.isGroupConversation(fromUser))
+                if (Utility.IsGroupConversation(fromUser))
                     GroupTableUtils.UpdateReadBy(fromUser, maxReadId, sender);
 
             }

@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Text;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -492,7 +493,7 @@ namespace windows_client.View
 
                     bool containsCharacter = false;
 
-                    containsCharacter = Utils.isGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
+                    containsCharacter = Utility.IsGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
                         : cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
 
                     if (containsCharacter)
@@ -860,7 +861,7 @@ namespace windows_client.View
             foreach (var cInfo in allContactsList)
             {
                 if ((_isExistingGroup && msisdnAlreadyExists(cInfo.Msisdn, activeExistingGroupMembers))
-                || cInfo.Msisdn == HikeInstantiation.MSISDN || ExistingContacts.ContainsKey(cInfo.Msisdn) || Utils.IsHikeBotMsg(cInfo.Msisdn))
+                || cInfo.Msisdn == HikeInstantiation.MSISDN || ExistingContacts.ContainsKey(cInfo.Msisdn) || Utility.IsHikeBotMsg(cInfo.Msisdn))
                     continue;
 
                 // Dont show contact if its hidden
@@ -924,7 +925,7 @@ namespace windows_client.View
             {
                 foreach (var conv in HikeInstantiation.ViewModel.MessageListPageCollection)
                 {
-                    if (conv.IsGroupChat || Utils.IsHikeBotMsg(conv.Msisdn))
+                    if (conv.IsGroupChat || Utility.IsHikeBotMsg(conv.Msisdn))
                         continue;
 
                     if (_isGroupChat && conv.Msisdn == HikeInstantiation.MSISDN)
@@ -968,7 +969,7 @@ namespace windows_client.View
 
             foreach (var friend in list)
             {
-                if ((_isExistingGroup && msisdnAlreadyExists(friend.Msisdn, activeExistingGroupMembers)) || Utils.IsHikeBotMsg(friend.Msisdn))
+                if ((_isExistingGroup && msisdnAlreadyExists(friend.Msisdn, activeExistingGroupMembers)) || Utility.IsHikeBotMsg(friend.Msisdn))
                     continue;
 
                 if (ExistingContacts.ContainsKey(friend.Msisdn))
@@ -1123,7 +1124,7 @@ namespace windows_client.View
 
                             if (!_isContactShared && _isFreeSmsOn && _isForward)
                             {
-                                if (!Utils.isGroupConversation(cInfo.Msisdn))
+                                if (!Utility.IsGroupConversation(cInfo.Msisdn))
                                 {
                                     if (!cInfo.OnHike)
                                         _smsUserCount++;
@@ -1159,7 +1160,7 @@ namespace windows_client.View
                             {
                                 item.IsSelected = false;
 
-                                if (!Utils.isGroupConversation(item.Msisdn))
+                                if (!Utility.IsGroupConversation(item.Msisdn))
                                 {
                                     if (!item.OnHike)
                                         _smsUserCount--;
@@ -1235,7 +1236,7 @@ namespace windows_client.View
 
         bool IsUserBlocked(ContactInfo cInfo)
         {
-            if (Utils.isGroupConversation(cInfo.Msisdn))
+            if (Utility.IsGroupConversation(cInfo.Msisdn))
             {
                 if (HikeInstantiation.ViewModel.BlockedHashset.Contains(groupInfoDictionary[cInfo.Msisdn]))
                 {

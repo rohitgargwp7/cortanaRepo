@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Text;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
@@ -31,7 +24,7 @@ namespace windows_client.utils
             BitmapImage = imageSource;
             DefaultImgUri = defaultImgUrl;
             Uri = uri;
-            FileName = String.IsNullOrEmpty(fileName) ? Utils.ConvertUrlToFileName(Uri.OriginalString) : fileName;
+            FileName = String.IsNullOrEmpty(fileName) ? Utility.ConvertUrlToFileName(Uri.OriginalString) : fileName;
             UseWebClient = useWebClient;
         }
 
@@ -253,7 +246,7 @@ namespace windows_client.utils
             }
             else
             {
-                AccountUtils.createGetRequest(imgInfo.Uri.OriginalString, getPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(imgInfo.FileName));
+                AccountUtils.createGetRequest(imgInfo.Uri.OriginalString, getPicFromHikeServer_Callback, true, Utility.ConvertUrlToFileName(imgInfo.FileName));
                 return true;
             }
         }
