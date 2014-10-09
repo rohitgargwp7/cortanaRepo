@@ -1520,6 +1520,14 @@ namespace windows_client.Model
             }
         }
 
+        public double BorderBGOpacity
+        {
+            get
+            {
+                return (App.ViewModel.SelectedBackground!=null && App.ViewModel.SelectedBackground.IsDefault) ? 0.1 : 0.2;
+            }
+        }
+
         public SolidColorBrush ChatForegroundColor
         {
             get
@@ -1570,6 +1578,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("MessageTextForeGround");
             NotifyPropertyChanged("PauseResumeImage");
             NotifyPropertyChanged("ChatForegroundColor");
+            NotifyPropertyChanged("BorderBGOpacity");
             NotifyPropertyChanged("BorderBackgroundColor");
             NotifyPropertyChanged("BubbleBackGroundColor");
             NotifyPropertyChanged("SdrImage");

@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike, say 'Hi' :)</value>
+    <value>{0} is now on hike, say hi :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1361,7 +1361,7 @@ Download it like asap from http://hike.in!</value>
     <value>Invite posted successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} is back on hike. Say hi :)</value>
+    <value>{0} is now on hike, say hi :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -2116,10 +2116,10 @@ Download it like asap from http://hike.in!</value>
     <value>photos</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>hide chat</value>
+    <value>mark chat as hidden</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>unhide chat</value>
+    <value>mark chat as visible</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>Confirm your password</value>
@@ -2328,5 +2328,8 @@ Download it like asap from http://hike.in!</value>
   <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
     <value>Posted a Pin </value>
     <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>Hide private chats on app exit</value>
   </data>
 </root>

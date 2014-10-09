@@ -254,7 +254,7 @@ namespace windows_client.utils
                 BackgroundList.Add(new ChatBackground()
                 {
                     ID = "0",
-                    Background = "#ff1b1b1b",
+                    Background = "#ff272727",
                     HeaderAndNotificationColor = "#ff232323",
                     SentBubbleBackground = "#ffb2e5ff",
                     ReceivedBubbleBackground = "#ffefefef",
@@ -873,7 +873,6 @@ namespace windows_client.utils
             {
                 Debug.WriteLine("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
-
         }
 
         public void Read(BinaryReader reader)
