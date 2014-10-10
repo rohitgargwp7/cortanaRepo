@@ -1678,8 +1678,10 @@ namespace windows_client.View
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
-                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
+
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
@@ -4126,14 +4128,13 @@ namespace windows_client.View
                         msgids[i] = convMessage.MessageId;
 
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
-                        {
                             ids.Add(Convert.ToString(convMessage.MappedMessageId));
-                        }
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         {
                             GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
                             convMessage.GroupMemberName = gp.FirstName;
                             pinMessage = convMessage;
+                            ids.Add(Convert.ToString(convMessage.MappedMessageId));
                         }
 
                         if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
