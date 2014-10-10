@@ -1,7 +1,6 @@
 ﻿using System;
 using CommonLibrary.Model;
 using System.Collections.Generic;
-using CommonLibrary.utils;
 using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
 using System.IO;
@@ -384,29 +383,25 @@ namespace CommonLibrary.DbUtils
                             }
                             if (count > 0)
                             {
-                                bool isLessThanEqualTo_1500 = false;
-                                if (Utility.CompareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
-                                    isLessThanEqualTo_1500 = true;
-
                                 convList = new List<ConversationListObject>(count);
+
                                 for (int i = 0; i < count; i++)
                                 {
                                     ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        if (isLessThanEqualTo_1500)
-                                            item.ReadVer_1_4_0_0(reader);
-                                        else
-                                            item.ReadVer_Latest(reader);
+                                            item.Read(reader);
                                     }
                                     catch (Exception ex)
                                     {
                                         Debug.WriteLine("ConversationTableUtils :: getAllConvs : reading file , Exception : " + ex.StackTrace);
                                         item = null;
                                     }
+
                                     if (IsValidConv(item))
                                         convList.Add(item);
                                 }
+
                                 convList.Sort();
                             }
                             reader.Close();
@@ -462,32 +457,39 @@ namespace CommonLibrary.DbUtils
 
         public static List<ConversationListObject> GetConvsFromIndividualFiles()
         {
-            byte[] data = null;
             List<ConversationListObject> convList = null;
+
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
                     return null;
+
                 string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+
                 if (files == null || files.Length == 0)
                     return null;
+                
                 convList = new List<ConversationListObject>(files.Length);
+
                 foreach (string fileName in files)
                 {
                     if (fileName == "Convs" || fileName == "Convs_bkp" || fileName == "_Convs")
                         continue;
+
                     using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + fileName, FileMode.Open, FileAccess.Read))
                     {
                         using (var reader = new BinaryReader(file))
                         {
                             ConversationListObject co = new ConversationListObject();
-                            co.ReadVer_Latest(reader); // we know we have to read from latest file system
+                            co.Read(reader); // we know we have to read from latest file system
+
                             if (IsValidConv(co))
                                 convList.Add(co);
                         }
                     }
                 }
             }
+
             convList.Sort();
             return convList;
         }

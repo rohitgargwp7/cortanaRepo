@@ -77,6 +77,19 @@ namespace CommonLibrary.Misc
             }
         }
 
+        private static string _currentVersion;
+        public static string CurrentVersion
+        {
+            set
+            {
+                _currentVersion = value;
+            }
+            get
+            {
+                return _currentVersion;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -86,10 +99,9 @@ namespace CommonLibrary.Misc
         {
             _latestVersion = Utility.GetAppVersion();
 
-            string currentVersion;
-            AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion);
+            AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out _currentVersion);
 
-            if (currentVersion == null || Utility.CompareVersion(currentVersion, LatestVersion) < 0)
+            if (_currentVersion == null || Utility.CompareVersion(_currentVersion, LatestVersion) < 0)
                 return false;
 
             AppSettings.TryGetValue(AppSettingsKeys.MSISDN_SETTING, out MSISDN);

@@ -381,50 +381,6 @@ namespace CommonLibrary.Model
 
         public void Read(BinaryReader reader)
         {
-            if (Utility.CompareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
-            {
-                ReadVer_1_4_0_0(reader);
-            }
-            else  //current_ver >= 1.5.0.0
-            {
-                ReadVer_Latest(reader);
-            }
-        }
-
-        public void ReadVer_1_4_0_0(BinaryReader reader)
-        {
-            try
-            {
-                int count = reader.ReadInt32();
-                _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (_msisdn == "*@N@*")
-                    _msisdn = null;
-
-                count = reader.ReadInt32();
-                _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
-                    _contactName = null;
-
-                count = reader.ReadInt32();
-                _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
-                if (_lastMessage == "*@N@*")
-                    _lastMessage = null;
-
-                _timeStamp = reader.ReadInt64();
-                _isOnhike = reader.ReadBoolean();
-                _messageStatus = (ConvMessage.State)reader.ReadInt32();
-                _isFirstMsg = reader.ReadBoolean();
-                _lastMsgId = reader.ReadInt64();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("ConversationListPage :: ReadVer_1_4_0_0 : Unable To write, Exception : " + ex.StackTrace);
-                throw new Exception("Conversation Object corrupt");
-            }
-        }
-
-        public void ReadVer_Latest(BinaryReader reader)
-        {
             try
             {
                 int count = reader.ReadInt32();
@@ -496,20 +452,6 @@ namespace CommonLibrary.Model
                 Debug.WriteLine("ConversationListPage :: ReadVer_Latest : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
-        }
-
-        public void ReadVer_1_0_0_0(BinaryReader reader)
-        {
-            _msisdn = reader.ReadString();
-            _contactName = reader.ReadString();
-            if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
-                _contactName = null;
-            _lastMessage = reader.ReadString();
-            _timeStamp = reader.ReadInt64();
-            _isOnhike = reader.ReadBoolean();
-            _messageStatus = (ConvMessage.State)reader.ReadInt32();
-            _isFirstMsg = reader.ReadBoolean();
-            _lastMsgId = reader.ReadInt64();
         }
 
         #region FAVOURITES AND PENDING SECTION
