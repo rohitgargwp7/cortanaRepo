@@ -14,6 +14,7 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -27,6 +28,8 @@ namespace windows_client.View
         private const int SUB_FETCH_COUNT = 21;     // After that, 21 pins would be loaded into memory
         bool _hasMoreMessages = false;              // To avoid multiple DB calls returning empty list
         bool _isFirstLaunch = true;                 // For avoiding loading messages, everytime app is suspended and resumed (No Tombstoning)
+
+        bool _isContextMenuOpen = false;
 
         public PinHistory()
         {
@@ -114,6 +117,22 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            if (_isContextMenuOpen)
+            {
+                e.Cancel = true;
+                _isContextMenuOpen = false;
+                return;
+            }
+
+            try
+            {
+                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("While removing listeners from Pin History, stack trace:"+ ex.StackTrace);
+            }
+
             PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
             base.OnBackKeyPress(e);
         }
@@ -214,6 +233,69 @@ namespace windows_client.View
         private void ViewMoreMessage_Clicked(object sender, EventArgs e)
         {
             App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
+
+            if (msg == null)
+                return;
+            
+            try
+            {
+                _pinMessages.Remove(msg);
+
+                if (_pinMessages.Count == 0)
+                {
+                    nopinImage.Visibility = Visibility.Visible;
+                    pinLongList.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception thrown in PinHistory while deleting Pin from Pin History:" + ex.StackTrace);
+            }
+
+            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn)) //checking if Pin is latest, if yes, alter MetaData
+            {
+                JObject metaData = App.ViewModel.ConvMap[_grpMsisdn].MetaData;
+
+                if (metaData != null && metaData[HikeConstants.PINID].Type != JTokenType.Null 
+                    && metaData.Value<long>(HikeConstants.PINID)==msg.MessageId)
+                {
+                    metaData[HikeConstants.PINID] = null;
+                    App.ViewModel.ConvMap[_grpMsisdn].MetaData = metaData;
+                    ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+                }
+            }
+
+            mPubSub.publish(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, msg); //to remove from NewChatThread UI
+            
+            ConversationListObject obj = App.ViewModel.ConvMap[_grpMsisdn];
+            BackgroundWorker deletePinBW = new BackgroundWorker();
+            deletePinBW.DoWork += (s, ev) =>
+                {
+                    if (obj.LastMsgId == msg.MessageId)
+                        ConversationTableUtils.SetSecondLastMessageForConvObject(_grpMsisdn, obj);
+
+                    object[] o = new object[3];
+                    o[0] = msg.MessageId;
+                    o[1] = obj;
+                    o[2] = false; //as Pin is in group, so it will always be false
+                    mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
+                };
+            deletePinBW.RunWorkerAsync();
+        }
+
+        private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            _isContextMenuOpen = true;
+        }
+
+        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _isContextMenuOpen = false;
         }
     }
 }

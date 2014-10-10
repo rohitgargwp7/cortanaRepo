@@ -70,6 +70,16 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static ConvMessage getSecondLastMessageForMsisdn(string msisdn)
+        {
+            ConvMessage res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetLastSecondMessageForMsisdn(context, msisdn).FirstOrDefault<ConvMessage>();
+                return res;
+            }
+        }
+
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;

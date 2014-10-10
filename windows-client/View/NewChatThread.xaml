@@ -1152,12 +1152,6 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <toolkit:ContextMenuService.ContextMenu>
-                                                <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
-                                                    <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
-                                                </toolkit:ContextMenu>
-                                            </toolkit:ContextMenuService.ContextMenu>
-
                                             <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
 
                                             <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch">

@@ -2706,6 +2706,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.LAST_SEEN, this);
             mPubSub.addListener(HikePubSub.CHAT_BACKGROUND_REC, this);
+            mPubSub.addListener(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, this);
         }
 
         private void removeListeners()
@@ -2727,6 +2728,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
                 mPubSub.removeListener(HikePubSub.LAST_SEEN, this);
                 mPubSub.removeListener(HikePubSub.CHAT_BACKGROUND_REC, this);
+                mPubSub.removeListener(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, this);
             }
             catch (Exception ex)
             {
@@ -3370,20 +3372,6 @@ namespace windows_client.View
                 // delete from db will be handled by dbconversation listener
                 mPubSub.publish(HikePubSub.DELETE_STATUS_AND_CONV, obj);//to update ui of conversation list page
                 delConv = true;
-            }
-
-            if (msg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
-            {
-                if (obj.MetaData != null && obj.MetaData[HikeConstants.PINID] != null 
-                    && obj.MetaData.Value<long>(HikeConstants.PINID) == msg.MessageId)
-                {
-                    gcPin.IsShow(false, false);
-                    tipControl.Visibility = Visibility.Visible;
-
-                    JObject metadata = obj.MetaData;
-                    metadata[HikeConstants.PINID] = null;
-                    obj.MetaData = metadata;
-                }
             }
 
             object[] o = new object[3];
@@ -4207,12 +4195,14 @@ namespace windows_client.View
                                     ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
                                 }
 
-                                if (!_isNewPin)
-                                    gcPin.IsShow(false, true);
                                 gcPin.SetUnreadPinCount((int)metadata[HikeConstants.UNREADPINS]);
                             }
+
+                            if (!_isNewPin)
+                                gcPin.IsShow(false, true);
                         }
                     });
+
                     if (ids.Count > 0)
                     {
                         JObject jobj = new JObject();
@@ -4765,6 +4755,45 @@ namespace windows_client.View
                     });
                 }
             }
+            #endregion
+
+            #region Pin Message Deleted From Pin History
+
+            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC )
+            {
+                if (obj is ConvMessage)
+                {
+                    ConvMessage msg = obj as ConvMessage;
+
+                    if (msg != null && msg.Msisdn == mContactNumber)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            try
+                            {
+                                ocMessages.Remove(msg);
+
+                                //For removing Pin User Control
+                                if (isGroupChat && msg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                                {
+                                    JObject metaData = App.ViewModel.ConvMap[mContactNumber].MetaData;
+
+                                    if (metaData != null && metaData[HikeConstants.PINID].Type == JTokenType.Null)
+                                        gcPin.IsShow(false, false);
+
+                                    tipControl.Visibility = Visibility.Visible;
+                                }
+                                
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Exception thrown in NewChat Thread while deleting Pin from Pin History:" + ex.StackTrace);
+                            }
+                        });
+                    }
+                }
+            }
+
             #endregion
         }
 
