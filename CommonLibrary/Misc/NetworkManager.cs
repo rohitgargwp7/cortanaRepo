@@ -412,8 +412,6 @@ namespace CommonLibrary
                     ts = jt.ToObject<long>();
                 
                 FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
-
-                HikeInstantiation.HikePubSubInstance.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             #endregion
             #region ICON
@@ -745,21 +743,12 @@ namespace CommonLibrary
                             Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
                         }
                     }
-
-                    JToken it = data[ServerJsonKeys.TOTAL_CREDITS_PER_MONTH];
-                    if (it != null)
-                    {
-                        string tc = it.ToString().Trim();
-                        Debug.WriteLine("Account Info :: TOTAL_CREDITS_PER_MONTH : " + tc);
-                        HikeInstantiation.HikePubSubInstance.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
-                    }
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception " + e.StackTrace);
                     return;
                 }
-
             }
             #endregion
             #region ACCOUNT CONFIG
@@ -1118,7 +1107,6 @@ namespace CommonLibrary
                 string iconBase64 = temp.ToString();
 
                 GroupManager.Instance.LoadGroupParticipants(groupId);
-
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1205,11 +1193,7 @@ namespace CommonLibrary
                         if (string.IsNullOrEmpty(newOwner))
                             return;
 
-                        if (GroupTableUtils.UpdateGroupOwner(groupId, newOwner))
-                        {
-                            Object[] objArray = new object[] { groupId, newOwner };
-                            HikeInstantiation.ViewModel.GroupOwnerChanged(objArray);
-                        }
+                        GroupTableUtils.UpdateGroupOwner(groupId, newOwner);
                     }
                 }
                 catch (Exception e)
@@ -2077,16 +2061,13 @@ namespace CommonLibrary
                 ConversationListObject favObj = null;
 
                 if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
-                {
                     favObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
-                }
                 else
                 {
                     // here no need to call cache
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true);
                 }
-
 
                 HikeInstantiation.ViewModel.FavList.Add(favObj);
                 MiscDBUtil.SaveFavourites();
@@ -2103,9 +2084,7 @@ namespace CommonLibrary
                 ConversationListObject favObj = null;
 
                 if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
-                {
                     favObj = HikeInstantiation.ViewModel.ConvMap[msisdn];
-                }
                 else
                 {
                     // no need to call cache here

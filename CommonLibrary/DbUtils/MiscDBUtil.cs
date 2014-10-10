@@ -536,7 +536,7 @@ namespace CommonLibrary.DbUtils
 
         #region FAVOURITES
 
-        public static void LoadFavouritesFromIndividualFiles(ObservableCollection<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
+        public static void LoadFavouritesFromIndividualFiles(List<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
         {
             lock (favReadWriteLock)
             {
@@ -585,7 +585,7 @@ namespace CommonLibrary.DbUtils
             }
         }
 
-        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
+        public static void LoadFavourites(List<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
         {
             lock (favReadWriteLock)
             {

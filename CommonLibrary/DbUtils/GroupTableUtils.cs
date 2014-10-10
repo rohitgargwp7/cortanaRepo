@@ -53,6 +53,7 @@ namespace CommonLibrary.DbUtils
                 gi.GroupOwner = groupOwner;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
+
             return true;
         }
 

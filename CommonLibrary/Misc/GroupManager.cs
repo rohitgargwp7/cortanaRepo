@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,8 +8,6 @@ using System.Text;
 using CommonLibrary.DbUtils;
 using CommonLibrary.Languages;
 using CommonLibrary.Model;
-using CommonLibrary.utils;
-using CommonLibrary.Lib;
 
 namespace CommonLibrary.Misc
 {
@@ -456,19 +453,6 @@ namespace CommonLibrary.Misc
             return activeGroupMembers;
         }
 
-        public Int32 GetSMSParticiantCount(string groupId)
-        {
-            try
-            {
-                return GetParticipantList(groupId).Where(g => g.IsOnHike == false && g.HasLeft == false).Count();
-            }
-            catch
-            {
-                Debug.WriteLine("GetSMSParticiantCount for grpID " + groupId + " is null");
-                return 0;
-            }
-        }
-
         public void DeleteAllGroups()
         {
             lock (readWriteLock)
@@ -507,50 +491,6 @@ namespace CommonLibrary.Misc
                     store.DeleteFile(GROUP_DIR + "\\" + grp);
                 }
             }
-        }
-
-        public void RefreshGroupParticpantsCache(ContactInfo cn, Dictionary<string, GroupInfo> allGrpsInfo, bool isNew)
-        {
-            if (allGrpsInfo == null || allGrpsInfo.Count == 0) // if no grp exists , do nothing
-                return;
-
-            foreach (string grpId in groupParticpantsCache.Keys.ToList())
-            {
-                GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
-                if (gp != null) // represents this contact lies in the group
-                {
-                    gp.Name = cn.Name;
-                    gp.IsInAddressBook = isNew ? true : false;
-                    if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId))
-                    {
-                        GroupInfo g = null;
-                        allGrpsInfo.TryGetValue(grpId, out g);
-                        if (g != null && string.IsNullOrEmpty(g.GroupName))  // update groupname if not already set
-                        {
-                            GetParticipantList(grpId).Sort();
-                            HikeInstantiation.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId);
-                            // update chat thread and group info page
-                            object[] o = new object[2];
-                            o[0] = grpId;
-                            o[1] = HikeInstantiation.ViewModel.ConvMap[grpId].ContactName;
-                            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
-                        }
-                    }
-                    else // if this group is not present in conversation , remove it
-                        DeleteGroup(grpId);
-                    SaveGroupParticpantsCache(grpId); // save the cache
-                }
-            }
-        }
-
-        private GroupParticipant GetParticipant(string groupId, string msisdn)
-        {
-            for (int i = 0; i < groupParticpantsCache[groupId].Count; i++)
-            {
-                if (groupParticpantsCache[groupId][i].Msisdn == msisdn)
-                    return groupParticpantsCache[groupId][i];
-            }
-            return null;
         }
     }
 }

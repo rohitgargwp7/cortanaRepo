@@ -105,7 +105,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Languages\LocalizedStrings.cs" />
-    <Compile Include="Lib\HikePubSub.cs" />
     <Compile Include="Lib\IBinarySerializable.cs" />
     <Compile Include="Lib\MD5.cs" />
     <Compile Include="Misc\GroupManager.cs" />

@@ -35,8 +35,6 @@ namespace CommonLibrary.Mqtt
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 HikeInstantiation.MqttManagerInstance.DisconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();
-
-                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
             }
             else if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.SERVER_UNAVAILABLE))
             {

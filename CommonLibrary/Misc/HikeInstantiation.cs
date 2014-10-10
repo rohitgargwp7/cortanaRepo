@@ -60,20 +60,6 @@ namespace CommonLibrary.Misc
             }
         }
 
-        private static HikePubSub mPubSubInstance;
-        public static HikePubSub HikePubSubInstance
-        {
-            get
-            {
-                return mPubSubInstance;
-            }
-            set
-            {
-                if (value != mPubSubInstance)
-                    mPubSubInstance = value;
-            }
-        }
-
         private static HikeViewModel _viewModel;
         public static HikeViewModel ViewModel
         {
@@ -222,10 +208,6 @@ namespace CommonLibrary.Misc
             }
 
             #endregion
-            #region PUBSUB
-            if (HikeInstantiation.HikePubSubInstance == null)
-                HikeInstantiation.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-            #endregion
             #region MQTT MANAGER
             if (HikeInstantiation.MqttManagerInstance == null)
                 HikeInstantiation.MqttManagerInstance = new HikeMqttManager();
@@ -271,9 +253,6 @@ namespace CommonLibrary.Misc
                 if (IsNewInstall && !AppSettings.Contains(AppSettingsKeys.PRO_TIP_COUNT))
                     HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.PRO_TIP_COUNT, 1);
             }
-            #endregion
-            #region Post App Locale
-            PostLocaleInfo();
             #endregion
             #region HIKE BOT
             if (IsNewInstall)
@@ -379,26 +358,6 @@ namespace CommonLibrary.Misc
                     convList = ConversationTableUtils.GetConvsFromIndividualFiles();
 
                 return convList;
-            }
-        }
-
-        /// <summary>
-        /// Post device locale info to server
-        /// </summary>
-        public static void PostLocaleInfo()
-        {
-            string savedLocale;
-            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CURRENT_LOCALE, out savedLocale) ||
-                savedLocale != CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
-            {
-                string currentLocale = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-                HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CURRENT_LOCALE, currentLocale);
-                JObject obj = new JObject();
-                obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
-                JObject data = new JObject();
-                data.Add(ServerJsonKeys.LOCALE, currentLocale);
-                obj.Add(ServerJsonKeys.DATA, data);
-                HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
 

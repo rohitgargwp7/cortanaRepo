@@ -1,5 +1,5 @@
 ﻿using CommonLibrary.Lib;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.IO;
 
 namespace CommonLibrary.Model.Sticker
@@ -10,7 +10,7 @@ namespace CommonLibrary.Model.Sticker
         private bool _hasMoreStickers = true;
         private bool _showDownloadMessage = true;
         private bool _hasNewStickers = false;
-        private ObservableCollection<StickerObj> _listStickers;
+        private List<StickerObj> _listStickers;
         private string _overlayBackground;
         private string _overlayText;
         private static object readWriteLock = new object();
@@ -68,7 +68,7 @@ namespace CommonLibrary.Model.Sticker
             }
         }
 
-        public ObservableCollection<StickerObj> ListStickers
+        public List<StickerObj> ListStickers
         {
             get
             {
@@ -89,7 +89,7 @@ namespace CommonLibrary.Model.Sticker
         public StickerCategory(string category)
         {
             this._category = category;
-            _listStickers = new ObservableCollection<StickerObj>();
+            _listStickers = new List<StickerObj>();
         }
 
         public string OverlayText

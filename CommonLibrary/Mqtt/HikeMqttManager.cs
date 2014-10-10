@@ -19,11 +19,9 @@ using System.Windows.Controls;
 
 namespace CommonLibrary.Mqtt
 {
-    //    public class HikeMqttManager : Listener
-    public class HikeMqttManager : Listener, HikePubSub.Listener
+    public class HikeMqttManager : Listener
     {
         public volatile MqttConnection mqttConnection;
-        private HikePubSub pubSub;
         public bool IsAppStarted = true; // false for resume
         private const int API_VERSION = 3;
         private const bool AUTO_SUBSCRIBE = true;
@@ -48,9 +46,6 @@ namespace CommonLibrary.Mqtt
 
         public HikeMqttManager()
         {
-            //logger = NLog.LogManager.GetCurrentClassLogger();
-            pubSub = HikeInstantiation.HikePubSubInstance;
-            pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
         }
 
         // status of MQTT client connection
@@ -134,9 +129,7 @@ namespace CommonLibrary.Mqtt
         public void ConnectToBroker()
         {
             if (isConnected() || isConnecting())
-            {
                 return;
-            }
 
             if (mqttConnection == null)
             {
@@ -145,9 +138,8 @@ namespace CommonLibrary.Mqtt
                     if (mqttConnection == null)
                     {
                         if (!init())
-                        {
                             return;
-                        }
+                        
                         mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
                         mqttConnection.OnSocketWriteCompleted += mqttConnection_OnSocketWriteCompleted;
                     }
@@ -168,16 +160,12 @@ namespace CommonLibrary.Mqtt
                 /* couldn't connect, schedule a ping even earlier? */
                 Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
             }
-
         }
 
         void mqttConnection_OnSocketWriteCompleted(object sender, OnSocketWriteEventArgs e)
         {
             if (e.MessageId > 0)
-            {
-                this.pubSub.publish(HikePubSub.MSG_WRITTEN_SOCKET, e.MessageId);
                 MiscDBUtil.UpdateDBsMessageStatus(null, e.MessageId, (int)ConvMessage.State.SENT_SOCKET_WRITE);
-            }
         }
 
         public bool isConnected()
@@ -193,9 +181,7 @@ namespace CommonLibrary.Mqtt
         private void unsubscribeFromTopics(string[] topics)
         {
             if (!isConnected())
-            {
                 return;
-            }
 
             try
             {
@@ -252,50 +238,22 @@ namespace CommonLibrary.Mqtt
             return connectionStatus;
         }
 
-        private Border b = new Border();
-
         public void connect()
         {
-            try
-            {
-                if (isConnected() || isConnecting())
-                {
-                    return;
-                }
-                b.Height = 4;
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (ss, ee) =>
-                {
-                    connectInBackground();
-                };
-                bw.RunWorkerAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("HIkeMqttManager ::  connect : connect, Exception : " + ex.StackTrace);
-                connectInBackground();
-            }
-        }
+            if (isConnected() || isConnecting())
+                return;
 
-        private void connectInBackground()
-        {
             lock (lockObj)
             {
                 disconnectExplicitly = false;
+
                 if (isConnected() || isConnecting())
-                {
                     return;
-                }
 
                 if (isUserOnline())
-                {
                     ConnectToBroker();
-                }
                 else
-                {
                     setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                    //scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
-                }
             }
         }
 
@@ -316,9 +274,11 @@ namespace CommonLibrary.Mqtt
                         Debug.WriteLine("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
                     }
                 }
+
                 this.connect();
                 return;
             }
+
             PublishCB pbCB = null;
             if (qos > 0)
                 pbCB = new PublishCB(packet, this, qos, false);
@@ -370,10 +330,10 @@ namespace CommonLibrary.Mqtt
         public void onConnected()
         {
             Debug.WriteLine("SUCCESS: MQTT CONNECTED");
+            
             if (isConnected())
-            {
                 return;
-            }
+
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
 
             /* Accesses the persistence object from the main handler thread */
@@ -415,56 +375,6 @@ namespace CommonLibrary.Mqtt
             {
                 Debug.WriteLine("HikeMqttManager::obPublish:Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
             }
-        }
-
-        public void onEventReceived(string type, object obj)
-        {
-            if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
-            {
-                if (obj is object[])
-                {
-                    object[] vals = (object[])obj;
-                    JObject json = (JObject)vals[0];
-                    int qos = (int)vals[1];
-                    mqttPublishToServer(json, qos);
-                }
-                else
-                {
-                    JObject json = (JObject)obj;
-                    mqttPublishToServer(json);
-                }
-            }
-        }
-
-        public void mqttPublishToServer(JObject json)
-        {
-            mqttPublishToServer(json, 1);
-        }
-
-        public void mqttPublishToServer(JObject json, int qos)
-        {
-            JToken data;
-            json.TryGetValue(ServerJsonKeys.TYPE, out data);
-            string objType = data.ToString();
-            json.TryGetValue(ServerJsonKeys.DATA, out data);
-            JObject dataObj;
-            long msgId;
-
-            if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
-            {
-                dataObj = JObject.FromObject(data);
-                JToken messageIdToken;
-                dataObj.TryGetValue("i", out messageIdToken);
-                msgId = Convert.ToInt64(messageIdToken.ToString());
-            }
-            else
-            {
-                msgId = -1;
-            }
-            String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
-            byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
-            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
-            send(packet, qos);
         }
 
         IDisposable scheduledConnect = null;
