@@ -369,22 +369,6 @@ namespace windows_client.utils
 
             BackgroundList.Add(new ChatBackground()
             {
-                ID = "35",
-                Background = "#ffe0cb00",
-                HeaderAndNotificationColor = "#ff087d40",
-                SentBubbleBackground = "#ffdcffa0",
-                ReceivedBubbleBackground = "#ffffffff",
-                BubbleForeground = "#ff000000",
-                Foreground = "#ffffffff",
-                IsTile = false,
-                IsLightTheme = true,
-                Position = 1,
-                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFifa.jpg",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbFifa.jpg"
-            });
-
-            BackgroundList.Add(new ChatBackground()
-            {
                 ID = "36",
                 Background = "#ffe2602f",
                 HeaderAndNotificationColor = "#ffc44523",
