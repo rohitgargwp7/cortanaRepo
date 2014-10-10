@@ -51,7 +51,6 @@ namespace windows_client.Controls
         /// <param name="e"></param>
         private void newPinTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            //newPinTextBox.Text = String.Empty;
             newPinTextBox.Hint = String.Empty;
             newPinTextBox.Hint = AppResources.NewGCPin_Hint_Txt;
         }

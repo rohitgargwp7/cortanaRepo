@@ -3333,7 +3333,6 @@ namespace windows_client.View
                     obj.LastMessage = lastMessageBubble.Message;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.Timestamp;
-                    obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
