@@ -6,10 +6,10 @@ using System.Windows;
 
 namespace windows_client.utils
 {
-    public class VoipBackgroundAgent
+    public class VoipBackgroundAgentHelper
     {
         // The name of the incoming call task.
-        private const string incomingCallTaskName = "HikeVoipBackgroundAgent";
+        public static readonly string incomingCallTaskName = "HikeVoipBackgroundAgent";
 
         public static void InitVoipBackgroundAgent()
         {

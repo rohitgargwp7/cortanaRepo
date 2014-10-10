@@ -28,4 +28,6 @@ windows-client.sdf
 RPALApiComponent/Arm/
 RPALApiComponent/Generated Files/
 RPALApiComponent/Debug/
+VoipBackgroundAgent/obj/
+VoipBackgroundAgent/Bin/
 *.suo

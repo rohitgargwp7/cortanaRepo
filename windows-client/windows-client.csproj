@@ -1163,6 +1163,10 @@
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
       <Name>RPALApiComponent</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VoipBackgroundAgent\VoipBackgroundAgent.csproj">
+      <Project>{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}</Project>
+      <Name>VoipBackgroundAgent</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
