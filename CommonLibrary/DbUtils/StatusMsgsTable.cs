@@ -48,23 +48,6 @@ namespace CommonLibrary.DbUtils
             return true;
         }
 
-        public static void DeleteAllStatusMsgs()
-        {
-
-            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
-            {
-                try
-                {
-                    context.statusMessage.DeleteAllOnSubmit<StatusMessage>(context.GetTable<StatusMessage>());
-                    context.SubmitChanges();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("StatusMsgsTable :: DeleteAllStatusMsgs : DeleteAllStatusMsgs, Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
         public static long DeleteStatusMsg(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -98,48 +81,6 @@ namespace CommonLibrary.DbUtils
                 {
                     smsg.MsgId = sm.MsgId;
                     context.SubmitChanges();
-                }
-            }
-        }
-
-        public static void DeleteLastStatusFile()
-        {
-            lock (readWriteLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    try
-                    {
-                        if (store.FileExists(LAST_STATUS_FILENAME))
-                        {
-                            store.DeleteFile(LAST_STATUS_FILENAME);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("StatusMsgTable :: DeleteLastStatusFile : delete file, Exception : " + ex.StackTrace);
-                    }
-                }
-            }
-        }
-
-        public static void DeleteUnreadCountFile()
-        {
-            lock (refreshLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    try
-                    {
-                        if (store.FileExists(UNREAD_COUNT_FILE))
-                        {
-                            store.DeleteFile(UNREAD_COUNT_FILE);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("StatusMsgTable :: DeleteRefreshCountFile : delete file, Exception : " + ex.StackTrace);
-                    }
                 }
             }
         }

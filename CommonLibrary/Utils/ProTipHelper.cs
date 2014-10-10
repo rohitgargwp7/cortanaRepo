@@ -141,56 +141,6 @@ namespace CommonLibrary.Utils
             }
         }
 
-        public void ClearProTips()
-        {
-            if (CurrentProTip != null)
-                RemoveCurrentProTip();
-
-            ClearOldProTips();
-
-            HikeInstantiation.AppSettings.Remove(AppSettingsKeys.PRO_TIP);
-            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.PRO_TIP_COUNT);
-        }
-
-        public void ClearOldProTips()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                try
-                {
-                    if (!store.DirectoryExists(PROTIPS_DIRECTORY))
-                        return;
-
-                    var fileNames = store.GetFileNames(PROTIPS_DIRECTORY + "\\*");
-
-                    if (CurrentProTip != null)
-                    {
-                        var currentFile = CurrentProTip.ImageUrl != null ? PROTIPS_DIRECTORY + "\\" + Utility.ConvertUrlToFileName(CurrentProTip.ImageUrl) : String.Empty;
-
-                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utility.ConvertUrlToFileName(CurrentProTip._id);
-
-                        foreach (var fileName in fileNames)
-                        {
-                            if (fileName != currentFile && fileName != currentTipFile && store.FileExists(fileName))
-                                store.DeleteFile(fileName);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var fileName in fileNames)
-                        {
-                            if (store.FileExists(fileName))
-                                store.DeleteFile(fileName);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("ProTip Helper :: delete ProTip Data on upgrade to 2.2.2.1, Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
         public void RemoveCurrentProTip()
         {
             if (CurrentProTip == null)

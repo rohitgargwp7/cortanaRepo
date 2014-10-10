@@ -151,21 +151,6 @@ namespace CommonLibrary.DbUtils
             return obj;
         }
 
-        public static void deleteAllConversations()
-        {
-            lock (readWriteLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
-                    if (files != null)
-                        foreach (string fileName in files)
-                            store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, 0); // clear total number of convs
-                }
-            }
-        }
-
         public static void deleteConversation(string msisdn)
         {
             msisdn = msisdn.Replace(":", "_");

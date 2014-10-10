@@ -483,36 +483,5 @@ namespace CommonLibrary.DbUtils
                 }
             }
         }
-
-        public static void DeleteAllFriends()
-        {
-            lock (readWriteLock)
-            {
-                try
-                {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        string[] files = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
-                        if (files != null)
-                            foreach (string fileName in files)
-                            {
-                                try
-                                {
-                                    store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} ", fileName);
-                                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
-                                }
-                            }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
-                }
-            }
-        }
     }
 }

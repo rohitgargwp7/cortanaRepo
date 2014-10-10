@@ -1,19 +1,14 @@
 ﻿using CommonLibrary.Model;
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System;
 using CommonLibrary.Misc;
-using CommonLibrary.ViewModel;
-using CommonLibrary.utils;
 using System.Threading.Tasks;
-using CommonLibrary.utils.ServerTips;
 using CommonLibrary.Constants;
 using Newtonsoft.Json.Linq;
 using CommonLibrary.Utils;
-using System.Collections.ObjectModel;
 
 namespace CommonLibrary.DbUtils
 {
@@ -34,128 +29,6 @@ namespace CommonLibrary.DbUtils
 
         public static string PENDING_REQ_FILE = "pendingReqFile";
         public static string PENDING_PROFILE_PIC_REQ_FILE = "pendingProfilePicReqFile";
-
-        public static void clearDatabase()
-        {
-            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES, STATUS MSGS , LAST STATUS
-
-            ConversationTableUtils.deleteAllConversations();
-            DeleteAllThumbnails();
-            DeleteAllAttachmentData();
-            DeleteAllPicUpdates();
-            DeleteAllLargeStatusImages();
-            StatusMsgsTable.DeleteAllStatusMsgs();
-            StatusMsgsTable.DeleteLastStatusFile();
-            StatusMsgsTable.DeleteUnreadCountFile();
-            GroupManager.Instance.DeleteAllGroups();
-            FriendsTableUtils.DeleteAllFriends();
-            MessagesTableUtils.DeleteAllLongMessages();
-
-            using (HikeChatsDb context = new HikeChatsDb(HikeConstants.DBStrings.MsgsDBConnectionstring))
-            {
-                context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
-                context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
-                try
-                {
-                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                }
-                catch (ChangeConflictException ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesChat, Exception : " + ex.StackTrace);
-                    // Automerge database values for members that client
-                    // has not modified.
-                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
-                    {
-                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
-                    }
-                }
-
-                // Submit succeeds on second try.
-                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
-
-            }
-            #endregion
-            #region DELETE USERS, BLOCKLIST
-
-            //BLockhasshSet.clear() reinitiates blocklist with default value preventing blocklist to have actual values so use this function to clear blocklist
-            HikeInstantiation.ViewModel.ClearBLockedHashSet();
-            HikeInstantiation.ViewModel.ContactsCache.Clear();
-
-            using (HikeUsersDb context = new HikeUsersDb(HikeConstants.DBStrings.UsersDBConnectionstring))
-            {
-                context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
-                context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
-                try
-                {
-                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                }
-
-                catch (ChangeConflictException ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesUSers , blocklists, Exception : " + ex.StackTrace);
-                    // Automerge database values for members that client
-                    // has not modified.
-                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
-                    {
-                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
-                    }
-                }
-
-                // Submit succeeds on second try.
-                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
-
-            }
-            #endregion
-            #region DELETE MQTTPERSISTED MESSAGES
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(HikeConstants.DBStrings.MqttDBConnectionstring))
-            {
-                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
-                try
-                {
-                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                }
-
-                catch (ChangeConflictException ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: clearDatabase :  DELETE MQTTPERSISTED MESSAGES , Exception : " + ex.StackTrace);
-                    // Automerge database values for members that client
-                    // has not modified.
-                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
-                    {
-                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
-                    }
-                }
-
-                // Submit succeeds on second try.
-                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
-            }
-            #endregion
-            #region DELETE FAVOURITES AND PENDING REQUESTS AND PROTIPS
-            DeleteFavourites();
-            DeletePendingRequests();
-            ProTipHelper.Instance.ClearProTips();
-
-            HikeInstantiation.AppSettings[AppSettingsKeys.PRO_TIP_COUNT] = 1; // reset value of protip count for next new user
-            #endregion
-            #region DELETE CATEGORIES, RECENT STICKERS
-            StickerHelper.DeleteAllCategories();//deletes all categories + downloaded stickers
-            StickerHelper.CreateDefaultCategories();//after unlink if user doesn't quit app then default categories must be created
-            #endregion
-            #region RESET IN APP TIPS
-
-            HikeInstantiation.AppSettings[AppSettingsKeys.CHAT_THREAD_COUNT_KEY] = 0;
-            HikeInstantiation.AppSettings[AppSettingsKeys.TIP_MARKED_KEY] = 0;
-            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.TIP_SHOW_KEY, 0); // to keep a track of current showing keys
-            #endregion
-            #region RESET CHAT THEMES
-            ChatBackgroundHelper.Instance.Clear();
-            #endregion
-            #region DELETE TIPS
-            TipManager.Instance.ClearTips();
-            #endregion
-        }
-
-        #region STATUS UPDATES
 
         /// <summary>
         /// This function is used to store profile pics (small) so that same can be used in timelines
@@ -193,65 +66,6 @@ namespace CommonLibrary.DbUtils
                 }
             }
         }
-
-        public static void DeleteAllLargeStatusImages()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.DirectoryExists(STATUS_UPDATE_LARGE))
-                    return;
-                string[] dirs = store.GetFileNames(STATUS_UPDATE_LARGE + "\\*");
-                foreach (string dir in dirs)
-                {
-                    string[] files = store.GetFileNames(STATUS_UPDATE_LARGE + "\\" + dir + "\\*");
-
-                    foreach (string file in files)
-                    {
-                        try
-                        {
-                            store.DeleteFile(STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
-                            Debug.WriteLine("MiscDbUtil :: DeleteAllLargeStatusImages : DeleteAllLargeStatusImages, Exception : " + ex.StackTrace);
-                        }
-                    }
-                }
-            }
-        }
-
-        public static void DeleteAllPicUpdates()
-        {
-            lock (profilePicLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!store.DirectoryExists(PROFILE_PICS))
-                        return;
-                    string[] dirs = store.GetFileNames(PROFILE_PICS + "\\*");
-                    foreach (string dir in dirs)
-                    {
-                        string[] files = store.GetFileNames(PROFILE_PICS + "\\" + dir + "\\*");
-
-                        foreach (string file in files)
-                        {
-                            try
-                            {
-                                store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file);
-                                Debug.WriteLine("MiscDbUtil :: DeleteAllPicUpdates : DeleteAllPicUpdates, Exception : " + ex.StackTrace);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        #endregion
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
@@ -336,26 +150,6 @@ namespace CommonLibrary.DbUtils
             }
         }
 
-        public static void DeleteAllThumbnails()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                string[] files = store.GetFileNames(THUMBNAILS + "\\*");
-                foreach (string fileName in files)
-                {
-                    try
-                    {
-                        store.DeleteFile(THUMBNAILS + "\\" + fileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("File {0} does not exist.", THUMBNAILS + "\\" + fileName);
-                        Debug.WriteLine("MiscDbUtil :: DeleteAllThumbnails : DeleteAllThumbnails, Exception : " + ex.StackTrace);
-                    }
-                }
-            }
-        }
-
         #region FILE TRANSFER UTILS
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
@@ -389,39 +183,6 @@ namespace CommonLibrary.DbUtils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("MiscDbUtil :: saveAttachmentObject : saveAttachmentObject, Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Clear all attachment data
-        /// </summary>
-        public static void DeleteAllAttachmentData()
-        {
-            string[] attachmentPaths = new string[2];
-            attachmentPaths[0] = FTBasedConstants.FILES_ATTACHMENT;
-            attachmentPaths[1] = FTBasedConstants.FILES_BYTE_LOCATION;
-
-            lock (attachmentLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    foreach (string attachmentPath in attachmentPaths)
-                    {
-                        if (store.DirectoryExists(attachmentPath))
-                        {
-                            string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
-                            foreach (string directoryName in directoryNames)
-                            {
-                                string escapedDirectoryName = directoryName.Replace(":", "_");
-                                string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
-                                foreach (string fileName in fileNames)
-                                {
-                                    store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -605,27 +366,6 @@ namespace CommonLibrary.DbUtils
             }
         }
 
-        public static void DeleteFavourites()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                try
-                {
-                    store.DeleteFile(MISC_DIR + "\\" + FAVOURITES_FILE);
-                    string[] fileName = store.GetFileNames("FAVS\\*");
-                    foreach (string file in fileName)
-                    {
-                        store.DeleteFile("FAVS\\" + file);
-                    }
-                    HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: DeleteFavourites :DeleteFavourites Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
         public static void DeleteFavourite(string msisdn)
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -740,21 +480,6 @@ namespace CommonLibrary.DbUtils
                         file.Close();
                         file.Dispose();
                     }
-                }
-            }
-        }
-
-        public static void DeletePendingRequests()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                try
-                {
-                    store.DeleteFile(MISC_DIR + "\\" + PENDING_REQ_FILE);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("MiscDbUtil :: DeletePendingRequests : DeletePendingRequests, Exception : " + ex.StackTrace);
                 }
             }
         }

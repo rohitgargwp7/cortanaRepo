@@ -22,19 +22,8 @@ namespace CommonLibrary.Mqtt
         {
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
-                bool isPresent = false;
-
-                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.IS_DB_CREATED))
-                    isPresent = true;
-
-                HikeInstantiation.ClearAppSettings();
-                
-                if (isPresent)
-                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_DB_CREATED, true);
-
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 HikeInstantiation.MqttManagerInstance.DisconnectFromBroker(false);
-                MiscDBUtil.clearDatabase();
             }
             else if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.SERVER_UNAVAILABLE))
             {

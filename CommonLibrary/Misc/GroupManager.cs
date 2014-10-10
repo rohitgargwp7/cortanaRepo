@@ -453,28 +453,6 @@ namespace CommonLibrary.Misc
             return activeGroupMembers;
         }
 
-        public void DeleteAllGroups()
-        {
-            lock (readWriteLock)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    string[] files = store.GetFileNames(GROUP_DIR + "\\*");
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        try
-                        {
-                            store.DeleteFile(GROUP_DIR + "\\" + files[i]);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("GroupManager :: DeleteAllGroups :DeleteAllGroups, Exception : " + ex.StackTrace);
-                        }
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Deletes group cache file
         /// </summary>

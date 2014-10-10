@@ -189,15 +189,6 @@ namespace CommonLibrary.utils
 
             return false;
         }
-
-        /// <summary>
-        /// Clear all data on unlink or delete
-        /// </summary>
-        public void Clear()
-        {
-            ChatBgMap.Clear();
-            SaveChatBgMapToFile();
-        }
     }
 
     public class ChatThemeData

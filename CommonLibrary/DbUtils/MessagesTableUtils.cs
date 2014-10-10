@@ -787,37 +787,5 @@ namespace CommonLibrary.DbUtils
                 }
             }
         }
-
-        public static void DeleteAllLongMessages()
-        {
-            lock (lockObj)
-            {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    try
-                    {
-                        if (store.DirectoryExists(LONG_MSG_DIRECTORY))
-                        {
-                            string[] directories = store.GetDirectoryNames(LONG_MSG_DIRECTORY + "\\*");
-                            if (directories != null)
-                                foreach (string msisdn in directories)
-                                {
-                                    string msisdnDirectory = LONG_MSG_DIRECTORY + "\\" + msisdn;
-
-                                    string[] files = store.GetFileNames(msisdnDirectory + "\\*");
-                                    if (files != null)
-                                        foreach (string fileName in files)
-                                            store.DeleteFile(msisdnDirectory + "\\" + fileName);
-                                }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
-                    }
-                }
-            }
-
-        }
     }
 }

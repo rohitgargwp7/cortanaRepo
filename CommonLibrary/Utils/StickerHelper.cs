@@ -72,7 +72,6 @@ namespace CommonLibrary.utils
            "007_gtg.png",
            "008_xoxo.png"
         };
-        private bool _isInitialised;
 
         private Dictionary<string, StickerCategory> _dictStickersCategories;
         public Dictionary<string, StickerCategory> DictStickersCategories
@@ -99,79 +98,6 @@ namespace CommonLibrary.utils
             return null;
         }
         
-        public static void CreateDefaultCategories()
-        {
-            StickerHelper.CreateCategory(CATEGORY_HUMANOID);
-            StickerHelper.CreateCategory(CATEGORY_DOGGY);
-            StickerHelper.CreateCategory(CATEGORY_KITTY);
-            StickerHelper.CreateCategory(CATEGORY_EXPRESSIONS);
-            StickerHelper.CreateCategory(CATEGORY_BOLLYWOOD);
-            StickerHelper.CreateCategory(CATEGORY_TROLL);
-            StickerHelper.CreateCategory(CATEGORY_AVATARS);
-            StickerHelper.CreateCategory(CATEGORY_INDIANS);
-            StickerHelper.CreateCategory(CATEGORY_JELLY);
-            StickerHelper.CreateCategory(CATEGORY_SPORTS);
-            StickerHelper.CreateCategory(CATEGORY_HUMANOID2);
-            StickerHelper.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
-            StickerHelper.CreateCategory(CATEGORY_LOVE);
-        }
-
-        public static void DeleteAllCategories()
-        {
-            lock (readWriteLock)
-            {
-                try
-                {
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        string categoryFolder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR;
-                        string[] folders = store.GetDirectoryNames(categoryFolder + "\\*");
-                        if (folders != null)
-                            foreach (string category in folders)
-                            {
-                                string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
-
-                                if (store.DirectoryExists(folder))
-                                {
-                                    string[] files = store.GetFileNames(folder + "\\*");
-                                    if (files != null)
-                                        foreach (string stickerId in files)
-                                        {
-                                            string fileName = folder + "\\" + stickerId;
-                                            if (store.FileExists(fileName))
-                                                store.DeleteFile(fileName);
-                                        }
-                                }
-                            }
-                        folders = store.GetDirectoryNames(categoryFolder + "\\*");
-                        if (folders != null)
-                        {
-                            foreach (string category in folders)
-                            {
-                                string folder = STICKERS_DIR + "\\" + HIGH_RESOLUTION_DIR + "\\" + category;
-
-                                if (store.DirectoryExists(folder))
-                                {
-                                    string[] files = store.GetFileNames(folder + "\\*");
-                                    if (files != null)
-                                        foreach (string stickerId in files)
-                                        {
-                                            string fileName = folder + "\\" + stickerId;
-                                            if (store.FileExists(fileName))
-                                                store.DeleteFile(fileName);
-                                        }
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
-                }
-            }
-        }
-
         public static void CreateCategory(string category)
         {
             lock (readWriteLock)

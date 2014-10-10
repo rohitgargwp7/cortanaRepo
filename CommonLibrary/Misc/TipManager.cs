@@ -302,52 +302,6 @@ namespace CommonLibrary.utils.ServerTips
             }
         }
 
-        /// <summary>
-        /// clearing tip reset and unlinking case
-        /// </summary>
-        public void ClearTips()
-        {
-            if (ChatScreenTip != null)
-                RemoveTip(ChatScreenTip.TipId);
-
-            if (ConversationPageTip != null)
-                RemoveTip(ConversationPageTip.TipId);
-
-            ClearOldTips();
-
-            HikeInstantiation.AppSettings.Remove(HikeConstants.ServerTips.CHAT_SCREEN_TIP_ID);
-            HikeInstantiation.AppSettings.Remove(HikeConstants.ServerTips.CONV_PAGE_TIP_ID);
-        }
-
-        /// <summary>
-        /// deleting files in servertips directory
-        /// </summary>
-        public void ClearOldTips()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                try
-                {
-                    if (!store.DirectoryExists(TIPS_DIRECTORY))
-                        return;
-
-                    var fileNames = store.GetFileNames(TIPS_DIRECTORY + "\\*");
-
-                    foreach (var fileName in fileNames)
-                    {
-                        if (store.FileExists(fileName))
-                            store.DeleteFile(fileName);
-                    }
-
-                    store.DeleteDirectory(TIPS_DIRECTORY);
-
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("Utils:ServerTips:TipManager:ClearOldTips::, Exception : " + ex.StackTrace);
-                }
-            }
-        }
         #endregion
     }
 }
