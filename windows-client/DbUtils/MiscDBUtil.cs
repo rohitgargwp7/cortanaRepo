@@ -17,6 +17,7 @@ using windows_client.utils.ServerTips;
 using FileTransfer;
 using CommonLibrary.Constants;
 using Newtonsoft.Json.Linq;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
@@ -1328,7 +1329,7 @@ namespace windows_client.DbUtils
         {
             IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, msgID);
             ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, (int)ConvMessage.State.SENT_DELIVERED_READ); // update conversationObj, null is already checked in the function
-            if (Utils.isGroupConversation(msisdn))
+            if (Utility.IsGroupConversation(msisdn))
                 GroupTableUtils.UpdateReadBy(msisdn, lastReadMessageId, readByArray);
             return listUpdatedMsgIds;
         }

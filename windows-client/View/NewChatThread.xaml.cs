@@ -44,6 +44,7 @@ using windows_client.utils.ServerTips;
 using System.Windows.Resources;
 using FileTransfer;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -567,7 +568,7 @@ namespace windows_client.View
                     HikeInstantiation.ViewModel.ConvMap[msisdn].Avatar = _avatar;
                     this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE] = statusObject = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 }
-                else if (Utils.isGroupConversation(msisdn))
+                else if (Utility.IsGroupConversation(msisdn))
                 {
                     ConversationListObject co = new ConversationListObject();
                     co.ContactName = AppResources.SelectUser_NewGroup_Text;
@@ -583,7 +584,7 @@ namespace windows_client.View
                     {
                         contact = new ContactInfo();
                         contact.Msisdn = msisdn;
-                        contact.Name = Utils.IsHikeBotMsg(msisdn) ? Utils.GetHikeBotName(msisdn) : null;
+                        contact.Name = Utility.IsHikeBotMsg(msisdn) ? Utility.GetHikeBotName(msisdn) : null;
                         contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
 
@@ -951,7 +952,7 @@ namespace windows_client.View
                 ConversationListObject convObj = (ConversationListObject)this.State[HikeConstants.NavigationKeys.OBJ_FROM_CONVERSATIONS_PAGE];
                 mContactNumber = convObj.Msisdn;
 
-                if (Utils.isGroupConversation(mContactNumber)) // represents group chat
+                if (Utility.IsGroupConversation(mContactNumber)) // represents group chat
                 {
                     GroupManager.Instance.LoadGroupParticipants(mContactNumber);
                     isGroupChat = true;
@@ -1101,7 +1102,7 @@ namespace windows_client.View
             mUserIsBlocked = groupOwner != null ? HikeInstantiation.ViewModel.BlockedHashset.Contains(groupOwner) : HikeInstantiation.ViewModel.BlockedHashset.Contains(mContactNumber);
             userName.Text = mContactName;
 
-            _isHikeBot = Utils.IsHikeBotMsg(mContactNumber);
+            _isHikeBot = Utility.IsHikeBotMsg(mContactNumber);
 
             initAppBar(isAddUser);
 
@@ -1417,7 +1418,7 @@ namespace windows_client.View
             if (!showFreeSMS) // if setting is off return false
                 return showFreeSMS; // == false
 
-            if (Utils.isGroupConversation(mContactNumber))//groupchat
+            if (Utility.IsGroupConversation(mContactNumber))//groupchat
             {
                 GroupManager.Instance.LoadGroupParticipants(mContactNumber);
 
@@ -1893,7 +1894,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
-            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_UI_EVENT, HikeConstants.AnalyticsKeys.ANALYTICS_EMAIL, HikeConstants.AnalyticsKeys.ANALYTICS_EMAIL_MENU, mContactNumber);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_UI_EVENT, AnalyticsKeys.ANALYTICS_EMAIL, AnalyticsKeys.ANALYTICS_EMAIL_MENU, mContactNumber);
             EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
@@ -2367,7 +2368,7 @@ namespace windows_client.View
                 #region PARTICIPANT_JOINED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
+                    string[] vals = Utility.SplitUserJoinedMessage(convMessage.Message);
                     if (vals == null || vals.Length == 0)
                         return;
                     for (int i = 0; i < vals.Length; i++)
@@ -2394,7 +2395,7 @@ namespace windows_client.View
                 // This function is called after first normal message of Group Creation
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING)
                 {
-                    string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
+                    string[] vals = Utility.SplitUserJoinedMessage(convMessage.Message);
                     if (vals == null || vals.Length == 0)
                         return;
                     List<string> waitingParticipants = null;
@@ -2476,7 +2477,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
                 {
                     ConvMessage.MessageType type = ConvMessage.MessageType.SMS_PARTICIPANT_OPTED_IN;
-                    if (Utils.isGroupConversation(mContactNumber))
+                    if (Utility.IsGroupConversation(mContactNumber))
                     {
                         type = ConvMessage.MessageType.SMS_PARTICIPANT_OPTED_IN;
                     }
@@ -2489,7 +2490,7 @@ namespace windows_client.View
                 #region DND_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
                 {
-                    //if (!Utils.isGroupConversation(mContactNumber))
+                    //if (!Utility.IsGroupConversation(mContactNumber))
                     {
                         ConvMessage chatBubble = new ConvMessage(convMessage.Message, this.Orientation, convMessage);
                         chatBubble.NotificationType = ConvMessage.MessageType.WAITING;
@@ -7751,14 +7752,14 @@ namespace windows_client.View
                 case ToolTipMode.CHAT_THEMES:
 
                     HideServerTips();
-                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.THEME_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(AnalyticsKeys.THEME_TIP_TAP_EVENT);
                     chatBackgroundPopUp_Opened();
                     break;
 
                 case ToolTipMode.ATTACHMENTS:
 
                     HideServerTips();
-                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.ATTACHMENT_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(AnalyticsKeys.ATTACHMENT_TIP_TAP_EVENT);
                     fileTransferButton_Click(null, null);
                     break;
 
@@ -7766,7 +7767,7 @@ namespace windows_client.View
 
                     HideServerTips();
 
-                    Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.STICKER_TIP_TAP_EVENT);
+                    Analytics.SendClickEvent(AnalyticsKeys.STICKER_TIP_TAP_EVENT);
 
                     if (stickersIconButton != null)
                         emoticonButton_Click(stickersIconButton, null);

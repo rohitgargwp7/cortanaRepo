@@ -19,6 +19,7 @@ using windows_client.utils.Sticker_Helper;
 using windows_client.ViewModel;
 using windows_client.Model.Sticker;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -84,7 +85,7 @@ namespace windows_client.View
                 string msisdn = Utils.GetParamFromUri(targetPage);
 
                 if (!HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
-                && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                && (!Utility.IsGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
 
@@ -159,7 +160,7 @@ namespace windows_client.View
         /// <param name="e"></param>
         void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Utils.compareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
+            if (Utility.CompareVersion(HikeInstantiation.LatestVersion, HikeInstantiation.CurrentVersion) == 1) // shows this is update
             {
                 HikeInstantiation.AppSettings[AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
                 HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.NEW_UPDATE, true);
@@ -175,10 +176,10 @@ namespace windows_client.View
             }
 
             // If current version is less than equal to 1.5.0.0 then upgrade DB.
-            if (Utils.compareVersion("1.5.0.0", HikeInstantiation.CurrentVersion) == 1)
+            if (Utility.CompareVersion("1.5.0.0", HikeInstantiation.CurrentVersion) == 1)
                 MqttDBUtils.MqttDbUpdateToLatestVersion();
 
-            if (Utils.compareVersion("2.5.3.0", HikeInstantiation.CurrentVersion) == 1)
+            if (Utility.CompareVersion("2.5.3.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 UpgradeContactsDBForPhoneKind();
 
@@ -196,12 +197,12 @@ namespace windows_client.View
                 }
             }
 
-            if (Utils.compareVersion("2.6.0.0", HikeInstantiation.CurrentVersion) == 1)
+            if (Utility.CompareVersion("2.6.0.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 HandleEmptyGroupName();
             }
 
-            if (Utils.compareVersion("2.6.5.0", HikeInstantiation.CurrentVersion) == 1)
+            if (Utility.CompareVersion("2.6.5.0", HikeInstantiation.CurrentVersion) == 1)
             {
                 ReShuffleStickerCategories();
 
@@ -210,7 +211,7 @@ namespace windows_client.View
                 DeleteAngryStickerCategory();
             }
             
-            if (Utils.compareVersion("2.8.0.1", HikeInstantiation.CurrentVersion) == 1)
+            if (Utility.CompareVersion("2.8.0.1", HikeInstantiation.CurrentVersion) == 1)
             {
                 UpgradeGroupInfoForReadBy();
             }

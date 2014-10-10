@@ -47,7 +47,7 @@ namespace windows_client.View
 
         private void Messaging_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.INVITE_SMS_SCREEN_FROM_INVITE);
+            Analytics.SendClickEvent(AnalyticsKeys.INVITE_SMS_SCREEN_FROM_INVITE);
             string uri = "/View/InviteUsers.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }

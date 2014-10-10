@@ -14,6 +14,7 @@ using System.Windows;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Newtonsoft.Json.Linq;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
@@ -104,9 +105,9 @@ namespace windows_client.DbUtils
             else
             {
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
-                if (Utils.IsHikeBotMsg(convMessage.Msisdn))
+                if (Utility.IsHikeBotMsg(convMessage.Msisdn))
                 {
-                    obj = new ConversationListObject(convMessage.Msisdn, Utils.GetHikeBotName(convMessage.Msisdn), convMessage.Message, true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
+                    obj = new ConversationListObject(convMessage.Msisdn, Utility.GetHikeBotName(convMessage.Msisdn), convMessage.Message, true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                 }
                 else
                 {
@@ -153,7 +154,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
             {
-                if (!Utils.isGroupConversation(from))
+                if (!Utility.IsGroupConversation(from))
                 {
                     if (from == HikeInstantiation.MSISDN)
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
@@ -167,7 +168,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
             {
-                if (!Utils.isGroupConversation(from))
+                if (!Utility.IsGroupConversation(from))
                 {
                     if (from == HikeInstantiation.MSISDN)
                         convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
@@ -472,7 +473,7 @@ namespace windows_client.DbUtils
                             if (count > 0)
                             {
                                 bool isLessThanEqualTo_1500 = false;
-                                if (Utils.compareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+                                if (Utility.CompareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
 
                                 convList = new List<ConversationListObject>(count);
@@ -521,7 +522,7 @@ namespace windows_client.DbUtils
             {
                 if (string.IsNullOrWhiteSpace(item.Msisdn))
                     return false;
-                else if (Utils.IsHikeBotMsg(item.Msisdn))
+                else if (Utility.IsHikeBotMsg(item.Msisdn))
                     return true;
                 else if (item.Msisdn.Contains(":"))
                 {

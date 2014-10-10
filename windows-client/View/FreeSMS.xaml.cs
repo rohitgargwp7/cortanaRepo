@@ -88,7 +88,7 @@ namespace windows_client.View
         {
             try
             {
-                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.INVITE_SMS_SCREEN_FROM_CREDIT);
+                Analytics.SendClickEvent(AnalyticsKeys.INVITE_SMS_SCREEN_FROM_CREDIT);
                 NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
             }
             catch (Exception ex)
@@ -116,7 +116,7 @@ namespace windows_client.View
         private void startChat_Click(object sender, RoutedEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.GO_TO_CONV_VIEW] = true;
-            Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.START_HIKING);
+            Analytics.SendClickEvent(AnalyticsKeys.START_HIKING);
             NavigationService.Navigate(new Uri("/View/ForwardTo.xaml", UriKind.Relative));
         }
 

@@ -9,6 +9,7 @@ using windows_client.Languages;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -58,7 +59,7 @@ namespace windows_client.View
                     object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                     _msisdn = (string)profilePicTapped[0];
 
-                    if (!HikeInstantiation.IsTombstoneLaunch && Utils.isGroupConversation(_msisdn))
+                    if (!HikeInstantiation.IsTombstoneLaunch && Utility.IsGroupConversation(_msisdn))
                         FileImage.Source = HikeInstantiation.ViewModel.ConvMap[_msisdn].AvatarImage;
                     else
                     {
@@ -80,7 +81,7 @@ namespace windows_client.View
                     {
                         fileName = _msisdn + FTBasedConstants.FULL_VIEW_IMAGE_PREFIX;
                         loadingProgress.Opacity = 1;
-                        if (!Utils.isGroupConversation(_msisdn))
+                        if (!Utility.IsGroupConversation(_msisdn))
                         {
                             if (_msisdn == HikeConstants.MY_PROFILE_PIC)
                                 AccountUtils.createGetRequest(ServerUrls.BASE + "/account/avatar/" + HikeInstantiation.MSISDN + "?fullsize=true", getProfilePic_Callback, true, fileName);
@@ -92,7 +93,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        if (!Utils.isGroupConversation(_msisdn))
+                        if (!Utility.IsGroupConversation(_msisdn))
                             this.FileImage.Source = UI_Utils.Instance.getDefaultAvatar(_msisdn, true);
                         else
                             this.FileImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(_msisdn, true);
@@ -112,7 +113,7 @@ namespace windows_client.View
                             else
                             {
                                 loadingProgress.Opacity = 1;
-                                AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getProTipPicFromHikeServer_Callback, true, Utils.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
+                                AccountUtils.createGetRequest(ProTipHelper.CurrentProTip.ImageUrl, getProTipPicFromHikeServer_Callback, true, Utility.ConvertUrlToFileName(ProTipHelper.CurrentProTip.ImageUrl));
                             }
                         }
                     }

@@ -11,8 +11,11 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
-using CommonLibrary;
+using windows_client;
 using CommonLibrary.Constants;
+using CommonLibrary;
+using CommonLibrary.Utils;
+
 namespace windows_client.utils
 {
     public class HikeInstantiation : HikeInitManager
@@ -198,15 +201,15 @@ namespace windows_client.utils
         public static void InstantiateClasses(bool initInUpgradePage)
         {
             #region Hidden Mode
-            if (IsNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
+            if (IsNewInstall || Utility.CompareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             #endregion
             #region Upgrade Pref Contacts Fix
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.6.2.0") < 0)
                 HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACTS_TO_SHOW);
             #endregion
             #region ProTips 2.3.0.0
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.3.0.0") < 0)
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.3.0.0") < 0)
             {
                 try
                 {
@@ -227,7 +230,7 @@ namespace windows_client.utils
             #endregion
             #region LAST SEEN BYTE TO BOOL FIX
 
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.2.2.0") < 0)
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.2.2.0") < 0)
             {
                 try
                 {
@@ -250,7 +253,7 @@ namespace windows_client.utils
             #endregion
             #region IN APP TIPS
 
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 HikeInstantiation.AppSettings.Remove(AppSettingsKeys.TIP_MARKED_KEY);
                 HikeInstantiation.AppSettings.Remove(AppSettingsKeys.TIP_SHOW_KEY);
@@ -259,16 +262,16 @@ namespace windows_client.utils
 
             #endregion
             #region STCIKERS
-            if (IsNewInstall || Utils.compareVersion(_currentVersion, "2.6.2.0") < 0)
+            if (IsNewInstall || Utility.CompareVersion(_currentVersion, "2.6.2.0") < 0)
             {
-                if (!IsNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
+                if (!IsNewInstall && Utility.CompareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
 
                 StickerHelper.CreateDefaultCategories();
             }
             #endregion
             #region TUTORIAL
-            if (!IsNewInstall && Utils.compareVersion("2.6.0.0", _currentVersion) == 1)
+            if (!IsNewInstall && Utility.CompareVersion("2.6.0.0", _currentVersion) == 1)
             {
                 if (ps == PageState.CONVLIST_SCREEN || ps == PageState.TUTORIAL_SCREEN_STATUS || ps == PageState.TUTORIAL_SCREEN_STICKERS
                     || ps == PageState.WELCOME_HIKE_SCREEN || ps == PageState.NUX_SCREEN_FAMILY || ps == PageState.NUX_SCREEN_FRIENDS)
@@ -336,7 +339,7 @@ namespace windows_client.utils
             IsViewModelLoaded = false;
             if (_viewModel == null)
             {
-                _latestVersion = Utils.getAppVersion(); // this will get the new version we have installed
+                _latestVersion = Utility.GetAppVersion(); // this will get the new version we have installed
                 List<ConversationListObject> convList = null;
 
                 if (!IsNewInstall)// this has to be called for no new install case
@@ -352,14 +355,14 @@ namespace windows_client.utils
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!IsNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
+                if (!IsNewInstall && Utility.CompareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                 {
                     if (!initInUpgradePage)
                     {
                         AppSettings[AppSettingsKeys.APP_UPDATE_POSTPENDING] = true;
                         AppSettings[AppSettingsKeys.NEW_UPDATE] = true;
                         WriteToIsoStorageSettings(AppSettingsKeys.FILE_SYSTEM_VERSION, _latestVersion);
-                        if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                        if (Utility.CompareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                             MqttDBUtils.MqttDbUpdateToLatestVersion();
                     }
                 }
@@ -384,15 +387,15 @@ namespace windows_client.utils
             #region HIKE BOT
             if (IsNewInstall)
                 WriteToIsoStorageSettings(AppSettingsKeys.REMOVE_EMMA, true);
-            else if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+            else if (Utility.CompareVersion(_currentVersion, "2.4.0.0") < 0)
             {
                 if (_viewModel != null)
                 {
                     foreach (ConversationListObject convlist in _viewModel.ConvMap.Values)
                     {
-                        if (Utils.IsHikeBotMsg(convlist.Msisdn))
+                        if (Utility.IsHikeBotMsg(convlist.Msisdn))
                         {
-                            convlist.ContactName = Utils.GetHikeBotName(convlist.Msisdn);
+                            convlist.ContactName = Utility.GetHikeBotName(convlist.Msisdn);
                             ConversationTableUtils.saveConvObject(convlist, convlist.Msisdn.Replace(":", "_"));
                         }
                     }
@@ -400,19 +403,19 @@ namespace windows_client.utils
             }
             #endregion
             #region CHAT_FTUE
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.6.0.0") < 0)//if it is upgrade
                 RemoveKeyFromAppSettings(AppSettingsKeys.SHOW_CHAT_FTUE);
             #endregion
             #region Enter to send
 
             if (!IsNewInstall)
             {
-                if (Utils.compareVersion(_currentVersion, "2.4.0.0") < 0)
+                if (Utility.CompareVersion(_currentVersion, "2.4.0.0") < 0)
                 {
                     AppSettings[AppSettingsKeys.HIKEJINGLE_PREF] = (bool)true;
                     HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.ENTER_TO_SEND, false);
                 }
-                else if (Utils.compareVersion(_currentVersion, "2.5.1.0") < 0)
+                else if (Utility.CompareVersion(_currentVersion, "2.5.1.0") < 0)
                 {
                     SendEnterToSendStatusToServer();
                 }
@@ -420,7 +423,7 @@ namespace windows_client.utils
 
             #endregion
             #region Auto Save Media Key Removal
-            if (!IsNewInstall && Utils.compareVersion(_currentVersion, "2.7.5.0") < 0)
+            if (!IsNewInstall && Utility.CompareVersion(_currentVersion, "2.7.5.0") < 0)
             {
                 HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_SAVE_MEDIA);
             }
@@ -440,7 +443,7 @@ namespace windows_client.utils
                 _currentVersion = "1.0.0.0";
 
             // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
-            if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
+            if (Utility.CompareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
                 WriteToIsoStorageSettings(AppSettingsKeys.SHOW_NUDGE_TUTORIAL, true);
             }
@@ -459,7 +462,7 @@ namespace windows_client.utils
                 HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
-            else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
+            else if (Utility.CompareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
             {
                 /*
                  * 1. Read from Convs File
@@ -673,7 +676,7 @@ namespace windows_client.utils
             if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ENTER_TO_SEND, out enterToSend))
                 enterToSend = true;
 
-            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, HikeConstants.AnalyticsKeys.ANALYTICS_ENTER_TO_SEND, enterToSend);
+            Analytics.SendAnalyticsEvent(ServerJsonKeys.ST_CONFIG_EVENT, AnalyticsKeys.ANALYTICS_ENTER_TO_SEND, enterToSend);
         }
     }
 }

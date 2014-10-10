@@ -1,0 +1,389 @@
+﻿using System;
+using finalmqtt.Client;
+using CommonLibrary.utils;
+using System.Collections.Generic;
+using CommonLibrary.Model;
+using CommonLibrary.DbUtils;
+using finalmqtt.Msg;
+using System.Net.NetworkInformation;
+using Newtonsoft.Json.Linq;
+using System.Text;
+using Microsoft.Phone.Reactive;
+using System.ComponentModel;
+using System.Diagnostics;
+using CommonLibrary.Constants;
+using CommonLibrary.Lib;
+using CommonLibrary.Utils;
+using CommonLibrary.Misc;
+using System.Windows.Controls;
+
+namespace CommonLibrary.Mqtt
+{
+    public class HikeMqttManager : Listener
+    {
+        public volatile MqttConnection mqttConnection;
+        public bool IsAppStarted = true; // false for resume
+        private const int API_VERSION = 3;
+        private const bool AUTO_SUBSCRIBE = true;
+        //Bug# 3833 - There are some changes in initialization of static objects in .Net 4. So, removing static for now.
+        //Later, on we should be using singleton so, static won't be required
+        private object lockObj = new object(); //TODO - Madhur Garg make this class singleton
+
+        // constants used to define MQTT connection status
+        public enum MQTTConnectionStatus
+        {
+            INITIAL, // initial status
+            CONNECTING, // attempting to connect
+            CONNECTED, // connected
+            NOTCONNECTED_WAITINGFORINTERNET, // can't connect because the phone
+            // does not have Internet access
+            NOTCONNECTED_USERDISCONNECT, // user has explicitly requested
+            // disconnection
+            NOTCONNECTED_DATADISABLED, // can't connect because the user
+            // has disabled data access
+            NOTCONNECTED_UNKNOWNREASON // failed to connect for some reason
+        }
+
+        public HikeMqttManager()
+        {
+        }
+
+        // status of MQTT client connection
+        public volatile MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
+
+        /************************************************************************/
+        /* VARIABLES used to configure MQTT connection */
+        /************************************************************************/
+
+        // taken from preferences
+        // host name of the server we're receiving push notifications from
+
+
+
+        // defaults - this sample uses very basic defaults for it's interactions
+        // with message brokers
+        //        private HikeMqttPersistence persistence = null;
+
+        /*
+         * how often should the app ping the server to keep the connection alive?
+         * 
+         * too frequently - and you waste battery life too infrequently - and you wont notice if you lose your connection until the next unsuccessfull attempt to ping // // it's a
+         * trade-off between how time-sensitive the data is that your // app is handling, vs the acceptable impact on battery life // // it is perhaps also worth bearing in mind the
+         * network's support for // long running, idle connections. Ideally, to keep a connection open // you want to use a keep alive value that is less than the period of // time
+         * after which a network operator will kill an idle connection
+         */
+
+        private String clientId;
+
+        private String topic;
+
+        private String password;
+
+        private String uid;
+
+        private IScheduler scheduler = Scheduler.NewThread;
+
+        private volatile bool disconnectExplicitly = false;
+
+        private bool init()
+        {
+            HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.TOKEN_SETTING, out password);
+            HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.UID_SETTING, out topic);
+            HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.MSISDN_SETTING, out clientId);
+            uid = topic;
+            if (!String.IsNullOrEmpty(clientId))
+                clientId += string.Format(":{0}:{1}", API_VERSION, AUTO_SUBSCRIBE);//: Api version : Auto subscribe(true/false)
+            return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
+        }
+
+        public void setConnectionStatus(MQTTConnectionStatus connectionStatus)
+        {
+            this.connectionStatus = connectionStatus;
+        }
+
+        /// <summary>
+        /// Terminates a connection to the message broker synchronously. 
+        /// </summary>
+        /// <param name="reconnect"></param>
+        public void DisconnectFromBroker(bool reconnect)
+        {
+            try
+            {
+                disconnectExplicitly = !reconnect;
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+
+                Debug.WriteLine("Disconnect from Broker Called");
+                if (mqttConnection != null)
+                    mqttConnection.disconnect();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// Connects to a connection to the message broker synchronously. 
+        /// </summary>
+        public void ConnectToBroker()
+        {
+            if (isConnected() || isConnecting())
+                return;
+
+            if (mqttConnection == null)
+            {
+                lock (lockObj)
+                {
+                    if (mqttConnection == null)
+                    {
+                        if (!init())
+                            return;
+                        
+                        mqttConnection = new MqttConnection(clientId, uid, password, new ConnectCB(this), this);
+                        mqttConnection.OnSocketWriteCompleted += mqttConnection_OnSocketWriteCompleted;
+                    }
+                }
+            }
+
+            try
+            {
+                // try to connect
+                setConnectionStatus(MQTTConnectionStatus.CONNECTING);
+                string ip;
+                int port;
+                IpManager.Instance.GetIpAndPort(out ip, out port);
+                mqttConnection.connect(ip, port);
+            }
+            catch (Exception ex)
+            {
+                /* couldn't connect, schedule a ping even earlier? */
+                Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
+            }
+        }
+
+        void mqttConnection_OnSocketWriteCompleted(object sender, OnSocketWriteEventArgs e)
+        {
+            if (e.MessageId > 0)
+                MiscDBUtil.UpdateDBsMessageStatus(null, e.MessageId, (int)ConvMessage.State.SENT_SOCKET_WRITE);
+        }
+
+        public bool isConnected()
+        {
+            return (MQTTConnectionStatus.CONNECTED == connectionStatus);
+        }
+
+        public bool isConnecting()
+        {
+            return (MQTTConnectionStatus.CONNECTING == connectionStatus);
+        }
+
+        private void unsubscribeFromTopics(string[] topics)
+        {
+            if (!isConnected())
+                return;
+
+            try
+            {
+                for (int i = 0; i < topics.Length; i++)
+                {
+                    if (mqttConnection != null)
+                        mqttConnection.unsubscribe(topics[i], null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HIkeMqttManager ::  unsubscribeFromTopics : unsubscribeFromTopics, Exception : " + ex.StackTrace);
+            }
+        }
+
+        private bool isUserOnline()
+        {
+            return NetworkInterface.GetIsNetworkAvailable();
+            //return (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.NetworkInterfaceType !=
+            //     Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None);
+        }
+
+        /*
+         * Send a request to the message broker to be sent messages published with the specified topic name. Wildcards are allowed.
+         */
+        //TODO Define class Topics and use that
+        private void subscribeToTopics(Topic[] topics)
+        {
+
+            if (isConnected() == false)
+            {
+                // quick sanity check - don't try and subscribe if we
+                // don't have a connection
+                return;
+            }
+            List<string> listTopics = new List<string>();
+            List<QoS> listQos = new List<QoS>();
+            for (int i = 0; i < topics.Length; i++)
+            {
+                listTopics.Add(topics[i].Name);
+                listQos.Add(topics[i].qos);
+            }
+            if (mqttConnection != null)
+                mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
+
+        }
+
+        /*
+         * Checks if the MQTT client thinks it has an active connection
+         */
+
+        public MQTTConnectionStatus getConnectionStatus()
+        {
+            return connectionStatus;
+        }
+
+        public void connect()
+        {
+            if (isConnected() || isConnecting())
+                return;
+
+            lock (lockObj)
+            {
+                disconnectExplicitly = false;
+
+                if (isConnected() || isConnecting())
+                    return;
+
+                if (isUserOnline())
+                    ConnectToBroker();
+                else
+                    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+            }
+        }
+
+        //this is called when messages are sent 1 by 1
+        public void send(HikePacket packet, int qos)
+        {
+            if (!isConnected())
+            {
+                /* only care about failures for messages we care about. */
+                if (qos > 0)
+                {
+                    try
+                    {
+                        MqttDBUtils.addSentMessage(packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
+                    }
+                }
+
+                this.connect();
+                return;
+            }
+
+            PublishCB pbCB = null;
+            if (qos > 0)
+                pbCB = new PublishCB(packet, this, qos, false);
+
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + ServerJsonKeys.PUBLISH_TOPIC,
+                    packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
+                    pbCB, packet.MessageId > 0 ? (object)packet.MessageId : null);
+        }
+
+        //this is called to send unsent messages. They all are sent in a single thread
+        public void sendAllUnsentMessages(List<HikePacket> packets)
+        {
+            if (!isConnected())
+            {
+                this.connect();
+                return;
+            }
+            byte[][] messagesToSend = new byte[packets.Count][];
+            PublishCB[] messageCallbacks = new PublishCB[packets.Count];
+            long[] msgIds = new long[packets.Count];
+            for (int i = 0; i < packets.Count; i++)
+            {
+                messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
+                messagesToSend[i] = packets[i].Message;
+            }
+            if (mqttConnection != null)
+                mqttConnection.publish(this.topic + ServerJsonKeys.PUBLISH_TOPIC,
+                    messagesToSend, QoS.AT_LEAST_ONCE,
+                    messageCallbacks, msgIds);
+        }
+
+        private Topic[] getTopics()
+        {
+            bool appConnected = true;
+            List<Topic> topics = new List<Topic>();
+            topics.Add(new Topic(this.topic + ServerJsonKeys.APP_TOPIC, QoS.AT_LEAST_ONCE));
+            topics.Add(new Topic(this.topic + ServerJsonKeys.SERVICE_TOPIC, QoS.AT_LEAST_ONCE));
+
+            /* only subscribe to UI events if the app is currently connected */
+            if (appConnected)
+            {
+                topics.Add(new Topic(this.topic + ServerJsonKeys.UI_TOPIC, QoS.AT_LEAST_ONCE));
+            }
+
+            return topics.ToArray();
+        }
+
+        public void onConnected()
+        {
+            Debug.WriteLine("SUCCESS: MQTT CONNECTED");
+            
+            if (isConnected())
+                return;
+
+            setConnectionStatus(MQTTConnectionStatus.CONNECTED);
+
+            /* Accesses the persistence object from the main handler thread */
+
+            //TODO make it async
+            List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
+
+            if (packets != null)
+            {
+                Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
+                sendAllUnsentMessages(packets);
+            }
+        }
+
+        public void onDisconnected()
+        {
+            Debug.WriteLine("OnDisconnected Called");
+            if (mqttConnection != null)
+            {
+                mqttConnection.MqttListener = null;
+                mqttConnection = null;
+            }
+            IpManager.Instance.ResetIp();
+            if (!disconnectExplicitly)
+            {
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                connect();
+            }
+        }
+
+        public void onPublish(String topic, byte[] body)
+        {
+            try
+            {
+                String receivedMessage = Utility.IsGZipHeader(body) ? Utility.GZipDecompress(body) : Encoding.UTF8.GetString(body, 0, body.Length);
+                NetworkManager.Instance.onMessage(receivedMessage);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HikeMqttManager::obPublish:Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
+        IDisposable scheduledConnect = null;
+
+        public void ScheduleConnect(int seconds)
+        {
+            if (scheduledConnect != null)
+                scheduledConnect.Dispose();
+            scheduledConnect = scheduler.Schedule(connect, TimeSpan.FromSeconds(seconds));
+        }
+    }
+}

@@ -16,6 +16,7 @@ using System.Threading;
 using System.Diagnostics;
 using Microsoft.Phone.Tasks;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -197,7 +198,7 @@ namespace windows_client.View
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
             if (_isSelectAllChecked)
-                Analytics.SendClickEvent(HikeConstants.AnalyticsKeys.SELECT_ALL_INVITE);
+                Analytics.SendClickEvent(AnalyticsKeys.SELECT_ALL_INVITE);
 
             string msisdns = string.Empty, toNum = String.Empty;
             JObject obj = new JObject();
@@ -425,7 +426,7 @@ namespace windows_client.View
 
                     bool containsCharacter = false;
 
-                    containsCharacter = Utils.isGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
+                    containsCharacter = Utility.IsGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
                         : cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
 
                     if (containsCharacter)

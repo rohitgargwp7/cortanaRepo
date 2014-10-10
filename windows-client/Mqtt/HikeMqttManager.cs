@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Diagnostics;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.Mqtt
 {
@@ -411,7 +412,7 @@ namespace windows_client.Mqtt
         {
             try
             {
-                String receivedMessage = Utils.IsGZipHeader(body) ? AccountUtils.GZipDecompress(body) : Encoding.UTF8.GetString(body, 0, body.Length);
+                String receivedMessage = Utility.IsGZipHeader(body) ? AccountUtils.GZipDecompress(body) : Encoding.UTF8.GetString(body, 0, body.Length);
                 NetworkManager.Instance.onMessage(receivedMessage);
             }
             catch (Exception ex)

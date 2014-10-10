@@ -28,7 +28,6 @@ namespace windows_client.DbUtils
         public static string FRIENDS_DIRECTORY = "FRIENDS";
         private static object readWriteLock = new object();
 
-
         public static FriendStatusEnum SetFriendStatus(string msisdn, FriendStatusEnum friendStatus)
         {
             lock (readWriteLock)
