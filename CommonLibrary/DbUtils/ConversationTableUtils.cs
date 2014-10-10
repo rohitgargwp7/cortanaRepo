@@ -20,35 +20,6 @@ namespace CommonLibrary.DbUtils
         private static object readWriteLock = new object();
         /* This function gets all the conversations shown on the message list page*/
 
-        public static List<ConversationListObject> GetAllConversations_Ver1000()
-        {
-            List<ConversationListObject> convList = null;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
-                    return null;
-                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
-                if (files == null || files.Length == 0)
-                    return null;
-                convList = new List<ConversationListObject>(files.Length);
-                foreach (string fileName in files)
-                {
-                    using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + fileName, FileMode.Open, FileAccess.Read))
-                    {
-                        using (var reader = new BinaryReader(file))
-                        {
-                            ConversationListObject co = new ConversationListObject();
-                            co.ReadVer_1_0_0_0(reader);
-                            if (IsValidConv(co))
-                                convList.Add(co);
-                        }
-                    }
-                }
-            }
-            convList.Sort();
-            return convList;
-        }
-
         public static ConversationListObject addGroupConversation(ConvMessage convMessage, string groupName)
         {
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
@@ -486,31 +457,6 @@ namespace CommonLibrary.DbUtils
             {
                 Debug.WriteLine("ConversationTableUtils :: IsValidConv : IsValidConv, Exception : " + ex.StackTrace);
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// This functions reads convMap and then store each converstaion in an individual file
-        /// </summary>
-        /// <param name="cObjList"></param>
-        public static void saveConvObjectListIndividual(List<ConversationListObject> cObjList)
-        {
-            if (cObjList == null)
-                return;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                for (int i = 0; i < cObjList.Count; i++)
-                {
-                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + cObjList[i].Msisdn.Replace(":", "_");
-                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
-                    {
-                        using (var writer = new BinaryWriter(file))
-                        {
-                            writer.Seek(0, SeekOrigin.Begin);
-                            cObjList[i].Write(writer);
-                        }
-                    }
-                }
             }
         }
 

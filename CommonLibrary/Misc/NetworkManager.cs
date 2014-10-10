@@ -1948,6 +1948,7 @@ namespace CommonLibrary
                 return null;
 
             JObject data = null;
+
             try
             {
                 data = (JObject)jsonObj[ServerJsonKeys.DATA];

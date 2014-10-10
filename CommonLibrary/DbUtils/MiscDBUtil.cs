@@ -24,7 +24,6 @@ namespace CommonLibrary.DbUtils
         private static object pendingReadWriteLock = new object();
         private static object pendingProfilePicReadWriteLock = new object();
         private static object profilePicLock = new object();
-        private static object statusImageLock = new object();
         private static object attachmentLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
@@ -158,37 +157,6 @@ namespace CommonLibrary.DbUtils
 
         #region STATUS UPDATES
 
-        public static void saveStatusImage(string msisdn, string serverId, byte[] imageBytes)
-        {
-            msisdn = msisdn.Replace(":", "_");
-            serverId = serverId.Replace(":", "_");
-            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-            StoreFileInIsolatedStorage(fullFilePath, imageBytes);
-        }
-
-        public static byte[] GetProfilePicUpdateForID(string msisdn, string serverId)
-        {
-            serverId = serverId.Replace(":", "_");
-            string filePath = PROFILE_PICS + "/" + msisdn + "/" + serverId;
-            byte[] data = null;
-            lock (profilePicLock)
-            {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (myIsolatedStorage.FileExists(filePath))
-                    {
-                        using (IsolatedStorageFileStream stream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
-                        {
-                            data = new byte[stream.Length];
-                            stream.Read(data, 0, data.Length);
-                            stream.Close();
-                        }
-                    }
-                }
-                return data;
-            }
-        }
-
         /// <summary>
         /// This function is used to store profile pics (small) so that same can be used in timelines
         /// </summary>
@@ -222,24 +190,6 @@ namespace CommonLibrary.DbUtils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("MiscDbUtil :: saveProfileImages :saveProfileImages, Exception : " + ex.StackTrace);
-                }
-            }
-        }
-
-        public static void getStatusUpdateImage(string msisdn, string serverId, out byte[] imageBytes, out bool isThumbnail)
-        {
-            lock (statusImageLock)
-            {
-                isThumbnail = false;
-                msisdn = msisdn.Replace(":", "_");
-                serverId = serverId.Replace(":", "_");
-                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-                readFileFromIsolatedStorage(fullFilePath, out imageBytes);
-                if (imageBytes == null || imageBytes.Length == 0)
-                {
-                    isThumbnail = true;
-                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + serverId;
-                    readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
                 }
             }
         }
@@ -443,62 +393,6 @@ namespace CommonLibrary.DbUtils
             }
         }
 
-        public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
-        {
-            filePath = filePath.Replace(":", "_");
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (myIsolatedStorage.FileExists(filePath))
-                {
-                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
-                    {
-                        imageBytes = new byte[fileStream.Length];
-                        // Read the entire file and then close it
-                        fileStream.Read(imageBytes, 0, imageBytes.Length);
-                        fileStream.Close();
-                    }
-                }
-                else
-                {
-                    imageBytes = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Save bytes in Isolated Storage
-        /// </summary>
-        /// <param name="filePath">file path where bytes need to be saved</param>
-        /// <param name="dataBytes">file bytes</param>
-        public static void StoreFileInIsolatedStorage(string filePath, byte[] dataBytes)
-        {
-            filePath = filePath.Replace(":", "_");
-            string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
-            if (dataBytes != null)
-            {
-                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!myIsolatedStorage.DirectoryExists(fileDirectory))
-                    {
-                        myIsolatedStorage.CreateDirectory(fileDirectory);
-                    }
-
-                    if (myIsolatedStorage.FileExists(filePath))
-                    {
-                        myIsolatedStorage.DeleteFile(filePath);
-                    }
-
-                    using (IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(filePath, FileMode.Create, myIsolatedStorage))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(fileStream))
-                        {
-                            writer.Write(dataBytes, 0, dataBytes.Length);
-                        }
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Clear all attachment data
         /// </summary>
@@ -648,7 +542,6 @@ namespace CommonLibrary.DbUtils
                 }
             }
         }
-
 
         public static void SaveFavourites()
         {
@@ -975,6 +868,7 @@ namespace CommonLibrary.DbUtils
         #endregion
 
         #region MESSAGE STATUS CHANGE
+
         /// <summary>
         /// Mark single msg as Sent Confirmed, Sent Socket Written and Sent Delivered
         /// </summary>
