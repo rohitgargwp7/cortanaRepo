@@ -1309,6 +1309,30 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage diwaliSentNudgeImage;
+        public BitmapImage DiwaliSentNudgeImage
+        {
+            get
+            {
+                if (diwaliSentNudgeImage == null)
+                    diwaliSentNudgeImage = new BitmapImage(new Uri("/View/images/diwali_sent_nudge.png", UriKind.Relative));
+
+                return diwaliSentNudgeImage;
+            }
+        }
+
+        private BitmapImage diwaliReceivedNudgeImage;
+        public BitmapImage DiwaliReceivedNudgeImage
+        {
+            get
+            {
+                if (diwaliReceivedNudgeImage == null)
+                    diwaliReceivedNudgeImage = new BitmapImage(new Uri("/View/images/diwali_receive_nudge.png", UriKind.Relative));
+
+                return diwaliReceivedNudgeImage;
+            }
+        }
+
         #endregion
 
         #region Walkie Talkie

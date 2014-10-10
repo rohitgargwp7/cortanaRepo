@@ -601,19 +601,22 @@ namespace windows_client.Model
 
         public Visibility NormalNudgeVisibility
         {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
+            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Collapsed : Visibility.Visible; }
         }
 
         public Visibility SpecialNudgeVisibility
         {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
+            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public BitmapImage SpecialNudgeImage
         {
             get
             {
-                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+                if (App.ViewModel.SelectedBackground!=null && App.ViewModel.SelectedBackground.ID =="20")
+                    return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+
+                return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
             }
         }
 
