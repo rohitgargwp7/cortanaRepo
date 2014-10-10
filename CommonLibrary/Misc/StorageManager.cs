@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonLibrary.StorageManager
+namespace CommonLibrary.Misc
 {
     public class StorageManager
     {

@@ -6,7 +6,6 @@ using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Diagnostics;
-using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -41,8 +40,8 @@ namespace windows_client.Model
                 return;
 
             JObject metadataObject = new JObject();
-            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_TYPE, HikeConstants.AnalyticsKeys.EVENT_TYPE_CLICK);
-            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
+            metadataObject.Add(AnalyticsKeys.EVENT_TYPE, AnalyticsKeys.EVENT_TYPE_CLICK);
+            metadataObject.Add(AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
             dataObj.Add(ServerJsonKeys.METADATA, metadataObject);
@@ -68,7 +67,7 @@ namespace windows_client.Model
                 return;
 
             JObject metadataObject = new JObject();
-            metadataObject.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, key);
+            metadataObject.Add(AnalyticsKeys.EVENT_KEY, key);
 
             JObject dataObj = new JObject();
             dataObj.Add(ServerJsonKeys.METADATA, metadataObject);
@@ -116,8 +115,8 @@ namespace windows_client.Model
                 return;
 
             JObject metadata = new JObject();
-            metadata.Add(HikeConstants.AnalyticsKeys.EVENT_TYPE, eventType);
-            metadata.Add(HikeConstants.AnalyticsKeys.EVENT_KEY, eventKey);
+            metadata.Add(AnalyticsKeys.EVENT_TYPE, eventType);
+            metadata.Add(AnalyticsKeys.EVENT_KEY, eventKey);
             metadata.Add(HikeConstants.NokiaHere.CONTEXT, msisdn);
 
             long ts = TimeUtils.getCurrentTimeStamp();

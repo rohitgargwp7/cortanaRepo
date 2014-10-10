@@ -7,6 +7,7 @@ using windows_client.DbUtils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Controls;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
@@ -2169,7 +2170,7 @@ namespace windows_client.utils
             if (msisdn == HikeInstantiation.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
 
-            if (Utils.IsHikeBotMsg(msisdn))
+            if (Utility.IsHikeBotMsg(msisdn))
                 return HikeLogo;
 
             int index = computeHash(msisdn);
@@ -2494,7 +2495,7 @@ namespace windows_client.utils
                 }
             }
             // do not add default avatar images to cache as they are already chached.
-            if (Utils.isGroupConversation(msisdn))
+            if (Utility.IsGroupConversation(msisdn))
                 return getDefaultGroupAvatar(msisdn, false);
             return getDefaultAvatar(msisdn, false);
         }

@@ -12,6 +12,7 @@ using System.Text;
 using windows_client.Languages;
 using windows_client.DbUtils;
 using CommonLibrary.Lib;
+using CommonLibrary.Utils;
 
 namespace windows_client.Model
 {
@@ -271,7 +272,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (HikeInstantiation.ViewModel.BlockedHashset.Contains(Msisdn) || Utils.isGroupConversation(Msisdn) || Utils.IsHikeBotMsg(Msisdn))
+                if (HikeInstantiation.ViewModel.BlockedHashset.Contains(Msisdn) || Utility.IsGroupConversation(Msisdn) || Utility.IsHikeBotMsg(Msisdn))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -564,7 +565,7 @@ namespace windows_client.Model
                         return empImage;
                     else if (_avatar == null)
                     {
-                        if (Utils.isGroupConversation(_msisdn))
+                        if (Utility.IsGroupConversation(_msisdn))
                             return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn, false);
                         return UI_Utils.Instance.getDefaultAvatar(Msisdn, false);
                     }
@@ -659,7 +660,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.IsHikeBotMsg(_msisdn) || (IsGroupChat && !IsGroupAlive))
+                if (Utility.IsHikeBotMsg(_msisdn) || (IsGroupChat && !IsGroupAlive))
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
@@ -670,7 +671,7 @@ namespace windows_client.Model
         {
             get
             {
-                return Utils.isGroupConversation(_msisdn);
+                return Utility.IsGroupConversation(_msisdn);
             }
         }
 
@@ -847,7 +848,7 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            if (Utils.compareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+            if (Utility.CompareVersion(HikeInstantiation.CurrentVersion, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
             {
                 ReadVer_1_4_0_0(reader);
             }

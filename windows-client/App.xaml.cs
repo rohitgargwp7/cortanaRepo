@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using FileTransfer;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client
 {
@@ -245,7 +246,7 @@ namespace windows_client
 
                     if ((!isStealth || (isStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
                         && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
-                        && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                        && (!Utility.IsGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                     {
                         PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                         mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);
@@ -308,11 +309,11 @@ namespace windows_client
             if (HikeInstantiation.AppSettings.TryGetValue<string>(AppSettingsKeys.FILE_SYSTEM_VERSION, out currentVersion))
                 HikeInstantiation.CurrentVersion = currentVersion;
 
-            HikeInstantiation.LatestVersion = Utils.getAppVersion(); // this will get the new version we are upgrading to
+            HikeInstantiation.LatestVersion = Utility.GetAppVersion(); // this will get the new version we are upgrading to
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(currentVersion) && Utils.compareVersion("2.8.0.1", currentVersion) == 1)
+            if (!String.IsNullOrEmpty(currentVersion) && Utility.CompareVersion("2.8.0.1", currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.PAGE_TO_NAVIGATE_TO] = targetPage;
                 HikeInstantiation.InstantiateClasses(true);
@@ -335,7 +336,7 @@ namespace windows_client
 
                 if ((!IsStealth || (IsStealth && HikeInstantiation.ViewModel.IsHiddenModeActive))
                     && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.NEW_UPDATE_AVAILABLE)
-                    && (!Utils.isGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
+                    && (!Utility.IsGroupConversation(msisdn) || GroupManager.Instance.GetParticipantList(msisdn) != null))
                 {
                     PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.LAUNCH_FROM_PUSH_MSISDN] = msisdn;
                     mapper.UriMappings[0].MappedUri = new Uri("/View/NewChatThread.xaml", UriKind.Relative);

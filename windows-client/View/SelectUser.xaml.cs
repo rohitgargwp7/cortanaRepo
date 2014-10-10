@@ -21,6 +21,7 @@ using System.ComponentModel;
 using windows_client.ViewModel;
 using System.Windows.Media;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.View
 {
@@ -410,7 +411,7 @@ namespace windows_client.View
 
                     bool containsCharacter = false;
 
-                    containsCharacter = Utils.isGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
+                    containsCharacter = Utility.IsGroupConversation(cn.Msisdn) ? cn.Name.ToLower().Contains(charsEntered)
                         : cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered);
 
                     if (containsCharacter)

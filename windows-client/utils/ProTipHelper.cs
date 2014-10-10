@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommonLibrary.Lib;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
@@ -233,9 +234,9 @@ namespace windows_client.utils
 
                     if (CurrentProTip != null)
                     {
-                        var currentFile = CurrentProTip.ImageUrl != null ? PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl) : String.Empty;
+                        var currentFile = CurrentProTip.ImageUrl != null ? PROTIPS_DIRECTORY + "\\" + Utility.ConvertUrlToFileName(CurrentProTip.ImageUrl) : String.Empty;
 
-                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip._id);
+                        var currentTipFile = PROTIPS_DIRECTORY + "\\" + Utility.ConvertUrlToFileName(CurrentProTip._id);
 
                         foreach (var fileName in fileNames)
                         {
@@ -279,7 +280,7 @@ namespace windows_client.utils
 
                             if (CurrentProTip.ImageUrl != null)
                             {
-                                fileName = PROTIPS_DIRECTORY + "\\" + Utils.ConvertUrlToFileName(CurrentProTip.ImageUrl);
+                                fileName = PROTIPS_DIRECTORY + "\\" + Utility.ConvertUrlToFileName(CurrentProTip.ImageUrl);
 
                                 if (store.FileExists(fileName))
                                     store.DeleteFile(fileName);
@@ -336,7 +337,7 @@ namespace windows_client.utils
             source = new BitmapImage();
 
             if (!String.IsNullOrEmpty(ImageUrl))
-                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utils.ConvertUrlToFileName(ImageUrl));
+                ImageLoader.Load(source as BitmapImage, new Uri(ImageUrl), null, Utility.ConvertUrlToFileName(ImageUrl));
 
             return source;
         }

@@ -13,6 +13,7 @@ using System.Diagnostics;
 using windows_client.DbUtils;
 using windows_client.Misc;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.utils
 {
@@ -339,7 +340,7 @@ namespace windows_client.utils
                     data.Add("devicetype", "windows");
                     data[ServerJsonKeys.DEVICE_ID] = Utils.getHashedDeviceId();
                     data[ServerJsonKeys.DEVICE_VERSION] = Utils.getDeviceModel();
-                    data[ServerJsonKeys.APPVERSION] = Utils.getAppVersion();
+                    data[ServerJsonKeys.APPVERSION] = Utility.GetAppVersion();
                     data[ServerJsonKeys.OS_NAME] = "win8";
                     data[ServerJsonKeys.OS_VERSION] = Utils.getOSVersion();
                     string inviteToken = String.Empty;
@@ -468,7 +469,7 @@ namespace windows_client.utils
                     data[ServerJsonKeys.OS_NAME] = "win8";
                     data[ServerJsonKeys.OS_VERSION] = Utils.getOSVersion();
                     data[ServerJsonKeys.DEVICE_VERSION] = Utils.getDeviceModel();
-                    data[ServerJsonKeys.APP_VERSION] = Utils.getAppVersion();
+                    data[ServerJsonKeys.APP_VERSION] = Utility.GetAppVersion();
                     data[ServerJsonKeys.DEVICE_TYPE_KEY] = "windows";
                     break;
                 #endregion
@@ -696,6 +697,7 @@ namespace windows_client.utils
 
             return sb.ToString();
         }
+
         public static byte[] StreamToByteArray(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];

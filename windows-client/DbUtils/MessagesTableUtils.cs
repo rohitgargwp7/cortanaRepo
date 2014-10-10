@@ -13,6 +13,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using CommonLibrary.Lib;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
@@ -259,7 +260,7 @@ namespace windows_client.DbUtils
 
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
+                if (Utility.IsGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -298,7 +299,7 @@ namespace windows_client.DbUtils
                 #region GROUP_JOINED_OR_WAITING
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING) // shows invite msg
                 {
-                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
+                    string[] vals = Utility.SplitUserJoinedMessage(convMsg.Message);
                     List<string> waitingParticipants = null;
                     for (int i = 0; i < vals.Length; i++)
                     {
@@ -344,7 +345,7 @@ namespace windows_client.DbUtils
                 #region USER_OPT_IN
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
                 {
-                    if (Utils.isGroupConversation(obj.Msisdn))
+                    if (Utility.IsGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
@@ -373,7 +374,7 @@ namespace windows_client.DbUtils
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
                     string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
-                    if (Utils.isGroupConversation(obj.Msisdn))
+                    if (Utility.IsGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = string.Format(msgtext, gp.FirstName);
@@ -405,7 +406,7 @@ namespace windows_client.DbUtils
                     string toastText = String.Empty;
 
                     //convMsg.GroupParticipant is null means message sent by urself
-                    if (convMsg.GroupParticipant != null && Utils.isGroupConversation(convMsg.Msisdn))
+                    if (convMsg.GroupParticipant != null && Utility.IsGroupConversation(convMsg.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
 
@@ -446,7 +447,7 @@ namespace windows_client.DbUtils
                 #region Chat Background Changed
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
                 {
-                    if (!Utils.isGroupConversation(from))
+                    if (!Utility.IsGroupConversation(from))
                     {
                         if (from == HikeInstantiation.MSISDN)
                             convMsg.Message = obj.LastMessage = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
@@ -492,8 +493,8 @@ namespace windows_client.DbUtils
             string nameToShow;
             if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
                 nameToShow = HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn].NameToShow;
-            else if (Utils.IsHikeBotMsg(convMsg.Msisdn))
-                nameToShow = Utils.GetHikeBotName(convMsg.Msisdn);
+            else if (Utility.IsHikeBotMsg(convMsg.Msisdn))
+                nameToShow = Utility.GetHikeBotName(convMsg.Msisdn);
             else
             {
                 ContactInfo contactInfo = ContactUtils.GetContactInfo(convMsg.Msisdn);
@@ -503,7 +504,7 @@ namespace windows_client.DbUtils
             #region USER_OPT_IN
             if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                if (Utils.isGroupConversation(convMsg.Msisdn))
+                if (Utility.IsGroupConversation(convMsg.Msisdn))
                 {
                     GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, convMsg.Msisdn);
                     convMsg.Message = String.Format(AppResources.USER_JOINED_GROUP_CHAT, gp.FirstName);
@@ -517,7 +518,7 @@ namespace windows_client.DbUtils
             #region Chat Background Changed
             else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
             {
-                if (!Utils.isGroupConversation(from))
+                if (!Utility.IsGroupConversation(from))
                 {
                     if (from == HikeInstantiation.MSISDN)
                         convMsg.Message = string.Format(AppResources.ChatBg_Changed_Text, AppResources.You_Txt);
@@ -536,7 +537,7 @@ namespace windows_client.DbUtils
             else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
             {
                 string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
-                if (Utils.isGroupConversation(convMsg.Msisdn))
+                if (Utility.IsGroupConversation(convMsg.Msisdn))
                 {
                     GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, convMsg.Msisdn);
                     convMsg.Message = string.Format(msgtext, gp.FirstName);

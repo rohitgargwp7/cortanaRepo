@@ -12,6 +12,7 @@ using FileTransfer;
 using System.Diagnostics;
 using Microsoft.Phone.Net.NetworkInformation;
 using CommonLibrary.Constants;
+using CommonLibrary.Utils;
 
 namespace windows_client.DbUtils
 {
@@ -262,7 +263,7 @@ namespace windows_client.DbUtils
                 string msisdn = (string)vals[0];
                 byte[] fullViewBytes = (byte[])vals[1];
                 byte[] thumbnailBytes = (byte[])vals[2];
-                if (Utils.isGroupConversation(msisdn))
+                if (Utility.IsGroupConversation(msisdn))
                 {
                     string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveLargeImage(grpId, fullViewBytes);
@@ -316,7 +317,7 @@ namespace windows_client.DbUtils
             else if (HikePubSub.DELETE_CONVERSATION == type)
             {
                 string convMsisdn = (string)obj;
-                if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
+                if (Utility.IsGroupConversation(convMsisdn)) // if Group Conversation delete groups too
                 {
                     GroupTableUtils.deleteGroupWithId(convMsisdn); // remove entry from Group Table
                     GroupManager.Instance.GroupParticpantsCache.Remove(convMsisdn);
