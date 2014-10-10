@@ -635,7 +635,7 @@ namespace windows_client.View
             }
 
             #endregion
-            
+
             //File transfer states
             #region AUDIO FT
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
@@ -4711,7 +4711,7 @@ namespace windows_client.View
             bool isAudio = true;
             byte[] fileBytes = null;
             byte[] thumbnail = null;
-            
+
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -5563,6 +5563,9 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            //todo:remove this , added for testing purpose
+            throw new ArgumentOutOfRangeException("self generated exception", (Exception)null);
+
             if (isGroupChat && !isGroupAlive)
                 return;
             if (mUserIsBlocked)
