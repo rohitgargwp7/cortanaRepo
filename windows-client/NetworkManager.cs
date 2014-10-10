@@ -1542,6 +1542,7 @@ namespace windows_client
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
+
                     if (msgId > 0) // delete only if msgId is greater than 0
                     {
                         MessagesTableUtils.deleteMessage(msgId);

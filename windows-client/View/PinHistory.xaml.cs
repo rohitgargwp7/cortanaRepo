@@ -14,6 +14,7 @@ using System.ComponentModel;
 using windows_client.Misc;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -98,7 +99,6 @@ namespace windows_client.View
                 _grpMsisdn = PhoneApplicationService.Current.State[HikeConstants.GC_PIN] as string;
 
             progressBar.Visibility = Visibility.Visible;
-            progressBar.IsIndeterminate = true;
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -111,12 +111,6 @@ namespace windows_client.View
                     }
                 };
             bw.RunWorkerAsync();
-        }
-
-        protected override void OnBackKeyPress(CancelEventArgs e)
-        {
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
-            base.OnBackKeyPress(e);
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -153,10 +147,29 @@ namespace windows_client.View
         public void LoadPinMessages(int messageFetchCount)
         {
             List<ConvMessage> pinMessages = MessagesTableUtils.getPinMessagesForMsisdn(_grpMsisdn, _lastMessageId < 0 ? long.MaxValue : _lastMessageId, messageFetchCount);
+            GroupParticipant gp;
 
             if (pinMessages != null && pinMessages.Count > 0)
             {
                 _lastMessageId = pinMessages[pinMessages.Count - 1].MessageId;
+
+                foreach (ConvMessage convMessage in pinMessages)
+                {
+                    if (!convMessage.IsSent)
+                    {
+                        gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
+                        convMessage.GroupMemberName = gp.FirstName;
+                    }
+
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                    {
+                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+
+                        if (message.Length > 0)
+                            convMessage.Message = message;
+                    }
+                }
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     AddMessagesToPinOC(pinMessages);
@@ -173,26 +186,25 @@ namespace windows_client.View
 
         private void AddMessagesToPinOC(List<ConvMessage> pinMessages)
         {
-            GroupParticipant gp;
-
             foreach (ConvMessage convMessage in pinMessages)
             {
-                if (!convMessage.IsSent)
-                {
-                    gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, _grpMsisdn);
-                    convMessage.GroupMemberName = gp.FirstName;
-                }
-
-                if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
-                {
-                    string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
-
-                    if (message.Length > 0)
-                        convMessage.Message = message;
-                }
-
                 _pinMessages.Add(convMessage);
             }
+        }
+
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            try
+            {
+                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception while removing listener in Pin History "+ex.StackTrace);
+            }
+
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
+            base.OnRemovedFromJournal(e);
         }
 
         private void pinLongList_ItemRealized(object sender, ItemRealizationEventArgs e)
@@ -207,6 +219,64 @@ namespace windows_client.View
                     };
                     bw.RunWorkerAsync();
                 }
+        }
+
+        private void ViewMoreMessage_Clicked(object sender, EventArgs e)
+        {
+            App.ViewModel.ViewMoreMessage_Clicked(sender);
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            ConvMessage msg = ((sender as MenuItem).DataContext as ConvMessage);
+
+            if (msg == null)
+                return;
+            
+            try
+            {
+                _pinMessages.Remove(msg);
+
+                if (_pinMessages.Count == 0)
+                {
+                    nopinImage.Visibility = Visibility.Visible;
+                    pinLongList.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception thrown in PinHistory while deleting Pin from Pin History:" + ex.StackTrace);
+            }
+
+            if (App.ViewModel.ConvMap.ContainsKey(_grpMsisdn)) //checking if Pin is latest, if yes, alter MetaData
+            {
+                JObject metaData = App.ViewModel.ConvMap[_grpMsisdn].MetaData;
+
+                if (metaData != null && metaData[HikeConstants.PINID].Type != JTokenType.Null 
+                    && metaData.Value<long>(HikeConstants.PINID)==msg.MessageId)
+                {
+                    metaData[HikeConstants.PINID] = null;
+                    App.ViewModel.ConvMap[_grpMsisdn].MetaData = metaData;
+                    ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[_grpMsisdn]);
+                }
+            }
+
+            mPubSub.publish(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, msg); //to remove from NewChatThread UI
+            
+            ConversationListObject obj = App.ViewModel.ConvMap[_grpMsisdn];
+            BackgroundWorker deletePinBW = new BackgroundWorker();
+            deletePinBW.DoWork += (s, ev) =>
+                {
+                    if (obj.LastMsgId == msg.MessageId)
+                        ConversationTableUtils.SetSecondLastMessageForConvObject(_grpMsisdn, obj);
+
+                    object[] o = new object[3];
+                    o[0] = msg.MessageId;
+                    o[1] = obj;
+                    o[2] = false; //as Pin is in group, so it will always be false
+                    mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
+                };
+            deletePinBW.RunWorkerAsync();
         }
     }
 }

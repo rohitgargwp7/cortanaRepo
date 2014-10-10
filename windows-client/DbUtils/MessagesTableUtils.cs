@@ -70,6 +70,16 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static ConvMessage getSecondLastMessageForMsisdn(string msisdn)
+        {
+            ConvMessage res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetLastSecondMessageForMsisdn(context, msisdn).FirstOrDefault<ConvMessage>();
+                return res;
+            }
+        }
+
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
@@ -167,8 +177,16 @@ namespace windows_client.DbUtils
             if (convMessage.Message.Length > 4000)
             {
                 SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
-                convMessage.Message = string.Empty;
-                convMessage.MetaDataString = "{lm:true}";
+                convMessage.Message = String.Empty;
+                
+                if (String.IsNullOrEmpty(convMessage.MetaDataString))
+                    convMessage.MetaDataString = "{lm:true}";
+                else
+                {
+                    JObject metaData = JObject.Parse(convMessage.MetaDataString);
+                    metaData[HikeConstants.LONG_MESSAGE] = "true";
+                    convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
+                }
             }
         }
 

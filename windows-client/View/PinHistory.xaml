@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:local="clr-namespace:windows_client.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -32,17 +33,24 @@
                                         VerticalContentAlignment="Center" FontSize="24" 
                                         HorizontalAlignment="Stretch" Height="10"
                                         HorizontalContentAlignment="Center" 
-                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
+                                        IsEnabled="True"/>
             
-            <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
+            <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource PinHistoryContainerStyle}">
-                            <Grid Background="#f6ea8a" HorizontalAlignment="Stretch">
+                            <Grid Background="#fff38f" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
+
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+
                                 <Grid Margin="25,13,25,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -52,9 +60,7 @@
                                     <TextBlock Text="{Binding GCPinMessageSenderName}" Foreground="#92872c"></TextBlock>
                                     <TextBlock  Grid.Column="2" Text="{Binding DirectTimeStampStr}" Foreground="#92872c" HorizontalAlignment="Right"></TextBlock>
                                 </Grid>
-                                <!--<Border  BorderBrush="Brown" BorderThickness="1" >-->
-                                    <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextWrapping="Wrap" />
-                                <!--</Border>-->
+                                <local:MyRichTextBox Grid.Row="1" Margin="13,4,25,17" FontSize="22" FontWeight="Normal" Text="{Binding DispMessage}" Foreground="#645e2d" TextForeground="#645e2d" TextWrapping="Wrap" ViewMoreClicked="ViewMoreMessage_Clicked" LinkifyAll="True" />
                             </Grid>
                         </Border>
                     </DataTemplate>

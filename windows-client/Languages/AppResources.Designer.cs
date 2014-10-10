@@ -4018,6 +4018,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} posted a pin.
+        /// </summary>
+        public static string Posted_A_Pin_Txt {
+            get {
+                return ResourceManager.GetString("Posted_A_Pin_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to what&apos;s up, {0}?.
         /// </summary>
         public static string PostStatus_WhatsUp_Hint_txt {
