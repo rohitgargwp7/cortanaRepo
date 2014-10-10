@@ -30,28 +30,12 @@ namespace windows_client.Model
             set { _lastDeliveredMsgId = value; }
         }
 
-        private long _lastReadMsgId;
-        public long LastReadMsgId
-        {
-            get { return _lastReadMsgId; }
-            set { _lastReadMsgId = value; }
-        }
+        private Dictionary<long, JArray> _dictReadBy = new Dictionary<long, JArray>();
 
-        private JArray _readByArray;
-
-        public JArray ReadByArray
+        public Dictionary<long, JArray> DictReadBy
         {
-            get
-            {
-                if (_readByArray == null)
-                    _readByArray = new JArray();
-                return _readByArray;
-            }
-            set
-            {
-                if (value != _readByArray)
-                    _readByArray = value;
-            }
+            get { return _dictReadBy; }
+            set { _dictReadBy = value; }
         }
 
 

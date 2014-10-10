@@ -764,6 +764,81 @@ namespace windows_client.DbUtils
             return msisdn;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversationId"></param>
+        /// <param name="ids"></param>
+        /// <param name="listExistingIds"></param>
+        /// <returns></returns>
+        public static string updateAllMsgReadStatus(string conversationId, long[] ids, out List<long> listExistingIds)
+        {
+            bool shouldSubmit = false;
+            string msisdn = null;
+            List<ConvMessage> messageList = new List<ConvMessage>();
+            listExistingIds = new List<long>(ids.Length);
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    var convMessage = DbCompiledQueries.GetSentMessagesForMsgIdAndMsisdn(context, ids[i], conversationId).FirstOrDefault<ConvMessage>();
+                    if (convMessage != null)
+                    {
+                        listExistingIds.Add(ids[i]);
+                        messageList.Add(convMessage);
+                    }
+                }
+                foreach (var message in messageList)
+                {
+                    if (message != null)
+                    {
+                        ConvMessage.State newMessageState = ConvMessage.State.SENT_DELIVERED_READ;
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                            newMessageState = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+
+                        if (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE || message.MessageStatus == ConvMessage.State.SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.SENT_DELIVERED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                        {
+                            if (conversationId == null || conversationId == message.Msisdn)
+                            {
+                                message.MessageStatus = newMessageState;
+
+                                msisdn = message.Msisdn;
+                                shouldSubmit = true;
+                            }
+                        }
+                    }
+                }
+
+                if (shouldSubmit)
+                    SubmitWithConflictResolve(context);
+            }
+
+            messageList.Clear();
+
+            return msisdn;
+        }
+
+
+        public static List<long> FilterExistingMsgIds(IEnumerable<long> listIds, string msisdn)
+        {
+            if (listIds == null || listIds.Count() == 0)
+                return null;
+            List<long> listExistingIds = new List<long>(listIds.Count());
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                foreach (long msgId in listIds)
+                {
+                    var convMessage = DbCompiledQueries.GetSentMessagesForMsgIdAndMsisdn(context, msgId, msisdn).FirstOrDefault<ConvMessage>();
+                    if (convMessage != null)
+                    {
+                        listExistingIds.Add(msgId);
+                    }
+                }
+            }
+
+            return listExistingIds;
+        }
+
         public static void deleteAllMessages()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
