@@ -606,16 +606,26 @@ namespace windows_client.Model
 
         public Visibility SpecialNudgeVisibility
         {
-            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Visible : Visibility.Collapsed; }
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        public Visibility DiwaliNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "42" ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public BitmapImage SpecialNudgeImage
         {
             get
             {
-                if (App.ViewModel.SelectedBackground!=null && App.ViewModel.SelectedBackground.ID =="20")
-                    return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+            }
+        }
 
+        public BitmapImage DiwaliNudgeImage
+        {
+            get
+            {
                 return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
             }
         }
@@ -1596,6 +1606,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("NotificationImage");
             NotifyPropertyChanged("NudgeImage");
             NotifyPropertyChanged("SpecialNudgeVisibility");
+            NotifyPropertyChanged("DiwaliNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");
