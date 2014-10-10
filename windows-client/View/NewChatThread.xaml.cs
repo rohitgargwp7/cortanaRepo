@@ -6063,8 +6063,14 @@ namespace windows_client.View
 
         void createPin_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NewPin_Open();
+            if (attachmentMenu.Visibility == Visibility.Visible)
+                attachmentMenu.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+            
             EnableDisableAppBar(false);
+            NewPin_Open();
         }
 
         private void EnableDisableAppBar(bool enable)

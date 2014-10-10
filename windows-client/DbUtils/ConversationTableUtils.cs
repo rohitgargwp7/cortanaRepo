@@ -644,7 +644,6 @@ namespace windows_client.DbUtils
             return convList;
         }
 
-
         /// <summary>
         /// Function for setting second last Message as LastMessage For ConvObject 
         /// ConvObj has not been updated in file in this function
@@ -696,5 +695,6 @@ namespace windows_client.DbUtils
                 }
             }
         }
+    
     }
 }
