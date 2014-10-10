@@ -35,7 +35,7 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="True"/>
             
-            <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding }">
+            <phone:LongListSelector x:Name="pinLongList" ItemRealized="pinLongList_ItemRealized" Style="{StaticResource LongListSelectorWithOverlappingScrollBar}" HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="3" BorderBrush="Black" ItemsSource="{Binding}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource PinHistoryContainerStyle}">
@@ -46,7 +46,7 @@
                                 </Grid.RowDefinitions>
 
                                 <toolkit:ContextMenuService.ContextMenu>
-                                    <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Unloaded="ContextMenu_Unloaded" Loaded="ContextMenu_Loaded">
+                                    <toolkit:ContextMenu Background="Black" IsZoomEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Click="MenuItem_Click_Delete"/>
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>

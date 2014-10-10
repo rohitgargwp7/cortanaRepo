@@ -29,8 +29,6 @@ namespace windows_client.View
         bool _hasMoreMessages = false;              // To avoid multiple DB calls returning empty list
         bool _isFirstLaunch = true;                 // For avoiding loading messages, everytime app is suspended and resumed (No Tombstoning)
 
-        bool _isContextMenuOpen = false;
-
         public PinHistory()
         {
             InitializeComponent();
@@ -115,28 +113,6 @@ namespace windows_client.View
             bw.RunWorkerAsync();
         }
 
-        protected override void OnBackKeyPress(CancelEventArgs e)
-        {
-            if (_isContextMenuOpen)
-            {
-                e.Cancel = true;
-                _isContextMenuOpen = false;
-                return;
-            }
-
-            try
-            {
-                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("While removing listeners from Pin History, stack trace:"+ ex.StackTrace);
-            }
-
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
-            base.OnBackKeyPress(e);
-        }
-
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
@@ -216,6 +192,21 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            try
+            {
+                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception while removing listener in Pin History "+ex.StackTrace);
+            }
+
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GC_PIN);
+            base.OnRemovedFromJournal(e);
+        }
+
         private void pinLongList_ItemRealized(object sender, ItemRealizationEventArgs e)
         {
             if (_hasMoreMessages && pinLongList.ItemsSource != null && pinLongList.ItemsSource.Count > 0)
@@ -286,16 +277,6 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
                 };
             deletePinBW.RunWorkerAsync();
-        }
-
-        private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
-        {
-            _isContextMenuOpen = true;
-        }
-
-        private void ContextMenu_Unloaded(object sender, RoutedEventArgs e)
-        {
-            _isContextMenuOpen = false;
         }
     }
 }
