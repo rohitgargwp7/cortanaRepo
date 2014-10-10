@@ -606,7 +606,6 @@
     <Content Include="View\images\chatBackgrounds\Background\cbCelebration.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbChatty.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbCreepy.jpg" />
-    <Content Include="View\images\chatBackgrounds\Background\cbFifa.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbFloral.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbForest.jpg" />
     <Content Include="View\images\chatBackgrounds\Background\cbGeometric1.jpg" />
@@ -634,7 +633,6 @@
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbCreepy.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbDefaultDark.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbDefaultLight.jpg" />
-    <Content Include="View\images\chatBackgrounds\Thumbnail\cbFifa.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbFloral.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbForest.jpg" />
     <Content Include="View\images\chatBackgrounds\Thumbnail\cbFriends.jpg" />
