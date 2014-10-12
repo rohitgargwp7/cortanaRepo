@@ -236,6 +236,7 @@
     <Compile Include="NetworkManager.cs" />
     <Compile Include="utils\MD5.cs" />
     <Compile Include="utils\EmailHelper.cs" />
+    <Compile Include="utils\ExceptionLoggingHelper.cs" />
     <Compile Include="utils\ServerTips\TipInfo.cs" />
     <Compile Include="utils\ServerTips\TipManager.cs" />
     <Compile Include="StorageManager\StorageManager.cs" />
