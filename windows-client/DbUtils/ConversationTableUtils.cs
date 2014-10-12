@@ -179,7 +179,8 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMessage.Message;
                 }
             }
-
+            if (obj.LastMessage.Length > 100)
+                obj.LastMessage = obj.LastMessage.Substring(0, 100);
             obj.LastMsgId = convMessage.MessageId;
 
             //saveNewConv(obj);
@@ -650,7 +651,7 @@ namespace windows_client.DbUtils
         /// </summary>
         /// <param name="msisdn"></param>
         /// <param name="obj"></param>
-        public static void SetSecondLastMessageForConvObject(string msisdn,ConversationListObject obj)
+        public static void SetSecondLastMessageForConvObject(string msisdn, ConversationListObject obj)
         {
             ConvMessage cm = MessagesTableUtils.getSecondLastMessageForMsisdn(msisdn);
 
@@ -695,6 +696,6 @@ namespace windows_client.DbUtils
                 }
             }
         }
-    
+
     }
 }

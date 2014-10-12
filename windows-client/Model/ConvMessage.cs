@@ -545,6 +545,15 @@ namespace windows_client.Model
             }
         }
 
+        /// <summary>
+        /// to store temporarily long message while inserting empty message in db
+        /// </summary>
+        public string TempLongMessage
+        {
+            get;
+            set;
+        }
+
         public string DispMessage
         {
             get

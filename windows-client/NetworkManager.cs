@@ -174,31 +174,9 @@ namespace windows_client
                     if (obj == null)
                         return;
 
-                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
-                        || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
-                    {
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                    }
-                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                    {
-                        string sendersMsisdn = String.Empty;
+                    HandleFTForMessageRecieved(convMessage);
 
-                        if (obj.IsGroupChat)
-                            sendersMsisdn = convMessage.GroupParticipant;
-                        else
-                            sendersMsisdn = convMessage.Msisdn;
-
-                        if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
-                            FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-
-                    }
-
-                    if (convMessage.FileAttachment != null)
-                    {
-                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    }
                     object[] vals = new object[3];
-
                     vals[0] = convMessage;
                     vals[1] = obj;
                     vals[2] = isPush;
@@ -2005,6 +1983,13 @@ namespace windows_client
                                 bool updateConversation = false;
                                 foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
                                 {
+                                    //handle long message
+                                    if (!string.IsNullOrEmpty(convMessage.TempLongMessage))
+                                    {
+                                        convMessage.Message = convMessage.TempLongMessage;
+                                        convMessage.TempLongMessage = null;
+                                    }
+
                                     if (convMessage.StatusUpdateObj != null)
                                     {
                                         convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
@@ -2020,28 +2005,7 @@ namespace windows_client
                                     }
                                     else
                                     {
-                                        if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
-                      || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
-                                        {
-                                            convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                                        }
-                                        else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                                        {
-                                            string sendersMsisdn = String.Empty;
-
-                                            if (Utils.isGroupConversation(convMessage.Msisdn))
-                                                sendersMsisdn = convMessage.GroupParticipant;
-                                            else
-                                                sendersMsisdn = convMessage.Msisdn;
-
-                                            if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
-                                                FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                                        }
-
-                                        if (convMessage.FileAttachment != null)
-                                        {
-                                            MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                                        }
+                                        HandleFTForMessageRecieved(convMessage);
                                     }
                                 }
                                 ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
@@ -2095,6 +2059,32 @@ namespace windows_client
             //{
             //    Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
             //}
+        }
+
+        private static void HandleFTForMessageRecieved(ConvMessage convMessage)
+        {
+            if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+|| convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+            {
+                convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
+            }
+            else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+            {
+                string sendersMsisdn = String.Empty;
+
+                if (Utils.isGroupConversation(convMessage.Msisdn))
+                    sendersMsisdn = convMessage.GroupParticipant;
+                else
+                    sendersMsisdn = convMessage.Msisdn;
+
+                if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
+                    FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+            }
+
+            if (convMessage.FileAttachment != null)
+            {
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+            }
         }
 
         /// <summary>

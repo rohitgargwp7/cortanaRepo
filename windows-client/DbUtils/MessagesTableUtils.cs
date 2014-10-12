@@ -93,8 +93,6 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static bool addMessage(ConvMessage convMessage)
         {
-            string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
-            SaveLongMessage(convMessage);
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 if (convMessage.MappedMessageId > 0)
@@ -115,7 +113,6 @@ namespace windows_client.DbUtils
                     return false;
                 }
             }
-            convMessage.Message = message;
             return true;
         }
 
@@ -174,19 +171,17 @@ namespace windows_client.DbUtils
         }
         private static void SaveLongMessage(ConvMessage convMessage)
         {
-            if (convMessage.Message.Length > 4000)
+            convMessage.TempLongMessage = convMessage.Message;
+            SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
+            convMessage.Message = String.Empty;
+
+            if (String.IsNullOrEmpty(convMessage.MetaDataString))
+                convMessage.MetaDataString = "{lm:true}";
+            else
             {
-                SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
-                convMessage.Message = String.Empty;
-                
-                if (String.IsNullOrEmpty(convMessage.MetaDataString))
-                    convMessage.MetaDataString = "{lm:true}";
-                else
-                {
-                    JObject metaData = JObject.Parse(convMessage.MetaDataString);
-                    metaData[HikeConstants.LONG_MESSAGE] = "true";
-                    convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
-                }
+                JObject metaData = JObject.Parse(convMessage.MetaDataString);
+                metaData[HikeConstants.LONG_MESSAGE] = "true";
+                convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
         }
 
@@ -247,12 +242,19 @@ namespace windows_client.DbUtils
             UpdateConvMessageText(convMsg, from);
             if (addMessage(convMsg))
             {
+                //should be done before updating conversation
+                if (!string.IsNullOrEmpty(convMsg.TempLongMessage))
+                {
+                    convMsg.Message = convMsg.TempLongMessage;
+                    convMsg.TempLongMessage = null;
+                }
                 ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, imageBytes, from);
                 if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     ProcessConversationMetadata(convMsg, cobj);
                     ConversationTableUtils.updateConversation(cobj);
                 }
+
                 return cobj;
             }
             return null;
@@ -491,6 +493,9 @@ namespace windows_client.DbUtils
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
 
+                if (obj.LastMessage.Length > 100)
+                    obj.LastMessage = obj.LastMessage.Substring(0, 100);
+
                 obj.LastMsgId = convMsg.MessageId;
                 ConversationTableUtils.updateConversation(obj);
             }
@@ -563,7 +568,12 @@ namespace windows_client.DbUtils
                 }
             }
             #endregion
-
+            #region handle long message
+            if (convMsg.Message.Length > 4000)
+            {
+                SaveLongMessage(convMsg);
+            }
+            #endregion
         }
 
         /// <summary>
