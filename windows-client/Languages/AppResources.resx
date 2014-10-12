@@ -2332,4 +2332,14 @@ Download it like asap from http://hike.in!</value>
   <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
     <value>Hide private chats on app exit</value>
   </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} posted a pin</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>Oops..</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>Something went wrong in hike. Please tap ok to email the crash report. We'll try and fix it.</value>
+  </data>
 </root>

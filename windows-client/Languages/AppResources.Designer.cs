@@ -1984,6 +1984,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Oops...
+        /// </summary>
+        public static string ExceptionCaption_Text {
+            get {
+                return ResourceManager.GetString("ExceptionCaption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong in hike. Please tap ok to email the crash report. We&apos;ll try and fix it..
+        /// </summary>
+        public static string ExceptionMessage_Text {
+            get {
+                return ResourceManager.GetString("ExceptionMessage_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to express yourself.
         /// </summary>
         public static string Express_Yourself_Txt {
@@ -4014,6 +4032,15 @@ namespace windows_client.Languages {
         public static string Please_Try_Again_Txt {
             get {
                 return ResourceManager.GetString("Please_Try_Again_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} posted a pin.
+        /// </summary>
+        public static string Posted_A_Pin_Txt {
+            get {
+                return ResourceManager.GetString("Posted_A_Pin_Txt", resourceCulture);
             }
         }
         

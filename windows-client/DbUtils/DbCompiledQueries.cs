@@ -236,11 +236,11 @@ namespace windows_client.DbUtils
             {
                 Func<HikeChatsDb, string, long, int, IQueryable<ConvMessage>> q =
                 CompiledQuery.Compile<HikeChatsDb, string, long, int, IQueryable<ConvMessage>>
-                ((HikeChatsDb hdc, string myMsisdn,long lastmessageId,int count) =>
+                ((HikeChatsDb hdc, string myMsisdn, long lastmessageId, int count) =>
                     (from o in hdc.messages
-                    where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1") && o.MessageId < lastmessageId
-                    orderby o.MessageId descending
-                    select o).Take(count));
+                     where o.Msisdn == myMsisdn && o.MetaDataString.Contains("\"pin\":1") && o.MessageId < lastmessageId
+                     orderby o.MessageId descending
+                     select o).Take(count));
                 return q;
             }
         }
@@ -256,6 +256,21 @@ namespace windows_client.DbUtils
                     where o.Msisdn == myMsisdn
                     orderby o.MessageId
                     select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, string, IQueryable<ConvMessage>> GetLastSecondMessageForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, string myMsisdn) =>
+                    (from o in hdc.messages
+                    where o.Msisdn == myMsisdn
+                    orderby o.MessageId descending
+                    select o).Skip(1).Take(1));
                 return q;
             }
         }
@@ -303,6 +318,20 @@ namespace windows_client.DbUtils
             }
         }
 
+
+        public static Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> GetSentMessagesForMsgIdAndMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> q =
+                     CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
+                     ((HikeChatsDb hdc, long id, string msisdn) =>
+                         from o in hdc.messages
+                         where o.MessageId == id && o.Msisdn == msisdn && o.MessageStatus != ConvMessage.State.UNKNOWN && o.MessageStatus != ConvMessage.State.RECEIVED_READ && o.MessageStatus != ConvMessage.State.RECEIVED_UNREAD
+                         select o);
+                return q;
+            }
+        }
         /// <summary>
         /// Get all messages which are sent but not delivered for msisdn for maximum msg id
         /// </summary>

@@ -427,7 +427,7 @@ namespace windows_client
         public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
         public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
         public static readonly string TOAST_FOR_FILE = "Sent you a file";
-        public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+        public static readonly string TOAST_FOR_PIN = "Posted a pin";
         #endregion
 
         #region ANALYTICS EVENTS KEYS
@@ -571,6 +571,19 @@ namespace windows_client
             public static readonly string CGEN_MAP = "map";
         }
 
+
+        public static class EmailException
+        {
+            public static readonly string USER_COMMENTS = "User Comments:";
+            public static readonly string DEFAULT_USER_COMMENT = "<Add any extra detail you'd like to here, or you can hit send now, the technical information below will help>";
+            public static readonly string DEVICE_DETAILS = "==Device Details==";
+            public static readonly string TECHNICAL_DETAILS= "==Auto generated technical details==";
+
+            public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "wp@hike.in;support@hike.in";
+            public static readonly string EXCEIPTION_REPORT_SUBJECT = " WP Bug Report: ";
+
+            public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
+        }
         #region Server URL Constants
         public static class ServerUrls
         {

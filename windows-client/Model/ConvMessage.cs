@@ -422,15 +422,9 @@ namespace windows_client.Model
         {
             get
             {
-                return (_messageStatus == State.SENT_UNCONFIRMED ||
-                        _messageStatus == State.SENT_CONFIRMED ||
-                        _messageStatus == State.SENT_SOCKET_WRITE ||
-                        _messageStatus == State.SENT_DELIVERED ||
-                        _messageStatus == State.SENT_DELIVERED_READ ||
-                        _messageStatus == State.SENT_FAILED ||
-                        _messageStatus == State.FORCE_SMS_SENT_CONFIRMED ||
-                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED ||
-                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED_READ);
+                return (_messageStatus != State.UNKNOWN &&
+                        _messageStatus != State.RECEIVED_READ &&
+                        _messageStatus != State.RECEIVED_UNREAD);
             }
         }
 
@@ -511,6 +505,14 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinSenderPostedAPin
+        {
+            get
+            {
+                return String.Format(AppResources.Posted_A_Pin_Txt, GCPinMessageSenderName);
+            }
+        }
+
         public string DirectTimeStampStr
         {
             get
@@ -541,6 +543,15 @@ namespace windows_client.Model
             {
                 return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
             }
+        }
+
+        /// <summary>
+        /// to store temporarily long message while inserting empty message in db
+        /// </summary>
+        public string TempLongMessage
+        {
+            get;
+            set;
         }
 
         public string DispMessage
@@ -593,7 +604,7 @@ namespace windows_client.Model
 
         public Visibility NormalNudgeVisibility
         {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
+            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Collapsed : Visibility.Visible; }
         }
 
         public Visibility SpecialNudgeVisibility
@@ -601,11 +612,24 @@ namespace windows_client.Model
             get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
         }
 
+        public Visibility DiwaliNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "42" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
         public BitmapImage SpecialNudgeImage
         {
             get
             {
                 return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+            }
+        }
+
+        public BitmapImage DiwaliNudgeImage
+        {
+            get
+            {
+                return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
             }
         }
 
@@ -1524,7 +1548,7 @@ namespace windows_client.Model
         {
             get
             {
-                return (App.ViewModel.SelectedBackground!=null && App.ViewModel.SelectedBackground.IsDefault) ? 0.1 : 0.2;
+                return (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault) ? 0.1 : 0.2;
             }
         }
 
@@ -1585,6 +1609,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("NotificationImage");
             NotifyPropertyChanged("NudgeImage");
             NotifyPropertyChanged("SpecialNudgeVisibility");
+            NotifyPropertyChanged("DiwaliNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");
@@ -1845,7 +1870,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged ,PropertyName:{0}, Exception :{1}, Stacktrace:{2} ", propertyName, ex.Message, ex.StackTrace);
                     }
                 });
             }

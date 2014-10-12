@@ -20,6 +20,10 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Text;
+using Microsoft.Phone.Tasks;
+using windows_client.Languages;
+using System.Threading.Tasks;
 
 namespace windows_client
 {
@@ -67,6 +71,7 @@ namespace windows_client
         public static readonly string AUTO_SAVE_PHOTO = "autoSavePhoto";
         public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
 
+        public static readonly string SHOW_EXCEPTION_MESSAGE = "showExcp";
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
@@ -580,7 +585,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.0.1", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.0.2", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -683,6 +688,9 @@ namespace windows_client
             }
             MQttLogging.LogWriter.Instance.WriteToLog(string.Format("Unhandled Exception:{0}, StackTrace:{1}", e.ExceptionObject.Message, e.ExceptionObject.StackTrace));
 
+            ExceptionLoggingHelper.WriteExceptionToFile(e.ExceptionObject.Message, e.ExceptionObject.StackTrace);
+            WriteToIsoStorageSettings(SHOW_EXCEPTION_MESSAGE, true);
+
             if (!IS_MARKETPLACE)
             {
                 //Running on a device / emulator without debugging
@@ -743,6 +751,12 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Process Exception Stack Trace
+            if (App.appSettings.Contains(App.SHOW_EXCEPTION_MESSAGE))
+            {
+                ShowExceptionMessageBox();
+            }
+            #endregion
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
@@ -965,6 +979,50 @@ namespace windows_client
                 App.RemoveKeyFromAppSettings(App.AUTO_SAVE_MEDIA);
             }
             #endregion
+        }
+
+        private static void ShowExceptionMessageBox()
+        {
+            var messageBoxResult = MessageBox.Show(AppResources.ExceptionMessage_Text, AppResources.ExceptionCaption_Text, MessageBoxButton.OKCancel);
+            if (messageBoxResult == MessageBoxResult.OK)
+            {
+                EmailExceptionDetails();
+            }
+            App.RemoveKeyFromAppSettings(App.SHOW_EXCEPTION_MESSAGE);
+        }
+
+        private async static void EmailExceptionDetails()
+        {
+            await Task.Delay(1);
+            string[] exceptions = ExceptionLoggingHelper.GetAllExceptions();
+
+            EmailComposeTask task = new EmailComposeTask();
+            task.To = HikeConstants.EmailException.EXCEIPTION_REPORT_TO_EMAILID;
+            task.Subject = HikeConstants.EmailException.EXCEIPTION_REPORT_SUBJECT + App.MSISDN;
+
+            StringBuilder emailBodyText = new StringBuilder();
+            emailBodyText.Append("\n").
+                Append(HikeConstants.EmailException.USER_COMMENTS).Append("\n").
+                Append(HikeConstants.EmailException.DEFAULT_USER_COMMENT).Append("\n\n").
+                Append(HikeConstants.EmailException.DEVICE_DETAILS).Append("\n").
+                Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append("\n").
+                Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").
+                Append(AppResources.Help_EmailPhoneNo).Append(App.MSISDN).Append("\n").
+                Append(AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append("\n").
+                Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator).Append("\n\n").
+                Append(HikeConstants.EmailException.TECHNICAL_DETAILS).Append("\n");
+
+            if (exceptions != null && exceptions.Length > 0)
+            {
+                for (int i = exceptions.Length - 1; i > -1; i--)
+                {
+                    emailBodyText.Append(exceptions[i]).Append("\n").Append("----------------------------").Append("\n\n");
+                }
+            }
+
+            task.Body = emailBodyText.Length > HikeConstants.EmailException.EMAIL_LIMIT ? emailBodyText.ToString().Substring(0, HikeConstants.EmailException.EMAIL_LIMIT) : emailBodyText.ToString();
+            task.Show();
+            ExceptionLoggingHelper.DeleteAllExceptions();
         }
 
         public static void createDatabaseAsync()
