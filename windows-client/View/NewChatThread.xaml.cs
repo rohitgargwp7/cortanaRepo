@@ -5563,9 +5563,6 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //todo:remove this , added for testing purpose
-            throw new ArgumentOutOfRangeException("self generated exception", (Exception)null);
-
             if (isGroupChat && !isGroupAlive)
                 return;
             if (mUserIsBlocked)
