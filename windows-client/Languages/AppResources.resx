@@ -2332,4 +2332,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
     <value>Hide private chats on app exit</value>
   </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} posted a pin</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
 </root>

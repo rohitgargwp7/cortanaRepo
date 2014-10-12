@@ -643,5 +643,58 @@ namespace windows_client.DbUtils
             convList.Sort();
             return convList;
         }
+
+        /// <summary>
+        /// Function for setting second last Message as LastMessage For ConvObject 
+        /// ConvObj has not been updated in file in this function
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="obj"></param>
+        public static void SetSecondLastMessageForConvObject(string msisdn,ConversationListObject obj)
+        {
+            ConvMessage cm = MessagesTableUtils.getSecondLastMessageForMsisdn(msisdn);
+
+            if (cm == null)
+            {
+                obj.LastMessage = String.Empty;
+                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+            }
+            else
+            {
+                obj.LastMessage = cm.Message;
+                obj.LastMsgId = cm.MessageId;
+                obj.MessageStatus = cm.MessageStatus;
+
+                if (cm.FileAttachment != null)
+                {
+                    if (cm.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        obj.LastMessage = AppResources.Image_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        obj.LastMessage = AppResources.Audio_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        obj.LastMessage = AppResources.Video_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        obj.LastMessage = AppResources.ContactTransfer_Text;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        obj.LastMessage = AppResources.Location_Txt;
+                    else
+                        obj.LastMessage = AppResources.UnknownFile_txt;
+
+                    obj.TimeStamp = cm.Timestamp;
+                }
+                else // check here nudge , notification , status update
+                {
+                    if (!String.IsNullOrEmpty(cm.MetaDataString))
+                    {
+                        // NUDGE
+                        if (cm.MetaDataString.Contains(HikeConstants.POKE))
+                            obj.LastMessage = AppResources.Nudge;
+                        else // NOTIFICATION AND NORMAL MSGS
+                            obj.LastMessage = cm.Message;
+                    }
+                }
+            }
+        }
+    
     }
 }

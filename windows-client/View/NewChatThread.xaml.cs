@@ -81,6 +81,7 @@ namespace windows_client.View
         private bool showNoSmsLeftOverlay = false;
         private JObject groupCreateJson = null;
         private bool _isNewPin = false;
+        private bool _isPinAlter = true;            //this value is that state of Pin doesn't change while tapping header
         private ConvMessage lastPinConvMsg;
         private bool _isOnPage = true;
 
@@ -257,8 +258,16 @@ namespace windows_client.View
 
         private void gcPin_LostFocus(object sender, EventArgs e)
         {
-            if (_isNewPin)
-                NewPin_Close();
+            if (_isPinAlter)
+            {
+                if (_isNewPin)
+                    NewPin_Close();
+            }
+            else
+            {
+                _isPinAlter = true;
+                gcPin.newPinTextBox.Focus();
+            }
         }
 
         void gcPin_RightIconClicked(object sender, EventArgs e)
@@ -1195,7 +1204,15 @@ namespace windows_client.View
         {
             if (lastPinConvMsg != null)
             {
-                gcPin.UpdateContent(lastPinConvMsg.GCPinMessageSenderName, lastPinConvMsg.DispMessage);
+                if (!String.IsNullOrEmpty(lastPinConvMsg.MetaDataString) && lastPinConvMsg.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                {
+                    string message = MessagesTableUtils.ReadLongMessageFile(lastPinConvMsg.Timestamp, lastPinConvMsg.Msisdn);
+
+                    if (message.Length > 0)
+                        lastPinConvMsg.Message = message;
+                }
+
+                gcPin.UpdateContent(lastPinConvMsg.GCPinMessageSenderName, lastPinConvMsg.Message);
                 gcPin.IsShow(false, true);
             }
         }
@@ -1661,8 +1678,10 @@ namespace windows_client.View
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
-                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
+
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
@@ -2632,6 +2651,13 @@ namespace windows_client.View
                         convMessage.StatusUpdateImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
                     }
 
+                    if (convMessage.MetaDataString != null && convMessage.MetaDataString.Contains(HikeConstants.LONG_MESSAGE))
+                    {
+                        string message = MessagesTableUtils.ReadLongMessageFile(convMessage.Timestamp, convMessage.Msisdn);
+                        if (message.Length > 0)
+                            convMessage.Message = message;
+                    }
+
                     ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
 
@@ -2682,6 +2708,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.LAST_SEEN, this);
             mPubSub.addListener(HikePubSub.CHAT_BACKGROUND_REC, this);
+            mPubSub.addListener(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, this);
         }
 
         private void removeListeners()
@@ -2703,6 +2730,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
                 mPubSub.removeListener(HikePubSub.LAST_SEEN, this);
                 mPubSub.removeListener(HikePubSub.CHAT_BACKGROUND_REC, this);
+                mPubSub.removeListener(HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC, this);
             }
             catch (Exception ex)
             {
@@ -3301,13 +3329,12 @@ namespace windows_client.View
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
-                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                    || lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     obj.LastMessage = lastMessageBubble.Message;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.Timestamp;
-                    obj.MessageStatus = lastMessageBubble.MessageStatus;
-
                 }
                 else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
@@ -4101,14 +4128,13 @@ namespace windows_client.View
                         msgids[i] = convMessage.MessageId;
 
                         if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
-                        {
                             ids.Add(Convert.ToString(convMessage.MappedMessageId));
-                        }
                         else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                         {
                             GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMessage.GroupParticipant, mContactNumber);
                             convMessage.GroupMemberName = gp.FirstName;
                             pinMessage = convMessage;
+                            ids.Add(Convert.ToString(convMessage.MappedMessageId));
                         }
 
                         if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
@@ -4169,12 +4195,14 @@ namespace windows_client.View
                                     ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
                                 }
 
-                                if (!_isNewPin)
-                                    gcPin.IsShow(false, true);
                                 gcPin.SetUnreadPinCount((int)metadata[HikeConstants.UNREADPINS]);
                             }
+
+                            if (!_isNewPin)
+                                gcPin.IsShow(false, true);
                         }
                     });
+
                     if (ids.Count > 0)
                     {
                         JObject jobj = new JObject();
@@ -4727,6 +4755,45 @@ namespace windows_client.View
                     });
                 }
             }
+            #endregion
+
+            #region Pin Message Deleted From Pin History
+
+            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC )
+            {
+                if (obj is ConvMessage)
+                {
+                    ConvMessage msg = obj as ConvMessage;
+
+                    if (msg != null && msg.Msisdn == mContactNumber)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            try
+                            {
+                                ocMessages.Remove(msg);
+
+                                //For removing Pin User Control
+                                if (isGroupChat && msg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                                {
+                                    JObject metaData = App.ViewModel.ConvMap[mContactNumber].MetaData;
+
+                                    if (metaData != null && metaData[HikeConstants.PINID].Type == JTokenType.Null)
+                                        gcPin.IsShow(false, false);
+
+                                    tipControl.Visibility = Visibility.Visible;
+                                }
+                                
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Exception thrown in NewChat Thread while deleting Pin from Pin History:" + ex.StackTrace);
+                            }
+                        });
+                    }
+                }
+            }
+
             #endregion
         }
 
@@ -5901,7 +5968,10 @@ namespace windows_client.View
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
                 CancelBackgroundChange();
             else
+            {
+                gcPin.EmptyPinText();
                 NewPin_Close();
+            }
         }
 
         private void CancelBackgroundChange()
@@ -5993,8 +6063,14 @@ namespace windows_client.View
 
         void createPin_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NewPin_Open();
+            if (attachmentMenu.Visibility == Visibility.Visible)
+                attachmentMenu.Visibility = Visibility.Collapsed;
+
+            if (emoticonPanel.Visibility == Visibility.Visible)
+                emoticonPanel.Visibility = Visibility.Collapsed;
+            
             EnableDisableAppBar(false);
+            NewPin_Open();
         }
 
         private void EnableDisableAppBar(bool enable)
@@ -6025,8 +6101,11 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 SendPinMsg(convMessage);
 
+                gcPin.EmptyPinText();
+
                 tipControl.Visibility = Visibility.Collapsed;
                 gcPin.IsShow(false, true, true);
+                _isNewPin = false;
 
                 chatThemeHeader.Visibility = Visibility.Collapsed;
                 userHeader.Visibility = Visibility.Visible;
@@ -6071,6 +6150,7 @@ namespace windows_client.View
                 }
 
                 _isNewPin = false;
+                _isPinAlter = true;
 
                 userHeader.Visibility = Visibility.Visible;
                 chatThemeHeader.Visibility = Visibility.Collapsed;
@@ -7649,11 +7729,6 @@ namespace windows_client.View
         }
         #endregion
 
-        private void newPinCancel_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NewPin_Close();
-        }
-
         #region SERVER TIPS
 
         void InitializeToolTipControl(ImageSource leftIconSource, ImageSource rightIconSource, string headerText, string bodyText,
@@ -7799,5 +7874,10 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/PinHistory.xaml", UriKind.Relative));
         }
 
+        private void chatThemeHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (_isNewPin)
+                _isPinAlter = false;
+        }
     }
 }

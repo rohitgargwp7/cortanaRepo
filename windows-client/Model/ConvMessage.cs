@@ -505,6 +505,14 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinSenderPostedAPin
+        {
+            get
+            {
+                return String.Format(AppResources.Posted_A_Pin_Txt, GCPinMessageSenderName);
+            }
+        }
+
         public string DirectTimeStampStr
         {
             get
@@ -587,7 +595,7 @@ namespace windows_client.Model
 
         public Visibility NormalNudgeVisibility
         {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
+            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Collapsed : Visibility.Visible; }
         }
 
         public Visibility SpecialNudgeVisibility
@@ -595,11 +603,24 @@ namespace windows_client.Model
             get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
         }
 
+        public Visibility DiwaliNudgeVisibility
+        {
+            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "42" ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
         public BitmapImage SpecialNudgeImage
         {
             get
             {
                 return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+            }
+        }
+
+        public BitmapImage DiwaliNudgeImage
+        {
+            get
+            {
+                return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
             }
         }
 
@@ -1579,6 +1600,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("NotificationImage");
             NotifyPropertyChanged("NudgeImage");
             NotifyPropertyChanged("SpecialNudgeVisibility");
+            NotifyPropertyChanged("DiwaliNudgeVisibility");
             NotifyPropertyChanged("NormalNudgeVisibility");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");

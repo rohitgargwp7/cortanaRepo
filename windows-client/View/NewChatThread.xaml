@@ -118,7 +118,7 @@
                             </Button>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="chatThemeHeader" Margin="12" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                    <Grid x:Name="chatThemeHeader" Margin="12" Visibility="Collapsed" HorizontalAlignment="Stretch" Tap="chatThemeHeader_Tap">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -141,7 +141,7 @@
             </StackPanel>
         </Grid>
 
-        <local:PinUC x:Name="gcPin" LostFocus="gcPin_LostFocus" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="66" MaxHeight="85" VerticalAlignment="Top" />
+        <local:PinUC x:Name="gcPin" Canvas.ZIndex="2" Grid.Row="1" Visibility="Collapsed" MinHeight="62" MaxHeight="85" VerticalAlignment="Top" />
 
         <Grid x:Name="tipControl" Grid.Row="1" Margin="0,-1,0,0" Canvas.ZIndex="1">
             <local:ToolTipsUC x:Name="chatScreenToolTip" ControlBackgroundColor="{StaticResource TipGreen}" VerticalAlignment="Top" />
@@ -486,6 +486,7 @@
                                             </TextBlock>
                                             <Image Grid.Row="1" Margin="0,0,0,10" Visibility="{Binding NormalNudgeVisibility}" Height="40" HorizontalAlignment="Left" Source="{Binding NudgeImage}"/>
                                             <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="65" Stretch="Uniform" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
+                                            <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="65" Stretch="Uniform" Source="{Binding DiwaliNudgeImage}" Visibility="{Binding DiwaliNudgeVisibility}"/>
                                             <Grid Grid.Row="2" HorizontalAlignment="Left" Margin="5,12">
                                                 <Border  CornerRadius="4" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Margin="5,0" HorizontalAlignment="Center" FontSize="18" FontWeight="Thin" Foreground="{Binding MessageTextForeGround}"/>
@@ -931,6 +932,7 @@
                                             </toolkit:ContextMenuService.ContextMenu>
                                             <Image Height="40" Margin="0,0,0,10" Visibility="{Binding NormalNudgeVisibility}" HorizontalAlignment="Right" Source="{Binding NudgeImage}"/>
                                             <Image Height="65" Stretch="Uniform" Margin="0,0,0,10" HorizontalAlignment="Right" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
+                                            <Image Height="65" Stretch="Uniform" Margin="0,0,0,10" HorizontalAlignment="Right" Source="{Binding DiwaliNudgeImage}" Visibility="{Binding DiwaliNudgeVisibility}"/>
                                             <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="5,12">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1122,7 +1124,7 @@
                             <templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                                 <DataTemplate>
                                     <Grid Margin="0,10" HorizontalAlignment="Stretch" Tap="ChatMessage_Tapped">
-                                        <Border Background="Black" Opacity="0.2"/>
+                                        <Border Background="Black" Opacity="{Binding BorderBGOpacity}"/>
                                         <Grid Margin="5,10">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -1143,40 +1145,37 @@
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtStatusUpdateBubble>
                             <templateSelector:ChatThreadTemplateSelector.DtGCPin>
-                                    <DataTemplate>
+                                <DataTemplate>
                                     <Grid Margin="0,10" HorizontalAlignment="Stretch" Tap="PinTemplate_Tapped">
                                         <Border Background="Black" Opacity="{Binding BorderBGOpacity}"/>
-                                            <Grid Margin="5,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                
-                                                <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
+                                        <Grid Margin="5,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
 
-                                                <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*" />
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <TextBlock FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" VerticalAlignment="Top">
-                                                                <Run Text="{Binding GCPinMessageSenderName}" />
-                                                                <Run Text="posted a pin" />
-                                                            </TextBlock>
-                                                            <TextBlock Grid.Column="1" FontSize="15" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top" HorizontalAlignment="Right" />
-                                                        </Grid>
-                                                        <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
-                                                                     LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left"  />
-                                                    </Grid>
+                                            <Image MaxHeight="50" Margin="17,10,0,0" VerticalAlignment="Top" Source="{Binding StatusUpdateImage}"/>
+
+                                            <Grid Grid.Column="1" Margin="17,10,12,10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="18" Text="{Binding GCPinSenderPostedAPin}" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" VerticalAlignment="Top" />
+                                                    <TextBlock Grid.Column="1" FontSize="18" Foreground="{Binding MessageTextForeGround}" Opacity="0.6" Text="{Binding TimeStampStr}" VerticalAlignment="Top" HorizontalAlignment="Right" />
                                                 </Grid>
+                                                <local:MyRichTextBox Grid.Row="1" MaxLines="5" TextForeground="{Binding MessageTextForeGround}" MaxWidth="{Binding MessageBubbleWidth}" MinWidth="{Binding MessageBubbleMinWidth}" Text="{Binding DispMessage}" FontFamily="Segoe WP SemiLight"
+                                                                     LinkifyAll="True" Foreground="{Binding MessageTextForeGround}" Margin="-12,0,0,0" HorizontalAlignment="Left" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked" />
+                                            </Grid>
                                         </Grid>
-                                    </DataTemplate>
-                                </templateSelector:ChatThreadTemplateSelector.DtGCPin>
+                                    </Grid>
+                                </DataTemplate>
+                            </templateSelector:ChatThreadTemplateSelector.DtGCPin>
                             
                         </templateSelector:ChatThreadTemplateSelector>
                     </DataTemplate>

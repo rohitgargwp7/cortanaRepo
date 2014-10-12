@@ -1219,7 +1219,7 @@ namespace windows_client.utils
             get
             {
                 if (nudgeSend == null)
-                    nudgeSend = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+                    nudgeSend = new BitmapImage(new Uri("/View/images/nudges/nudge_sent.png", UriKind.Relative));
 
                 return nudgeSend;
             }
@@ -1231,7 +1231,7 @@ namespace windows_client.utils
             get
             {
                 if (nudgeReceived == null)
-                    nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+                    nudgeReceived = new BitmapImage(new Uri("/View/images/nudges/nudge_received.png", UriKind.Relative));
 
                 return nudgeReceived;
             }
@@ -1243,7 +1243,7 @@ namespace windows_client.utils
             get
             {
                 if (heartNudgeSend == null)
-                    heartNudgeSend = new BitmapImage(new Uri("/View/images/heartsNudgeSent.png", UriKind.Relative));
+                    heartNudgeSend = new BitmapImage(new Uri("/View/images/nudges/heartsNudgeSent.png", UriKind.Relative));
 
                 return heartNudgeSend;
             }
@@ -1255,7 +1255,7 @@ namespace windows_client.utils
             get
             {
                 if (heartNudgeReceived == null)
-                    heartNudgeReceived = new BitmapImage(new Uri("/View/images/heartsNudgeReceived.png", UriKind.Relative));
+                    heartNudgeReceived = new BitmapImage(new Uri("/View/images/nudges/heartsNudgeReceived.png", UriKind.Relative));
 
                 return heartNudgeReceived;
             }
@@ -1267,7 +1267,7 @@ namespace windows_client.utils
             get
             {
                 if (whiteSentNudgeImage == null)
-                    whiteSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+                    whiteSentNudgeImage = new BitmapImage(new Uri("/View/images/nudges/nudge_sent.png", UriKind.Relative));
 
                 return whiteSentNudgeImage;
             }
@@ -1279,7 +1279,7 @@ namespace windows_client.utils
             get
             {
                 if (whiteReceivedNudgeImage == null)
-                    whiteReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+                    whiteReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudges/nudge_received.png", UriKind.Relative));
 
                 return whiteReceivedNudgeImage;
             }
@@ -1291,7 +1291,7 @@ namespace windows_client.utils
             get
             {
                 if (blueReceivedNudgeImage == null)
-                    blueReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudge_received_blue.png", UriKind.Relative));
+                    blueReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudges/nudge_received_blue.png", UriKind.Relative));
 
                 return blueReceivedNudgeImage;
             }
@@ -1303,9 +1303,33 @@ namespace windows_client.utils
             get
             {
                 if (blueSentNudgeImage == null)
-                    blueSentNudgeImage = new BitmapImage(new Uri("/View/images/nudge_sent_blue.png", UriKind.Relative));
+                    blueSentNudgeImage = new BitmapImage(new Uri("/View/images/nudges/nudge_sent_blue.png", UriKind.Relative));
 
                 return blueSentNudgeImage;
+            }
+        }
+
+        private BitmapImage diwaliSentNudgeImage;
+        public BitmapImage DiwaliSentNudgeImage
+        {
+            get
+            {
+                if (diwaliSentNudgeImage == null)
+                    diwaliSentNudgeImage = new BitmapImage(new Uri("/View/images/nudges/diwali_sent_nudge.png", UriKind.Relative));
+
+                return diwaliSentNudgeImage;
+            }
+        }
+
+        private BitmapImage diwaliReceivedNudgeImage;
+        public BitmapImage DiwaliReceivedNudgeImage
+        {
+            get
+            {
+                if (diwaliReceivedNudgeImage == null)
+                    diwaliReceivedNudgeImage = new BitmapImage(new Uri("/View/images/nudges/diwali_receive_nudge.png", UriKind.Relative));
+
+                return diwaliReceivedNudgeImage;
             }
         }
 
