@@ -75,22 +75,23 @@ namespace windows_client.utils
                     bool isFirstTime = true;
                     int msgcount = 0;
                     List<ConvMessage> convList;
-
                     string currentMessage;
                     string messageTime;
                     string messageSender;
                     string messageText;
                     string contentType;
                     string subject = string.Format(AppResources.EmailConv_Subject_Txt, displayName);
-
                     Dictionary<string, string> groupChatParticipantInfo = null;
                     Attachment attachment;
                     StringBuilder emailText = new StringBuilder();
                     bool isShowTruncatedText = false;
                     Stack<string> messagesStack = new Stack<string>();
+                    bool hasMoreMsg;
 
-                    while (true)
+                    do
                     {
+                        hasMoreMsg = false;
+
                         convList = MessagesTableUtils.getMessagesForMsisdn(msisdn, lastMessageId, HikeConstants.EmailConversation.CHAT_FETCH_LIMIT);
 
                         if (convList != null)
@@ -164,10 +165,8 @@ namespace windows_client.utils
 
                                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                                 {
-                                    if (convMsg.IsSent || convMsg.Msisdn == App.MSISDN)
-                                    {
+                                    if (convMsg.IsSent)
                                         messageSender = AppResources.You_Txt;
-                                    }
                                     else if (isGroupChat)
                                     {
                                         if (convMsg.GroupParticipant == App.MSISDN)
@@ -183,13 +182,13 @@ namespace windows_client.utils
                                 else
                                     currentMessage = string.Format(HikeConstants.EmailConversation.SYS_MSG_DISP_FMT, messageTime, messageText);
 
-                                int messageLength = currentMessage.Length * sizeOfChar;
+                                int messageSize = currentMessage.Length * sizeOfChar; //sizeOfChar is 2
 
-                                if (messageLength + bytesConsumed <= HikeConstants.EmailConversation.EMAIL_LIMIT)
+                                if (messageSize + bytesConsumed <= HikeConstants.EmailConversation.EMAIL_LIMIT)
                                 {
                                     msgcount++;
                                     messagesStack.Push(currentMessage);
-                                    bytesConsumed += messageLength;
+                                    bytesConsumed += messageSize;
                                 }
                                 else
                                 {
@@ -202,13 +201,10 @@ namespace windows_client.utils
                             {
                                 isFirstTime = false;
                                 lastMessageId = convList[convList.Count - 1].MessageId-1;
+                                hasMoreMsg = true;
                             }
-                            else
-                                break;
                         }
-                        else
-                            break;
-                    }
+                    }while(hasMoreMsg);
 
                     string header;
 
