@@ -4,6 +4,7 @@ using Microsoft.Phone.Scheduler;
 using System.Threading.Tasks;
 using CommonLibrary.Misc;
 using CommonLibrary.Constants;
+using System.Threading;
 
 namespace VoipBackgroundAgent
 {
@@ -43,14 +44,8 @@ namespace VoipBackgroundAgent
         protected override void OnInvoke(ScheduledTask task)
         {
             //TODO: Add code to perform your task in background
-            RunAgentForSpecifiedTime(HikeConstants.BackgroundExecutionTime);
             HikeInstantiation.InstantiateClasses();
-            while (true) ;
-        }
-
-        public async void RunAgentForSpecifiedTime(int milliseconds)
-        {
-            await Task.Delay(milliseconds);
+            Thread.Sleep(HikeConstants.BackgroundExecutionTime);
             NotifyComplete();
         }
     }

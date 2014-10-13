@@ -158,6 +158,7 @@ namespace windows_client.View
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
             PushHelper.Instance.closePushnotifications();
+            VoipBackgroundAgentHelper.UnsubscibeVoipBackgroundAgent();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
             ServerUrls.AppEnvironment = ServerUrls.DebugEnvironment.STAGING;

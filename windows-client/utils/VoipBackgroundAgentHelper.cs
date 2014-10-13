@@ -32,7 +32,6 @@ namespace windows_client.utils
 
             // Create a new incoming call task.
             voipBackgroundTask = new VoipHttpIncomingCallTask(HikeConstants.VoipBackgroundTaskName, HikeConstants.PushNotificationChannelName);
-            voipBackgroundTask.Description = "Incoming call task";
             
             try
             {
@@ -53,6 +52,15 @@ namespace windows_client.utils
             {
                 Debug.WriteLine("VoipBackgroundAgent::InitHttpNotificationTask , Exceptin at : " + exception.StackTrace);
             }
+        }
+
+        public static void UnsubscibeVoipBackgroundAgent()
+        {
+            VoipHttpIncomingCallTask voipBackgroundTask = ScheduledActionService.Find(HikeConstants.VoipBackgroundTaskName) as VoipHttpIncomingCallTask;
+            
+            if (voipBackgroundTask != null)
+                 ScheduledActionService.Remove(HikeConstants.VoipBackgroundTaskName);
+
         }
     }
 }

@@ -201,6 +201,7 @@ namespace windows_client
                     if (isPushEnabled)
                     {
                         PushHelper.Instance.registerPushnotifications(false);
+                        VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
                     }
 
                     FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);
