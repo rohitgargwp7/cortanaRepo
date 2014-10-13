@@ -129,21 +129,26 @@ namespace CommonLibrary.DbUtils
         public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj, string gName)
         {
             ConversationListObject obj = null;
+
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 bool success = addMessage(convMsg);
+                
                 if (!success)
                     return null;
+
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 HikeInstantiation.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
+                ConversationTableUtils.saveConvObjectList();
             }
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
                 GroupManager.Instance.GroupParticpantsCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+
                 if (existingMembers == null)
                     return null;
 
@@ -156,6 +161,7 @@ namespace CommonLibrary.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
                 {
                     string[] vals = convMsg.Message.Split(';');
+
                     if (vals.Length == 2)
                         obj.LastMessage = vals[1];
                     else
@@ -180,14 +186,17 @@ namespace CommonLibrary.DbUtils
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup, string from = "")
         {
             UpdateConvMessageText(convMsg, from);
+
             if (addMessage(convMsg))
             {
                 ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, from);
+                
                 if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     ProcessConversationMetadata(convMsg, cobj);
                     ConversationTableUtils.updateConversation(cobj);
                 }
+
                 return cobj;
             }
             return null;
@@ -212,12 +221,14 @@ namespace CommonLibrary.DbUtils
             {
                 if (Utility.IsGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
+
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
                 HikeInstantiation.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
+                ConversationTableUtils.saveConvObjectList();
             }
             else
             {
@@ -429,6 +440,7 @@ namespace CommonLibrary.DbUtils
                 obj.LastMsgId = convMsg.MessageId;
                 ConversationTableUtils.updateConversation(obj);
             }
+
             return obj;
         }
 

@@ -1079,8 +1079,11 @@ namespace CommonLibrary
                         return;
                     
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
+
                     if (goAhead)
                         HikeInstantiation.ViewModel.ConvMap[groupId].ContactName = groupName;
+                    
+                    ConversationTableUtils.saveConvObjectList();
                 }
                 catch (Exception e)
                 {
@@ -1433,6 +1436,8 @@ namespace CommonLibrary
                                     ConversationTableUtils.deleteConversation(msisdn);
                                     HikeInstantiation.ViewModel.ConvMap.Remove(msisdn);
                                 }
+
+                                ConversationTableUtils.saveConvObjectList();
                             }
                         }
                     }
@@ -2268,6 +2273,7 @@ namespace CommonLibrary
                     return GroupChatState.NEW_GROUP;
 
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
+
                 if (gi != null && !gi.GroupAlive)
                     return GroupChatState.KICKEDOUT_USER_ADDED;
 

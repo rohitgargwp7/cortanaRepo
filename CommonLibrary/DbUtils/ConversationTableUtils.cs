@@ -35,10 +35,10 @@ namespace CommonLibrary.DbUtils
 
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
+            saveConvObjectList();
             int convs = 0;
             HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            //saveNewConv(obj);
             return obj;
         }
 
@@ -142,8 +142,8 @@ namespace CommonLibrary.DbUtils
 
             obj.LastMsgId = convMessage.MessageId;
 
-            //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            saveConvObjectList();
             int convs = 0;
             HikeInstantiation.AppSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             HikeInstantiation.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
@@ -179,25 +179,27 @@ namespace CommonLibrary.DbUtils
                 ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
                 saveConvObject(obj, msisdn);
-                //saveConvObjectList();
+                saveConvObjectList();
             }
         }
 
         public static void updateConversation(ConversationListObject obj)
         {
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
-            //saveConvObjectList();
+            saveConvObjectList();
         }
 
         public static bool updateGroupName(string grpId, string groupName)
         {
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(grpId))
                 return false;
+            
             ConversationListObject obj = HikeInstantiation.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
             string msisdn = grpId.Replace(":", "_");
             saveConvObject(obj, msisdn);
-            //saveConvObjectList();
+            saveConvObjectList();
+
             return true;
         }
 
@@ -206,16 +208,19 @@ namespace CommonLibrary.DbUtils
             if (msisdn == null)
                 return;
             ConversationListObject obj = null;
+
             if (HikeInstantiation.ViewModel.ConvMap.ContainsKey(msisdn))
             {
                 obj = HikeInstantiation.ViewModel.ConvMap[msisdn];
+                
                 if (obj.LastMsgId != id)
                     return;
+                
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
                 {
                     obj.MessageStatus = (ConvMessage.State)status;
                     saveConvObject(obj, msisdn.Replace(":", "_"));
-                    //saveConvObjectList();
+                    saveConvObjectList();
                 }
             }
         }
