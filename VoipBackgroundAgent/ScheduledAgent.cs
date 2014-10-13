@@ -2,9 +2,8 @@
 using System.Windows;
 using Microsoft.Phone.Scheduler;
 using System.Threading.Tasks;
-using Microsoft.Phone.Shell;
 using CommonLibrary.Misc;
-using CommonLibrary;
+using CommonLibrary.Constants;
 
 namespace VoipBackgroundAgent
 {
@@ -44,20 +43,14 @@ namespace VoipBackgroundAgent
         protected override void OnInvoke(ScheduledTask task)
         {
             //TODO: Add code to perform your task in background
-            RunAgentForSpecifiedTime(45000);
-            if (HikeInstantiation.InstantiateClasses())
-            {
-                //NetworkManager.turnOffNetworkManager = false;
-                Debug.WriteLine("Instantiation done ");
-            }
+            RunAgentForSpecifiedTime(HikeConstants.BackgroundExecutionTime);
+            HikeInstantiation.InstantiateClasses();
             while (true) ;
         }
 
         public async void RunAgentForSpecifiedTime(int milliseconds)
         {
-            Debug.WriteLine("Trying to invoke Notify complete");
             await Task.Delay(milliseconds);
-            Debug.WriteLine("Invoking Notify complete");
             NotifyComplete();
         }
     }

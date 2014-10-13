@@ -69,6 +69,7 @@ namespace CommonLibrary.Constants
         public static readonly string IS_PRIMARY_CAM = "isPrimaryCam";
         public static readonly string VIDEO_RESOLUTION = "videoResolution";
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
+        public static readonly int BackgroundExecutionTime = 45000;
 
         #endregion
 

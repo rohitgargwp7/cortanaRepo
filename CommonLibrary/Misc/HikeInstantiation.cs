@@ -112,8 +112,8 @@ namespace CommonLibrary.Misc
             if (HikeInstantiation.MqttManagerInstance == null)
                 HikeInstantiation.MqttManagerInstance = new HikeMqttManager();
 
-            //if (ps == PageState.CONVLIST_SCREEN)
-            //{
+            if (ps == PageState.CONVLIST_SCREEN)
+            {
                 IsViewModelLoaded = false;
 
                 if (_viewModel == null)
@@ -130,10 +130,9 @@ namespace CommonLibrary.Misc
                     IsViewModelLoaded = true;
                 }
 
-                Debug.WriteLine("Instantiationg MqttManager");
                 NetworkManager.turnOffNetworkManager = false;
                 HikeInstantiation.MqttManagerInstance.connect();
-            //}
+            }
 
             return true;
         }
