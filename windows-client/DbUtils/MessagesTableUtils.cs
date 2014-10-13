@@ -93,8 +93,6 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static bool addMessage(ConvMessage convMessage)
         {
-            string message = convMessage.Message;//cached message for long message if db is updated with empty message it can be regained
-            SaveLongMessage(convMessage);
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 if (convMessage.MappedMessageId > 0)
@@ -115,7 +113,6 @@ namespace windows_client.DbUtils
                     return false;
                 }
             }
-            convMessage.Message = message;
             return true;
         }
 
@@ -174,19 +171,17 @@ namespace windows_client.DbUtils
         }
         private static void SaveLongMessage(ConvMessage convMessage)
         {
-            if (convMessage.Message.Length > 4000)
+            convMessage.TempLongMessage = convMessage.Message;
+            SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
+            convMessage.Message = String.Empty;
+
+            if (String.IsNullOrEmpty(convMessage.MetaDataString))
+                convMessage.MetaDataString = "{lm:1}";
+            else
             {
-                SaveLongMessageFile(convMessage.Message, convMessage.Msisdn, convMessage.Timestamp);
-                convMessage.Message = String.Empty;
-                
-                if (String.IsNullOrEmpty(convMessage.MetaDataString))
-                    convMessage.MetaDataString = "{lm:1}";
-                else
-                {
-                    JObject metaData = JObject.Parse(convMessage.MetaDataString);
-                    metaData[HikeConstants.LONG_MESSAGE] = "1";
-                    convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
-                }
+                JObject metaData = JObject.Parse(convMessage.MetaDataString);
+                metaData[HikeConstants.LONG_MESSAGE] = "1";
+                convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
         }
 
@@ -247,12 +242,19 @@ namespace windows_client.DbUtils
             UpdateConvMessageText(convMsg, from);
             if (addMessage(convMsg))
             {
+                //should be done before updating conversation
+                if (!string.IsNullOrEmpty(convMsg.TempLongMessage))
+                {
+                    convMsg.Message = convMsg.TempLongMessage;
+                    convMsg.TempLongMessage = null;
+                }
                 ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, imageBytes, from);
                 if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     ProcessConversationMetadata(convMsg, cobj);
                     ConversationTableUtils.updateConversation(cobj);
                 }
+
                 return cobj;
             }
             return null;
@@ -491,6 +493,9 @@ namespace windows_client.DbUtils
                     obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
 
+                if (obj.LastMessage.Length > 100)
+                    obj.LastMessage = obj.LastMessage.Substring(0, 100);
+
                 obj.LastMsgId = convMsg.MessageId;
                 ConversationTableUtils.updateConversation(obj);
             }
@@ -563,7 +568,12 @@ namespace windows_client.DbUtils
                 }
             }
             #endregion
-
+            #region handle long message
+            if (convMsg.Message.Length > 4000)
+            {
+                SaveLongMessage(convMsg);
+            }
+            #endregion
         }
 
         /// <summary>
@@ -788,6 +798,81 @@ namespace windows_client.DbUtils
             messageList.Clear();
 
             return msisdn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversationId"></param>
+        /// <param name="ids"></param>
+        /// <param name="listExistingIds"></param>
+        /// <returns></returns>
+        public static string updateAllMsgReadStatus(string conversationId, long[] ids, out List<long> listExistingIds)
+        {
+            bool shouldSubmit = false;
+            string msisdn = null;
+            List<ConvMessage> messageList = new List<ConvMessage>();
+            listExistingIds = new List<long>(ids.Length);
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    var convMessage = DbCompiledQueries.GetSentMessagesForMsgIdAndMsisdn(context, ids[i], conversationId).FirstOrDefault<ConvMessage>();
+                    if (convMessage != null)
+                    {
+                        listExistingIds.Add(ids[i]);
+                        messageList.Add(convMessage);
+                    }
+                }
+                foreach (var message in messageList)
+                {
+                    if (message != null)
+                    {
+                        ConvMessage.State newMessageState = ConvMessage.State.SENT_DELIVERED_READ;
+                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                            newMessageState = ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+
+                        if (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE || message.MessageStatus == ConvMessage.State.SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.SENT_DELIVERED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED)
+                        {
+                            if (conversationId == null || conversationId == message.Msisdn)
+                            {
+                                message.MessageStatus = newMessageState;
+
+                                msisdn = message.Msisdn;
+                                shouldSubmit = true;
+                            }
+                        }
+                    }
+                }
+
+                if (shouldSubmit)
+                    SubmitWithConflictResolve(context);
+            }
+
+            messageList.Clear();
+
+            return msisdn;
+        }
+
+
+        public static List<long> FilterExistingMsgIds(IEnumerable<long> listIds, string msisdn)
+        {
+            if (listIds == null || listIds.Count() == 0)
+                return null;
+            List<long> listExistingIds = new List<long>(listIds.Count());
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                foreach (long msgId in listIds)
+                {
+                    var convMessage = DbCompiledQueries.GetSentMessagesForMsgIdAndMsisdn(context, msgId, msisdn).FirstOrDefault<ConvMessage>();
+                    if (convMessage != null)
+                    {
+                        listExistingIds.Add(msgId);
+                    }
+                }
+            }
+
+            return listExistingIds;
         }
 
         public static void deleteAllMessages()

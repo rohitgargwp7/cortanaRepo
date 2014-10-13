@@ -1334,6 +1334,36 @@ namespace windows_client.DbUtils
             return listUpdatedMsgIds;
         }
 
+
+        public static void GetReadby(Dictionary<long, JArray> dictReadby, string msisdn, out long lastReadMsgId, out JArray readByArray)
+        {
+            lastReadMsgId = 0;
+            readByArray = null;
+            if (dictReadby == null || dictReadby.Count == 0)
+                return;
+
+            List<long> listExistingIds = MessagesTableUtils.FilterExistingMsgIds(dictReadby.Keys, msisdn);
+            bool isGroup = Utils.isGroupConversation(msisdn);
+            foreach (long msgID in listExistingIds)
+            {
+                JArray currentReadByArray = dictReadby[msgID];
+                if (msgID > lastReadMsgId)
+                {
+                    lastReadMsgId = msgID;
+                    if (isGroup)
+                        readByArray = currentReadByArray;//if new msg id is greater than existing msg id then create new readby array
+                }
+                else if (msgID == lastReadMsgId && isGroup)
+                {
+                    for (int i = 0; i < currentReadByArray.Count; i++)
+                    {
+                        if (!readByArray.Contains(currentReadByArray[i]))
+                            readByArray.Add(currentReadByArray[i]);
+                    }
+                }
+            }
+
+        }
         #endregion
     }
 }
