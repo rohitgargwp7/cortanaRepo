@@ -145,7 +145,7 @@ namespace windows_client.View
             {
                 JToken statusData;
                 JObject moodData;
-                obj.TryGetValue(ServerJsonKeys.DATA, out statusData);
+                obj.TryGetValue(ServerJsonKeys.STATUS_DATA, out statusData);
                 try
                 {
                     moodData = statusData.ToObject<JObject>();

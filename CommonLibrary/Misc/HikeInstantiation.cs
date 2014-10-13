@@ -112,6 +112,8 @@ namespace CommonLibrary.Misc
             if (HikeInstantiation.MqttManagerInstance == null)
                 HikeInstantiation.MqttManagerInstance = new HikeMqttManager();
 
+            HikeInstantiation.AppSettings.TryGetValue<PageState>(AppSettingsKeys.PAGE_STATE, out ps);
+
             if (ps == PageState.CONVLIST_SCREEN)
             {
                 IsViewModelLoaded = false;
@@ -130,7 +132,7 @@ namespace CommonLibrary.Misc
                     IsViewModelLoaded = true;
                 }
 
-                NetworkManager.turnOffNetworkManager = true;
+                NetworkManager.turnOffNetworkManager = false;
                 HikeInstantiation.MqttManagerInstance.connect();
             }
 
