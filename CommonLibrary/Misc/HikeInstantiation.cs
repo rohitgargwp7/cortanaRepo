@@ -112,25 +112,29 @@ namespace CommonLibrary.Misc
             if (HikeInstantiation.MqttManagerInstance == null)
                 HikeInstantiation.MqttManagerInstance = new HikeMqttManager();
 
+            HikeInstantiation.AppSettings.TryGetValue<PageState>(AppSettingsKeys.PAGE_STATE, out ps);
 
-            IsViewModelLoaded = false;
-
-            if (_viewModel == null)
+            if (ps == PageState.CONVLIST_SCREEN)
             {
-                List<ConversationListObject> convList = null;
+                IsViewModelLoaded = false;
 
-                convList = GetConversations();
+                if (_viewModel == null)
+                {
+                    List<ConversationListObject> convList = null;
 
-                if (convList == null || convList.Count == 0)
-                    _viewModel = new HikeViewModel();
-                else
-                    _viewModel = new HikeViewModel(convList);
+                    convList = GetConversations();
 
-                IsViewModelLoaded = true;
+                    if (convList == null || convList.Count == 0)
+                        _viewModel = new HikeViewModel();
+                    else
+                        _viewModel = new HikeViewModel(convList);
+
+                    IsViewModelLoaded = true;
+                }
+
+                NetworkManager.turnOffNetworkManager = false;
+                HikeInstantiation.MqttManagerInstance.connect();
             }
-
-            NetworkManager.turnOffNetworkManager = false;
-            HikeInstantiation.MqttManagerInstance.connect();
 
             return true;
         }

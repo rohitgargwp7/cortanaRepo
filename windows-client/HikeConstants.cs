@@ -93,7 +93,7 @@ namespace windows_client
         public static readonly string VIDEO_FRAME_BYTES = "videoFrameBytes";
 
         public static readonly int MAX_GROUP_MEMBER_SIZE = 100;
-        public static readonly string DATA = "data";
+        
 
         #endregion
 
