@@ -435,8 +435,10 @@ namespace CommonLibrary.DbUtils
                                     }
                                 }
                             }
+
                             reader.Close();
                         }
+
                         try
                         {
                             file.Close();
@@ -448,6 +450,7 @@ namespace CommonLibrary.DbUtils
                         }
                     }
                 }
+
                 HikeInstantiation.ViewModel.IsPendingListLoaded = true;
             }
         }
