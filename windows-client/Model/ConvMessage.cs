@@ -599,34 +599,58 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
-        public Visibility NormalNudgeVisibility
-        {
-            get { return App.ViewModel.SelectedBackground != null && (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42") ? Visibility.Collapsed : Visibility.Visible; }
-        }
-
-        public Visibility SpecialNudgeVisibility
-        {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
-        }
-
-        public Visibility DiwaliNudgeVisibility
-        {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "42" ? Visibility.Visible : Visibility.Collapsed; }
-        }
-
-        public BitmapImage SpecialNudgeImage
+        public int NudgeHeight
         {
             get
             {
-                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42")
+                        return 65;
+
+                    return 40;
+                }
+
+                return 40;
             }
         }
 
-        public BitmapImage DiwaliNudgeImage
+        public BitmapImage NudgeImage
         {
             get
             {
-                return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.ID == "20")
+                        return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+                    else if (App.ViewModel.SelectedBackground.ID == "42")
+                        return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
+
+                    return DefaultNudgeImage;
+                }
+
+                return DefaultNudgeImage;
+            }
+        }
+
+        public BitmapImage DefaultNudgeImage
+        {
+            get
+            {
+                if (IsSent)
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
+                        return UI_Utils.Instance.BlueSentNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteSentNudgeImage;
+                }
+                else
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
+                        return UI_Utils.Instance.BlueReceivedNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteReceivedNudgeImage;
+                }
             }
         }
 
@@ -684,27 +708,6 @@ namespace windows_client.Model
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
-            }
-        }
-
-        public BitmapImage NudgeImage
-        {
-            get
-            {
-                if (IsSent)
-                {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
-                        return UI_Utils.Instance.BlueSentNudgeImage;
-                    else
-                        return UI_Utils.Instance.WhiteSentNudgeImage;
-                }
-                else
-                {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
-                        return UI_Utils.Instance.BlueReceivedNudgeImage;
-                    else
-                        return UI_Utils.Instance.WhiteReceivedNudgeImage;
-                }
             }
         }
 
@@ -1605,9 +1608,7 @@ namespace windows_client.Model
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("NotificationImage");
             NotifyPropertyChanged("NudgeImage");
-            NotifyPropertyChanged("SpecialNudgeVisibility");
-            NotifyPropertyChanged("DiwaliNudgeVisibility");
-            NotifyPropertyChanged("NormalNudgeVisibility");
+            NotifyPropertyChanged("NudgeHeight");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");
             NotifyPropertyChanged("NotificationBorderBrush");
