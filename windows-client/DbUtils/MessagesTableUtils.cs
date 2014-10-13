@@ -180,11 +180,11 @@ namespace windows_client.DbUtils
                 convMessage.Message = String.Empty;
                 
                 if (String.IsNullOrEmpty(convMessage.MetaDataString))
-                    convMessage.MetaDataString = "{lm:true}";
+                    convMessage.MetaDataString = "{lm:1}";
                 else
                 {
                     JObject metaData = JObject.Parse(convMessage.MetaDataString);
-                    metaData[HikeConstants.LONG_MESSAGE] = "true";
+                    metaData[HikeConstants.LONG_MESSAGE] = "1";
                     convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
                 }
             }
