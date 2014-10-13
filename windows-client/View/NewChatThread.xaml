@@ -484,9 +484,7 @@
                                                 <Run Text="{Binding GroupMemberMsisdn}"/>
                                                 <Run Text="- "/>
                                             </TextBlock>
-                                            <Image Grid.Row="1" Margin="0,0,0,10" Visibility="{Binding NormalNudgeVisibility}" Height="40" HorizontalAlignment="Left" Source="{Binding NudgeImage}"/>
-                                            <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="65" Stretch="Uniform" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
-                                            <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="65" Stretch="Uniform" Source="{Binding DiwaliNudgeImage}" Visibility="{Binding DiwaliNudgeVisibility}"/>
+                                            <Image Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Left" Height="{Binding NudgeHeight}" Source="{Binding NudgeImage}"/>
                                             <Grid Grid.Row="2" HorizontalAlignment="Left" Margin="5,12">
                                                 <Border  CornerRadius="4" Background="{Binding BubbleBackGroundColor}" Margin="-5,-8" Canvas.ZIndex="-1"/>
                                                 <TextBlock Text="{Binding TimeStampStr}" Margin="5,0" HorizontalAlignment="Center" FontSize="18" FontWeight="Thin" Foreground="{Binding MessageTextForeGround}"/>
@@ -930,9 +928,7 @@
                                                     <toolkit:MenuItem Foreground="White" Header="{Binding Path= LocalizedResources.Send_As_Sms, Source={StaticResource LocalizedStrings}}" Visibility="{Binding SendAsSMSVisibility}" Click="MenuItem_Click_SendAsSMS"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
-                                            <Image Height="40" Margin="0,0,0,10" Visibility="{Binding NormalNudgeVisibility}" HorizontalAlignment="Right" Source="{Binding NudgeImage}"/>
-                                            <Image Height="65" Stretch="Uniform" Margin="0,0,0,10" HorizontalAlignment="Right" Source="{Binding SpecialNudgeImage}" Visibility="{Binding SpecialNudgeVisibility}"/>
-                                            <Image Height="65" Stretch="Uniform" Margin="0,0,0,10" HorizontalAlignment="Right" Source="{Binding DiwaliNudgeImage}" Visibility="{Binding DiwaliNudgeVisibility}"/>
+                                            <Image Margin="0,0,0,10" HorizontalAlignment="Right" Height="{Binding NudgeHeight}" Source="{Binding NudgeImage}"/>
                                             <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="5,12">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
