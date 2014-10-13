@@ -114,6 +114,7 @@ namespace windows_client.View
 
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_PUSH_ENABLED, true);
             PushHelper.Instance.registerPushnotifications(false);
+            VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
@@ -122,6 +123,7 @@ namespace windows_client.View
 
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_PUSH_ENABLED, false);
             PushHelper.Instance.closePushnotifications();
+            VoipBackgroundAgentHelper.UnsubscibeVoipBackgroundAgent();
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)

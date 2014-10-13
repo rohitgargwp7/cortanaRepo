@@ -26,9 +26,13 @@
       <Capability Name="ID_CAP_MEDIALIB_PLAYBACK" />
       <Capability Name="ID_CAP_MAP" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
+      <Capability Name="ID_CAP_VOIP" />
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="View/ConversationsList.xaml" ActivationPolicy="Resume" />
+      <ExtendedTask Name="BackgroundTask">
+        <BackgroundServiceAgent Specifier="ScheduledTaskAgent" Name="VoipBackgroundAgent" Source="VoipBackgroundAgent" Type="VoipBackgroundAgent.ScheduledAgent" />
+      </ExtendedTask>
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="windows_clientToken" TaskName="_default">

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTransfer", "FileTransfe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "CommonLibrary\CommonLibrary.csproj", "{230CE6E8-77F4-4A39-876F-41BAC647FBB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoipBackgroundAgent", "VoipBackgroundAgent\VoipBackgroundAgent.csproj", "{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,26 @@ Global
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|Win32.Build.0 = Release|x86
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|x86.ActiveCfg = Release|x86
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|x86.Build.0 = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|ARM.ActiveCfg = Debug|ARM
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|ARM.Build.0 = Debug|ARM
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Win32.ActiveCfg = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Win32.Build.0 = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|x86.ActiveCfg = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|x86.Build.0 = Debug|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|ARM.ActiveCfg = Release|ARM
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|ARM.Build.0 = Release|ARM
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Mixed Platforms.Build.0 = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Win32.ActiveCfg = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|Win32.Build.0 = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|x86.ActiveCfg = Release|x86
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

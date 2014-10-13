@@ -175,6 +175,7 @@ namespace windows_client
             if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New || HikeInstantiation.IsTombstoneLaunch)
             {
                 PushHelper.Instance.registerPushnotifications(false);
+                VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
 
                 if (!HikeInstantiation.AppSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
                 {

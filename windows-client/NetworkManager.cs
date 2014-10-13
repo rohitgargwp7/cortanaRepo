@@ -1875,8 +1875,10 @@ namespace windows_client
                     bool isRegisterPush = (bool)data[ServerJsonKeys.PUSH];
 
                     if (isRegisterPush)
+                    {
                         PushHelper.Instance.registerPushnotifications(true);
-
+                        VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
+                    }
                 }
                 catch (Exception ex)
                 {

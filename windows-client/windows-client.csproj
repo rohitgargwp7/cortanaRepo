@@ -256,6 +256,7 @@
     <Compile Include="utils\ThemeManager.cs" />
     <Compile Include="utils\UpdatePostHelper.cs" />
     <Compile Include="utils\Utils.cs" />
+    <Compile Include="utils\VoipBackgroundAgentHelper.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
     <Compile Include="View\BlockListPage.xaml.cs">
       <DependentUpon>BlockListPage.xaml</DependentUpon>
@@ -1161,6 +1162,10 @@
     <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
       <Name>RPALApiComponent</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoipBackgroundAgent\VoipBackgroundAgent.csproj">
+      <Project>{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}</Project>
+      <Name>VoipBackgroundAgent</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

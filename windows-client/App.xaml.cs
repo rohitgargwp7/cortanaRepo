@@ -178,9 +178,12 @@ namespace windows_client
             HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
 
             if (isPushEnabled)
+            {
                 PushHelper.Instance.registerPushnotifications(false);
-        
+                VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
+            }
             #endregion
+
         }
 
         private static void OnNetworkChange(object sender, NetworkNotificationEventArgs e)
@@ -198,6 +201,7 @@ namespace windows_client
                     if (isPushEnabled)
                     {
                         PushHelper.Instance.registerPushnotifications(false);
+                        VoipBackgroundAgentHelper.InitVoipBackgroundAgent();
                     }
 
                     FileTransferManager.Instance.ChangeMaxUploadBuffer(e.NetworkInterface.InterfaceSubtype);

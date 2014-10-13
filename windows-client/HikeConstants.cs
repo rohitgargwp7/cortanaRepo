@@ -8,6 +8,7 @@ namespace windows_client
     {
         #region All Uncategorized constants
         public static readonly string PushNotificationChannelName = "HikeApp";
+        public static readonly string VoipBackgroundTaskName = "HikeVoipBackgroundAgent";
 
         public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
         public static readonly string HikeDirectoryPath = @"C:/Data/Users/Public/Pictures/hike";
