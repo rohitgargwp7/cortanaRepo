@@ -130,7 +130,7 @@ namespace CommonLibrary.Misc
                     IsViewModelLoaded = true;
                 }
 
-                NetworkManager.turnOffNetworkManager = false;
+                NetworkManager.turnOffNetworkManager = true;
                 HikeInstantiation.MqttManagerInstance.connect();
             }
 
