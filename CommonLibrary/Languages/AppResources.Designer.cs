@@ -304,6 +304,15 @@ namespace CommonLibrary.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Background agents for this application have been disabled by the user.Some functions might not work properly. Please turn on background agents..
+        /// </summary>
+        public static string BackgroundAgent_Off_Exception_Message {
+            get {
+                return ResourceManager.GetString("BackgroundAgent_Off_Exception_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark theme.
         /// </summary>
         public static string BlackSettings_Txt {
