@@ -4913,14 +4913,6 @@ namespace windows_client.View
                     if (fInfo.FileState == FileTransferState.COMPLETED)
                     {
                         msgMap.Remove(convMessage.MessageId);
-
-                        if (convMessage.UserTappedDownload)
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                displayAttachment(convMessage);
-                            });
-                        }
                     }
                 }
                 else
