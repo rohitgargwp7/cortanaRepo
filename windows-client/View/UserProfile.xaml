@@ -117,10 +117,9 @@
                                                     <TextBlock Margin="0,0,-10,0" Text="{Binding TimestampString}" Style="{StaticResource StatusUpdateTimestampTextBlock}"/>
                                                 </Grid>
                                             </Grid>
-                                            <local:MyRichTextBox Margin="-12,0,0,0" Foreground="{Binding StatusTextForeground}" TextForeground="{StaticResource HikeBlue}"
-                                                                             HorizontalAlignment="Left" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
-                                                                             TextWrapping="Wrap" LinkifyAll="True" MaxWidth="400" 
-                                                                             ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
+                                            <local:MyRichTextBox Margin="-12,0,-22,0" Foreground="{Binding StatusTextForeground}" TextForeground="{StaticResource HikeBlue}"
+                                                                             HorizontalAlignment="Stretch" Text="{Binding Text}" FontSize="22" Grid.Row="1" FontFamily="Segoe WP SemiLight"
+                                                                             TextWrapping="Wrap" LinkifyAll="True" ViewMoreClicked="ViewMoreMessage_Clicked" HyperlinkClicked="Hyperlink_Clicked"/>
                                         </Grid>
                                     </Grid>
                                 </Border>
