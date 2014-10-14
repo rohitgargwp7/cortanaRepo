@@ -122,8 +122,8 @@ namespace windows_client.View
             this.pushNotifications.Content = AppResources.Off;
 
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.IS_PUSH_ENABLED, false);
-            PushHelper.Instance.closePushnotifications();
             VoipBackgroundAgentHelper.UnsubscibeVoipBackgroundAgent();
+            PushHelper.Instance.closePushnotifications();
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)
