@@ -33,6 +33,8 @@ namespace windows_client.Controls
 
         private void newPinTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            _isFocused = false;
+
             if (NewPinLostFocus != null)
                 NewPinLostFocus(sender, e);
         }
@@ -44,6 +46,8 @@ namespace windows_client.Controls
         }
         #endregion
 
+        bool _isFocused = false;
+
         /// <summary>
         /// Hint has to be reset otherwise it will not show hint initially
         /// </summary>
@@ -51,6 +55,7 @@ namespace windows_client.Controls
         /// <param name="e"></param>
         private void newPinTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
+            _isFocused = true;
             newPinTextBox.Hint = String.Empty;
             newPinTextBox.Hint = AppResources.NewGCPin_Hint_Txt;
         }
@@ -124,7 +129,9 @@ namespace windows_client.Controls
         public void SetUnreadPinCount(int count)
         {
             notificationCountTxtBlk.Text = (count < 10) ? (count <= 0 ? String.Empty : count.ToString()) : "9+";
-            notificationCountGrid.Visibility = String.IsNullOrEmpty(notificationCountTxtBlk.Text) ? Visibility.Collapsed : Visibility.Visible;
+
+            if (!_isFocused)
+                notificationCountGrid.Visibility = String.IsNullOrEmpty(notificationCountTxtBlk.Text) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public void EmptyPinText()
