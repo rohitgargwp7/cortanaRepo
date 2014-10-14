@@ -278,5 +278,13 @@ namespace windows_client.View
                 };
             deletePinBW.RunWorkerAsync();
         }
+
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+            ConvMessage chatBubble = ((sender as MenuItem).DataContext as ConvMessage);
+
+            if (chatBubble.FileAttachment == null)
+                Clipboard.SetText(chatBubble.Message);
+        }
     }
 }
