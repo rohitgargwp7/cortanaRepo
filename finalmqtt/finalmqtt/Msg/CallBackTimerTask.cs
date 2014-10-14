@@ -33,7 +33,9 @@ namespace finalmqtt.Msg
             Debug.WriteLine("CALLBACK TIMER:: For message ID - " + messageId);
             Callback cb = onAckFailed(messageId);
             if (cb != null)
+            {
                 cb.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + messageId));
+            }
         }
     }
 }

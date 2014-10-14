@@ -110,10 +110,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
     </Reference>
-    <Reference Include="finalmqtt, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\finalmqtt.dll</HintPath>
-    </Reference>
     <Reference Include="Hammock.WindowsPhone.Mango">
       <HintPath>..\packages\Hammock.1.3.1\lib\sl4-wp71\Hammock.WindowsPhone.Mango.dll</HintPath>
     </Reference>
@@ -1138,6 +1134,10 @@
     <Content Include="View\images\typing.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\finalmqtt\finalmqtt\finalmqtt.csproj">
+      <Project>{42d8b5d8-53f9-4051-ada8-ae5eec1820ed}</Project>
+      <Name>finalmqtt</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">
       <Project>{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}</Project>
       <Name>RPALApiComponent</Name>

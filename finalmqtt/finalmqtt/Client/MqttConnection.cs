@@ -102,7 +102,7 @@ namespace finalmqtt.Client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(string.Format("MqttConnection::MsgCallBackMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::MsgCallBackMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
                     }
                 }
                 msgCallbacksMap.Clear();
@@ -147,7 +147,7 @@ namespace finalmqtt.Client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(string.Format("MqttConnection::ScheduledActionsMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::ScheduledActionsMapClear:Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
                     }
                 }
                 scheduledActionsMap.Clear();
@@ -177,21 +177,29 @@ namespace finalmqtt.Client
             this.connectCallback = cb;
         }
 
+        DateTime dt;
         /// <summary>
         /// Initiates connect request to server.
         /// </summary>
         public void connect(String host, int port)
         {
+            dt = DateTime.Now;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
+            MQttLogging.LogWriter.Instance.WriteToLog("ip:" + host + ", port:" + port);
+
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _socket.NoDelay = true;
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
             socketEventArg.RemoteEndPoint = hostEntry;
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
             if (!_socket.ConnectAsync(socketEventArg))
+            {
+                MQttLogging.LogWriter.Instance.WriteToLog("Connect Async connected synchronously");
                 ProcessSocketConnected(socketEventArg);
+            }
         }
 
+        DateTime dt2;
         /// <summary>
         /// AsyncCallback of socket connection. Is called when response of socket connection is received. 
         /// It sends a connect message and then starts reading from socket.  
@@ -209,12 +217,17 @@ namespace finalmqtt.Client
         /// <param name="e">Socket event arguement</param>
         private void ProcessSocketConnected(SocketAsyncEventArgs e)
         {
+            Double timeTaken = (DateTime.Now - dt).TotalSeconds;
+            dt2 = DateTime.Now;
             //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
             {
                 connectCallback.onFailure(new Exception(e.SocketError.ToString()));
+
+                MQttLogging.LogWriter.Instance.WriteToLog("MQTT socket connection FAILED, time taken :" + timeTaken + " secs");
                 return;
             }
+            MQttLogging.LogWriter.Instance.WriteToLog("MQTT socket connection SUCCESS, time taken :" + timeTaken + " secs");
             ConnectMessage msg = new ConnectMessage(id, false, (byte)60, this);
             if (username != null)
                 msg.setCredentials(username, password);
@@ -236,10 +249,14 @@ namespace finalmqtt.Client
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
 
                     if (!_socket.ReceiveAsync(socketEventArg))
+                    {
                         ProcessDataRead(socketEventArg);
+                        MQttLogging.LogWriter.Instance.WriteToLog("Messsage sent synchronously");
+                    }
                 }
                 catch (Exception e)
                 {
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::READ Error, Exception:" + e.Message);
                     disconnect();
                 }
             }
@@ -269,14 +286,22 @@ namespace finalmqtt.Client
                 }
                 else
                 {
+                    if (e.ConnectSocket != null)
+                        MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedError, Object HAsh:" + e.ConnectSocket.GetHashCode());
+
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Error:" + e.SocketError);
                     disconnect();
                     return;
                 }
                 readMessagesFromBuffer();
                 read();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (e.ConnectSocket != null)
+                    MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompletedException, Object HAsh:" + e.ConnectSocket.GetHashCode());
+
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::onReadCompleted, Exception:" + ex.Message);
                 disconnect();
             }
         }
@@ -308,6 +333,7 @@ namespace finalmqtt.Client
         {
             if (e.SocketError == SocketError.Success)
             {
+
                 if (e.MessageData != null)
                 {
                     if (e.MessageData is long)
@@ -341,7 +367,6 @@ namespace finalmqtt.Client
                     OnSocketWriteCompleted(null, new OnSocketWriteEventArgs(messageId));
             }
         }
-
         /// <summary>
         /// sends raw bytes of data through socket
         /// </summary>
@@ -357,13 +382,20 @@ namespace finalmqtt.Client
                     socketEventArg.UserToken = null;
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
                     socketEventArg.SetBuffer(data, 0, data.Length);
+
+                    var str = Encoding.UTF8.GetString(data, 0, data.Length);
+                    MQttLogging.LogWriter.Instance.WriteToLog("Socket write:MSG SENT:: " + str);
                     socketEventArg.MessageData = messageData;
                     if (!_socket.SendAsync(socketEventArg))
+                    {
+                        MQttLogging.LogWriter.Instance.WriteToLog("Messsage sent synchronously");
                         OnDataSentSuccess(socketEventArg);
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::sendMessage, Exception:" + ex.Message);
                 disconnect();
             }
         }
@@ -430,7 +462,6 @@ namespace finalmqtt.Client
             }
             return msg;
         }
-
         /// <summary>
         /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
         /// If ack is not received in 5 seconds, then callback's onFailure is called
@@ -474,6 +505,7 @@ namespace finalmqtt.Client
 
         }
 
+
         /// <summary>
         /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
         /// If ack is not received in 5 seconds, then callback's onFailure is called
@@ -497,9 +529,18 @@ namespace finalmqtt.Client
             }
             try
             {
+                List<short> listMessageIds = new List<short>();
                 for (int i = 0; i < msg.Length; i++)
                 {
                     Message messsage = msg[i];
+
+                    var data = msg[i].messageContent();
+                    combinedMessageBytes.AddRange(data);
+                    var str = Encoding.UTF8.GetString(data, 0, data.Length);
+                    if (messsage is RetryableMessage)
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, MQTT ID:{0}, Data:{1}", ((RetryableMessage)messsage).getMessageId(), str));
+                    else
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MSG SENT, Data:{0}", str));
                     combinedMessageBytes.AddRange(messsage.messageContent());
                 }
                 sendMessage(combinedMessageBytes.ToArray(), messageData);
@@ -557,7 +598,7 @@ namespace finalmqtt.Client
 
         private void recursivePingSchedule()
         {
-            Debug.WriteLine("RECURSIVE PING CALLED, Time:" + DateTime.Now);
+            MQttLogging.LogWriter.Instance.WriteToLog("RECURSIVE PING CALLED, Time:" + DateTime.Now);
             if (this.mqttListener != null && _socket != null)
             {
                 int lastActivityTime = Math.Min(_lastReadTime, _lastWriteTime);
@@ -570,13 +611,13 @@ namespace finalmqtt.Client
 
                 if (timeDiff >= RECURSIVE_PING_INTERVAL)
                 {
-                    Debug.WriteLine("PING CALLED AND SCHEDULED, Time:" + DateTime.Now);
+                    MQttLogging.LogWriter.Instance.WriteToLog("PING CALLED AND SCHEDULED, Time:" + DateTime.Now);
                     ping();
                 }
 
                 var nextPingTime = timeDiff < RECURSIVE_PING_INTERVAL ? RECURSIVE_PING_INTERVAL - timeDiff : RECURSIVE_PING_INTERVAL;
                 pingScheduleAction = scheduler.Schedule(recursivePingSchedule, TimeSpan.FromSeconds(nextPingTime));
-                Debug.WriteLine("NEXT PING TIME:" + DateTime.Now.AddSeconds(nextPingTime));
+                MQttLogging.LogWriter.Instance.WriteToLog("NEXT PING TIME:" + DateTime.Now.AddSeconds(nextPingTime));
             }
         }
 
@@ -588,7 +629,9 @@ namespace finalmqtt.Client
 
             if ((currentTime - _lastReadTime) > PING_CALLBACK_WAIT_TIME)
             {
-                Debug.WriteLine("On Ping Failure Called,Time:" + DateTime.Now);
+                MQttLogging.LogWriter.Instance.WriteToLog("On Ping Failure Called,Time:" + DateTime.Now);
+                MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT::PingFailure");
+
                 disconnect();
                 pingFailureAction = null;
             }
@@ -605,6 +648,7 @@ namespace finalmqtt.Client
         /// <param name="cb">Callback for message published</param>
         public void publish(String topic, byte[] message, QoS qos, Callback cb) //throws IOException 
         {
+
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
             msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb, null);
@@ -633,6 +677,7 @@ namespace finalmqtt.Client
         /// <param name="cb">Callback for message published</param>
         public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
         {
+
             PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
             for (int i = 0; i < message.Length; i++)
             {
@@ -641,6 +686,7 @@ namespace finalmqtt.Client
             }
             sendCallbackMessage(messagesToPublish, cb);
         }
+
 
         /// <summary>
         /// Publishes messages and set callback for multiple messages, use this if messageId > 0
@@ -664,19 +710,23 @@ namespace finalmqtt.Client
         public void subscribe(String topic, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, QoS.AT_MOST_ONCE, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
+
             sendCallbackMessage(msg, cb);
         }
         public void subscribe(String topic, QoS qos, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, qos, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
             sendCallbackMessage(msg, cb);
         }
         public void subscribe(List<String> listTopics, List<QoS> listQos, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(listTopics, listQos, this);
-            msg.setMessageId(getNextMessageId());
+            short messageid = getNextMessageId();
+            msg.setMessageId(messageid);
             sendCallbackMessage(msg, cb);
         }
         public void unsubscribe(String topic, Callback cb) //throws IOException 
@@ -687,10 +737,14 @@ namespace finalmqtt.Client
 
         public void disconnect() //throws IOException 
         {
+            MQttLogging.LogWriter.Instance.WriteToLog("DISCONNECT CALLED");
+
             try
             {
-                Debug.WriteLine("DISCONNECT CALLED");
-
+                if (_socket != null)
+                {
+                    MQttLogging.LogWriter.Instance.WriteToLog("Current object hash Code:" + _socket.GetHashCode());
+                }
                 ClearPageResources();
 
                 if (mqttListener != null)
@@ -701,7 +755,7 @@ namespace finalmqtt.Client
             //to make sure if there is any exception in clearing page resources, app should work fine 
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
+                MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MqttConnection::disconnect :Exception:{0}, StackTrace:{1}", ex.Message, ex.StackTrace));
 
                 if (_socket != null)
                 {
@@ -729,6 +783,7 @@ namespace finalmqtt.Client
             {
                 return;
             }
+
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
@@ -745,13 +800,12 @@ namespace finalmqtt.Client
                             ScheduledActionsMapRemove(messageId);
                             scheduledAction.Dispose();
                         }
-                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
                         MsgCallbacksMapRemove(messageId);
+                        MQttLogging.LogWriter.Instance.WriteToLog(string.Format("Ack received for messageId:{0}", messageId));
                         cb.onSuccess();
                     }
                 }
             }
-
             switch (msg.getType())
             {
                 case MessageType.CONNACK:
@@ -765,6 +819,8 @@ namespace finalmqtt.Client
                     break;
                 case MessageType.PUBACK:
                     handleMessage((PubAckMessage)msg);
+                    PubAckMessage puback = (PubAckMessage)msg;
+                    MQttLogging.LogWriter.Instance.WriteToLog("PubAck recieved for message ID:" + puback.getMessageId());
                     break;
                 case MessageType.SUBACK:
                     handleMessage((SubAckMessage)msg);
@@ -776,6 +832,10 @@ namespace finalmqtt.Client
 
         protected void handleMessage(ConnAckMessage msg)
         {
+            Double totalTimeTaken = (DateTime.Now - dt).TotalSeconds;
+            Double timeForACkBac = (DateTime.Now - dt2).TotalSeconds;
+            MQttLogging.LogWriter.Instance.WriteToLog(string.Format("MQTT connack recieved, STATUS:{0},Total connect time:{1}, time for ack:{2}", msg.getStatus(), totalTimeTaken, timeForACkBac));
+
             connackReceived = true;
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)
             {
@@ -784,6 +844,7 @@ namespace finalmqtt.Client
             }
             if (mqttListener != null)
                 mqttListener.onConnected();
+
             connectCallback.onSuccess();
             if (pingScheduleAction == null)
                 pingScheduleAction = scheduler.Schedule(recursivePingSchedule, TimeSpan.FromSeconds(RECURSIVE_PING_INTERVAL));
@@ -794,13 +855,18 @@ namespace finalmqtt.Client
         {
             try
             {
-                sendAcknowledement(msg);
                 if (mqttListener != null)
                     mqttListener.onPublish(msg.getTopic(), msg.getData());
+
+                String receivedMessage = Encoding.UTF8.GetString(msg.getData(), 0, msg.getData().Length);
+
+                MQttLogging.LogWriter.Instance.WriteToLog(string.Format("recieved : MQttID:{0} ,Message:{1}", msg.getMessageId(), receivedMessage));
+
+                sendAcknowledement(msg);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("MqttConnection :: handleMessage : Exception -" + ex.StackTrace);
+                MQttLogging.LogWriter.Instance.WriteToLog("MqttConnection :: handleMessage : Exception -" + ex.StackTrace);
             }
         }
 
@@ -808,13 +874,14 @@ namespace finalmqtt.Client
         {
             if (pingFailureAction != null)
             {
-                Debug.WriteLine("Ping Response recieved");
+                MQttLogging.LogWriter.Instance.WriteToLog("Ping Response recieved");
                 pingFailureAction.Dispose();
                 pingFailureAction = null;
             }
         }
         protected void handleMessage(PubAckMessage msg)
         {
+
         }
         protected void handleMessage(SubAckMessage msg)
         {
@@ -830,6 +897,8 @@ namespace finalmqtt.Client
             short messageId = msg.getMessageId();
             if (msg.getQos() == QoS.AT_LEAST_ONCE || msg.getQos() == QoS.EXACTLY_ONCE)
             {
+                MQttLogging.LogWriter.Instance.WriteToLog("Sending ACK for messageId:" + messageId);
+
                 Message puback = new PubAckMessage(messageId, this);
                 puback.write();
             }
@@ -837,12 +906,13 @@ namespace finalmqtt.Client
 
         private void ClearPageResources()
         {
-            Debug.WriteLine("CLEARING PAGE RESOURCES");
+
+            MQttLogging.LogWriter.Instance.WriteToLog("CLEARING PAGE RESOURCES");
             ScheduledActionsMapClear();
             MsgCallbacksMapClear();
             if (pingScheduleAction != null)
             {
-                Debug.WriteLine("PING DISPOSED");
+                MQttLogging.LogWriter.Instance.WriteToLog("PING DISPOSED");
 
                 pingScheduleAction.Dispose();
                 pingScheduleAction = null;
