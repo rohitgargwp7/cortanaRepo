@@ -1736,13 +1736,16 @@ namespace windows_client.View
 
             if (isPublish)
             {
-                JObject obj = new JObject();
-                obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.TO, mContactNumber);
-                obj.Add(HikeConstants.DATA, ids);
+                if (ids != null && ids.Count > 0)
+                {
+                    JObject obj = new JObject();
+                    obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                    obj.Add(HikeConstants.DATA, ids);
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
+                }
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 updateLastMsgColor(mContactNumber);
                 isPublish = false;
             }
