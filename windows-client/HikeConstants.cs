@@ -579,7 +579,7 @@ namespace windows_client
             public static readonly string DEVICE_DETAILS = "==Device Details==";
             public static readonly string TECHNICAL_DETAILS= "==Auto generated technical details==";
 
-            public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "wp@hike.in;support@hike.in";
+            public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "support@hike.in";
             public static readonly string EXCEIPTION_REPORT_SUBJECT = " WP Bug Report: ";
         }
         #region Server URL Constants
