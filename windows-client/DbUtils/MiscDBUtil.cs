@@ -1360,17 +1360,17 @@ namespace windows_client.DbUtils
                 return;
 
             List<long> listExistingIds = MessagesTableUtils.FilterExistingMsgIds(dictReadby.Keys, msisdn);
-
+            bool isGroup = Utils.isGroupConversation(msisdn);
             foreach (long msgID in listExistingIds)
             {
                 JArray currentReadByArray = dictReadby[msgID];
                 if (msgID > lastReadMsgId)
                 {
                     lastReadMsgId = msgID;
-                    if (Utils.isGroupConversation(msisdn))
+                    if (isGroup)
                         readByArray = currentReadByArray;//if new msg id is greater than existing msg id then create new readby array
                 }
-                else if (msgID == lastReadMsgId && Utils.isGroupConversation(msisdn))
+                else if (msgID == lastReadMsgId && isGroup)
                 {
                     for (int i = 0; i < currentReadByArray.Count; i++)
                     {
