@@ -981,10 +981,6 @@ namespace windows_client
             await Task.Delay(1);
             string[] exceptions = ExceptionLoggingHelper.GetAllExceptions();
 
-            EmailComposeTask task = new EmailComposeTask();
-            task.To = HikeConstants.EmailException.EXCEIPTION_REPORT_TO_EMAILID;
-            task.Subject = HikeConstants.EmailException.EXCEIPTION_REPORT_SUBJECT + App.MSISDN;
-
             StringBuilder emailBodyText = new StringBuilder();
             emailBodyText.Append("\n").
                 Append(HikeConstants.EmailException.USER_COMMENTS).Append("\n").
@@ -1004,9 +1000,9 @@ namespace windows_client
                     emailBodyText.Append(exceptions[i]).Append("\n").Append("----------------------------").Append("\n\n");
                 }
             }
-
-            task.Body = emailBodyText.Length > HikeConstants.EmailException.EMAIL_LIMIT ? emailBodyText.ToString().Substring(0, HikeConstants.EmailException.EMAIL_LIMIT) : emailBodyText.ToString();
-            task.Show();
+            int maxCharsInEmail = HikeConstants.EmailConversation.EMAIL_LIMIT / sizeof(char);
+            string emailBody = emailBodyText.Length > maxCharsInEmail ? emailBodyText.ToString().Substring(0, maxCharsInEmail) : emailBodyText.ToString();
+            EmailHelper.SendEmail(HikeConstants.EmailException.EXCEIPTION_REPORT_SUBJECT + App.MSISDN, emailBody, HikeConstants.EmailException.EXCEIPTION_REPORT_TO_EMAILID);
             ExceptionLoggingHelper.DeleteAllExceptions();
         }
 

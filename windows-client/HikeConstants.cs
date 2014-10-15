@@ -581,8 +581,6 @@ namespace windows_client
 
             public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "wp@hike.in;support@hike.in";
             public static readonly string EXCEIPTION_REPORT_SUBJECT = " WP Bug Report: ";
-
-            public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
         }
         #region Server URL Constants
         public static class ServerUrls

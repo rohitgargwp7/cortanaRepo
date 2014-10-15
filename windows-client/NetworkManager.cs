@@ -2219,14 +2219,17 @@ namespace windows_client
                     ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
                     if (cm != null)
                     {
-                        cm.StatusUpdateObj = sm;//to update after getting message id after storing in db
-                        MsisdnBulkData msisdnBulkData;
-                        if (!dictBulkData.TryGetValue(cm.Msisdn, out msisdnBulkData))
+                        if (App.ViewModel.ConvMap.ContainsKey(cm.Msisdn))
                         {
-                            msisdnBulkData = new MsisdnBulkData(cm.Msisdn);
-                            dictBulkData[cm.Msisdn] = msisdnBulkData;
+                            cm.StatusUpdateObj = sm;//to update after getting message id after storing in db
+                            MsisdnBulkData msisdnBulkData;
+                            if (!dictBulkData.TryGetValue(cm.Msisdn, out msisdnBulkData))
+                            {
+                                msisdnBulkData = new MsisdnBulkData(cm.Msisdn);
+                                dictBulkData[cm.Msisdn] = msisdnBulkData;
+                            }
+                            msisdnBulkData.ListMessages.Add(cm);
                         }
-                        msisdnBulkData.ListMessages.Add(cm);
                     }
                 }
                 #endregion
