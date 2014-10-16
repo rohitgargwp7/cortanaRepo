@@ -224,7 +224,18 @@ namespace CommonLibrary.DbUtils
 
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    ContactInfo contact = Utility.GetContactInfo(convMsg.Msisdn);
+                    string content;
+
+                    if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
+                    else
+                        content = "wrote " + convMsg.Message;
+
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, contact.NameToShow, content, convMsg.Msisdn, false);
                     return null;
+                }
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
                 HikeInstantiation.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
@@ -358,6 +369,17 @@ namespace CommonLibrary.DbUtils
                 {
                     obj.IsLastMsgStatusUpdate = true;
                     obj.LastMessage = "\"" + convMsg.Message + "\"";
+
+                    var content = convMsg.Message;
+
+                    if (obj.IsHidden)
+                        content = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
+                    else if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
+                    else
+                        content = "wrote " + convMsg.Message;
+
+                    NotificationManager.ShowNotification(ToastType.STATUS, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region NO_INFO
@@ -403,6 +425,8 @@ namespace CommonLibrary.DbUtils
 
                         obj.ToastText = toastText;
                     }
+
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.ToastText, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region Chat Background Changed
@@ -420,6 +444,8 @@ namespace CommonLibrary.DbUtils
 
                     if (obj.IsHidden)
                         obj.ToastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
+
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.ToastText, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region OTHER MSGS
@@ -509,7 +535,6 @@ namespace CommonLibrary.DbUtils
                 }
             }
             #endregion
-
         }
 
         /// <summary>

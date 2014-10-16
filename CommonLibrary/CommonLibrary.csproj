@@ -109,6 +109,7 @@
     <Compile Include="Lib\MD5.cs" />
     <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\NetworkManager.cs" />
+    <Compile Include="Misc\NotificationManager.cs" />
     <Compile Include="Model\PageState.cs" />
     <Compile Include="Utils\RecentStickerHelper.cs" />
     <Compile Include="Model\Attachment.cs" />

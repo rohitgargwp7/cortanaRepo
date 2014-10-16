@@ -161,6 +161,14 @@ namespace CommonLibrary.Model
             }
         }
 
+        public string NameToShow
+        {
+            get
+            {
+                return String.IsNullOrEmpty(Name) ? Msisdn : Name;
+            }
+        }
+
         public ContactInfo()
         {
             _name = null;

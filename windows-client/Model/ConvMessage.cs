@@ -2365,20 +2365,6 @@ namespace windows_client.Model
                     }
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
-                case ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED:
-                    grpId = (string)jsonObj[ServerJsonKeys.TO];
-                    from = (string)jsonObj[ServerJsonKeys.FROM];
-                    this._groupParticipant = from;
-                    this._msisdn = grpId;
-                    if (from == HikeInstantiation.MSISDN)
-                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                    else
-                    {
-                        gp = GroupManager.Instance.GetGroupParticipant(null, from, grpId);
-                        this.Message = string.Format(AppResources.ChatBg_NotChanged_Text, gp.Name);
-                    }
-                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                    break;
                 default:
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
