@@ -2020,7 +2020,7 @@ namespace windows_client.View
                 return;
 
             Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_LONGPRESS, convObj.Msisdn);
-            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.ContactName != null ? convObj.ContactName : convObj.Msisdn, convObj.IsGroupChat);
+            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.NameToShow, convObj.IsGroupChat);
         }
 
         #endregion
