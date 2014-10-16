@@ -5062,7 +5062,7 @@ namespace windows_client.View
 
                 source = Attachment.AttachemntSource.CAMERA;
                 thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
-                filePath = HikeConstants.TEMP_VIDEO_NAME;
+                filePath = Utils.GetAbsolutePath(HikeConstants.TEMP_VIDEO_NAME);
                 isAudio = false;
 
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
