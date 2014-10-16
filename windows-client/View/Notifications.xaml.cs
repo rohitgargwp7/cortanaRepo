@@ -106,6 +106,14 @@ namespace windows_client.View
 
             hideMessageToggle.IsChecked = hideMessagePreview;
             this.hideMessageToggle.Content = hideMessagePreview ? AppResources.On : AppResources.Off;
+
+            bool contactJoiningNotification = true;
+            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotification))
+                contactJoiningNotification = true;
+
+            contactJoiningNotificationToggle.IsChecked = contactJoiningNotification;
+            this.contactJoiningNotificationToggle.Content = contactJoiningNotification ? AppResources.On : AppResources.Off;
+
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -303,6 +311,90 @@ namespace windows_client.View
             }
         }
 
+        private void contactJoiningNotificationToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            contactJoiningNotificationToggle.Loaded -= contactJoiningNotificationToggle_Loaded;
+            contactJoiningNotificationToggle.Checked += contactJoiningNotificationToggle_Checked;
+            contactJoiningNotificationToggle.Unchecked += contactJoiningNotificationToggle_Unchecked;
+        }
+
+        private void contactJoiningNotificationToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.contactJoiningNotificationToggle.Content = AppResources.On;
+
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, true);
+            JObject obj = new JObject();
+
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.USER_JOINING_NOTIF, 1);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
+        }
+
+        private void contactJoiningNotificationToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.contactJoiningNotificationToggle.Content = AppResources.Off;
+
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, false);
+
+            JObject obj = new JObject();
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(HikeConstants.USER_JOINING_NOTIF, 0);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
+        }
+
+        
+
+        public void postAccountJoiningNotification_Callback(JObject obj, Object currentStatus)
+        {
+            bool currentlyChecked = (bool)currentStatus;
+            string stat = "";
+            string message = "";
+
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
+                if (statusToken != null)
+                    stat = statusToken.ToString();
+            }
+
+            if (stat != ServerJsonKeys.OK)
+            {
+                message = AppResources.Oops_Something_Wrong_Txt;
+                preventCheckedState(currentlyChecked);
+                HideOverLay(message);
+            }
+            else
+            {
+                if (!currentlyChecked)
+                {
+                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, false);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        contactJoiningNotificationToggle.Content = AppResources.Off;
+                    });
+                }
+                else
+                {
+                    HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        contactJoiningNotificationToggle.Content = AppResources.On;
+                    });
+                }
+
+                HideOverLay(String.Empty);
+            }
+        }
+
         void preventCheckedState(bool currentlyChecked)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -348,6 +440,7 @@ namespace windows_client.View
 
             base.OnBackKeyPress(e);
         }
+
     }
     
 }

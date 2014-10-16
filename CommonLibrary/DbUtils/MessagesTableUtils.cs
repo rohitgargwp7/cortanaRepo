@@ -133,7 +133,7 @@ namespace CommonLibrary.DbUtils
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 bool success = addMessage(convMsg);
-                
+
                 if (!success)
                     return null;
 
@@ -190,7 +190,7 @@ namespace CommonLibrary.DbUtils
             if (addMessage(convMsg))
             {
                 ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, from);
-                
+
                 if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     ProcessConversationMetadata(convMsg, cobj);
@@ -225,6 +225,14 @@ namespace CommonLibrary.DbUtils
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
+
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ||
+                    convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
+                    HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
+                {
+                    if (HikeInstantiation.AppSettings[AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING].Equals("false"))
+                        return null;
+                }
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
                 HikeInstantiation.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);

@@ -75,7 +75,7 @@ namespace windows_client.utils
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
             LAST_SEEN_POST, SOCIAL_INVITE, POST_GROUP_ICON,
-            HIDE_MESSAGE_PREVIEW
+            HIDE_MESSAGE_PREVIEW, CONTACT_JOINING_NOTIFICATION
         }
 
         public static void AddToken(HttpWebRequest req)
@@ -259,6 +259,16 @@ namespace windows_client.utils
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.HIDE_MESSAGE_PREVIEW, push_token, on_off, finalCallbackFunction, obj });
+        }
+
+        public static void postAccountJoiningNotification(string push_token, bool on_off, parametrisedPostResponseFunction finalCallbackFunction, Object obj)
+        {
+            //TODO::MOHIT Process it as MQTT packet
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/device")) as HttpWebRequest;
+            AddToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.CONTACT_JOINING_NOTIFICATION, push_token, on_off, finalCallbackFunction, obj });
         }
 
         public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)

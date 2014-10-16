@@ -1756,7 +1756,14 @@ namespace CommonLibrary
                                     }
                                 }
                                 
+                                
                                 ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+
+                                if (HikeInstantiation.AppSettings[AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING].Equals("false") &&
+                                    lastMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
+                                {
+                                    //TODO
+                                }
                                 obj = MessagesTableUtils.UpdateConversationList(lastMessage, false);
 
                                 if (obj == null)

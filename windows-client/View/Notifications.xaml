@@ -41,13 +41,19 @@
                                           Header="{Binding Path= LocalizedResources.Settings_HikeJingleToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="hikeJingle_Checked" Unchecked="hikeJingle_Unchecked"/>
             <toolkit:ToggleSwitch  Margin="0 0 0 -10" Grid.Row="2" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
+            
             <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="3" x:Name="statusUpdateNotificationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="statusUpdateNotificationToggle_Loaded"
                                           Header="{Binding Path= LocalizedResources.Settings_StatusNotification_SwitchHeader, Source={StaticResource LocalizedStrings}}" />
+            
             <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="4" x:Name="hideMessageToggle" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Message_Preview, Source={StaticResource LocalizedStrings}}" Loaded="hideMessageToggle_Loaded"/>
-            <toolkit:ListPicker Grid.Row="5" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
+            
+            <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="5" x:Name="contactJoiningNotificationToggle" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="{Binding Path= LocalizedResources.contactJoiningNotification, Source={StaticResource LocalizedStrings}}" Loaded="contactJoiningNotificationToggle_Loaded"/>
+            
+            <toolkit:ListPicker Grid.Row="6" x:Name="listBoxStatusSettings" Loaded="listBoxStatusSettings_Loaded" Margin="10 -5 10 0" Visibility="Collapsed"/>
 
-            <Button Margin="12,20,0,0" Width="425" Height="50" Style="{StaticResource YesButtonStyle}" Grid.Row="5" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
+            <Button Margin="12,20,0,0" Width="425" Height="50" Style="{StaticResource YesButtonStyle}" Grid.Row="6" Content="{Binding Path= LocalizedResources.Settings_LockScreenNotifications, Source={StaticResource LocalizedStrings}}" Tap="btnGoToLockSettings_Click" />
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
