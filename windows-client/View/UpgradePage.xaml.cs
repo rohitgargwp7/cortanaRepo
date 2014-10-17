@@ -212,12 +212,28 @@ namespace windows_client.View
                 DeleteAngryStickerCategory();
             }
             
-            if (Utils.compareVersion("2.8.0.3", App.CURRENT_VERSION) == 1)
+            if (Utils.compareVersion("2.8.1.0", App.CURRENT_VERSION) == 1)
             {
                 UpgradeGroupInfoForReadBy();
+
+                UpdateConverationsIndividually();
             }
             
             Thread.Sleep(2000);
+        }
+
+        private void UpdateConverationsIndividually()
+        {
+            if (App.ViewModel.ConvMap.Count > 0)
+            {
+                //in previous versions is hidden is not updated in individual files
+                foreach (ConversationListObject co in App.ViewModel.ConvMap.Values)
+                {
+                    ConversationTableUtils.saveConvObject(co, co.Msisdn);
+                }
+                //to update metadata in all objects
+                ConversationTableUtils.saveConvObjectList();
+            }
         }
 
         /// <summary>

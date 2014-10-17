@@ -3306,6 +3306,7 @@ namespace windows_client.View
             if (obj != null)
             {
                 obj.IsHidden = !obj.IsHidden;
+                ConversationTableUtils.saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
 
                 if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 {
