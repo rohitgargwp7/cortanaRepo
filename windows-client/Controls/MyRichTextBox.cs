@@ -41,7 +41,6 @@ namespace windows_client.Controls
     
         private string lastText = String.Empty;
         private string lastGroupMemberName = String.Empty;
-        bool _isGroupMemberNameChanged = true;
 
         public string Text
         {
@@ -144,7 +143,6 @@ namespace windows_client.Controls
             try
             {
                 var richTextBox = (MyRichTextBox)dependencyObject;
-                var text = (string)dependencyPropertyChangedEventArgs.NewValue;
                 richTextBox.LinkifyText(richTextBox.Text);
             }
             catch (Exception ex)
