@@ -31,7 +31,7 @@ namespace windows_client.Controls
                     DependencyProperty.Register("MaxLines", typeof(Int32), typeof(MyRichTextBox), new PropertyMetadata(default(Int32)));
 
         public static readonly DependencyProperty GroupMemberNameProperty =
-                    DependencyProperty.Register("GroupMemberName", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String)));
+                    DependencyProperty.Register("GroupMemberName", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String), GroupMemberNamePropertyChanged));
 
         public static readonly DependencyProperty GroupMemberMsisdnProperty =
                     DependencyProperty.Register("GroupMemberMsisdn", typeof(String), typeof(MyRichTextBox), new PropertyMetadata(default(String)));
@@ -39,7 +39,10 @@ namespace windows_client.Controls
         public static readonly DependencyProperty IsPinProperty =
                     DependencyProperty.Register("IsPin", typeof(Boolean), typeof(MyRichTextBox), new PropertyMetadata(default(Boolean)));
     
-        private string lastText = string.Empty;
+        private string lastText = String.Empty;
+        private string lastGroupMemberName = String.Empty;
+        bool _isGroupMemberNameChanged = true;
+
         public string Text
         {
             get
@@ -136,6 +139,20 @@ namespace windows_client.Controls
             }
         }
 
+        private static void GroupMemberNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            try
+            {
+                var richTextBox = (MyRichTextBox)dependencyObject;
+                var text = (string)dependencyPropertyChangedEventArgs.NewValue;
+                richTextBox.LinkifyText(richTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
         private static void TextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             try
@@ -153,9 +170,11 @@ namespace windows_client.Controls
 
         internal void LinkifyText(string text)
         {
-            if (text == lastText)
+            if (text == lastText && GroupMemberName == lastGroupMemberName)
                 return;
+
             lastText = text;
+            lastGroupMemberName = GroupMemberName;
 
             if (MaxCharsPerLine > 0)
             {
