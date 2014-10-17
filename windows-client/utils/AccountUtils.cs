@@ -828,8 +828,8 @@ namespace windows_client.utils
         public static string GZipDecompress(byte[] byteArray)
         {
             if (byteArray == null || byteArray.Length == 0)
-                return string.Empty;
-
+                return String.Empty;
+            
             //Prepare for decompress
             using (MemoryStream ms = new MemoryStream(byteArray))
             {
