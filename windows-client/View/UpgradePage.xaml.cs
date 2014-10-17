@@ -229,7 +229,7 @@ namespace windows_client.View
                 //in previous versions is hidden is not updated in individual files
                 foreach (ConversationListObject co in App.ViewModel.ConvMap.Values)
                 {
-                    ConversationTableUtils.saveConvObject(co, co.Msisdn);
+                    ConversationTableUtils.saveConvObject(co, co.Msisdn.Replace(":", "_"));
                 }
                 //to update metadata in all objects
                 ConversationTableUtils.saveConvObjectList();
