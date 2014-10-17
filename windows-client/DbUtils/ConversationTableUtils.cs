@@ -234,7 +234,7 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
-                saveConvObject(obj, msisdn);
+                saveConvObject(obj, msisdn.Replace(":", "_"));
                 //saveConvObjectList();
             }
         }

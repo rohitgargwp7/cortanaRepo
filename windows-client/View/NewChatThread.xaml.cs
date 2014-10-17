@@ -3984,6 +3984,7 @@ namespace windows_client.View
             MessagesTableUtils.deleteAllMessagesForMsisdn(mContactNumber);
             MiscDBUtil.deleteMsisdnData(mContactNumber);
             MessagesTableUtils.DeleteLongMessages(mContactNumber);
+            ConversationTableUtils.updateConversation(App.ViewModel.ConvMap[mContactNumber]);
         }
 
         #endregion
