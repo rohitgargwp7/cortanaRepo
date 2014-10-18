@@ -828,29 +828,17 @@ namespace windows_client.utils
         public static string GZipDecompress(byte[] byteArray)
         {
             if (byteArray == null || byteArray.Length == 0)
-                return string.Empty;
-
+                return String.Empty;
+            
             //Prepare for decompress
-            MemoryStream ms = new MemoryStream(byteArray);
-            GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
-
-            //Decompress
-            byte[] buffer = StreamToByteArray(gzip);
-
-            //Transform byte[] unzip data to string
-            StringBuilder sb = new StringBuilder();
-
-            //Read the number of bytes GZipStream red and do not a for each bytes in resultByteArray;
-            for (int i = 0; i < buffer.Length; i++)
-                sb.Append((char)buffer[i]);
-
-            gzip.Close();
-            ms.Close();
-
-            gzip.Dispose();
-            ms.Dispose();
-
-            return sb.ToString();
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
+                {
+                    byte[] buffer = StreamToByteArray(gzip);
+                    return System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length); //Please use inbuilt function
+                }
+            }
         }
         public static byte[] StreamToByteArray(Stream input)
         {

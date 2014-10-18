@@ -2024,7 +2024,7 @@ namespace windows_client.View
                 return;
 
             Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_LONGPRESS, convObj.Msisdn);
-            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.ContactName, convObj.IsGroupChat);
+            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.NameToShow, convObj.IsGroupChat);
         }
 
         #endregion
@@ -3310,6 +3310,7 @@ namespace windows_client.View
             if (obj != null)
             {
                 obj.IsHidden = !obj.IsHidden;
+                ConversationTableUtils.saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
 
                 if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 {

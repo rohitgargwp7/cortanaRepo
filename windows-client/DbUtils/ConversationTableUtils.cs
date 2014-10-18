@@ -234,7 +234,7 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
-                saveConvObject(obj, msisdn);
+                saveConvObject(obj, msisdn.Replace(":", "_"));
                 //saveConvObjectList();
             }
         }
@@ -475,7 +475,9 @@ namespace windows_client.DbUtils
                                 bool isLessThanEqualTo_1500 = false;
                                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
-
+                                bool isLessThan_2900 = false;
+                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.8.0.5") != 1) // current_ver < 2.9.0.0
+                                    isLessThan_2900 = true;
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
                                 {
@@ -484,6 +486,8 @@ namespace windows_client.DbUtils
                                     {
                                         if (isLessThanEqualTo_1500)
                                             item.ReadVer_1_4_0_0(reader);
+                                        else if(isLessThan_2900)
+                                            item.ReadVer_2_8_0_0(reader);
                                         else
                                             item.ReadVer_Latest(reader);
                                     }
