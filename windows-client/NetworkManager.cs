@@ -1966,7 +1966,6 @@ namespace windows_client
             #endregion
         }
 
-
         /// <summary>
         /// Process bulk packet
         /// </summary>

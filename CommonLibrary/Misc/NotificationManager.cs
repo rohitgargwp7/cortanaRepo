@@ -29,6 +29,14 @@ namespace CommonLibrary.Misc
                 if (statusSettingsValue == 0)
                     return;
             }
+            else
+            {
+                bool isPushEnabled = true;
+                HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
+
+                if (!isPushEnabled)
+                    return;
+            }
 
             try
             {

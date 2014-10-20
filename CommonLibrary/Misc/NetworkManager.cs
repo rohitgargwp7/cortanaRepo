@@ -1229,6 +1229,11 @@ namespace CommonLibrary
 
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
 
+                    ContactInfo contact = Utility.GetContactInfo(msisdn);
+                    var header = contact == null ? msisdn : contact.NameToShow;
+
+                    NotificationManager.ShowNotification(ToastType.FRIENDREQUEST, header, HikeConstants.ToastConstants.TOAST_FOR_FRIENDREQUEST, msisdn, false);
+
                     if (friendStatus == FriendsTableUtils.FriendStatusEnum.ALREADY_FRIENDS)
                         return;
 

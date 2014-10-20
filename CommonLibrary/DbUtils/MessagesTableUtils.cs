@@ -226,14 +226,35 @@ namespace CommonLibrary.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
                     ContactInfo contact = Utility.GetContactInfo(convMsg.Msisdn);
-                    string content;
+                    string content = convMsg.Message;
 
                     if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                         content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
-                    else
-                        content = "wrote " + convMsg.Message;
+                    else if (convMsg.MetaDataString.Contains(ServerJsonKeys.MqttMessageTypes.STATUS_UPDATE))
+                    {
+                        JObject jdata = null;
 
-                    NotificationManager.ShowNotification(ToastType.MESSAGE, contact.NameToShow, content, convMsg.Msisdn, false);
+                        try
+                        {
+                            jdata = JObject.Parse(convMsg.MetaDataString);
+                        }
+                        catch { }
+
+                        if (jdata != null)
+                        {
+                            JToken val;
+                            JObject ddata = jdata[ServerJsonKeys.DATA] as JObject;
+
+                            // profile pic update
+                            if (ddata.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                                content = "\"" + HikeConstants.ToastConstants.TOAST_FOR_PROFILEUPDATE + "\"";
+                            else // status , mood update
+                                content = "wrote " + "\"" + convMsg.Message + "\"";
+                        }
+                    }
+
+                    var header = contact == null ? convMsg.Msisdn : contact.NameToShow;
+                    NotificationManager.ShowNotification(ToastType.STATUS, header, content, convMsg.Msisdn, false);
                     return null;
                 }
 
@@ -355,13 +376,16 @@ namespace CommonLibrary.DbUtils
                     {
                         obj.LastMessage = string.Format(msgtext, obj.NameToShow);
                     }
+
                     convMsg.Message = obj.LastMessage;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region GROUP NAME/PIC CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
                     obj.LastMessage = convMsg.Message;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region STATUS UPDATES
@@ -376,8 +400,28 @@ namespace CommonLibrary.DbUtils
                         content = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
                     else if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
                         content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
-                    else
-                        content = "wrote " + convMsg.Message;
+                    else if (convMsg.MetaDataString.Contains(ServerJsonKeys.MqttMessageTypes.STATUS_UPDATE))
+                    {
+                        JObject jdata = null;
+
+                        try
+                        {
+                            jdata = JObject.Parse(convMsg.MetaDataString);
+                        }
+                        catch{ }
+
+                        if (jdata != null)
+                        {
+                            JToken val;
+                            JObject ddata = jdata[ServerJsonKeys.DATA] as JObject;
+
+                            // profile pic update
+                            if (ddata.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                                content = "\"" + HikeConstants.ToastConstants.TOAST_FOR_PROFILEUPDATE + "\"";
+                            else // status , mood update
+                                content = "wrote " + "\"" + convMsg.Message + "\"";
+                        }
+                    }
 
                     NotificationManager.ShowNotification(ToastType.STATUS, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
