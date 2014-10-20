@@ -364,18 +364,34 @@ namespace windows_client
                     return;
                 }
 
-                long[] ids = new long[msgIds.Count];
-                for (int i = 0; i < ids.Length; i++)
+                long lastSentMsgId = 0;
+                bool isGroupConversation = Utils.isGroupConversation(msisdnToCheck);
+                if (isGroupConversation)
                 {
-                    ids[i] = Int64.Parse(msgIds[i].ToString());
+                    lastSentMsgId = MessagesTableUtils.GetLastSentMessageId(msisdnToCheck);
                 }
-                List<long> listIds;
-                updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn, out listIds);
-                object[] vals = new object[3];
-                vals[0] = listIds;
-                vals[1] = msisdnToCheck;
-                vals[2] = new JArray() { msisdn };
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+
+                long maxMessageId = 0;
+                for (int i = 0; i < msgIds.Count; i++)
+                {
+                    long messageId = Int64.Parse(msgIds[i].ToString());
+
+                    if (isGroupConversation)
+                    {
+                        if (messageId > maxMessageId && messageId <= lastSentMsgId)
+                            maxMessageId = messageId;
+                    }
+                    else
+                    {
+                        if (messageId > maxMessageId)
+                            maxMessageId = messageId;
+                    }
+                }
+
+                JArray readByArray = new JArray() { msisdn };
+                UpdateReadByStatus(msisdnToCheck, maxMessageId, readByArray);
+
+                Debug.WriteLine("Message read report processed completely");
             }
             #endregion
             #region USER_JOINED USER_LEFT
@@ -1948,6 +1964,26 @@ namespace windows_client
             #endregion
         }
 
+        private void UpdateReadByStatus(string msisdnToCheck, long lastSentMsgId, JArray readByArray)
+        {
+            IList<long> listUpdatedMessageIds = null;
+            listUpdatedMessageIds = MiscDBUtil.UpdateMessageDBsReadStatus(msisdnToCheck, lastSentMsgId, readByArray);
+
+            bool isGroupUpdated = false;
+            if (Utils.isGroupConversation(msisdnToCheck))
+                isGroupUpdated = GroupTableUtils.UpdateReadBy(msisdnToCheck, lastSentMsgId, readByArray);
+
+            if (isGroupUpdated || listUpdatedMessageIds.Count > 0)
+            {
+                object[] vals = new object[4];
+                vals[0] = listUpdatedMessageIds;
+                vals[1] = msisdnToCheck;
+                vals[2] = readByArray;
+                vals[3] = lastSentMsgId;
+                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+            }
+        }
+
 
         /// <summary>
         /// Process bulk packet
@@ -2038,19 +2074,9 @@ namespace windows_client
                         vals[1] = msisdnBulkData.Msisdn;
                         this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
                     }
-                    if (msisdnBulkData.DictReadBy.Count > 0)
+                    if (msisdnBulkData.MaxReadById > 0)
                     {
-
-                        long lastReadMsgId;
-                        JArray readByArray;
-                        MiscDBUtil.GetReadby(msisdnBulkData.DictReadBy, msisdnBulkData.Msisdn, out lastReadMsgId, out readByArray);
-
-                        object[] vals = new object[3];
-                        vals[0] = MiscDBUtil.UpdateBulkMessageDBsReadStatus(msisdnBulkData.Msisdn, lastReadMsgId, lastReadMsgId, readByArray);
-                        vals[1] = msisdnBulkData.Msisdn;
-                        vals[2] = readByArray;
-                        this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
-
+                        UpdateReadByStatus(msisdnBulkData.Msisdn, msisdnBulkData.MaxReadById, msisdnBulkData.ReadByArray);
                     }
                 }
             }
@@ -2193,19 +2219,35 @@ namespace windows_client
                         msisdnBulkData = new MsisdnBulkData(msisdn);
                         dictBulkData[msisdn] = msisdnBulkData;
                     }
+                    bool isGroupConversation = Utils.isGroupConversation(msisdn);
+                    if (isGroupConversation && msisdnBulkData.LastSentMessageId == 0)
+                    {
+                        msisdnBulkData.LastSentMessageId = MessagesTableUtils.GetLastSentMessageId(msisdn);
+                    }
+
                     for (int i = 0; i < msgIds.Count; i++)
                     {
-                        long msgID = Int64.Parse(msgIds[i].ToString());
+                        long messageId = Int64.Parse(msgIds[i].ToString());
 
-                        JArray readByArray;
-                        if (!msisdnBulkData.DictReadBy.TryGetValue(msgID, out readByArray))
+                        if (isGroupConversation)
                         {
-                            readByArray = new JArray() { readBy };
-                            msisdnBulkData.DictReadBy[msgID] = readByArray;
+                            if (messageId > msisdnBulkData.MaxReadById && messageId <= msisdnBulkData.LastSentMessageId)
+                            {
+                                msisdnBulkData.MaxReadById = messageId;
+                                msisdnBulkData.ReadByArray = new JArray() { readBy };
+                            }
+                            else if(msisdnBulkData.MaxReadById==messageId)
+                            {
+                                if (msisdnBulkData.ReadByArray == null)
+                                    msisdnBulkData.ReadByArray = new JArray() { readBy };
+                                else if (!msisdnBulkData.ReadByArray.Contains(readBy))
+                                    msisdnBulkData.ReadByArray.Add(readBy);
+                            }
                         }
-                        else if (!readByArray.Contains(readBy))
+                        else
                         {
-                            readByArray.Add(readBy);
+                            if (messageId > msisdnBulkData.MaxReadById)
+                                msisdnBulkData.MaxReadById = messageId;
                         }
                     }
 
@@ -2679,43 +2721,6 @@ namespace windows_client
             for (int i = 0; i < groupParticipantList.Count; i++)
                 map[groupParticipantList[i].Msisdn] = groupParticipantList[i];
             return map;
-        }
-
-        /// <summary>
-        /// Update message db with status sent delivered read for set of messages
-        /// </summary>
-        /// <param name="conversationId"></param>
-        /// <param name="ids"></param>
-        /// <param name="status"></param>
-        /// <param name="sender"></param>
-        private void updateDbBatch(string conversationId, long[] ids, int status, string sender, out List<long> listExistingIds)
-        {
-            listExistingIds = null;
-            if (ids == null || ids.Length == 0)
-                return;
-            string msisdn = MessagesTableUtils.updateAllMsgReadStatus(conversationId, ids, out listExistingIds);
-
-            // To update conversation object , we have to check if ids [] contains last msg id
-            if (App.ViewModel.ConvMap.ContainsKey(conversationId) && listExistingIds != null && listExistingIds.Count > 0)
-            {
-                ConversationListObject co = App.ViewModel.ConvMap[conversationId];
-                bool containsMessageId = false;
-                long maxReadId = 0;
-                for (int i = 0; i < listExistingIds.Count; i++)
-                {
-                    if (listExistingIds[i] > maxReadId)
-                        maxReadId = listExistingIds[i];
-                    if (co.LastMsgId == listExistingIds[i])
-                        containsMessageId = true;
-                }
-
-                if (containsMessageId)
-                    ConversationTableUtils.updateLastMsgStatus(co.LastMsgId, msisdn, status);//if msisdn null then conversastionlistObj is alreadyUpdated
-
-                if (Utils.isGroupConversation(conversationId))
-                    GroupTableUtils.UpdateReadBy(conversationId, maxReadId, sender);
-
-            }
         }
 
     }

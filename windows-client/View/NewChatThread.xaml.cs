@@ -1915,7 +1915,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT,HikeConstants.ANALYTICS_EMAIL,HikeConstants.ANALYTICS_EMAIL_MENU,mContactNumber);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_MENU, mContactNumber);
             EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
@@ -3332,7 +3332,7 @@ namespace windows_client.View
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
-                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
                     || lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     obj.LastMessage = lastMessageBubble.Message;
@@ -4187,7 +4187,7 @@ namespace windows_client.View
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
 
-                            if ( _isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if (_isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
                                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
 
@@ -4360,22 +4360,19 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 IList<long> ids = (IList<long>)vals[0];
                 string msisdnToCheck = (string)vals[1];
-                if (msisdnToCheck != mContactNumber || ids == null || ids.Count == 0)
+                if (msisdnToCheck != mContactNumber || ids == null)//ids.count check removed because only read by may be updated
                     return;
 
                 JArray readByArray = null;
                 if (isGroupChat)
                     readByArray = (JArray)vals[2];
 
-                long maxId = 0;
+                long maxId = (long)vals[3];
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Count; i++)
                 {
                     try
                     {
-                        if (maxId < ids[i])
-                            maxId = ids[i];
-
                         ConvMessage msg = null;
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
@@ -4763,7 +4760,7 @@ namespace windows_client.View
 
             #region Pin Message Deleted From Pin History
 
-            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC )
+            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC)
             {
                 if (obj is ConvMessage)
                 {
@@ -4787,7 +4784,7 @@ namespace windows_client.View
 
                                     tipControl.Visibility = Visibility.Visible;
                                 }
-                                
+
                             }
                             catch (Exception ex)
                             {
@@ -6064,7 +6061,7 @@ namespace windows_client.View
 
             if (emoticonPanel.Visibility == Visibility.Visible)
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            
+
             EnableDisableAppBar(false);
             NewPin_Open();
         }
