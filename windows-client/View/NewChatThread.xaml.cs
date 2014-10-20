@@ -554,6 +554,8 @@ namespace windows_client.View
                 {
                     CreateStickerPivot();
                     CreateStickerCategories();
+                    if (stickersIconButton != null)
+                        stickersIconButton.IsEnabled = true;
                 };
                 bw.RunWorkerAsync();
                 App.newChatThreadPage = this;
@@ -1820,7 +1822,7 @@ namespace windows_client.View
             stickersIconButton.IconUri = new Uri("/View/images/AppBar/icon_sticker.png", UriKind.Relative);
             stickersIconButton.Text = AppResources.Sticker_Txt;
             stickersIconButton.Click += new EventHandler(emoticonButton_Click);
-            stickersIconButton.IsEnabled = true;
+            stickersIconButton.IsEnabled = false;
             appBar.Buttons.Add(stickersIconButton);
 
             //add icon for smiley
@@ -6679,8 +6681,10 @@ namespace windows_client.View
             // Check if sticker category doesn't exist, show humanoid (default) category.
             if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
-            else
+            else if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(StickerHelper.CATEGORY_HUMANOID))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
+            else
+                return;
 
             // So that after reopening of ct , if pivot index are same we need to update pivot selection explicitly.
             if (pivotStickers.SelectedIndex == stickerPivot.PivotItemIndex)
