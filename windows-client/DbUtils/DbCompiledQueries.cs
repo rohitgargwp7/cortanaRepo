@@ -328,7 +328,7 @@ namespace windows_client.DbUtils
                          from o in hdc.messages
                          where o.Msisdn == msisdn && o.MessageStatus != ConvMessage.State.UNKNOWN && o.MessageStatus != ConvMessage.State.RECEIVED_READ && o.MessageStatus != ConvMessage.State.RECEIVED_UNREAD
                          orderby o.MessageId descending
-                         select o);//doubt:only sent or everyone
+                         select o);
                 return q;
             }
         }

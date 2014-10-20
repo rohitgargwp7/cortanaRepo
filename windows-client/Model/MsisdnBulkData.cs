@@ -46,7 +46,7 @@ namespace windows_client.Model
         }
 
         /// <summary>
-        /// Max msg id in bulk packet
+        /// Max msg id in bulk packet(for group less than equal to last sent msg id, for 1:1 max msg id)
         /// </summary>
         public long MaxReadById
         {
