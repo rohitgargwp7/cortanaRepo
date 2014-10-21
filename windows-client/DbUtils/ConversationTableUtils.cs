@@ -166,20 +166,6 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMessage.Message;
                 }
             }
-            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
-            {
-                if (!Utility.IsGroupConversation(from))
-                {
-                    if (from == HikeInstantiation.MSISDN)
-                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                    else
-                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
-                }
-                else
-                {
-                    obj.LastMessage = convMessage.Message;
-                }
-            }
 
             obj.LastMsgId = convMessage.MessageId;
 

@@ -85,6 +85,9 @@ namespace CommonLibrary.Constants
             public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
             public static readonly string TOAST_FOR_FILE = "Sent you a file";
             public static readonly string TOAST_FOR_PIN = "Has posted a pin";
+            public static readonly string TOAST_FOR_STATUS = "Posted a status";
+            public static readonly string TOAST_FOR_FRIENDREQUEST = "Added you as favorite";
+            public static readonly string TOAST_FOR_PROFILEUPDATE = "Changed profile picture";
         }
 
         public static class Extras

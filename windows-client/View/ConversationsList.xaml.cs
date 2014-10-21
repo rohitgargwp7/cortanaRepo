@@ -592,7 +592,6 @@ namespace windows_client.View
 
             if (_isStatusUpdatesNotMute)
             {
-
                 HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.STATUS_UPDATE_SETTING, (byte)1);
                 settingsValue = 0;
             }
