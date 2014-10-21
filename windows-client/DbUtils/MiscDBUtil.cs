@@ -1325,45 +1325,14 @@ namespace windows_client.DbUtils
         /// <param name="msisdn"></param>
         /// <param name="msgID"></param>
         /// <param name="status"></param>
-        public static IList<long> UpdateBulkMessageDBsReadStatus(string msisdn, long msgID, long lastReadMessageId, JArray readByArray)
+        public static IList<long> UpdateMessageDBsReadStatus(string msisdn,  long lastReadMessageId, JArray readByArray)
         {
-            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, msgID);
-            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, (int)ConvMessage.State.SENT_DELIVERED_READ); // update conversationObj, null is already checked in the function
-            if (Utils.isGroupConversation(msisdn))
-                GroupTableUtils.UpdateReadBy(msisdn, lastReadMessageId, readByArray);
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, lastReadMessageId);
+            ConversationTableUtils.updateLastMsgStatus(lastReadMessageId, msisdn, (int)ConvMessage.State.SENT_DELIVERED_READ); // update conversationObj, null is already checked in the function
+          
             return listUpdatedMsgIds;
         }
 
-
-        public static void GetReadby(Dictionary<long, JArray> dictReadby, string msisdn, out long lastReadMsgId, out JArray readByArray)
-        {
-            lastReadMsgId = 0;
-            readByArray = null;
-            if (dictReadby == null || dictReadby.Count == 0)
-                return;
-
-            List<long> listExistingIds = MessagesTableUtils.FilterExistingMsgIds(dictReadby.Keys, msisdn);
-            bool isGroup = Utils.isGroupConversation(msisdn);
-            foreach (long msgID in listExistingIds)
-            {
-                JArray currentReadByArray = dictReadby[msgID];
-                if (msgID > lastReadMsgId)
-                {
-                    lastReadMsgId = msgID;
-                    if (isGroup)
-                        readByArray = currentReadByArray;//if new msg id is greater than existing msg id then create new readby array
-                }
-                else if (msgID == lastReadMsgId && isGroup)
-                {
-                    for (int i = 0; i < currentReadByArray.Count; i++)
-                    {
-                        if (!readByArray.Contains(currentReadByArray[i]))
-                            readByArray.Add(currentReadByArray[i]);
-                    }
-                }
-            }
-
-        }
         #endregion
     }
 }

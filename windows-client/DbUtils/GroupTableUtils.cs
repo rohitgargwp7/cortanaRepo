@@ -123,16 +123,16 @@ namespace windows_client.DbUtils
         /// <param name="groupId"></param>
         /// <param name="lastReadMessageId"></param>
         /// <param name="readByArray"></param>
-        public static void UpdateReadBy(string groupId, long lastReadMessageId, JArray readByArray)
+        public static bool UpdateReadBy(string groupId, long lastReadMessageId, JArray readByArray)
         {
             if (string.IsNullOrEmpty(groupId) || readByArray == null || readByArray.Count == 0)
-                return;
+                return false;
 
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 GroupInfo gi = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
                 if (gi == null || gi.LastReadMessageId > lastReadMessageId)
-                    return;
+                    return false;
 
                 if (gi.LastReadMessageId == lastReadMessageId)
                 {
@@ -150,6 +150,7 @@ namespace windows_client.DbUtils
                 gi.ReadByInfo = gi.ReadByArray.ToString();
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
+            return true;
         }
 
         /// <summary>
