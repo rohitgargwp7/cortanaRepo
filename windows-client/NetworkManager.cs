@@ -378,7 +378,12 @@ namespace windows_client
 
                     if (isGroupConversation)
                     {
-                        if (messageId > maxMessageId && messageId <= lastSentMsgId)
+                        if (messageId == lastSentMsgId)
+                        {
+                            maxMessageId = messageId;
+                            break;
+                        }
+                        else if (messageId > maxMessageId && messageId < lastSentMsgId)
                             maxMessageId = messageId;
                     }
                     else
@@ -2236,7 +2241,7 @@ namespace windows_client
                                 msisdnBulkData.MaxReadById = messageId;
                                 msisdnBulkData.ReadByArray = new JArray() { readBy };
                             }
-                            else if(msisdnBulkData.MaxReadById==messageId)
+                            else if (msisdnBulkData.MaxReadById == messageId)
                             {
                                 if (msisdnBulkData.ReadByArray == null)
                                     msisdnBulkData.ReadByArray = new JArray() { readBy };
