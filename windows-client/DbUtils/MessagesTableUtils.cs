@@ -257,6 +257,13 @@ namespace windows_client.DbUtils
                 return null;
 
             ConversationListObject obj = null;
+            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
+                convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+            {
+                bool contactJoiningNotif = true;
+                if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotif))
+                    return null;
+            }
 
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
@@ -265,12 +272,6 @@ namespace windows_client.DbUtils
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
-
-                //MOHIT 
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
-                    convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
-                    if (HikeInstantiation.AppSettings[AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING].Equals("false"))
-                        return null;
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, imageBytes, from);
                 HikeInstantiation.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
@@ -379,8 +380,6 @@ namespace windows_client.DbUtils
                 #region USER_JOINED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
                 {
-                    if (HikeInstantiation.AppSettings[AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING].Equals(false))
-                        return null;
                     string msgtext = convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ? AppResources.USER_JOINED_HIKE : AppResources.USER_REJOINED_HIKE_TXT;
                     if (Utility.IsGroupConversation(obj.Msisdn))
                     {

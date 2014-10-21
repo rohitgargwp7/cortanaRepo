@@ -322,7 +322,7 @@ namespace windows_client.View
         {
             this.contactJoiningNotificationToggle.Content = AppResources.On;
 
-            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, true);
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING);
             JObject obj = new JObject();
 
             obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
