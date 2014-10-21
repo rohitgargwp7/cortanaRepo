@@ -40,7 +40,7 @@ namespace CommonLibrary.Misc
             {
                 ShellToast toast = new ShellToast();
                 string navigationURI = null;
-                toast.Title = header ?? String.Empty;
+                toast.Title = isHidden && header == null ? String.Empty : header;
                 toast.Content = content;
 
                 switch (type)
