@@ -378,14 +378,16 @@ namespace CommonLibrary.DbUtils
                     }
 
                     convMsg.Message = obj.LastMessage;
-                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
+                    var content = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : convMsg.Message;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region GROUP NAME/PIC CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
                     obj.LastMessage = convMsg.Message;
-                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
+                    var content = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : convMsg.Message;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region STATUS UPDATES
@@ -486,9 +488,7 @@ namespace CommonLibrary.DbUtils
                     else
                         obj.LastMessage = convMsg.Message;
 
-                    if (obj.IsHidden)
-                        obj.ToastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
-
+                    obj.ToastText = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : obj.LastMessage;
                     NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.ToastText, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion

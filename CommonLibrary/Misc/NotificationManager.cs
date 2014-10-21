@@ -21,20 +21,18 @@ namespace CommonLibrary.Misc
     {
         public static void ShowNotification(ToastType type, string header, string content, string msisdn, bool isHidden)
         {
+            bool isPushEnabled = true;
+            HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
+
+            if (!isPushEnabled)
+                return;
+
             if (type == ToastType.STATUS)
             {
                 byte statusSettingsValue;
                 HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
                 if (statusSettingsValue == 0)
-                    return;
-            }
-            else
-            {
-                bool isPushEnabled = true;
-                HikeInstantiation.AppSettings.TryGetValue<bool>(AppSettingsKeys.IS_PUSH_ENABLED, out isPushEnabled);
-
-                if (!isPushEnabled)
                     return;
             }
 
