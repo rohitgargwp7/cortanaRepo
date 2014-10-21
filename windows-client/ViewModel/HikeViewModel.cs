@@ -413,10 +413,9 @@ namespace windows_client.ViewModel
                             showPush = (Boolean)vals[2];
 
                         ConversationListObject mObj = (ConversationListObject)vals[1];
-                        if (mObj == null)
+                        if (mObj == null || !ConvMap.ContainsKey(mObj.Msisdn))
                             return;
 
-                        App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
 
                         if (index < 0)//not present in oc

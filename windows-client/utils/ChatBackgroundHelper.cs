@@ -298,7 +298,7 @@ namespace windows_client.utils
                 BubbleForeground = "#ff000000",
                 Foreground = "#ffffffff",
                 IsTile = false,
-                IsLightTheme = false,
+                IsLightTheme = true,
                 Position = 34,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbdiwali.jpg",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbdiwali.jpg"

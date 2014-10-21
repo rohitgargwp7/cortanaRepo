@@ -84,7 +84,7 @@ namespace windows_client.View
         private bool _isPinAlter = true;            //this value is that state of Pin doesn't change while tapping header
         private ConvMessage lastPinConvMsg;
         private bool _isOnPage = true;
-
+        bool enableStickerButton = true;
         bool isDisplayPicSet = false;
 
         /// <summary>
@@ -554,6 +554,8 @@ namespace windows_client.View
                 {
                     CreateStickerPivot();
                     CreateStickerCategories();
+                    if (stickersIconButton != null && enableStickerButton)
+                        stickersIconButton.IsEnabled = true;
                 };
                 bw.RunWorkerAsync();
                 App.newChatThreadPage = this;
@@ -1822,7 +1824,7 @@ namespace windows_client.View
             stickersIconButton.IconUri = new Uri("/View/images/AppBar/icon_sticker.png", UriKind.Relative);
             stickersIconButton.Text = AppResources.Sticker_Txt;
             stickersIconButton.Click += new EventHandler(emoticonButton_Click);
-            stickersIconButton.IsEnabled = true;
+            stickersIconButton.IsEnabled = false;
             appBar.Buttons.Add(stickersIconButton);
 
             //add icon for smiley
@@ -1917,7 +1919,7 @@ namespace windows_client.View
 
         private void emailConversationMenuItem_Click(object sender, EventArgs e)
         {
-            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT,HikeConstants.ANALYTICS_EMAIL,HikeConstants.ANALYTICS_EMAIL_MENU,mContactNumber);
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_MENU, mContactNumber);
             EmailHelper.FetchAndEmail(mContactNumber, mContactName, isGroupChat);
         }
 
@@ -2115,6 +2117,7 @@ namespace windows_client.View
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
+                    enableStickerButton = true;
                     stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
@@ -3335,7 +3338,7 @@ namespace windows_client.View
 
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
-                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO 
+                else if (lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO
                     || lastMessageBubble.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     obj.LastMessage = lastMessageBubble.Message;
@@ -4192,7 +4195,7 @@ namespace windows_client.View
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
 
-                            if ( _isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                            if (_isOnPage && App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                             {
                                 JObject metadata = App.ViewModel.ConvMap[mContactNumber].MetaData;
 
@@ -4365,22 +4368,19 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 IList<long> ids = (IList<long>)vals[0];
                 string msisdnToCheck = (string)vals[1];
-                if (msisdnToCheck != mContactNumber || ids == null || ids.Count == 0)
+                if (msisdnToCheck != mContactNumber || ids == null)//ids.count check removed because only read by may be updated
                     return;
 
                 JArray readByArray = null;
                 if (isGroupChat)
                     readByArray = (JArray)vals[2];
 
-                long maxId = 0;
+                long maxId = (long)vals[3];
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Count; i++)
                 {
                     try
                     {
-                        if (maxId < ids[i])
-                            maxId = ids[i];
-
                         ConvMessage msg = null;
                         msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
@@ -4768,7 +4768,7 @@ namespace windows_client.View
 
             #region Pin Message Deleted From Pin History
 
-            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC )
+            else if (type == HikePubSub.DELETE_FROM_NEWCHATTHREAD_OC)
             {
                 if (obj is ConvMessage)
                 {
@@ -4792,7 +4792,7 @@ namespace windows_client.View
 
                                     tipControl.Visibility = Visibility.Visible;
                                 }
-                                
+
                             }
                             catch (Exception ex)
                             {
@@ -6069,7 +6069,7 @@ namespace windows_client.View
 
             if (emoticonPanel.Visibility == Visibility.Visible)
                 emoticonPanel.Visibility = Visibility.Collapsed;
-            
+
             EnableDisableAppBar(false);
             NewPin_Open();
         }
@@ -6077,7 +6077,7 @@ namespace windows_client.View
         private void EnableDisableAppBar(bool enable)
         {
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            stickersIconButton.IsEnabled = enableStickerButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
@@ -6687,7 +6687,7 @@ namespace windows_client.View
             // Check if sticker category doesn't exist, show humanoid (default) category.
             if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
-            else
+            else 
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
 
             // So that after reopening of ct , if pivot index are same we need to update pivot selection explicitly.

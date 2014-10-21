@@ -268,9 +268,9 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     (from o in hdc.messages
-                    where o.Msisdn == myMsisdn
-                    orderby o.MessageId descending
-                    select o).Skip(1).Take(1));
+                     where o.Msisdn == myMsisdn
+                     orderby o.MessageId descending
+                     select o).Skip(1).Take(1));
                 return q;
             }
         }
@@ -318,16 +318,16 @@ namespace windows_client.DbUtils
             }
         }
 
-
-        public static Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> GetSentMessagesForMsgIdAndMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<ConvMessage>> GetLastSentMsgId
         {
             get
             {
-                Func<HikeChatsDb, long, string, IQueryable<ConvMessage>> q =
-                     CompiledQuery.Compile<HikeChatsDb, long, string, IQueryable<ConvMessage>>
-                     ((HikeChatsDb hdc, long id, string msisdn) =>
+                Func<HikeChatsDb, string, IQueryable<ConvMessage>> q =
+                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
+                     ((HikeChatsDb hdc, string msisdn) =>
                          from o in hdc.messages
-                         where o.MessageId == id && o.Msisdn == msisdn && o.MessageStatus != ConvMessage.State.UNKNOWN && o.MessageStatus != ConvMessage.State.RECEIVED_READ && o.MessageStatus != ConvMessage.State.RECEIVED_UNREAD
+                         where o.Msisdn == msisdn && o.MessageStatus != ConvMessage.State.UNKNOWN && o.MessageStatus != ConvMessage.State.RECEIVED_READ && o.MessageStatus != ConvMessage.State.RECEIVED_UNREAD
+                         orderby o.MessageId descending
                          select o);
                 return q;
             }

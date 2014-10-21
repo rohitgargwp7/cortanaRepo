@@ -30,15 +30,29 @@ namespace windows_client.Model
             set { _lastDeliveredMsgId = value; }
         }
 
-        private Dictionary<long, JArray> _dictReadBy = new Dictionary<long, JArray>();
-
-        public Dictionary<long, JArray> DictReadBy
+        public JArray ReadByArray
         {
-            get { return _dictReadBy; }
-            set { _dictReadBy = value; }
+            get;
+            set;
         }
 
+        /// <summary>
+        /// Last sent msg id in db
+        /// </summary>
+        public long LastSentMessageId
+        {
+            get;
+            set;
+        }
 
+        /// <summary>
+        /// Max msg id in bulk packet(for group less than equal to last sent msg id, for 1:1 max msg id)
+        /// </summary>
+        public long MaxReadById
+        {
+            get;
+            set;
+        }
 
         public MsisdnBulkData(string msisdn)
         {
