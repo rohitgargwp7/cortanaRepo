@@ -84,7 +84,7 @@ namespace windows_client.View
         private bool _isPinAlter = true;            //this value is that state of Pin doesn't change while tapping header
         private ConvMessage lastPinConvMsg;
         private bool _isOnPage = true;
-
+        bool enableStickerButton = true;
         bool isDisplayPicSet = false;
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace windows_client.View
                 {
                     CreateStickerPivot();
                     CreateStickerCategories();
-                    if (stickersIconButton != null)
+                    if (stickersIconButton != null && enableStickerButton)
                         stickersIconButton.IsEnabled = true;
                 };
                 bw.RunWorkerAsync();
@@ -2114,6 +2114,7 @@ namespace windows_client.View
                     App.ViewModel.BlockedHashset.Remove(mContactNumber);
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                     sendIconButton.IsEnabled = sendMsgTxtbox.Text.Length > 0;
+                    enableStickerButton = true;
                     stickersIconButton.IsEnabled = true;
                     emoticonsIconButton.IsEnabled = true;
                     enableSendMsgButton = true;
@@ -6071,7 +6072,7 @@ namespace windows_client.View
         private void EnableDisableAppBar(bool enable)
         {
             appBar.IsMenuEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
-            stickersIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
+            stickersIconButton.IsEnabled = enableStickerButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             emoticonsIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
             sendIconButton.IsEnabled = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay || sendMsgTxtbox.Text.Length <= 0 ? false : enable;
             enableSendMsgButton = (isGroupChat && !isGroupAlive) || showNoSmsLeftOverlay ? false : enable;
