@@ -81,6 +81,7 @@ namespace CommonLibrary.DbUtils
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
             {
                 obj.LastMessage = convMessage.Message;
+                NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
             }
             //If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
@@ -105,11 +106,13 @@ namespace CommonLibrary.DbUtils
             {
                 obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
+                NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED)
             {
                 obj.LastMessage = string.Format(AppResources.USER_REJOINED_HIKE_TXT, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
+                NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED)
             {
@@ -124,20 +127,8 @@ namespace CommonLibrary.DbUtils
                 {
                     obj.LastMessage = convMessage.Message;
                 }
-            }
-            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED)
-            {
-                if (!Utility.IsGroupConversation(from))
-                {
-                    if (from == HikeInstantiation.MSISDN)
-                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, AppResources.You_Txt);
-                    else
-                        convMessage.Message = obj.LastMessage = string.Format(AppResources.ChatBg_NotChanged_Text, obj.NameToShow);
-                }
-                else
-                {
-                    obj.LastMessage = convMessage.Message;
-                }
+
+                NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.LastMessage, obj.Msisdn, obj.IsHidden);
             }
 
             obj.LastMsgId = convMessage.MessageId;

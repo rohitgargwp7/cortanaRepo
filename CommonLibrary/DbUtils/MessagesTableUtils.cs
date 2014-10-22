@@ -224,7 +224,39 @@ namespace CommonLibrary.DbUtils
 
                 // if status update dont create a new conversation if not already there
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    ContactInfo contact = Utility.GetContactInfo(convMsg.Msisdn);
+                    string content = convMsg.Message;
+
+                    if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
+                    else if (convMsg.MetaDataString.Contains(ServerJsonKeys.MqttMessageTypes.STATUS_UPDATE))
+                    {
+                        JObject jdata = null;
+
+                        try
+                        {
+                            jdata = JObject.Parse(convMsg.MetaDataString);
+                        }
+                        catch { }
+
+                        if (jdata != null)
+                        {
+                            JToken val;
+                            JObject ddata = jdata[ServerJsonKeys.DATA] as JObject;
+
+                            // profile pic update
+                            if (ddata.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                                content = "\"" + HikeConstants.ToastConstants.TOAST_FOR_PROFILEUPDATE + "\"";
+                            else // status , mood update
+                                content = "wrote " + "\"" + convMsg.Message + "\"";
+                        }
+                    }
+
+                    var header = contact == null ? convMsg.Msisdn : contact.NameToShow;
+                    NotificationManager.ShowNotification(ToastType.STATUS, header, content, convMsg.Msisdn, false);
                     return null;
+                }
 
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ||
                     convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
@@ -352,13 +384,18 @@ namespace CommonLibrary.DbUtils
                     {
                         obj.LastMessage = string.Format(msgtext, obj.NameToShow);
                     }
+
                     convMsg.Message = obj.LastMessage;
+                    var content = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : convMsg.Message;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region GROUP NAME/PIC CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
                     obj.LastMessage = convMsg.Message;
+                    var content = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : convMsg.Message;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region STATUS UPDATES
@@ -366,6 +403,37 @@ namespace CommonLibrary.DbUtils
                 {
                     obj.IsLastMsgStatusUpdate = true;
                     obj.LastMessage = "\"" + convMsg.Message + "\"";
+
+                    var content = convMsg.Message;
+
+                    if (obj.IsHidden)
+                        content = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
+                    else if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.HIDE_MESSAGE_PREVIEW_SETTING))
+                        content = HikeConstants.ToastConstants.TOAST_FOR_STATUS;
+                    else if (convMsg.MetaDataString.Contains(ServerJsonKeys.MqttMessageTypes.STATUS_UPDATE))
+                    {
+                        JObject jdata = null;
+
+                        try
+                        {
+                            jdata = JObject.Parse(convMsg.MetaDataString);
+                        }
+                        catch{ }
+
+                        if (jdata != null)
+                        {
+                            JToken val;
+                            JObject ddata = jdata[ServerJsonKeys.DATA] as JObject;
+
+                            // profile pic update
+                            if (ddata.TryGetValue(ServerJsonKeys.PROFILE_UPDATE, out val) && true == (bool)val)
+                                content = "\"" + HikeConstants.ToastConstants.TOAST_FOR_PROFILEUPDATE + "\"";
+                            else // status , mood update
+                                content = "wrote " + "\"" + convMsg.Message + "\"";
+                        }
+                    }
+
+                    NotificationManager.ShowNotification(ToastType.STATUS, obj.NameToShow, content, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region NO_INFO
@@ -411,6 +479,8 @@ namespace CommonLibrary.DbUtils
 
                         obj.ToastText = toastText;
                     }
+
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.ToastText, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region Chat Background Changed
@@ -426,8 +496,8 @@ namespace CommonLibrary.DbUtils
                     else
                         obj.LastMessage = convMsg.Message;
 
-                    if (obj.IsHidden)
-                        obj.ToastText = HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE;
+                    obj.ToastText = obj.IsHidden ? HikeConstants.ToastConstants.TOAST_FOR_HIDDEN_MODE : obj.LastMessage;
+                    NotificationManager.ShowNotification(ToastType.MESSAGE, obj.NameToShow, obj.ToastText, obj.Msisdn, obj.IsHidden);
                 }
                 #endregion
                 #region OTHER MSGS
@@ -517,7 +587,6 @@ namespace CommonLibrary.DbUtils
                 }
             }
             #endregion
-
         }
 
         /// <summary>
