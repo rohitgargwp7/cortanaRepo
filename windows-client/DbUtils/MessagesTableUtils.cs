@@ -257,13 +257,10 @@ namespace windows_client.DbUtils
                 return null;
 
             ConversationListObject obj = null;
-            if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
-                convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
-            {
-                bool contactJoiningNotif = true;
-                if (HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotif))
-                    return null;
-            }
+
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
+                return null;
+
 
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {

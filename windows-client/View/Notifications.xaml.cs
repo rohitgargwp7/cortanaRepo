@@ -350,51 +350,6 @@ namespace windows_client.View
             HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
         }
 
-        
-
-        public void postAccountJoiningNotification_Callback(JObject obj, Object currentStatus)
-        {
-            bool currentlyChecked = (bool)currentStatus;
-            string stat = "";
-            string message = "";
-
-            if (obj != null)
-            {
-                JToken statusToken;
-                obj.TryGetValue(ServerJsonKeys.STAT, out statusToken);
-                if (statusToken != null)
-                    stat = statusToken.ToString();
-            }
-
-            if (stat != ServerJsonKeys.OK)
-            {
-                message = AppResources.Oops_Something_Wrong_Txt;
-                preventCheckedState(currentlyChecked);
-                HideOverLay(message);
-            }
-            else
-            {
-                if (!currentlyChecked)
-                {
-                    HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, false);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        contactJoiningNotificationToggle.Content = AppResources.Off;
-                    });
-                }
-                else
-                {
-                    HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        contactJoiningNotificationToggle.Content = AppResources.On;
-                    });
-                }
-
-                HideOverLay(String.Empty);
-            }
-        }
-
         void preventCheckedState(bool currentlyChecked)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>

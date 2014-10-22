@@ -261,16 +261,6 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.HIDE_MESSAGE_PREVIEW, push_token, on_off, finalCallbackFunction, obj });
         }
 
-        public static void postAccountJoiningNotification(string push_token, bool on_off, parametrisedPostResponseFunction finalCallbackFunction, Object obj)
-        {
-            //TODO::MOHIT Process it as MQTT packet
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/account/device")) as HttpWebRequest;
-            AddToken(req);
-            req.Method = "POST";
-            req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.CONTACT_JOINING_NOTIFICATION, push_token, on_off, finalCallbackFunction, obj });
-        }
-
         public static void GetStickers(JObject stickerJson, parametrisedPostResponseFunction finalCallBackFunc, Object obj)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(ServerUrls.BASE + "/stickers")) as HttpWebRequest;

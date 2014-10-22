@@ -2336,8 +2336,4 @@ Download it like asap from http://hike.in!</value>
     <value>Contact joining notifications</value>
     <comment>For Hiding Contact Joining Notifications</comment>
   </data>
-  <data name="contactJoiningNotification1" xml:space="preserve">
-    <value>Contact joining notifications</value>
-    <comment>For Hiding Contact Joining Notifications</comment>
-  </data>
 </root>
