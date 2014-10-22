@@ -217,6 +217,9 @@ namespace CommonLibrary.DbUtils
 
             ConversationListObject obj = null;
 
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
+                return null;
+
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utility.IsGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
@@ -256,14 +259,6 @@ namespace CommonLibrary.DbUtils
                     var header = contact == null ? convMsg.Msisdn : contact.NameToShow;
                     NotificationManager.ShowNotification(ToastType.STATUS, header, content, convMsg.Msisdn, false);
                     return null;
-                }
-
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED ||
-                    convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED ||
-                    HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
-                {
-                    if (HikeInstantiation.AppSettings[AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING].Equals("false"))
-                        return null;
                 }
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup, from);
