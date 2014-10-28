@@ -42,6 +42,7 @@ namespace CommonLibrary.Constants
         public static readonly string AUTO_RESUME_SETTING = "autoResume";
 
         public static readonly string HIDE_MESSAGE_PREVIEW_SETTING = "hideMessagePreview";
+        public static readonly string CONTACT_JOINING_NOTIFICATION_SETTING = "contactJoiningNotifSet";
 
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
@@ -107,5 +108,6 @@ namespace CommonLibrary.Constants
         public static readonly string BLACK_THEME = "black_theme";
 
         public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
+        
     }
 }

@@ -2040,6 +2040,7 @@ namespace windows_client
                                     }
                                 }
                                 ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+
                                 obj = MessagesTableUtils.UpdateConversationList(lastMessage, false);
                                 if (obj == null)
                                     continue;
@@ -2470,7 +2471,8 @@ namespace windows_client
                         cm = new ConvMessage(isRejoin ? ConvMessage.ParticipantInfoState.USER_REJOINED : ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj == null)
+                    if (obj == null && !(cm.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_REJOINED
+                                    || cm.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED))
                     {
                         GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
                         return;

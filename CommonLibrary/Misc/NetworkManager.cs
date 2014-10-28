@@ -1761,7 +1761,9 @@ namespace CommonLibrary
                                     }
                                 }
                                 
+                                
                                 ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+
                                 obj = MessagesTableUtils.UpdateConversationList(lastMessage, false);
 
                                 if (obj == null)

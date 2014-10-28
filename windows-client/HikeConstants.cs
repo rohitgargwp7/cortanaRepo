@@ -79,8 +79,6 @@ namespace windows_client
         public static readonly string UNREAD_FRIEND_REQUESTS = "urFr";
         public static readonly string REFRESH_BAR = "refBar";
 
-        
-
         public static readonly string AVATAR = "avatar";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
