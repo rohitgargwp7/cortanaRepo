@@ -4119,6 +4119,7 @@ namespace windows_client.View
                 List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
 
                 bool hasNudge = false;
+                int newMessageCount = 0;
                 /* Check if this is the same user for which this message is recieved*/
                 if (listConvMessage.Count > 0 && listConvMessage[0].Msisdn == mContactNumber)
                 {
@@ -4126,6 +4127,10 @@ namespace windows_client.View
                     JArray ids = new JArray();
                     ConvMessage pinMessage = null;
                     HideTypingNotification();
+                    Deployment.Current.Dispatcher.BeginInvoke(()=>
+                    {  
+                        newMessageCount = ocMessages.Count;
+                    });
 
                     for (int i = 0; i < listConvMessage.Count; i++)
                     {
@@ -4152,7 +4157,6 @@ namespace windows_client.View
                         // Update UI
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-
                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                             {
                                 mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
@@ -4162,8 +4166,6 @@ namespace windows_client.View
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                             AddMessageToOcMessages(convMessage, false, true);
-                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                ShowJumpToBottom(true);
 
                             if (vals.Length == 3)
                             {
@@ -4186,6 +4188,17 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        newMessageCount = ocMessages.Count - newMessageCount;
+
+                        if (newMessageCount == 1 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                            ScrollToBottom();
+                        else if (newMessageCount > 0)
+                        {
+                                _unreadMessageCounter += newMessageCount;
+                                JumpToBottomGrid.Visibility = Visibility.Visible;
+                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                        }
+
                         if (pinMessage != null)
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
