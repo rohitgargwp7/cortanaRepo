@@ -2259,7 +2259,7 @@ namespace windows_client.View
 
         List<ConvMessage> listDownload = new List<ConvMessage>();
 
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool jumpToBottom = true)
         {
             if (ocMessages == null)
                 return;
@@ -2640,7 +2640,7 @@ namespace windows_client.View
                     ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
 
-                    if (!insertAtTop)
+                    if (!insertAtTop && jumpToBottom)
                         ScrollToBottom();
                 }
                 #endregion
@@ -2667,7 +2667,7 @@ namespace windows_client.View
                     ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
 
-                    if (!insertAtTop)
+                    if (!insertAtTop && jumpToBottom)
                         ScrollToBottom();
                 }
                 #endregion
@@ -2679,7 +2679,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop && !isReceived)
+                if (!insertAtTop && !isReceived && jumpToBottom)
                     ScrollToBottom(true);
 
             }
@@ -4161,9 +4161,14 @@ namespace windows_client.View
                             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                            AddMessageToOcMessages(convMessage, false, true);
-                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                ShowJumpToBottom(true);
+                            AddMessageToOcMessages(convMessage, false, true, false);
+
+                            if (listConvMessage.Count > 1)
+                            {
+                                _unreadMessageCounter += 1;
+                                JumpToBottomGrid.Visibility = Visibility.Visible;
+                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;                
+                            }
 
                             if (vals.Length == 3)
                             {
@@ -4186,6 +4191,9 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (listConvMessage.Count == 1)
+                            ScrollToBottom();
+
                         if (pinMessage != null)
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);
