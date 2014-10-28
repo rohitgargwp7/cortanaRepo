@@ -107,10 +107,8 @@ namespace windows_client.View
             hideMessageToggle.IsChecked = hideMessagePreview;
             this.hideMessageToggle.Content = hideMessagePreview ? AppResources.On : AppResources.Off;
 
-            bool contactJoiningNotification = true;
-            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotification))
-                contactJoiningNotification = true;
-
+            bool contactJoiningNotification = !(HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotification));
+                
             contactJoiningNotificationToggle.IsChecked = contactJoiningNotification;
             this.contactJoiningNotificationToggle.Content = contactJoiningNotification ? AppResources.On : AppResources.Off;
 
