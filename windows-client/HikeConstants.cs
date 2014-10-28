@@ -79,19 +79,9 @@ namespace windows_client
         public static readonly string UNREAD_FRIEND_REQUESTS = "urFr";
         public static readonly string REFRESH_BAR = "refBar";
 
-        
-
         public static readonly string AVATAR = "avatar";
         public static readonly string STICKER_ID = "stId";
         public static readonly string CATEGORY_ID = "catId";
-
-
-        public static readonly string  USER_JOINING_NOTIF = "ujn";
-
-        public static readonly string ICON = "icon";
-        public static readonly string LASTSEEN = "ls";
-        public static readonly string LASTSEENONOFF = "lastseen";
-        public static readonly string JUSTOPENED = "justOpened";
 
         public static readonly string VIDEO_SIZE = "videoSize";
         public static readonly string VIDEO_THUMBNAIL = "videoThumbnail";

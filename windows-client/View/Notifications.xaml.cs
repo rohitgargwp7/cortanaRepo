@@ -325,7 +325,7 @@ namespace windows_client.View
 
             obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.USER_JOINING_NOTIF, 1);
+            data.Add(ServerJsonKeys.USER_JOINING_NOTIF, 1);
             obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
@@ -339,7 +339,7 @@ namespace windows_client.View
             JObject obj = new JObject();
             obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
             JObject data = new JObject();
-            data.Add(HikeConstants.USER_JOINING_NOTIF, 0);
+            data.Add(ServerJsonKeys.USER_JOINING_NOTIF, 0);
             obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }

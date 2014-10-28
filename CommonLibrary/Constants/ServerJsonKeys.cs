@@ -177,6 +177,8 @@ namespace CommonLibrary.Constants
 
         public static readonly string GC_PIN = "pin";
 
+        public static readonly string USER_JOINING_NOTIF = "ujn";
+
         public static class MqttMessageTypes
         {
             public static readonly string BLOCK_INTERNATIONAL_USER = "bis";
