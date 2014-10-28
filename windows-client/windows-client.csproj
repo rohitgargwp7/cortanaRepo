@@ -267,6 +267,9 @@
     <Compile Include="View\ForwardTo.xaml.cs">
       <DependentUpon>ForwardTo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Media.xaml.cs">
+      <DependentUpon>Media.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewGroup.xaml.cs">
       <DependentUpon>NewGroup.xaml</DependentUpon>
     </Compile>
@@ -412,6 +415,10 @@
     </Page>
     <Page Include="View\ForwardTo.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Media.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NewGroup.xaml">
       <SubType>Designer</SubType>
@@ -1156,7 +1163,7 @@
       <Name>CommonLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileTransfer\FileTransfer.csproj">
-      <Project>{57BE909D-CAE2-40A7-A07F-88A31973C195}</Project>
+      <Project>{57be909d-cae2-40a7-a07f-88a31973c195}</Project>
       <Name>FileTransfer</Name>
     </ProjectReference>
     <ProjectReference Include="..\RPALApiComponent\RPALApiComponent.vcxproj">

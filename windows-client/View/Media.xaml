@@ -1,0 +1,78 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="windows_client.View.Media"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Media_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="0 0 0 2" BorderBrush="Gray" Margin="12 0 0 0" >
+                    <TextBlock Margin="0 0 0 0" Foreground="Gray">Auto Download Media : Mobile</TextBlock>
+                </Border>
+
+                <toolkit:ToggleSwitch Grid.Row="1" Margin="0 0 0 -10" x:Name="autoDownload_image_mobile" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="Image" Loaded="autoDownloadToggleLoaded"/>
+                <toolkit:ToggleSwitch Grid.Row="2" Margin="0 0 0 -10" x:Name="autoDownload_audio_mobile" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
+                                          Header="Audio" Loaded="autoDownloadToggleLoaded" />
+                <toolkit:ToggleSwitch Grid.Row="3" Margin="0 0 0 -10" x:Name="autoDownload_video_mobile" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
+                                          Header="Video" Loaded="autoDownloadToggleLoaded"/>
+            </Grid>
+
+            <Grid Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="0 0 0 2" BorderBrush="Gray" Margin="12 0 0 0" >
+                    <TextBlock Foreground="Gray">Auto Download Media : WiFi</TextBlock>
+                </Border>
+
+                <toolkit:ToggleSwitch Grid.Row="1" Margin="0 0 0 -10" x:Name="autoDownload_image_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="Image" Loaded="autoDownloadToggleLoaded" />
+                <toolkit:ToggleSwitch Grid.Row="2" Margin="0 0 0 -10" x:Name="autoDownload_audio_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="Audio" Loaded="autoDownloadToggleLoaded"/>
+                <toolkit:ToggleSwitch Grid.Row="3" Margin="0 0 0 -10" x:Name="autoDownload_video_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                          Header="Video" Loaded="autoDownloadToggleLoaded"/>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

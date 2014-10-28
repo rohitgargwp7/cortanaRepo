@@ -3091,6 +3091,15 @@ namespace CommonLibrary.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to media.
+        /// </summary>
+        public static string Media_Header_Txt {
+            get {
+                return ResourceManager.GetString("Media_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free some memory and try again..
         /// </summary>
         public static string Memory_Limit_Reached_Body {

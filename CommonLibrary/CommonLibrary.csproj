@@ -151,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="finalmqtt">
-      <HintPath>..\finalmqtt\finalmqtt\Bin\Release\finalmqtt.dll</HintPath>
+      <HintPath>..\windows-client\lib\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
