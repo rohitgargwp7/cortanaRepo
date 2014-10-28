@@ -2259,7 +2259,7 @@ namespace windows_client.View
 
         List<ConvMessage> listDownload = new List<ConvMessage>();
 
-        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived, bool jumpToBottom = true)
+        private void AddMessageToOcMessages(ConvMessage convMessage, bool insertAtTop, bool isReceived)
         {
             if (ocMessages == null)
                 return;
@@ -2640,7 +2640,7 @@ namespace windows_client.View
                     ocMessages.Insert(insertPosition, chatBubble);
                     insertPosition++;
 
-                    if (!insertAtTop && jumpToBottom)
+                    if (!insertAtTop)
                         ScrollToBottom();
                 }
                 #endregion
@@ -2667,7 +2667,7 @@ namespace windows_client.View
                     ocMessages.Insert(insertPosition, convMessage);
                     insertPosition++;
 
-                    if (!insertAtTop && jumpToBottom)
+                    if (!insertAtTop)
                         ScrollToBottom();
                 }
                 #endregion
@@ -2679,7 +2679,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                if (!insertAtTop && !isReceived && jumpToBottom)
+                if (!insertAtTop && !isReceived)
                     ScrollToBottom(true);
 
             }
@@ -4119,6 +4119,7 @@ namespace windows_client.View
                 List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
 
                 bool hasNudge = false;
+                int newMessageCount = 0;
                 /* Check if this is the same user for which this message is recieved*/
                 if (listConvMessage.Count > 0 && listConvMessage[0].Msisdn == mContactNumber)
                 {
@@ -4126,6 +4127,10 @@ namespace windows_client.View
                     JArray ids = new JArray();
                     ConvMessage pinMessage = null;
                     HideTypingNotification();
+                    Deployment.Current.Dispatcher.BeginInvoke(()=>
+                    {  
+                        newMessageCount = ocMessages.Count;
+                    });
 
                     for (int i = 0; i < listConvMessage.Count; i++)
                     {
@@ -4152,7 +4157,6 @@ namespace windows_client.View
                         // Update UI
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-
                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                             {
                                 mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
@@ -4161,14 +4165,7 @@ namespace windows_client.View
                             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
-                            AddMessageToOcMessages(convMessage, false, true, false);
-
-                            if (listConvMessage.Count > 1)
-                            {
-                                _unreadMessageCounter += 1;
-                                JumpToBottomGrid.Visibility = Visibility.Visible;
-                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;                
-                            }
+                            AddMessageToOcMessages(convMessage, false, true);
 
                             if (vals.Length == 3)
                             {
@@ -4191,8 +4188,16 @@ namespace windows_client.View
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (listConvMessage.Count == 1)
+                        newMessageCount = ocMessages.Count - newMessageCount;
+
+                        if (newMessageCount == 1 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
                             ScrollToBottom();
+                        else if (newMessageCount > 0)
+                        {
+                                _unreadMessageCounter += newMessageCount;
+                                JumpToBottomGrid.Visibility = Visibility.Visible;
+                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                        }
 
                         if (pinMessage != null)
                         {
