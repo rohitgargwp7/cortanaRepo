@@ -330,8 +330,6 @@ namespace windows_client.View
             data.Add(HikeConstants.USER_JOINING_NOTIF, 1);
             obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-
-            HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
         }
 
         private void contactJoiningNotificationToggle_Unchecked(object sender, RoutedEventArgs e)
@@ -346,8 +344,6 @@ namespace windows_client.View
             data.Add(HikeConstants.USER_JOINING_NOTIF, 0);
             obj.Add(ServerJsonKeys.DATA, data);
             HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-
-            HikeInstantiation.ViewModel.StatusNotificationSettingsChanged();
         }
 
         void preventCheckedState(bool currentlyChecked)
