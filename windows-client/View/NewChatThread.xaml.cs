@@ -798,6 +798,7 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
                 ConversationTableUtils.saveConvObjectList();
             }
+
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;
@@ -811,10 +812,13 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
 
                 App.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
+                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
+                App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
+                App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
 
-                base.OnRemovedFromJournal(e);
                 removeListeners();
                 RemoveEmmaBot();
+
                 if (mediaElement != null)
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
@@ -845,8 +849,6 @@ namespace windows_client.View
                     Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
 
-                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
-
                 stickerPallet.Children.Remove(pivotStickers);
                 StickerPivotHelper.Instance.ClearData();
                 ClearPageResources();
@@ -857,6 +859,8 @@ namespace windows_client.View
             {
                 Debug.WriteLine(ex.Message);
             }
+
+            base.OnRemovedFromJournal(e);
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
