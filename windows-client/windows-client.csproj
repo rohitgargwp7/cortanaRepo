@@ -217,7 +217,6 @@
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\MsisdnBulkData.cs" />
     <Compile Include="Model\StatusMessage.cs" />
-    <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\FriendRequestStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\ImageStatusUpdate.cs" />
