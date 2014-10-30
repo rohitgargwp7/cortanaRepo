@@ -815,6 +815,7 @@ namespace windows_client.View
                 FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
                 App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
                 App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
+                TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
 
                 removeListeners();
                 RemoveEmmaBot();
