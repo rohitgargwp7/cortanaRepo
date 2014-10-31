@@ -288,22 +288,6 @@ namespace windows_client.utils
                 });
             }
 
-            BackgroundList.Add(new ChatBackground() //Diwali Theme
-            {
-                ID = "42",
-                Background = "#fff8b100",       
-                HeaderAndNotificationColor = "#ffdf9f00", 
-                SentBubbleBackground = "#fffff8be",
-                ReceivedBubbleBackground = "#ffffff8be",
-                BubbleForeground = "#ff000000",
-                Foreground = "#ffffffff",
-                IsTile = false,
-                IsLightTheme = true,
-                Position = 34,
-                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbdiwali.jpg",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbdiwali.jpg"
-            });
-
             BackgroundList.Add(new ChatBackground()
             {
                 ID = "39",

@@ -323,6 +323,13 @@ namespace windows_client.View
             removeListeners();
             if (launchPagePivot.SelectedIndex == 2) //if user quits app from timeline when a few statuses were shown as unread
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
+
+            ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
+            TipManager.Instance.ConversationPageTipChanged -= Instance_ShowServerTip;
+            App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
+            App.ViewModel.StartResetHiddenModeTimer -= ViewModel_ResetHiddenModeClicked;
+            App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
+            App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
         }
 
         #region STATUS UPDATE TUTORIAL

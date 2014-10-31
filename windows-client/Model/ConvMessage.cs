@@ -608,7 +608,7 @@ namespace windows_client.Model
             {
                 if (App.ViewModel.SelectedBackground != null)
                 {
-                    if (App.ViewModel.SelectedBackground.ID == "20" || App.ViewModel.SelectedBackground.ID == "42")
+                    if (App.ViewModel.SelectedBackground.ID == "20")
                         return 65;
 
                     return 40;
@@ -626,8 +626,6 @@ namespace windows_client.Model
                 {
                     if (App.ViewModel.SelectedBackground.ID == "20")
                         return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
-                    else if (App.ViewModel.SelectedBackground.ID == "42")
-                        return IsSent ? UI_Utils.Instance.DiwaliSentNudgeImage : UI_Utils.Instance.DiwaliReceivedNudgeImage;
 
                     return DefaultNudgeImage;
                 }

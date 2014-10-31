@@ -801,7 +801,6 @@ namespace windows_client.utils
                 return compressedText;
             }
 
-
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);
             GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
