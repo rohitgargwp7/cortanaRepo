@@ -295,6 +295,60 @@ namespace CommonLibrary.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to never.
+        /// </summary>
+        public static string AutoDownloadOption_Never_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Never_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi.
+        /// </summary>
+        public static string AutoDownloadOption_Wifi_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Wifi_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi and cellular.
+        /// </summary>
+        public static string AutoDownloadOption_WifiCellular_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_WifiCellular_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to autodownload audio.
+        /// </summary>
+        public static string AutoDownloadSettings_Audio_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Audio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to autodownload image.
+        /// </summary>
+        public static string AutoDownloadSettings_Image_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Image_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to autodownload video.
+        /// </summary>
+        public static string AutoDownloadSettings_Video_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto save photo and video.
         /// </summary>
         public static string AutoSaveSettings_Txt {
@@ -3091,15 +3145,6 @@ namespace CommonLibrary.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to media.
-        /// </summary>
-        public static string Media_Header_Txt {
-            get {
-                return ResourceManager.GetString("Media_Header_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to perform the action due to low memory. Please free some memory and try again..
         /// </summary>
         public static string Memory_Limit_Reached_Body {
@@ -4792,6 +4837,15 @@ namespace CommonLibrary.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to media.
+        /// </summary>
+        public static string Settings_MediaSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_MediaSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
@@ -4932,6 +4986,15 @@ namespace CommonLibrary.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download, auto resume, image quality.
+        /// </summary>
+        public static string SettingsSubtitle_Media_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Media_Txt", resourceCulture);
             }
         }
         

@@ -15,7 +15,7 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -23,7 +23,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
-            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Media_Header_Txt, Source={StaticResource LocalizedStrings}}"/>
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_MediaSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
         </Grid>
 
         <!--ContentPanel - place additional content here-->
@@ -31,48 +31,38 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Image_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource EditProfileLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadImage" x:Name="autoDownloadImageListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" Tag="0" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" Tag="1" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" Tag="2" />
+                </toolkit:ListPicker>
+            </StackPanel>
 
-                <Border BorderThickness="0 0 0 2" BorderBrush="Gray" Margin="12 0 0 0" >
-                    <TextBlock Margin="0 0 0 0" Foreground="Gray">Auto Download Media : Mobile</TextBlock>
-                </Border>
+            <StackPanel Orientation="Vertical" Grid.Row="1">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Audio_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource EditProfileLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadAudio" x:Name="autoDownloadAudioListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" />
+                </toolkit:ListPicker>
+            </StackPanel>
 
-                <toolkit:ToggleSwitch Grid.Row="1" Margin="0 0 0 -10" x:Name="autoDownload_image_mobile" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="Image" Loaded="autoDownloadToggleLoaded"/>
-                <toolkit:ToggleSwitch Grid.Row="2" Margin="0 0 0 -10" x:Name="autoDownload_audio_mobile" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
-                                          Header="Audio" Loaded="autoDownloadToggleLoaded" />
-                <toolkit:ToggleSwitch Grid.Row="3" Margin="0 0 0 -10" x:Name="autoDownload_video_mobile" Content="{Binding Path= LocalizedResources.Off, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
-                                          Header="Video" Loaded="autoDownloadToggleLoaded"/>
-            </Grid>
-
-            <Grid Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Border BorderThickness="0 0 0 2" BorderBrush="Gray" Margin="12 0 0 0" >
-                    <TextBlock Foreground="Gray">Auto Download Media : WiFi</TextBlock>
-                </Border>
-
-                <toolkit:ToggleSwitch Grid.Row="1" Margin="0 0 0 -10" x:Name="autoDownload_image_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="Image" Loaded="autoDownloadToggleLoaded" />
-                <toolkit:ToggleSwitch Grid.Row="2" Margin="0 0 0 -10" x:Name="autoDownload_audio_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="Audio" Loaded="autoDownloadToggleLoaded"/>
-                <toolkit:ToggleSwitch Grid.Row="3" Margin="0 0 0 -10" x:Name="autoDownload_video_wifi" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
-                                          Header="Video" Loaded="autoDownloadToggleLoaded"/>
-            </Grid>
+            <StackPanel Orientation="Vertical" Grid.Row="2">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Video_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource EditProfileLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadVideo" x:Name="autoDownloadVideoListPicker" Margin="25,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource EditProfileListPicker}" Foreground="{StaticResource HikeFGBrush}">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" />
+                </toolkit:ListPicker>
+            </StackPanel>
         </Grid>
     </Grid>
-
 </phone:PhoneApplicationPage>

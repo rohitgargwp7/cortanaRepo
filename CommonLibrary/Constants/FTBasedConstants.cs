@@ -30,5 +30,11 @@ namespace CommonLibrary.Constants
         public static readonly int FILE_MAX_SIZE = 26214400;//in bytes
 
         public static readonly string IfModifiedSince = "30";
+
+        #region AutoDownload Keys
+        public static readonly string AUTO_DOWNLOAD_IMAGE = "autoDownloadImage";  //0 implies never
+        public static readonly string AUTO_DOWNLOAD_AUDIO = "autoDownloadAudio";  //1 implies wifi
+        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";  //2 implies wifi and cellular
+        #endregion
     }
 }

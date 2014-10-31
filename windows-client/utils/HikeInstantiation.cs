@@ -200,6 +200,20 @@ namespace windows_client.utils
         /// <param name="initInUpgradePage">is upgrade page called</param>
         public static void InstantiateClasses(bool initInUpgradePage)
         {
+            #region AutoDownload Settings
+            if (IsNewInstall && Utility.CompareVersion(_currentVersion, "2.9.0.1") < 0)
+            {
+                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_IMAGE))
+                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
+                
+                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_AUDIO))
+                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
+
+                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_VIDEO))
+                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
+            }
+            #endregion
+
             #region Hidden Mode
             if (IsNewInstall || Utility.CompareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);

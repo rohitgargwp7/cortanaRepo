@@ -175,7 +175,7 @@ namespace windows_client
                     {
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                     }
-                    else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
+                    else if (convMessage.FileAttachment != null)
                     {
                         string sendersMsisdn = String.Empty;
 
@@ -185,8 +185,7 @@ namespace windows_client
                             sendersMsisdn = convMessage.Msisdn;
 
                         if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
-                            FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-
+                            DownloadFileAutomatically(convMessage);
                     }
 
                     if (convMessage.FileAttachment != null)
@@ -1964,6 +1963,55 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
+        }
+
+        /// <summary>
+        /// This function is responsible for downloading file taking into account what setting user has opted for
+        /// </summary>
+        /// <param name="convMessage"></param>
+        private void DownloadFileAutomatically(ConvMessage convMessage)
+        {
+            bool autoDownload = false;
+
+            if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
+            {
+                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE];
+
+                if (Utility.IsOnWifi())
+                {
+                    if (settings > 0)
+                        autoDownload = true;
+                }
+                else if (settings == 2)
+                    autoDownload = true;
+            } 
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
+            {
+                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO];
+
+                if (Utility.IsOnWifi())
+                {
+                    if (settings > 0)
+                        autoDownload = true;
+                }
+                else if (settings == 2)
+                    autoDownload = true;
+            }
+            else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
+            {
+                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_VIDEO];
+
+                if (Utility.IsOnWifi())
+                {
+                    if (settings > 0)
+                        autoDownload = true;
+                }
+                else if (settings == 2)
+                    autoDownload = true;
+            }
+
+            if (autoDownload)
+                FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
         }
 
         /// <summary>

@@ -56,8 +56,8 @@
                     </Grid.ColumnDefinitions>
                     <Image Source="/view/images/settings/notifications.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_NotificationSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SettingsSubtitle_Notification_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_MediaSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SettingsSubtitle_Media_Txt, Source={StaticResource LocalizedStrings}}"/>
                     </StackPanel>
                 </Grid>
 
