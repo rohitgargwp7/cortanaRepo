@@ -1966,7 +1966,7 @@ namespace windows_client
         }
 
         /// <summary>
-        /// This function is responsible for downloading file taking into account what setting user has opted for
+        /// This function is responsible for downloading file taking into account what setting (regarding autodownload) user has opted for
         /// </summary>
         /// <param name="convMessage"></param>
         private void DownloadFileAutomatically(ConvMessage convMessage)
@@ -1974,44 +1974,27 @@ namespace windows_client
             bool autoDownload = false;
 
             if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.IMAGE))
-            {
-                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE];
-
-                if (Utility.IsOnWifi())
-                {
-                    if (settings > 0)
-                        autoDownload = true;
-                }
-                else if (settings == 2)
-                    autoDownload = true;
-            } 
+                autoDownload = IsOKToDownload((int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE]);               
             else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.AUDIO))
-            {
-                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO];
-
-                if (Utility.IsOnWifi())
-                {
-                    if (settings > 0)
-                        autoDownload = true;
-                }
-                else if (settings == 2)
-                    autoDownload = true;
-            }
+                autoDownload = IsOKToDownload((int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO]);               
             else if (convMessage.FileAttachment.ContentType.Contains(FTBasedConstants.VIDEO))
-            {
-                int settings = (int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_VIDEO];
-
-                if (Utility.IsOnWifi())
-                {
-                    if (settings > 0)
-                        autoDownload = true;
-                }
-                else if (settings == 2)
-                    autoDownload = true;
-            }
+                autoDownload = IsOKToDownload((int)HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_VIDEO]);  
 
             if (autoDownload)
                 FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+        }
+
+        private bool IsOKToDownload(int settings)
+        {
+            if (Utility.IsOnWifi())
+            {
+                if (settings > 0)
+                    return true;
+            }
+            else if (settings == 2)
+                return true;
+
+            return false;
         }
 
         /// <summary>

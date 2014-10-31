@@ -21,23 +21,19 @@ namespace windows_client.View
             int selIndex;
             
             if (!HikeInstantiation.AppSettings.TryGetValue(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, out selIndex))
-                selIndex = 0;
+                selIndex = 2;
 
             autoDownloadImageListPicker.SelectedIndex = selIndex;
 
             if (!HikeInstantiation.AppSettings.TryGetValue(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, out selIndex))
-                selIndex = 0;
+                selIndex = 1;
 
             autoDownloadAudioListPicker.SelectedIndex = selIndex;
 
             if (!HikeInstantiation.AppSettings.TryGetValue(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, out selIndex))
-                selIndex = 0;
+                selIndex = 1;
 
             autoDownloadVideoListPicker.SelectedIndex = selIndex;
-
-            autoDownloadImageListPicker.SelectionChanged -= autoDownloadListPicker_SelectionChanged;
-            autoDownloadAudioListPicker.SelectionChanged -= autoDownloadListPicker_SelectionChanged;
-            autoDownloadVideoListPicker.SelectionChanged -= autoDownloadListPicker_SelectionChanged;
             
             autoDownloadImageListPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
             autoDownloadAudioListPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;

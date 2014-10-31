@@ -201,16 +201,11 @@ namespace windows_client.utils
         public static void InstantiateClasses(bool initInUpgradePage)
         {
             #region AutoDownload Settings
-            if (IsNewInstall && Utility.CompareVersion(_currentVersion, "2.9.0.1") < 0)
+            if (IsNewInstall) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
             {
-                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_IMAGE))
-                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
-                
-                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_AUDIO))
-                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
-
-                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_VIDEO))
-                    WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
+                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
+                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
+                WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
             }
             #endregion
 
