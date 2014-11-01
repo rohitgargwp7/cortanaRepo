@@ -50,10 +50,6 @@ namespace windows_client.View
             }
 
             bool value;
-            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.AUTO_DOWNLOAD_SETTING, out value))
-                value = true;
-            autoDownloadToggle.IsChecked = value;
-            this.autoDownloadToggle.Content = value ? AppResources.On : AppResources.Off;
 
             if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.AUTO_RESUME_SETTING, out value))
                 value = true;
@@ -98,23 +94,6 @@ namespace windows_client.View
             this.locationToggle.Content = AppResources.Off;
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.USE_LOCATION_SETTING, false);
             HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.LOCATION_DEVICE_COORDINATE);
-        }
-        private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            autoDownloadToggle.Loaded -= autoDownloadToggle_Loaded;
-            autoDownloadToggle.Checked += autoDownloadToggle_Checked;
-            autoDownloadToggle.Unchecked += autoDownloadToggle_Unchecked;
-        }
-        private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.autoDownloadToggle.Content = AppResources.On;
-            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_DOWNLOAD_SETTING);
-        }
-
-        private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.autoDownloadToggle.Content = AppResources.Off;
-            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.AUTO_DOWNLOAD_SETTING, false);
         }
 
         private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)

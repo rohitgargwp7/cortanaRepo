@@ -238,9 +238,12 @@ namespace windows_client.View
             }
             else
             {
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
-                HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
+                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_IMAGE))
+                {
+                    HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
+                    HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
+                    HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
+                }
             }
         }
 

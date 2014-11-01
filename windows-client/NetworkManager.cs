@@ -1986,15 +1986,7 @@ namespace windows_client
 
         private bool IsOKToDownload(int settings)
         {
-            if (Utility.IsOnWifi())
-            {
-                if (settings > 0)
-                    return true;
-            }
-            else if (settings == 2)
-                return true;
-
-            return false;
+            return ((Utility.IsOnWifi() && settings > 0) || settings == 2) ? true : false;
         }
 
         /// <summary>
