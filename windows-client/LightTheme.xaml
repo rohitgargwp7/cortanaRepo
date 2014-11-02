@@ -1498,6 +1498,98 @@ private copy.
         </StackPanel>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="AutoDownloadListPicker" TargetType="toolkit:ListPicker">
+        <StackPanel>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="PickerStates">
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="Highlighted">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="UserControl"
+								Storyboard.TargetProperty="Foreground"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="{StaticResource HikeFGBrush}"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="Border"
+								Storyboard.TargetProperty="Background"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="White"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="Border"
+								Storyboard.TargetProperty="BorderBrush"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="{StaticResource HikeBlue}"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="Border"
+								Storyboard.TargetProperty="Background"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="{StaticResource TransparentBrush}"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="Border"
+								Storyboard.TargetProperty="BorderBrush"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="{StaticResource PhoneDisabledBrush}"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames
+								Storyboard.TargetName="UserControl"
+								Storyboard.TargetProperty="Foreground"
+								Duration="0">
+                                <DiscreteObjectKeyFrame
+									Value="{StaticResource PhoneDisabledBrush}"
+									KeyTime="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ContentControl
+				Content="{TemplateBinding Header}"
+				ContentTemplate="{TemplateBinding HeaderTemplate}"
+				Foreground="{StaticResource PhoneSubtleBrush}"
+				FontSize="{StaticResource PhoneFontSizeNormal}"
+				HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				Margin="0 0 0 8"/>
+            <Grid>
+                <Border x:Name="Border"
+					Background="{TemplateBinding Background}"
+					BorderBrush="{TemplateBinding BorderBrush}"
+					BorderThickness="{TemplateBinding BorderThickness}">
+                    <UserControl x:Name="UserControl" Foreground="{TemplateBinding Foreground}" Margin="0,0">
+                        <StackPanel>
+                            <TextBlock x:Name="MultipleSelectionModeSummary" Margin="0 8 0 8" />
+                            <Canvas x:Name="ItemsPresenterHost" MinHeight="46">
+                                <ItemsPresenter x:Name="ItemsPresenter">
+                                    <ItemsPresenter.RenderTransform>
+                                        <TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>
+                                    </ItemsPresenter.RenderTransform>
+                                </ItemsPresenter>
+                            </Canvas>
+                        </StackPanel>
+                    </UserControl>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ControlTemplate>
+
     <Style TargetType="ScrollBar">
         <Setter Property="Background" Value="{StaticResource PhoneDisabledBrush}"/>
         <Setter Property="Padding" Value="1"/>
@@ -1845,6 +1937,14 @@ private copy.
         <Setter Property="Foreground" Value="{StaticResource HikeBlue}"/>
         <Setter Property="FontSize" Value="28"/>
         <Setter Property="Margin" Value="25,12,25,6"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <Style x:Key="AutoDownloadLabelTextBlock" TargetType="TextBlock" BasedOn="{StaticResource HeaderTextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource HikeFGBrush}"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Margin" Value="12,0"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>

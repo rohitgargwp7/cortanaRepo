@@ -2043,7 +2043,7 @@ namespace windows_client
                                         {
                                             convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
                                         }
-                                        else if (convMessage.FileAttachment != null && !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
+                                        else if (convMessage.FileAttachment != null)
                                         {
                                             string sendersMsisdn = String.Empty;
 
@@ -2053,7 +2053,7 @@ namespace windows_client
                                                 sendersMsisdn = convMessage.Msisdn;
 
                                             if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
-                                                FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                                                DownloadFileAutomatically(convMessage);
                                         }
 
                                         if (convMessage.FileAttachment != null)
@@ -2082,7 +2082,6 @@ namespace windows_client
                                 vals[2] = false;
                                 HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                             }
-
                         }
                     }
                     if (msisdnBulkData.LastDeliveredMsgId > 0)

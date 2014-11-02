@@ -234,7 +234,7 @@ namespace FileTransfer
                 {
                     if (!TaskMap.ContainsKey(fileInfo.MessageId))
                     {
-                        //If not netwrok mark it as failed and remove from taskmap
+                        //If no network mark it as failed and remove from taskmap
                         if (!NetworkInterface.GetIsNetworkAvailable())
                         {
                             FailTask(fileInfo);

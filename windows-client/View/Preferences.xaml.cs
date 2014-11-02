@@ -51,11 +51,6 @@ namespace windows_client.View
 
             bool value;
 
-            if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.AUTO_RESUME_SETTING, out value))
-                value = true;
-            autoResumeToggle.IsChecked = value;
-            this.autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
-
             if (!HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.ENTER_TO_SEND, out value))
                 value = true;
             enterToSendToggle.IsChecked = value;
@@ -94,26 +89,6 @@ namespace windows_client.View
             this.locationToggle.Content = AppResources.Off;
             HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.USE_LOCATION_SETTING, false);
             HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.LOCATION_DEVICE_COORDINATE);
-        }
-
-        private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            autoResumeToggle.Loaded -= autoUploadToggle_Loaded;
-            autoResumeToggle.Checked += autoResumeToggle_Checked;
-            autoResumeToggle.Unchecked += autoResumeToggle_Unchecked;
-        }
-
-        private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.autoResumeToggle.Content = AppResources.On;
-            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_RESUME_SETTING);
-            FileTransferManager.Instance.PopulatePreviousTasks();
-        }
-
-        private void autoResumeToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.autoResumeToggle.Content = AppResources.Off;
-            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.AUTO_RESUME_SETTING, false);
         }
 
         private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)

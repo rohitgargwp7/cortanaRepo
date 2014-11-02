@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using CommonLibrary.Misc;
 using CommonLibrary.Constants;
+using CommonLibrary.Languages;
 
 namespace windows_client.View
 {
@@ -34,10 +35,56 @@ namespace windows_client.View
                 selIndex = 1;
 
             autoDownloadVideoListPicker.SelectedIndex = selIndex;
-            
-            autoDownloadImageListPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
-            autoDownloadAudioListPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
-            autoDownloadVideoListPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
+
+            bool value = !HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_RESUME_SETTING);
+            autoResumeToggle.IsChecked = value;
+            autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
+        }
+
+        private void Toggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+
+            if (toggleSwitch == null)
+                return;
+
+            toggleSwitch.Checked   -= Toggle_Checked;
+            toggleSwitch.Checked   += Toggle_Checked;
+            toggleSwitch.Unchecked -= Toggle_Unchecked;
+            toggleSwitch.Unchecked += Toggle_Unchecked;
+        }
+
+        private void Toggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+
+            if (toggleSwitch == null)
+                return;
+
+            toggleSwitch.Content = AppResources.Off;
+            HikeInstantiation.WriteToIsoStorageSettings(toggleSwitch.Tag.ToString(),false);
+        }
+
+        private void Toggle_Checked(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+
+            if (toggleSwitch == null)
+                return;
+
+            toggleSwitch.Content = AppResources.On;
+            HikeInstantiation.RemoveKeyFromAppSettings(toggleSwitch.Tag.ToString());
+        }
+
+        private void ListPicker_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListPicker listPicker = sender as ListPicker;
+
+            if (listPicker == null)
+                return;
+
+            listPicker.SelectionChanged -= autoDownloadListPicker_SelectionChanged;
+            listPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
         }
 
         private void autoDownloadListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
