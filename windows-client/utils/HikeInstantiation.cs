@@ -203,8 +203,8 @@ namespace windows_client.utils
             #region AutoDownload Settings
             if (IsNewInstall) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
             {
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE] = 2;
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO] = 1;
                 WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
             }
             #endregion

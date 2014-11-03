@@ -230,20 +230,17 @@ namespace windows_client.View
         {
             if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
             {
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 0);
-                HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 0);
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE] = 0;
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO] = 0;
                 HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 0);
 
                 HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_DOWNLOAD_SETTING);
             }
             else
             {
-                if (!HikeInstantiation.AppSettings.Contains(FTBasedConstants.AUTO_DOWNLOAD_IMAGE))
-                {
-                    HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_IMAGE, 2);
-                    HikeInstantiation.AppSettings.Add(FTBasedConstants.AUTO_DOWNLOAD_AUDIO, 1);
-                    HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
-                }
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE]=2;
+                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO]=1;
+                HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
             }
         }
 
