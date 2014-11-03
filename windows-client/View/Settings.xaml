@@ -36,7 +36,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,20,0,0" Tap="Notifications_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="0" Margin="0,15,0,0" Tap="Notifications_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -48,19 +48,19 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="1" Margin="0,20,0,0" Tap="SMS_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="1" Margin="0,15,0,0" Tap="Media_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/view/images/settings/free_sms.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                    <Image Source="/view/images/settings/notifications.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
                     <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SMSSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
-                        <TextBlock x:Name="smsCounterText" Style="{StaticResource SettingsSubHeaderTextBlockStyle}"/>
+                        <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_MediaSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SettingsSubtitle_Media_Txt, Source={StaticResource LocalizedStrings}}"/>
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" Margin="0,20,0,0" Tap="Account_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="2" Margin="0,15,0,0" Tap="Account_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -72,7 +72,7 @@
                     </StackPanel>
                 </Grid>
                 
-                <Grid Grid.Row="3" Margin="0,20,0,0" Tap="Privacy_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="3" Margin="0,15,0,0" Tap="Privacy_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -84,7 +84,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="4" Margin="0,20,0,0" Tap="Preferences_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="4" Margin="0,15,0,0" Tap="Preferences_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -96,7 +96,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="5" Margin="0,20,0,0" Tap="Sync_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="5" Margin="0,15,0,0" Tap="Sync_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -108,7 +108,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="6" Margin="0,20,0,25" Tap="Help_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid Grid.Row="6" Margin="0,15,0,25" Tap="Help_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>

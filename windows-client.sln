@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Phone
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "windows-client", "windows-client\windows-client.csproj", "{FAD63E16-FFA4-4227-8788-CFD93B1F04C5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RPALApiComponent", "RPALApiComponent\RPALApiComponent.vcxproj", "{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}"
@@ -72,8 +74,8 @@ Global
 		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|Win32.Build.0 = Release|Win32
 		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|x86.ActiveCfg = Release|Win32
 		{F886ABBB-1FE5-4C1B-8C1F-2A26C4C49CE8}.Release|x86.Build.0 = Release|Win32
-		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|Any CPU.ActiveCfg = Debug|ARM
+		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|Any CPU.Build.0 = Debug|ARM
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|ARM.ActiveCfg = Debug|ARM
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|ARM.Build.0 = Debug|ARM
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -92,8 +94,8 @@ Global
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Release|Win32.Build.0 = Release|x86
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Release|x86.ActiveCfg = Release|x86
 		{57BE909D-CAE2-40A7-A07F-88A31973C195}.Release|x86.Build.0 = Release|x86
-		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|Any CPU.ActiveCfg = Debug|ARM
+		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|Any CPU.Build.0 = Debug|ARM
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|ARM.ActiveCfg = Debug|ARM
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|ARM.Build.0 = Debug|ARM
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -112,8 +114,8 @@ Global
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|Win32.Build.0 = Release|x86
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|x86.ActiveCfg = Release|x86
 		{230CE6E8-77F4-4A39-876F-41BAC647FBB6}.Release|x86.Build.0 = Release|x86
-		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.ActiveCfg = Debug|ARM
+		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Any CPU.Build.0 = Debug|ARM
 		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|ARM.ActiveCfg = Debug|ARM
 		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|ARM.Build.0 = Debug|ARM
 		{06FDEE42-8BDC-4157-80EA-9E591B8DABAB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86

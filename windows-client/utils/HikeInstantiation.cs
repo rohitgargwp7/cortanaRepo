@@ -200,6 +200,26 @@ namespace windows_client.utils
         /// <param name="initInUpgradePage">is upgrade page called</param>
         public static void InstantiateClasses(bool initInUpgradePage)
         {
+            #region AutoDownload Settings
+            if (IsNewInstall || Utility.CompareVersion(_currentVersion,"2.9.0.1")!=1) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
+            {
+                if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
+                {
+                    HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE] = 0;
+                    HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO] = 0;
+                    HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 0);
+
+                    HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_DOWNLOAD_SETTING); //since this key will no longer be used
+                }
+                else
+                {
+                    HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE]=2;
+                    HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO]=1;
+                    HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
+                }
+            }
+            #endregion
+
             #region Hidden Mode
             if (IsNewInstall || Utility.CompareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(AppSettingsKeys.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);

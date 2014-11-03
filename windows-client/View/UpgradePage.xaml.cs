@@ -215,7 +215,7 @@ namespace windows_client.View
             {
                 UpgradeGroupInfoForReadBy();
             }
-            
+
             Thread.Sleep(2000);
         }
 

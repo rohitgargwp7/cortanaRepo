@@ -2332,6 +2332,30 @@ Download it like asap from http://hike.in!</value>
   <data name="BackgroundAgent_Off_Exception_Message" xml:space="preserve">
     <value>Background agents for this application have been disabled by the user.Some functions might not work properly. Please turn on background agents.</value>
   </data>
+  <data name="AutoDownloadOption_Never_Txt" xml:space="preserve">
+    <value>never</value>
+  </data>
+  <data name="AutoDownloadOption_WifiCellular_Txt" xml:space="preserve">
+    <value>wifi and cellular</value>
+  </data>
+  <data name="AutoDownloadOption_Wifi_Txt" xml:space="preserve">
+    <value>wifi</value>
+  </data>
+  <data name="AutoDownloadSettings_Audio_Txt" xml:space="preserve">
+    <value>auto download audio</value>
+  </data>
+  <data name="AutoDownloadSettings_Image_Txt" xml:space="preserve">
+    <value>auto download image</value>
+  </data>
+  <data name="AutoDownloadSettings_Video_Txt" xml:space="preserve">
+    <value>auto download video</value>
+  </data>
+  <data name="SettingsSubtitle_Media_Txt" xml:space="preserve">
+    <value>auto download, auto resume, image quality</value>
+  </data>
+  <data name="Settings_MediaSettings_Txt" xml:space="preserve">
+    <value>media</value>
+  </data>
   <data name="contactJoiningNotification" xml:space="preserve">
     <value>Contact joining notifications</value>
     <comment>For Hiding Contact Joining Notifications</comment>

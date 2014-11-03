@@ -1,0 +1,72 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="windows_client.View.Media"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="{StaticResource HikeBGBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <Grid Background="{StaticResource HikeHeaderBrush}"  Height="90">
+            <TextBlock Style="{StaticResource PageHeaderTextBlock}" Text="{Binding Path= LocalizedResources.Settings_MediaSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+        </Grid>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Vertical" Margin="0,20,0,0">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Image_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource AutoDownloadLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadImage" x:Name="autoDownloadImageListPicker" Margin="10,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource AutoDownloadListPicker}" Foreground="{StaticResource HikeFGBrush}" Loaded="ListPicker_Loaded">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" Tag="0" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" Tag="1" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" Tag="2" />
+                </toolkit:ListPicker>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,20,0,0">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Audio_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource AutoDownloadLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadAudio" x:Name="autoDownloadAudioListPicker" Margin="10,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource AutoDownloadListPicker}" Foreground="{StaticResource HikeFGBrush}">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" />
+                </toolkit:ListPicker>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Row="2" Margin="0,20,0,0">
+                <TextBlock Text="{Binding Path= LocalizedResources.AutoDownloadSettings_Video_Txt, Source={StaticResource LocalizedStrings}}" 
+                       Style="{StaticResource AutoDownloadLabelTextBlock}"/>
+                <toolkit:ListPicker Tag="autoDownloadVideo" x:Name="autoDownloadVideoListPicker" Margin="10,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource AutoDownloadListPicker}" Foreground="{StaticResource HikeFGBrush}">
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Never_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_Wifi_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.AutoDownloadOption_WifiCellular_Txt, Source={StaticResource LocalizedStrings}}" />
+                </toolkit:ListPicker>
+            </StackPanel>
+
+            <toolkit:ToggleSwitch Margin="0 25 0 -10" Grid.Row="3" x:Name="autoResumeToggle" Tag="autoResume" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"
+                                              Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" Loaded="Toggle_Loaded" />
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>
