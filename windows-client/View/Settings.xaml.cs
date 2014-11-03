@@ -23,11 +23,6 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
-
-            int creditsRemaining = 0;
-
-            HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.SMS_SETTING, out creditsRemaining);
-            smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 
         private void Preferences_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -43,11 +38,6 @@ namespace windows_client.View
         private void Account_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/Account.xaml", UriKind.Relative));
-        }
-
-        private void SMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
