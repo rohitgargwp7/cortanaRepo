@@ -216,32 +216,7 @@ namespace windows_client.View
                 UpgradeGroupInfoForReadBy();
             }
 
-            if (Utility.CompareVersion("2.9.0.1", HikeInstantiation.CurrentVersion) == 1)
-                AddAutoDownloadSettings();
-            
             Thread.Sleep(2000);
-        }
-
-        /// <summary>
-        /// If AutoDownload was previously off, all settings are off
-        /// else in case of Image => WifiCellular, Audio and Video => Wifi
-        /// </summary>
-        private void AddAutoDownloadSettings()
-        {
-            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.AUTO_DOWNLOAD_SETTING))
-            {
-                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE] = 0;
-                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO] = 0;
-                HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 0);
-
-                HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.AUTO_DOWNLOAD_SETTING);
-            }
-            else
-            {
-                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_IMAGE]=2;
-                HikeInstantiation.AppSettings[FTBasedConstants.AUTO_DOWNLOAD_AUDIO]=1;
-                HikeInstantiation.WriteToIsoStorageSettings(FTBasedConstants.AUTO_DOWNLOAD_VIDEO, 1);
-            }
         }
 
         /// <summary>
