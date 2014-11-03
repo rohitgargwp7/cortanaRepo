@@ -736,6 +736,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact joining notifications.
+        /// </summary>
+        public static string contactJoiningNotification {
+            get {
+                return ResourceManager.GetString("contactJoiningNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact.
         /// </summary>
         public static string ContactTransfer_Text {

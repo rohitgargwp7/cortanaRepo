@@ -2356,4 +2356,8 @@ Download it like asap from http://hike.in!</value>
   <data name="Settings_MediaSettings_Txt" xml:space="preserve">
     <value>media</value>
   </data>
+  <data name="contactJoiningNotification" xml:space="preserve">
+    <value>Contact joining notifications</value>
+    <comment>For Hiding Contact Joining Notifications</comment>
+  </data>
 </root>

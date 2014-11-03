@@ -258,6 +258,10 @@ namespace windows_client.DbUtils
 
             ConversationListObject obj = null;
 
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
+                return null;
+
+
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utility.IsGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.

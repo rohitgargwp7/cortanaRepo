@@ -106,6 +106,12 @@ namespace windows_client.View
 
             hideMessageToggle.IsChecked = hideMessagePreview;
             this.hideMessageToggle.Content = hideMessagePreview ? AppResources.On : AppResources.Off;
+
+            bool contactJoiningNotification = !(HikeInstantiation.AppSettings.TryGetValue(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, out contactJoiningNotification));
+                
+            contactJoiningNotificationToggle.IsChecked = contactJoiningNotification;
+            this.contactJoiningNotificationToggle.Content = contactJoiningNotification ? AppResources.On : AppResources.Off;
+
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -303,6 +309,41 @@ namespace windows_client.View
             }
         }
 
+        private void contactJoiningNotificationToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            contactJoiningNotificationToggle.Loaded -= contactJoiningNotificationToggle_Loaded;
+            contactJoiningNotificationToggle.Checked += contactJoiningNotificationToggle_Checked;
+            contactJoiningNotificationToggle.Unchecked += contactJoiningNotificationToggle_Unchecked;
+        }
+
+        private void contactJoiningNotificationToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.contactJoiningNotificationToggle.Content = AppResources.On;
+
+            HikeInstantiation.RemoveKeyFromAppSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING);
+            JObject obj = new JObject();
+
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(ServerJsonKeys.USER_JOINING_NOTIF, 1);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
+        private void contactJoiningNotificationToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.contactJoiningNotificationToggle.Content = AppResources.Off;
+
+            HikeInstantiation.WriteToIsoStorageSettings(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING, false);
+
+            JObject obj = new JObject();
+            obj.Add(ServerJsonKeys.TYPE, ServerJsonKeys.MqttMessageTypes.ACCOUNT_CONFIG);
+            JObject data = new JObject();
+            data.Add(ServerJsonKeys.USER_JOINING_NOTIF, 0);
+            obj.Add(ServerJsonKeys.DATA, data);
+            HikeInstantiation.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+
         void preventCheckedState(bool currentlyChecked)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -348,6 +389,7 @@ namespace windows_client.View
 
             base.OnBackKeyPress(e);
         }
+
     }
     
 }

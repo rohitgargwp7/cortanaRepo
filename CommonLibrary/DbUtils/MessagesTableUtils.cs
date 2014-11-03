@@ -133,7 +133,7 @@ namespace CommonLibrary.DbUtils
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 bool success = addMessage(convMsg);
-                
+
                 if (!success)
                     return null;
 
@@ -190,7 +190,7 @@ namespace CommonLibrary.DbUtils
             if (addMessage(convMsg))
             {
                 ConversationListObject cobj = UpdateConversationList(convMsg, isNewGroup, from);
-                
+
                 if (cobj != null && convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                 {
                     ProcessConversationMetadata(convMsg, cobj);
@@ -216,6 +216,9 @@ namespace CommonLibrary.DbUtils
                 return null;
 
             ConversationListObject obj = null;
+
+            if (HikeInstantiation.AppSettings.Contains(AppSettingsKeys.CONTACT_JOINING_NOTIFICATION_SETTING))
+                return null;
 
             if (!HikeInstantiation.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
