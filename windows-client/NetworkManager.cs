@@ -178,9 +178,8 @@ namespace windows_client
                         return;
                     }
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    HandleFTForMessageRecieved(convMessage);
-
-                    UpdateDbAndUiForMsg(null, convMessage, isPush);
+                    if (UpdateDbAndUiForMsg(null, convMessage, isPush))
+                        HandleFTForMessageRecieved(convMessage);
                 }
                 catch (Exception ex)
                 {
@@ -1999,20 +1998,21 @@ namespace windows_client
 
         #endregion
 
-        private void UpdateDbAndUiForMsg(ConvMessage convMessage)
+        private bool UpdateDbAndUiForMsg(ConvMessage convMessage)
         {
             ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
             if (obj == null)
-                return;
+                return false;
 
             object[] vals = new object[2];
             vals[0] = convMessage;
             vals[1] = obj;
 
             this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            return true;
         }
 
-        private void UpdateDbAndUiForMsg(string sender, ConvMessage cm, bool isPush)
+        private bool UpdateDbAndUiForMsg(string sender, ConvMessage cm, bool isPush)
         {
             ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
             if (obj != null)
@@ -2023,7 +2023,10 @@ namespace windows_client
                 vals[1] = obj;
                 vals[2] = isPush;
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                return true;
             }
+
+            return false;
         }
 
         private void UpdateReadByStatus(string msisdnToCheck, long lastSentMsgId, JArray readByArray)
@@ -2388,7 +2391,7 @@ namespace windows_client
                         ConvMessage convMessage = ProcessGroupChatLeave(jsonObj);
                         if (convMessage == null)
                             return;
-                        UpdateDbAndUiForMsg(convMessage);
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
                     }
                     catch (Exception e)
                     {
