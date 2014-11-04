@@ -12,6 +12,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using System.IO.IsolatedStorage;
 using System.IO;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.DbUtils
 {
@@ -186,16 +187,14 @@ namespace windows_client.DbUtils
         }
 
         // this is called in case of gcj from Network manager
-        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj, string gName)
+        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, string gName)
         {
             ConversationListObject obj = null;
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
-                bool success = addMessage(convMsg);
-                if (!success)
-                    return null;
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
-                obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
+                PhoneApplicationService.Current.State[convMsg.Msisdn] = groupName;
+                obj = ConversationTableUtils.addConversation(convMsg, true, null);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
@@ -223,10 +222,6 @@ namespace windows_client.DbUtils
                 }
                 else
                     obj.LastMessage = convMsg.Message;
-
-                bool success = addMessage(convMsg);
-                if (!success)
-                    return null;
 
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
@@ -294,23 +289,12 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
                     obj.LastMessage = convMsg.Message;
-
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
-                    if (gi == null)
-                        return null;
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region PARTICIPANT_LEFT
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
                 {
                     obj.LastMessage = convMsg.Message;
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
-                    if (gi == null)
-                        return null;
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING

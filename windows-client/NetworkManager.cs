@@ -1160,19 +1160,19 @@ namespace windows_client
                 }
                 #endregion
 
-                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
+                GroupManager.Instance.SaveGroupParticpantsCache(grpId);
+                this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
+                MessagesTableUtils.addGroupChatMessage(convMessage, groupName);//name is handled inside
+
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
                 if (obj == null)
                     return;
-                GroupManager.Instance.SaveGroupParticpantsCache(grpId);
-                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
-                Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = obj;
 
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
             }
             #endregion
             #region GROUP_CHAT_NAME CHANGE
@@ -1195,24 +1195,27 @@ namespace windows_client
                         return;//group doesn't exists
 
                     GroupManager.Instance.LoadGroupParticipants(groupId);
-                    ConversationTableUtils.updateGroupName(groupId, groupName);
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj == null)
-                        return;
-                    object[] vals = new object[2];
-                    vals[0] = cm;
-                    vals[1] = obj;
+
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
                     {
+                        ConversationTableUtils.updateGroupName(groupId, groupName);
+                        ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                            this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
                         });
+
+                        this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
+
+                        ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                        if (obj == null)
+                            return;
+                        object[] vals = new object[2];
+                        vals[0] = cm;
+                        vals[1] = obj;
+                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
                 }
                 catch (Exception e)
@@ -1251,30 +1254,30 @@ namespace windows_client
 
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
+
+                MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                    }
+                });
+                this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
+
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                 if (obj == null)
                     return;
-                MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
-                if (App.ViewModel.ConvMap.ContainsKey(groupId))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        try
-                        {
-                            App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
-                            object[] oa = new object[2];
-                            oa[0] = cm;
-                            oa[1] = obj;
+                object[] oa = new object[2];
+                oa[0] = cm;
+                oa[1] = obj;
 
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
-                            this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
-                        }
-                    });
-                }
+                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -1297,7 +1300,20 @@ namespace windows_client
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
                     GroupManager.Instance.SaveGroupParticpantsCache(groupId);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
+
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
+                    if (gi == null)
+                        return;
+                    if (string.IsNullOrEmpty(gi.GroupName) && App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))// no group name is set
+                    {
+                        ConversationListObject obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                        //todo:check update on bg thread
+                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
+                        ConversationTableUtils.saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+                    }
+                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
+
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                     if (cObj == null)
                         return;
 
@@ -1306,7 +1322,6 @@ namespace windows_client
                     vals[1] = cObj;
 
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
                 }
                 catch (Exception e)
                 {
@@ -1324,19 +1339,20 @@ namespace windows_client
                     if (goAhead)
                     {
                         ConvMessage convMessage = new ConvMessage(jsonObj, false, false);
+                        this.pubSub.publish(HikePubSub.GROUP_END, groupId);
+
+                        //explicitly set IsGroupAlive false to prevent db hit
+                        if (App.ViewModel.ConvMap.ContainsKey(convMessage.Msisdn))
+                            App.ViewModel.ConvMap[convMessage.Msisdn].IsGroupAlive = false;
+
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
                         if (cObj == null)
                             return;
-
-                        //explicitly set IsGroupAlive false to prevent db hit
-                        cObj.IsGroupAlive = false;
-
                         object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = cObj;
 
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                        this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                     }
                 }
                 catch (Exception e)
@@ -1800,7 +1816,7 @@ namespace windows_client
                         vals[0] = cm;
                         vals[1] = obj;
                         vals[2] = isPush;
-
+                        //todo:handle
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
 
@@ -2539,6 +2555,7 @@ namespace windows_client
                         obj = MessagesTableUtils.addChatMessage(cmCredits, false);
                         vals = new object[3];
                         vals[2] = cmCredits;
+                        //todo:handle
                     }
 
                     vals[0] = cm;
@@ -2583,6 +2600,7 @@ namespace windows_client
                             }
                             values = new object[3];
                             values[2] = cmCredits;
+                            //todo:handle
                         }
                         else
                             values = new object[2];
