@@ -4810,6 +4810,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to media.
+        /// </summary>
+        public static string Settings_MediaSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_MediaSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
@@ -4950,6 +4959,15 @@ namespace windows_client.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download, image quality and more.
+        /// </summary>
+        public static string SettingsSubtitle_Media_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Media_Txt", resourceCulture);
             }
         }
         

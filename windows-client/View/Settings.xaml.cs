@@ -349,5 +349,10 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
+
+        private void Media_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/Media.xaml", UriKind.Relative));
+        }
     }
 }
