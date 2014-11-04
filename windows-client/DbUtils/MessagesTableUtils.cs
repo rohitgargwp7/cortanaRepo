@@ -558,6 +558,7 @@ namespace windows_client.DbUtils
                 SaveLongMessage(convMsg);
             }
             #endregion
+           
         }
 
         /// <summary>

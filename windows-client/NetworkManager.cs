@@ -2693,12 +2693,12 @@ namespace windows_client
                     if (dictBulkData == null)
                     {
                         obj = MessagesTableUtils.addChatMessage(cm, false);
-                        listMessages.Add(cm);
                         if (obj == null)
                         {
                             GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
                             return;
                         }
+                        listMessages.Add(cm);
                     }
                     else
                     {
@@ -2717,6 +2717,11 @@ namespace windows_client
                         if (dictBulkData == null)
                         {
                             obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            if (obj == null)
+                            {
+                                GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
+                                return;
+                            }
                             listMessages.Add(cmCredits);
                         }
                         else
@@ -2751,12 +2756,12 @@ namespace windows_client
                         if (dictBulkData == null)
                         {
                             co = MessagesTableUtils.addChatMessage(convMsg, false);
-                            listMessages.Add(convMsg);
                             if (co == null)
                             {
-                                GroupManager.Instance.SaveGroupParticpantsCache(convMsg.Msisdn);
+                                GroupManager.Instance.SaveGroupParticpantsCache();
                                 return;
                             }
+                            listMessages.Add(convMsg);
                         }
                         else
                         {
@@ -2775,12 +2780,12 @@ namespace windows_client
                             if (dictBulkData == null)
                             {
                                 co = MessagesTableUtils.addChatMessage(cmCredits, false);
-                                listMessages.Add(cmCredits);
                                 if (co == null)
                                 {
-                                    GroupManager.Instance.SaveGroupParticpantsCache(cmCredits.Msisdn);
+                                    GroupManager.Instance.SaveGroupParticpantsCache();
                                     return;
                                 }
+                                listMessages.Add(cmCredits);
                             }
                             else
                             {
