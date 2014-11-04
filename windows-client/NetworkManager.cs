@@ -143,8 +143,18 @@ namespace windows_client
                 ProcessBulkPacket(jsonObj);
             }
             #endregion
+            else
+            {
+                ProcessAllPacketsExceptBulk(jsonObj, type, msisdn);
+            }
+
+        }
+
+        private void ProcessAllPacketsExceptBulk(JObject jsonObj, string type, string msisdn)
+        {
+
             #region MESSAGE
-            else if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
+            if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
                 try
                 {
@@ -2177,7 +2187,16 @@ namespace windows_client
             try
             {
                 string type = (string)jsonObj[HikeConstants.TYPE];
-
+                string msisdn = null;
+                try
+                {
+                    msisdn = (string)jsonObj[HikeConstants.FROM];
+                }
+                catch (JsonReaderException ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse from, Exception : " + ex.StackTrace);
+                    return;
+                }
                 if (type == MESSAGE)
                 {
                     try
@@ -2206,13 +2225,10 @@ namespace windows_client
                     try
                     {
                         string id = (string)jsonObj[HikeConstants.DATA];
-                        string msisdn;
                         JToken msisdnToken;
                         jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
                         if (msisdnToken != null)
                             msisdn = msisdnToken.ToString();
-                        else
-                            msisdn = (string)jsonObj[HikeConstants.FROM];
                         long msgID = Int64.Parse(id);
                         MsisdnBulkData msisdnBulkData;
                         if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
@@ -2249,14 +2265,11 @@ namespace windows_client
                         return;
                     }
 
-                    string readBy = (string)jsonObj[HikeConstants.FROM];
-                    string msisdn;
+                    string readBy = msisdn;
                     JToken msisdnToken;
                     jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
                     if (msisdnToken != null)
                         msisdn = msisdnToken.ToString();
-                    else
-                        msisdn = readBy;
 
                     MsisdnBulkData msisdnBulkData;
                     if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
@@ -2301,7 +2314,6 @@ namespace windows_client
                 #region STATUS UPDATE
                 else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
                 {
-                    string msisdn = (string)jsonObj[HikeConstants.FROM];
                     StatusMessage sm = null;
                     ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
                     if (cm != null)
@@ -2406,16 +2418,6 @@ namespace windows_client
                 {
                     try
                     {
-                        string msisdn = null;
-                        try
-                        {
-                            msisdn = (string)jsonObj[HikeConstants.FROM];
-                        }
-                        catch (JsonReaderException ex)
-                        {
-                            Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse from, Exception : " + ex.StackTrace);
-                            return;
-                        }
                         string sender;
                         ConvMessage cm = ProcessChatBackground(jsonObj, msisdn, out sender);
                         if (cm == null)
@@ -2440,7 +2442,7 @@ namespace windows_client
                 #endregion
                 else
                 {
-                    onMessage(jsonObj.ToString(Newtonsoft.Json.Formatting.None));
+                    ProcessAllPacketsExceptBulk(jsonObj, type, msisdn);
                 }
             }
             catch (JsonReaderException ex)
