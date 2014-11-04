@@ -2189,13 +2189,7 @@ namespace windows_client
                         convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                         MessagesTableUtils.UpdateConvMessageText(convMessage, string.Empty);
 
-                        MsisdnBulkData msisdnBulkData;
-                        if (!dictBulkData.TryGetValue(convMessage.Msisdn, out msisdnBulkData))
-                        {
-                            msisdnBulkData = new MsisdnBulkData(convMessage.Msisdn);
-                            dictBulkData[convMessage.Msisdn] = msisdnBulkData;
-                        }
-                        msisdnBulkData.ListMessages.Add(convMessage);
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
 
                     }
                     catch (Exception ex)
@@ -2326,6 +2320,124 @@ namespace windows_client
                     }
                 }
                 #endregion
+                #region USER_JOINED USER_LEFT
+                else if ((USER_JOINED == type) || (USER_LEFT == type))
+                {
+                    ProcessUjUl(jsonObj, type, dictBulkData);
+                }
+                #endregion
+                #region GROUP CHAT RELATED
+
+                #region GROUP_CHAT_JOIN
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
+                {
+                    ConvMessage convMessage = ProcessGcj(jsonObj);
+                    if (convMessage == null)
+                        return;
+                    AddMessageToBulkDataMap(dictBulkData, convMessage);
+                }
+                #endregion
+                #region GROUP_CHAT_NAME CHANGE
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
+                {
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGCN(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #region GROUP DISPLAY PIC CHANGE
+                else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+                {
+                    ConvMessage convMessage = ProcessGroupDP(jsonObj);
+                    if (convMessage == null)
+                        return;
+                    AddMessageToBulkDataMap(dictBulkData, convMessage);
+                }
+                #endregion
+                #region GROUP_CHAT_LEAVE
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
+                {
+                    /*
+                    * 1. Update Conversation list name if groupName is not set.
+                    * 2. Update DB.
+                    * 3. Notify GroupInfo page (if opened)
+                    * 4. Notify Chat Thread page if opened.
+                    */
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGroupChatLeave(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        UpdateDbAndUiForMsg(convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCL packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #region GROUP_CHAT_END
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type) //Group chat end
+                {
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGroupChatEnd(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #endregion
+                #region CHAT BACKGROUND
+                else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+                {
+                    try
+                    {
+                        string msisdn = null;
+                        try
+                        {
+                            msisdn = (string)jsonObj[HikeConstants.FROM];
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
+                            return;
+                        }
+                        string sender;
+                        ConvMessage cm = ProcessChatBackground(jsonObj, msisdn, out sender);
+                        if (cm == null)
+                            return;
+
+                        MessagesTableUtils.UpdateConvMessageText(cm, sender);
+
+                        AddMessageToBulkDataMap(dictBulkData, cm);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    }
+                }
+                #endregion
+                #region USER_OPT_IN
+                else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
+                {
+                    ProcessUoUjMsgs(jsonObj, true, true, false, null);
+                }
+                #endregion
                 else
                 {
                     onMessage(jsonObj.ToString(Newtonsoft.Json.Formatting.None));
@@ -2337,6 +2449,17 @@ namespace windows_client
                 return;
             }
             return;
+        }
+
+        private static void AddMessageToBulkDataMap(Dictionary<string, MsisdnBulkData> dictBulkData, ConvMessage convMessage)
+        {
+            MsisdnBulkData msisdnBulkData;
+            if (!dictBulkData.TryGetValue(convMessage.Msisdn, out msisdnBulkData))
+            {
+                msisdnBulkData = new MsisdnBulkData(convMessage.Msisdn);
+                dictBulkData[convMessage.Msisdn] = msisdnBulkData;
+            }
+            msisdnBulkData.ListMessages.Add(convMessage);
         }
 
         private ConvMessage ProcessStatusUpdate(string msisdn, JObject jsonObj, out StatusMessage sm)
