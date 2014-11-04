@@ -2194,7 +2194,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg :  MESSAGE convmessage, Exception : " + ex.StackTrace);
                         return;
                     }
 
@@ -2224,7 +2224,7 @@ namespace windows_client
                     }
                     catch (FormatException e)
                     {
-                        Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
+                        Debug.WriteLine("Network Manager::ProcessBulkIndividualMsg: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
                         return;
                     }
                 }
@@ -2240,7 +2240,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE_READ, Exception : " + ex.StackTrace);
+                        Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg :  MESSAGE_READ, Exception : " + ex.StackTrace);
                         return;
                     }
                     if (msgIds == null || msgIds.Count == 0)
@@ -2349,7 +2349,7 @@ namespace windows_client
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCN packet : " + e.StackTrace);
                     }
                 }
                 #endregion
@@ -2380,7 +2380,7 @@ namespace windows_client
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCL packet : " + e.StackTrace);
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCL packet : " + e.StackTrace);
                     }
                 }
                 #endregion
@@ -2396,7 +2396,7 @@ namespace windows_client
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCE packet : " + e.StackTrace);
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCE packet : " + e.StackTrace);
                     }
                 }
                 #endregion
@@ -2413,7 +2413,7 @@ namespace windows_client
                         }
                         catch (JsonReaderException ex)
                         {
-                            Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
+                            Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse from, Exception : " + ex.StackTrace);
                             return;
                         }
                         string sender;
@@ -2428,7 +2428,7 @@ namespace windows_client
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Network Manager:: Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                        Debug.WriteLine("Network Manager::ProcessBulkIndividualMsg, Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
                     }
                 }
                 #endregion
@@ -2445,7 +2445,7 @@ namespace windows_client
             }
             catch (JsonReaderException ex)
             {
-                Debug.WriteLine("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
+                Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse type, Exception : " + ex.StackTrace);
                 return;
             }
             return;
