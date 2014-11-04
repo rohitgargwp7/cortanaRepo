@@ -52,33 +52,6 @@ namespace windows_client.DbUtils
             return convList;
         }
 
-        public static ConversationListObject addGroupConversation(ConvMessage convMessage, string groupName)
-        {
-            /*
-            * Msisdn : GroupId
-            * Contactname : GroupOwner
-            */
-            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
-            ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
-                true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
-
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
-            {
-                string[] vals = convMessage.Message.Split(';');
-                if (vals.Length == 2)
-                    obj.LastMessage = vals[1];
-                else
-                    obj.LastMessage = convMessage.Message;
-            }
-            string msisdn = obj.Msisdn.Replace(":", "_");
-            saveConvObject(obj, msisdn);
-            int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            //saveNewConv(obj);
-            return obj;
-        }
-
         /// <summary>
         /// Creates new conversation object and add it to db
         /// </summary>
@@ -88,7 +61,7 @@ namespace windows_client.DbUtils
         /// <param name="imageBytes">Avatar image bytes</param>
         /// <param name="from"></param>
         /// <returns></returns>
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")//todo:pass group name
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -118,7 +91,16 @@ namespace windows_client.DbUtils
                 }
             }
 
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
+            {
+                string[] vals = convMessage.Message.Split(';');
+                if (vals.Length == 2)
+                    obj.LastMessage = vals[1];
+                else
+                    obj.LastMessage = convMessage.Message;
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
             {
                 obj.LastMessage = convMessage.Message;
             }
@@ -476,7 +458,7 @@ namespace windows_client.DbUtils
                                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
                                 bool isLessThan_2900 = false;
-                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.8.0.8") < 0) // current_ver < 2.8.0.8
+                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.8.0.9") < 0) // current_ver < 2.8.0.9
                                     isLessThan_2900 = true;
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
@@ -486,7 +468,7 @@ namespace windows_client.DbUtils
                                     {
                                         if (isLessThanEqualTo_1500)
                                             item.ReadVer_1_4_0_0(reader);
-                                        else if(isLessThan_2900)
+                                        else if (isLessThan_2900)
                                             item.ReadVer_2_8_0_0(reader);
                                         else
                                             item.ReadVer_Latest(reader);

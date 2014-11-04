@@ -4176,24 +4176,6 @@ namespace windows_client.View
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                             AddMessageToOcMessages(convMessage, false, true);
-
-                            if (vals.Length == 3)
-                            {
-                                try
-                                {
-                                    if (vals[2] is ConvMessage)
-                                    {
-                                        ConvMessage cm = (ConvMessage)vals[2];
-                                        if (cm != null)
-                                        {
-                                            AddMessageToOcMessages(cm, false, true);
-                                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                                ShowJumpToBottom(true);
-                                        }
-                                    }
-                                }
-                                catch { }
-                            }
                         });
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
