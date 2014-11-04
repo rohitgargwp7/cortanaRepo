@@ -2342,4 +2342,10 @@ Download it like asap from http://hike.in!</value>
   <data name="ExceptionMessage_Text" xml:space="preserve">
     <value>Something went wrong in hike. Please tap ok to email the crash report. We'll try and fix it.</value>
   </data>
+  <data name="SetupHiddenMode_SubTxt" xml:space="preserve">
+    <value>let's hide your chats</value>
+  </data>
+  <data name="SetupHiddenMode_Txt" xml:space="preserve">
+    <value>setup hidden mode</value>
+  </data>
 </root>
