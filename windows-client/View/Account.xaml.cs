@@ -42,6 +42,9 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
+            int creditsRemaining = 0;
+            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -269,6 +272,11 @@ namespace windows_client.View
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);
             else
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+        }
+
+        private void SMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
     }
 }
