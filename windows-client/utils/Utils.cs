@@ -879,7 +879,7 @@ namespace windows_client.utils
 	        var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 	 
 	        if (profile!=null)
-	        return profile.NetworkAdapter.IanaInterfaceType == 71;
+	            return profile.NetworkAdapter.IanaInterfaceType == 71;
 	 
 	        return false;
 	    }
