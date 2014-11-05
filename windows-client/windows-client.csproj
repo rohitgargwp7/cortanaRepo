@@ -274,6 +274,9 @@
     <Compile Include="View\ForwardTo.xaml.cs">
       <DependentUpon>ForwardTo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Media.xaml.cs">
+      <DependentUpon>Media.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewGroup.xaml.cs">
       <DependentUpon>NewGroup.xaml</DependentUpon>
     </Compile>
@@ -419,6 +422,10 @@
     </Page>
     <Page Include="View\ForwardTo.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Media.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NewGroup.xaml">
       <SubType>Designer</SubType>

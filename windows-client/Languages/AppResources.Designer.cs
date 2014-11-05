@@ -304,6 +304,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to never.
+        /// </summary>
+        public static string AutoDownloadOption_Never_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Never_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi.
+        /// </summary>
+        public static string AutoDownloadOption_Wifi_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Wifi_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi and cellular.
+        /// </summary>
+        public static string AutoDownloadOption_WifiCellular_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_WifiCellular_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download audio.
+        /// </summary>
+        public static string AutoDownloadSettings_Audio_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Audio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download image.
+        /// </summary>
+        public static string AutoDownloadSettings_Image_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Image_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download video.
+        /// </summary>
+        public static string AutoDownloadSettings_Video_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto save photo and video.
         /// </summary>
         public static string AutoSaveSettings_Txt {
