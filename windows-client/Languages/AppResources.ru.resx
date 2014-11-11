@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>Пользователь {0} только что присоединился к hike, поприветствуйте его :)</value>
+    <value>{0} теперь в hike. Поздоровайтесь :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1355,7 +1355,7 @@
     <value>Приглашение отправлено</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} снова в hike. Поздоровайтесь :)</value>
+    <value>{0} теперь в hike. Поздоровайтесь :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -2110,10 +2110,10 @@
     <value>фото</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>скрыть чат</value>
+    <value>пометить чат как скрытый</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>показать чат</value>
+    <value>пометить чат как видимый</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>Подтвердите пароль</value>
@@ -2222,6 +2222,12 @@
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Пароли не совпадают.</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>закрепить пост </value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>закрепить</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Телефон</value>
   </data>
@@ -2235,13 +2241,99 @@
     <value>Создайте новый пароль</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
   </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>чат по эл. почте</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>Чат с пользователем {0} – только последние сообщения ({1}); остальные обрезаны системой WP</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>Чат с пользователем {0} – последние сообщения ({1})</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>Опубликовано АУДИО</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>Опубликован КОНТАКТ</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>Опубликован ФАЙЛ</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>Опубликовано ИЗОБРАЖЕНИЕ</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>Опубликовано МЕСТО</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>Опубликовано ВИДЕО</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>Резервное копирование чата hike с пользователем {0}</value>
+    <comment>subject of email text when backing up</comment>
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>Файл добавлен в галерею</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Не удалось сохранить</value>
   </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>поделитесь чем-то важным...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>закрепленные посты</value>
+  </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Не удается открыть это видео. По-видимому, оно повреждено.</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Чат с пользователем {0} – 1 последнее сообщение</value>
+    <comment>Only one Message in email body</comment>
+  </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>Предупреждение</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>В этом чате нет сообщений</value>
+    <comment>when there is no message</comment>
+  </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>закрепленный пост не может быть пустым</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>Не удалось загрузить файл</value>
+  </data>
+  <data name="No_Pins_Yet" xml:space="preserve">
+    <value>еще нет закрепленных постов</value>
+    <comment>In case of 0 pins in Pin History</comment>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>опубликовал(а) закрепленный пост  </value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>Скрывать личные чаты при выходе из приложения</value>
+  </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} опубликовал(а) закрепленный пост</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>Сбой в hike. Нажмите "ОК", чтобы отправить отчет об ошибке, и мы постараемся ее исправить.</value>
   </data>
 </root>
