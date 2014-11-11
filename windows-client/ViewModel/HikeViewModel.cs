@@ -1141,17 +1141,7 @@ namespace windows_client.ViewModel
                 App.ViewModel.StartResetHiddenModeTimer(null, null);
         }
 
-        /// <summary>
-        /// To Start hidden mode setup again
-        /// </summary>
-        public void SetupHiddenModeTapped()
-        {
-            if (App.ViewModel.SetupHiddenMode != null)
-                App.ViewModel.SetupHiddenMode(null,null);
-        }
-
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;
-        public event EventHandler<EventArgs> SetupHiddenMode;
 
         public string Password { get; set; }
 

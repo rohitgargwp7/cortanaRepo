@@ -4963,24 +4963,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to let&apos;s hide your chats.
-        /// </summary>
-        public static string SetupHiddenMode_SubTxt {
-            get {
-                return ResourceManager.GetString("SetupHiddenMode_SubTxt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to setup hidden mode.
-        /// </summary>
-        public static string SetupHiddenMode_Txt {
-            get {
-                return ResourceManager.GetString("SetupHiddenMode_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to share.
         /// </summary>
         public static string Share_Txt {
