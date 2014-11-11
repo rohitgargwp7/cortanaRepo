@@ -39,7 +39,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_ProfilePictureToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="profilePictureToggle_Loaded"/>
@@ -80,19 +79,7 @@
                         </Grid>
                     </Grid>
                     
-                    <Grid Grid.Row="4" Margin="0,0,0,20" x:Name="setupHiddenModeGrid" Tap="SetupHiddenMode_Tapped" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Source="/view/images/settings/change_password.png" Height="30" VerticalAlignment="Top" Margin="0,20,0,0"/>
-                        <StackPanel Grid.Column="1" Margin="25,0,0,0">
-                            <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SetupHiddenMode_Txt, Source={StaticResource LocalizedStrings}}"/>
-                            <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.SetupHiddenMode_SubTxt, Source={StaticResource LocalizedStrings}}"/>
-                        </StackPanel>
-                    </Grid>
-                    
-                    <Grid Grid.Row="5" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                    <Grid Grid.Row="4" Tap="BlockList_Tap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
