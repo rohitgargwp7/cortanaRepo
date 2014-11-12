@@ -194,6 +194,12 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
+        #region FTCaps
+        public static readonly int FT_WIFI_CAP = 1048576;
+        public static readonly int FT_3G_CAP = 102400;
+        public static readonly int FT_2G_CAP = 102400;
+        #endregion
+
         #region ConvObject_MetaData
         public static readonly string PINID = "pinId";
         public static readonly string READPIN = "readPin";
