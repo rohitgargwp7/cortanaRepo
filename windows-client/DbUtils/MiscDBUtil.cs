@@ -162,6 +162,31 @@ namespace windows_client.DbUtils
             #endregion
         }
 
+        /// <summary>
+        /// Deletes entire database
+        /// </summary>
+        public static void DeleteExistingDbs()
+        {
+            using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                    db.DeleteDatabase();
+            }
+
+            using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                    db.DeleteDatabase();
+            }
+
+            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            {
+                if (db.DatabaseExists())
+                    db.DeleteDatabase();
+            }
+            App.RemoveKeyFromAppSettings(App.IS_DB_CREATED);
+        }
+
         #region STATUS UPDATES
 
         public static void saveStatusImage(string msisdn, string serverId, byte[] imageBytes)
