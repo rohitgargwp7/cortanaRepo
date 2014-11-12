@@ -210,6 +210,7 @@ namespace windows_client.View
 
         private void SetupHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             App.ViewModel.SetupHiddenModeTapped();
 
             while (NavigationService.BackStack.Count() > 1) 
