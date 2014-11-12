@@ -4864,7 +4864,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; c13136ad4cf1869ea3ddf62543074713bbb6d927.
+        ///   Looks up a localized string similar to media.
         /// </summary>
         public static string Settings_MediaSettings_Txt {
             get {
