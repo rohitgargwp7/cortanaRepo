@@ -742,6 +742,26 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
+            #region Auto Download
+            if (isNewInstall || Utils.compareVersion(_currentVersion,"2.9.0.1")!=1) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
+	        {
+	              if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+	              {
+	                  App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE] = 0;
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 0;
+                      App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_VIDEO, 0);
+
+                      App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING); //since this key will no longer be used
+	              }
+	              else
+	              {
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE] = 2;
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 1;
+                      App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_VIDEO, 1);
+	              }
+	        }
+            #endregion
+
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);

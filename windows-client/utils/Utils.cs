@@ -867,5 +867,21 @@ namespace windows_client.utils
                     return string.Empty;
             }
         }
+
+        /// <summary>
+	    /// To check if Phone is on Wifi
+	    /// Don't use DeviceNetworkInformation as it only tells Wifi is enabled or not, not connection
+	    /// Don't use NetworkInterfaceType as it is a blocking call
+	    /// </summary>
+	    /// <returns></returns>
+	    public static bool IsOnWifi()
+	    {
+	        var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+	 
+	        if (profile!=null)
+	            return profile.NetworkAdapter.IanaInterfaceType == 71;
+	 
+	        return false;
+	    }
     }
 }

@@ -58,15 +58,6 @@ namespace windows_client.View
             }
 
             bool value;
-            if (!App.appSettings.TryGetValue(App.AUTO_DOWNLOAD_SETTING, out value))
-                value = true;
-            autoDownloadToggle.IsChecked = value;
-            this.autoDownloadToggle.Content = value ? AppResources.On : AppResources.Off;
-
-            if (!App.appSettings.TryGetValue(App.AUTO_RESUME_SETTING, out value))
-                value = true;
-            autoResumeToggle.IsChecked = value;
-            this.autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
 
             if (!App.appSettings.TryGetValue(App.ENTER_TO_SEND, out value))
                 value = true;
@@ -106,44 +97,6 @@ namespace windows_client.View
             this.locationToggle.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.USE_LOCATION_SETTING, false);
             App.RemoveKeyFromAppSettings(HikeConstants.LOCATION_DEVICE_COORDINATE);
-        }
-        private void autoDownloadToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            autoDownloadToggle.Loaded -= autoDownloadToggle_Loaded;
-            autoDownloadToggle.Checked += autoDownloadToggle_Checked;
-            autoDownloadToggle.Unchecked += autoDownloadToggle_Unchecked;
-        }
-        private void autoDownloadToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.autoDownloadToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING);
-        }
-
-        private void autoDownloadToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.autoDownloadToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.AUTO_DOWNLOAD_SETTING, false);
-        }
-
-        private void autoUploadToggle_Loaded(object sender, RoutedEventArgs e)
-        {
-            autoResumeToggle.Loaded -= autoUploadToggle_Loaded;
-            autoResumeToggle.Checked += autoResumeToggle_Checked;
-            autoResumeToggle.Unchecked += autoResumeToggle_Unchecked;
-        }
-
-        private void autoResumeToggle_Checked(object sender, RoutedEventArgs e)
-        {
-            this.autoResumeToggle.Content = AppResources.On;
-            App.RemoveKeyFromAppSettings(App.AUTO_RESUME_SETTING);
-
-            FileTransfers.FileTransferManager.Instance.PopulatePreviousTasks();
-        }
-
-        private void autoResumeToggle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            this.autoResumeToggle.Content = AppResources.Off;
-            App.WriteToIsoStorageSettings(App.AUTO_RESUME_SETTING, false);
         }
 
         private void enterToSendToggle_Loaded(object sender, RoutedEventArgs e)

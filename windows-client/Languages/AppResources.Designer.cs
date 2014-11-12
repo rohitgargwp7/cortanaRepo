@@ -304,6 +304,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to never.
+        /// </summary>
+        public static string AutoDownloadOption_Never_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Never_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi.
+        /// </summary>
+        public static string AutoDownloadOption_Wifi_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_Wifi_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to wifi and cellular.
+        /// </summary>
+        public static string AutoDownloadOption_WifiCellular_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadOption_WifiCellular_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download audio.
+        /// </summary>
+        public static string AutoDownloadSettings_Audio_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Audio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download image.
+        /// </summary>
+        public static string AutoDownloadSettings_Image_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Image_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download video.
+        /// </summary>
+        public static string AutoDownloadSettings_Video_Txt {
+            get {
+                return ResourceManager.GetString("AutoDownloadSettings_Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto save photo and video.
         /// </summary>
         public static string AutoSaveSettings_Txt {
@@ -4810,6 +4864,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; c13136ad4cf1869ea3ddf62543074713bbb6d927.
+        /// </summary>
+        public static string Settings_MediaSettings_Txt {
+            get {
+                return ResourceManager.GetString("Settings_MediaSettings_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to notifications.
         /// </summary>
         public static string Settings_NotificationSettings_Txt {
@@ -4950,6 +5013,15 @@ namespace windows_client.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to auto download, image quality and more.
+        /// </summary>
+        public static string SettingsSubtitle_Media_Txt {
+            get {
+                return ResourceManager.GetString("SettingsSubtitle_Media_Txt", resourceCulture);
             }
         }
         

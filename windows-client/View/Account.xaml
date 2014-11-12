@@ -35,8 +35,20 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Tap="Unlink_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Grid Tap="SMS_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Height="30" Source="/View/images/settings/free_sms.png" VerticalAlignment="Top" Margin="0,25,0,0"/>
+                <StackPanel Grid.Column="1" Margin="25,0,0,0">
+                    <TextBlock Style="{StaticResource SettingsHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Settings_SMSSettings_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <TextBlock x:Name="smsCounterText" Style="{StaticResource SettingsSubHeaderTextBlockStyle}"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" Tap="Unlink_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -47,7 +59,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_LogoutAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1" Tap="Delete_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Grid Grid.Row="2" Tap="Delete_Tap" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -58,7 +70,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Privacy_DeleteAccountText, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridFB" Grid.Row="2" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Grid Name="gridFB" Grid.Row="3" Tap="UnlinkFb_tap" Visibility="Collapsed" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -69,7 +81,7 @@
                     <TextBlock Style="{StaticResource SettingsSubHeaderTextBlockStyle}" Text="{Binding Path= LocalizedResources.Unlink_Fb_SubHeader_Txt, Source={StaticResource LocalizedStrings}}"/>
                 </StackPanel>
             </Grid>
-            <Grid Name="gridTwitter" Grid.Row="3" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Grid Name="gridTwitter" Grid.Row="4" Visibility="Collapsed" Tap="UnlinkTwitter_tap" Margin="0,20,0,25" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
