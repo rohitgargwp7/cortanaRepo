@@ -202,8 +202,7 @@ namespace windows_client.ViewModel
 
         public HikeViewModel(List<ConversationListObject> convList)
         {
-            int convListCount = convList.Count;
-            _convMap = new Dictionary<string, ConversationListObject>(convListCount);
+            _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             
             // this order should be maintained as _convMap should be populated before loading fav list
