@@ -800,6 +800,7 @@
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
     <Content Include="View\images\settings\reset_hidden_mode.png" />
+    <Content Include="View\images\settings\setup_hiddenmode.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />
