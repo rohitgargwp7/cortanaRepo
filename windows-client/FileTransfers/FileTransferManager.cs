@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using System.Windows;
+using System.Net.Sockets;
 
 namespace windows_client.FileTransfers
 {
@@ -68,9 +69,41 @@ namespace windows_client.FileTransfers
             {
                 FileDownloader.MaxBlockSize = HikeConstants.FT_2G_CAP;
                 FileUploader.MaxBlockSize = HikeConstants.FT_2G_CAP;
+
+                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                string serverName = "http://staging.im.hike.in/updates/wp8";
+                int portNumber = 8080;
+
+                DnsEndPoint hostEntry = new DnsEndPoint(serverName, portNumber);
+                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                socketEventArg.RemoteEndPoint = hostEntry;
+                socketEventArg.UserToken = socket;
+                socketEventArg.Completed += ChangeFTCapOnBasisOfNetwork;
+                socket.ConnectAsync(socketEventArg);
             }
 
             ThreadPool.SetMaxThreads(NoOfParallelRequest, NoOfParallelRequest);
+        }
+
+        private void ChangeFTCapOnBasisOfNetwork(object sender, SocketAsyncEventArgs e)
+        {
+            Socket socket = e.UserToken as Socket;
+            NetworkInterfaceInfo netInterfaceInfo = socket.GetCurrentNetworkInterface();
+            
+            if (e.SocketError == SocketError.Success)
+            {
+                if (netInterfaceInfo.InterfaceSubtype == NetworkInterfaceSubType.WiFi)
+                    FileUploader.MaxBlockSize = FileDownloader.MaxBlockSize = HikeConstants.FT_WIFI_CAP;
+                else if (netInterfaceInfo.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G || netInterfaceInfo.InterfaceSubtype == NetworkInterfaceSubType.Cellular_HSPA)
+                    FileUploader.MaxBlockSize = FileDownloader.MaxBlockSize = HikeConstants.FT_3G_CAP;
+                else
+                    FileUploader.MaxBlockSize = FileDownloader.MaxBlockSize = HikeConstants.FT_2G_CAP;
+            }
+            else
+            {
+                Debug.WriteLine("Error in socket while capping fileSize");
+            }
+            socket.Dispose();
         }
 
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
