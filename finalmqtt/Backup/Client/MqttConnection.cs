@@ -17,15 +17,12 @@ using mqtttest.Client;
 using Microsoft.Phone.Reactive;
 using System.Threading;
 using System.Diagnostics;
-using Microsoft.Phone.Net.NetworkInformation;
 
 namespace finalmqtt.Client
 {
     public class MqttConnection
     {
         short nextMessageId = 1;
-        public NetworkInterfaceSubType networkInterfaceSubType;
-
         public short getNextMessageId()
         {
             short rc = nextMessageId;
@@ -218,8 +215,6 @@ namespace finalmqtt.Client
                 connectCallback.onFailure(new Exception(e.SocketError.ToString()));
                 return;
             }
-
-            networkInterfaceSubType = _socket.GetCurrentNetworkInterface().InterfaceSubtype;
             ConnectMessage msg = new ConnectMessage(id, false, (byte)60, this);
             if (username != null)
                 msg.setCredentials(username, password);
