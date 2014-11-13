@@ -24,7 +24,7 @@ namespace finalmqtt.Client
     public class MqttConnection
     {
         short nextMessageId = 1;
-        public NetworkInterfaceSubType networkInterfaceSubType;
+        public NetworkInterfaceSubType networkInterfaceSubType = NetworkInterfaceSubType.Cellular_EDGE;
 
         public short getNextMessageId()
         {
@@ -219,7 +219,15 @@ namespace finalmqtt.Client
                 return;
             }
 
-            networkInterfaceSubType = _socket.GetCurrentNetworkInterface().InterfaceSubtype;
+            try 
+            { 
+                networkInterfaceSubType = _socket.GetCurrentNetworkInterface().InterfaceSubtype;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ProcessSocketConnected:: Error while finding cap using socket " + ex.StackTrace);
+            }
+
             ConnectMessage msg = new ConnectMessage(id, false, (byte)60, this);
             if (username != null)
                 msg.setCredentials(username, password);
