@@ -915,6 +915,5 @@ namespace windows_client.utils
                     return HikeConstants.FT_2G_CAP;
             }
         }
-        
     }
 }

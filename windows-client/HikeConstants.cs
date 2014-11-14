@@ -201,6 +201,12 @@ namespace windows_client
         public static readonly int FT_2G_CAP   =   64 * 1024;   //  64 kB
         #endregion
 
+        #region AUTODOWNLOAD KEYS
+        public static readonly string AUTO_DOWNLOAD_IMAGE = "autoDownloadImage";
+        public static readonly string AUTO_DOWNLOAD_AUDIO = "autoDownloadAudio";
+        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";        
+        #endregion
+
         #region ConvObject_MetaData
         public static readonly string PINID = "pinId";
         public static readonly string READPIN = "readPin";

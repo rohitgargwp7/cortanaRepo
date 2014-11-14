@@ -2158,7 +2158,7 @@ namespace windows_client
             {
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
             }
-            else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+            else if (convMessage.FileAttachment != null)
             {
                 string sendersMsisdn = String.Empty;
 
@@ -2168,13 +2168,42 @@ namespace windows_client
                     sendersMsisdn = convMessage.Msisdn;
 
                 if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
-                    FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+                    DownloadFileAutomatically(convMessage);
             }
 
             if (convMessage.FileAttachment != null)
             {
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
             }
+        }
+
+        /// <summary>
+	    /// This function is responsible for downloading file taking into account what setting (regarding autodownload) user has opted for
+	    /// </summary>
+	    /// <param name="convMessage"></param>
+        private static void DownloadFileAutomatically(ConvMessage convMessage)
+        {
+            bool autoDownload = false;
+	 
+	        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+	            autoDownload = IsOKToDownload((int)App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE]);
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+	            autoDownload = IsOKToDownload((int)App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO]);
+            else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+	            autoDownload = IsOKToDownload((int)App.appSettings[HikeConstants.AUTO_DOWNLOAD_VIDEO]);
+	 
+	        if (autoDownload)
+                FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+        }
+
+        /// <summary>
+        /// It checks if present settings allow to download
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        private static bool IsOKToDownload(int settings)
+        {
+            return ((Utils.IsOnWifi() && settings > 0) || settings == 2) ? true : false;
         }
 
         /// <summary>
