@@ -204,7 +204,7 @@ namespace windows_client.ViewModel
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
 
-            List<ConversationListObject> listConversationBox = new List<ConversationListObject>(convList);
+            List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
             for (int i = 0; i < convList.Count; i++)
             {
