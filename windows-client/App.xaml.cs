@@ -1010,7 +1010,7 @@ namespace windows_client
         {
             //if db already present on new install then delete existing dbs
             //version check so that from next versions db should not be created again once created
-            if (App.appSettings.Contains(App.IS_DB_CREATED) && (!isNewInstall || Utils.compareVersion("2.9.0.0", _latestVersion) != 0)) // shows db are created
+            if (App.appSettings.Contains(App.IS_DB_CREATED) && (!isNewInstall || Utils.compareVersion("2.9.0.1", _latestVersion) != 0)) // shows db are created
             {
                 return;
             }
