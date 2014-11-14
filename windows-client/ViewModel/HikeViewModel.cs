@@ -204,7 +204,7 @@ namespace windows_client.ViewModel
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
-            
+
             // this order should be maintained as _convMap should be populated before loading fav list
             foreach (ConversationListObject convListObj in convList)
                 _convMap[convListObj.Msisdn] = convListObj;
