@@ -375,14 +375,7 @@ namespace windows_client.Mqtt
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
 
-            NetworkInterfaceSubType networkInterfaceSubType = mqttConnection.networkInterfaceSubType;
-
-            if (networkInterfaceSubType == NetworkInterfaceSubType.WiFi)
-                FileTransfers.FileUploader.MaxBlockSize = FileTransfers.FileDownloader.MaxBlockSize = HikeConstants.FT_WIFI_CAP;
-            else if (networkInterfaceSubType == NetworkInterfaceSubType.Cellular_3G || networkInterfaceSubType == NetworkInterfaceSubType.Cellular_HSPA)
-                FileTransfers.FileUploader.MaxBlockSize = FileTransfers.FileDownloader.MaxBlockSize = HikeConstants.FT_3G_CAP;
-            else
-                FileTransfers.FileUploader.MaxBlockSize = FileTransfers.FileDownloader.MaxBlockSize = HikeConstants.FT_2G_CAP;
+            FileTransfers.FileInfoBase.MaxBlockSize = Utils.GetCapOnBasisOfNetwork(mqttConnection.networkInterfaceSubType);
 
             /* Accesses the persistence object from the main handler thread */
 

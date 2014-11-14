@@ -60,23 +60,13 @@ namespace windows_client.FileTransfers
 
         public FileTransferManager()
         {
-            if (Utils.IsOnWifi())
-            {
-                FileDownloader.MaxBlockSize = HikeConstants.FT_WIFI_CAP;
-                FileUploader.MaxBlockSize = HikeConstants.FT_WIFI_CAP;
-            }
-            else
-            {
-                FileDownloader.MaxBlockSize = HikeConstants.FT_2G_CAP;
-                FileUploader.MaxBlockSize = HikeConstants.FT_2G_CAP;
-            }
-
+            FileInfoBase.MaxBlockSize = Utils.IsOnWifi() ? HikeConstants.FT_WIFI_CAP : HikeConstants.FT_2G_CAP;
             ThreadPool.SetMaxThreads(NoOfParallelRequest, NoOfParallelRequest);
         }
 
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
-            FileInfoBase.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE) ? HikeConstants.FT_2G_CAP : ( (type == NetworkInterfaceSubType.Cellular_3G || type==NetworkInterfaceSubType.Cellular_HSPA) ? HikeConstants.FT_3G_CAP : HikeConstants.FT_WIFI_CAP);
+            FileInfoBase.MaxBlockSize = Utils.GetCapOnBasisOfNetwork(type);
 
             foreach (var key in TaskMap)
                 key.Value.ResetRetryOnNetworkChanged();

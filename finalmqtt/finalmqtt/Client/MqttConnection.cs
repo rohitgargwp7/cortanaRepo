@@ -225,7 +225,7 @@ namespace finalmqtt.Client
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ProcessSocketConnected:: Error while finding cap using socket " + ex.StackTrace);
+                Debug.WriteLine("ProcessSocketConnected:: Error while finding cap using socket " + ex.Message);
             }
 
             ConnectMessage msg = new ConnectMessage(id, false, (byte)60, this);
