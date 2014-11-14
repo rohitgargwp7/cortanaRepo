@@ -458,7 +458,7 @@ namespace windows_client.DbUtils
                                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
                                 bool isLessThan_2900 = false;
-                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.9.0.0") < 0) // current_ver < 2.9.0.0
+                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.8.1.0") < 0) // current_ver < 2.8.1.0
                                     isLessThan_2900 = true;
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
