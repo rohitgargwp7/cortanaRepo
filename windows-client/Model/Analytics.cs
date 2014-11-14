@@ -5,6 +5,7 @@ using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Diagnostics;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -159,6 +160,33 @@ namespace windows_client.Model
 
             if (App.HikePubSubInstance != null)
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, jsonObj);
+        }
+
+        public static void SendAnalyticsEvent(string subtype, string eventType, string eventKey, string msisdn)
+        {
+            if (String.IsNullOrEmpty(subtype) || String.IsNullOrEmpty(eventType) || String.IsNullOrEmpty(eventKey) || String.IsNullOrEmpty(msisdn))
+                return;
+
+            JObject metadata = new JObject();
+            metadata.Add(HikeConstants.EVENT_TYPE, eventType);
+            metadata.Add(HikeConstants.EVENT_KEY, eventKey);
+            metadata.Add(HikeConstants.CONTEXT, msisdn);
+
+            long ts = TimeUtils.getCurrentTimeStamp();
+
+            JObject data = new JObject();
+            data.Add(HikeConstants.SUB_TYPE, subtype);
+            data.Add(HikeConstants.CLIENT_TIMESTAMP,ts);
+            data.Add(HikeConstants.METADATA,metadata);
+            data.Add(HikeConstants.TAG, HikeConstants.TAG_MOBILE);
+            data.Add(HikeConstants.MESSAGE_ID, ts);
+
+            JObject analyticsJson = new JObject();
+            analyticsJson.Add(HikeConstants.DATA,data);
+            analyticsJson.Add(HikeConstants.TYPE,HikeConstants.LOG_EVENT);
+
+            if (App.HikePubSubInstance != null)
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, analyticsJson);
         }
     }
 }

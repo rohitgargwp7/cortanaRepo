@@ -2,6 +2,7 @@
 using System.Text;
 using windows_client.Languages;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -73,6 +74,18 @@ namespace windows_client.utils
                 return String.Format("{0}, {1}", messageTime.ToShortDateString(), messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p"));
         }
 
+        public static string getTimeStringForEmailConversation(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+
+            DateTime messageTime = new DateTime(ticks);
+            DateTime now = DateTime.UtcNow;
+            TimeSpan span = now.Subtract(messageTime);
+            messageTime = messageTime.ToLocalTime();
+
+            return String.Format("{0}, {1}", messageTime.ToShortDateString(), messageTime.ToShortTimeString().Replace(" AM", "a").Replace(" PM", "p"));
+        }
 
         public static bool isUpdateTimeElapsed(long timestamp)
         {
@@ -221,10 +234,19 @@ namespace windows_client.utils
 
         public static string GetOnHikeSinceDisplay(long timestamp)
         {
-            long ticks = timestamp * 10000000;
-            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
-            DateTime messageTime = new DateTime(ticks);
-            return messageTime.ToString("MMM yyyy", CultureInfo.CurrentUICulture);
+            try
+            {
+                long ticks = timestamp * 10000000;
+                ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+                DateTime messageTime = new DateTime(ticks);
+                return messageTime.ToString("MMM yyyy", CultureInfo.CurrentUICulture);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error while GetOnHikeSinceDisplay() " + ex.StackTrace);
+            }
+
+            return String.Empty;
         }
 
     }

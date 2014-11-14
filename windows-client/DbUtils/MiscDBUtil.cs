@@ -16,6 +16,11 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
+using Newtonsoft.Json.Linq;
+using System.Windows.Resources;
+using System.Windows;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace windows_client.DbUtils
 {
@@ -164,7 +169,7 @@ namespace windows_client.DbUtils
             msisdn = msisdn.Replace(":", "_");
             serverId = serverId.Replace(":", "_");
             string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
-            storeFileInIsolatedStorage(fullFilePath, imageBytes);
+            StoreFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
         public static byte[] GetProfilePicUpdateForID(string msisdn, string serverId)
@@ -308,7 +313,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             if (imageBytes == null)
                 return;
 
@@ -323,7 +328,7 @@ namespace windows_client.DbUtils
                     {
                         if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                             store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
-                        
+
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
                             stream.Write(imageBytes, 0, imageBytes.Length);
@@ -343,7 +348,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             if (imageBytes == null)
                 return;
             msisdn = msisdn.Replace(":", "_");
@@ -380,7 +385,7 @@ namespace windows_client.DbUtils
 
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             msisdn = msisdn.Replace(":", "_");
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -403,7 +408,7 @@ namespace windows_client.DbUtils
         {
             if (msisdn == App.MSISDN)
                 msisdn = HikeConstants.MY_PROFILE_PIC;
-            
+
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -664,11 +669,16 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void storeFileInIsolatedStorage(string filePath, byte[] imagebytes)
+        /// <summary>
+        /// Save bytes in Isolated Storage
+        /// </summary>
+        /// <param name="filePath">file path where bytes need to be saved</param>
+        /// <param name="dataBytes">file bytes</param>
+        public static void StoreFileInIsolatedStorage(string filePath, byte[] dataBytes)
         {
             filePath = filePath.Replace(":", "_");
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
-            if (imagebytes != null)
+            if (dataBytes != null)
             {
                 using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -686,31 +696,54 @@ namespace windows_client.DbUtils
                     {
                         using (BinaryWriter writer = new BinaryWriter(fileStream))
                         {
-                            writer.Write(imagebytes, 0, imagebytes.Length);
+                            writer.Write(dataBytes, 0, dataBytes.Length);
                         }
                     }
                 }
             }
         }
 
-        public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        public static void CopyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
-            sourceFilePath = sourceFilePath.Replace(":", "_");
-            destinationFilePath = destinationFilePath.Replace(":", "_");
-            string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
             string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
+            string destinationFileName = destinationFilePath.Substring(destinationFilePath.LastIndexOf("/") + 1);
 
+            string absoulutePath = null;
+
+            try
+            {
+                using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!isoStore.DirectoryExists(destinationFileDirectory))
+                        isoStore.CreateDirectory(destinationFileDirectory);
+
+                    using (IsolatedStorageFileStream output = new IsolatedStorageFileStream(destinationFilePath, FileMode.CreateNew, isoStore))
+                    {
+                        absoulutePath = output.Name;
+                    }
+                }
+
+                File.Copy(sourceFilePath, absoulutePath, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception at MiscDBUtils::CopyFileInIsolatedStorage" + ex.StackTrace);
+            }
+        }
+
+        public static int GetFileSize(string filePath)
+        {
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
+                if (myIsolatedStorage.FileExists(filePath))
                 {
-                    return;
+                    using (IsolatedStorageFileStream fileStream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        return Convert.ToInt32(fileStream.Length);
+                    }
                 }
-                if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
-                {
-                    myIsolatedStorage.CreateDirectory(destinationFileDirectory);
-                }
-                myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+                else
+                    return 0;
             }
         }
 
@@ -749,7 +782,7 @@ namespace windows_client.DbUtils
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
-            
+
             lock (attachmentLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -1165,14 +1198,14 @@ namespace windows_client.DbUtils
                         store.DeleteFile(fName);
                         return;
                     }
-                   
+
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
                             writer.Write(App.ViewModel.PicUploadList.Count);
-                            
+
                             foreach (var ms in App.ViewModel.PicUploadList)
                             {
                                 ms.Write(writer);
@@ -1199,9 +1232,9 @@ namespace windows_client.DbUtils
                 {
                     if (!store.DirectoryExists(MISC_DIR))
                         return;
-                    
+
                     string fname = MISC_DIR + "\\" + PENDING_PROFILE_PIC_REQ_FILE;
-                    
+
                     if (!store.FileExists(fname))
                         return;
 
@@ -1210,7 +1243,7 @@ namespace windows_client.DbUtils
                         using (var reader = new BinaryReader(file))
                         {
                             int count = 0;
-                            
+
                             try
                             {
                                 count = reader.ReadInt32();
@@ -1269,13 +1302,37 @@ namespace windows_client.DbUtils
         /// <param name="status"></param>
         public static void UpdateDBsMessageStatus(string fromUser, long msgID, int status)
         {
-            Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
             ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
+
+        /// <summary>
+        /// Update delivered status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateBulkMessageDBsDeliveredStatus(string msisdn, long msgID)
+        {
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgDeliveredStatus(msisdn, msgID);
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, (int)ConvMessage.State.SENT_DELIVERED); // update conversationObj, null is already checked in the function
+            return listUpdatedMsgIds;
+        }
+
+        /// <summary>
+        /// Update read status of all messages less than msg id 
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="msgID"></param>
+        /// <param name="status"></param>
+        public static IList<long> UpdateMessageDBsReadStatus(string msisdn,  long lastReadMessageId, JArray readByArray)
+        {
+            IList<long> listUpdatedMsgIds = MessagesTableUtils.updateBulkMsgReadStatus(msisdn, lastReadMessageId);
+            ConversationTableUtils.updateLastMsgStatus(lastReadMessageId, msisdn, (int)ConvMessage.State.SENT_DELIVERED_READ); // update conversationObj, null is already checked in the function
+          
+            return listUpdatedMsgIds;
+        }
+
         #endregion
     }
 }

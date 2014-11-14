@@ -23,6 +23,8 @@ namespace windows_client
         /* message read by recipient */
         public static readonly string MESSAGE_READ = "mr";
 
+        public static readonly string BULK_MESSAGES = "bm";
+
         public static readonly string MESSAGE = "m";
 
         public static readonly string SMS_CREDITS = "sc";
@@ -135,6 +137,21 @@ namespace windows_client
                 Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
                 return;
             }
+            #region BULK MESSAGE
+            if (BULK_MESSAGES == type)
+            {
+                ProcessBulkPacket(jsonObj);
+            }
+            #endregion
+            else
+            {
+                ProcessAllPacketsExceptBulk(jsonObj, type, msisdn);
+            }
+
+        }
+
+        private void ProcessAllPacketsExceptBulk(JObject jsonObj, string type, string msisdn)
+        {
 
             #region MESSAGE
             if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
@@ -151,6 +168,7 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
@@ -159,33 +177,9 @@ namespace windows_client
                         Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
                         return;
                     }
-
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
-
-                    if (obj == null)
-                        return;
-
-                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
-                        || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
-                    {
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                    }
-                    else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
-                    {
-                        FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
-                    }
-
-                    if (convMessage.FileAttachment != null)
-                    {
-                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    }
-                    object[] vals = new object[3];
-
-                    vals[0] = convMessage;
-                    vals[1] = obj;
-                    vals[2] = isPush;
-                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    if (UpdateDbAndUiForMsg(null, convMessage, isPush))
+                        HandleFTForMessageRecieved(convMessage);
                 }
                 catch (Exception ex)
                 {
@@ -197,7 +191,7 @@ namespace windows_client
             #region REQUEST_DISPLAY_PIC
             else if (REQUEST_DISPLAY_PIC == type)
             {
-                string grpId = "";
+                string grpId = String.Empty;
                 try
                 {
                     grpId = (string)jsonObj[HikeConstants.TO];
@@ -213,7 +207,7 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
-                string sentTo = "";
+                string sentTo = String.Empty;
                 try
                 {
                     // If not null then this is group id
@@ -369,101 +363,45 @@ namespace windows_client
                     return;
                 }
 
-                long[] ids = new long[msgIds.Count];
-                for (int i = 0; i < ids.Length; i++)
+                long lastSentMsgId = 0;
+                bool isGroupConversation = Utils.isGroupConversation(msisdnToCheck);
+                if (isGroupConversation)
                 {
-                    ids[i] = Int64.Parse(msgIds[i].ToString());
+                    lastSentMsgId = MessagesTableUtils.GetLastSentMessageId(msisdnToCheck);
                 }
-                object[] vals = new object[3];
-                vals[0] = ids;
-                vals[1] = msisdnToCheck;
-                vals[2] = msisdn;
-                updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ, msisdn);
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+
+                long maxMessageId = 0;
+                for (int i = 0; i < msgIds.Count; i++)
+                {
+                    long messageId = Int64.Parse(msgIds[i].ToString());
+
+                    if (isGroupConversation)
+                    {
+                        if (messageId == lastSentMsgId)
+                        {
+                            maxMessageId = messageId;
+                            break;
+                        }
+                        else if (messageId > maxMessageId && messageId < lastSentMsgId)
+                            maxMessageId = messageId;
+                    }
+                    else
+                    {
+                        if (messageId > maxMessageId)
+                            maxMessageId = messageId;
+                    }
+                }
+
+                JArray readByArray = new JArray() { msisdn };
+                UpdateReadByStatus(msisdnToCheck, maxMessageId, readByArray);
+
+                Debug.WriteLine("Message read report processed completely");
             }
             #endregion
             #region USER_JOINED USER_LEFT
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
-                JObject o = null;
-                string uMsisdn = null;
-                long serverTimestamp = 0;
-                try
-                {
-                    o = (JObject)jsonObj[HikeConstants.DATA];
-                    uMsisdn = (string)o[HikeConstants.MSISDN];
-                    serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  USER_JOINED USER_LEFT, Exception : " + ex.StackTrace);
-                    return;
-                }
-                bool joined = USER_JOINED == type;
-                bool isRejoin = false;
-                JToken subtype;
-                if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
-                {
-                    isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
-                }
-                // update contacts cache
-                if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
-                    App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
-                GroupManager.Instance.LoadGroupCache();
-                if (joined)
-                {
-                    long lastTimeStamp;
-                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
-                        return;
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
-                    // if user is in contact list then only show the joined msg
-                    ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
-
-                    // if user does not exists we dont know about his onhike status , so we need to process
-                    ProcessUoUjMsgs(jsonObj, false, c != null, isRejoin);
-                }
-                // if user has left, mark him as non hike user in group cache
-                else
-                {
-                    //remove image if stored.
-                    if (App.ViewModel.ConvMap.ContainsKey(uMsisdn))
-                    {
-                        if (App.ViewModel.ConvMap[uMsisdn].Avatar != null)
-                        {
-                            App.ViewModel.ConvMap[uMsisdn].Avatar = null;
-                            this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
-                        }
-                    }
-
-                    MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
-
-                    if (GroupManager.Instance.GroupCache != null)
-                    {
-                        foreach (string key in GroupManager.Instance.GroupCache.Keys)
-                        {
-                            bool shouldSave = false;
-                            List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
-                            for (int i = 0; i < l.Count; i++)
-                            {
-                                if (l[i].Msisdn == uMsisdn)
-                                {
-                                    l[i].IsOnHike = false;
-                                    shouldSave = true;
-                                }
-                            }
-                            if (shouldSave)
-                                GroupManager.Instance.SaveGroupCache(key);
-                        }
-                    }
-                }
-                UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
-                ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
-                JToken jt;
-                long ts = 0;
-                if (joined && jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
-                    ts = jt.ToObject<long>();
-                FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
-                this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
+                ProcessUjUl(jsonObj, type, null);
             }
             #endregion
             #region ICON
@@ -480,9 +418,7 @@ namespace windows_client
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
-                Stopwatch st = Stopwatch.StartNew();
                 MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
-                st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
                     try
@@ -523,8 +459,6 @@ namespace windows_client
                 {
                     App.ViewModel.UpdateUserImageInStatus(msisdn);
                 });
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
             #endregion
             #region INVITE_INFO
@@ -830,7 +764,7 @@ namespace windows_client
                                             int value = (int)kkvv.Value;
                                             if (value == 2)
                                             {
-                                                App.WriteToIsoStorageSettings(App.DISPLAYPIC_FAV_ONLY, true);
+                                                App.WriteToIsoStorageSettings(App.DISPLAY_PIC_FAV_ONLY, true);
                                             }
                                         }
                                         #endregion
@@ -994,7 +928,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":10}}
-                ProcessUoUjMsgs(jsonObj, true, true, false);
+                ProcessUoUjMsgs(jsonObj, true, true, false, null);
             }
             #endregion
             #region GROUP CHAT RELATED
@@ -1002,164 +936,10 @@ namespace windows_client
             #region GROUP_CHAT_JOIN
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
-                string groupName = string.Empty;
-                jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
-                JArray arr = null;
-                try
-                {
-                    arr = (JArray)jsonObj[HikeConstants.DATA];
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCJ packet : " + e.StackTrace);
-                }
-                if (arr == null || !arr.HasValues)
+                ConvMessage convMessage = ProcessGcj(jsonObj);
+                if (convMessage == null)
                     return;
-
-                string grpId = null;
-                try
-                {
-                    grpId = jsonObj[HikeConstants.TO].ToString();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN , Exception : " + ex.StackTrace);
-                }
-                GroupManager.Instance.LoadGroupParticipants(grpId);
-                ConvMessage convMessage = null;
-                List<GroupParticipant> dndList = new List<GroupParticipant>(1);
-                GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
-
-                #region META DATA CHAT BACKGROUND
-
-                JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
-                if (metaData != null)
-                {
-                    #region chat background
-                    try
-                    {
-                        JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
-                        if (chatBg != null)
-                        {
-                            bool hasCustomBg = false;
-                            JToken custom;
-                            if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                                hasCustomBg = (bool)custom;
-
-                            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
-                                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
-                    }
-
-                    #endregion
-
-                    #region GROUP NAME
-
-                    JToken gName;
-                    //pubsub for gcn is not raised
-                    if (metaData.TryGetValue(HikeConstants.NAME, out gName))
-                        groupName = gName.ToString().Trim();
-
-                    #endregion
-                }
-                #endregion
-
-                #region NEW GROUP
-                if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
-                {
-                    // 1. create new msg for new GC
-                    // 2. create DND msg also
-                    try
-                    {
-                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
-                        List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
-                        if (dndMembersList != null && dndMembersList.Count > 0)
-                        {
-                            string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("NetworkManager ::  onMessage :  NEW GROUP , Exception : " + ex.StackTrace);
-                        return;
-                    }
-                }
-                #endregion
-                #region ALREADY ADDED TO GROUP
-                else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
-                {
-                    // update JSON in the metadata .....
-                    if (dndList.Count > 0) // there are people who are in dnd , show their msg
-                    {
-                        JObject o = new JObject();
-                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
-                        convMessage = new ConvMessage(); // this will be normal DND msg
-                        convMessage.Msisdn = grpId;
-                        convMessage.MetaDataString = o.ToString(Formatting.None);
-                        convMessage.Message = GetDndMsg(dndList);
-                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
-                        convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
-                    }
-                    else
-                    {
-                        GroupManager.Instance.SaveGroupCache(grpId);
-                        return;
-                    }
-                }
-                #endregion
-                #region DUPLICATE GCJ
-                else if (gcState == GroupChatState.DUPLICATE)
-                {
-                    return;
-                }
-                #endregion
-                #region KICKEDOUT USER ADDED
-                else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
-                {
-                    GroupTableUtils.SetGroupAlive(grpId);
-                    convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
-                    this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
-                }
-                #endregion
-                #region ADD NEW MEMBERS TO EXISTING GROUP
-                else // new members are added to group
-                {
-                    try
-                    {
-                        convMessage = new ConvMessage(jsonObj, false, true); // this will be normal DND msg
-                        List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
-                        if (dndMembersList != null && dndMembersList.Count > 0)
-                        {
-                            string dndMsg = GetDndMsg(dndMembersList);
-                            convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
-                        }
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-                #endregion
-
-                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj, groupName);
-                if (obj == null)
-                    return;
-                GroupManager.Instance.SaveGroupCache(grpId);
-                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-                Debug.WriteLine("NetworkManager", "Group is new");
-
-                object[] vals = new object[2];
-                vals[0] = convMessage;
-                vals[1] = obj;
-
-                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
+                UpdateDbAndUiForMsg(convMessage);
             }
             #endregion
             #region GROUP_CHAT_NAME CHANGE
@@ -1167,40 +947,10 @@ namespace windows_client
             {
                 try
                 {
-                    string groupName = (string)jsonObj[HikeConstants.DATA];
-                    groupName = groupName.Trim();
-                    string groupId = (string)jsonObj[HikeConstants.TO];
-                    //no self check as server will send packet of group name change if changed by self
-                    //we need to use this in case of self name change and unlink account
-                    ConversationListObject cObj;
-                    if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
-                    {
-                        if (cObj.ContactName == groupName || string.IsNullOrEmpty(groupName))//group name is same as previous or empty
-                            return;
-                    }
-                    else
-                        return;//group doesn't exists
-
-                    GroupManager.Instance.LoadGroupParticipants(groupId);
-                    ConversationTableUtils.updateGroupName(groupId, groupName);
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj == null)
+                    ConvMessage convMessage = ProcessGCN(jsonObj);
+                    if (convMessage == null)
                         return;
-                    object[] vals = new object[2];
-                    vals[0] = cm;
-                    vals[1] = obj;
-
-                    bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
-                    if (goAhead)
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                            this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
-                        });
-                    }
+                    UpdateDbAndUiForMsg(convMessage);
                 }
                 catch (Exception e)
                 {
@@ -1211,57 +961,10 @@ namespace windows_client
             #region GROUP DISPLAY PIC CHANGE
             else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
             {
-                string groupId = (string)jsonObj[HikeConstants.TO];
-                string from = (string)jsonObj[HikeConstants.FROM];
-                ConversationListObject cObj;
-                if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
-                    return;//if group doesn't exist return
-                JToken temp;
-                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
-                if (temp == null)
+                ConvMessage convMessage = ProcessGroupDP(jsonObj);
+                if (convMessage == null)
                     return;
-                string iconBase64 = temp.ToString();
-                
-                //check if same image is set
-                if (cObj.Avatar != null)
-                {
-                    string previousImage = System.Convert.ToBase64String(cObj.Avatar);
-                    if (previousImage.Length > 4 && iconBase64.Length > 4 &&
-                        previousImage.Substring(0, 5) == iconBase64.Substring(0, 5) &&
-                        previousImage.Substring(previousImage.Length - 5) == iconBase64.Substring(iconBase64.Length - 5))
-                    {
-                        return;
-                    }
-                }
-
-                GroupManager.Instance.LoadGroupParticipants(groupId);
-
-                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
-                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                if (obj == null)
-                    return;
-                MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
-                if (App.ViewModel.ConvMap.ContainsKey(groupId))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        try
-                        {
-                            App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
-                            object[] oa = new object[2];
-                            oa[0] = cm;
-                            oa[1] = obj;
-
-                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
-                            this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
-                        }
-                    });
-                }
+                UpdateDbAndUiForMsg(convMessage);
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -1275,25 +978,10 @@ namespace windows_client
                 */
                 try
                 {
-                    string groupId = (string)jsonObj[HikeConstants.TO];
-                    string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
-                    GroupManager.Instance.LoadGroupParticipants(groupId);
-                    GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
-                    if (gp == null || gp.HasLeft)
+                    ConvMessage convMessage = ProcessGroupChatLeave(jsonObj);
+                    if (convMessage == null)
                         return;
-
-                    ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
-                    GroupManager.Instance.SaveGroupCache(groupId);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
-                    if (cObj == null)
-                        return;
-
-                    object[] vals = new object[2];
-                    vals[0] = convMsg;
-                    vals[1] = cObj;
-
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
+                    UpdateDbAndUiForMsg(convMessage);
                 }
                 catch (Exception e)
                 {
@@ -1306,25 +994,10 @@ namespace windows_client
             {
                 try
                 {
-                    string groupId = (string)jsonObj[HikeConstants.TO];
-                    bool goAhead = GroupTableUtils.SetGroupDead(groupId);
-                    if (goAhead)
-                    {
-                        ConvMessage convMessage = new ConvMessage(jsonObj, false, false);
-                        ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
-                        if (cObj == null)
-                            return;
-
-                        //explicitly set IsGroupAlive false to prevent db hit
-                        cObj.IsGroupAlive = false;
-
-                        object[] vals = new object[2];
-                        vals[0] = convMessage;
-                        vals[1] = cObj;
-
-                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                        this.pubSub.publish(HikePubSub.GROUP_END, groupId);
-                    }
+                    ConvMessage convMessage = ProcessGroupChatEnd(jsonObj);
+                    if (convMessage == null)
+                        return;
+                    UpdateDbAndUiForMsg(convMessage);
                 }
                 catch (Exception e)
                 {
@@ -1371,15 +1044,10 @@ namespace windows_client
             #region INTERNATIONAL USER
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
             {
-                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.INTERNATIONAL_USER, jsonObj);
-                cm.Msisdn = msisdn;
-                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                if (obj == null)
+                ConvMessage convMessage = ProcessInternationalUser(jsonObj, msisdn);
+                if (convMessage == null)
                     return;
-                object[] vals = new object[2];
-                vals[0] = cm;
-                vals[1] = obj;
-                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                UpdateDbAndUiForMsg(convMessage);
             }
             #endregion
             #region ADD FAVOURITES
@@ -1498,93 +1166,11 @@ namespace windows_client
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
-                // if this user is already blocked simply ignore his status
-                if (App.ViewModel.BlockedHashset.Contains(msisdn))
-                    return;
-
-                JObject data = null;
-                try
+                StatusMessage sm = null;
+                ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                if (cm != null)
                 {
-                    data = (JObject)jsonObj[HikeConstants.DATA];
-                    StatusMessage sm = null;
-                    JToken val;
-                    string iconBase64 = null;
-
-                    if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
-                        iconBase64 = val.ToString();
-
-                    val = null;
-                    long ts = 0;
-
-                    if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
-                    {
-                        ts = val.ToObject<long>();
-                        long tsCorrection;
-
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
-                            ts -= tsCorrection;
-                    }
-
-                    val = null;
-                    string id = null;
-                    JToken idToken;
-
-                    if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
-                        id = idToken.ToString();
-                    #region HANDLE PROFILE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
-                    {
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
-                        idToken = null;
-                        if (iconBase64 != null)
-                        {
-                            byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                            if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                                return;
-                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
-                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
-                            UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
-                        }
-                    }
-                    #endregion
-
-                    #region HANDLE TEXT UPDATE
-                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
-                    {
-                        int moodId = -1;
-                        int tod = 0;
-                        if (data[HikeConstants.MOOD] != null)
-                        {
-                            string moodId_String = data[HikeConstants.MOOD].ToString();
-                            if (!string.IsNullOrEmpty(moodId_String))
-                            {
-                                int.TryParse(moodId_String, out moodId);
-                                moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
-                                try
-                                {
-                                    if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
-                                        tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
-                                
-                                }
-                                catch (Exception ex)
-                                {
-                                    tod = 0;
-                                    Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
-                                }
-                            }
-                        }
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
-                            StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
-                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
-                            return;
-                    }
-                    #endregion
-
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
-                    cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {
@@ -1596,12 +1182,8 @@ namespace windows_client
                         sm.MsgId = cm.MessageId;
                         StatusMsgsTable.UpdateMsgId(sm);
                     }
-                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
-                }
+
             }
             #endregion
             #region DELETE STATUS
@@ -1615,6 +1197,7 @@ namespace windows_client
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
+
                     if (msgId > 0) // delete only if msgId is greater than 0
                     {
                         MessagesTableUtils.deleteMessage(msgId);
@@ -1766,24 +1349,24 @@ namespace windows_client
                     var header = (string)data[HikeConstants.PRO_TIP_HEADER];
                     var text = (string)data[HikeConstants.PRO_TIP_TEXT];
 
-                    var imageUrl = "";
+                    var imageUrl = String.Empty;
                     try
                     {
                         imageUrl = (string)data[HikeConstants.PRO_TIP_IMAGE];
                     }
                     catch
                     {
-                        imageUrl = "";
+                        imageUrl = String.Empty;
                     }
 
-                    var base64Image = "";
+                    var base64Image = String.Empty;
                     try
                     {
                         base64Image = (string)data[HikeConstants.THUMBNAIL];
                     }
                     catch
                     {
-                        base64Image = "";
+                        base64Image = String.Empty;
                     }
 
                     ProTipHelper.Instance.AddProTip(id, header, text, imageUrl, base64Image);
@@ -1800,86 +1383,18 @@ namespace windows_client
             {
                 try
                 {
-                    ConvMessage cm;
-                    var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
-                    if (ts > 0)
-                    {
-                        long timedifference;
-                        if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
-                            ts = ts - timedifference;
-                    }
-
-                    var to = (string)jsonObj[HikeConstants.TO];
-
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
-                        GroupManager.Instance.LoadGroupParticipants(to);
-
-                    if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupCache.ContainsKey(to))
-                    {
-                        Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
-                        return;
-                    }
-
-                    var sender = !String.IsNullOrEmpty(to) ? to : msisdn;
-
-                    var data = (JObject)jsonObj[HikeConstants.DATA];
-                    var bgId = (string)data[HikeConstants.BACKGROUND_ID];
-
-                    ChatThemeData bg = null;
-                    if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
-                    {
-                        if (bg.Timestamp > ts || bg.BackgroundId == bgId)
-                            return;
-                    }
-
-                    bool hasCustomBg = false;
-                    JToken custom;
-                    if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
-                        hasCustomBg = (bool)custom;
-
-                    if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
-                    {
-                        if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupCache.ContainsKey(to))
-                        {
-                            //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
-                            cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
-                        }
-                        else
-                        {
-                            cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
-                            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
-                        }
-
-                        cm.MetaDataString = "{\"t\":\"cbg\"}";
-                    }
-                    else
+                    string sender;
+                    ConvMessage cm = ProcessChatBackground(jsonObj, msisdn, out sender);
+                    if (cm == null)
                         return;
 
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
+                    bool isPush = true;
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken pushJToken;
+                    if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
+                        isPush = (Boolean)pushJToken;
 
-                    if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
-                        cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
-
-                    if (obj != null)
-                    {
-                        bool isPush = true;
-                        JToken pushJToken;
-                        if (data.TryGetValue(HikeConstants.PUSH, out pushJToken))
-                            isPush = (Boolean)pushJToken;
-
-                        object[] vals;
-                        vals = new object[3];
-                        vals[0] = cm;
-                        vals[1] = obj;
-                        vals[2] = isPush;
-
-                        this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                    }
-
-                    if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
-                    {
-                        pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
-                    }
+                    UpdateDbAndUiForMsg(sender, cm, isPush);
                 }
                 catch (Exception ex)
                 {
@@ -1916,7 +1431,7 @@ namespace windows_client
                         isCritical = false;
                     }
 
-                    var message = "";
+                    var message = String.Empty;
                     try
                     {
                         message = (string)data[HikeConstants.TEXT_UPDATE_MSG];
@@ -2019,12 +1534,12 @@ namespace windows_client
 
                     if (!data.TryGetValue(TIPS_HEADER, out headertext))
                         headertext = String.Empty;
-                    
+
                     JToken bodyText;
-                    
+
                     if (!data.TryGetValue(TIPS_BODY, out bodyText))
                         bodyText = String.Empty;
-                    
+
                     TipManager.Instance.AddTip((string)subtype, (string)headertext, (string)bodyText, (string)data[TIPS_ID]);
                 }
                 catch (Exception e)
@@ -2039,6 +1554,1016 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
+        }
+
+        private void ProcessUjUl(JObject jsonObj, string type, Dictionary<string, MsisdnBulkData> dictBulkData)
+        {
+            JObject o = null;
+            string uMsisdn = null;
+            long serverTimestamp = 0;
+            try
+            {
+                o = (JObject)jsonObj[HikeConstants.DATA];
+                uMsisdn = (string)o[HikeConstants.MSISDN];
+                serverTimestamp = (long)jsonObj[HikeConstants.TIMESTAMP];
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NetworkManager ::  onMessage :  USER_JOINED USER_LEFT, Exception : " + ex.StackTrace);
+                return;
+            }
+            bool joined = USER_JOINED == type;
+            bool isRejoin = false;
+            JToken subtype;
+            if (jsonObj.TryGetValue(HikeConstants.SUB_TYPE, out subtype))
+            {
+                isRejoin = HikeConstants.SUBTYPE_REJOIN == (string)subtype;
+            }
+            // update contacts cache
+            if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
+                App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
+            GroupManager.Instance.LoadGroupParticpantsCache();
+            if (joined)
+            {
+                long lastTimeStamp;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, out lastTimeStamp) && lastTimeStamp >= serverTimestamp)
+                    return;
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_USER_JOIN_TIMESTAMP, serverTimestamp);
+                // if user is in contact list then only show the joined msg
+                ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
+
+                // if user does not exists we dont know about his onhike status , so we need to process
+                ProcessUoUjMsgs(jsonObj, false, c != null, isRejoin, dictBulkData);
+            }
+            // if user has left, mark him as non hike user in group cache
+            else
+            {
+                //remove image if stored.
+                if (App.ViewModel.ConvMap.ContainsKey(uMsisdn))
+                {
+                    if (App.ViewModel.ConvMap[uMsisdn].Avatar != null)
+                    {
+                        App.ViewModel.ConvMap[uMsisdn].Avatar = null;
+                        this.pubSub.publish(HikePubSub.UPDATE_PROFILE_ICON, uMsisdn);
+                    }
+                }
+
+                MiscDBUtil.DeleteImageForMsisdn(uMsisdn);
+
+                if (GroupManager.Instance.GroupParticpantsCache != null)
+                {
+                    foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
+                    {
+                        bool shouldSave = false;
+                        List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
+                        for (int i = 0; i < l.Count; i++)
+                        {
+                            if (l[i].Msisdn == uMsisdn)
+                            {
+                                l[i].IsOnHike = false;
+                                shouldSave = true;
+                            }
+                        }
+                        if (shouldSave)
+                            GroupManager.Instance.SaveGroupParticpantsCache(key);
+                    }
+                }
+            }
+            UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
+            ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
+            JToken jt;
+            long ts = 0;
+            if (joined && jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
+                ts = jt.ToObject<long>();
+            FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
+            this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
+            return;
+        }
+
+        #region Process recieved packets
+
+        private ConvMessage ProcessChatBackground(JObject jsonObj, string msisdn, out string sender)
+        {
+            sender = null;
+            var ts = (long)jsonObj[HikeConstants.TIMESTAMP];
+            if (ts > 0)
+            {
+                long timedifference;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out timedifference))
+                    ts = ts - timedifference;
+            }
+
+            var to = (string)jsonObj[HikeConstants.TO];
+
+            if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to))
+                GroupManager.Instance.LoadGroupParticipants(to);
+
+            if (!String.IsNullOrEmpty(to) && Utils.isGroupConversation(to) && !GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
+            {
+                Debug.WriteLine("OnMesage: Chat backgrounds: Group not found - {0}", to);
+                return null;
+            }
+
+            sender = !String.IsNullOrEmpty(to) ? to : msisdn;
+
+            JObject data = (JObject)jsonObj[HikeConstants.DATA];
+            var bgId = (string)data[HikeConstants.BACKGROUND_ID];
+
+            ChatThemeData bg = null;
+            if (ChatBackgroundHelper.Instance.ChatBgMap.TryGetValue(sender, out bg))
+            {
+                if (bg.Timestamp > ts || bg.BackgroundId == bgId)
+                    return null;
+            }
+
+            bool hasCustomBg = false;
+            JToken custom;
+            if (data.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                hasCustomBg = (bool)custom;
+
+            ConvMessage cm = null;
+            if (!hasCustomBg && ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+            {
+                if (!String.IsNullOrEmpty(to) && GroupManager.Instance.GroupParticpantsCache.ContainsKey(to))
+                {
+                    //if group chat, message text will be set in the constructor else it will be updated by MessagesTableUtils.addChatMessage
+                    cm = new ConvMessage(ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED, jsonObj, ts);
+                }
+                else
+                {
+                    cm = new ConvMessage(String.Empty, msisdn, ts, ConvMessage.State.RECEIVED_UNREAD);
+                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.CHAT_BACKGROUND_CHANGED;
+                }
+
+                cm.MetaDataString = "{\"t\":\"cbg\"}";
+            }
+            else
+                return null;
+
+            if (hasCustomBg || !ChatBackgroundHelper.Instance.BackgroundIDExists(bgId))
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.NO_INFO;
+
+            if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(sender, bgId, ts))
+            {
+                pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, sender);
+            }
+            return cm;
+        }
+
+        private static ConvMessage ProcessInternationalUser(JObject jsonObj, string msisdn)
+        {
+            ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.INTERNATIONAL_USER, jsonObj);
+            cm.Msisdn = msisdn;
+            return cm;
+        }
+
+        private ConvMessage ProcessGroupChatEnd(JObject jsonObj)
+        {
+            string groupId = (string)jsonObj[HikeConstants.TO];
+            bool goAhead = GroupTableUtils.SetGroupDead(groupId);
+            ConvMessage convMessage = null;
+            if (goAhead)
+            {
+                convMessage = new ConvMessage(jsonObj, false, false);
+                //explicitly set IsGroupAlive false to prevent db hit
+                if (App.ViewModel.ConvMap.ContainsKey(convMessage.Msisdn))
+                    App.ViewModel.ConvMap[convMessage.Msisdn].IsGroupAlive = false;
+                this.pubSub.publish(HikePubSub.GROUP_END, groupId);
+            }
+            return convMessage;
+        }
+
+        private ConvMessage ProcessGroupChatLeave(JObject jsonObj)
+        {
+            string groupId = (string)jsonObj[HikeConstants.TO];
+            string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
+            GroupManager.Instance.LoadGroupParticipants(groupId);
+            GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, fromMsisdn, groupId);
+            if (gp == null || gp.HasLeft)
+                return null;
+
+            ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
+            GroupManager.Instance.SaveGroupParticpantsCache(groupId);
+
+            GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
+            if (gi == null)
+                return null;
+            if (string.IsNullOrEmpty(gi.GroupName) && App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))// no group name is set
+            {
+                ConversationListObject obj = App.ViewModel.ConvMap[convMsg.Msisdn];
+                //todo:check update on bg thread
+                obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
+                ConversationTableUtils.saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            }
+            this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
+            return convMsg;
+        }
+
+        private ConvMessage ProcessGroupDP(JObject jsonObj)
+        {
+            string groupId = (string)jsonObj[HikeConstants.TO];
+            string from = (string)jsonObj[HikeConstants.FROM];
+            ConversationListObject cObj;
+            if (!App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+                return null;//if group doesn't exist return
+            JToken temp;
+            jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+            if (temp == null)
+                return null;
+            string iconBase64 = temp.ToString();
+
+            //check if same image is set
+            if (cObj.Avatar != null)
+            {
+                string previousImage = System.Convert.ToBase64String(cObj.Avatar);
+                if (previousImage.Length > 4 && iconBase64.Length > 4 &&
+                    previousImage.Substring(0, 5) == iconBase64.Substring(0, 5) &&
+                    previousImage.Substring(previousImage.Length - 5) == iconBase64.Substring(iconBase64.Length - 5))
+                {
+                    return null;
+                }
+            }
+
+            GroupManager.Instance.LoadGroupParticipants(groupId);
+
+            byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+            ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
+
+            MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                try
+                {
+                    App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                }
+            });
+            this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
+            return cm;
+        }
+
+        private ConvMessage ProcessGCN(JObject jsonObj)
+        {
+            ConvMessage cm = null;
+            string groupName = (string)jsonObj[HikeConstants.DATA];
+            groupName = groupName.Trim();
+            string groupId = (string)jsonObj[HikeConstants.TO];
+            //no self check as server will send packet of group name change if changed by self
+            //we need to use this in case of self name change and unlink account
+            ConversationListObject cObj;
+            if (App.ViewModel.ConvMap.TryGetValue(groupId, out cObj))
+            {
+                if (cObj.ContactName == groupName || string.IsNullOrEmpty(groupName))//group name is same as previous or empty
+                    return null;
+            }
+            else
+                return null;//group doesn't exists
+
+            GroupManager.Instance.LoadGroupParticipants(groupId);
+
+
+            bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
+            if (goAhead)
+            {
+                ConversationTableUtils.updateGroupName(groupId, groupName);
+                cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                });
+
+                this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
+            }
+            return cm;
+        }
+
+
+
+        private ConvMessage ProcessGcj(JObject jsonObj)
+        {
+            ConvMessage convMessage = null;
+            string groupName = string.Empty;
+            jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
+            JArray arr = null;
+            try
+            {
+                arr = (JArray)jsonObj[HikeConstants.DATA];
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCJ packet : " + e.StackTrace);
+            }
+            if (arr == null || !arr.HasValues)
+                return null;
+
+            string grpId = null;
+            try
+            {
+                grpId = jsonObj[HikeConstants.TO].ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN , Exception : " + ex.StackTrace);
+            }
+            GroupManager.Instance.LoadGroupParticipants(grpId);
+            List<GroupParticipant> dndList = new List<GroupParticipant>(1);
+            GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
+
+            #region META DATA CHAT BACKGROUND
+
+            JObject metaData = (JObject)jsonObj[HikeConstants.METADATA];
+            if (metaData != null)
+            {
+                #region chat background
+                try
+                {
+                    JObject chatBg = (JObject)metaData[HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS];
+                    if (chatBg != null)
+                    {
+                        bool hasCustomBg = false;
+                        JToken custom;
+                        if (chatBg.TryGetValue(HikeConstants.HAS_CUSTOM_BACKGROUND, out custom))
+                            hasCustomBg = (bool)custom;
+
+                        if (!hasCustomBg && ChatBackgroundHelper.Instance.UpdateChatBgMap(grpId, (string)chatBg[HikeConstants.BACKGROUND_ID], TimeUtils.getCurrentTimeStamp()))
+                            pubSub.publish(HikePubSub.CHAT_BACKGROUND_REC, grpId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN with chat background, Exception : " + ex.StackTrace);
+                }
+
+                #endregion
+
+                #region GROUP NAME
+
+                JToken gName;
+                //pubsub for gcn is not raised
+                if (metaData.TryGetValue(HikeConstants.NAME, out gName))
+                    groupName = gName.ToString().Trim();
+
+                #endregion
+            }
+            #endregion
+
+            #region NEW GROUP
+            if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
+            {
+                // 1. create new msg for new GC
+                // 2. create DND msg also
+                try
+                {
+                    convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
+                    List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
+                    if (dndMembersList != null && dndMembersList.Count > 0)
+                    {
+                        string dndMsg = GetDndMsg(dndMembersList);
+                        convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  NEW GROUP , Exception : " + ex.StackTrace);
+                    return null;
+                }
+            }
+            #endregion
+            #region ALREADY ADDED TO GROUP
+            else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
+            {
+                // update JSON in the metadata .....
+                if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                {
+                    JObject o = new JObject();
+                    o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                    convMessage = new ConvMessage(); // this will be normal DND msg
+                    convMessage.Msisdn = grpId;
+                    convMessage.MetaDataString = o.ToString(Formatting.None);
+                    convMessage.Message = GetDndMsg(dndList);
+                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                    convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
+                    convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                }
+                else
+                {
+                    GroupManager.Instance.SaveGroupParticpantsCache(grpId);
+                    return null;
+                }
+            }
+            #endregion
+            #region DUPLICATE GCJ
+            else if (gcState == GroupChatState.DUPLICATE)
+            {
+                return null;
+            }
+            #endregion
+            #region KICKEDOUT USER ADDED
+            else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
+            {
+                GroupTableUtils.SetGroupAlive(grpId);
+                convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
+                this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
+            }
+            #endregion
+            #region ADD NEW MEMBERS TO EXISTING GROUP
+            else // new members are added to group
+            {
+                try
+                {
+                    convMessage = new ConvMessage(jsonObj, false, true); // this will be normal DND msg
+                    List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
+                    if (dndMembersList != null && dndMembersList.Count > 0)
+                    {
+                        string dndMsg = GetDndMsg(dndMembersList);
+                        convMessage.Message = convMessage.Message.Replace(";", "") + ";" + dndMsg.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            #endregion
+
+            GroupManager.Instance.SaveGroupParticpantsCache(grpId);
+            this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
+            MessagesTableUtils.addGroupChatMessage(convMessage, groupName);//name is handled inside
+            return convMessage;
+        }
+
+        #endregion
+
+        private bool UpdateDbAndUiForMsg(ConvMessage convMessage)
+        {
+            ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+            if (obj == null)
+                return false;
+
+            object[] vals = new object[2];
+            vals[0] = convMessage;
+            vals[1] = obj;
+
+            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            return true;
+        }
+
+        private bool UpdateDbAndUiForMsg(string sender, ConvMessage cm, bool isPush)
+        {
+            ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false, null, sender);
+            if (obj != null)
+            {
+                object[] vals;
+                vals = new object[3];
+                vals[0] = cm;
+                vals[1] = obj;
+                vals[2] = isPush;
+                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdateReadByStatus(string msisdnToCheck, long lastSentMsgId, JArray readByArray)
+        {
+            IList<long> listUpdatedMessageIds = null;
+            listUpdatedMessageIds = MiscDBUtil.UpdateMessageDBsReadStatus(msisdnToCheck, lastSentMsgId, readByArray);
+
+            bool isGroupUpdated = false;
+            if (Utils.isGroupConversation(msisdnToCheck))
+                isGroupUpdated = GroupTableUtils.UpdateReadBy(msisdnToCheck, lastSentMsgId, readByArray);
+
+            if (isGroupUpdated || listUpdatedMessageIds.Count > 0)
+            {
+                object[] vals = new object[4];
+                vals[0] = listUpdatedMessageIds;
+                vals[1] = msisdnToCheck;
+                vals[2] = readByArray;
+                vals[3] = lastSentMsgId;
+                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
+            }
+        }
+
+        /// <summary>
+        /// Process bulk packet
+        /// </summary>
+        /// <param name="jsonObj"></param>
+        private void ProcessBulkPacket(JObject jsonObj)
+        {
+            try
+            {
+                var jData = (JObject)jsonObj[HikeConstants.DATA];
+                JArray msgs = (JArray)jData[HikeConstants.MESSAGES];
+
+                Dictionary<string, MsisdnBulkData> dictBulkData = new Dictionary<string, MsisdnBulkData>();
+                for (int i = 0; i < msgs.Count; i++)
+                {
+                    ProcessBulkIndividualMsg((JObject)msgs[i], dictBulkData);
+                }
+
+                if (dictBulkData.Count > 0)
+                {
+                    foreach (MsisdnBulkData msisdnBulkData in dictBulkData.Values)
+                    {
+                        if (msisdnBulkData.ListMessages.Count > 0)
+                        {
+                            MessagesTableUtils.FilterDuplicateMessage(msisdnBulkData.ListMessages);
+                            //after filtering it may be zero
+                            if (msisdnBulkData.ListMessages.Count > 0)
+                            {
+                                bool success = MessagesTableUtils.BulkInsertMessage(msisdnBulkData.ListMessages);
+                                if (success)
+                                {
+                                    ConversationListObject obj;
+                                    bool updateConversation = false;
+                                    foreach (ConvMessage convMessage in msisdnBulkData.ListMessages)
+                                    {
+                                        //handle long message
+                                        if (!string.IsNullOrEmpty(convMessage.TempLongMessage))
+                                        {
+                                            convMessage.Message = convMessage.TempLongMessage;
+                                            convMessage.TempLongMessage = null;
+                                        }
+
+                                        if (convMessage.StatusUpdateObj != null)
+                                        {
+                                            convMessage.StatusUpdateObj.MsgId = convMessage.MessageId;
+                                            StatusMsgsTable.UpdateMsgId(convMessage.StatusUpdateObj);
+                                        }
+                                        else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                                        {
+                                            if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out obj))
+                                            {
+                                                MessagesTableUtils.ProcessConversationMetadata(convMessage, obj);
+                                                updateConversation = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            HandleFTForMessageRecieved(convMessage);
+                                        }
+                                    }
+                                    ConvMessage lastMessage = msisdnBulkData.ListMessages[msisdnBulkData.ListMessages.Count - 1];
+                                    obj = MessagesTableUtils.UpdateConversationList(lastMessage, false);
+                                    if (obj == null)
+                                        continue;
+
+                                    if (msisdnBulkData.ListMessages.Count > 1)
+                                    {
+                                        obj.UnreadCounter += msisdnBulkData.ListMessages.Count - 1;// -1 because 1 count is already incremented by adding last message
+                                        updateConversation = true;
+                                    }
+                                    if (updateConversation)
+                                        ConversationTableUtils.updateConversation(obj);
+
+                                    object[] vals = new object[3];
+
+                                    vals[0] = msisdnBulkData.ListMessages;
+                                    vals[1] = obj;
+                                    vals[2] = false;
+                                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                                }
+
+                            }
+                        }
+                        if (msisdnBulkData.LastDeliveredMsgId > 0)
+                        {
+                            object[] vals = new object[2];
+                            vals[0] = MiscDBUtil.UpdateBulkMessageDBsDeliveredStatus(msisdnBulkData.Msisdn, msisdnBulkData.LastDeliveredMsgId);
+                            vals[1] = msisdnBulkData.Msisdn;
+                            this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
+                        }
+                        if (msisdnBulkData.MaxReadById > 0)
+                        {
+                            UpdateReadByStatus(msisdnBulkData.Msisdn, msisdnBulkData.MaxReadById, msisdnBulkData.ReadByArray);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NetworkManager::OnMessage:BulkMessages,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
+        private static void HandleFTForMessageRecieved(ConvMessage convMessage)
+        {
+            if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT)
+|| convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
+            {
+                convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
+            }
+            else if (convMessage.FileAttachment != null && !App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+            {
+                string sendersMsisdn = String.Empty;
+
+                if (Utils.isGroupConversation(convMessage.Msisdn))
+                    sendersMsisdn = convMessage.GroupParticipant;
+                else
+                    sendersMsisdn = convMessage.Msisdn;
+
+                if (ContactUtils.CheckUserInAddressBook(sendersMsisdn))
+                    FileTransfers.FileTransferManager.Instance.DownloadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileKey, convMessage.FileAttachment.ContentType, convMessage.FileAttachment.FileSize);
+            }
+
+            if (convMessage.FileAttachment != null)
+            {
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+            }
+        }
+
+        /// <summary>
+        /// Processes individual packets in bulk packets
+        /// </summary>
+        /// <param name="jsonObj"></param>
+        /// <param name="dictBulkData"></param>
+        private void ProcessBulkIndividualMsg(JObject jsonObj, Dictionary<string, MsisdnBulkData> dictBulkData)
+        {
+
+            if (jsonObj == null)
+                return;
+            try
+            {
+                string type = (string)jsonObj[HikeConstants.TYPE];
+                string msisdn = null;
+                try
+                {
+                    msisdn = (string)jsonObj[HikeConstants.FROM];
+                }
+                catch (JsonReaderException ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse from, Exception : " + ex.StackTrace);
+                    return;
+                }
+                if (type == MESSAGE)
+                {
+                    try
+                    {
+                        ConvMessage convMessage = new ConvMessage(jsonObj);
+                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                            GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
+
+                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                        MessagesTableUtils.UpdateConvMessageText(convMessage, string.Empty);
+
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg :  MESSAGE convmessage, Exception : " + ex.StackTrace);
+                        return;
+                    }
+
+                }
+                #region DELIVERY_REPORT
+                else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
+                {
+
+                    try
+                    {
+                        string id = (string)jsonObj[HikeConstants.DATA];
+                        JToken msisdnToken;
+                        jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                        if (msisdnToken != null)
+                            msisdn = msisdnToken.ToString();
+                        long msgID = Int64.Parse(id);
+                        MsisdnBulkData msisdnBulkData;
+                        if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
+                        {
+                            msisdnBulkData = new MsisdnBulkData(msisdn);
+                            dictBulkData[msisdn] = msisdnBulkData;
+                        }
+                        msisdnBulkData.LastDeliveredMsgId = msgID > msisdnBulkData.LastDeliveredMsgId ? msgID : msisdnBulkData.LastDeliveredMsgId;
+                    }
+                    catch (FormatException e)
+                    {
+                        Debug.WriteLine("Network Manager::ProcessBulkIndividualMsg: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
+                        return;
+                    }
+                }
+                #endregion
+                #region MESSAGE_READ
+                else if (MESSAGE_READ == type) // Message read by recipient
+                {
+                    JArray msgIds = null;
+
+                    try
+                    {
+                        msgIds = (JArray)jsonObj["d"];
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg :  MESSAGE_READ, Exception : " + ex.StackTrace);
+                        return;
+                    }
+                    if (msgIds == null || msgIds.Count == 0)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
+                        return;
+                    }
+
+                    string readBy = msisdn;
+                    JToken msisdnToken;
+                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    if (msisdnToken != null)
+                        msisdn = msisdnToken.ToString();
+
+                    MsisdnBulkData msisdnBulkData;
+                    if (!dictBulkData.TryGetValue(msisdn, out msisdnBulkData))
+                    {
+                        msisdnBulkData = new MsisdnBulkData(msisdn);
+                        dictBulkData[msisdn] = msisdnBulkData;
+                    }
+                    bool isGroupConversation = Utils.isGroupConversation(msisdn);
+                    if (isGroupConversation && msisdnBulkData.LastSentMessageId == 0)
+                    {
+                        msisdnBulkData.LastSentMessageId = MessagesTableUtils.GetLastSentMessageId(msisdn);
+                    }
+
+                    for (int i = 0; i < msgIds.Count; i++)
+                    {
+                        long messageId = Int64.Parse(msgIds[i].ToString());
+
+                        if (isGroupConversation)
+                        {
+                            if (messageId > msisdnBulkData.MaxReadById && messageId <= msisdnBulkData.LastSentMessageId)
+                            {
+                                msisdnBulkData.MaxReadById = messageId;
+                                msisdnBulkData.ReadByArray = new JArray() { readBy };
+                            }
+                            else if (msisdnBulkData.MaxReadById == messageId)
+                            {
+                                if (msisdnBulkData.ReadByArray == null)
+                                    msisdnBulkData.ReadByArray = new JArray() { readBy };
+                                else if (!msisdnBulkData.ReadByArray.Contains(readBy))
+                                    msisdnBulkData.ReadByArray.Add(readBy);
+                            }
+                        }
+                        else
+                        {
+                            if (messageId > msisdnBulkData.MaxReadById)
+                                msisdnBulkData.MaxReadById = messageId;
+                        }
+                    }
+
+                }
+                #endregion
+                #region STATUS UPDATE
+                else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+                {
+                    StatusMessage sm = null;
+                    ConvMessage cm = ProcessStatusUpdate(msisdn, jsonObj, out sm);
+                    if (cm != null)
+                    {
+                        if (App.ViewModel.ConvMap.ContainsKey(cm.Msisdn))
+                        {
+                            cm.StatusUpdateObj = sm;//to update after getting message id after storing in db
+                            MsisdnBulkData msisdnBulkData;
+                            if (!dictBulkData.TryGetValue(cm.Msisdn, out msisdnBulkData))
+                            {
+                                msisdnBulkData = new MsisdnBulkData(cm.Msisdn);
+                                dictBulkData[cm.Msisdn] = msisdnBulkData;
+                            }
+                            msisdnBulkData.ListMessages.Add(cm);
+                        }
+                    }
+                }
+                #endregion
+                #region USER_JOINED USER_LEFT
+                else if ((USER_JOINED == type) || (USER_LEFT == type))
+                {
+                    ProcessUjUl(jsonObj, type, dictBulkData);
+                }
+                #endregion
+                #region GROUP CHAT RELATED
+
+                #region GROUP_CHAT_JOIN
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
+                {
+                    ConvMessage convMessage = ProcessGcj(jsonObj);
+                    if (convMessage == null)
+                        return;
+                    AddMessageToBulkDataMap(dictBulkData, convMessage);
+                }
+                #endregion
+                #region GROUP_CHAT_NAME CHANGE
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
+                {
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGCN(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCN packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #region GROUP DISPLAY PIC CHANGE
+                else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+                {
+                    ConvMessage convMessage = ProcessGroupDP(jsonObj);
+                    if (convMessage == null)
+                        return;
+                    AddMessageToBulkDataMap(dictBulkData, convMessage);
+                }
+                #endregion
+                #region GROUP_CHAT_LEAVE
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
+                {
+                    /*
+                    * 1. Update Conversation list name if groupName is not set.
+                    * 2. Update DB.
+                    * 3. Notify GroupInfo page (if opened)
+                    * 4. Notify Chat Thread page if opened.
+                    */
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGroupChatLeave(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCL packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #region GROUP_CHAT_END
+                else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type) //Group chat end
+                {
+                    try
+                    {
+                        ConvMessage convMessage = ProcessGroupChatEnd(jsonObj);
+                        if (convMessage == null)
+                            return;
+                        AddMessageToBulkDataMap(dictBulkData, convMessage);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("NETWORK MANAGER ::ProcessBulkIndividualMsg, Exception while parsing GCE packet : " + e.StackTrace);
+                    }
+                }
+                #endregion
+                #endregion
+                #region CHAT BACKGROUND
+                else if (HikeConstants.MqttMessageTypes.CHAT_BACKGROUNDS == type)
+                {
+                    try
+                    {
+                        string sender;
+                        ConvMessage cm = ProcessChatBackground(jsonObj, msisdn, out sender);
+                        if (cm == null)
+                            return;
+
+                        MessagesTableUtils.UpdateConvMessageText(cm, sender);
+
+                        AddMessageToBulkDataMap(dictBulkData, cm);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Network Manager::ProcessBulkIndividualMsg, Chat Background, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), ex.StackTrace);
+                    }
+                }
+                #endregion
+                #region USER_OPT_IN
+                else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
+                {
+                    ProcessUoUjMsgs(jsonObj, true, true, false, null);
+                }
+                #endregion
+                else
+                {
+                    ProcessAllPacketsExceptBulk(jsonObj, type, msisdn);
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.WriteLine("NetworkManager ::  ProcessBulkIndividualMsg : json Parse type, Exception : " + ex.StackTrace);
+                return;
+            }
+            return;
+        }
+
+        private static void AddMessageToBulkDataMap(Dictionary<string, MsisdnBulkData> dictBulkData, ConvMessage convMessage)
+        {
+            MsisdnBulkData msisdnBulkData;
+            if (!dictBulkData.TryGetValue(convMessage.Msisdn, out msisdnBulkData))
+            {
+                msisdnBulkData = new MsisdnBulkData(convMessage.Msisdn);
+                dictBulkData[convMessage.Msisdn] = msisdnBulkData;
+            }
+            msisdnBulkData.ListMessages.Add(convMessage);
+        }
+
+        private ConvMessage ProcessStatusUpdate(string msisdn, JObject jsonObj, out StatusMessage sm)
+        {
+            sm = null;
+            // if this user is already blocked simply ignore his status
+            if (App.ViewModel.BlockedHashset.Contains(msisdn))
+                return null;
+
+            JObject data = null;
+            try
+            {
+                data = (JObject)jsonObj[HikeConstants.DATA];
+                JToken val;
+                string iconBase64 = null;
+
+                if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
+                    iconBase64 = val.ToString();
+
+                val = null;
+                long ts = 0;
+
+                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out val) && val != null)
+                {
+                    ts = val.ToObject<long>();
+                    long tsCorrection;
+
+                    if (App.appSettings.TryGetValue(HikeConstants.AppSettings.TIME_DIFF_EPOCH, out tsCorrection))
+                        ts -= tsCorrection;
+                }
+
+                val = null;
+                string id = null;
+                JToken idToken;
+
+                if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
+                    id = idToken.ToString();
+                #region HANDLE PROFILE PIC UPDATE
+                if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                {
+                    sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, -1, 0, true);
+                    idToken = null;
+                    if (iconBase64 != null)
+                    {
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                            return null;
+                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
+                        jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
+                        UI_Utils.Instance.BitmapImageCache.Remove(msisdn);
+                    }
+                }
+                #endregion
+
+                #region HANDLE TEXT UPDATE
+                else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                {
+                    int moodId = -1;
+                    int tod = 0;
+                    if (data[HikeConstants.MOOD] != null)
+                    {
+                        string moodId_String = data[HikeConstants.MOOD].ToString();
+                        if (!string.IsNullOrEmpty(moodId_String))
+                        {
+                            int.TryParse(moodId_String, out moodId);
+                            moodId = MoodsInitialiser.GetRecieverMoodId(moodId);
+                            try
+                            {
+                                if (moodId > 0 && data[HikeConstants.TIME_OF_DAY] != null && !String.IsNullOrWhiteSpace(data[HikeConstants.TIME_OF_DAY].ToString()))
+                                    tod = data[HikeConstants.TIME_OF_DAY].ToObject<int>();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                tod = 0;
+                                Debug.WriteLine("NetworkManager :: Exception in TextStatus Updates : " + ex.StackTrace);
+                            }
+                        }
+                    }
+                    sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, ts,
+                        StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, moodId, tod, true);
+                    if (!StatusMsgsTable.InsertStatusMsg(sm, true))//will return false if status already exists
+                        return null;
+                }
+                #endregion
+
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj, ts);
+                cm.Msisdn = msisdn;
+
+                pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
+
+                return cm;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Network Manager :: Exception in STATUS UPDATES : " + e.StackTrace);
+            }
+            return null;
         }
 
         private void LoadFavAndPending(bool isFav, string msisdn)
@@ -2130,7 +2655,7 @@ namespace windows_client
             return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
-        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList, bool isRejoin)
+        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList, bool isRejoin, Dictionary<string, MsisdnBulkData> dictBulkData)
         {
             int credits = 0;
 
@@ -2161,23 +2686,32 @@ namespace windows_client
             {
                 if (!isOptInMsg || App.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
                 {
-                    object[] vals = null;
+                    List<ConvMessage> listMessages = new List<ConvMessage>(2);
+
                     ConvMessage cm = null;
                     if (isOptInMsg)
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                     else
                         cm = new ConvMessage(isRejoin ? ConvMessage.ParticipantInfoState.USER_REJOINED : ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj == null)
+                    ConversationListObject obj = null;
+                    if (dictBulkData == null)
                     {
-                        GroupManager.Instance.SaveGroupCache(cm.Msisdn);
-                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
-                        return;
+                        obj = MessagesTableUtils.addChatMessage(cm, false);
+                        if (obj == null)
+                        {
+                            GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
+                            return;
+                        }
+                        listMessages.Add(cm);
                     }
-                    if (credits <= 0)
-                        vals = new object[2];
-                    else                    // this shows that we have to show credits msg as this user got credits.
+                    else
+                    {
+                        MessagesTableUtils.UpdateConvMessageText(cm, null);
+                        AddMessageToBulkDataMap(dictBulkData, cm);
+                    }
+
+                    if (credits > 0)// this shows that we have to show credits msg as this user got credits.
                     {
                         string text = string.Format(AppResources.CREDITS_EARNED, credits);
                         JObject o = new JObject();
@@ -2185,38 +2719,62 @@ namespace windows_client
                         ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
                         cmCredits.Message = text;
                         cmCredits.Msisdn = ms;
-                        obj = MessagesTableUtils.addChatMessage(cmCredits, false);
-                        vals = new object[3];
-                        vals[2] = cmCredits;
+                        if (dictBulkData == null)
+                        {
+                            obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            if (obj == null)
+                            {
+                                GroupManager.Instance.SaveGroupParticpantsCache(cm.Msisdn);
+                                return;
+                            }
+                            listMessages.Add(cmCredits);
+                        }
+                        else
+                        {
+                            AddMessageToBulkDataMap(dictBulkData, cmCredits);
+                        }
                     }
-
-                    vals[0] = cm;
-                    vals[1] = obj;
-
-                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    if (dictBulkData == null)
+                    {
+                        object[] vals = new object[2];
+                        vals[0] = listMessages;
+                        vals[1] = obj;
+                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    }
                 }
             }
             // UPDATE group cache
-            foreach (string key in GroupManager.Instance.GroupCache.Keys)
+            foreach (string key in GroupManager.Instance.GroupParticpantsCache.Keys)
             {
-                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
+                List<GroupParticipant> l = GroupManager.Instance.GroupParticpantsCache[key];
                 GroupParticipant gp = l.Find(x => x.Msisdn == ms);
                 if (gp != null)
                 {
                     if (isOptInMsg)
                     {
+                        List<ConvMessage> listMessages = new List<ConvMessage>(2);
                         ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
 
-                        object[] values = null;
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
-                        ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
-                        if (co == null)
+                        ConversationListObject co = null;
+                        if (dictBulkData == null)
                         {
-                            GroupManager.Instance.SaveGroupCache();
-                            return;
+                            co = MessagesTableUtils.addChatMessage(convMsg, false);
+                            if (co == null)
+                            {
+                                GroupManager.Instance.SaveGroupParticpantsCache();
+                                return;
+                            }
+                            listMessages.Add(convMsg);
                         }
-                        if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
+                        else
+                        {
+                            MessagesTableUtils.UpdateConvMessageText(convMsg, null);
+                            AddMessageToBulkDataMap(dictBulkData, convMsg);
+                        }
+
+                        if (credits > 0)// this shows that we have to show credits msg as this user got credits.
                         {
                             string text = string.Format(AppResources.CREDITS_EARNED, credits);
                             JObject o = new JObject();
@@ -2224,29 +2782,36 @@ namespace windows_client
                             ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
                             cmCredits.Message = text;
                             cmCredits.Msisdn = key;
-                            co = MessagesTableUtils.addChatMessage(cmCredits, false);
-                            if (co == null)
+                            if (dictBulkData == null)
                             {
-                                GroupManager.Instance.SaveGroupCache();
-                                return;
+                                co = MessagesTableUtils.addChatMessage(cmCredits, false);
+                                if (co == null)
+                                {
+                                    GroupManager.Instance.SaveGroupParticpantsCache();
+                                    return;
+                                }
+                                listMessages.Add(cmCredits);
                             }
-                            values = new object[3];
-                            values[2] = cmCredits;
+                            else
+                            {
+                                AddMessageToBulkDataMap(dictBulkData, cmCredits);
+                            }
                         }
-                        else
-                            values = new object[2];
+                        if (dictBulkData == null)
+                        {
+                            object[] values = new object[2];
+                            values[0] = listMessages;
+                            values[1] = co;
 
-                        values[0] = convMsg;
-                        values[1] = co;
-
-                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
+                            pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
+                        }
                     }
                     else
                         gp.IsOnHike = true;
                     gp.HasOptIn = true;
                 }
             }
-            GroupManager.Instance.SaveGroupCache();
+            GroupManager.Instance.SaveGroupParticpantsCache();
         }
 
         #region OLD ADD GROUPMEMBERS LOGIC
@@ -2259,7 +2824,7 @@ namespace windows_client
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
-        //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
+        //        GroupManager.Instance.GroupParticpantsCache.TryGetValue(grpId, out l);
         //        if (l == null)
         //            return true;
 
@@ -2306,7 +2871,7 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupParticpantsCache);
         //        return output;
         //    }
         //    else
@@ -2377,48 +2942,5 @@ namespace windows_client
             return map;
         }
 
-        /// <summary>
-        /// Update message db with status sent delivered read for set of messages
-        /// </summary>
-        /// <param name="fromUser"></param>
-        /// <param name="ids"></param>
-        /// <param name="status"></param>
-        /// <param name="sender"></param>
-        private void updateDbBatch(string fromUser, long[] ids, int status, string sender)
-        {
-            if (ids == null || ids.Length == 0)
-                return;
-            Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status, sender);
-            if (msisdn == null)
-            {
-                string idsString = string.Empty;
-                foreach (long id in ids)
-                {
-                    idsString = string.Format("{0}, {1}", idsString, id.ToString());
-                }
-                Debug.WriteLine("NetworkManager :: UpdateDbBatch : msisdn null for user:{0} ,ids:{1}, status:{2}", fromUser, idsString, status);
-                return;
-            }
-            // To update conversation object , we have to check if ids [] contains last msg id
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-            {
-                if (ContainsLastMsgId(ids, App.ViewModel.ConvMap[msisdn]))
-                    ConversationTableUtils.updateLastMsgStatus(App.ViewModel.ConvMap[msisdn].LastMsgId, msisdn, status);
-            }
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
-        }
-
-        private bool ContainsLastMsgId(long[] ids, ConversationListObject co)
-        {
-            for (int i = 0; i < ids.Length; i++)
-            {
-                if (ids[i] == co.LastMsgId)
-                    return true;
-            }
-            return false;
-        }
     }
 }

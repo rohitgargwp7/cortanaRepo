@@ -526,7 +526,7 @@ namespace windows_client.View
 
                     defaultContact.Msisdn = Utils.NormalizeNumber(_charsEntered);
 
-                    charsEntered = (isPlus ? "+" : "") + charsEntered;
+                    charsEntered = (isPlus ? "+" : String.Empty) + charsEntered;
                     defaultContact.Name = charsEntered;
                     defaultContact.ContactListLabel = Utils.IsNumberValid(charsEntered) ? defaultContact.Msisdn : AppResources.SelectUser_EnterValidNo_Txt;
                     defaultContact.IsSelected = SelectedContacts.Where(c => c.Msisdn == defaultContact.Msisdn).Count() > 0;
@@ -693,7 +693,7 @@ namespace windows_client.View
                 deletedContacts = new List<ContactInfo>(ContactUtils.hike_contactsMap.Count);
                 // This loop deletes all those contacts which are removed.
                 Dictionary<string, GroupInfo> allGroupsInfo = null;
-                GroupManager.Instance.LoadGroupCache();
+                GroupManager.Instance.LoadGroupParticpantsCache();
                 List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                 for (int i = 0; i < gl.Count; i++)
                 {
@@ -747,7 +747,7 @@ namespace windows_client.View
                     if (App.ViewModel.ContactsCache.ContainsKey(dCn.Msisdn))
                         App.ViewModel.ContactsCache[dCn.Msisdn].Name = null;
                     cinfo.Name = cinfo.Msisdn;
-                    GroupManager.Instance.RefreshGroupCache(cinfo, allGroupsInfo, false);
+                    GroupManager.Instance.RefreshGroupParticpantsCache(cinfo, allGroupsInfo, false);
                 }
 
                 if (isFavUpdated)

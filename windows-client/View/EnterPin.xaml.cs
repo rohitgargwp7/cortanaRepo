@@ -267,7 +267,7 @@ namespace windows_client
 
         private void callMePostResponse_Callback(JObject obj)
         {
-            string stat = "";
+            string stat = String.Empty;
             if (obj != null)
             {
                 JToken statusToken;

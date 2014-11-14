@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -51,34 +52,16 @@ namespace windows_client.DbUtils
             return convList;
         }
 
-        public static ConversationListObject addGroupConversation(ConvMessage convMessage, string groupName)
-        {
-            /*
-            * Msisdn : GroupId
-            * Contactname : GroupOwner
-            */
-            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
-            ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
-                true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
-
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
-            {
-                string[] vals = convMessage.Message.Split(';');
-                if (vals.Length == 2)
-                    obj.LastMessage = vals[1];
-                else
-                    obj.LastMessage = convMessage.Message;
-            }
-            string msisdn = obj.Msisdn.Replace(":", "_");
-            saveConvObject(obj, msisdn);
-            int convs = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            //saveNewConv(obj);
-            return obj;
-        }
-
-        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")
+        /// <summary>
+        /// Creates new conversation object and add it to db
+        /// </summary>
+        /// <param name="convMessage">Message to be added in conversation</param>
+        /// <param name="isNewGroup"></param>
+        /// <param name="persistMessage">false if messsage already persisted or to be persisted later</param>
+        /// <param name="imageBytes">Avatar image bytes</param>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup, byte[] imageBytes, string from = "")//todo:pass group name
         {
             ConversationListObject obj = null;
             if (isNewGroup)
@@ -100,11 +83,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                    ContactInfo contactInfo = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(convMessage.Msisdn))
-                        contactInfo = App.ViewModel.ContactsCache[convMessage.Msisdn];
-                    else
-                        contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    ContactInfo contactInfo = ContactUtils.GetContactInfo(convMessage.Msisdn);
                     obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                         contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
                     if (App.ViewModel.Isfavourite(convMessage.Msisdn))
@@ -112,7 +91,16 @@ namespace windows_client.DbUtils
                 }
             }
 
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
+            {
+                string[] vals = convMessage.Message.Split(';');
+                if (vals.Length == 2)
+                    obj.LastMessage = vals[1];
+                else
+                    obj.LastMessage = convMessage.Message;
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
             {
                 obj.LastMessage = convMessage.Message;
             }
@@ -173,25 +161,15 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMessage.Message;
                 }
             }
-
-            Stopwatch st1 = Stopwatch.StartNew();
-            bool success = MessagesTableUtils.addMessage(convMessage);
-            if (!success)
-                return null;
+            if (obj.LastMessage.Length > 100)
+                obj.LastMessage = obj.LastMessage.Substring(0, 100);
             obj.LastMsgId = convMessage.MessageId;
-            st1.Stop();
-            long msec1 = st1.ElapsedMilliseconds;
-            Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-            Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
 
             return obj;
         }
@@ -238,7 +216,7 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
-                saveConvObject(obj, msisdn);
+                saveConvObject(obj, msisdn.Replace(":", "_"));
                 //saveConvObjectList();
             }
         }
@@ -299,7 +277,6 @@ namespace windows_client.DbUtils
         public static void saveConvObjectList()
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
 
             if (convMap == null)
@@ -382,15 +359,11 @@ namespace windows_client.DbUtils
                     store.Dispose();
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         public static void saveNewConv(ConversationListObject obj)
         {
             int convs = 0;
-            Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
             lock (readWriteLock)
             {
@@ -418,9 +391,6 @@ namespace windows_client.DbUtils
                     store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
-            st.Stop();
-            long mSec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
         }
 
         /// <summary>
@@ -487,7 +457,9 @@ namespace windows_client.DbUtils
                                 bool isLessThanEqualTo_1500 = false;
                                 if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
                                     isLessThanEqualTo_1500 = true;
-
+                                bool isLessThan_2900 = false;
+                                if (Utils.compareVersion(App.CURRENT_VERSION, "2.8.1.0") < 0) // current_ver < 2.8.1.0
+                                    isLessThan_2900 = true;
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
                                 {
@@ -496,6 +468,8 @@ namespace windows_client.DbUtils
                                     {
                                         if (isLessThanEqualTo_1500)
                                             item.ReadVer_1_4_0_0(reader);
+                                        else if (isLessThan_2900)
+                                            item.ReadVer_2_8_0_0(reader);
                                         else
                                             item.ReadVer_Latest(reader);
                                     }
@@ -656,5 +630,58 @@ namespace windows_client.DbUtils
             convList.Sort();
             return convList;
         }
+
+        /// <summary>
+        /// Function for setting second last Message as LastMessage For ConvObject 
+        /// ConvObj has not been updated in file in this function
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="obj"></param>
+        public static void SetSecondLastMessageForConvObject(string msisdn, ConversationListObject obj)
+        {
+            ConvMessage cm = MessagesTableUtils.getSecondLastMessageForMsisdn(msisdn);
+
+            if (cm == null)
+            {
+                obj.LastMessage = String.Empty;
+                obj.MessageStatus = ConvMessage.State.UNKNOWN;
+            }
+            else
+            {
+                obj.LastMessage = cm.Message;
+                obj.LastMsgId = cm.MessageId;
+                obj.MessageStatus = cm.MessageStatus;
+
+                if (cm.FileAttachment != null)
+                {
+                    if (cm.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        obj.LastMessage = AppResources.Image_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        obj.LastMessage = AppResources.Audio_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        obj.LastMessage = AppResources.Video_Txt;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                        obj.LastMessage = AppResources.ContactTransfer_Text;
+                    else if (cm.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                        obj.LastMessage = AppResources.Location_Txt;
+                    else
+                        obj.LastMessage = AppResources.UnknownFile_txt;
+
+                    obj.TimeStamp = cm.Timestamp;
+                }
+                else // check here nudge , notification , status update
+                {
+                    if (!String.IsNullOrEmpty(cm.MetaDataString))
+                    {
+                        // NUDGE
+                        if (cm.MetaDataString.Contains(HikeConstants.POKE))
+                            obj.LastMessage = AppResources.Nudge;
+                        else // NOTIFICATION AND NORMAL MSGS
+                            obj.LastMessage = cm.Message;
+                    }
+                }
+            }
+        }
+
     }
 }

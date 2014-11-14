@@ -129,6 +129,12 @@ namespace windows_client.TemplateSelectors
             set;
         }
 
+        public DataTemplate DtGCPin
+        {
+            get;
+            set;
+        }
+
         public DataTemplate DtSentSticker
         {
             get;
@@ -192,6 +198,8 @@ namespace windows_client.TemplateSelectors
                     return DtStatusUpdateBubble;
                 else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.TYPING_NOTIFICATION)
                     return DtTypingNotificationBubble;
+                else if (convMesssage.GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
+                    return DtGCPin;
                 else
                     return DtNotificationBubble;
             }

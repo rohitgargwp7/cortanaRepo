@@ -41,7 +41,6 @@ namespace windows_client.Model
         private StickerObj _stickerObj;
         // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
-        private string _readByInfo;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -86,7 +85,8 @@ namespace windows_client.Model
             CHAT_BACKGROUND_CHANGED,
             CHAT_BACKGROUND_CHANGE_NOT_SUPPORTED,
             MESSAGE_STATUS,
-            UNREAD_NOTIFICATION
+            UNREAD_NOTIFICATION,
+            PIN_MESSAGE
         }
 
         public enum MessageType
@@ -119,8 +119,13 @@ namespace windows_client.Model
         {
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
+
             JToken typeToken = null;
             string type = null;
+
+            if (obj.TryGetValue(HikeConstants.GC_PIN, out typeToken))
+                return ParticipantInfoState.PIN_MESSAGE;
+
             if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
@@ -367,43 +372,12 @@ namespace windows_client.Model
             }
         }
 
+        //to be used for upgrading users
         [Column(CanBeNull = true)]
         public string ReadByInfo
         {
-            get
-            {
-                return _readByInfo;
-            }
-            set
-            {
-                if (_readByInfo != value)
-                {
-                    NotifyPropertyChanging("ReadByInfo");
-                    _readByInfo = value;
-                }
-            }
-        }
-
-        JArray _readByArray;
-        public JArray ReadByArray
-        {
-            get
-            {
-                if (_readByArray == null)
-                {
-                    if (String.IsNullOrEmpty(_readByInfo))
-                        return null;
-                    else
-                        _readByArray = JArray.Parse(_readByInfo);
-                }
-
-                return _readByArray;
-            }
-            set
-            {
-                if (value != _readByArray)
-                    _readByArray = value;
-            }
+            get;
+            set;
         }
 
         public Attachment FileAttachment
@@ -420,6 +394,12 @@ namespace windows_client.Model
                     NotifyPropertyChanged("SdrImage");
                 }
             }
+        }
+
+        public StatusMessage StatusUpdateObj
+        {
+            get;
+            set;
         }
 
         public bool IsInvite
@@ -442,15 +422,9 @@ namespace windows_client.Model
         {
             get
             {
-                return (_messageStatus == State.SENT_UNCONFIRMED ||
-                        _messageStatus == State.SENT_CONFIRMED ||
-                        _messageStatus == State.SENT_SOCKET_WRITE ||
-                        _messageStatus == State.SENT_DELIVERED ||
-                        _messageStatus == State.SENT_DELIVERED_READ ||
-                        _messageStatus == State.SENT_FAILED ||
-                        _messageStatus == State.FORCE_SMS_SENT_CONFIRMED ||
-                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED ||
-                        _messageStatus == State.FORCE_SMS_SENT_DELIVERED_READ);
+                return (_messageStatus != State.UNKNOWN &&
+                        _messageStatus != State.RECEIVED_READ &&
+                        _messageStatus != State.RECEIVED_UNREAD);
             }
         }
 
@@ -517,11 +491,41 @@ namespace windows_client.Model
             }
         }
 
+        public string GCPinMessageSenderName
+        {
+            get
+            {
+                if (this.IsSent)
+                    return AppResources.You_Txt;
+
+                if (this.GroupMemberName == null)
+                    return this.GroupParticipant;
+                else
+                    return this.GroupMemberName;
+            }
+        }
+
+        public string GCPinSenderPostedAPin
+        {
+            get
+            {
+                return String.Format(AppResources.Posted_A_Pin_Txt, GCPinMessageSenderName);
+            }
+        }
+
+        public string DirectTimeStampStr
+        {
+            get
+            {
+                return TimeUtils.getTimeStringForChatThread(_timestamp);
+            }
+        }
+
         public string TimeStampStr
         {
             get
             {
-                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE)
+                if (participantInfoState == ParticipantInfoState.STATUS_UPDATE || participantInfoState == ParticipantInfoState.PIN_MESSAGE)
                     return TimeUtils.getRelativeTime(_timestamp);
                 else
                 {
@@ -539,6 +543,15 @@ namespace windows_client.Model
             {
                 return App.ViewModel.SelectedBackground != null && !App.ViewModel.SelectedBackground.IsLightTheme ? UI_Utils.Instance.TypingNotificationWhite : UI_Utils.Instance.TypingNotificationBlack;
             }
+        }
+
+        /// <summary>
+        /// to store temporarily long message while inserting empty message in db
+        /// </summary>
+        public string TempLongMessage
+        {
+            get;
+            set;
         }
 
         public string DispMessage
@@ -589,21 +602,56 @@ namespace windows_client.Model
             get { return String.IsNullOrEmpty(DispMessage) ? Visibility.Collapsed : Visibility.Visible; }
         }
 
-        public Visibility NormalNudgeVisibility
-        {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Collapsed : Visibility.Visible; }
-        }
-
-        public Visibility SpecialNudgeVisibility
-        {
-            get { return App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.ID == "20" ? Visibility.Visible : Visibility.Collapsed; }
-        }
-
-        public BitmapImage SpecialNudgeImage
+        public int NudgeHeight
         {
             get
             {
-                return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.ID == "20")
+                        return 65;
+
+                    return 40;
+                }
+
+                return 40;
+            }
+        }
+
+        public BitmapImage NudgeImage
+        {
+            get
+            {
+                if (App.ViewModel.SelectedBackground != null)
+                {
+                    if (App.ViewModel.SelectedBackground.ID == "20")
+                        return IsSent ? UI_Utils.Instance.HeartNudgeSent : UI_Utils.Instance.HeartNudgeReceived;
+
+                    return DefaultNudgeImage;
+                }
+
+                return DefaultNudgeImage;
+            }
+        }
+
+        public BitmapImage DefaultNudgeImage
+        {
+            get
+            {
+                if (IsSent)
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
+                        return UI_Utils.Instance.BlueSentNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteSentNudgeImage;
+                }
+                else
+                {
+                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
+                        return UI_Utils.Instance.BlueReceivedNudgeImage;
+                    else
+                        return UI_Utils.Instance.WhiteReceivedNudgeImage;
+                }
             }
         }
 
@@ -661,27 +709,6 @@ namespace windows_client.Model
                     return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
-            }
-        }
-
-        public BitmapImage NudgeImage
-        {
-            get
-            {
-                if (IsSent)
-                {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
-                        return UI_Utils.Instance.BlueSentNudgeImage;
-                    else
-                        return UI_Utils.Instance.WhiteSentNudgeImage;
-                }
-                else
-                {
-                    if (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault && !App.ViewModel.IsDarkMode)
-                        return UI_Utils.Instance.BlueReceivedNudgeImage;
-                    else
-                        return UI_Utils.Instance.WhiteReceivedNudgeImage;
-                }
             }
         }
 
@@ -782,7 +809,7 @@ namespace windows_client.Model
             get
             {
                 return FileAttachment != null && MessageStatus == State.SENT_FAILED &&
-                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED 
+                    (FileAttachment.FileState == Attachment.AttachmentState.FAILED
                     || FileAttachment.FileState == Attachment.AttachmentState.CANCELED) ?
                     Visibility.Visible : Visibility.Collapsed;
             }
@@ -1199,16 +1226,16 @@ namespace windows_client.Model
 
         public BitmapImage StatusUpdateImage
         {
-            set
-            {
-                _statusUpdateImage = value;
-            }
             get
             {
                 if (_statusUpdateImage != null)
                     return _statusUpdateImage;
                 else
                     return MoodsInitialiser.Instance.GetMoodImageForMoodId(MoodsInitialiser.GetMoodId(metadataJsonString));
+            }
+            set
+            {
+                _statusUpdateImage = value;
             }
         }
 
@@ -1325,6 +1352,7 @@ namespace windows_client.Model
             {
                 _groupMemeberName = value;
                 NotifyPropertyChanged("GroupMemberName");
+                NotifyPropertyChanged("GCPinMessageSenderName");
                 IsGroup = true;
             }
         }
@@ -1403,7 +1431,7 @@ namespace windows_client.Model
         string getTimeTextFromMetaData()
         {
             if (String.IsNullOrEmpty(this.MetaDataString))
-                return "";
+                return String.Empty;
 
             try
             {
@@ -1414,7 +1442,7 @@ namespace windows_client.Model
             }
             catch
             {
-                return "";
+                return String.Empty;
             }
         }
 
@@ -1517,6 +1545,14 @@ namespace windows_client.Model
             }
         }
 
+        public double BorderBGOpacity
+        {
+            get
+            {
+                return (App.ViewModel.SelectedBackground != null && App.ViewModel.SelectedBackground.IsDefault) ? 0.1 : 0.2;
+            }
+        }
+
         public SolidColorBrush ChatForegroundColor
         {
             get
@@ -1539,7 +1575,8 @@ namespace windows_client.Model
             {
                 if (GrpParticipantState == ConvMessage.ParticipantInfoState.FORCE_SMS_NOTIFICATION
                     || GrpParticipantState == ConvMessage.ParticipantInfoState.MESSAGE_STATUS
-                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE
+                    || GrpParticipantState == ConvMessage.ParticipantInfoState.PIN_MESSAGE)
                     return ChatForegroundColor;
                 else
                 {
@@ -1566,13 +1603,13 @@ namespace windows_client.Model
             NotifyPropertyChanged("MessageTextForeGround");
             NotifyPropertyChanged("PauseResumeImage");
             NotifyPropertyChanged("ChatForegroundColor");
+            NotifyPropertyChanged("BorderBGOpacity");
             NotifyPropertyChanged("BorderBackgroundColor");
             NotifyPropertyChanged("BubbleBackGroundColor");
             NotifyPropertyChanged("SdrImage");
             NotifyPropertyChanged("NotificationImage");
             NotifyPropertyChanged("NudgeImage");
-            NotifyPropertyChanged("SpecialNudgeVisibility");
-            NotifyPropertyChanged("NormalNudgeVisibility");
+            NotifyPropertyChanged("NudgeHeight");
             NotifyPropertyChanged("FileFailedImage");
             NotifyPropertyChanged("TypingNotificationImage");
             NotifyPropertyChanged("NotificationBorderBrush");
@@ -1686,6 +1723,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_SIZE] = FileAttachment.FileSize;
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.ContentType.Contains(HikeConstants.AUDIO) && !String.IsNullOrEmpty(this.MetaDataString))
                         {
@@ -1718,6 +1756,7 @@ namespace windows_client.Model
                         singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                         singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                         singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                        singleFileInfo[HikeConstants.SOURCE] = Attachment.GetAttachmentSource(FileAttachment.FileSource);
 
                         if (FileAttachment.Thumbnail != null)
                             singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
@@ -1741,6 +1780,11 @@ namespace windows_client.Model
                 data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
                 obj[HikeConstants.SUB_TYPE] = NetworkManager.STICKER;
             }
+            else if (this.MetaDataString != null && this.MetaDataString.Contains(HikeConstants.GC_PIN))
+            {
+                data[HikeConstants.METADATA] = JObject.Parse(metadataJsonString);
+            }
+
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
 
@@ -1825,7 +1869,7 @@ namespace windows_client.Model
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged ,PropertyName:{0}, Exception :{1}, Stacktrace:{2} ", propertyName, ex.Message, ex.StackTrace);
                     }
                 });
             }
@@ -1926,7 +1970,7 @@ namespace windows_client.Model
                 JObject metadataObject = null;
                 JToken val = null;
                 obj.TryGetValue(HikeConstants.TO, out val);
-                string messageText = "";
+                string messageText = String.Empty;
 
                 JToken metadataToken = null;
                 try
@@ -1973,7 +2017,6 @@ namespace windows_client.Model
 
                                 if (fileName == null || String.IsNullOrWhiteSpace(fileName.ToString()))
                                     fileName = AppResources.ContactTransfer_Text;
-
                             }
                         }
 
@@ -1991,8 +2034,8 @@ namespace windows_client.Model
 
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
+                        contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
 
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -2005,8 +2048,8 @@ namespace windows_client.Model
                         }
                         else
                         {
-                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, fs);
+                            this.FileAttachment = new Attachment(fileName.ToString(), fileKey == null ? String.Empty : fileKey.ToString(), base64Decoded,
+                           contentType.ToString(), Attachment.AttachmentState.NOT_STARTED, Attachment.AttachemntSource.CAMERA, fs);
                         }
 
                         if (contentType.ToString().Contains(HikeConstants.CONTACT) || contentType.ToString().Contains(HikeConstants.AUDIO))
@@ -2180,16 +2223,16 @@ namespace windows_client.Model
                     }
                 }
                 if (!isSelfGenerated) // when I am group owner chache is already sorted
-                    GroupManager.Instance.GroupCache[toVal].Sort();
+                    GroupManager.Instance.GroupParticpantsCache[toVal].Sort();
                 if (addedLater)
                 {
                     addedMembers.Sort();
                     this._message = GetMsgText(addedMembers, false);
                 }
                 else
-                    this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
+                    this._message = GetMsgText(GroupManager.Instance.GroupParticpantsCache[toVal], true);
 
-                this._message = this._message.Replace(";", "");// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
+                this._message = this._message.Replace(";", String.Empty);// as while displaying MEMBERS_JOINED in CT we split on ; for dnd message
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)

@@ -13,6 +13,7 @@ namespace windows_client
 
         public static readonly string TYPE = "t";
         public static readonly string DATA = "d";
+        public static readonly string MESSAGES = "msgs";
         public static readonly string TO = "to";
         public static readonly string FROM = "f";
         public static readonly string SUB_TYPE = "st";
@@ -38,6 +39,7 @@ namespace windows_client
         public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
         public static readonly string REQUEST_SERVER_TIME = "rsts";
         public static readonly string STATUS = "st";
+        public static readonly string LONG_MESSAGE = "lm";
 
         public static readonly string PUSH = "push";
         public static readonly string CRITICAL = "critical";
@@ -59,6 +61,7 @@ namespace windows_client
         public static readonly string FILE_KEY = "fk";
         public static readonly string FILE_SIZE = "fs";
         public static readonly string FILE_THUMBNAIL = "tn";
+        public static readonly string SOURCE = "source";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
         public static readonly string FILE_PLAY_TIME = "pt";
@@ -71,6 +74,9 @@ namespace windows_client
         public static readonly string LOCATION_TITLE = "title";
         public static readonly string LOCATION_FILENAME = "Location";
         public static readonly string LOCATION_CONTENT_TYPE = "hikemap/location";
+
+        public static readonly string FILE_TYPE_AUDIO = "audio/voice";
+        public static readonly string FILE_TYPE_VIDEO = "video/mp4";
 
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILE_TRANSFER_TEMP_LOCATION = "TempTransferredFiles";
@@ -128,6 +134,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp8";
         private static readonly string FAQS_LINK_WHITE = "http://get.hike.in/help/wp8/index.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        public static readonly string CONTACT_US_EMAIL = "support@hike.in";
         public static readonly string SYSTEM_HEALTH_LINK = "http://twitter.com/hikestatus/";
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
@@ -162,7 +169,6 @@ namespace windows_client
         public static readonly string ST_UI_EVENT = "uiEvent";
         public static readonly string ST_CONFIG_EVENT = "config";
         public static readonly string ST_NETWORK_EVENT = "nw";
-        public static readonly string ST_FILE_TRANSFER = "ft";
 
         public static readonly string COUNT = "c";
         public static readonly string FORCE_SMS_MESSAGE = "m";
@@ -182,10 +188,17 @@ namespace windows_client
         public static readonly string VERSION = "version";
         public static readonly string BLACK_THEME = "black_theme";
 
+        public static readonly string ACTIVATE_HIDDEN_MODE_ON_EXIT = "act_hidden_mode_exit";
         public static readonly string HIDDEN_MODE_ACTIVATED = "hidden_mode_active";
         public static readonly string HIDDEN_MODE_PASSWORD = "hid_mode_pswd";
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
+
+        #region ConvObject_MetaData
+        public static readonly string PINID = "pinId";
+        public static readonly string READPIN = "readPin";
+        public static readonly string UNREADPINS = "unreadpins";
+        #endregion
 
         public static string FAQS_LINK
         {
@@ -358,6 +371,7 @@ namespace windows_client
         public static readonly string UNKNOWN_FILE = "file";
         public static readonly string CT_CONTACT = "contact/share";
         public static readonly string POKE = "poke";
+        public static readonly string GC_PIN = "pin";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
@@ -399,6 +413,9 @@ namespace windows_client
         public static readonly string INVITE_POPUP_UNIQUEID = "invite_popup_uniqueid";
         public static readonly string SHOW_POPUP = "show_popup";
 
+        public static readonly string HIDDEN_AUTO_SWITCH = "hiddenaso";
+
+
         #region TOAST CONSTANTS
         public static readonly string TOAST_FOR_HIDDEN_MODE = "You have a new notification";
 
@@ -410,6 +427,7 @@ namespace windows_client
         public static readonly string TOAST_FOR_CONTACT = "Sent you a contact";
         public static readonly string TOAST_FOR_LOCATION = "Sent you a location";
         public static readonly string TOAST_FOR_FILE = "Sent you a file";
+        public static readonly string TOAST_FOR_PIN = "Posted a pin";
         #endregion
 
         #region ANALYTICS EVENTS KEYS
@@ -432,12 +450,13 @@ namespace windows_client
         public static readonly string FTUE_CARD_INVITE_CLICKED = "ftueCardInviteClicked";
         public static readonly string DARK_MODE_CLICKED = "darkModeClicked";
         public static readonly string NEW_CHAT_FROM_TOP_BAR = "newChatFromTopBar";
-        public static readonly string FT_VIDEO_FILE = "SendVideo";
 
         public static readonly string EVENT_TYPE = "et";
         public static readonly string EVENT_KEY = "ek";
         public static readonly string EVENT_TYPE_CLICK = "click";
         public static readonly string TAG_MOBILE = "wp8";
+        public static readonly string CLIENT_TIMESTAMP = "cts";
+        public static readonly string CONTEXT = "ctx";
 
         public static readonly string PRO_TIPS_DISMISSED = "tip_id";
         public static readonly string ENTER_TO_SEND = "entr_2_snd";
@@ -450,6 +469,10 @@ namespace windows_client
         public static readonly string ANALYTICS_TAP_HI_WHILE_NO_TIP = "stlthFtueTap";
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
+
+        public static readonly string ANALYTICS_EMAIL           = "email";
+        public static readonly string ANALYTICS_EMAIL_MENU      = "menu";
+        public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
 
         #endregion
 
@@ -548,6 +571,17 @@ namespace windows_client
             public static readonly string CGEN_MAP = "map";
         }
 
+
+        public static class EmailException
+        {
+            public static readonly string USER_COMMENTS = "User Comments:";
+            public static readonly string DEFAULT_USER_COMMENT = "<Add any extra detail you'd like to here, or you can hit send now, the technical information below will help>";
+            public static readonly string DEVICE_DETAILS = "==Device Details==";
+            public static readonly string TECHNICAL_DETAILS= "==Auto generated technical details==";
+
+            public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "support@hike.in";
+            public static readonly string EXCEIPTION_REPORT_SUBJECT = " WP Bug Report: ";
+        }
         #region Server URL Constants
         public static class ServerUrls
         {
@@ -604,7 +638,7 @@ namespace windows_client
             public const string STATUS_UPDATE_TIPS = "stts";
 
             //Analytic Events
-            public static readonly string STICKER_TIP_TAP_EVENT= "StickerTClick";
+            public static readonly string STICKER_TIP_TAP_EVENT = "StickerTClick";
             public static readonly string ATTACHMENT_TIP_TAP_EVENT = "AttachmentTClick";
             public static readonly string INFORMATIONAL_TIP_TAP_EVENT = "InformationalTClick";
             public static readonly string THEME_TIP_TAP_EVENT = "ChatThemeTClick";
@@ -613,6 +647,22 @@ namespace windows_client
             public static readonly string FAVOURITE_TIP_TAP_EVENT = "atomicFavTClick";
             public static readonly string PROFILE_PIC_TIP_TAP_EVENT = "atomicProPicTClick";
         }
+        #endregion
+
+        #region EMAIL CONVERSATION
+        public static class EmailConversation
+        {
+            public static readonly int EMAIL_LIMIT = 60 * 1024; //60 KB
+            public static readonly int CHAT_FETCH_LIMIT = 500; //how many chats to be fetched from DB to avoid multiple DB call
+            public static readonly string CONV_MSG_DISP_FMT = "{0}- {1}: {2}"; //datetime- name: msg (format to display conversation)
+            public static readonly string SYS_MSG_DISP_FMT = "{0}- {1}"; //datetime- msg (format to display system msgs like changed chat theme etc)
+        }
+        #endregion
+
+        #region HTTP HEADERS
+
+        public static readonly string IfModifiedSince = "30";
+
         #endregion
     }
 }

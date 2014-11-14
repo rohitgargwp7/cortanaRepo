@@ -138,9 +138,9 @@ namespace windows_client.View
             App.appSettings.TryGetValue(App.STATUS_UPDATE_SETTING, out statusSettingsValue);
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
-                });
+            {
+                muteStatusMenu.Text = statusSettingsValue > 0 ? AppResources.Conversations_MuteStatusNotification_txt : AppResources.Conversations_UnmuteStatusNotification_txt;
+            });
         }
 
         void Instance_ShowProTip(object sender, EventArgs e)
@@ -323,6 +323,13 @@ namespace windows_client.View
             removeListeners();
             if (launchPagePivot.SelectedIndex == 2) //if user quits app from timeline when a few statuses were shown as unread
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
+
+            ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
+            TipManager.Instance.ConversationPageTipChanged -= Instance_ShowServerTip;
+            App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
+            App.ViewModel.StartResetHiddenModeTimer -= ViewModel_ResetHiddenModeClicked;
+            App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
+            App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
         }
 
         #region STATUS UPDATE TUTORIAL
@@ -443,14 +450,7 @@ namespace windows_client.View
                 ContactInfo cn;
                 foreach (var msisdn in contacts)
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        cn = App.ViewModel.ContactsCache[msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getHikeContactInfoFromMSISDN(msisdn);
-                        if (cn != null)
-                            App.ViewModel.ContactsCache[msisdn] = cn;
-                    }
+                    cn = ContactUtils.GetContactInfo(msisdn);
 
                     if (cn != null)
                         cl.Add(cn);
@@ -1564,10 +1564,7 @@ namespace windows_client.View
                 else
                 {
                     string msisdn = obj as string;
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        c = App.ViewModel.ContactsCache[msisdn];
-                    else
-                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    c = ContactUtils.GetContactInfo(msisdn);
                 }
 
                 // ignore if not onhike or not in addressbook
@@ -2021,6 +2018,18 @@ namespace windows_client.View
 
             Clipboard.SetText(selectedItem.Text);
         }
+
+        private void MenuItem_EmailConversation_Clicked(object sender, RoutedEventArgs e)
+        {
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+
+            if (convObj == null)
+                return;
+
+            Analytics.SendAnalyticsEvent(HikeConstants.ST_UI_EVENT, HikeConstants.ANALYTICS_EMAIL, HikeConstants.ANALYTICS_EMAIL_LONGPRESS, convObj.Msisdn);
+            EmailHelper.FetchAndEmail(convObj.Msisdn, convObj.NameToShow, convObj.IsGroupChat);
+        }
+
         #endregion
 
         private void disableAppBar()
@@ -2527,15 +2536,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-                        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-                    else
-                    {
-                        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                        if (cn != null)
-                            App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
-                    }
-                    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                    cn = ContactUtils.GetContactInfo(fObj.Msisdn);
+                    bool onHike = cn != null ? cn.OnHike : true; // by default only hike user can send you friend request
                     cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
                 }
 
@@ -3031,9 +3033,9 @@ namespace windows_client.View
             if (convListObj.IsGroupChat)
             {
                 GroupManager.Instance.LoadGroupParticipants(searchBy);
-                if (GroupManager.Instance.GroupCache != null && GroupManager.Instance.GroupCache.ContainsKey(searchBy))
+                if (GroupManager.Instance.GroupParticpantsCache != null && GroupManager.Instance.GroupParticpantsCache.ContainsKey(searchBy))
                 {
-                    var a = (GroupManager.Instance.GroupCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
+                    var a = (GroupManager.Instance.GroupParticpantsCache[searchBy]).Where(gp => gp.Msisdn == typerMsisdn);
                     if (a.Count() > 0)
                     {
                         GroupParticipant gp = (GroupParticipant)a.FirstOrDefault();
@@ -3264,7 +3266,7 @@ namespace windows_client.View
                     }
                     catch (Exception)
                     {
-                        //handled exception due to scroll to
+                        Debug.WriteLine("llsConversations Scroll to null Exception :: HiddenToggleMode");
                     }
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0 || (!App.ViewModel.IsHiddenModeActive && App.ViewModel.MessageListPageCollection.Where(m => m.IsHidden == false).Count() == 0))
@@ -3311,6 +3313,7 @@ namespace windows_client.View
             if (obj != null)
             {
                 obj.IsHidden = !obj.IsHidden;
+                ConversationTableUtils.saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
 
                 if (App.appSettings.Contains(HikeConstants.HIDDEN_TOOLTIP_STATUS) && _tipMode == ToolTipMode.HIDDEN_MODE_STEP2)
                 {

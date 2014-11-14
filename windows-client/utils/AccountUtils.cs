@@ -498,7 +498,7 @@ namespace windows_client.utils
                     data[HikeConstants.APPVERSION] = Utils.getAppVersion();
                     data[HikeConstants.OS_NAME] = "win8";
                     data[HikeConstants.OS_VERSION] = Utils.getOSVersion();
-                    string inviteToken = "";
+                    string inviteToken = String.Empty;
                     if (!string.IsNullOrEmpty(inviteToken))
                         data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;
                     if (pin != null)
@@ -672,6 +672,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
             AddToken(req);
             req.Method = "GET";
+            req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallbackFunction });
         }
 
@@ -716,7 +717,7 @@ namespace windows_client.utils
             object[] vars = (object[])result.AsyncState;
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
-            string data = "";
+            string data = String.Empty;
             byte[] fileBytes = null;
             if (request != null)
             {
@@ -800,7 +801,6 @@ namespace windows_client.utils
                 return compressedText;
             }
 
-
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);
             GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
@@ -824,6 +824,21 @@ namespace windows_client.utils
             return sb.ToString();
         }
 
+        public static string GZipDecompress(byte[] byteArray)
+        {
+            if (byteArray == null || byteArray.Length == 0)
+                return String.Empty;
+            
+            //Prepare for decompress
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
+                {
+                    byte[] buffer = StreamToByteArray(gzip);
+                    return System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length); //Please use inbuilt function
+                }
+            }
+        }
         public static byte[] StreamToByteArray(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];
@@ -1113,7 +1128,7 @@ namespace windows_client.utils
 
                 if (isRefresh)
                 {
-                    GroupManager.Instance.LoadGroupCache();
+                    GroupManager.Instance.LoadGroupParticpantsCache();
                     List<GroupInfo> gl = GroupTableUtils.GetAllGroups();
                     for (int i = 0; i < gl.Count; i++)
                     {
@@ -1186,7 +1201,7 @@ namespace windows_client.utils
                                     }
                                 }
 
-                                GroupManager.Instance.RefreshGroupCache(cn, allGroupsInfo, true);
+                                GroupManager.Instance.RefreshGroupParticpantsCache(cn, allGroupsInfo, true);
                             }
 
                             server_contacts.Add(cn);

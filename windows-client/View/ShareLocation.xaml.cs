@@ -319,16 +319,14 @@ namespace windows_client.View
 
                 Dispatcher.BeginInvoke(() =>
                 {
-                    shareIconButton.IsEnabled = true;
-
                     DrawMapMarkers();
                     MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+
+                    shareIconButton.IsEnabled = true;
                 });
             }
             catch (Exception ex)
             {
-                // Couldn't get current location - location might be disabled in settings
-                //MessageBox.Show("Location might be disabled", "", MessageBoxButton.OK);
                 System.Diagnostics.Debug.WriteLine("Location exception GetCurrentCoordinate : " + ex.StackTrace);
 
                 _isFetchingCurrentLocation = false;
@@ -338,9 +336,9 @@ namespace windows_client.View
                 {
                     Dispatcher.BeginInvoke(() =>
                     {
-                        shareIconButton.IsEnabled = true;
                         DrawMapMarkers();
                         MyMap.SetView(_myCoordinate, 16, MapAnimationKind.Parabolic);
+                        shareIconButton.IsEnabled = true;
                     });
                 }
             }
@@ -513,7 +511,7 @@ namespace windows_client.View
             base.OnBackKeyPress(e);
         }
 
-        String _searchString = "";
+        String _searchString = String.Empty;
         Place _lastSelectedPlace = null;
 
         private void SearchAction_Tap(object sender, EventArgs e)
@@ -654,7 +652,6 @@ namespace windows_client.View
                     GetCurrentCoordinate();
                 else if (_selectedCoordinate != null)
                 {
-                    shareIconButton.IsEnabled = true;
                     DrawMapMarkers();
                     SearchTextBox.Text = _searchString;
 
@@ -671,6 +668,8 @@ namespace windows_client.View
                         loadingPlaces.IsIndeterminate = true;
                         PopulatePlaces(JObject.Parse(_resultString), _selectedIndex);
                     }
+
+                    shareIconButton.IsEnabled = true;
                 }
             }
             else if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New && _isLocationEnabled)
@@ -735,7 +734,7 @@ namespace windows_client.View
             shareIconButton.IsEnabled = false;
         }
 
-        private void SearchTextBox_LostFocus_1(object sender, RoutedEventArgs e)
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             shareIconButton.IsEnabled = true;
         }
