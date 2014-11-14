@@ -204,7 +204,7 @@ namespace windows_client.ViewModel
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
-            
+
             // this order should be maintained as _convMap should be populated before loading fav list
             foreach (ConversationListObject convListObj in convList)
                 _convMap[convListObj.Msisdn] = convListObj;
@@ -1132,8 +1132,8 @@ namespace windows_client.ViewModel
         /// </summary>
         public void ResetHiddenModeTapped()
         {
-            if (App.ViewModel.StartResetHiddenModeTimer != null)
-                App.ViewModel.StartResetHiddenModeTimer(null, null);
+            if (StartResetHiddenModeTimer != null)
+                StartResetHiddenModeTimer(null, null);
         }
 
         /// <summary>
@@ -1141,8 +1141,8 @@ namespace windows_client.ViewModel
         /// </summary>
         public void SetupHiddenModeTapped()
         {
-            if (App.ViewModel.SetupHiddenMode != null)
-                App.ViewModel.SetupHiddenMode(null,null);
+            if (SetupHiddenMode != null)
+                SetupHiddenMode(null,null);
         }
 
         public event EventHandler<EventArgs> StartResetHiddenModeTimer;

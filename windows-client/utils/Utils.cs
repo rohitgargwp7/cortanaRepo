@@ -883,5 +883,37 @@ namespace windows_client.utils
 	 
 	        return false;
 	    }
+
+        public static int GetCapOnBasisOfNetwork(NetworkInterfaceSubType networkInterfaceSubType)
+        {
+            switch (networkInterfaceSubType)
+            {
+                //Wifi
+                case NetworkInterfaceSubType.WiFi:
+                    return HikeConstants.FT_WIFI_CAP;
+
+                //4G
+                case NetworkInterfaceSubType.Cellular_EHRPD:
+                case NetworkInterfaceSubType.Cellular_LTE:
+                    return HikeConstants.FT_4G_CAP;
+
+                //3G
+                case NetworkInterfaceSubType.Cellular_EVDO:
+                case NetworkInterfaceSubType.Cellular_EVDV:
+                case NetworkInterfaceSubType.Cellular_3G:
+                case NetworkInterfaceSubType.Cellular_HSPA:
+                    return HikeConstants.FT_3G_CAP;
+
+                //2G
+                case NetworkInterfaceSubType.Cellular_GPRS:
+                case NetworkInterfaceSubType.Cellular_EDGE:
+                case NetworkInterfaceSubType.Cellular_1XRTT:
+                case NetworkInterfaceSubType.Unknown:
+                    return HikeConstants.FT_2G_CAP;
+                
+                default:
+                    return HikeConstants.FT_2G_CAP;
+            }
+        }
     }
 }

@@ -78,8 +78,6 @@ namespace windows_client.View
             App.ViewModel.GroupOwnerChangedEvent += GroupOwnerChanged;
         }
 
-
-
         #region App Bar
 
         private void InitAppBar()
@@ -280,8 +278,12 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             removeListeners();
+
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
+
+            App.ViewModel.GroupOwnerChangedEvent -= GroupOwnerChanged;
+
             base.OnRemovedFromJournal(e);
         }
 

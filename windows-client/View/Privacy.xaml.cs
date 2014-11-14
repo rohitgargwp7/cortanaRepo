@@ -29,15 +29,7 @@ namespace windows_client.View
 
             // dont show reset and change password option if any tooltip is being shown on home screen
             if (App.appSettings.Contains(HikeConstants.HIDDEN_MODE_PASSWORD))
-            {
                 hiddenModeGrid.Visibility = Visibility.Visible;
-                setupHiddenModeGrid.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                hiddenModeGrid.Visibility = Visibility.Collapsed;
-                setupHiddenModeGrid.Visibility = Visibility.Visible;
-            }
 
             value = App.appSettings.TryGetValue(App.DISPLAY_PIC_FAV_ONLY, out value);
             profilePictureToggle.IsChecked = value;
@@ -239,7 +231,6 @@ namespace windows_client.View
             data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-
         }
 
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)
@@ -254,6 +245,5 @@ namespace windows_client.View
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
-
     }
 }

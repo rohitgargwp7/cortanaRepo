@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using System.Windows;
+using System.Net.Sockets;
 
 namespace windows_client.FileTransfers
 {
@@ -59,14 +60,13 @@ namespace windows_client.FileTransfers
 
         public FileTransferManager()
         {
-            FileDownloader.MaxBlockSize = WifiBuffer;
-            FileUploader.MaxBlockSize = WifiBuffer;
+            FileInfoBase.MaxBlockSize = Utils.IsOnWifi() ? HikeConstants.FT_WIFI_CAP : HikeConstants.FT_2G_CAP;
             ThreadPool.SetMaxThreads(NoOfParallelRequest, NoOfParallelRequest);
         }
 
         public void ChangeMaxUploadBuffer(NetworkInterfaceSubType type)
         {
-            FileInfoBase.MaxBlockSize = (type == NetworkInterfaceSubType.Cellular_EDGE || type == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
+            FileInfoBase.MaxBlockSize = Utils.GetCapOnBasisOfNetwork(type);
 
             foreach (var key in TaskMap)
                 key.Value.ResetRetryOnNetworkChanged();

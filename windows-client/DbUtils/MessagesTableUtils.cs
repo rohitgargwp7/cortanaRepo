@@ -12,6 +12,7 @@ using windows_client.Misc;
 using windows_client.Languages;
 using System.IO.IsolatedStorage;
 using System.IO;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.DbUtils
 {
@@ -186,16 +187,14 @@ namespace windows_client.DbUtils
         }
 
         // this is called in case of gcj from Network manager
-        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj, string gName)
+        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, string gName)
         {
             ConversationListObject obj = null;
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
-                bool success = addMessage(convMsg);
-                if (!success)
-                    return null;
                 string groupName = string.IsNullOrEmpty(gName) ? GroupManager.Instance.defaultGroupName(convMsg.Msisdn) : gName;
-                obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
+                PhoneApplicationService.Current.State[convMsg.Msisdn] = groupName;
+                obj = ConversationTableUtils.addConversation(convMsg, true, null);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
@@ -223,10 +222,6 @@ namespace windows_client.DbUtils
                 }
                 else
                     obj.LastMessage = convMsg.Message;
-
-                bool success = addMessage(convMsg);
-                if (!success)
-                    return null;
 
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
@@ -294,23 +289,12 @@ namespace windows_client.DbUtils
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
                     obj.LastMessage = convMsg.Message;
-
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
-                    if (gi == null)
-                        return null;
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region PARTICIPANT_LEFT
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
                 {
                     obj.LastMessage = convMsg.Message;
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
-                    if (gi == null)
-                        return null;
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
@@ -574,6 +558,7 @@ namespace windows_client.DbUtils
                 SaveLongMessage(convMsg);
             }
             #endregion
+           
         }
 
         /// <summary>
@@ -750,57 +735,64 @@ namespace windows_client.DbUtils
         {
             bool shouldSubmit = false;
             string msisdn = null;
-            List<ConvMessage> messageList = new List<ConvMessage>();
 
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            try
             {
-                for (int i = 0; i < ids.Length; i++)
-                    messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
+                List<ConvMessage> messageList = new List<ConvMessage>();
 
-                foreach (var message in messageList)
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
-                    var val = status;
+                    for (int i = 0; i < ids.Length; i++)
+                        messageList.Add(DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>());
 
-                    if (message != null)
+                    foreach (var message in messageList)
                     {
-                        if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
-                           || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
-                           || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
-                        {
-                            var msgState = (ConvMessage.State)val;
+                        var val = status;
 
-                            if (msgState == ConvMessage.State.SENT_DELIVERED)
-                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
-                            else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
-                                val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
-                        }
-
-                        //hack to update db for sent socket write
-                        if ((int)message.MessageStatus < val ||
-                                (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
-                                    (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
+                        if (message != null)
                         {
-                            if (fromUser == null || fromUser == message.Msisdn)
+                            if (message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_CONFIRMED
+                               || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED
+                               || message.MessageStatus == ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ)
                             {
-                                message.MessageStatus = (ConvMessage.State)val;
+                                var msgState = (ConvMessage.State)val;
 
-                                msisdn = message.Msisdn;
-                                shouldSubmit = true;
+                                if (msgState == ConvMessage.State.SENT_DELIVERED)
+                                    val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED;
+                                else if (msgState == ConvMessage.State.SENT_DELIVERED_READ)
+                                    val = (int)ConvMessage.State.FORCE_SMS_SENT_DELIVERED_READ;
+                            }
+
+                            //hack to update db for sent socket write
+                            if ((int)message.MessageStatus < val ||
+                                    (message.MessageStatus == ConvMessage.State.SENT_SOCKET_WRITE &&
+                                        (val == (int)ConvMessage.State.SENT_CONFIRMED || val == (int)ConvMessage.State.SENT_DELIVERED || val == (int)ConvMessage.State.SENT_DELIVERED_READ)))
+                            {
+                                if (fromUser == null || fromUser == message.Msisdn)
+                                {
+                                    message.MessageStatus = (ConvMessage.State)val;
+
+                                    msisdn = message.Msisdn;
+                                    shouldSubmit = true;
+                                }
                             }
                         }
                     }
+
+                    if (shouldSubmit)
+                        SubmitWithConflictResolve(context);
                 }
 
-                if (shouldSubmit)
-                    SubmitWithConflictResolve(context);
+                messageList.Clear();
             }
-
-            messageList.Clear();
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MessageTableUtils::updateAllMsgStatus,Exception:{0},StackTrace:{1}", ex.Message, ex.StackTrace);
+            }
             return msisdn;
         }
 
-        public static long GetLastSentMessageId( string msisdn)
+        public static long GetLastSentMessageId(string msisdn)
         {
             long maxReturnId = 0;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))

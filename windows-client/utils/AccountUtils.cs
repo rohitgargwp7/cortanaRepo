@@ -76,32 +76,46 @@ namespace windows_client.utils
 
         #endregion
 
+        static string _fileTransferBase = null;
         public static string FILE_TRANSFER_BASE
         {
             get
             {
-                if (AppEnvironment == DebugEnvironment.PRODUCTION)
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
-                else if (AppEnvironment == DebugEnvironment.DEV)
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
-                else
-                    return String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                if (_fileTransferBase == null)
+                {
+                    if (AppEnvironment == DebugEnvironment.PRODUCTION)
+                        _fileTransferBase = String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.ProductionUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                    else if (AppEnvironment == DebugEnvironment.DEV)
+                        _fileTransferBase = String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.DevUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                    else
+                        _fileTransferBase = String.Format("http://{0}:{1}/v1", HikeConstants.ServerUrls.StagingUrls.FILE_TRANSFER_HOST, Convert.ToString(PORT));
+                }
+
+                return _fileTransferBase;
             }
         }
 
+        static string _fileTransferBaseUrl = null;
         public static string FILE_TRANSFER_BASE_URL
         {
             get
             {
-                return FILE_TRANSFER_BASE + "/user/ft";
+                if (_fileTransferBaseUrl == null)
+                    _fileTransferBaseUrl = FILE_TRANSFER_BASE + "/user/ft";
+
+                return _fileTransferBaseUrl;
             }
         }
 
+        static string _partialFileTransferBAseUrl = null;
         public static string PARTIAL_FILE_TRANSFER_BASE_URL
         {
             get
             {
-                return FILE_TRANSFER_BASE + "/user/pft/";
+                if (_partialFileTransferBAseUrl == null)
+                    _partialFileTransferBAseUrl = FILE_TRANSFER_BASE + "/user/pft/";
+
+                return _partialFileTransferBAseUrl;
             }
         }
 
@@ -131,19 +145,27 @@ namespace windows_client.utils
             }
         }
 
+        static string _base = null;
         public static string BASE
         {
             get
             {
-                return "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+                if (_base == null)
+                    _base = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+
+                return _base;
             }
         }
 
+        static string _avatarBase = null;
         public static string AVATAR_BASE
         {
             get
             {
-                return "http://" + HOST + ":" + Convert.ToString(PORT);
+                if (_avatarBase == null)
+                    _avatarBase = "htt://" + HOST + ":" + Convert.ToString(PORT);
+
+                return _avatarBase;
             }
         }
 
@@ -800,7 +822,6 @@ namespace windows_client.utils
                 Debug.WriteLine("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
                 return compressedText;
             }
-
 
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);

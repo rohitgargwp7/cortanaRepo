@@ -127,7 +127,6 @@ namespace windows_client.View
             App.appSettings.TryGetValue(HikeConstants.HIDDEN_TOOLTIP_STATUS, out _tipMode);
 
             App.ViewModel.StartResetHiddenModeTimer += ViewModel_ResetHiddenModeClicked;
-            App.ViewModel.SetupHiddenMode += ViewModel_SetupHiddenModeTapped;
         }
 
         string _firstName;
@@ -320,13 +319,17 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            App.ViewModel.StartResetHiddenModeTimer -= ViewModel_ResetHiddenModeClicked;
-            App.ViewModel.SetupHiddenMode -= ViewModel_SetupHiddenModeTapped;
-
             base.OnRemovedFromJournal(e);
             removeListeners();
             if (launchPagePivot.SelectedIndex == 2) //if user quits app from timeline when a few statuses were shown as unread
                 TotalUnreadStatuses = RefreshBarCount;  //and new statuses arrived in refresh bar
+
+            ProTipHelper.Instance.ShowProTip -= Instance_ShowProTip;
+            TipManager.Instance.ConversationPageTipChanged -= Instance_ShowServerTip;
+            App.ViewModel.StatusNotificationsStatusChanged -= ViewModel_statusNotificationsStatusChanged;
+            App.ViewModel.StartResetHiddenModeTimer -= ViewModel_ResetHiddenModeClicked;
+            App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
+            App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
         }
 
         #region STATUS UPDATE TUTORIAL
@@ -3828,12 +3831,6 @@ namespace windows_client.View
         void ViewModel_ResetHiddenModeClicked(object sender, EventArgs e)
         {
             ShowHiddenModeResetToolTip();
-        }
-
-        void ViewModel_SetupHiddenModeTapped(object sender, EventArgs e)
-        {
-            _tipMode = ToolTipMode.HIDDEN_MODE_GETSTARTED;
-            UpdateToolTip(true);
         }
 
         /// <summary>
