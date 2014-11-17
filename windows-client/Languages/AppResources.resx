@@ -2352,18 +2352,62 @@ Download it like asap from http://hike.in!</value>
     <value>wifi</value>
   </data>
   <data name="AutoDownloadSettings_Audio_Txt" xml:space="preserve">
-    <value>auto download audio</value>
+    <value>Auto Download Audio</value>
   </data>
   <data name="AutoDownloadSettings_Image_Txt" xml:space="preserve">
-    <value>auto download image</value>
+    <value>Auto Download Image</value>
   </data>
   <data name="AutoDownloadSettings_Video_Txt" xml:space="preserve">
-    <value>auto download video</value>
+    <value>Auto Download Video</value>
   </data>
   <data name="SettingsSubtitle_Media_Txt" xml:space="preserve">
     <value>auto download, image quality and more</value>
   </data>
   <data name="Settings_MediaSettings_Txt" xml:space="preserve">
     <value>media</value>
+  </data>
+  <data name="setImageQuality_AskEveryTime_Txt" xml:space="preserve">
+    <value>ask every time</value>
+    <comment>Ask Every Time about image quality</comment>
+  </data>
+  <data name="setImageQuality_Best_Txt" xml:space="preserve">
+    <value>uncompressed</value>
+    <comment>Best image quality</comment>
+  </data>
+  <data name="setImageQuality_Better_Txt" xml:space="preserve">
+    <value>better quality</value>
+    <comment>Better image quality</comment>
+  </data>
+  <data name="setImageQuality_Normal_Txt" xml:space="preserve">
+    <value>normal quality</value>
+    <comment>Normal image quality</comment>
+  </data>
+  <data name="setImageQuality_Txt" xml:space="preserve">
+    <value>Set Image Quality</value>
+    <comment>Set Image Quality header on Media page</comment>
+  </data>
+  <data name="imageQuality_txt" xml:space="preserve">
+    <value>image quality</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="ImageQualityPageHeader" xml:space="preserve">
+    <value>choose image quality</value>
+    <comment>Image quality page header</comment>
+  </data>
+  <data name="setImageQuality_Faster_Txt" xml:space="preserve">
+    <value>faster</value>
+    <comment>Normal Image quality selection footer</comment>
+  </data>
+  <data name="setImageQuality_Fast_Txt" xml:space="preserve">
+    <value>fast</value>
+    <comment>Better Image quality selection footer</comment>
+  </data>
+  <data name="setImageQuality_info_Txt" xml:space="preserve">
+    <value>you can set default preference by going to settings &gt; media</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="setImageQuality_Slow_Txt" xml:space="preserve">
+    <value>slow</value>
+    <comment>Best Image quality selection footer</comment>
   </data>
 </root>

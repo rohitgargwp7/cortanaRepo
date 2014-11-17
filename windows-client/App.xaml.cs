@@ -110,7 +110,7 @@ namespace windows_client
         private static string _currentVersion;
         private static string _latestVersion;
         public static bool IS_VIEWMODEL_LOADED = false;
-        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -742,13 +742,13 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
-            #region Auto Download
+            #region Media Settings
             if (isNewInstall || Utils.compareVersion(_currentVersion,"2.9.0.1")!=1) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
 	        {
 	              if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
 	              {
 	                  App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE] = 0;
-                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 0;
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 0;                                            
                       App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_VIDEO, 0);
 
                       App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING); //since this key will no longer be used

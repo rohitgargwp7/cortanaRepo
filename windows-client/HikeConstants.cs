@@ -194,10 +194,14 @@ namespace windows_client
         public static readonly string HIDDEN_MODE_RESET_TIME = "hid_mode_resetTime";
         public static readonly int HIDDEN_MODE_RESET_TIMER = 300;
 
+        
+
         #region AUTODOWNLOAD KEYS
         public static readonly string AUTO_DOWNLOAD_IMAGE = "autoDownloadImage";
         public static readonly string AUTO_DOWNLOAD_AUDIO = "autoDownloadAudio";
-        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";        
+        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";
+        public static readonly string SET_IMAGE_QUALITY = "setImageQuality";            //Image Quality Setting in Media Settings
+        public static readonly string IMAGE_QUALITY = "imageQuality";                   //Image Quality Selection on SetImageQuality Page
         #endregion
 
 

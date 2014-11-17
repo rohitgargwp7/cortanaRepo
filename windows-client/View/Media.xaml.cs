@@ -17,6 +17,9 @@ namespace windows_client.View
         {
             InitializeComponent();
             int selIndex;
+            
+            //TODO::MOHIT 
+            //autoDownloadImageListPicker.Tag = HikeConstants.AUTO_DOWNLOAD_IMAGE;
 
             if (!App.appSettings.TryGetValue(HikeConstants.AUTO_DOWNLOAD_IMAGE, out selIndex))
                 selIndex = 2;
@@ -32,6 +35,13 @@ namespace windows_client.View
                 selIndex = 1;
 
             autoDownloadVideoListPicker.SelectedIndex = selIndex;
+
+            if (!App.appSettings.TryGetValue(HikeConstants.SET_IMAGE_QUALITY, out selIndex))
+                selIndex = 3;
+
+            setImageQualityListPicker.SelectedIndex = selIndex;
+
+
 
             bool value = !App.appSettings.Contains(App.AUTO_RESUME_SETTING);
             autoResumeToggle.IsChecked = value;
@@ -49,14 +59,36 @@ namespace windows_client.View
             listPicker.SelectionChanged += autoDownloadListPicker_SelectionChanged;
         }
 
-        private void autoDownloadListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ImageQuality_ListPicker_Loaded(object sender, RoutedEventArgs e)
         {
             ListPicker listPicker = sender as ListPicker;
 
             if (listPicker == null)
                 return;
 
-            App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);
+            listPicker.SelectionChanged -= ImageQualityListPicker_SelectionChanged;
+            listPicker.SelectionChanged += ImageQualityListPicker_SelectionChanged;
+        }
+
+        private void autoDownloadListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker listPicker = sender as ListPicker;
+
+            if (listPicker == null)
+                return;
+            if(listPicker.SelectedIndex != 3)
+                App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);
+        }
+
+        private void ImageQualityListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker listPicker = sender as ListPicker;
+            if (listPicker == null)
+                return;
+            if (listPicker.SelectedIndex == 3)
+                App.RemoveKeyFromAppSettings(HikeConstants.SET_IMAGE_QUALITY);
+            else
+                App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);
         }
 
         private void Toggle_Loaded(object sender, RoutedEventArgs e)

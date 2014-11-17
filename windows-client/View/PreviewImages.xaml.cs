@@ -27,7 +27,7 @@ namespace windows_client.View
         /// total number of images selected by user for preview
         /// </summary>
         int totalCount = 0;
-        
+        bool showQualityPage;
         public PreviewImages()
         {
             InitializeComponent();
@@ -40,6 +40,21 @@ namespace windows_client.View
         }
 
         #region Page Functions
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            SystemTray.IsVisible = false;
+
+        }
+
+        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+
+            //clear thumbnail cache as it is not required now
+            App.ViewModel.ClearMFtImageCache();
+        }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
@@ -59,11 +74,24 @@ namespace windows_client.View
             };
             ApplicationBar.IsVisible = true;
             ApplicationBar.Opacity = 0.5;
-
-            picturesUpload = new ApplicationBarIconButton();
-            picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
-            picturesUpload.Text = AppResources.Send_Txt;
-            picturesUpload.Click += OnPicturesUploadClick;
+            Object obj;
+            //MOHIT
+            if (App.appSettings.Contains(HikeConstants.SET_IMAGE_QUALITY))
+            {
+                showQualityPage = false;
+                picturesUpload = new ApplicationBarIconButton();
+                picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
+                picturesUpload.Text = AppResources.Send_Txt;
+                picturesUpload.Click += OnPicturesUploadClick;
+            }
+            else
+            {
+                showQualityPage = true;
+                picturesUpload = new ApplicationBarIconButton();
+                picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
+                picturesUpload.Text = AppResources.imageQuality_txt;
+                picturesUpload.Click += OnPicturesUploadClick;
+            }
 
             ApplicationBar.Buttons.Add(picturesUpload);
 
@@ -177,15 +205,19 @@ namespace windows_client.View
         }
 
         private void OnPicturesUploadClick(object sender, EventArgs e)
-        {
-            //previous page is viewalbums page and then new chatthread page
-            if (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-
-            //clear thumbnail cache as it is not required now
-            App.ViewModel.ClearMFtImageCache();
+        {            
+            if (showQualityPage)
+            {
+                NavigationService.Navigate(new Uri("/View/SetImageQuality.xaml", UriKind.RelativeOrAbsolute));
+            }
+            else
+            {
+                //previous page is viewalbums page and then new chatthread page
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
+            }
         }
 
         private void lbThumbnails_SelectionChanged(object sender, SelectionChangedEventArgs e)
