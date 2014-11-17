@@ -219,7 +219,6 @@
     <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Model\MsisdnBulkData.cs" />
     <Compile Include="Model\StatusMessage.cs" />
-    <Compile Include="Model\HikeToolTip.cs" />
     <Compile Include="Model\StatusUpdates\DefaultStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\FriendRequestStatusUpdate.cs" />
     <Compile Include="Model\StatusUpdates\ImageStatusUpdate.cs" />
@@ -592,8 +591,6 @@
     </Content>
     <Content Include="RPALManifest.xml" />
     <Content Include="View\images\AppBar\icon_send_video.png" />
-    <Content Include="View\images\chatBackgrounds\Background\cbdiwali.jpg" />
-    <Content Include="View\images\chatBackgrounds\Thumbnail\cbdiwali.jpg" />
     <Content Include="View\images\ConversationPage\backspace.png" />
     <Content Include="View\images\ConversationPage\passwordPopup_shield.png" />
     <Content Include="View\images\AppBar\icon_add.png" />
@@ -696,8 +693,6 @@
     <Content Include="View\images\ConversationPage\tooltip_Cross.png" />
     <Content Include="View\images\ConversationPage\tutorial_preview.jpg" />
     <Content Include="View\images\default_album_icon.png" />
-    <Content Include="View\images\nudges\diwali_receive_nudge.png" />
-    <Content Include="View\images\nudges\diwali_sent_nudge.png" />
     <Content Include="View\images\DownloadAudio_icon.png" />
     <Content Include="View\images\emoticons\emote_cat1_active.png" />
     <Content Include="View\images\emoticons\emote_cat1_inactive.png" />
@@ -811,6 +806,7 @@
     <Content Include="View\images\settings\privacy.png" />
     <Content Include="View\images\settings\rateUs.png" />
     <Content Include="View\images\settings\reset_hidden_mode.png" />
+    <Content Include="View\images\settings\setup_hiddenmode.png" />
     <Content Include="View\images\settings\sync.png" />
     <Content Include="View\images\settings\systemHealth.png" />
     <Content Include="View\images\settings\tw_unlink.png" />

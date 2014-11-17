@@ -814,9 +814,9 @@ namespace windows_client.utils
                 case StickerHelper.CATEGORY_BOLLYWOOD:
                     return "Bollywood Masala";
                 case StickerHelper.CATEGORY_TROLL:
-                    return "Rage Face";
+                    return "What's Your Rage Face?";
                 case StickerHelper.CATEGORY_HUMANOID2:
-                    return "You & I";
+                    return "Girl Power";
                 case StickerHelper.CATEGORY_AVATARS:
                     return "Superhero Avatars";
                 case StickerHelper.CATEGORY_INDIANS:
