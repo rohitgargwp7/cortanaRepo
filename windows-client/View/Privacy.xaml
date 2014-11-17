@@ -38,6 +38,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <toolkit:ToggleSwitch  Margin="-10,20,-10,-10" x:Name="profilePictureToggle" IsChecked="True"  
                                           Header="{Binding Path= LocalizedResources.Settings_ProfilePictureToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="profilePictureToggle_Loaded"/>
