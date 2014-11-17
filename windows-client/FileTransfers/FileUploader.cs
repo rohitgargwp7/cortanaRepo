@@ -262,13 +262,8 @@ namespace windows_client.FileTransfers
                     }
                 }
 
-                var stop = System.Diagnostics.Stopwatch.StartNew();
-                stop.Start();
                 Md5Sum = Utils.GetMD5Hash(FilePath);
-                stop.Stop();
-                Debug.WriteLine(FilePath + "-->timetaken-->" + stop.Elapsed.ToString("mm':'ss':'fff"));
-
-                request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/ffu/" + Md5Sum));
+                request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + HikeConstants.ServerUrls.FAST_FORWARD_UPLOAD + Md5Sum));
                 request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
 
                 response = await httpClient.SendAsync(request);

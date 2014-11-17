@@ -600,6 +600,8 @@ namespace windows_client
         {
             public static readonly string APP_ENVIRONMENT_SETTING = "appEnv";
 
+            public static readonly string FAST_FORWARD_UPLOAD = "/ffu/";
+
             public static class ProductionUrls
             {
                 public static readonly string HOST = "api.im.hike.in";
