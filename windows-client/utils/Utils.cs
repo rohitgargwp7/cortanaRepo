@@ -858,13 +858,15 @@ namespace windows_client.utils
 
                             foreach (byte b in hashAlgorithm.Hash)
                                 sb.Append(b.ToString("x2"));
-                            
+
                             return sb.ToString();
                         }
                     }
                 }
                 else
+                {
                     return string.Empty;
+                }
             }
         }
 

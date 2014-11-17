@@ -25,6 +25,7 @@ namespace windows_client.FileTransfers
         public JObject SuccessObj { get; set; }
         public string FileKey { get; set; }
         public bool IsFileExist { get; set; }
+        public string Md5Sum { get; set; }
 
         public FileUploader()
             : base()
@@ -86,6 +87,11 @@ namespace windows_client.FileTransfers
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(FileKey);
+
+            if (Md5Sum == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Md5Sum);
         }
 
         public override void Read(BinaryReader reader)
@@ -141,6 +147,19 @@ namespace windows_client.FileTransfers
             catch
             {
                 FileKey = null;
+            }
+
+
+            try
+            {
+                count = reader.ReadInt32();
+                Md5Sum = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (Md5Sum == "*@N@*")
+                    Md5Sum = null;
+            }
+            catch
+            {
+                Md5Sum = null;
             }
         }
 
@@ -213,7 +232,7 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            if (!String.IsNullOrEmpty(FileKey) && CurrentHeaderPosition == 0)
+            if (CurrentHeaderPosition == 0)
                 CheckForExistingFile();
             else
                 GetWritingIndexFromServer();
@@ -224,25 +243,59 @@ namespace windows_client.FileTransfers
             try
             {
                 HttpClient httpClient = new HttpClient();
+                HttpRequestMessage request;
+                HttpResponseMessage response;
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+                if (FileKey != null)
+                {
+                    request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+                    request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+                    response = await httpClient.SendAsync(request);
+
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        IsFileExist = true;
+                        FileState = FileTransferState.COMPLETED;
+                        Save();
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                        return;
+                    }
+                }
+
+                var stop = System.Diagnostics.Stopwatch.StartNew();
+                stop.Start();
+                Md5Sum = Utils.GetMD5Hash(FilePath);
+                stop.Stop();
+                Debug.WriteLine(FilePath + "-->timetaken-->" + stop.Elapsed.ToString("mm':'ss':'fff"));
+
+                request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/ffu/" + Md5Sum));
                 request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
 
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                response = await httpClient.SendAsync(request);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    IsFileExist = true;
-                    FileState = FileTransferState.COMPLETED;
-                    Save();
-                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    if (response.Headers.Contains(HikeConstants.FILE_KEY))
+                    {
+                        IsFileExist = true;
+                        IEnumerable<string> x;
+                        response.Headers.TryGetValues(HikeConstants.FILE_KEY, out x);
+                        FileKey = x.FirstOrDefault();
+                        FileState = FileTransferState.COMPLETED;
+                        Save();
+                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    }
+                    else
+                    {
+                        GetWritingIndexFromServer(); //fail safe measure code should not reach here, if it reaches server error
+                        IsFileExist = false;
+                    }
                 }
                 else
                 {
                     GetWritingIndexFromServer();
                     IsFileExist = false;
                 }
-
             }
             catch { }
         }

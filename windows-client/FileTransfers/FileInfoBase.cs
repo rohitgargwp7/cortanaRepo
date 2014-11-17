@@ -155,12 +155,14 @@ namespace windows_client.FileTransfers
                 return true;
 
             // Calculate md5 by parts
-            String md5 = Utils.GetMD5Hash(FilePath);
+            String md5 = String.Empty;
 
             string result = String.Empty;
 
             if (this is FileDownloader)
             {
+                md5 = Utils.GetMD5Hash(FilePath);
+
                 try
                 {
                     HttpClient httpClient = new HttpClient();
@@ -179,9 +181,13 @@ namespace windows_client.FileTransfers
             }
             else
             {
+                var uploader = this as FileUploader;
+
+                md5 = uploader.Md5Sum != null ? uploader.Md5Sum : Utils.GetMD5Hash(FilePath);
+
                 try
                 {
-                    var jData = (this as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                    var jData = uploader.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                     result = jData[HikeConstants.MD5_ORIGINAL].ToString();
                 }
                 catch
