@@ -688,7 +688,7 @@ namespace windows_client.FileTransfers
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload
+            else if ((code == HttpStatusCode.NotFound && MaxRetryAttempts == 1) || code == HttpStatusCode.InternalServerError) // server error during upload
             {
                 FileState = FileTransferState.FAILED;
                 Delete();
@@ -696,7 +696,9 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                if (ShouldRetry())
+                MaxRetryAttempts = code == HttpStatusCode.NotFound ? (short)1 : (short)10;
+
+                if (code != HttpStatusCode.BadRequest && ShouldRetry())
                 {
                     Start(null);
                 }

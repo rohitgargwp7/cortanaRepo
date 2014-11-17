@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} ist gerade hike beigetreten, sag doch 'Hi' :)</value>
+    <value>{0} ist jetzt bei hike. Sag hallo :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1355,7 +1355,7 @@
     <value>Einladung erfolgreich gepostet</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} ist wieder bei hike. Sag Hallo :)</value>
+    <value>{0} ist jetzt bei hike. Sag hallo :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -2110,10 +2110,10 @@
     <value>Fotos</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>Chat ausblenden</value>
+    <value>Chat als verborgen markieren</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>Chat einblenden</value>
+    <value>Chat als sichtbar markieren</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>Passwort bestätigen</value>
@@ -2222,6 +2222,12 @@
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Die Passwörter stimmen nicht überein.</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>Pin erstellen</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>Anheften</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Telefon</value>
   </data>
@@ -2235,13 +2241,99 @@
     <value>Neues Passwort erstellen </value>
     <comment>Text while changing passing password of Hidden Mode</comment>
   </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>Chat per E-Mail senden</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>Chat mit {0} - nur die letzten {1} Nachrichten; Rest durch Textverarbeitung gekürzt</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>Chat mit {0} - nur die letzten {1} Nachrichten</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>Hat eine AUDIODATEI geteilt</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>Hat einen KONTAKT geteilt</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>Hat eine DATEI geteilt</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>Hat ein BILD geteilt</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>Hat einen ORT geteilt</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>Hat ein VIDEO geteilt</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>Backup von hike-Chat mit {0}</value>
+    <comment>subject of email text when backing up</comment>
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>Datei wurde zur Galerie hinzugefügt</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Speichern fehlgeschlagen</value>
   </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>Teile etwas Wichtiges ...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>Pin-Verlauf</value>
+  </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Video kann nicht geöffnet werden. Es ist beschädigt.</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Chat mit {0} - letzte Nachricht</value>
+    <comment>Only one Message in email body</comment>
+  </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>Benachrichtigung</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>Keine Nachrichten in diesem Chat</value>
+    <comment>when there is no message</comment>
+  </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>Pin darf nicht leer sein</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>Datei konnte nicht hochgeladen werden</value>
+  </data>
+  <data name="No_Pins_Yet" xml:space="preserve">
+    <value>noch keine Pins</value>
+    <comment>In case of 0 pins in Pin History</comment>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>Pin   gepostet</value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>Private Chats bei Beenden der App verbergen</value>
+  </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} hat einen Pin gepostet</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>Hoppla!</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>Ein Problem ist aufgetreten. Tippe auf OK, um einen Absturzbericht per E-Mail zu senden. Wir werden versuchen, den Fehler zu beheben.</value>
   </data>
 </root>

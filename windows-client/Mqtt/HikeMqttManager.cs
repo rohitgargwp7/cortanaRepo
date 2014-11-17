@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Diagnostics;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.Mqtt
 {
@@ -213,7 +214,7 @@ namespace windows_client.Mqtt
 
         private bool isUserOnline()
         {
-            return NetworkInterface.GetIsNetworkAvailable();
+            return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
             //return (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.NetworkInterfaceType !=
             //     Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None);
         }
@@ -240,7 +241,6 @@ namespace windows_client.Mqtt
             }
             if (mqttConnection != null)
                 mqttConnection.subscribe(listTopics, listQos, new SubscribeCB(this));
-
         }
 
         /*
@@ -282,10 +282,9 @@ namespace windows_client.Mqtt
             lock (lockObj)
             {
                 disconnectExplicitly = false;
+
                 if (isConnected() || isConnecting())
-                {
                     return;
-                }
 
                 if (isUserOnline())
                 {
@@ -376,6 +375,8 @@ namespace windows_client.Mqtt
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
 
+            FileTransfers.FileInfoBase.MaxBlockSize = Utils.GetCapOnBasisOfNetwork(mqttConnection.networkInterfaceSubType);
+
             /* Accesses the persistence object from the main handler thread */
 
             //TODO make it async
@@ -443,7 +444,6 @@ namespace windows_client.Mqtt
         {
             mqttPublishToServer(json, 1);
         }
-
 
         public void mqttPublishToServer(JObject json, int qos)
         {

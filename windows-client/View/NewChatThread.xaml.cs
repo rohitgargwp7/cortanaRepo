@@ -798,6 +798,7 @@ namespace windows_client.View
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));//to update file in case of tombstoning
                 ConversationTableUtils.saveConvObjectList();
             }
+
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             App.IS_TOMBSTONED = false;
@@ -811,10 +812,14 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove(App.HAS_CUSTOM_IMAGE);
 
                 App.ViewModel.RequestLastSeenEvent -= RequestLastSeenHandler;
+                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
+                App.ViewModel.ShowTypingNotification -= ShowTypingNotification;
+                App.ViewModel.AutohideTypingNotification -= AutoHidetypingNotification;
+                TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
 
-                base.OnRemovedFromJournal(e);
                 removeListeners();
                 RemoveEmmaBot();
+
                 if (mediaElement != null)
                 {
                     CompositionTarget.Rendering -= CompositionTarget_Rendering;
@@ -845,8 +850,6 @@ namespace windows_client.View
                     Debug.WriteLine("NewChatThread.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
                 }
 
-                FileTransfers.FileTransferManager.Instance.UpdateTaskStatusOnUI -= FileTransferStatusUpdated;
-
                 stickerPallet.Children.Remove(pivotStickers);
                 StickerPivotHelper.Instance.ClearData();
                 ClearPageResources();
@@ -857,6 +860,8 @@ namespace windows_client.View
             {
                 Debug.WriteLine(ex.Message);
             }
+
+            base.OnRemovedFromJournal(e);
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -4119,6 +4124,7 @@ namespace windows_client.View
                 List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
 
                 bool hasNudge = false;
+                int newMessageCount = 0;
                 /* Check if this is the same user for which this message is recieved*/
                 if (listConvMessage.Count > 0 && listConvMessage[0].Msisdn == mContactNumber)
                 {
@@ -4126,6 +4132,10 @@ namespace windows_client.View
                     JArray ids = new JArray();
                     ConvMessage pinMessage = null;
                     HideTypingNotification();
+                    Deployment.Current.Dispatcher.BeginInvoke(()=>
+                    {  
+                        newMessageCount = ocMessages.Count;
+                    });
 
                     for (int i = 0; i < listConvMessage.Count; i++)
                     {
@@ -4152,7 +4162,6 @@ namespace windows_client.View
                         // Update UI
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-
                             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                             {
                                 mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
@@ -4162,30 +4171,21 @@ namespace windows_client.View
                                 userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
 
                             AddMessageToOcMessages(convMessage, false, true);
-                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                ShowJumpToBottom(true);
-
-                            if (vals.Length == 3)
-                            {
-                                try
-                                {
-                                    if (vals[2] is ConvMessage)
-                                    {
-                                        ConvMessage cm = (ConvMessage)vals[2];
-                                        if (cm != null)
-                                        {
-                                            AddMessageToOcMessages(cm, false, true);
-                                            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                                                ShowJumpToBottom(true);
-                                        }
-                                    }
-                                }
-                                catch { }
-                            }
                         });
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        newMessageCount = ocMessages.Count - newMessageCount;
+
+                        if (newMessageCount == 1 && JumpToBottomGrid.Visibility == Visibility.Collapsed)
+                            ScrollToBottom();
+                        else if (newMessageCount > 0)
+                        {
+                                _unreadMessageCounter += newMessageCount;
+                                JumpToBottomGrid.Visibility = Visibility.Visible;
+                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                        }
+
                         if (pinMessage != null)
                         {
                             gcPin.UpdateContent(pinMessage.GCPinMessageSenderName, pinMessage.DispMessage);

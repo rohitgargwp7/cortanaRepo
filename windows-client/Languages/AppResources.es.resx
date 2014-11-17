@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} acaba de unirse a hike. Dile hola :)</value>
+    <value>{0} ahora está en hike; dile hola :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1361,7 +1361,7 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>Invitación publicada con éxito</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} ha vuelto a hike. ¡Dale la bienvenida! :)</value>
+    <value>{0} ahora está en hike; dile hola :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -2116,10 +2116,10 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>fotos</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>ocultar chat</value>
+    <value>marcar chat como oculto</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>mostrar chat</value>
+    <value>marcar chat como visible</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>Confirmar contraseña</value>
@@ -2228,6 +2228,12 @@ No esperes más y descárgalo ya en http://hike.in</value>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Las contraseñas no coinciden</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>crear marcador</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>marcador</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Teléfono</value>
   </data>
@@ -2241,13 +2247,99 @@ No esperes más y descárgalo ya en http://hike.in</value>
     <value>Crear nueva contraseña</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
   </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>enviar chat por correo electrónico</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>Chat con {0}: solo los últimos {1} mensajes; el resto está truncado por WP</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>Chat con {0}: últimos {1} mensajes</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>Ha compartido un AUDIO</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>Ha compartido un CONTACTO</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>Ha compartido un ARCHIVO</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>Ha compartido una IMAGEN</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>Ha compartido una UBICACIÓN</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>Ha compartido un VÍDEO</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>Copia de seguridad del chat de hike con {0}</value>
+    <comment>subject of email text when backing up</comment>
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>Archivo añadido a la galería</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Error al guardar archivo</value>
   </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>comparte algo importante...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>historial de marcadores</value>
+  </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>Este vídeo no se puede abrir. Parece que está dañado.</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>Chat con {0}: último mensaje</value>
+    <comment>Only one Message in email body</comment>
+  </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>Aviso</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>No tienes mensajes en este chat</value>
+    <comment>when there is no message</comment>
+  </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>el marcador no puede estar en blanco</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>No se puede cargar el archivo</value>
+  </data>
+  <data name="No_Pins_Yet" xml:space="preserve">
+    <value>todavía no hay marcadores</value>
+    <comment>In case of 0 pins in Pin History</comment>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>Ha publicado un marcador </value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>Ocultar los chats privados al salir de la aplicación</value>
+  </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} ha publicado un marcador</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>¡Vaya!</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>Se ha producido un problema en hike. Toca Aceptar para enviar el informe de errores por correo electrónico e intentaremos solucionarlo.</value>
   </data>
 </root>

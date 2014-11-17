@@ -165,12 +165,13 @@ namespace windows_client.View
             App.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.ClearStickerHelperInstance();
             App.ClearAppSettings();
-            App.appSettings[App.IS_DB_CREATED] = true;
+            App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();
 
             //so that on signing up again user can see these tutorials 
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
+            MiscDBUtil.DeleteExistingDbs();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();

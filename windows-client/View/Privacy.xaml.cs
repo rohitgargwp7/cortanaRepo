@@ -200,6 +200,17 @@ namespace windows_client.View
             }
         }
 
+        private void SetupHiddenMode_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            App.ViewModel.SetupHiddenModeTapped();
+
+            while (NavigationService.BackStack.Count() > 1) 
+                NavigationService.RemoveBackEntry(); //Clear Backstack and go back or else NavigationStack will never be empty
+
+            NavigationService.GoBack();
+        }
+
         #endregion
 
         private void profilePictureToggle_Loaded(object sender, RoutedEventArgs e)
@@ -220,7 +231,6 @@ namespace windows_client.View
             data.Add(HikeConstants.AVATAR, 2);
             obj.Add(HikeConstants.DATA, data);
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-
         }
 
         private void profilePictureToggle_UnChecked(object sender, RoutedEventArgs e)

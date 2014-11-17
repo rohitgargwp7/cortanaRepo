@@ -571,7 +571,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
+            if (!isNewInstall && !String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.9.0.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -1028,11 +1028,19 @@ namespace windows_client
 
         public static void createDatabaseAsync()
         {
-            if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
+            //if db already present on new install then delete existing dbs
+            //version check so that from next versions db should not be created again once created
+            if (App.appSettings.Contains(App.IS_DB_CREATED) && (!isNewInstall || Utils.compareVersion("2.9.0.1", _latestVersion) != 0)) // shows db are created
+            {
                 return;
+            }
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
+                if (App.appSettings.Contains(App.IS_DB_CREATED))
+                {
+                    MiscDBUtil.DeleteExistingDbs();
+                } 
                 try
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -1091,6 +1099,8 @@ namespace windows_client
             };
             bw.RunWorkerAsync();
         }
+
+
 
         /* This function should always be used to store values to isolated storage
          * Its a thread safe implemenatation to save values.
