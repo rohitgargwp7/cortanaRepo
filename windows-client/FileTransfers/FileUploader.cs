@@ -26,13 +26,14 @@ namespace windows_client.FileTransfers
         public string FileKey { get; set; }
         public bool IsFileExist { get; set; }
         public string Md5Sum { get; set; }
+        protected bool IsNewFile = false;
 
         public FileUploader()
             : base()
         {
         }
 
-        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey)
+        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey, bool isNewFile = false)
             : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
@@ -41,6 +42,7 @@ namespace windows_client.FileTransfers
                 FileKey = fileKey;
 
             IsFileExist = false;
+            IsNewFile = isNewFile;
 
             Save();
         }
@@ -92,6 +94,8 @@ namespace windows_client.FileTransfers
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(Md5Sum);
+
+            writer.Write(IsNewFile);
         }
 
         public override void Read(BinaryReader reader)
@@ -160,6 +164,15 @@ namespace windows_client.FileTransfers
             catch
             {
                 Md5Sum = null;
+            }
+
+            try
+            {
+                IsNewFile = reader.ReadBoolean();
+            }
+            catch
+            {
+                IsNewFile = false;
             }
         }
 
@@ -249,7 +262,8 @@ namespace windows_client.FileTransfers
 
                 if (!flag)
                 {
-                    flag = await CheckForMd5();
+                    if (!IsNewFile)
+                        flag = await CheckForMd5();
 
                     if (!flag)
                     {
