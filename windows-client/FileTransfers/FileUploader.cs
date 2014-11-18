@@ -242,57 +242,73 @@ namespace windows_client.FileTransfers
         {
             try
             {
-                HttpClient httpClient = new HttpClient();
-                HttpRequestMessage request;
-                HttpResponseMessage response;
+                bool flag = false;
 
-                if (FileKey != null)
+                if (!String.IsNullOrEmpty(FileKey))
+                    flag = await CheckForFileKey();
+
+                if (!flag)
                 {
-                    request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
-                    request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
-                    response = await httpClient.SendAsync(request);
+                    flag = await CheckForMd5();
 
-                    if (response.StatusCode == HttpStatusCode.OK)
+                    if (!flag)
                     {
-                        IsFileExist = true;
-                        FileState = FileTransferState.COMPLETED;
-                        Save();
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                        return;
-                    }
-                }
-
-                Md5Sum = Utils.GetMD5Hash(FilePath);
-                request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + HikeConstants.ServerUrls.FAST_FORWARD_UPLOAD + Md5Sum));
-                request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
-
-                response = await httpClient.SendAsync(request);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    if (response.Headers.Contains(HikeConstants.FILE_KEY))
-                    {
-                        IsFileExist = true;
-                        IEnumerable<string> x;
-                        response.Headers.TryGetValues(HikeConstants.FILE_KEY, out x);
-                        FileKey = x.FirstOrDefault();
-                        FileState = FileTransferState.COMPLETED;
-                        Save();
-                        OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
-                    }
-                    else
-                    {
-                        GetWritingIndexFromServer(); //fail safe measure code should not reach here, if it reaches server error
+                        GetWritingIndexFromServer();
                         IsFileExist = false;
                     }
                 }
-                else
-                {
-                    GetWritingIndexFromServer();
-                    IsFileExist = false;
-                }
             }
             catch { }
+        }
+
+        private async Task<bool> CheckForFileKey()
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpRequestMessage request;
+            HttpResponseMessage response;
+            request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+            request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+            response = await httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                IsFileExist = true;
+                FileState = FileTransferState.COMPLETED;
+                Save();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> CheckForMd5()
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpRequestMessage request;
+            HttpResponseMessage response;
+            Md5Sum = Utils.GetMD5Hash(FilePath);
+            request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + HikeConstants.ServerUrls.FAST_FORWARD_UPLOAD + Md5Sum));
+            request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+
+            response = await httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                if (response.Headers.Contains(HikeConstants.FILE_KEY))
+                {
+                    IsFileExist = true;
+                    IEnumerable<string> x;
+                    response.Headers.TryGetValues(HikeConstants.FILE_KEY, out x);
+                    FileKey = x.FirstOrDefault();
+                    FileState = FileTransferState.COMPLETED;
+                    Save();
+                    OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void GetWritingIndexFromServer()
