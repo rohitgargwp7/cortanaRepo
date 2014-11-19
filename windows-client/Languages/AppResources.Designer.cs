@@ -4803,81 +4803,81 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to ask every time.
         /// </summary>
-        public static string setImageQuality_AskEveryTime_Txt {
+        public static string SetImageQuality_AskEveryTime_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_AskEveryTime_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_AskEveryTime_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to uncompressed.
         /// </summary>
-        public static string setImageQuality_Best_Txt {
+        public static string SetImageQuality_Best_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Best_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Best_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to better quality.
         /// </summary>
-        public static string setImageQuality_Better_Txt {
+        public static string SetImageQuality_Better_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Better_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Better_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to fast.
         /// </summary>
-        public static string setImageQuality_Fast_Txt {
+        public static string SetImageQuality_Fast_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Fast_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Fast_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to faster.
         /// </summary>
-        public static string setImageQuality_Faster_Txt {
+        public static string SetImageQuality_Faster_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Faster_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Faster_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to you can set default preference by going to settings &gt; media.
         /// </summary>
-        public static string setImageQuality_info_Txt {
+        public static string SetImageQuality_info_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_info_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_info_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to normal quality.
         /// </summary>
-        public static string setImageQuality_Normal_Txt {
+        public static string SetImageQuality_Normal_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Normal_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Normal_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to slow.
         /// </summary>
-        public static string setImageQuality_Slow_Txt {
+        public static string SetImageQuality_Slow_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Slow_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Slow_Txt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Set Image Quality.
         /// </summary>
-        public static string setImageQuality_Txt {
+        public static string SetImageQuality_Txt {
             get {
-                return ResourceManager.GetString("setImageQuality_Txt", resourceCulture);
+                return ResourceManager.GetString("SetImageQuality_Txt", resourceCulture);
             }
         }
         

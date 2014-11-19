@@ -41,13 +41,6 @@ namespace windows_client.View
 
         #region Page Functions
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            SystemTray.IsVisible = false;
-
-        }
-
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
@@ -74,25 +67,22 @@ namespace windows_client.View
             };
             ApplicationBar.IsVisible = true;
             ApplicationBar.Opacity = 0.5;
-            Object obj;
-            //MOHIT
+
+            //Add "Image Quality" selection button if user media setting is "ask every time" else add "send" button
+            picturesUpload = new ApplicationBarIconButton();
             if (App.appSettings.Contains(HikeConstants.SET_IMAGE_QUALITY))
             {
-                showQualityPage = false;
-                picturesUpload = new ApplicationBarIconButton();
+                showQualityPage = false;                
                 picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
-                picturesUpload.Text = AppResources.Send_Txt;
-                picturesUpload.Click += OnPicturesUploadClick;
+                picturesUpload.Text = AppResources.Send_Txt;                
             }
             else
             {
                 showQualityPage = true;
-                picturesUpload = new ApplicationBarIconButton();
                 picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
                 picturesUpload.Text = AppResources.imageQuality_txt;
-                picturesUpload.Click += OnPicturesUploadClick;
             }
-
+            picturesUpload.Click += OnPicturesUploadClick;
             ApplicationBar.Buttons.Add(picturesUpload);
 
             deleteIcon = new ApplicationBarIconButton();

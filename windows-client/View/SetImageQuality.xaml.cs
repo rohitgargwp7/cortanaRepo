@@ -38,12 +38,15 @@ namespace windows_client.View
             ApplicationBar.Buttons.Add(picturesUpload);
         }
 
+        /// <summary>
+        /// Uploads the images with selected Image Quality
+        /// </summary>
         private void OnPicturesUploadClick(object sender, EventArgs e)
         {
-            //PhoneApplicationService.Current.State[HikeConstants.NavigationKeys.MULTIPLE_IMAGES] = ImageQualityBox.SelectedIndex;
             PhoneApplicationService.Current.State[HikeConstants.IMAGE_QUALITY] = ImageQualityBox.SelectedIndex;
 
-            //previous page is viewalbums page and then new chat thread page
+            //previous page is preview Images page and then viewalbums page and then new chat thread page
+            //So need to remove 2 entries from navigation service so that upload takes us directly to the chat thread page
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (NavigationService.CanGoBack)
@@ -54,42 +57,8 @@ namespace windows_client.View
             //clear thumbnail cache as it is not required now
             App.ViewModel.ClearMFtImageCache();
         }
-        /*
-        private void ImageQualityBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-            if (ImageQualityBox != null)
-            {
-                try
-                {
-                    ListBox listBox = sender as ListBox;
-                    ResetImageQualityBox();
-                    if (listBox.SelectedIndex == 0)
-                    {
-                        normalBox.Foreground = UI_Utils.Instance.HikeBlue;
-                    }
-                    else if (listBox.SelectedIndex == 1)
-                    {
-                        betterBox.Foreground = UI_Utils.Instance.HikeBlue;
-                    }
-                    else
-                    {
-                        uncompressedBox.Foreground = UI_Utils.Instance.HikeBlue;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
-             
-        }* */
+        
         #region Page Functions
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-        }
 
         #endregion
     }
