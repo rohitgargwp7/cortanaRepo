@@ -81,7 +81,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Height="16" Width="16" Margin="37,7,0,1" VerticalAlignment="Top" Source="/View/images/info.png"/>
+            <Image Grid.Column="0" Height="16" Width="16" Margin="37,7,0,1" VerticalAlignment="Top" Source="/View/images/notification_Image.png"/>
             <TextBlock Foreground="#FFFFFF" Grid.Column="1" TextWrapping="Wrap" Margin="7,0,0,0" Text="{Binding Path=LocalizedResources.SetImageQuality_info_Txt,Source={StaticResource LocalizedStrings}}" />
         </Grid>
     </Grid>

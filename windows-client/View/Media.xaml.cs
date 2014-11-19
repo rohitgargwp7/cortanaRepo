@@ -43,6 +43,31 @@ namespace windows_client.View
             autoResumeToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
+        private void setImageQuality_ListPicker_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListPicker listPicker = sender as ListPicker;
+
+            if (listPicker == null)
+                return;
+
+            listPicker.SelectionChanged -= setImageQuality_ListPicker_SelectionChanged;
+            listPicker.SelectionChanged += setImageQuality_ListPicker_SelectionChanged;        
+        }
+
+        private void setImageQuality_ListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker listPicker = sender as ListPicker;
+
+            if (listPicker == null)
+                return;
+
+            //Index 3 corresponds to "Ask Every Time" option
+            if (listPicker.SelectedIndex == 3)
+                App.RemoveKeyFromAppSettings(HikeConstants.SET_IMAGE_QUALITY);                
+            else
+                App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);                
+        }     
+
         private void MediaSettings_ListPicker_Loaded(object sender, RoutedEventArgs e)
         {
             ListPicker listPicker = sender as ListPicker;
@@ -63,8 +88,6 @@ namespace windows_client.View
 
             if(listPicker.SelectedIndex != 3)
                 App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);
-            else
-                App.RemoveKeyFromAppSettings(HikeConstants.SET_IMAGE_QUALITY);
         }        
 
         private void Toggle_Loaded(object sender, RoutedEventArgs e)

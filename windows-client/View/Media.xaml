@@ -40,7 +40,7 @@
             <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,20,0,0">
                 <TextBlock Text="{Binding Path= LocalizedResources.SetImageQuality_Txt, Source={StaticResource LocalizedStrings}}"
 	 Style="{StaticResource AutoDownloadLabelTextBlock}"/>
-                <toolkit:ListPicker Tag="setImageQuality" x:Name="setImageQualityListPicker" Margin="10,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource MediaSettingsListPicker}" Foreground="{StaticResource HikeFGBrush}" Loaded="MediaSettings_ListPicker_Loaded">
+                <toolkit:ListPicker Tag="setImageQuality" x:Name="setImageQualityListPicker" Margin="10,0" FontWeight="Light" BorderBrush="{StaticResource HikeFGBrush}" Template="{StaticResource MediaSettingsListPicker}" Foreground="{StaticResource HikeFGBrush}" Loaded="setImageQuality_ListPicker_Loaded">
                     <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.SetImageQuality_Normal_Txt, Source={StaticResource LocalizedStrings}}" />
                     <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.SetImageQuality_Better_Txt, Source={StaticResource LocalizedStrings}}" />
                     <toolkit:ListPickerItem Content="{Binding Path= LocalizedResources.SetImageQuality_Best_Txt, Source={StaticResource LocalizedStrings}}" />
