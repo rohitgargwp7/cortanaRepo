@@ -194,10 +194,8 @@ namespace windows_client.DbUtils
                         if (!NetworkInterface.GetIsNetworkAvailable())
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
 
-                        if (convMessage.FileAttachment.FileSource != Attachment.AttachemntSource.CAMERA)
-                            FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
-                        else
-                            FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty, true);
+                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty, 
+                            (convMessage.FileAttachment.FileSource == Attachment.AttachemntSource.GALLERY || convMessage.FileAttachment.FileSource == Attachment.AttachemntSource.FORWARDED) ? false : true);  //MD5Check only for gallery files and forwarded files
                     }
                     else
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
