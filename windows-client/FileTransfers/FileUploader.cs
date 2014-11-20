@@ -25,8 +25,7 @@ namespace windows_client.FileTransfers
         public JObject SuccessObj { get; set; }
         public string FileKey { get; set; }
         public bool IsFileExist { get; set; }
-        public string Md5Sum { get; set; }
-        protected bool IsNewFile = false;
+        bool _isNewFile = false;
 
         public FileUploader()
             : base()
@@ -42,7 +41,7 @@ namespace windows_client.FileTransfers
                 FileKey = fileKey;
 
             IsFileExist = false;
-            IsNewFile = isNewFile;
+            _isNewFile = isNewFile;
 
             Save();
         }
@@ -95,7 +94,7 @@ namespace windows_client.FileTransfers
             else
                 writer.WriteStringBytes(Md5Sum);
 
-            writer.Write(IsNewFile);
+            writer.Write(_isNewFile);
         }
 
         public override void Read(BinaryReader reader)
@@ -153,7 +152,6 @@ namespace windows_client.FileTransfers
                 FileKey = null;
             }
 
-
             try
             {
                 count = reader.ReadInt32();
@@ -168,11 +166,11 @@ namespace windows_client.FileTransfers
 
             try
             {
-                IsNewFile = reader.ReadBoolean();
+                _isNewFile = reader.ReadBoolean();
             }
             catch
             {
-                IsNewFile = false;
+                _isNewFile = false;
             }
         }
 
@@ -262,7 +260,7 @@ namespace windows_client.FileTransfers
 
                 if (!flag)
                 {
-                    if (!IsNewFile)
+                    if (!_isNewFile)
                         flag = await CheckForMd5();
 
                     if (!flag)

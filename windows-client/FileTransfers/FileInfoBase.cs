@@ -51,6 +51,7 @@ namespace windows_client.FileTransfers
         public string FileName { get; set; }
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
+        public string Md5Sum { get; set; }
 
         string _filePath = null;
         public string FilePath
@@ -159,10 +160,11 @@ namespace windows_client.FileTransfers
 
             string result = String.Empty;
 
+            // In case of download, md5Sum is null, in case of upload it may not be null for gallery/fwd files.
+            md5 = Md5Sum ?? Utils.GetMD5Hash(FilePath);
+
             if (this is FileDownloader)
             {
-                md5 = Utils.GetMD5Hash(FilePath);
-
                 try
                 {
                     HttpClient httpClient = new HttpClient();
@@ -181,13 +183,9 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                var uploader = this as FileUploader;
-
-                md5 = uploader.Md5Sum != null ? uploader.Md5Sum : Utils.GetMD5Hash(FilePath);
-
                 try
                 {
-                    var jData = uploader.SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                    var jData = (this as FileUploader).SuccessObj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                     result = jData[HikeConstants.MD5_ORIGINAL].ToString();
                 }
                 catch
