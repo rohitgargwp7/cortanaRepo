@@ -1644,6 +1644,10 @@ namespace windows_client.View
 
             for (i = 0; i < messagesList.Count; i++)
             {
+                //Once user exists the chat thread, prevent running of this thread
+                if (App.newChatThreadPage == null)
+                    return;
+
                 ConvMessage cm = messagesList[i];
                 Debug.WriteLine(cm.MessageId);
                 if (i == messageFetchCount - 1)
