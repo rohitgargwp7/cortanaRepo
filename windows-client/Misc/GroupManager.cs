@@ -359,6 +359,10 @@ namespace windows_client.Misc
                     for (int i = 0; i < files.Length; i++)
                     {
                         var index = files[i].LastIndexOf("_");
+                        
+                        if (index < 0)
+                            continue;
+
                         StringBuilder sb = new StringBuilder(files[i]);
                         sb[index] = ':';
                         string grpId = sb.ToString();
