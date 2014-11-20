@@ -310,9 +310,7 @@ namespace windows_client.FileTransfers
                 if (response.Headers.Contains(HikeConstants.FILE_KEY))
                 {
                     IsFileExist = true;
-                    IEnumerable<string> x;
-                    response.Headers.TryGetValues(HikeConstants.FILE_KEY, out x);
-                    FileKey = x.FirstOrDefault();
+                    FileKey = response.Headers.GetValues(HikeConstants.FILE_KEY).First().ToString();
                     FileState = FileTransferState.COMPLETED;
                     Save();
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
