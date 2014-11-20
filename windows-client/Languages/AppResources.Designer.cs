@@ -601,7 +601,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Great! {0} will now able to see your Last Seen and Status Updates..
+        ///   Looks up a localized string similar to Great! {0} will now be able to see your Last Seen and Status Updates..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {
             get {

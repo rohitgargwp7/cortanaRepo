@@ -1365,7 +1365,7 @@ Download it like asap from http://hike.in!</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>Great! {0} will now able to see your Last Seen and Status Updates.</value>
+    <value>Great! {0} will now be able to see your Last Seen and Status Updates.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
