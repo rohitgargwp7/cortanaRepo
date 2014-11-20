@@ -5146,6 +5146,7 @@ namespace windows_client.View
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.NOT_STARTED, source, fileSize);
                     convMessage.FileAttachment.ContentType = HikeConstants.FILE_TYPE_VIDEO;
                     convMessage.Message = AppResources.Video_Txt;
+
                 }
 
                 AddNewMessageToUI(convMessage, false);

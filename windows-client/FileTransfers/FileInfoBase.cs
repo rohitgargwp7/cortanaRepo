@@ -51,6 +51,7 @@ namespace windows_client.FileTransfers
         public string FileName { get; set; }
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
+        public string Md5Sum { get; set; }
 
         string _filePath = null;
         public string FilePath
@@ -98,7 +99,7 @@ namespace windows_client.FileTransfers
         public abstract void Delete();
         public abstract void Start(object obj);
         public abstract void CheckIfComplete();
-        
+
         public void ResetRetryOnNetworkChanged()
         {
             _sleep.Set();
@@ -154,10 +155,11 @@ namespace windows_client.FileTransfers
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
-            // Calculate md5 by parts
-            String md5 = Utils.GetMD5Hash(FilePath);
-
             string result = String.Empty;
+
+            // Calculate md5 by parts
+            // In case of download, md5Sum is null, in case of upload it may not be null for gallery/fwd files.
+            String md5 = Md5Sum ?? Utils.GetMD5Hash(FilePath);
 
             if (this is FileDownloader)
             {

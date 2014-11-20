@@ -158,11 +158,11 @@ namespace windows_client.FileTransfers
             return true;
         }
 
-        public bool UploadFile(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey)
+        public bool UploadFile(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey,bool isNewFile=false)
         {
             if (!DoesTransferExist(messageId, false))
             {
-                FileUploader fInfo = new FileUploader(msisdn, messageId, fileName, contentType, size, fileKey);
+                FileUploader fInfo = new FileUploader(msisdn, messageId, fileName, contentType, size, fileKey,isNewFile);
                 if (!IsTransferPossible())
                 {
                     FailTask(fInfo);
