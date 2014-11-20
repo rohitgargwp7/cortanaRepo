@@ -134,18 +134,7 @@ namespace windows_client.View
         bool isMessageLoaded;
         public bool IsSMSOptionValid = true;
 
-        public int ResolutionId
-        {
-            get
-            {
-                if (Utils.CurrentResolution == Utils.Resolutions.WVGA)
-                    return 7;
-                else if (Utils.CurrentResolution == Utils.Resolutions.WXGA)
-                    return 8;
-                else
-                    return 9;
-            }
-        }
+        private const int ResolutionId = 7;//WVGA
 
         Pivot pivotStickers = null;
 
@@ -4132,8 +4121,8 @@ namespace windows_client.View
                     JArray ids = new JArray();
                     ConvMessage pinMessage = null;
                     HideTypingNotification();
-                    Deployment.Current.Dispatcher.BeginInvoke(()=>
-                    {  
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
                         newMessageCount = ocMessages.Count;
                     });
 
@@ -4181,9 +4170,9 @@ namespace windows_client.View
                             ScrollToBottom();
                         else if (newMessageCount > 0)
                         {
-                                _unreadMessageCounter += newMessageCount;
-                                JumpToBottomGrid.Visibility = Visibility.Visible;
-                                txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
+                            _unreadMessageCounter += newMessageCount;
+                            JumpToBottomGrid.Visibility = Visibility.Visible;
+                            txtJumpToBttom.Text = _unreadMessageCounter > 0 ? (_unreadMessageCounter == 1 ? AppResources.ChatThread_1NewMessage_txt : String.Format(AppResources.ChatThread_More_NewMessages_txt, _unreadMessageCounter)) : AppResources.ChatThread_JumpToLatest;
                         }
 
                         if (pinMessage != null)
@@ -6682,7 +6671,7 @@ namespace windows_client.View
             // Check if sticker category doesn't exist, show humanoid (default) category.
             if (StickerPivotHelper.Instance.dictStickersPivot.ContainsKey(stickerCategory.Category))
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[stickerCategory.Category];
-            else 
+            else
                 stickerPivot = StickerPivotHelper.Instance.dictStickersPivot[StickerHelper.CATEGORY_HUMANOID];
 
             // So that after reopening of ct , if pivot index are same we need to update pivot selection explicitly.

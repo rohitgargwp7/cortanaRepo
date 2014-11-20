@@ -519,21 +519,6 @@ namespace windows_client.utils
             }
         }
 
-        public static Resolutions CurrentResolution
-        {
-            get
-            {
-                if (currentResolution == Resolutions.Default)
-                {
-                    if (IsWvga) currentResolution = Resolutions.WVGA;
-                    else if (IsWxga) currentResolution = Resolutions.WXGA;
-                    else if (Is720p) currentResolution = Resolutions.HD720p;
-                    currentResolution = Resolutions.WVGA;
-                }
-                return currentResolution;
-            }
-        }
-
         public static Resolutions PalleteResolution
         {
             get
