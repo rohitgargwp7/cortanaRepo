@@ -151,6 +151,28 @@ namespace windows_client.Model.Sticker
                         return _isSelected ? UI_Utils.Instance.SmileyExpressionsActive : UI_Utils.Instance.SmileyExpressionsInactive;
                     case StickerHelper.CATEGORY_LOVE:
                         return _isSelected ? UI_Utils.Instance.LoveActive : UI_Utils.Instance.LoveInactive;
+                    case StickerHelper.CATEGORY_DELHI:
+                        return _isSelected ? UI_Utils.Instance.DelhiActive : UI_Utils.Instance.DelhiInactive;
+                    case StickerHelper.CATEGORY_MUMBAI:
+                        return _isSelected ? UI_Utils.Instance.MumbaiActive : UI_Utils.Instance.MumbaiInactive;
+                    case StickerHelper.CATEGORY_GUJARAT:
+                        return _isSelected ? UI_Utils.Instance.GujaratActive : UI_Utils.Instance.GujaratInactive;
+                    case StickerHelper.CATEGORY_BANGALORE:
+                        return _isSelected ? UI_Utils.Instance.BangaloreActive : UI_Utils.Instance.BangaloreInactive;
+                    case StickerHelper.CATEGORY_HYDERABAD:
+                        return _isSelected ? UI_Utils.Instance.HyderabadActive : UI_Utils.Instance.HyderabadInactive;
+                    case StickerHelper.CATEGORY_BHOPAL:
+                        return _isSelected ? UI_Utils.Instance.BhopalActive : UI_Utils.Instance.BhopalInactive;
+                    case StickerHelper.CATEGORY_CHENNAI:
+                        return _isSelected ? UI_Utils.Instance.ChennaiActive : UI_Utils.Instance.ChennaiInactive;
+                    case StickerHelper.CATEGORY_KERALA:
+                        return _isSelected ? UI_Utils.Instance.KeralaActive : UI_Utils.Instance.KeralaInactive;
+                    case StickerHelper.CATEGORY_KOLKATA:
+                        return _isSelected ? UI_Utils.Instance.KolkataActive : UI_Utils.Instance.KolkataInactive;
+                    case StickerHelper.CATEGORY_BIHAR:
+                        return _isSelected ? UI_Utils.Instance.BiharActive : UI_Utils.Instance.BiharInactive;
+                    case StickerHelper.CATEGORY_GUWAHATI:
+                        return _isSelected ? UI_Utils.Instance.GuwahatiActive : UI_Utils.Instance.GuwahatiInactive;
                     default:
                         return new BitmapImage();
                 }
@@ -257,6 +279,28 @@ namespace windows_client.Model.Sticker
                         return UI_Utils.Instance.SmileyExpressionsOverlay;
                     case StickerHelper.CATEGORY_LOVE:
                         return UI_Utils.Instance.LoveOverlay;
+                    case StickerHelper.CATEGORY_DELHI:
+                        return UI_Utils.Instance.DelhiOverlay;
+                    case StickerHelper.CATEGORY_MUMBAI:
+                        return UI_Utils.Instance.MumbaiOverlay;
+                    case StickerHelper.CATEGORY_GUJARAT:
+                        return UI_Utils.Instance.GujaratOverlay;
+                    case StickerHelper.CATEGORY_BANGALORE:
+                        return UI_Utils.Instance.BangaloreOverlay;
+                    case StickerHelper.CATEGORY_HYDERABAD:
+                        return UI_Utils.Instance.HyderabadOverlay;
+                    case StickerHelper.CATEGORY_BHOPAL:
+                        return UI_Utils.Instance.BhopalOverlay;
+                    case StickerHelper.CATEGORY_CHENNAI:
+                        return UI_Utils.Instance.ChennaiOverlay;
+                    case StickerHelper.CATEGORY_KERALA:
+                        return UI_Utils.Instance.KerelaOverlay;
+                    case StickerHelper.CATEGORY_KOLKATA:
+                        return UI_Utils.Instance.KolkataOverlay;
+                    case StickerHelper.CATEGORY_BIHAR:
+                        return UI_Utils.Instance.BiharOverlay;
+                    case StickerHelper.CATEGORY_GUWAHATI:
+                        return UI_Utils.Instance.GuwahatiOverlay;
                 }
                 return null;
             }

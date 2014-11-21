@@ -553,6 +553,7 @@ namespace windows_client
             public static readonly string LAST_SELECTED_STICKER_CATEGORY = "lastSelectedStickerCategory";
             public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
             public static readonly string LAST_USER_JOIN_TIMESTAMP = "lastUjTs";
+            public static readonly string PREFERRED_STICKER_CATEGORY = "prefCategory";
 
         }
 

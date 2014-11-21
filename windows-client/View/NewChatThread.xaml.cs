@@ -7041,6 +7041,17 @@ namespace windows_client.View
                 {
                     listStickerCategories.Add(stickerCategory);
                 }
+                List<string> listRegionalCategory;
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
+                {
+                    foreach (string category in listRegionalCategory)
+                    {
+                        if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category)) != null)
+                        {
+                            listStickerCategories.Add(stickerCategory);
+                        }
+                    }
+                }
                 if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
                 {
                     listStickerCategories.Add(stickerCategory);

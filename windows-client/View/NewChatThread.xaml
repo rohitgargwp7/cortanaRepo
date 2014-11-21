@@ -1485,7 +1485,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Name="overlayText" Opacity="0.8" FontSize="26" Text="{Binding OverlayText}" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"/>
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Tap="downloadStickers_Tap">
-                            <Button Name="btnDownload" Width="150" Foreground="White" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}"
+                            <Button Name="btnDownload" Width="145" Foreground="White" Content="{Binding Path= LocalizedResources.Download_txt, Source={StaticResource LocalizedStrings}}"
                                     VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="18" Height="70" FontFamily="Segoe WP SemiLight" BorderBrush="#3d3d3d" Background="#3d3d3d"/>
                             <Button Name="btnFree" Background="#7aa700" Foreground="White" Width="70" Height="50" Content="{Binding Path= LocalizedResources.Free_txt, Source={StaticResource LocalizedStrings}}"
                             Padding="0" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="Segoe WP SemiLight" FontSize="12" BorderThickness="0" Margin="0,-15,-15,0" Canvas.ZIndex="1"/>

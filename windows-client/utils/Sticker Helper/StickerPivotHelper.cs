@@ -55,6 +55,18 @@ namespace windows_client.utils
                 CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
                 pivotIndex++;
             }
+            List<string> listRegionalCategory;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
+            {
+                foreach (string category in listRegionalCategory)
+                {
+                    if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category)) != null)
+                    {
+                        CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
+                        pivotIndex++;
+                    }
+                }
+            }
             if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null)
             {
                 CreateStickerPivotItem(stickerCategory.Category, pivotIndex);
