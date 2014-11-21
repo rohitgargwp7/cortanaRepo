@@ -1258,15 +1258,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
-        /// </summary>
-        public static string CT_FileNotOpenable_Text {
-            get {
-                return ResourceManager.GetString("CT_FileNotOpenable_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unsupported video.
         /// </summary>
         public static string CT_FileNotSupported_Caption_Text {
@@ -1303,11 +1294,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t open this image. It seems to be corrupt..
+        /// </summary>
+        public static string CT_ImageNotOpenable_Text {
+            get {
+                return ResourceManager.GetString("CT_ImageNotOpenable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} messages,.
         /// </summary>
         public static string CT_MessageCount_Sms_User {
             get {
                 return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
+        /// </summary>
+        public static string CT_VideoNotOpenable_Text {
+            get {
+                return ResourceManager.GetString("CT_VideoNotOpenable_Text", resourceCulture);
             }
         }
         

@@ -148,7 +148,10 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show(AppResources.Something_Wrong_Txt);
+                MessageBox.Show (AppResources.CT_ImageNotOpenable_Text, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
+
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
             }
 
             return pvtItem;
