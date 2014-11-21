@@ -804,6 +804,7 @@ namespace windows_client.ViewModel
                         convMessage.FileAttachment.FileKey = (string)attachmentData[4];
                         convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
                         convMessage.FileAttachment.FileName = (string)attachmentData[6];
+                        convMessage.FileAttachment.FileSource = Attachment.AttachemntSource.FORWARDED;
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))
