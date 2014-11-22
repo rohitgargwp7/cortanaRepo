@@ -571,7 +571,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
+            if (!isNewInstall && !String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.9.0.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -742,6 +742,26 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
+            #region Auto Download
+            if (isNewInstall || Utils.compareVersion(_currentVersion,"2.9.0.1")!=1) //Default Settings for Auto-Download is Image =>WifiCellular, Audio and Video => Wifi
+	        {
+	              if (App.appSettings.Contains(App.AUTO_DOWNLOAD_SETTING))
+	              {
+	                  App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE] = 0;
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 0;
+                      App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_VIDEO, 0);
+
+                      App.RemoveKeyFromAppSettings(App.AUTO_DOWNLOAD_SETTING); //since this key will no longer be used
+	              }
+	              else
+	              {
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_IMAGE] = 2;
+                      App.appSettings[HikeConstants.AUTO_DOWNLOAD_AUDIO] = 1;
+                      App.WriteToIsoStorageSettings(HikeConstants.AUTO_DOWNLOAD_VIDEO, 1);
+	              }
+	        }
+            #endregion
+
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
@@ -1008,11 +1028,19 @@ namespace windows_client
 
         public static void createDatabaseAsync()
         {
-            if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
+            //if db already present on new install then delete existing dbs
+            //version check so that from next versions db should not be created again once created
+            if (App.appSettings.Contains(App.IS_DB_CREATED) && (!isNewInstall || Utils.compareVersion("2.9.0.1", _latestVersion) != 0)) // shows db are created
+            {
                 return;
+            }
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
+                if (App.appSettings.Contains(App.IS_DB_CREATED))
+                {
+                    MiscDBUtil.DeleteExistingDbs();
+                } 
                 try
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -1071,6 +1099,8 @@ namespace windows_client
             };
             bw.RunWorkerAsync();
         }
+
+
 
         /* This function should always be used to store values to isolated storage
          * Its a thread safe implemenatation to save values.

@@ -858,13 +858,63 @@ namespace windows_client.utils
 
                             foreach (byte b in hashAlgorithm.Hash)
                                 sb.Append(b.ToString("x2"));
-                            
+
                             return sb.ToString();
                         }
                     }
                 }
                 else
+                {
                     return string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+	    /// To check if Phone is on Wifi
+	    /// Don't use DeviceNetworkInformation as it only tells Wifi is enabled or not, not connection
+	    /// Don't use NetworkInterfaceType as it is a blocking call
+	    /// </summary>
+	    /// <returns></returns>
+	    public static bool IsOnWifi()
+	    {
+	        var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+	 
+	        if (profile!=null)
+	            return profile.NetworkAdapter.IanaInterfaceType == 71;
+	 
+	        return false;
+	    }
+
+        public static int GetCapOnBasisOfNetwork(NetworkInterfaceSubType networkInterfaceSubType)
+        {
+            switch (networkInterfaceSubType)
+            {
+                //Wifi
+                case NetworkInterfaceSubType.WiFi:
+                    return HikeConstants.FT_WIFI_CAP;
+
+                //4G
+                case NetworkInterfaceSubType.Cellular_EHRPD:
+                case NetworkInterfaceSubType.Cellular_LTE:
+                    return HikeConstants.FT_4G_CAP;
+
+                //3G
+                case NetworkInterfaceSubType.Cellular_EVDO:
+                case NetworkInterfaceSubType.Cellular_EVDV:
+                case NetworkInterfaceSubType.Cellular_3G:
+                case NetworkInterfaceSubType.Cellular_HSPA:
+                    return HikeConstants.FT_3G_CAP;
+
+                //2G
+                case NetworkInterfaceSubType.Cellular_GPRS:
+                case NetworkInterfaceSubType.Cellular_EDGE:
+                case NetworkInterfaceSubType.Cellular_1XRTT:
+                case NetworkInterfaceSubType.Unknown:
+                    return HikeConstants.FT_2G_CAP;
+                
+                default:
+                    return HikeConstants.FT_2G_CAP;
             }
         }
     }

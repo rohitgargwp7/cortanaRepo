@@ -2345,4 +2345,34 @@ Download it like asap from http://hike.in!</value>
   <data name="CT_ImageNotOpenable_Text" xml:space="preserve">
     <value>Can't open this image. It seems to be corrupt.</value>
   </data>
+  <data name="SetupHiddenMode_SubTxt" xml:space="preserve">
+    <value>let's hide your chats</value>
+  </data>
+  <data name="SetupHiddenMode_Txt" xml:space="preserve">
+    <value>setup hidden mode</value>
+  </data>
+  <data name="AutoDownloadOption_Never_Txt" xml:space="preserve">
+    <value>never</value>
+  </data>
+  <data name="AutoDownloadOption_WifiCellular_Txt" xml:space="preserve">
+    <value>wifi and cellular</value>
+  </data>
+  <data name="AutoDownloadOption_Wifi_Txt" xml:space="preserve">
+    <value>wifi</value>
+  </data>
+  <data name="AutoDownloadSettings_Audio_Txt" xml:space="preserve">
+    <value>auto download audio</value>
+  </data>
+  <data name="AutoDownloadSettings_Image_Txt" xml:space="preserve">
+    <value>auto download image</value>
+  </data>
+  <data name="AutoDownloadSettings_Video_Txt" xml:space="preserve">
+    <value>auto download video</value>
+  </data>
+  <data name="SettingsSubtitle_Media_Txt" xml:space="preserve">
+    <value>auto download, image quality and more</value>
+  </data>
+  <data name="Settings_MediaSettings_Txt" xml:space="preserve">
+    <value>media</value>
+  </data>
 </root>

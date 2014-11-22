@@ -25,13 +25,14 @@ namespace windows_client.FileTransfers
         public JObject SuccessObj { get; set; }
         public string FileKey { get; set; }
         public bool IsFileExist { get; set; }
+        bool _isNewFile = false;
 
         public FileUploader()
             : base()
         {
         }
 
-        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey)
+        public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey, bool isNewFile = false)
             : base(msisdn, messageId, fileName, contentType, size)
         {
             Id = Guid.NewGuid().ToString();
@@ -40,6 +41,7 @@ namespace windows_client.FileTransfers
                 FileKey = fileKey;
 
             IsFileExist = false;
+            _isNewFile = isNewFile;
 
             Save();
         }
@@ -86,6 +88,13 @@ namespace windows_client.FileTransfers
                 writer.WriteStringBytes("*@N@*");
             else
                 writer.WriteStringBytes(FileKey);
+
+            if (Md5Sum == null)
+                writer.WriteStringBytes("*@N@*");
+            else
+                writer.WriteStringBytes(Md5Sum);
+
+            writer.Write(_isNewFile);
         }
 
         public override void Read(BinaryReader reader)
@@ -141,6 +150,27 @@ namespace windows_client.FileTransfers
             catch
             {
                 FileKey = null;
+            }
+
+            try
+            {
+                count = reader.ReadInt32();
+                Md5Sum = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (Md5Sum == "*@N@*")
+                    Md5Sum = null;
+            }
+            catch
+            {
+                Md5Sum = null;
+            }
+
+            try
+            {
+                _isNewFile = reader.ReadBoolean();
+            }
+            catch
+            {
+                _isNewFile = false;
             }
         }
 
@@ -213,7 +243,7 @@ namespace windows_client.FileTransfers
 
         public override void Start(object obj)
         {
-            if (!String.IsNullOrEmpty(FileKey) && CurrentHeaderPosition == 0)
+            if (CurrentHeaderPosition == 0)
                 CheckForExistingFile();
             else
                 GetWritingIndexFromServer();
@@ -223,28 +253,72 @@ namespace windows_client.FileTransfers
         {
             try
             {
-                HttpClient httpClient = new HttpClient();
+                bool flag = false;
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
-                request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+                if (!String.IsNullOrEmpty(FileKey))
+                    flag = await CheckForFileKey();
 
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                if (!flag)
+                {
+                    if (!_isNewFile)
+                        flag = await CheckForMd5();
 
-                if (response.StatusCode == HttpStatusCode.OK)
+                    if (!flag)
+                    {
+                        GetWritingIndexFromServer();
+                        IsFileExist = false;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private async Task<bool> CheckForFileKey()
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpRequestMessage request;
+            HttpResponseMessage response;
+            request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + "/" + FileKey));
+            request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+            response = await httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                IsFileExist = true;
+                FileState = FileTransferState.COMPLETED;
+                Save();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> CheckForMd5()
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpRequestMessage request;
+            HttpResponseMessage response;
+            Md5Sum = Utils.GetMD5Hash(FilePath);
+            request = new HttpRequestMessage(HttpMethod.Head, new Uri(AccountUtils.FILE_TRANSFER_BASE_URL + HikeConstants.ServerUrls.FAST_FORWARD_UPLOAD + Md5Sum));
+            request.Headers.Add(HikeConstants.IfModifiedSince, DateTime.UtcNow.ToString());
+
+            response = await httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                if (response.Headers.Contains(HikeConstants.FILE_KEY))
                 {
                     IsFileExist = true;
+                    FileKey = response.Headers.GetValues(HikeConstants.FILE_KEY).First().ToString();
                     FileState = FileTransferState.COMPLETED;
                     Save();
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                    return true;
                 }
-                else
-                {
-                    GetWritingIndexFromServer();
-                    IsFileExist = false;
-                }
-
             }
-            catch { }
+
+            return false;
         }
 
         private void GetWritingIndexFromServer()
@@ -636,7 +710,7 @@ namespace windows_client.FileTransfers
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if (code == HttpStatusCode.NotFound || code == HttpStatusCode.InternalServerError) // server error during upload
+            else if ((code == HttpStatusCode.NotFound && MaxRetryAttempts == 1) || code == HttpStatusCode.InternalServerError) // server error during upload
             {
                 FileState = FileTransferState.FAILED;
                 Delete();
@@ -644,7 +718,9 @@ namespace windows_client.FileTransfers
             }
             else
             {
-                if (ShouldRetry())
+                MaxRetryAttempts = code == HttpStatusCode.NotFound ? (short)1 : (short)10;
+
+                if (code != HttpStatusCode.BadRequest && ShouldRetry())
                 {
                     Start(null);
                 }

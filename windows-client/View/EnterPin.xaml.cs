@@ -14,7 +14,7 @@ namespace windows_client
 {
     public partial class EnterPin : PhoneApplicationPage
     {
-        bool isNextClicked = false;
+        bool _requestInProgress = false;
         string pinEntered;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
@@ -43,21 +43,17 @@ namespace windows_client
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
-        private void btnEnterPin_Click(object sender, EventArgs e)
+        private void SendPinCredentialForVerification()
         {
-            if (isNextClicked)
-                return;
-            pinEntered = txtBxEnterPin.Text.Trim();
-            if (string.IsNullOrEmpty(pinEntered))
-                return;
-            isNextClicked = true;
+            _requestInProgress = true;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 pinErrorTxt.Text = AppResources.Connectivity_Issue;
                 pinErrorTxt.Opacity = 1;
-                isNextClicked = false;
+                _requestInProgress = false;
+                nextIconButton.IsEnabled = true;
                 return;
             }
             txtBxEnterPin.IsReadOnly = true;
@@ -67,6 +63,17 @@ namespace windows_client
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback));
+        }
+
+        private void btnEnterPin_Click(object sender, EventArgs e)
+        {
+            if (_requestInProgress)
+                return;
+
+            pinEntered = txtBxEnterPin.Text.Trim();
+
+            if (!string.IsNullOrEmpty(pinEntered) && pinEntered.Length >= 4)
+                SendPinCredentialForVerification();
         }
 
         private void pinPostResponse_Callback(JObject obj)
@@ -86,7 +93,7 @@ namespace windows_client
                     if (!string.IsNullOrWhiteSpace(pinEntered))
                         nextIconButton.IsEnabled = true;
                     txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
-                    isNextClicked = false;
+                    _requestInProgress = false;
                 });
                 return;
             }
@@ -111,7 +118,7 @@ namespace windows_client
 
         private void goBackLogic()
         {
-            if (isNextClicked)
+            if (_requestInProgress)
                 return;
             App.RemoveKeyFromAppSettings(App.MSISDN_SETTING);
 
@@ -135,10 +142,17 @@ namespace windows_client
 
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text) && txtBxEnterPin.Text.Length > 2)
-                nextIconButton.IsEnabled = true;
-            else
+            if (_requestInProgress)
+                return;
+
+            pinEntered = txtBxEnterPin.Text.Trim();
+
+            if (!string.IsNullOrEmpty(pinEntered) && pinEntered.Length < 4)
                 nextIconButton.IsEnabled = false;
+
+            if (!string.IsNullOrEmpty(pinEntered) && pinEntered.Length >= 4)
+                SendPinCredentialForVerification();
+
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)

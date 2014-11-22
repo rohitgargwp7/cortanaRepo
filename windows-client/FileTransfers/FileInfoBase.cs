@@ -19,8 +19,16 @@ namespace windows_client.FileTransfers
         protected const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
         protected const int DefaultBlockSize = 1024;
         public static int MaxBlockSize;
+        static readonly int MAX_RECONNECT_TIME = 20; // in seconds
         protected int BlockSize = 1024;
         protected int ChunkFactor = 1;
+        protected short MaxRetryAttempts = 10;
+
+        bool _retry = true;
+        short _retryAttempts = 0;
+        int _reconnectTime = 0;
+
+        ManualResetEvent _sleep = new ManualResetEvent(false);
 
         public int BytesTransfered
         {
@@ -43,6 +51,7 @@ namespace windows_client.FileTransfers
         public string FileName { get; set; }
         public string Msisdn { get; set; }
         public FileTransferState FileState { get; set; }
+        public string Md5Sum { get; set; }
 
         string _filePath = null;
         public string FilePath
@@ -91,14 +100,6 @@ namespace windows_client.FileTransfers
         public abstract void Start(object obj);
         public abstract void CheckIfComplete();
 
-        bool retry = true;
-        short _retryAttempts = 0;
-        const short MAX_RETRY_ATTEMPTS = 10;
-        int reconnectTime = 0;
-        const int MAX_RECONNECT_TIME = 20; // in seconds
-
-        ManualResetEvent _sleep = new ManualResetEvent(false);
-
         public void ResetRetryOnNetworkChanged()
         {
             _sleep.Set();
@@ -107,29 +108,29 @@ namespace windows_client.FileTransfers
         protected void ResetRetryOnSuccess()
         {
             _retryAttempts = 0;
-            reconnectTime = 0;
+            _reconnectTime = 0;
         }
 
         protected bool ShouldRetry()
         {
-            if (retry && _retryAttempts < MAX_RETRY_ATTEMPTS)
+            if (_retry && _retryAttempts < MaxRetryAttempts)
             {
                 // make first attempt within first 5 seconds
-                if (reconnectTime == 0)
+                if (_reconnectTime == 0)
                 {
                     Random random = new Random();
-                    reconnectTime = random.Next(5) + 1;
+                    _reconnectTime = random.Next(5) + 1;
                 }
                 else
                 {
-                    reconnectTime *= 2;
+                    _reconnectTime *= 2;
                 }
 
-                reconnectTime = reconnectTime > MAX_RECONNECT_TIME ? MAX_RECONNECT_TIME : reconnectTime;
+                _reconnectTime = _reconnectTime > MAX_RECONNECT_TIME ? MAX_RECONNECT_TIME : _reconnectTime;
 
                 try
                 {
-                    _sleep.WaitOne(TimeSpan.FromMilliseconds(reconnectTime * 1000));
+                    _sleep.WaitOne(TimeSpan.FromMilliseconds(_reconnectTime * 1000));
                 }
                 catch (Exception e)
                 {
@@ -154,10 +155,11 @@ namespace windows_client.FileTransfers
             if (TotalBytes > HikeConstants.FILE_MAX_SIZE)
                 return true;
 
-            // Calculate md5 by parts
-            String md5 = Utils.GetMD5Hash(FilePath);
-
             string result = String.Empty;
+
+            // Calculate md5 by parts
+            // In case of download, md5Sum is null, in case of upload it may not be null for gallery/fwd files.
+            String md5 = Md5Sum ?? Utils.GetMD5Hash(FilePath);
 
             if (this is FileDownloader)
             {

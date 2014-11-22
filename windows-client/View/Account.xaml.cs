@@ -42,6 +42,9 @@ namespace windows_client.View
             if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
                 gridTwitter.Visibility = Visibility.Visible;
 
+            int creditsRemaining = 0;
+            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            smsCounterText.Text = String.Format(AppResources.Settings_SubtitleSMSSettings_Txt, creditsRemaining);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -162,12 +165,13 @@ namespace windows_client.View
             App.MqttManagerInstance.disconnectFromBroker(false);
             HikeViewModel.ClearStickerHelperInstance();
             App.ClearAppSettings();
-            App.appSettings[App.IS_DB_CREATED] = true;
+            App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();
 
             //so that on signing up again user can see these tutorials 
             App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
             App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
             MiscDBUtil.clearDatabase();
+            MiscDBUtil.DeleteExistingDbs();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
@@ -269,6 +273,11 @@ namespace windows_client.View
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFBOnAccountUnlinkDelete), HikeConstants.FACEBOOK, false);
             else
                 AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteFB), HikeConstants.FACEBOOK, false);
+        }
+
+        private void SMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
     }
 }
