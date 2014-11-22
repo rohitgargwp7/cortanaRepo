@@ -508,6 +508,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = FileName;
             req.Headers["X-SESSION-ID"] = Id;
+            req.Headers["X-Thumbnail-Required"] = "0";
 
             var bytesLeft = TotalBytes - CurrentHeaderPosition;
             BlockSize = bytesLeft >= BlockSize ? BlockSize : bytesLeft;

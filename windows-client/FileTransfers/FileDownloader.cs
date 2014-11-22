@@ -256,7 +256,7 @@ namespace windows_client.FileTransfers
                     while (BytesTransfered < TotalBytes && FileState == FileTransferState.STARTED)
                     {
                         newBytes = br.ReadBytes(BlockSize);
-                        if (newBytes.Length == 0)
+                        if (newBytes == null || newBytes.Length == 0)
                             break;
 
                         if (WriteChunkToIsolatedStorage(newBytes, CurrentHeaderPosition))
@@ -300,7 +300,7 @@ namespace windows_client.FileTransfers
                     {
                         CheckIfComplete();
                     }
-                    else if (newBytes.Length == 0)
+                    else if (newBytes == null || newBytes.Length == 0)
                     {
                         if (ShouldRetry())
                         {

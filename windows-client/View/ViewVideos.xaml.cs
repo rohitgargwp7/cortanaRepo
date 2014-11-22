@@ -318,7 +318,7 @@ namespace windows_client.View
                 streamInfo.Stream.Dispose();
                 if (size <= 0)
                 {
-                    MessageBox.Show(AppResources.CT_FileNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.CT_VideoNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                     return;
                 }
                 selectedVideo.Size = size;
@@ -326,7 +326,7 @@ namespace windows_client.View
             catch (Exception ex)
             {
                 Debug.WriteLine("PreviewVideo :: llsVideos_SelectionChanged , Exception : " + ex.StackTrace);
-                MessageBox.Show(AppResources.CT_FileNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.CT_VideoNotOpenable_Text, AppResources.CT_FileNotSupported_Caption_Text, MessageBoxButton.OK);
                 return;
             }
 
