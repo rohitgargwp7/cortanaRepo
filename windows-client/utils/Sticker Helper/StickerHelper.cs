@@ -813,7 +813,7 @@ namespace windows_client.utils
                 case StickerHelper.CATEGORY_LOVE:
                     return "#f988aa";
                 case StickerHelper.CATEGORY_DELHI:
-                    return "#9ce5bb";
+                    return "#8acda7";
                 case StickerHelper.CATEGORY_MUMBAI:
                     return "#f87840";
                 case StickerHelper.CATEGORY_GUJARAT:
@@ -825,7 +825,7 @@ namespace windows_client.utils
                 case StickerHelper.CATEGORY_BHOPAL:
                     return "#ef7802";
                 case StickerHelper.CATEGORY_CHENNAI:
-                    return "#ddb190";
+                    return "#c9a083";
                 case StickerHelper.CATEGORY_KERALA:
                     return "#e19c5b";
                 case StickerHelper.CATEGORY_KOLKATA:
@@ -974,6 +974,14 @@ namespace windows_client.utils
             if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS) != null)
             {
                 listCategories.Add(StickerHelper.CATEGORY_INDIANS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_DOGGY);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_TROLL);
             }
             if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY) != null)
             {
