@@ -975,6 +975,14 @@ namespace windows_client.utils
             {
                 listCategories.Add(StickerHelper.CATEGORY_INDIANS);
             }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_DOGGY);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_TROLL);
+            }
             if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY) != null)
             {
                 listCategories.Add(StickerHelper.CATEGORY_JELLY);
