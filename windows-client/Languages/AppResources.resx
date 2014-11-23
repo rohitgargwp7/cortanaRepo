@@ -1365,7 +1365,7 @@ Download it like asap from http://hike.in!</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>Great! {0} will now able to see your Last Seen and Status Updates.</value>
+    <value>Great! {0} will now be able to see your Last Seen and Status Updates.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
@@ -2299,7 +2299,7 @@ Download it like asap from http://hike.in!</value>
   <data name="PinHistory_Header_Txt" xml:space="preserve">
     <value>pin history</value>
   </data>
-  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+  <data name="CT_VideoNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
   <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
@@ -2341,6 +2341,9 @@ Download it like asap from http://hike.in!</value>
   </data>
   <data name="ExceptionMessage_Text" xml:space="preserve">
     <value>Something went wrong in hike. Please tap ok to email the crash report. We'll try and fix it.</value>
+  </data>
+  <data name="CT_ImageNotOpenable_Text" xml:space="preserve">
+    <value>Can't open this image. It seems to be corrupt.</value>
   </data>
   <data name="SetupHiddenMode_SubTxt" xml:space="preserve">
     <value>let's hide your chats</value>

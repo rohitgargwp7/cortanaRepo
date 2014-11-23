@@ -22,20 +22,25 @@ namespace windows_client.View
         ObservableCollection<PhotoItem> listPic;
         ApplicationBarIconButton picturesUpload;
         ApplicationBarIconButton deleteIcon;
-        
+
         /// <summary>
         /// total number of images selected by user for preview
         /// </summary>
         int totalCount = 0;
         bool showQualityPage;
+
         public PreviewImages()
         {
             InitializeComponent();
             InitialiseAppBar();
-           
+
             listPic = new ObservableCollection<PhotoItem>();
             shellProgressPhotos.Visibility = Visibility.Visible;
-           
+            Loaded += PreviewImages_Loaded;
+        }
+
+        void PreviewImages_Loaded(object sender, RoutedEventArgs e)
+        {
             BindPivotPhotos();
         }
 
@@ -145,18 +150,29 @@ namespace windows_client.View
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            Image img = new Image();
-            img.Source = photo.ImageSource;
-            img.VerticalAlignment = VerticalAlignment.Center;
-            img.HorizontalAlignment = HorizontalAlignment.Center;
-            img.Stretch = Stretch.None;
-            img.Margin = new Thickness(0);
+            try
+            {
+                Image img = new Image();
+                img.Source = photo.ImageSource;
+                img.VerticalAlignment = VerticalAlignment.Center;
+                img.HorizontalAlignment = HorizontalAlignment.Center;
+                img.Stretch = Stretch.None;
+                img.Margin = new Thickness(0);
 
-            grid.Children.Add(img);
-            pvtItem.Content = grid;
-            pvtItem.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pvtItem.VerticalAlignment = VerticalAlignment.Stretch;
-            pvtItem.Margin = pvtItem.Padding = new Thickness(0);
+                grid.Children.Add(img);
+                pvtItem.Content = grid;
+                pvtItem.HorizontalAlignment = HorizontalAlignment.Stretch;
+                pvtItem.VerticalAlignment = VerticalAlignment.Stretch;
+                pvtItem.Margin = pvtItem.Padding = new Thickness(0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show (AppResources.CT_ImageNotOpenable_Text, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
+
+                if (NavigationService.CanGoBack)
+                    NavigationService.GoBack();
+            }
+
             return pvtItem;
         }
 
@@ -237,8 +253,9 @@ namespace windows_client.View
 
         private void pivotPhotos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (pivotPhotos.SelectedIndex < 0)
+            if (pivotPhotos.SelectedIndex < 0 || lbThumbnails.SelectedIndex < 0)
                 return;
+
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
                 headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, pivotPhotos.SelectedIndex + 1, totalCount);
