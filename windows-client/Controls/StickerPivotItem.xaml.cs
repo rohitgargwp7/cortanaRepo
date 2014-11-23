@@ -20,20 +20,29 @@ namespace windows_client.Controls
 {
     public partial class StickerPivotItem : UserControl
     {
-        private int _pivotIndex;
         private string _category;
-        public StickerPivotItem(int pivotIndex, string category)
+        public string StickerCategory
+        {
+            get
+            {
+                return _category;
+            }
+        }
+
+        public StickerPivotItem()
         {
             InitializeComponent();
             llsStickerCategory.Tap += Stickers_Tap;
-            //  llsStickerCategory.ItemsSource = listStickers;item source will be set when that particular category would be tapped
-            _pivotIndex = pivotIndex;
-            _category = category;
         }
 
-        public void SetLlsSource(ObservableCollection<StickerObj> listStickers)
+        public void UpdateStickerPivot(StickerCategory stickerCategoryObj)
         {
-            llsStickerCategory.ItemsSource = listStickers;
+            if (stickerCategoryObj.Category == StickerHelper.CATEGORY_RECENT)
+                llsStickerCategory.ItemsSource = HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers;
+            else
+                llsStickerCategory.ItemsSource = stickerCategoryObj.ListStickers;
+            _category = stickerCategoryObj.Category;
+            ShowHidMoreProgreesBar(stickerCategoryObj.IsDownLoading);
         }
         public void SetLlsSourceList(List<StickerObj> listStickers)
         {
@@ -116,14 +125,6 @@ namespace windows_client.Controls
             if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null)
             {
                 App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
-            }
-        }
-
-        public int PivotItemIndex
-        {
-            get
-            {
-                return _pivotIndex;
             }
         }
 

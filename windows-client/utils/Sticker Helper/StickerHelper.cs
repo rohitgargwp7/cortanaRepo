@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -398,8 +399,9 @@ namespace windows_client.utils
             return null;
         }
 
-        public static void CreateCategory(string category)
+        public static StickerCategory CreateCategory(string category)
         {
+            StickerCategory stickerCategory;
             lock (readWriteLock)
             {
                 string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
@@ -419,7 +421,7 @@ namespace windows_client.utils
                         store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
                     }
                     string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
-                    StickerCategory stickerCategory = new StickerCategory(category);
+                    stickerCategory = new StickerCategory(category);
                     if (store.FileExists(metadataFile))
                     {
                         using (var file = store.OpenFile(metadataFile, FileMode.Open, FileAccess.Read))
@@ -451,6 +453,7 @@ namespace windows_client.utils
                 }
 
             }
+            return stickerCategory;
         }
 
         public static List<StickerCategory> ReadAllStickerCategories()
@@ -924,12 +927,79 @@ namespace windows_client.utils
                     if (categoryJobj.TryGetValue("visibility", out jtoken) && (int)jtoken == 1)
                     {
                         string category = (string)categoryJobj["catId"];
-                        CreateCategory(category);
+                        HikeViewModel.StickerHelper.DictStickersCategories[category] = CreateCategory(category);
                         listCaetgories.Add(category);
                     }
                 }
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, listCaetgories.Count > 0 ? listCaetgories : null);
+                if (App.newChatThreadPage != null)
+                    App.newChatThreadPage.UpdateCategoryOrder(GetStickerCategoryOrder());
             }
+        }
+
+        public static List<string> GetStickerCategoryOrder()
+        {
+            List<string> listCategories = new List<string>();
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_RECENT);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_HUMANOID);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_EXPRESSIONS);
+            }
+            List<string> listRegionalCategory;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
+            {
+                foreach (string category in listRegionalCategory)
+                {
+                    if (HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
+                    {
+                        listCategories.Add(category);
+                    }
+                }
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_LOVE);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_BOLLYWOOD);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_INDIANS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_JELLY);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_SPORTS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_HUMANOID2);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_AVATARS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_KITTY);
+            }
+            return listCategories;
         }
     }
 }
