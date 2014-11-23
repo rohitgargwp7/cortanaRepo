@@ -499,10 +499,7 @@ namespace windows_client.View
             emotList3.ItemsSource = imagePathsForList3;
 
             bw.RunWorkerAsync();
-
-            cameraCaptureTask = new CameraCaptureTask();
-            cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-
+            
             if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && !string.IsNullOrWhiteSpace(App.ViewModel.ConvMap[mContactNumber].DraftMessage))
             {
                 _isDraftMessage = true;
@@ -704,7 +701,16 @@ namespace windows_client.View
                 MultipleImagesTransfer();
             }
             #endregion
+            #region CAMERA IMAGE
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CAMERA_IMAGE))
+            {
+                BitmapImage image = UI_Utils.Instance.createImageFromBytes(PhoneApplicationService.Current.State[HikeConstants.CAMERA_IMAGE] as byte[]);
+                SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.CAMERA);
 
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_QUALITY);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.CAMERA_IMAGE);
+            }
+            #endregion
             #region Server Tips
 
             ShowServerTips();
@@ -2898,34 +2904,6 @@ namespace windows_client.View
             spSmsCharCounter.Visibility = Visibility.Collapsed;
         }
 
-        void photoChooserTask_Completed(object sender, PhotoResult e)
-        {
-            emoticonPanel.Visibility = Visibility.Collapsed;
-
-            if ((!isOnHike && mCredits <= 0))
-                return;
-
-            if (e.TaskResult == TaskResult.OK)
-            {
-                Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage();
-                image.SetSource(e.ChosenPhoto);
-                try
-                {
-                    SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.CAMERA);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
-                }
-            }
-            else if (e.TaskResult == TaskResult.Cancel)
-            {
-                if (e.Error != null)
-                    MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
-            }
-        }
-
         private bool SendImage(BitmapImage image, string fileName, Attachment.AttachemntSource source)
         {
             if (!isGroupChat || isGroupAlive)
@@ -3599,10 +3577,15 @@ namespace windows_client.View
         }
         private void clickPhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            
             try
-            {
-                cameraCaptureTask.Show();
+            {                
                 attachmentMenu.Visibility = Visibility.Collapsed;
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+
+                PhoneApplicationService.Current.State[HikeConstants.SELECT_CAMERA_IMAGE] = true;
+                NavigationService.Navigate(new Uri("/View/SetImageQuality.xaml", UriKind.RelativeOrAbsolute));                
             }
             catch (Exception ex)
             {
@@ -5180,8 +5163,17 @@ namespace windows_client.View
                     //Add delay so that each message has different timestamps and equals function for convmessages runs correctly
                     await Task.Delay(1);
 
-                    if (!SendImage(pic.ImageSource, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.GALLERY))
-                        break;
+                    try
+                    {
+                        BitmapImage image = new BitmapImage();
+                        image.SetSource(pic.Pic.GetImage()); // GetImage can throw exception if image is corrupt
+
+                        //Prevent memory leak
+                        SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString(), Attachment.AttachemntSource.GALLERY);
+                    }
+                    catch
+                    {
+                    }
 
                     pic.Pic.Dispose();
                 }

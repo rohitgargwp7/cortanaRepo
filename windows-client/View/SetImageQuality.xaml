@@ -21,69 +21,70 @@
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <!--TitlePanel contains the name of the application and page title-->
-        <Grid Margin="37,30,0,0">
-            <TextBlock FontFamily="Segoe UI SemiLight" FontSize="41" Foreground="White" Name="ImageQualityHeader" Text="{Binding Path=LocalizedResources.ImageQualityPageHeader,Source={StaticResource LocalizedStrings}}" />
-        </Grid>
-
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="37,50,0,0" VerticalAlignment="Top">
+        <Grid x:Name="ContentGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ListBox Foreground="White" ScrollViewer.VerticalScrollBarVisibility="Disabled" x:Name="ImageQualityBox">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBoxItem IsSelected="True">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Normal_Txt,Source={StaticResource LocalizedStrings}}" />
-                        <TextBlock FontFamily="Segoe UI Regular" FontSize="19"  Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Faster_Txt,Source={StaticResource LocalizedStrings}}" />
-                    </Grid>
-                </ListBoxItem>
-                <ListBoxItem Margin="0,15,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Better_Txt,Source={StaticResource LocalizedStrings}}" />
-                        <TextBlock FontFamily="Segoe UI Regular" FontSize="19" Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Fast_Txt,Source={StaticResource LocalizedStrings}}" />
-                    </Grid>
-                </ListBoxItem>
-                <ListBoxItem Margin="0,15,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Best_Txt,Source={StaticResource LocalizedStrings}}" />
-                        <TextBlock FontFamily="Segoe UI Regular" FontSize="19" Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Slow_Txt,Source={StaticResource LocalizedStrings}}" />
-                    </Grid>
-                </ListBoxItem>
-            </ListBox>
-        </Grid>
-        <Grid x:Name="Footer" Grid.Row="2" Margin="0,50,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Height="16" Width="16" Margin="37,7,0,1" VerticalAlignment="Top" Source="/View/images/notification_Image.png"/>
-            <TextBlock Foreground="#FFFFFF" Grid.Column="1" TextWrapping="Wrap" Margin="7,0,0,0" Text="{Binding Path=LocalizedResources.SetImageQuality_info_Txt,Source={StaticResource LocalizedStrings}}" />
+
+            <!--TitlePanel contains the name of the application and page title-->
+            <Grid Margin="37,30,0,0">
+                <TextBlock FontFamily="Segoe UI SemiLight" FontSize="41" Foreground="White" Name="ImageQualityHeader" Text="{Binding Path=LocalizedResources.ImageQualityPageHeader,Source={StaticResource LocalizedStrings}}" />
+            </Grid>
+
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="37,50,0,0" VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListBox Foreground="White" ScrollViewer.VerticalScrollBarVisibility="Disabled" x:Name="ImageQualityBox">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBoxItem IsSelected="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Normal_Txt,Source={StaticResource LocalizedStrings}}" />
+                            <TextBlock FontFamily="Segoe UI Regular" FontSize="19"  Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Faster_Txt,Source={StaticResource LocalizedStrings}}" />
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem Margin="0,15,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Better_Txt,Source={StaticResource LocalizedStrings}}" />
+                            <TextBlock FontFamily="Segoe UI Regular" FontSize="19" Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Fast_Txt,Source={StaticResource LocalizedStrings}}" />
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem Margin="0,15,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource ListBoxItemTextBlock}" Text="{Binding Path=LocalizedResources.SetImageQuality_Best_Txt,Source={StaticResource LocalizedStrings}}" />
+                            <TextBlock FontFamily="Segoe UI Regular" FontSize="19" Grid.Row="1" Foreground="#7E7E7E" Text="{Binding Path=LocalizedResources.SetImageQuality_Slow_Txt,Source={StaticResource LocalizedStrings}}" />
+                        </Grid>
+                    </ListBoxItem>
+                </ListBox>
+            </Grid>
+            <Grid x:Name="Footer" Grid.Row="2" Margin="0,50,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Height="16" Width="16" Margin="37,7,0,1" VerticalAlignment="Top" Source="/View/images/notification_Image.png"/>
+                <TextBlock Foreground="#FFFFFF" Grid.Column="1" TextWrapping="Wrap" Margin="7,0,0,0" Text="{Binding Path=LocalizedResources.SetImageQuality_info_Txt,Source={StaticResource LocalizedStrings}}" />
+            </Grid>
         </Grid>
     </Grid>
-
 </phone:PhoneApplicationPage>

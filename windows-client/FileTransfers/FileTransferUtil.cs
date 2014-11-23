@@ -87,9 +87,6 @@ namespace windows_client.FileTransfers
                 adjustedHeight = (height * adjustedWidth) / width;
             }
         }
-
-
     }
-
 }
 

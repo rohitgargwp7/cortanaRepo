@@ -325,6 +325,8 @@ namespace windows_client
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
         public static string MULTIPLE_IMAGES = "multipleimages";
+        public static string SELECT_CAMERA_IMAGE = "sltCamImg";
+        public static string CAMERA_IMAGE = "cameraImage";
         public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
         public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
         public static string LOCATION_SEARCH = "locationSearch";
