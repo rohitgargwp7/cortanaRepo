@@ -2914,12 +2914,12 @@ namespace windows_client.View
             {
                 byte[] thumbnailBytes;
                 byte[] fileBytes;
-                int qIndex = 0;
+                ImageQuality qIndex = ImageQuality.Normal;
 
                 if (!App.appSettings.TryGetValue(HikeConstants.SET_IMAGE_QUALITY, out qIndex))
                 {
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_QUALITY))
-                        qIndex = (int)PhoneApplicationService.Current.State[HikeConstants.IMAGE_QUALITY];
+                        qIndex = (ImageQuality)(byte)PhoneApplicationService.Current.State[HikeConstants.IMAGE_QUALITY];
                 }
 
                 FileTransferUtil.GetCompressedJPEGImage(image, fileName, qIndex, out thumbnailBytes, out fileBytes);

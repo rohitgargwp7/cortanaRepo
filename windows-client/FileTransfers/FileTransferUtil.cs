@@ -13,12 +13,12 @@ namespace windows_client.FileTransfers
 {
     public class FileTransferUtil
     {
-        public static void GetCompressedJPEGImage(BitmapImage image, string fileName, int qualityIndex, out byte[] thumbnailBytes, out byte[] fileBytes)
+        public static void GetCompressedJPEGImage(BitmapImage image, string fileName,ImageQuality qualityIndex, out byte[] thumbnailBytes, out byte[] fileBytes)
         {
             int qFactor = FileTransferConstants.IMAGE_QUALITY_NORMAL;
-            if (qualityIndex == (int)ImageQuality.Normal)
+            if (qualityIndex == ImageQuality.Normal)
                 qFactor = FileTransferConstants.IMAGE_QUALITY_NORMAL;
-            else if (qualityIndex == (int)ImageQuality.Better)
+            else if (qualityIndex == ImageQuality.Better)
                 qFactor = FileTransferConstants.IMAGE_QUALITY_BETTER;
             else
                 qFactor = FileTransferConstants.IMAGE_QUALITY_BEST;
@@ -59,7 +59,6 @@ namespace windows_client.FileTransfers
                 writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, qFactor);
                 fileBytes = msLargeImage.ToArray();
             }
-
         }
 
         private static void AdjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)

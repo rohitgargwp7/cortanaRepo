@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.Languages;
+using windows_client.FileTransfers;
 
 namespace windows_client.View
 {
@@ -17,7 +18,7 @@ namespace windows_client.View
         {
             InitializeComponent();
             int selIndex;
-
+            ImageQuality imgQlty;
             if (!App.appSettings.TryGetValue(HikeConstants.AUTO_DOWNLOAD_IMAGE, out selIndex))
                 selIndex = 2;
 
@@ -33,8 +34,10 @@ namespace windows_client.View
 
             autoDownloadVideoListPicker.SelectedIndex = selIndex;
 
-            if (!App.appSettings.TryGetValue(HikeConstants.SET_IMAGE_QUALITY, out selIndex))
+            if (!App.appSettings.TryGetValue(HikeConstants.SET_IMAGE_QUALITY, out imgQlty))
                 selIndex = 3;
+            else
+                selIndex = (int)imgQlty;
 
             setImageQualityListPicker.SelectedIndex = selIndex;
 
@@ -65,7 +68,7 @@ namespace windows_client.View
             if (listPicker.SelectedIndex == 3)
                 App.RemoveKeyFromAppSettings(HikeConstants.SET_IMAGE_QUALITY);                
             else
-                App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), listPicker.SelectedIndex);                
+                App.WriteToIsoStorageSettings(listPicker.Tag.ToString(), (ImageQuality)(byte)listPicker.SelectedIndex);                
         }     
 
         private void MediaSettings_ListPicker_Loaded(object sender, RoutedEventArgs e)

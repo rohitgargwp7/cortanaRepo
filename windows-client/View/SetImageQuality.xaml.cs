@@ -14,6 +14,7 @@ using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Diagnostics;
+using windows_client.FileTransfers;
 
 namespace windows_client.View
 {
@@ -48,7 +49,7 @@ namespace windows_client.View
         /// </summary>
         private void OnPicturesUploadClick(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_QUALITY] = ImageQualityBox.SelectedIndex;
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_QUALITY] = (ImageQuality)(byte)ImageQualityBox.SelectedIndex;
             
             if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CAMERA_IMAGE))
             {
