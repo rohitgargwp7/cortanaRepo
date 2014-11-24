@@ -340,7 +340,7 @@ namespace windows_client.View
                 e.Cancel = true;
             }
             else
-                //go back and cleat thumbnail cache
+                //go back and clear thumbnail cache
                 App.ViewModel.ClearMFtImageCache();
             base.OnBackKeyPress(e);
         }

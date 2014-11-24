@@ -1498,7 +1498,7 @@ private copy.
         </StackPanel>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="AutoDownloadListPicker" TargetType="toolkit:ListPicker">
+    <ControlTemplate x:Key="MediaSettingsListPicker" TargetType="toolkit:ListPicker">
         <StackPanel>
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="PickerStates">

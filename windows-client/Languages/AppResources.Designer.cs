@@ -331,7 +331,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to auto download audio.
+        ///   Looks up a localized string similar to Auto download audio.
         /// </summary>
         public static string AutoDownloadSettings_Audio_Txt {
             get {
@@ -340,7 +340,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to auto download image.
+        ///   Looks up a localized string similar to Auto download image.
         /// </summary>
         public static string AutoDownloadSettings_Image_Txt {
             get {
@@ -349,7 +349,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to auto download video.
+        ///   Looks up a localized string similar to Auto download video.
         /// </summary>
         public static string AutoDownloadSettings_Video_Txt {
             get {
@@ -2830,6 +2830,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to image quality.
+        /// </summary>
+        public static string imageQuality_txt {
+            get {
+                return ResourceManager.GetString("imageQuality_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to choose image quality.
+        /// </summary>
+        public static string ImageQualityPageHeader {
+            get {
+                return ResourceManager.GetString("ImageQualityPageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tap here to share our awesome emoticons :).
         /// </summary>
         public static string In_App_Tip_1 {
@@ -4792,6 +4810,87 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ask every time.
+        /// </summary>
+        public static string SetImageQuality_AskEveryTime_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_AskEveryTime_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to uncompressed.
+        /// </summary>
+        public static string SetImageQuality_Best_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Best_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to better quality.
+        /// </summary>
+        public static string SetImageQuality_Better_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Better_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to fast.
+        /// </summary>
+        public static string SetImageQuality_Fast_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Fast_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to faster.
+        /// </summary>
+        public static string SetImageQuality_Faster_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Faster_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to you can set default preference by going to settings &gt; media.
+        /// </summary>
+        public static string SetImageQuality_info_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_info_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to normal quality.
+        /// </summary>
+        public static string SetImageQuality_Normal_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Normal_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to slow.
+        /// </summary>
+        public static string SetImageQuality_Slow_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Slow_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set image quality.
+        /// </summary>
+        public static string SetImageQuality_Txt {
+            get {
+                return ResourceManager.GetString("SetImageQuality_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
@@ -4891,7 +4990,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to dark theme, auto download, location service and more.
+        ///   Looks up a localized string similar to dark theme, disable nudge, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {
@@ -5026,7 +5125,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to auto download, image quality and more.
+        ///   Looks up a localized string similar to image quality, auto download and more.
         /// </summary>
         public static string SettingsSubtitle_Media_Txt {
             get {

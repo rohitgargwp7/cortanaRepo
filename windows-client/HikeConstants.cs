@@ -204,7 +204,9 @@ namespace windows_client
         #region AUTODOWNLOAD KEYS
         public static readonly string AUTO_DOWNLOAD_IMAGE = "autoDownloadImage";
         public static readonly string AUTO_DOWNLOAD_AUDIO = "autoDownloadAudio";
-        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";        
+        public static readonly string AUTO_DOWNLOAD_VIDEO = "autoDownloadVideo";
+        public static readonly string SET_IMAGE_QUALITY = "setImageQuality";            //Image Quality Setting in Media Settings
+        public static readonly string IMAGE_QUALITY = "imageQuality";                   //Image Quality Selection on SetImageQuality Page
         #endregion
 
         #region ConvObject_MetaData
@@ -323,6 +325,8 @@ namespace windows_client
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         public static string PLAYER_TIMER = "playerTimer";
         public static string MULTIPLE_IMAGES = "multipleimages";
+        public static string SELECT_CAMERA_IMAGE = "sltCamImg";
+        public static string CAMERA_IMAGE = "cameraImage";
         public static string LOCATION_MAP_COORDINATE = "locationMapCoordinate";
         public static string LOCATION_DEVICE_COORDINATE = "locationDeviceCoordinate";
         public static string LOCATION_SEARCH = "locationSearch";

@@ -184,7 +184,9 @@
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfers\FileDownloader.cs" />
     <Compile Include="FileTransfers\FileInfoBase.cs" />
+    <Compile Include="FileTransfers\FileTransferConstants.cs" />
     <Compile Include="FileTransfers\FileTransferManager.cs" />
+    <Compile Include="FileTransfers\FileTransferUtil.cs" />
     <Compile Include="FileTransfers\FileUploader.cs" />
     <Compile Include="FileTransfers\FileTransferState.cs" />
     <Compile Include="FileTransfers\FileTransferSatatusChangedEventArgs.cs" />
@@ -323,6 +325,9 @@
     </Compile>
     <Compile Include="View\SelectUser.xaml.cs">
       <DependentUpon>SelectUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetImageQuality.xaml.cs">
+      <DependentUpon>SetImageQuality.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -486,6 +491,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SelectUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SetImageQuality.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -789,6 +798,7 @@
     <Content Include="View\images\settings\hike_h2h_icon.png" />
     <Content Include="View\images\settings\hike_h2s_icon.png" />
     <Content Include="View\images\settings\hike_sms_icon.png" />
+    <Content Include="View\images\settings\media.png" />
     <Content Include="View\images\settings\message.png" />
     <Content Include="View\images\settings\notifications.png" />
     <Content Include="View\images\settings\preferences.png" />
