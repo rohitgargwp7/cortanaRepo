@@ -804,6 +804,7 @@ namespace windows_client.ViewModel
                         convMessage.FileAttachment.FileKey = (string)attachmentData[4];
                         convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
                         convMessage.FileAttachment.FileName = (string)attachmentData[6];
+                        convMessage.FileAttachment.FileSize = (int)attachmentData[7];
                         convMessage.FileAttachment.FileSource = Attachment.AttachemntSource.FORWARDED;
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
@@ -837,6 +838,7 @@ namespace windows_client.ViewModel
                         object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = sourceFilePath;
+
                         App.HikePubSubInstance.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                     }
                 }
