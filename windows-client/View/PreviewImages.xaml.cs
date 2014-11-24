@@ -19,22 +19,26 @@ namespace windows_client.View
 {
     public partial class PreviewImages : PhoneApplicationPage
     {
-        ObservableCollection<PhotoItem> listPic;
-        ApplicationBarIconButton picturesUpload;
-        ApplicationBarIconButton deleteIcon;
+        ObservableCollection<PhotoItem> _listPic;
+        ApplicationBarIconButton _picturesUpload;
+        ApplicationBarIconButton _deleteIcon;
 
         /// <summary>
         /// total number of images selected by user for preview
         /// </summary>
-        int totalCount = 0;
-        bool showQualityPage;
+        int _totalCount = 0;
+
+        /// <summary>
+        /// Variable to identify if SML page needs to be displayed depending upon Media Settings
+        /// </summary>
+        bool _showQualityPage;
 
         public PreviewImages()
         {
             InitializeComponent();
             InitialiseAppBar();
 
-            listPic = new ObservableCollection<PhotoItem>();
+            _listPic = new ObservableCollection<PhotoItem>();
             shellProgressPhotos.Visibility = Visibility.Visible;
             Loaded += PreviewImages_Loaded;
         }
@@ -74,28 +78,28 @@ namespace windows_client.View
             ApplicationBar.Opacity = 0.5;
 
             //Add "Image Quality" selection button if user media setting is "ask every time" else add "send" button
-            picturesUpload = new ApplicationBarIconButton();
+            _picturesUpload = new ApplicationBarIconButton();
             if (App.appSettings.Contains(HikeConstants.SET_IMAGE_QUALITY))
             {
-                showQualityPage = false;                
-                picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
-                picturesUpload.Text = AppResources.Send_Txt;                
+                _showQualityPage = false;                
+                _picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
+                _picturesUpload.Text = AppResources.Send_Txt;                
             }
             else
             {
-                showQualityPage = true;
-                picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
-                picturesUpload.Text = AppResources.imageQuality_txt;
+                _showQualityPage = true;
+                _picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_tick.png", UriKind.RelativeOrAbsolute);
+                _picturesUpload.Text = AppResources.imageQuality_txt;
             }
-            picturesUpload.Click += OnPicturesUploadClick;
-            ApplicationBar.Buttons.Add(picturesUpload);
+            _picturesUpload.Click += OnPicturesUploadClick;
+            ApplicationBar.Buttons.Add(_picturesUpload);
 
-            deleteIcon = new ApplicationBarIconButton();
-            deleteIcon.IconUri = new Uri("/View/images/AppBar/appbar.delete.png", UriKind.RelativeOrAbsolute);
-            deleteIcon.Text = AppResources.Delete_Txt;
-            deleteIcon.Click += deleteIcon_Click;
+            _deleteIcon = new ApplicationBarIconButton();
+            _deleteIcon.IconUri = new Uri("/View/images/AppBar/appbar.delete.png", UriKind.RelativeOrAbsolute);
+            _deleteIcon.Text = AppResources.Delete_Txt;
+            _deleteIcon.Click += deleteIcon_Click;
 
-            ApplicationBar.Buttons.Add(deleteIcon);
+            ApplicationBar.Buttons.Add(_deleteIcon);
         }
 
         public void BindPivotPhotos()
@@ -107,7 +111,7 @@ namespace windows_client.View
                 List<PhotoItem> listSelectedPic = (List<PhotoItem>)obj;
                 foreach (PhotoItem photo in listSelectedPic)
                 {
-                    listPic.Add(photo);
+                    _listPic.Add(photo);
                     PivotItem pvt = GetPivotItem(photo);
                     pivotPhotos.Items.Add(pvt);
                     //marking first object as selected on page load and others as unselected as same object is used on to and fro, it wont get unselected itself
@@ -120,16 +124,16 @@ namespace windows_client.View
                         photo.IsSelected = false;
                 }
 
-                totalCount = listPic.Count;
-                if (listPic.Count < HikeConstants.MAX_IMAGES_SHARE)
+                _totalCount = _listPic.Count;
+                if (_listPic.Count < HikeConstants.MAX_IMAGES_SHARE)
                 {
                     PhotoItem photo = new PhotoItem(null);//to show add new image
                     photo.AddMoreImage = true;
-                    listPic.Add(photo);
+                    _listPic.Add(photo);
                 }
             }
-            headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, 1, totalCount);
-            lbThumbnails.ItemsSource = listPic;
+            headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, 1, _totalCount);
+            lbThumbnails.ItemsSource = _listPic;
             lbThumbnails.SelectedIndex = 0;
             pivotPhotos.SelectedIndex = 0;
 
@@ -186,12 +190,12 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.MULTIPLE_IMAGES, out obj))
             {
                 //update counter so that header text can be updated
-                totalCount--;
+                _totalCount--;
                 List<PhotoItem> listSelectedPic = (List<PhotoItem>)obj;
                 int index = lbThumbnails.SelectedIndex;
                 listSelectedPic.RemoveAt(index);
                 pivotPhotos.Items.RemoveAt(index);
-                listPic.RemoveAt(index);
+                _listPic.RemoveAt(index);
 
                 //if zeroith image is deleted then selected image should be next one else previous one 
                 //it will call selection change event and other ui elements would be updated
@@ -201,18 +205,18 @@ namespace windows_client.View
                     NavigationService.GoBack();
 
                 //if add more doesnot exist previously then add it to list
-                if (!listPic[listPic.Count - 1].AddMoreImage)
+                if (!_listPic[_listPic.Count - 1].AddMoreImage)
                 {
                     PhotoItem photo = new PhotoItem(null);//to show add new image
                     photo.AddMoreImage = true;
-                    listPic.Add(photo);
+                    _listPic.Add(photo);
                 }
             }
         }
 
         private void OnPicturesUploadClick(object sender, EventArgs e)
         {            
-            if (showQualityPage)
+            if (_showQualityPage)
             {
                 NavigationService.Navigate(new Uri("/View/SetImageQuality.xaml", UriKind.RelativeOrAbsolute));
             }
@@ -232,7 +236,7 @@ namespace windows_client.View
                 return;
 
             //on tapping add more go back to previous page to add more image
-            if (listPic[lbThumbnails.SelectedIndex].AddMoreImage)
+            if (_listPic[lbThumbnails.SelectedIndex].AddMoreImage)
             {
                 if (NavigationService.CanGoBack)
                     NavigationService.GoBack();
@@ -241,10 +245,10 @@ namespace windows_client.View
 
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
-                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, lbThumbnails.SelectedIndex + 1, totalCount);
+                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, lbThumbnails.SelectedIndex + 1, _totalCount);
 
-                listPic[pivotPhotos.SelectedIndex].IsSelected = false;
-                PhotoItem photo = listPic[lbThumbnails.SelectedIndex];
+                _listPic[pivotPhotos.SelectedIndex].IsSelected = false;
+                PhotoItem photo = _listPic[lbThumbnails.SelectedIndex];
                 photo.IsSelected = true;
                 lbThumbnails.ScrollIntoView(photo);
                 pivotPhotos.SelectedIndex = lbThumbnails.SelectedIndex;
@@ -258,10 +262,10 @@ namespace windows_client.View
 
             if (pivotPhotos.SelectedIndex != lbThumbnails.SelectedIndex || (pivotPhotos.SelectedIndex == 0 && lbThumbnails.SelectedIndex == 0))
             {
-                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, pivotPhotos.SelectedIndex + 1, totalCount);
+                headerText.Text = string.Format(AppResources.PreviewImages_Header_txt, pivotPhotos.SelectedIndex + 1, _totalCount);
 
-                listPic[lbThumbnails.SelectedIndex].IsSelected = false;
-                PhotoItem photo = listPic[pivotPhotos.SelectedIndex];
+                _listPic[lbThumbnails.SelectedIndex].IsSelected = false;
+                PhotoItem photo = _listPic[pivotPhotos.SelectedIndex];
                 photo.IsSelected = true;
                 lbThumbnails.ScrollIntoView(photo);
                 lbThumbnails.SelectedIndex = pivotPhotos.SelectedIndex;

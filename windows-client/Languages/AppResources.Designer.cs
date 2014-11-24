@@ -331,7 +331,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Download Audio.
+        ///   Looks up a localized string similar to Auto download audio.
         /// </summary>
         public static string AutoDownloadSettings_Audio_Txt {
             get {
@@ -340,7 +340,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Download Image.
+        ///   Looks up a localized string similar to Auto download image.
         /// </summary>
         public static string AutoDownloadSettings_Image_Txt {
             get {
@@ -349,7 +349,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Download Video.
+        ///   Looks up a localized string similar to Auto download video.
         /// </summary>
         public static string AutoDownloadSettings_Video_Txt {
             get {
@@ -4882,7 +4882,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set Image Quality.
+        ///   Looks up a localized string similar to Set image quality.
         /// </summary>
         public static string SetImageQuality_Txt {
             get {

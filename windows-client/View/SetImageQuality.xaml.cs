@@ -19,9 +19,8 @@ namespace windows_client.View
 {
     public partial class SetImageQuality : PhoneApplicationPage
     {
-        ApplicationBarIconButton picturesUpload;
-
-        private CameraCaptureTask cameraCaptureTask;
+        ApplicationBarIconButton _picturesUpload;
+        CameraCaptureTask _cameraCaptureTask;
 
         public SetImageQuality()
         {
@@ -37,11 +36,11 @@ namespace windows_client.View
                 BackgroundColor = (Color)App.Current.Resources["AppBarBlackBackgroundColor"],
             };
 
-            picturesUpload = new ApplicationBarIconButton();
-            picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
-            picturesUpload.Text = AppResources.Send_Txt;
-            picturesUpload.Click += OnPicturesUploadClick;
-            ApplicationBar.Buttons.Add(picturesUpload);
+            _picturesUpload = new ApplicationBarIconButton();
+            _picturesUpload.IconUri = new Uri("/View/images/AppBar/icon_send.png", UriKind.RelativeOrAbsolute);
+            _picturesUpload.Text = AppResources.Send_Txt;
+            _picturesUpload.Click += OnPicturesUploadClick;
+            ApplicationBar.Buttons.Add(_picturesUpload);
         }
 
         /// <summary>
@@ -121,9 +120,9 @@ namespace windows_client.View
                     ContentGrid.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
 
-                    cameraCaptureTask = new CameraCaptureTask();
-                    cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-                    cameraCaptureTask.Show();
+                    _cameraCaptureTask = new CameraCaptureTask();
+                    _cameraCaptureTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+                    _cameraCaptureTask.Show();
                     PhoneApplicationService.Current.State.Remove(HikeConstants.SELECT_CAMERA_IMAGE);
                 }
             }

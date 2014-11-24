@@ -2361,13 +2361,13 @@ Download it like asap from http://hike.in!</value>
     <value>wifi</value>
   </data>
   <data name="AutoDownloadSettings_Audio_Txt" xml:space="preserve">
-    <value>Auto Download Audio</value>
+    <value>Auto download audio</value>
   </data>
   <data name="AutoDownloadSettings_Image_Txt" xml:space="preserve">
-    <value>Auto Download Image</value>
+    <value>Auto download image</value>
   </data>
   <data name="AutoDownloadSettings_Video_Txt" xml:space="preserve">
-    <value>Auto Download Video</value>
+    <value>Auto download video</value>
   </data>
   <data name="SettingsSubtitle_Media_Txt" xml:space="preserve">
     <value>auto download, image quality and more</value>
@@ -2392,7 +2392,7 @@ Download it like asap from http://hike.in!</value>
     <comment>Normal image quality</comment>
   </data>
   <data name="SetImageQuality_Txt" xml:space="preserve">
-    <value>Set Image Quality</value>
+    <value>Set image quality</value>
     <comment>Set Image Quality header on Media page</comment>
   </data>
   <data name="imageQuality_txt" xml:space="preserve">
