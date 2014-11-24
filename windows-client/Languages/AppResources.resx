@@ -1306,7 +1306,7 @@ Download it like asap from http://hike.in!</value>
     <value>preferences</value>
   </data>
   <data name="Settings_PreferencesSettings_Txt" xml:space="preserve">
-    <value>dark theme, auto download, location service and more</value>
+    <value>dark theme, disable nudge, location service and more</value>
   </data>
   <data name="Drag_Here_To_Delete" xml:space="preserve">
     <value>drag here to delete</value>
@@ -2370,7 +2370,7 @@ Download it like asap from http://hike.in!</value>
     <value>Auto download video</value>
   </data>
   <data name="SettingsSubtitle_Media_Txt" xml:space="preserve">
-    <value>auto download, image quality and more</value>
+    <value>image quality, auto download and more</value>
   </data>
   <data name="Settings_MediaSettings_Txt" xml:space="preserve">
     <value>media</value>

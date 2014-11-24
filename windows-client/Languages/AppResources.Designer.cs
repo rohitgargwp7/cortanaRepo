@@ -4990,7 +4990,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to dark theme, auto download, location service and more.
+        ///   Looks up a localized string similar to dark theme, disable nudge, location service and more.
         /// </summary>
         public static string Settings_PreferencesSettings_Txt {
             get {
@@ -5125,7 +5125,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to auto download, image quality and more.
+        ///   Looks up a localized string similar to image quality, auto download and more.
         /// </summary>
         public static string SettingsSubtitle_Media_Txt {
             get {
