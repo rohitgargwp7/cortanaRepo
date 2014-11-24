@@ -3235,7 +3235,7 @@ namespace windows_client.View
                 }
 
                 //done this way as on locking it is unable to serialize convmessage or attachment object
-                object[] attachmentForwardMessage = new object[7];
+                object[] attachmentForwardMessage = new object[8];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
                 attachmentForwardMessage[1] = mContactNumber;
                 attachmentForwardMessage[2] = convMessage.MessageId;
@@ -3243,6 +3243,7 @@ namespace windows_client.View
                 attachmentForwardMessage[4] = convMessage.FileAttachment.FileKey;
                 attachmentForwardMessage[5] = convMessage.FileAttachment.Thumbnail;
                 attachmentForwardMessage[6] = convMessage.FileAttachment.FileName;
+                attachmentForwardMessage[7] = convMessage.FileAttachment.FileSize;
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }
