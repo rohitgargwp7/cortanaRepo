@@ -1134,7 +1134,7 @@ namespace windows_client.View
                     if (metadata != null)
                     {
                         JToken pinId = null;
-                        if (metadata.TryGetValue(HikeConstants.PINID, out pinId) && pinId != null) //to be Checked if value is null && load Last Pin Message
+                        if (metadata.TryGetValue(HikeConstants.PINID, out pinId) && pinId.Type != JTokenType.Null) //to be Checked if value is null && load Last Pin Message
                         {
                             BackgroundWorker latestPinBW = new BackgroundWorker();
                             latestPinBW.RunWorkerCompleted += latestPinBW_RunWorkerCompleted;
