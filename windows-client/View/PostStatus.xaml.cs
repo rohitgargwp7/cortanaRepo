@@ -33,8 +33,6 @@ namespace windows_client.View
         private const int TWITTER_WITH_MOOD_LIMIT = 130;
         private int twitterPostLimit = TWITTER_CHAR_LIMIT;
 
-        HikeToolTip tooltip;
-
         public PostStatus()
         {
             InitializeComponent();

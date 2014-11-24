@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide private chats on app exit.
+        /// </summary>
+        public static string Activate_HiddenMode_on_Exit {
+            get {
+                return ResourceManager.GetString("Activate_HiddenMode_on_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add.
         /// </summary>
         public static string Add_AppBar_Txt {
@@ -592,7 +601,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Great! {0} will now able to see your Last Seen and Status Updates..
+        ///   Looks up a localized string similar to Great! {0} will now be able to see your Last Seen and Status Updates..
         /// </summary>
         public static string ConfimFriendTimeline_Txt {
             get {
@@ -1249,15 +1258,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
-        /// </summary>
-        public static string CT_FileNotOpenable_Text {
-            get {
-                return ResourceManager.GetString("CT_FileNotOpenable_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unsupported video.
         /// </summary>
         public static string CT_FileNotSupported_Caption_Text {
@@ -1294,11 +1294,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t open this image. It seems to be corrupt..
+        /// </summary>
+        public static string CT_ImageNotOpenable_Text {
+            get {
+                return ResourceManager.GetString("CT_ImageNotOpenable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} messages,.
         /// </summary>
         public static string CT_MessageCount_Sms_User {
             get {
                 return ResourceManager.GetString("CT_MessageCount_Sms_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t open this video. It seems to be corrupt..
+        /// </summary>
+        public static string CT_VideoNotOpenable_Text {
+            get {
+                return ResourceManager.GetString("CT_VideoNotOpenable_Text", resourceCulture);
             }
         }
         
@@ -1620,6 +1638,15 @@ namespace windows_client.Languages {
         public static string EmailConv_Header_Txt {
             get {
                 return ResourceManager.GetString("EmailConv_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Posted a Pin .
+        /// </summary>
+        public static string EmailConv_PostedPin_Txt {
+            get {
+                return ResourceManager.GetString("EmailConv_PostedPin_Txt", resourceCulture);
             }
         }
         
@@ -1966,6 +1993,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Oops...
+        /// </summary>
+        public static string ExceptionCaption_Text {
+            get {
+                return ResourceManager.GetString("ExceptionCaption_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong in hike. Please tap ok to email the crash report. We&apos;ll try and fix it..
+        /// </summary>
+        public static string ExceptionMessage_Text {
+            get {
+                return ResourceManager.GetString("ExceptionMessage_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to express yourself.
         /// </summary>
         public static string Express_Yourself_Txt {
@@ -2097,6 +2142,15 @@ namespace windows_client.Languages {
         public static string FileTransfer_NetworkError {
             get {
                 return ResourceManager.GetString("FileTransfer_NetworkError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to upload file.
+        /// </summary>
+        public static string FileTransfer_UploadErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_UploadErrorMsgBoxText", resourceCulture);
             }
         }
         
@@ -2695,7 +2749,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hide chat.
+        ///   Looks up a localized string similar to mark chat as hidden.
         /// </summary>
         public static string Hide_Txt {
             get {
@@ -3631,6 +3685,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to share something important....
+        /// </summary>
+        public static string NewGCPin_Hint_Txt {
+            get {
+                return ResourceManager.GetString("NewGCPin_Hint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new group.
         /// </summary>
         public static string NewGrpChat_Txt {
@@ -3663,6 +3726,15 @@ namespace windows_client.Languages {
         public static string No_Network_Txt {
             get {
                 return ResourceManager.GetString("No_Network_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to no pins yet.
+        /// </summary>
+        public static string No_Pins_Yet {
+            get {
+                return ResourceManager.GetString("No_Pins_Yet", resourceCulture);
             }
         }
         
@@ -3901,6 +3973,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to pin.
+        /// </summary>
+        public static string Pin_Done_Txt {
+            get {
+                return ResourceManager.GetString("Pin_Done_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin can&apos;t be empty.
+        /// </summary>
+        public static string Pin_Empty_Msg {
+            get {
+                return ResourceManager.GetString("Pin_Empty_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to create pin.
+        /// </summary>
+        public static string PinHeader_Txt {
+            get {
+                return ResourceManager.GetString("PinHeader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pin history.
+        /// </summary>
+        public static string PinHistory_Header_Txt {
+            get {
+                return ResourceManager.GetString("PinHistory_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
         public static string Play_File {
@@ -3933,6 +4041,15 @@ namespace windows_client.Languages {
         public static string Please_Try_Again_Txt {
             get {
                 return ResourceManager.GetString("Please_Try_Again_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} posted a pin.
+        /// </summary>
+        public static string Posted_A_Pin_Txt {
+            get {
+                return ResourceManager.GetString("Posted_A_Pin_Txt", resourceCulture);
             }
         }
         
@@ -5323,7 +5440,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unhide chat.
+        ///   Looks up a localized string similar to mark chat as visible.
         /// </summary>
         public static string Unhide_Txt {
             get {
@@ -5467,7 +5584,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} just joined hike, say &apos;Hi&apos; :).
+        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
         /// </summary>
         public static string USER_JOINED_HIKE {
             get {
@@ -5494,7 +5611,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is back on hike. Say hi :).
+        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
         /// </summary>
         public static string USER_REJOINED_HIKE_TXT {
             get {

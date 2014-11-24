@@ -89,6 +89,9 @@ namespace windows_client
         /* published when a message is deleted */
         public static readonly string MESSAGE_DELETED = "messageDeleted";
 
+        /* published when a message is removed from new chat thread OC*/
+        public static readonly string DELETE_FROM_NEWCHATTHREAD_OC = "deleteFromNewChatThreadOC";
+
         public static readonly string MESSAGE_FAILED = "messageFailed";
 
         public static readonly string CONNECTION_STATUS = "connStatus";

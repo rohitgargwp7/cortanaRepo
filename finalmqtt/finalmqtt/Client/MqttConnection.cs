@@ -794,9 +794,10 @@ namespace finalmqtt.Client
         {
             try
             {
-                sendAcknowledement(msg);
                 if (mqttListener != null)
                     mqttListener.onPublish(msg.getTopic(), msg.getData());
+
+                sendAcknowledement(msg);
             }
             catch (Exception ex)
             {

@@ -411,10 +411,9 @@ namespace windows_client.ViewModel
                             showPush = (Boolean)vals[2];
 
                         ConversationListObject mObj = (ConversationListObject)vals[1];
-                        if (mObj == null)
+                        if (mObj == null || !ConvMap.ContainsKey(mObj.Msisdn))
                             return;
 
-                        App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
 
                         if (index < 0)//not present in oc
@@ -618,7 +617,7 @@ namespace windows_client.ViewModel
                 }
             }
 
-            ContactUtils.UpdateGroupCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
+            ContactUtils.UpdateGroupParticpantsCacheWithContactName(contactInfo.Msisdn, contactInfo.Name);
         }
 
         /// <summary>
@@ -806,6 +805,7 @@ namespace windows_client.ViewModel
                         convMessage.FileAttachment.FileKey = (string)attachmentData[4];
                         convMessage.FileAttachment.Thumbnail = (byte[])attachmentData[5];
                         convMessage.FileAttachment.FileName = (string)attachmentData[6];
+                        convMessage.FileAttachment.FileSource = Attachment.AttachemntSource.FORWARDED;
                         convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                         if (contentType.Contains(HikeConstants.IMAGE))

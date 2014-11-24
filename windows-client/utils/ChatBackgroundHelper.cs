@@ -253,7 +253,7 @@ namespace windows_client.utils
                 BackgroundList.Add(new ChatBackground()
                 {
                     ID = "0",
-                    Background = "#ff1b1b1b",
+                    Background = "#ff272727",
                     HeaderAndNotificationColor = "#ff232323",
                     SentBubbleBackground = "#ffb2e5ff",
                     ReceivedBubbleBackground = "#ffefefef",
@@ -349,22 +349,6 @@ namespace windows_client.utils
                 Position = 11,
                 ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbRains.jpg",
                 ImagePath = "/View/images/chatBackgrounds/Background/cbRains.jpg"
-            });
-
-            BackgroundList.Add(new ChatBackground()
-            {
-                ID = "35",
-                Background = "#ffe0cb00",
-                HeaderAndNotificationColor = "#ff087d40",
-                SentBubbleBackground = "#ffdcffa0",
-                ReceivedBubbleBackground = "#ffffffff",
-                BubbleForeground = "#ff000000",
-                Foreground = "#ffffffff",
-                IsTile = false,
-                IsLightTheme = true,
-                Position = 1,
-                ThumbnailPath = "/View/images/chatBackgrounds/Thumbnail/cbFifa.jpg",
-                ImagePath = "/View/images/chatBackgrounds/Background/cbFifa.jpg"
             });
 
             BackgroundList.Add(new ChatBackground()
@@ -872,7 +856,6 @@ namespace windows_client.utils
             {
                 System.Diagnostics.Debug.WriteLine("BackgroundImage :: Write : Unable To write, Exception : " + ex.StackTrace);
             }
-
         }
 
         public void Read(BinaryReader reader)

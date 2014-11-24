@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} ने अभी hike  से जुड़े हैं उन्हें नमस्ते कहें |</value>
+    <value>{0} अब hike पर है, हैलो कहें :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1361,7 +1361,7 @@
     <value>आमंत्रण सफलतापूर्वक पोस्ट किया गया</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} hike  पर वापस आ गया है। उसे नमस्ते :) बोलें</value>
+    <value>{0} अब hike पर है, हैलो कहें :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
@@ -2116,10 +2116,10 @@
     <value>फ़ोटो</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>चैट अदृश्य करें</value>
+    <value>वार्तालाप को अदृश्य के रूप में चिह्नित करें</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>चैट दृश्य करें</value>
+    <value>वार्तालाप को दृश्य के रूप में चिह्नित करें</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>अपने पासवर्ड की पुष्टि करें</value>
@@ -2228,6 +2228,12 @@
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>पासवर्ड मेल नहीं खाते।</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>पिन बनाएँ</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>पिन</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>फोन</value>
   </data>
@@ -2241,13 +2247,99 @@
     <value>नया पासवर्ड बनाएँ</value>
     <comment>Text while changing passing password of Hidden Mode</comment>
   </data>
+  <data name="EmailChat_Txt" xml:space="preserve">
+    <value>चैट ई-मेल से भेजें</value>
+    <comment>menu items will show </comment>
+  </data>
+  <data name="EmailConv_Header_Truncation_Txt" xml:space="preserve">
+    <value>{0} के साथ वार्तालाप करें - केवल अंतिम {1} संदेश; शेष WP द्वारा संक्षिप्त किया गया</value>
+    <comment>Truncation text when msg is truncated</comment>
+  </data>
+  <data name="EmailConv_Header_Txt" xml:space="preserve">
+    <value>{0} के साथ वार्तालाप करें - अंतिम {1} संदेश</value>
+    <comment>header of email body tex when backing up</comment>
+  </data>
+  <data name="EmailConv_SharedAudio_Txt" xml:space="preserve">
+    <value>ऑडियो साझा किया है</value>
+    <comment>shared an audio text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedContact_Txt" xml:space="preserve">
+    <value>संपर्क साझा किया है</value>
+    <comment>shared contact text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedFile_Txt" xml:space="preserve">
+    <value>फ़ाइल साझा की है</value>
+    <comment>shared a file text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedImage_Txt" xml:space="preserve">
+    <value>छवि साझा की है</value>
+    <comment>shared an image text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedLocation_Txt" xml:space="preserve">
+    <value>स्थान साझा किया है</value>
+    <comment>shared location text in email backup</comment>
+  </data>
+  <data name="EmailConv_SharedVideo_Txt" xml:space="preserve">
+    <value>वीडियो साझा किया है</value>
+    <comment>shared a video text in email backup</comment>
+  </data>
+  <data name="EmailConv_Subject_Txt" xml:space="preserve">
+    <value>{0} के साथ hike वार्तालाप का बैकअप</value>
+    <comment>subject of email text when backing up</comment>
+  </data>
   <data name="SaveSuccess_Txt" xml:space="preserve">
     <value>फ़ाइल गैलरी में जोड़ दी गई है</value>
   </data>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>सहेजना विफल</value>
   </data>
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>कुछ महत्वपूर्ण साझा करें...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>पिन का इतिहास</value>
+  </data>
   <data name="CT_FileNotOpenable_Text" xml:space="preserve">
     <value>इस वीडियो को नहीं खोला जा सकता। यह दूषित लगता है।</value>
+  </data>
+  <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
+    <value>{0} के साथ वार्तालाप करें - अंतिम 1 संदेश</value>
+    <comment>Only one Message in email body</comment>
+  </data>
+  <data name="Alert_Txt" xml:space="preserve">
+    <value>चेतावनी</value>
+    <comment>alert text for message box</comment>
+  </data>
+  <data name="EmailConvError_Txt" xml:space="preserve">
+    <value>आपके इस वार्तालाप में संदेश नहीं हैं</value>
+    <comment>when there is no message</comment>
+  </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>पिन रिक्त नहीं हो सकती</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>फ़ाइल अपलोड करने में अक्षम</value>
+  </data>
+  <data name="No_Pins_Yet" xml:space="preserve">
+    <value>अभी तक कोई पिन नहीं हैं</value>
+    <comment>In case of 0 pins in Pin History</comment>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>पिन  पोस्ट की है</value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>ऐप से बाहर निकलने पर निजी वार्तालाप छिपाएँ</value>
+  </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} ने पिन पोस्ट की है</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>उफ़..</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>hike में कुछ ग़लत हो गया। क्रैश रिपोर्ट ईमेल करने के लिए कृपया ठीक पर टैप करें। हम इसे ठीक करने की कोशिश करेंगे।</value>
   </data>
 </root>

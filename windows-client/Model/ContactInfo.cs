@@ -40,7 +40,7 @@ namespace windows_client.Model
         private Binary version;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-        public int DbId
+        public int DbId   
         {
             get
             {

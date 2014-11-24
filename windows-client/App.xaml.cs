@@ -20,6 +20,10 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Text;
+using Microsoft.Phone.Tasks;
+using windows_client.Languages;
+using System.Threading.Tasks;
 
 namespace windows_client
 {
@@ -52,7 +56,7 @@ namespace windows_client
 
         public static readonly string ENTER_TO_SEND = "enterToSend";
         public static readonly string SEND_NUDGE = "sendNudge";
-        public static readonly string DISPLAYPIC_FAV_ONLY = "dpFavorites";
+        public static readonly string DISPLAY_PIC_FAV_ONLY = "dpFavorites";
         public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string SHOW_STATUS_UPDATES_TUTORIAL = "statusTut";
         public static readonly string SHOW_BASIC_TUTORIAL = "basicTut";
@@ -64,6 +68,7 @@ namespace windows_client
         public static readonly string APP_UPDATE_POSTPENDING = "updatePost";
         public static readonly string AUTO_SAVE_MEDIA = "autoSavePhoto";
 
+        public static readonly string SHOW_EXCEPTION_MESSAGE = "showExcp";
         public static readonly string CHAT_THREAD_COUNT_KEY = "chatThreadCountKey";
         public static readonly string TIP_MARKED_KEY = "tipMarkedKey";
         public static readonly string TIP_SHOW_KEY = "tipShowKey";
@@ -131,6 +136,11 @@ namespace windows_client
             get
             {
                 return ps;
+            }
+            set
+            {
+                if (ps != value)
+                    ps = value;
             }
         }
 
@@ -364,6 +374,10 @@ namespace windows_client
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             _isAppLaunched = true;
+
+            // Activate hidden mode whne app is launched if setting is true.
+            if (appSettings.Contains(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT))
+                appSettings.Remove(HikeConstants.HIDDEN_MODE_ACTIVATED);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -557,7 +571,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.6.5.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -658,6 +672,10 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+
+            ExceptionLoggingHelper.WriteExceptionToFile(e.ExceptionObject.Message, e.ExceptionObject.StackTrace);
+            WriteToIsoStorageSettings(SHOW_EXCEPTION_MESSAGE, true);
+
             if (!IS_MARKETPLACE)
             {
                 //Running on a device / emulator without debugging
@@ -718,6 +736,12 @@ namespace windows_client
 
         private static void instantiateClasses(bool initInUpgradePage)
         {
+            #region Process Exception Stack Trace
+            if (App.appSettings.Contains(App.SHOW_EXCEPTION_MESSAGE))
+            {
+                ShowExceptionMessageBox();
+            }
+            #endregion
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
@@ -805,40 +829,24 @@ namespace windows_client
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
-                GroupManager.Instance.SaveGroupCache();
+                GroupManager.Instance.GroupParticpantsCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupParticpantsCache();
                 RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 
             #endregion
             #region PUBSUB
-            Stopwatch st = Stopwatch.StartNew();
             if (App.HikePubSubInstance == null)
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
             #endregion
             #region DBCONVERSATION LISTENER
-            st.Reset();
-            st.Start();
             if (App.DbListener == null)
                 App.DbListener = new DbConversationListener();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
             #endregion
             #region NETWORK MANAGER
-            st.Reset();
-            st.Start();
             App.NetworkManagerInstance = NetworkManager.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
             #endregion
             #region MQTT MANAGER
-            st.Reset();
-            st.Start();
             if (App.MqttManagerInstance == null)
                 App.MqttManagerInstance = new HikeMqttManager();
             if (ps == PageState.CONVLIST_SCREEN)
@@ -846,32 +854,12 @@ namespace windows_client
                 NetworkManager.turnOffNetworkManager = true;
                 App.MqttManagerInstance.connect();
             }
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
             #endregion
             #region UI UTILS
-            st.Reset();
-            st.Start();
             App.UI_UtilsInstance = UI_Utils.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
             #endregion
             #region ANALYTICS
-            st.Reset();
-            st.Start();
             App.AnalyticsInstance = Analytics.Instance;
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
-            #endregion
-            #region PUSH HELPER
-            st.Reset();
-            st.Start();
-            st.Stop();
-            msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
             #region SMILEY
             if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
@@ -918,9 +906,6 @@ namespace windows_client
                     }
                 }
 
-                st.Stop();
-                msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
                 IS_VIEWMODEL_LOADED = true;
 
                 // setting it a default counter of 2 to show notification counter for new user on conversation page
@@ -981,6 +966,46 @@ namespace windows_client
             #endregion
         }
 
+        private static void ShowExceptionMessageBox()
+        {
+            var messageBoxResult = MessageBox.Show(AppResources.ExceptionMessage_Text, AppResources.ExceptionCaption_Text, MessageBoxButton.OKCancel);
+            if (messageBoxResult == MessageBoxResult.OK)
+            {
+                EmailExceptionDetails();
+            }
+            App.RemoveKeyFromAppSettings(App.SHOW_EXCEPTION_MESSAGE);
+        }
+
+        private async static void EmailExceptionDetails()
+        {
+            await Task.Delay(1);
+            string[] exceptions = ExceptionLoggingHelper.GetAllExceptions();
+
+            StringBuilder emailBodyText = new StringBuilder();
+            emailBodyText.Append("\n").
+                Append(HikeConstants.EmailException.USER_COMMENTS).Append("\n").
+                Append(HikeConstants.EmailException.DEFAULT_USER_COMMENT).Append("\n\n").
+                Append(HikeConstants.EmailException.DEVICE_DETAILS).Append("\n").
+                Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append("\n").
+                Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").
+                Append(AppResources.Help_EmailPhoneNo).Append(App.MSISDN).Append("\n").
+                Append(AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append("\n").
+                Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator).Append("\n\n").
+                Append(HikeConstants.EmailException.TECHNICAL_DETAILS).Append("\n");
+
+            if (exceptions != null && exceptions.Length > 0)
+            {
+                for (int i = exceptions.Length - 1; i > -1; i--)
+                {
+                    emailBodyText.Append(exceptions[i]).Append("\n").Append("----------------------------").Append("\n\n");
+                }
+            }
+            int maxCharsInEmail = HikeConstants.EmailConversation.EMAIL_LIMIT / sizeof(char);
+            string emailBody = emailBodyText.Length > maxCharsInEmail ? emailBodyText.ToString().Substring(0, maxCharsInEmail) : emailBodyText.ToString();
+            EmailHelper.SendEmail(HikeConstants.EmailException.EXCEIPTION_REPORT_SUBJECT + App.MSISDN, emailBody, HikeConstants.EmailException.EXCEIPTION_REPORT_TO_EMAILID);
+            ExceptionLoggingHelper.DeleteAllExceptions();
+        }
+
         public static void createDatabaseAsync()
         {
             if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
@@ -1018,7 +1043,6 @@ namespace windows_client
                         }
                     }
                     // Create the database if it does not exist.
-                    Stopwatch st = Stopwatch.StartNew();
                     using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
                     {
                         if (db.DatabaseExists() == false)
@@ -1037,9 +1061,6 @@ namespace windows_client
                             db.CreateDatabase();
                     }
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-                    st.Stop();
-                    long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
                 catch (Exception ex)
                 {

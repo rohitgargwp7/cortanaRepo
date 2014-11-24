@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} just joined hike, say 'Hi' :)</value>
+    <value>{0} is now on hike, say hi :)</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1361,11 +1361,11 @@ Download it like asap from http://hike.in!</value>
     <value>Invite posted successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} is back on hike. Say hi :)</value>
+    <value>{0} is now on hike, say hi :)</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
-    <value>Great! {0} will now able to see your Last Seen and Status Updates.</value>
+    <value>Great! {0} will now be able to see your Last Seen and Status Updates.</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendUserProfile_Txt" xml:space="preserve">
@@ -2116,10 +2116,10 @@ Download it like asap from http://hike.in!</value>
     <value>photos</value>
   </data>
   <data name="Hide_Txt" xml:space="preserve">
-    <value>hide chat</value>
+    <value>mark chat as hidden</value>
   </data>
   <data name="Unhide_Txt" xml:space="preserve">
-    <value>unhide chat</value>
+    <value>mark chat as visible</value>
   </data>
   <data name="ConfirmPassword_Txt" xml:space="preserve">
     <value>Confirm your password</value>
@@ -2228,6 +2228,12 @@ Download it like asap from http://hike.in!</value>
   <data name="Password_Mismatch_Txt" xml:space="preserve">
     <value>Passwords don’t match.</value>
   </data>
+  <data name="PinHeader_Txt" xml:space="preserve">
+    <value>create pin</value>
+  </data>
+  <data name="Pin_Done_Txt" xml:space="preserve">
+    <value>pin</value>
+  </data>
   <data name="Default_Video_Album_Txt" xml:space="preserve">
     <value>Phone</value>
   </data>
@@ -2287,7 +2293,13 @@ Download it like asap from http://hike.in!</value>
   <data name="Something_WrongCaption_Txt" xml:space="preserve">
     <value>Saving failed</value>
   </data>
-  <data name="CT_FileNotOpenable_Text" xml:space="preserve">
+  <data name="NewGCPin_Hint_Txt" xml:space="preserve">
+    <value>share something important...</value>
+  </data>
+  <data name="PinHistory_Header_Txt" xml:space="preserve">
+    <value>pin history</value>
+  </data>
+  <data name="CT_VideoNotOpenable_Text" xml:space="preserve">
     <value>Can't open this video. It seems to be corrupt.</value>
   </data>
   <data name="EmailConv_Header_One_Message_Txt" xml:space="preserve">
@@ -2301,5 +2313,36 @@ Download it like asap from http://hike.in!</value>
   <data name="EmailConvError_Txt" xml:space="preserve">
     <value>You don't have messages in this chat</value>
     <comment>when there is no message</comment>
+  </data>
+  <data name="Pin_Empty_Msg" xml:space="preserve">
+    <value>pin can't be empty</value>
+    <comment>Text when user tries to create empty pin</comment>
+  </data>
+  <data name="FileTransfer_UploadErrorMsgBoxText" xml:space="preserve">
+    <value>Unable to upload file</value>
+  </data>
+  <data name="No_Pins_Yet" xml:space="preserve">
+    <value>no pins yet</value>
+    <comment>In case of 0 pins in Pin History</comment>
+  </data>
+  <data name="EmailConv_PostedPin_Txt" xml:space="preserve">
+    <value>Posted a Pin </value>
+    <comment>shared pin text for email conversation</comment>
+  </data>
+  <data name="Activate_HiddenMode_on_Exit" xml:space="preserve">
+    <value>Hide private chats on app exit</value>
+  </data>
+  <data name="Posted_A_Pin_Txt" xml:space="preserve">
+    <value>{0} posted a pin</value>
+    <comment>posted a pin in Chat Thread</comment>
+  </data>
+  <data name="ExceptionCaption_Text" xml:space="preserve">
+    <value>Oops..</value>
+  </data>
+  <data name="ExceptionMessage_Text" xml:space="preserve">
+    <value>Something went wrong in hike. Please tap ok to email the crash report. We'll try and fix it.</value>
+  </data>
+  <data name="CT_ImageNotOpenable_Text" xml:space="preserve">
+    <value>Can't open this image. It seems to be corrupt.</value>
   </data>
 </root>

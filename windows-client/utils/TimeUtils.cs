@@ -2,6 +2,7 @@
 using System.Text;
 using windows_client.Languages;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -43,7 +44,7 @@ namespace windows_client.utils
             TimeSpan span = now.Subtract(messageTime);
             messageTime = messageTime.ToLocalTime();
 
-            if (span.Days < 1)
+            if (span.Days < 1 && DateTime.Now.Date == messageTime.Date)
                 return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
                 return messageTime.ToString("ddd", CultureInfo.CurrentUICulture);
@@ -63,7 +64,7 @@ namespace windows_client.utils
             TimeSpan span = now.Subtract(messageTime);
             messageTime = messageTime.ToLocalTime();
 
-            if (span.Days < 1)
+            if (span.Days < 1 && DateTime.Now.Date == messageTime.Date)
                 return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
                 return messageTime.ToString("ddd, ", CultureInfo.CurrentUICulture) + messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
@@ -233,10 +234,19 @@ namespace windows_client.utils
 
         public static string GetOnHikeSinceDisplay(long timestamp)
         {
-            long ticks = timestamp * 10000000;
-            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
-            DateTime messageTime = new DateTime(ticks);
-            return messageTime.ToString("MMM yyyy", CultureInfo.CurrentUICulture);
+            try
+            {
+                long ticks = timestamp * 10000000;
+                ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+                DateTime messageTime = new DateTime(ticks);
+                return messageTime.ToString("MMM yyyy", CultureInfo.CurrentUICulture);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error while GetOnHikeSinceDisplay() " + ex.StackTrace);
+            }
+
+            return String.Empty;
         }
 
     }
