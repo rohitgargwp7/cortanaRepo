@@ -412,19 +412,19 @@ namespace windows_client.ViewModel
                 if (mObj == null || !ConvMap.ContainsKey(mObj.Msisdn))
                     return;
 
-                int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
-
-                if (index < 0)//not present in oc
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        int index = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+
+                        if (index < 0)//not present in oc
+                        {
+                            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                        }
+                        else if (index > 0)
+                        {
+                            App.ViewModel.MessageListPageCollection.Move(index, 0);
+                        }//if already at zero, do nothing
                     });
-                }
-                else if (index > 0)
-                {
-                    App.ViewModel.MessageListPageCollection.Move(index, 0);
-                }//if already at zero, do nothing
 
                 if (showPush &&
                     ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
