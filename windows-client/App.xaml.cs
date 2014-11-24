@@ -742,6 +742,10 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
+            #region HIDDEN_MODE EXIT SETTING
+            if (isNewInstall)
+                App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+            #endregion
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
                 WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
