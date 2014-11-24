@@ -124,33 +124,40 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 string sourceFilePath = (string)vals[1];
+                sourceFilePath = Utils.GetAbsolutePath(sourceFilePath);
+                int fileSize = convMessage.FileAttachment.FileSize;
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
                 convMessage.MessageId = convMessage.MessageId;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    UpdateConvListForSentMessage(convMessage, convObj);
+                UpdateConvListForSentMessage(convMessage, convObj);
 
+                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                {
                     byte[] fileBytes;
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) || convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                        fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
-                    else
-                        MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out fileBytes);
+                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
 
                     if (fileBytes == null)
                         return;
 
                     MiscDBUtil.StoreFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId), fileBytes);
-                    convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
-                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                }
+                else
+                    MiscDBUtil.CopyFileInIsolatedStorage(sourceFilePath, HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn.Replace(":", "_") + "/" + Convert.ToString(convMessage.MessageId));
 
-                    if (FileTransferManager.Instance.IsTransferPossible())
-                        FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileBytes.Length, convMessage.FileAttachment.FileKey);
-                    else
+                convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
+                if (FileTransferManager.Instance.IsTransferPossible())
+                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, convMessage.FileAttachment.FileKey);
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
-                });
+                    });
+                }
             }
             #endregion
             #region ATTACHMENT_SEND
@@ -185,21 +192,30 @@ namespace windows_client.DbUtils
                 convMessage.SetAttachmentState(Attachment.AttachmentState.NOT_STARTED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    UpdateConvListForSentMessage(convMessage, convObj);
+                UpdateConvListForSentMessage(convMessage, convObj);
 
-                    if (FileTransferManager.Instance.IsTransferPossible())
+                if (FileTransferManager.Instance.IsTransferPossible())
+                {
+                    if (!NetworkInterface.GetIsNetworkAvailable())
                     {
-                        if (!NetworkInterface.GetIsNetworkAvailable())
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
                             MessageBox.Show(AppResources.FileTransfer_NetworkError, AppResources.NetworkError_TryAgain, MessageBoxButton.OK);
+                        });
 
                         bool isNewFile = convMessage.FileAttachment.FileSource != Attachment.AttachemntSource.GALLERY && convMessage.FileAttachment.FileSource != Attachment.AttachemntSource.FORWARDED; //MD5Check only for gallery files and forwarded files
                         FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty, isNewFile);
                     }
-                    else
+
+                    FileTransfers.FileTransferManager.Instance.UploadFile(convMessage.Msisdn, convMessage.MessageId.ToString(), convMessage.FileAttachment.FileName, convMessage.FileAttachment.ContentType, fileSize, string.Empty);
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
                         MessageBox.Show(AppResources.FT_MaxFiles_Txt, AppResources.FileTransfer_LimitReached, MessageBoxButton.OK);
-                });
+                    });
+                }
             }
             #endregion
             #region MESSAGE_RECEIVED_READ
@@ -530,17 +546,21 @@ namespace windows_client.DbUtils
 
             AddSentMessageToMsgMap(convMessage);
 
-            int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
-            //cannot use convMap here because object has pushed to map but not to ui
-            if (index < 0)//not present in convmap
-            {
-                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-            }
-            else if (index > 0)
-            {
-                App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-            }//if already at zero, do nothing
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    int index = App.ViewModel.MessageListPageCollection.IndexOf(convObj);
+
+                    //cannot use convMap here because object has pushed to map but not to ui
+                    if (index < 0)//not present in convmap
+                    {
+                        App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    }
+                    else if (index > 0)
+                    {
+                        App.ViewModel.MessageListPageCollection.RemoveAt(index);
+                        App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    }//if already at zero, do nothing
+                });
 
             App.ViewModel.IsConversationUpdated = true;
         }
