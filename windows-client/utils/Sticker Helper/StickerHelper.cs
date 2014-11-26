@@ -910,30 +910,37 @@ namespace windows_client.utils
             array.Add(StickerHelper.CATEGORY_GUWAHATI);
 
             JObject obj = new JObject();
-            obj.Add("catIds", array);
+            obj.Add(HikeConstants.Stickers.CATEGORY_IDS_COLLECTION, array);
             AccountUtils.GetStickerCategoryData(obj, new AccountUtils.postResponseFunction(StickerCategoryCallBack));
         }
 
         public static void StickerCategoryCallBack(JObject json)
         {
-            if (json != null && HikeConstants.OK == (string)json[HikeConstants.STAT])
+            try
             {
-                JArray jarray = (JArray)json["data"];
-                List<string> listCaetgories = new List<string>();
-                for (int i = 0; i < jarray.Count; i++)
+                if (json != null && HikeConstants.OK == (string)json[HikeConstants.STAT])
                 {
-                    JObject categoryJobj = (JObject)jarray[i];
-                    JToken jtoken;
-                    if (categoryJobj.TryGetValue("visibility", out jtoken) && (int)jtoken == 1)
+                    JArray jarray = (JArray)json[HikeConstants.Stickers.DATA];
+                    List<string> listCategories = new List<string>();
+                    for (int i = 0; i < jarray.Count; i++)
                     {
-                        string category = (string)categoryJobj["catId"];
-                        HikeViewModel.StickerHelper.DictStickersCategories[category] = CreateCategory(category);
-                        listCaetgories.Add(category);
+                        JObject categoryJobj = (JObject)jarray[i];
+                        JToken jtoken;
+                        if (categoryJobj.TryGetValue(HikeConstants.Stickers.VISIBILITY, out jtoken) && (int)jtoken == 1)
+                        {
+                            string category = (string)categoryJobj[HikeConstants.Stickers.CATEGORY_ID];
+                            HikeViewModel.StickerHelper.DictStickersCategories[category] = CreateCategory(category);
+                            listCategories.Add(category);
+                        }
                     }
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, listCategories.Count > 0 ? listCategories : null);
+                    if (App.newChatThreadPage != null)
+                        App.newChatThreadPage.UpdateCategoryOrder(GetStickerCategoryOrder());
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, listCaetgories.Count > 0 ? listCaetgories : null);
-                if (App.newChatThreadPage != null)
-                    App.newChatThreadPage.UpdateCategoryOrder(GetStickerCategoryOrder());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("StickerHelper::StickerCategoryCallBack,ExMessage:{0},ExStackTrace:{1}", ex.Message, ex.StackTrace);
             }
         }
 

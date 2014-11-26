@@ -47,7 +47,7 @@ namespace windows_client.Controls
             _category = stickerCategoryObj.Category;
 
             //to update progress bar visibility
-            ShowHidMoreProgreesBar(llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && stickerCategoryObj.IsDownLoading);
+            ShowHidMoreProgressBar(llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && stickerCategoryObj.IsDownLoading);
         }
 
         public void SetLlsSourceList(List<StickerObj> listStickers)
@@ -97,7 +97,7 @@ namespace windows_client.Controls
             stRetry.Visibility = Visibility.Collapsed;
         }
 
-        public void ShowHidMoreProgreesBar(bool show)
+        public void ShowHidMoreProgressBar(bool show)
         {
             if (show)
                 moreProgressBar.Visibility = Visibility.Visible;
@@ -122,7 +122,7 @@ namespace windows_client.Controls
             if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
             {
                 ShowStickers();
-                ShowHidMoreProgreesBar(true);
+                ShowHidMoreProgressBar(true);
             }
             else
                 ShowLoadingStickers();
@@ -155,7 +155,7 @@ namespace windows_client.Controls
                         if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                         {
                             ShowStickers();
-                            ShowHidMoreProgreesBar(true);
+                            ShowHidMoreProgressBar(true);
                         }
                         else
                             ShowLoadingStickers();

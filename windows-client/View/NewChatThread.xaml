@@ -1361,7 +1361,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid x:Name="stickerPallet">
+                    <Grid>
                         <phone:Pivot Name="pivotSticker" MaxHeight="265" SelectionChanged="PivotStickers_SelectionChanged">
                             <phone:PivotItem Margin="0" BorderThickness="0" Padding="0">
                                 <local:StickerPivotItem Name="pvtItem0"/>
