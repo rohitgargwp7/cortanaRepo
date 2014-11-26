@@ -586,7 +586,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="USER_JOINED_HIKE" xml:space="preserve">
-    <value>{0} is now on hike, say hi :)</value>
+    <value>{0} is now on hike, say hi!</value>
     <comment>General Text</comment>
   </data>
   <data name="USER_LEFT" xml:space="preserve">
@@ -1361,7 +1361,7 @@ Download it like asap from http://hike.in!</value>
     <value>Invite posted successfully</value>
   </data>
   <data name="USER_REJOINED_HIKE_TXT" xml:space="preserve">
-    <value>{0} is now on hike, say hi :)</value>
+    <value>{0} is now on the all new hike, say hi!</value>
     <comment>{0} to be replaced by name</comment>
   </data>
   <data name="ConfimFriendTimeline_Txt" xml:space="preserve">
