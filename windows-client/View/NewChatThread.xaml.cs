@@ -6721,7 +6721,6 @@ namespace windows_client.View
 
         private void StickerCategoryTapped(StickerCategory stickerCategory, StickerPivotItem stickerPivot)
         {
-            Debug.WriteLine("Category tapped:" + stickerCategory.Category);
             foreach (StickerCategory stCategory in listStickerCategories)
             {
                 stCategory.IsSelected = stCategory.Category == stickerCategory.Category;
@@ -6732,8 +6731,11 @@ namespace windows_client.View
                 if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
                 else
+                {
+                    //in recents we are using listbox rather than lls so that it gets updated on binding again not when you are sending stickers from recents
+                    stickerPivot.UpdateStickerPivot(stickerCategory);
                     stickerPivot.ShowStickers();
-
+                }
                 return;
             }
 

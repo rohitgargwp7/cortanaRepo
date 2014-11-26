@@ -1362,14 +1362,14 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid x:Name="stickerPallet">
-                        <phone:Pivot Name="pivotSticker" SelectionChanged="PivotStickers_SelectionChanged">
-                            <phone:PivotItem>
+                        <phone:Pivot Name="pivotSticker" MaxHeight="265" SelectionChanged="PivotStickers_SelectionChanged">
+                            <phone:PivotItem Margin="0" BorderThickness="0" Padding="0">
                                 <local:StickerPivotItem Name="pvtItem0"/>
                             </phone:PivotItem>
-                            <phone:PivotItem>
+                            <phone:PivotItem Margin="0" BorderThickness="0" Padding="0">
                                 <local:StickerPivotItem Name="pvtItem1"/>
                             </phone:PivotItem>
-                            <phone:PivotItem>
+                            <phone:PivotItem Margin="0" BorderThickness="0" Padding="0">
                                 <local:StickerPivotItem Name="pvtItem2"/>
                             </phone:PivotItem>
                         </phone:Pivot>

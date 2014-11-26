@@ -38,12 +38,18 @@ namespace windows_client.Controls
         public void UpdateStickerPivot(StickerCategory stickerCategoryObj)
         {
             if (stickerCategoryObj.Category == StickerHelper.CATEGORY_RECENT)
+            {
+                llsStickerCategory.ItemsSource = null;//done to update stickers
                 llsStickerCategory.ItemsSource = HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers;
+            }
             else
                 llsStickerCategory.ItemsSource = stickerCategoryObj.ListStickers;
             _category = stickerCategoryObj.Category;
-            ShowHidMoreProgreesBar(stickerCategoryObj.IsDownLoading);
+
+            //to update progress bar visibility
+            ShowHidMoreProgreesBar(llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && stickerCategoryObj.IsDownLoading);
         }
+
         public void SetLlsSourceList(List<StickerObj> listStickers)
         {
             llsStickerCategory.ItemsSource = listStickers;
