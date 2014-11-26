@@ -470,8 +470,8 @@ namespace windows_client
         public static readonly string ANALYTICS_INIT_RESET_HIDDEN_MODE = "resetStlthInit";
         public static readonly string ANALYTICS_PWD_CHANGE_HIDDEN_MODE = "changepassStlthSucc";
 
-        public static readonly string ANALYTICS_EMAIL           = "email";
-        public static readonly string ANALYTICS_EMAIL_MENU      = "menu";
+        public static readonly string ANALYTICS_EMAIL = "email";
+        public static readonly string ANALYTICS_EMAIL_MENU = "menu";
         public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
 
         #endregion
@@ -578,10 +578,24 @@ namespace windows_client
             public static readonly string USER_COMMENTS = "User Comments:";
             public static readonly string DEFAULT_USER_COMMENT = "<Add any extra detail you'd like to here, or you can hit send now, the technical information below will help>";
             public static readonly string DEVICE_DETAILS = "==Device Details==";
-            public static readonly string TECHNICAL_DETAILS= "==Auto generated technical details==";
+            public static readonly string TECHNICAL_DETAILS = "==Auto generated technical details==";
 
             public static readonly string EXCEIPTION_REPORT_TO_EMAILID = "support@hike.in";
             public static readonly string EXCEIPTION_REPORT_SUBJECT = " WP Bug Report: ";
+        }
+
+        public static class Stickers
+        {
+            public static readonly string DATA = "data";
+            public static readonly string CATEGORY_ID = "catId";
+            public static readonly string SUBTYPE = "st";
+            public static readonly string DISABLED = "disabled";
+            public static readonly string STICKER_IDS = "stIds";
+            public static readonly string RESOLUTION_ID = "resId";
+            public static readonly string NUMBERS_TO_DOWNLOAD = "nos";
+            public static readonly string CATEGORY_IDS_COLLECTION = "catIds";
+            public static readonly string VISIBILITY = "visibility";
+
         }
         #region Server URL Constants
         public static class ServerUrls

@@ -38,12 +38,18 @@ namespace windows_client.Controls
         public void UpdateStickerPivot(StickerCategory stickerCategoryObj)
         {
             if (stickerCategoryObj.Category == StickerHelper.CATEGORY_RECENT)
+            {
+                llsStickerCategory.ItemsSource = null;//done to update stickers
                 llsStickerCategory.ItemsSource = HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers;
+            }
             else
                 llsStickerCategory.ItemsSource = stickerCategoryObj.ListStickers;
             _category = stickerCategoryObj.Category;
-            ShowHidMoreProgreesBar(stickerCategoryObj.IsDownLoading);
+
+            //to update progress bar visibility
+            ShowHidMoreProgressBar(llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0 && stickerCategoryObj.IsDownLoading);
         }
+
         public void SetLlsSourceList(List<StickerObj> listStickers)
         {
             llsStickerCategory.ItemsSource = listStickers;
@@ -91,7 +97,7 @@ namespace windows_client.Controls
             stRetry.Visibility = Visibility.Collapsed;
         }
 
-        public void ShowHidMoreProgreesBar(bool show)
+        public void ShowHidMoreProgressBar(bool show)
         {
             if (show)
                 moreProgressBar.Visibility = Visibility.Visible;
@@ -116,7 +122,7 @@ namespace windows_client.Controls
             if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
             {
                 ShowStickers();
-                ShowHidMoreProgreesBar(true);
+                ShowHidMoreProgressBar(true);
             }
             else
                 ShowLoadingStickers();
@@ -149,7 +155,7 @@ namespace windows_client.Controls
                         if (llsStickerCategory.ItemsSource != null && llsStickerCategory.ItemsSource.Count > 0)
                         {
                             ShowStickers();
-                            ShowHidMoreProgreesBar(true);
+                            ShowHidMoreProgressBar(true);
                         }
                         else
                             ShowLoadingStickers();

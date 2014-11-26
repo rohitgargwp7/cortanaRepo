@@ -3542,19 +3542,9 @@ namespace windows_client.View
             if (!isStickersLoaded)
             {
                 String category;
-                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category))
+                if (App.appSettings.TryGetValue(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, out category) && category != StickerHelper.CATEGORY_RECENT)
                 {
-                    if (category == StickerHelper.CATEGORY_RECENT)
-                    {
-                        if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count > 0)
-                            _currentSelectedIndex = 0;//index of recent category
-                        else
-                            _currentSelectedIndex = GetIndexOfElement(StickerHelper.CATEGORY_HUMANOID);
-                    }
-                    else
-                    {
-                        _currentSelectedIndex = GetIndexOfElement(category);
-                    }
+                    _currentSelectedIndex = GetIndexOfElement(category);
                 }
                 else
                 {
@@ -6721,7 +6711,6 @@ namespace windows_client.View
 
         private void StickerCategoryTapped(StickerCategory stickerCategory, StickerPivotItem stickerPivot)
         {
-            Debug.WriteLine("Category tapped:" + stickerCategory.Category);
             foreach (StickerCategory stCategory in listStickerCategories)
             {
                 stCategory.IsSelected = stCategory.Category == stickerCategory.Category;
@@ -6732,8 +6721,11 @@ namespace windows_client.View
                 if (HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
                 else
+                {
+                    //in recents we are using listbox rather than lls so that it gets updated on binding again not when you are sending stickers from recents
+                    stickerPivot.UpdateStickerPivot(stickerCategory);
                     stickerPivot.ShowStickers();
-
+                }
                 return;
             }
 
@@ -6767,7 +6759,7 @@ namespace windows_client.View
         public void PostRequestForBatchStickers(StickerCategory stickerCategory)
         {
             JObject json = new JObject();
-            json["catId"] = stickerCategory.Category;
+            json[HikeConstants.Stickers.CATEGORY_ID] = stickerCategory.Category;
             if (!stickerCategory.IsDownLoading && stickerCategory.HasMoreStickers)
             {
                 List<string> listStickerIds = new List<string>();
@@ -6776,9 +6768,10 @@ namespace windows_client.View
                 {
                     existingIds.Add(sticker.Id);
                 }
-                json["stIds"] = existingIds;
-                json["resId"] = ResolutionId;
-                json["nos"] = 10;
+                json[HikeConstants.Stickers.STICKER_IDS] = existingIds;
+                json[HikeConstants.Stickers.RESOLUTION_ID] = ResolutionId;
+                json[HikeConstants.Stickers.NUMBERS_TO_DOWNLOAD] = 10;
+
                 stickerCategory.IsDownLoading = true;
                 AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
             }
@@ -6807,7 +6800,7 @@ namespace windows_client.View
                         {
                             if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_EXPRESSIONS && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
                                 _currenPivot.ShowDownloadFailed();
-                            _currenPivot.ShowHidMoreProgreesBar(false);
+                            _currenPivot.ShowHidMoreProgressBar(false);
                         });
                     }
                 }
@@ -6831,10 +6824,10 @@ namespace windows_client.View
 
             try
             {
-                string category = (string)json["catId"];
-                JObject stickers = (JObject)json["data"];
+                string category = (string)json[HikeConstants.Stickers.CATEGORY_ID];
+                JObject stickers = (JObject)json[HikeConstants.Stickers.DATA];
                 bool hasMoreStickers = true;
-                if (json["st"] != null)
+                if (json[HikeConstants.Stickers.SUBTYPE] != null)
                 {
                     hasMoreStickers = false;
                 }
@@ -6855,7 +6848,7 @@ namespace windows_client.View
                     {
                         KeyValuePair<string, JToken> kv = keyVals.Current;
                         string id = (string)kv.Key;
-                        if (id == "disabled")
+                        if (id == HikeConstants.Stickers.DISABLED)
                         {
                             isDisabled = (bool)stickers[kv.Key];
                             continue;
@@ -6923,7 +6916,7 @@ namespace windows_client.View
                     if (stickerCategory != null && _currenPivot.StickerCategory == stickerCategory.Category)
                     {
                         _currenPivot.ShowStickers();
-                        _currenPivot.ShowHidMoreProgreesBar(false);
+                        _currenPivot.ShowHidMoreProgressBar(false);
                     }
                     stickerCategory.IsDownLoading = false;
                 });
@@ -6938,7 +6931,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            _currenPivot.ShowHidMoreProgreesBar(false);
+                            _currenPivot.ShowHidMoreProgressBar(false);
                         });
                     }
                 }
