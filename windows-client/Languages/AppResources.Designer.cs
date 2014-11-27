@@ -5584,7 +5584,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
+        ///   Looks up a localized string similar to {0} is now on hike, say hi!.
         /// </summary>
         public static string USER_JOINED_HIKE {
             get {
@@ -5611,7 +5611,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is now on hike, say hi :).
+        ///   Looks up a localized string similar to {0} is now on the all new hike, say hi!.
         /// </summary>
         public static string USER_REJOINED_HIKE_TXT {
             get {
