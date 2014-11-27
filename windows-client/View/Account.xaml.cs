@@ -170,6 +170,8 @@ namespace windows_client.View
             App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
 
             MiscDBUtil.clearDatabase();
+            MiscDBUtil.DeleteDatabase();
+
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();
