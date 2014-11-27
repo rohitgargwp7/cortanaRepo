@@ -149,15 +149,18 @@ namespace windows_client
 
         private void getStarted_Click(object sender, RoutedEventArgs e)
         {
+            getStartedButton.Opacity = 0;
+
             if (!MiscDBUtil.DeleteDatabase())
             {
                 MessageBox.Show(AppResources.Please_Try_Again_Txt);
+                getStartedButton.Opacity = 1;
                 return;
             }
 
             App.createDatabaseAsync();
 
-            getStartedButton.Opacity = 0;
+            
 
             if (!App.IS_MARKETPLACE) // this is done to save the server info
                 App.appSettings.Save();
