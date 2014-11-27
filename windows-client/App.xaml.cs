@@ -809,7 +809,7 @@ namespace windows_client
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
 
-                StickerHelper.CreateDefaultCategories();
+                HikeViewModel.StickerHelper.CreateDefaultCategories();
             }
             #endregion
             #region TUTORIAL

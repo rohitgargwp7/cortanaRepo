@@ -1326,6 +1326,7 @@ namespace windows_client
                     {
                         string category = (string)jsonData[HikeConstants.CATEGORY_ID];
                         StickerHelper.DeleteCategory(category);
+                        StickerHelper.UpdateRemovedCategory(category);
                         RecentStickerHelper.DeleteCategory(category);
                     }
 

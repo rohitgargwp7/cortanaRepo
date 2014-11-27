@@ -595,6 +595,7 @@ namespace windows_client
             public static readonly string NUMBERS_TO_DOWNLOAD = "nos";
             public static readonly string CATEGORY_IDS_COLLECTION = "catIds";
             public static readonly string VISIBILITY = "visibility";
+            public static readonly string STICKER_COUNT_TEXT = "{0} stickers, free";
 
         }
         #region Server URL Constants

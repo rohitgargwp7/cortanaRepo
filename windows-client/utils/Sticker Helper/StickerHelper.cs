@@ -187,21 +187,14 @@ namespace windows_client.utils
             return null;
         }
 
-        public static void CreateDefaultCategories()
+        public void CreateDefaultCategories()
         {
-            StickerHelper.CreateCategory(CATEGORY_HUMANOID);
-            StickerHelper.CreateCategory(CATEGORY_DOGGY);
-            StickerHelper.CreateCategory(CATEGORY_KITTY);
-            StickerHelper.CreateCategory(CATEGORY_EXPRESSIONS);
-            StickerHelper.CreateCategory(CATEGORY_BOLLYWOOD);
-            StickerHelper.CreateCategory(CATEGORY_TROLL);
-            StickerHelper.CreateCategory(CATEGORY_AVATARS);
-            StickerHelper.CreateCategory(CATEGORY_INDIANS);
-            StickerHelper.CreateCategory(CATEGORY_JELLY);
-            StickerHelper.CreateCategory(CATEGORY_SPORTS);
-            StickerHelper.CreateCategory(CATEGORY_HUMANOID2);
-            StickerHelper.CreateCategory(CATEGORY_SMILEY_EXPRESSIONS);
-            StickerHelper.CreateCategory(CATEGORY_LOVE);
+            CreateCategory(CATEGORY_HUMANOID);
+            CreateCategory(CATEGORY_INDIANS);
+            CreateCategory(CATEGORY_EXPRESSIONS);
+            CreateCategory(CATEGORY_LOVE);
+            CreateCategory(CATEGORY_BOLLYWOOD);
+            CreateCategory(CATEGORY_TROLL);
         }
 
         /// <summary>
@@ -327,6 +320,7 @@ namespace windows_client.utils
                                             if (store.FileExists(fileName))
                                                 store.DeleteFile(fileName);
                                         }
+                                    store.DeleteDirectory(folder);
                                 }
                             }
                         folders = store.GetDirectoryNames(categoryFolder + "\\*");
@@ -346,6 +340,7 @@ namespace windows_client.utils
                                             if (store.FileExists(fileName))
                                                 store.DeleteFile(fileName);
                                         }
+                                    store.DeleteDirectory(folder);
                                 }
                             }
                         }
@@ -399,61 +394,63 @@ namespace windows_client.utils
             return null;
         }
 
-        public static StickerCategory CreateCategory(string category)
+        public async void CreateCategory(string category, bool isVisible = true)
         {
-            StickerCategory stickerCategory;
-            lock (readWriteLock)
-            {
-                string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
-
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            await Task.Run(() =>
                 {
-                    if (!store.DirectoryExists(STICKERS_DIR))
+                    StickerCategory stickerCategory;
+                    lock (readWriteLock)
                     {
-                        store.CreateDirectory(STICKERS_DIR);
-                    }
-                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
-                    {
-                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
-                    }
-                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
-                    {
-                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
-                    }
-                    string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
-                    stickerCategory = new StickerCategory(category);
-                    if (store.FileExists(metadataFile))
-                    {
-                        using (var file = store.OpenFile(metadataFile, FileMode.Open, FileAccess.Read))
+                        string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                         {
-                            using (var reader = new BinaryReader(file))
+                            if (!store.DirectoryExists(STICKERS_DIR))
                             {
-                                try
+                                store.CreateDirectory(STICKERS_DIR);
+                            }
+                            if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
+                            {
+                                store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
+                            }
+                            if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
+                            {
+                                store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
+                            }
+                            string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
+                            stickerCategory = new StickerCategory(category);
+                            if (store.FileExists(metadataFile))
+                            {
+                                using (var file = store.OpenFile(metadataFile, FileMode.Open, FileAccess.Read))
                                 {
-                                    stickerCategory.Read(reader);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("Exception in reading sticker file,message:" + ex.Message);
+                                    using (var reader = new BinaryReader(file))
+                                    {
+                                        try
+                                        {
+                                            stickerCategory.Read(reader);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine("Exception in reading sticker file,message:" + ex.Message);
+                                        }
+                                    }
                                 }
                             }
+                            stickerCategory.IsVisbile = isVisible;
+                            using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    stickerCategory.Write(writer);
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                            }
+                            if (!DictStickersCategories.ContainsKey(category))
+                                DictStickersCategories[category] = stickerCategory;
                         }
                     }
-                    stickerCategory.OverlayText = GetOverLayText(category);
-                    stickerCategory.OverlayBackgroundColorString = GetOverLayColor(category);
-                    using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(file))
-                        {
-                            stickerCategory.Write(writer);
-                            writer.Flush();
-                            writer.Close();
-                        }
-                    }
-                }
-
-            }
-            return stickerCategory;
+                });
         }
 
         public static List<StickerCategory> ReadAllStickerCategories()
@@ -557,6 +554,43 @@ namespace windows_client.utils
                 catch (Exception ex)
                 {
                     Debug.WriteLine("StickerCategory::DeleteCategory, Exception:" + ex.Message);
+                }
+            }
+        }
+
+        public static void UpdateRemovedCategory(string category)
+        {
+            StickerCategory stickerCategory;
+            lock (readWriteLock)
+            {
+                string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(STICKERS_DIR))
+                    {
+                        store.CreateDirectory(STICKERS_DIR);
+                    }
+                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
+                    {
+                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
+                    }
+                    if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
+                    {
+                        store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
+                    }
+                    string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
+                    stickerCategory = new StickerCategory(category);
+                    stickerCategory.IsRemoved = true;
+                    using (var file = store.OpenFile(metadataFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            stickerCategory.Write(writer);
+                            writer.Flush();
+                            writer.Close();
+                        }
+                    }
                 }
             }
         }
@@ -714,11 +748,12 @@ namespace windows_client.utils
             if (string.IsNullOrEmpty(category))
                 return;
 
-            if (HikeViewModel.StickerHelper != null && HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
             {
                 StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
                 stickerCategory.HasMoreStickers = hasMoreStickers;
                 stickerCategory.HasNewStickers = hasNewMessages;
+                stickerCategory.IsRemoved = false;
             }
 
             lock (readWriteLock)
@@ -747,28 +782,27 @@ namespace windows_client.utils
 
                         using (var file = store.OpenFile(metadataFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                         {
-                            bool showDownloadMessage = true;
+                            StickerCategory stickerCategory = new StickerCategory(category);
                             if (file.Length > 0)
                             {
                                 using (var reader = new BinaryReader(file, Encoding.UTF8, true))
                                 {
                                     try
                                     {
-                                        reader.ReadBoolean();
-                                        showDownloadMessage = reader.ReadBoolean();
+                                        stickerCategory.Read(reader);
                                     }
                                     catch
                                     {
                                     }
                                 }
                             }
-
+                            stickerCategory.HasMoreStickers = hasMoreStickers;
+                            stickerCategory.HasNewStickers = hasNewMessages;
+                            stickerCategory.IsRemoved = false;
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
                                 writer.Seek(0, SeekOrigin.Begin);
-                                writer.Write(hasMoreStickers);
-                                writer.Write(showDownloadMessage);
-                                writer.Write(hasNewMessages);
+                                stickerCategory.Write(writer);
                                 writer.Flush();
                                 writer.Close();
                             }
@@ -782,6 +816,76 @@ namespace windows_client.utils
             }
         }
 
+        public async void UpdateVisibility(string category, bool isVisible)
+        {
+            if (string.IsNullOrEmpty(category))
+                return;
+
+            await Task.Run(() =>
+                {
+                    if (HikeViewModel.StickerHelper != null && HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
+                    {
+                        StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
+                        stickerCategory.IsVisbile = isVisible;
+                    }
+
+                    lock (readWriteLock)
+                    {
+                        try
+                        {
+                            string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
+                            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                            {
+                                if (!store.DirectoryExists(STICKERS_DIR))
+                                {
+                                    store.CreateDirectory(STICKERS_DIR);
+                                }
+
+                                if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR))
+                                {
+                                    store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
+                                }
+
+                                if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
+                                {
+                                    store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
+                                }
+
+                                string metadataFile = folder + "\\" + METADATA;
+                                StickerCategory stickerCategory = new StickerCategory(category);
+                                using (var file = store.OpenFile(metadataFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                {
+                                    if (file.Length > 0)
+                                    {
+                                        using (var reader = new BinaryReader(file, Encoding.UTF8, true))
+                                        {
+                                            try
+                                            {
+                                                stickerCategory.Read(reader);
+                                            }
+                                            catch
+                                            {
+                                            }
+                                        }
+                                    }
+                                    stickerCategory.IsVisbile = isVisible;
+                                    using (BinaryWriter writer = new BinaryWriter(file))
+                                    {
+                                        writer.Seek(0, SeekOrigin.Begin);
+                                        stickerCategory.Write(writer);
+                                        writer.Flush();
+                                        writer.Close();
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("StickerCategory::UpdateHasMoreMessages, Exception:" + ex.Message);
+                        }
+                    }
+                });
+        }
         public static string GetOverLayColor(string _category)
         {
             switch (_category)
@@ -929,7 +1033,7 @@ namespace windows_client.utils
                         if (categoryJobj.TryGetValue(HikeConstants.Stickers.VISIBILITY, out jtoken) && (int)jtoken == 1)
                         {
                             string category = (string)categoryJobj[HikeConstants.Stickers.CATEGORY_ID];
-                            HikeViewModel.StickerHelper.DictStickersCategories[category] = CreateCategory(category);
+                            HikeViewModel.StickerHelper.CreateCategory(category);
                             listCategories.Add(category);
                         }
                     }
@@ -947,74 +1051,312 @@ namespace windows_client.utils
         public static List<string> GetStickerCategoryOrder()
         {
             List<string> listCategories = new List<string>();
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT) != null)
+            StickerCategory stickerCategory;
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT)) != null)
             {
-                listCategories.Add(StickerHelper.CATEGORY_RECENT);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_HUMANOID);
-            }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS) != null)
-            {
-                listCategories.Add(StickerHelper.CATEGORY_EXPRESSIONS);
+                listCategories.Add(stickerCategory.Category);
             }
             List<string> listRegionalCategory;
             if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
             {
                 foreach (string category in listRegionalCategory)
                 {
-                    if (HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
+                    if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
                     {
-                        listCategories.Add(category);
+                        listCategories.Add(stickerCategory.Category);
                     }
                 }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_LOVE);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_BOLLYWOOD);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_INDIANS);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_DOGGY);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL) != null)
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
             {
-                listCategories.Add(StickerHelper.CATEGORY_TROLL);
+                listCategories.Add(stickerCategory.Category);
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY) != null)
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_MUMBAI))
             {
-                listCategories.Add(StickerHelper.CATEGORY_JELLY);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_MUMBAI);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS) != null)
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_DELHI))
             {
-                listCategories.Add(StickerHelper.CATEGORY_SPORTS);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_DELHI);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2) != null)
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_GUJARAT))
             {
-                listCategories.Add(StickerHelper.CATEGORY_HUMANOID2);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_GUJARAT);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS) != null)
+
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_HYDERABAD))
             {
-                listCategories.Add(StickerHelper.CATEGORY_AVATARS);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_HYDERABAD);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS) != null)
+
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_CHENNAI))
             {
-                listCategories.Add(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_CHENNAI);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
-            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY) != null)
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BIHAR))
             {
-                listCategories.Add(StickerHelper.CATEGORY_KITTY);
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_BIHAR);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
             }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BANGALORE))
+            {
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_BANGALORE);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
+            }
+
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_KOLKATA))
+            {
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_KOLKATA);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BHOPAL))
+            {
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_BHOPAL);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
+            } if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_KERALA))
+            {
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_KERALA);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_GUWAHATI))
+            {
+                stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(CATEGORY_GUWAHATI);
+                if (stickerCategory != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+                {
+                    listCategories.Add(stickerCategory.Category);
+                }
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+            if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY)) != null && stickerCategory.IsVisbile && !stickerCategory.IsRemoved)
+            {
+                listCategories.Add(stickerCategory.Category);
+            }
+
             return listCategories;
+        }
+
+        public static ObservableCollection<StickerCategory> GetAllStickerGategories()
+        {
+            ObservableCollection<StickerCategory> listCategories = new ObservableCollection<StickerCategory>();
+            AddCategory(listCategories, CATEGORY_HUMANOID);
+            List<string> listRegionalCategory;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
+            {
+                foreach (string category in listRegionalCategory)
+                {
+                    AddCategory(listCategories, category);
+                }
+            }
+            AddCategory(listCategories, CATEGORY_INDIANS);
+            AddCategory(listCategories, CATEGORY_EXPRESSIONS);
+            AddCategory(listCategories, CATEGORY_LOVE);
+            AddCategory(listCategories, CATEGORY_BOLLYWOOD);
+            AddCategory(listCategories, CATEGORY_TROLL);
+
+
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_MUMBAI))
+            {
+                AddCategory(listCategories, CATEGORY_MUMBAI);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_DELHI))
+            {
+                AddCategory(listCategories, CATEGORY_DELHI);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_GUJARAT))
+            {
+                AddCategory(listCategories, CATEGORY_GUJARAT);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_HYDERABAD))
+            {
+                AddCategory(listCategories, CATEGORY_HYDERABAD);
+            }
+
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_CHENNAI))
+            {
+                AddCategory(listCategories, CATEGORY_CHENNAI);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BIHAR))
+            {
+                AddCategory(listCategories, CATEGORY_BIHAR);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BANGALORE))
+            {
+                AddCategory(listCategories, CATEGORY_BANGALORE);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_KOLKATA))
+            {
+                AddCategory(listCategories, CATEGORY_KOLKATA);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_BHOPAL))
+            {
+                AddCategory(listCategories, CATEGORY_BHOPAL);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_KERALA))
+            {
+                AddCategory(listCategories, CATEGORY_KERALA);
+            }
+            if (listRegionalCategory == null || !listRegionalCategory.Contains(CATEGORY_GUWAHATI))
+            {
+                AddCategory(listCategories, CATEGORY_GUWAHATI);
+            }
+            AddCategory(listCategories, CATEGORY_DOGGY);
+            AddCategory(listCategories, CATEGORY_SPORTS);
+            AddCategory(listCategories, CATEGORY_HUMANOID2);
+            AddCategory(listCategories, CATEGORY_AVATARS);
+            AddCategory(listCategories, CATEGORY_SMILEY_EXPRESSIONS);
+            AddCategory(listCategories, CATEGORY_KITTY);
+            AddCategory(listCategories, CATEGORY_JELLY);
+
+            return listCategories;
+        }
+
+        private static void AddCategory(ObservableCollection<StickerCategory> listCategories, string category)
+        {
+            StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
+            if (stickerCategory == null || !stickerCategory.IsRemoved)
+            {
+                if (stickerCategory == null)
+                {
+                    stickerCategory = new StickerCategory(category);
+                }
+                listCategories.Add(stickerCategory);
+            }
+        }
+
+        public static int GetStickersCount(string category)
+        {
+            switch (category)
+            {
+                case StickerHelper.CATEGORY_HUMANOID:
+                    return 49;
+                case StickerHelper.CATEGORY_EXPRESSIONS:
+                    return 59;
+                case StickerHelper.CATEGORY_DOGGY:
+                    return 30;
+                case StickerHelper.CATEGORY_KITTY:
+                    return 17;
+                case StickerHelper.CATEGORY_BOLLYWOOD:
+                    return 50;
+                case StickerHelper.CATEGORY_TROLL:
+                    return 50;
+                case StickerHelper.CATEGORY_HUMANOID2:
+                    return 25;
+                case StickerHelper.CATEGORY_AVATARS:
+                    return 29;
+                case StickerHelper.CATEGORY_INDIANS:
+                    return 56;
+                case StickerHelper.CATEGORY_JELLY:
+                    return 12;
+                case StickerHelper.CATEGORY_SPORTS:
+                    return 29;
+                case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
+                    return 26;
+                case StickerHelper.CATEGORY_LOVE:
+                    return 30;
+                case StickerHelper.CATEGORY_DELHI:
+                    return 12;
+                case StickerHelper.CATEGORY_MUMBAI:
+                    return 12;
+                case StickerHelper.CATEGORY_GUJARAT:
+                    return 12;
+                case StickerHelper.CATEGORY_BANGALORE:
+                    return 12;
+                case StickerHelper.CATEGORY_HYDERABAD:
+                    return 12;
+                case StickerHelper.CATEGORY_BHOPAL:
+                    return 12;
+                case StickerHelper.CATEGORY_CHENNAI:
+                    return 12;
+                case StickerHelper.CATEGORY_KERALA:
+                    return 12;
+                case StickerHelper.CATEGORY_KOLKATA:
+                    return 12;
+                case StickerHelper.CATEGORY_BIHAR:
+                    return 12;
+                case StickerHelper.CATEGORY_GUWAHATI:
+                    return 12;
+            }
+            return 0;
+
         }
     }
 }

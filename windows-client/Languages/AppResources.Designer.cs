@@ -3550,6 +3550,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to my stickers.
+        /// </summary>
+        public static string MyStickers_Header_Txt {
+            get {
+                return ResourceManager.GetString("MyStickers_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
         public static string NamingConvention_Txt {

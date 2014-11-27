@@ -1375,22 +1375,32 @@
                         </phone:Pivot>
                     </Grid>
 
-                    <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1" SelectionChanged="StickerCategory_SelectionChanged">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                    <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto"  SelectionChanged="StickerCategory_SelectionChanged" MaxWidth="400">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
 
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0 0 2 0">
-                                    <Border BorderBrush="#F14B4B" Width="75" Height="50" BorderThickness="{Binding BorderThickness}" Background="{Binding BackgroundColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
-                                    <Image Source="{Binding CategoryIcon}" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0 0 2 0">
+                                        <Border BorderBrush="#F14B4B" Width="75" Height="50" BorderThickness="{Binding BorderThickness}" Background="{Binding BackgroundColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
+                                        <Image Source="{Binding CategoryIcon}" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Grid Margin="0 0 2 0" Grid.Column="1" Tap="gridStickerShop" MaxWidth="80" HorizontalAlignment="Right">
+                            <Border BorderBrush="#F14B4B" Width="75" Height="50" BorderThickness="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
+                            <Image Source="/View/images/circles.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
 
