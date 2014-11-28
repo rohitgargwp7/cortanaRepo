@@ -45,6 +45,7 @@ namespace windows_client.View
 
         void PreviewImages_Loaded(object sender, RoutedEventArgs e)
         {
+            Loaded -= PreviewImages_Loaded;
             BindPivotPhotos();
         }
 
