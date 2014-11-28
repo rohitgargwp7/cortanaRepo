@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,6 +7,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -37,6 +39,19 @@ namespace windows_client.utils
         public const string CATEGORY_LOVE = "love";
         public const string CATEGORY_ANGRY = "angry";
 
+        //regional stickers
+        public const string CATEGORY_MUMBAI = "mumbai";
+        public const string CATEGORY_DELHI = "delhi";
+        public const string CATEGORY_GUJARAT = "gujarat";
+        public const string CATEGORY_BANGALORE = "bangalore";
+        public const string CATEGORY_HYDERABAD = "hyderabad";
+        public const string CATEGORY_BHOPAL = "bhopal";
+        public const string CATEGORY_CHENNAI = "chennai";
+        public const string CATEGORY_KERALA = "kerala";
+        public const string CATEGORY_KOLKATA = "kolkata";
+        public const string CATEGORY_BIHAR = "bihar";
+        public const string CATEGORY_GUWAHATI = "guwahati";
+
         //File constants
         public const string STICKERS_DIR = "stickers";
         public const string HIGH_RESOLUTION_DIR = "highres";
@@ -63,7 +78,7 @@ namespace windows_client.utils
             "010_yawning.png"
         
         };
-        
+
         public static string[] ArrayDefaultExpressionStickers = new string[]
         {
            "001_gn.png",
@@ -171,7 +186,7 @@ namespace windows_client.utils
 
             return null;
         }
-        
+
         public static void CreateDefaultCategories()
         {
             StickerHelper.CreateCategory(CATEGORY_HUMANOID);
@@ -384,8 +399,9 @@ namespace windows_client.utils
             return null;
         }
 
-        public static void CreateCategory(string category)
+        public static StickerCategory CreateCategory(string category)
         {
+            StickerCategory stickerCategory;
             lock (readWriteLock)
             {
                 string folder = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category;
@@ -405,7 +421,7 @@ namespace windows_client.utils
                         store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
                     }
                     string metadataFile = STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category + "\\" + METADATA;
-                    StickerCategory stickerCategory = new StickerCategory(category);
+                    stickerCategory = new StickerCategory(category);
                     if (store.FileExists(metadataFile))
                     {
                         using (var file = store.OpenFile(metadataFile, FileMode.Open, FileAccess.Read))
@@ -437,6 +453,7 @@ namespace windows_client.utils
                 }
 
             }
+            return stickerCategory;
         }
 
         public static List<StickerCategory> ReadAllStickerCategories()
@@ -550,7 +567,7 @@ namespace windows_client.utils
                 return;
 
             StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
-            
+
             if (stickerCategory != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -597,7 +614,7 @@ namespace windows_client.utils
                 return;
 
             StickerCategory stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category);
-            
+
             if (stickerCategory != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -608,7 +625,7 @@ namespace windows_client.utils
                     }
                 });
             }
-            
+
             lock (readWriteLock)
             {
                 try
@@ -720,14 +737,14 @@ namespace windows_client.utils
                         {
                             store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR);
                         }
-                        
+
                         if (!store.DirectoryExists(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category))
                         {
                             store.CreateDirectory(STICKERS_DIR + "\\" + LOW_RESOLUTION_DIR + "\\" + category);
                         }
-                        
+
                         string metadataFile = folder + "\\" + METADATA;
-                        
+
                         using (var file = store.OpenFile(metadataFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                         {
                             bool showDownloadMessage = true;
@@ -770,31 +787,53 @@ namespace windows_client.utils
             switch (_category)
             {
                 case StickerHelper.CATEGORY_HUMANOID:
-                    return "#008bd3";
+                    return "#06a4e0";
                 case StickerHelper.CATEGORY_EXPRESSIONS:
-                    return "#00a470";
+                    return "#fedc4d";
                 case StickerHelper.CATEGORY_DOGGY:
-                    return "#9d5c2c";
+                    return "#fedc4d";
                 case StickerHelper.CATEGORY_KITTY:
-                    return "#267be1";
+                    return "#fedc4d";
                 case StickerHelper.CATEGORY_BOLLYWOOD:
-                    return "#d59022";
+                    return "#f47a67";
                 case StickerHelper.CATEGORY_TROLL:
-                    return "#349d26";
+                    return "#292824";
                 case StickerHelper.CATEGORY_HUMANOID2:
-                    return "#c63070";
+                    return "#f8b0b7";
                 case StickerHelper.CATEGORY_AVATARS:
-                    return "#b9181d";
+                    return "#292824";
                 case StickerHelper.CATEGORY_INDIANS:
-                    return "#6238b7";
+                    return "#9ce5bb";
                 case StickerHelper.CATEGORY_JELLY:
                     return "#663129";
                 case StickerHelper.CATEGORY_SPORTS:
-                    return "#a77a11";
+                    return "#adad18";
                 case StickerHelper.CATEGORY_SMILEY_EXPRESSIONS:
-                    return "#3a2533";
+                    return "#df3657";
                 case StickerHelper.CATEGORY_LOVE:
-                    return "#d83a59";
+                    return "#f988aa";
+                case StickerHelper.CATEGORY_DELHI:
+                    return "#8acda7";
+                case StickerHelper.CATEGORY_MUMBAI:
+                    return "#f87840";
+                case StickerHelper.CATEGORY_GUJARAT:
+                    return "#47211b";
+                case StickerHelper.CATEGORY_BANGALORE:
+                    return "#25aaa0";
+                case StickerHelper.CATEGORY_HYDERABAD:
+                    return "#abc533";
+                case StickerHelper.CATEGORY_BHOPAL:
+                    return "#ef7802";
+                case StickerHelper.CATEGORY_CHENNAI:
+                    return "#c9a083";
+                case StickerHelper.CATEGORY_KERALA:
+                    return "#e19c5b";
+                case StickerHelper.CATEGORY_KOLKATA:
+                    return "#06a4e0";
+                case StickerHelper.CATEGORY_BIHAR:
+                    return "#292824";
+                case StickerHelper.CATEGORY_GUWAHATI:
+                    return "#03b7a7";
             }
             return string.Empty;
         }
@@ -829,8 +868,153 @@ namespace windows_client.utils
                     return "Wacky Smileys";
                 case StickerHelper.CATEGORY_LOVE:
                     return "Love You Forever";
+                case StickerHelper.CATEGORY_DELHI:
+                    return "Saddi Dilli";
+                case StickerHelper.CATEGORY_MUMBAI:
+                    return "Aamchi Mumbai";
+                case StickerHelper.CATEGORY_GUJARAT:
+                    return "Aapno Gujarat";
+                case StickerHelper.CATEGORY_BANGALORE:
+                    return "Namma Kannada";
+                case StickerHelper.CATEGORY_HYDERABAD:
+                    return "Telugu Tamasha";
+                case StickerHelper.CATEGORY_BHOPAL:
+                    return "Apna MP";
+                case StickerHelper.CATEGORY_CHENNAI:
+                    return "Sooper Tamilian";
+                case StickerHelper.CATEGORY_KERALA:
+                    return "Ende Keralam";
+                case StickerHelper.CATEGORY_KOLKATA:
+                    return "Bong Connection";
+                case StickerHelper.CATEGORY_BIHAR:
+                    return "Hamaar Bihar";
+                case StickerHelper.CATEGORY_GUWAHATI:
+                    return "Ami Axomiya";
             }
             return string.Empty;
+        }
+
+        public static void GetStickerCategoryPreference()
+        {
+            JArray array = new JArray();
+            array.Add(StickerHelper.CATEGORY_DELHI);
+            array.Add(StickerHelper.CATEGORY_MUMBAI);
+            array.Add(StickerHelper.CATEGORY_GUJARAT);
+            array.Add(StickerHelper.CATEGORY_BANGALORE);
+            array.Add(StickerHelper.CATEGORY_HYDERABAD);
+            array.Add(StickerHelper.CATEGORY_BHOPAL);
+            array.Add(StickerHelper.CATEGORY_CHENNAI);
+            array.Add(StickerHelper.CATEGORY_KERALA);
+            array.Add(StickerHelper.CATEGORY_KOLKATA);
+            array.Add(StickerHelper.CATEGORY_BIHAR);
+            array.Add(StickerHelper.CATEGORY_GUWAHATI);
+
+            JObject obj = new JObject();
+            obj.Add(HikeConstants.Stickers.CATEGORY_IDS_COLLECTION, array);
+            AccountUtils.GetStickerCategoryData(obj, new AccountUtils.postResponseFunction(StickerCategoryCallBack));
+        }
+
+        public static void StickerCategoryCallBack(JObject json)
+        {
+            try
+            {
+                if (json != null && HikeConstants.OK == (string)json[HikeConstants.STAT])
+                {
+                    JArray jarray = (JArray)json[HikeConstants.Stickers.DATA];
+                    List<string> listCategories = new List<string>();
+                    for (int i = 0; i < jarray.Count; i++)
+                    {
+                        JObject categoryJobj = (JObject)jarray[i];
+                        JToken jtoken;
+                        if (categoryJobj.TryGetValue(HikeConstants.Stickers.VISIBILITY, out jtoken) && (int)jtoken == 1)
+                        {
+                            string category = (string)categoryJobj[HikeConstants.Stickers.CATEGORY_ID];
+                            HikeViewModel.StickerHelper.DictStickersCategories[category] = CreateCategory(category);
+                            listCategories.Add(category);
+                        }
+                    }
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, listCategories.Count > 0 ? listCategories : null);
+                    if (App.newChatThreadPage != null)
+                        App.newChatThreadPage.UpdateCategoryOrder(GetStickerCategoryOrder());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("StickerHelper::StickerCategoryCallBack,ExMessage:{0},ExStackTrace:{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
+        public static List<string> GetStickerCategoryOrder()
+        {
+            List<string> listCategories = new List<string>();
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_RECENT) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_RECENT);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_HUMANOID);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_EXPRESSIONS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_EXPRESSIONS);
+            }
+            List<string> listRegionalCategory;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listRegionalCategory) && listRegionalCategory != null)
+            {
+                foreach (string category in listRegionalCategory)
+                {
+                    if (HikeViewModel.StickerHelper.GetStickersByCategory(category) != null)
+                    {
+                        listCategories.Add(category);
+                    }
+                }
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_LOVE) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_LOVE);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_BOLLYWOOD) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_BOLLYWOOD);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_INDIANS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_INDIANS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_DOGGY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_DOGGY);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_TROLL) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_TROLL);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_JELLY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_JELLY);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SPORTS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_SPORTS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_HUMANOID2) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_HUMANOID2);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_AVATARS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_AVATARS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_SMILEY_EXPRESSIONS);
+            }
+            if (HikeViewModel.StickerHelper.GetStickersByCategory(StickerHelper.CATEGORY_KITTY) != null)
+            {
+                listCategories.Add(StickerHelper.CATEGORY_KITTY);
+            }
+            return listCategories;
         }
     }
 }

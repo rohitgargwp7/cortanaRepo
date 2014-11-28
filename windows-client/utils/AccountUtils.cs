@@ -231,7 +231,7 @@ namespace windows_client.utils
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS, GET_ONHIKE_DATE, POST_INFO_ON_APP_UPDATE, GET_STICKERS,
             LAST_SEEN_POST, SOCIAL_INVITE, POST_GROUP_ICON,
-            HIDE_MESSAGE_PREVIEW
+            HIDE_MESSAGE_PREVIEW, GET_STICKER_CATEGORY
         }
 
         public static void AddToken(HttpWebRequest req)
@@ -439,6 +439,15 @@ namespace windows_client.utils
             req.BeginGetResponse(GetRequestCallback, new object[] { req, finalCallBackFunc, convMessage });
         }
 
+        public static void GetStickerCategoryData(JObject categoryJson, postResponseFunction finalCallBackFunc)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/stickers/categories")) as HttpWebRequest;
+            AddToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.GET_STICKER_CATEGORY, categoryJson, finalCallBackFunc });
+        }
+
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
@@ -641,6 +650,12 @@ namespace windows_client.utils
                     obj = vars[4];
                     break;
                 #endregion
+                #region GET STICKER CATEGORY
+                case RequestType.GET_STICKER_CATEGORY:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
                 #region POST HIDE MESSAGE PREVIEW
                 case RequestType.HIDE_MESSAGE_PREVIEW:
                     string push_token = (string)vars[2];
@@ -828,7 +843,7 @@ namespace windows_client.utils
         {
             if (byteArray == null || byteArray.Length == 0)
                 return String.Empty;
-            
+
             //Prepare for decompress
             using (MemoryStream ms = new MemoryStream(byteArray))
             {

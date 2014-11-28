@@ -215,6 +215,9 @@ namespace windows_client.View
                 bw.DoWork += (ss, ee) =>
                 {
                     LoadMessages();
+                    List<string> listCategory;
+                    if (!appSettings.TryGetValue(HikeConstants.AppSettings.PREFERRED_STICKER_CATEGORY, out listCategory))
+                        StickerHelper.GetStickerCategoryPreference();
                 };
 
                 bw.RunWorkerCompleted += (ss, ee) =>
@@ -283,6 +286,8 @@ namespace windows_client.View
 
             FrameworkDispatcher.Update();
         }
+
+
 
         private async void BindFriendsAsync()
         {

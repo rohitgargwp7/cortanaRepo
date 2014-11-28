@@ -1626,6 +1626,132 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage delhiOverlay;
+        public BitmapImage DelhiOverlay
+        {
+            get
+            {
+                if (delhiOverlay == null)
+                    delhiOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_delhi.png", UriKind.Relative));
+
+                return delhiOverlay;
+            }
+        }
+
+        private BitmapImage mumbaiOverlay;
+        public BitmapImage MumbaiOverlay
+        {
+            get
+            {
+                if (mumbaiOverlay == null)
+                    mumbaiOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_mumbai.png", UriKind.Relative));
+
+                return mumbaiOverlay;
+            }
+        }
+        private BitmapImage gujaratOverlay;
+        public BitmapImage GujaratOverlay
+        {
+            get
+            {
+                if (gujaratOverlay == null)
+                    gujaratOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_gujarat.png", UriKind.Relative));
+
+                return gujaratOverlay;
+            }
+        }
+        private BitmapImage bangaloreOverlay;
+        public BitmapImage BangaloreOverlay
+        {
+            get
+            {
+                if (bangaloreOverlay == null)
+                    bangaloreOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_bangalore.png", UriKind.Relative));
+
+                return bangaloreOverlay;
+            }
+        }
+
+        private BitmapImage hyderabadOverlay;
+        public BitmapImage HyderabadOverlay
+        {
+            get
+            {
+                if (hyderabadOverlay == null)
+                    hyderabadOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_hyderabad.png", UriKind.Relative));
+
+                return hyderabadOverlay;
+            }
+        }
+
+        private BitmapImage bhopalOverlay;
+        public BitmapImage BhopalOverlay
+        {
+            get
+            {
+                if (bhopalOverlay == null)
+                    bhopalOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_bhopal.png", UriKind.Relative));
+
+                return bhopalOverlay;
+            }
+        }
+        private BitmapImage chennaiOverlay;
+        public BitmapImage ChennaiOverlay
+        {
+            get
+            {
+                if (chennaiOverlay == null)
+                    chennaiOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_chennai.png", UriKind.Relative));
+
+                return chennaiOverlay;
+            }
+        }
+        private BitmapImage kerelaOverlay;
+        public BitmapImage KerelaOverlay
+        {
+            get
+            {
+                if (kerelaOverlay == null)
+                    kerelaOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_kerela.png", UriKind.Relative));
+
+                return kerelaOverlay;
+            }
+        }
+
+        private BitmapImage kolkataOverlay;
+        public BitmapImage KolkataOverlay
+        {
+            get
+            {
+                if (kolkataOverlay == null)
+                    kolkataOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_kolkata.png", UriKind.Relative));
+
+                return kolkataOverlay;
+            }
+        }
+
+        private BitmapImage biharOverlay;
+        public BitmapImage BiharOverlay
+        {
+            get
+            {
+                if (biharOverlay == null)
+                    biharOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_bihar.png", UriKind.Relative));
+
+                return biharOverlay;
+            }
+        }
+        private BitmapImage guwahatiOverlay;
+        public BitmapImage GuwahatiOverlay
+        {
+            get
+            {
+                if (guwahatiOverlay == null)
+                    guwahatiOverlay = new BitmapImage(new Uri("/View/images/stickers/categorySets/overlay_guwahati.png", UriKind.Relative));
+
+                return guwahatiOverlay;
+            }
+        }
         #endregion
 
         #region Sticker categroy icons
@@ -1783,6 +1909,133 @@ namespace windows_client.utils
             }
         }
 
+        BitmapImage delhiInactive;
+        public BitmapImage DelhiInactive
+        {
+            get
+            {
+                if (delhiInactive == null)
+                    delhiInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/delhi_inactive.png", UriKind.Relative));
+
+                return delhiInactive;
+            }
+        }
+
+        BitmapImage mumbaiInactive;
+        public BitmapImage MumbaiInactive
+        {
+            get
+            {
+                if (mumbaiInactive == null)
+                    mumbaiInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/mumbai_inactive.png", UriKind.Relative));
+
+                return mumbaiInactive;
+            }
+        }
+
+        BitmapImage gujaratInactive;
+        public BitmapImage GujaratInactive
+        {
+            get
+            {
+                if (gujaratInactive == null)
+                    gujaratInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/gujarat_inactive.png", UriKind.Relative));
+
+                return gujaratInactive;
+            }
+        }
+        BitmapImage bangaloreInactive;
+        public BitmapImage BangaloreInactive
+        {
+            get
+            {
+                if (bangaloreInactive == null)
+                    bangaloreInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bangalore_inactive.png", UriKind.Relative));
+
+                return bangaloreInactive;
+            }
+        }
+
+        BitmapImage hyderabadInactive;
+        public BitmapImage HyderabadInactive
+        {
+            get
+            {
+                if (hyderabadInactive == null)
+                    hyderabadInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/hyderabad_inactive.png", UriKind.Relative));
+
+                return hyderabadInactive;
+            }
+        }
+        BitmapImage bhopalInactive;
+        public BitmapImage BhopalInactive
+        {
+            get
+            {
+                if (bhopalInactive == null)
+                    bhopalInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bhopal_inactive.png", UriKind.Relative));
+
+                return bhopalInactive;
+            }
+        }
+
+        BitmapImage chennaiInactive;
+        public BitmapImage ChennaiInactive
+        {
+            get
+            {
+                if (chennaiInactive == null)
+                    chennaiInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/chennai_inactive.png", UriKind.Relative));
+
+                return chennaiInactive;
+            }
+        }
+        BitmapImage keralaInactive;
+        public BitmapImage KeralaInactive
+        {
+            get
+            {
+                if (keralaInactive == null)
+                    keralaInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kerala_inactive.png", UriKind.Relative));
+
+                return keralaInactive;
+            }
+        }
+
+        BitmapImage kolkataInactive;
+        public BitmapImage KolkataInactive
+        {
+            get
+            {
+                if (kolkataInactive == null)
+                    kolkataInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kolkata_inactive.png", UriKind.Relative));
+
+                return kolkataInactive;
+            }
+        }
+        BitmapImage biharInactive;
+        public BitmapImage BiharInactive
+        {
+            get
+            {
+                if (biharInactive == null)
+                    biharInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bihar_inactive.png", UriKind.Relative));
+
+                return biharInactive;
+            }
+        }
+
+        BitmapImage guwahatiInactive;
+        public BitmapImage GuwahatiInactive
+        {
+            get
+            {
+                if (guwahatiInactive == null)
+                    guwahatiInactive = new BitmapImage(new Uri("/View/images/stickers/categorySets/guwahati_inactive.png", UriKind.Relative));
+
+                return guwahatiInactive;
+            }
+        }
         private BitmapImage recentIconInActive;
         public BitmapImage RecentIconInActive
         {
@@ -1945,6 +2198,137 @@ namespace windows_client.utils
                     loveActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/love_active.png", UriKind.Relative));
 
                 return loveActive;
+            }
+        }
+
+        private BitmapImage delhiActive;
+        public BitmapImage DelhiActive
+        {
+            get
+            {
+                if (delhiActive == null)
+                    delhiActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/delhi_active.png", UriKind.Relative));
+
+                return delhiActive;
+            }
+        }
+
+        private BitmapImage mumbaiActive;
+        public BitmapImage MumbaiActive
+        {
+            get
+            {
+                if (mumbaiActive == null)
+                    mumbaiActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/mumbai_active.png", UriKind.Relative));
+
+                return mumbaiActive;
+            }
+        }
+
+        private BitmapImage gujaratActive;
+        public BitmapImage GujaratActive
+        {
+            get
+            {
+                if (gujaratActive == null)
+                    gujaratActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/gujarat_active.png", UriKind.Relative));
+
+                return gujaratActive;
+            }
+        }
+
+        private BitmapImage bangaloreActive;
+        public BitmapImage BangaloreActive
+        {
+            get
+            {
+                if (bangaloreActive == null)
+                    bangaloreActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bangalore_active.png", UriKind.Relative));
+
+                return bangaloreActive;
+            }
+        }
+        private BitmapImage hyderabadActive;
+        public BitmapImage HyderabadActive
+        {
+            get
+            {
+                if (hyderabadActive == null)
+                    hyderabadActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/hyderabad_active.png", UriKind.Relative));
+
+                return hyderabadActive;
+            }
+        }
+
+        private BitmapImage bhopalActive;
+        public BitmapImage BhopalActive
+        {
+            get
+            {
+                if (bhopalActive == null)
+                    bhopalActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bhopal_active.png", UriKind.Relative));
+
+                return bhopalActive;
+            }
+        }
+
+        private BitmapImage chennaiActive;
+        public BitmapImage ChennaiActive
+        {
+            get
+            {
+                if (chennaiActive == null)
+                    chennaiActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/chennai_active.png", UriKind.Relative));
+
+                return chennaiActive;
+            }
+        }
+
+        private BitmapImage keralaActive;
+        public BitmapImage KeralaActive
+        {
+            get
+            {
+                if (keralaActive == null)
+                    keralaActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kerala_active.png", UriKind.Relative));
+
+                return keralaActive;
+            }
+        }
+
+        private BitmapImage kolkataActive;
+        public BitmapImage KolkataActive
+        {
+            get
+            {
+                if (kolkataActive == null)
+                    kolkataActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/kolkata_active.png", UriKind.Relative));
+
+                return kolkataActive;
+            }
+        }
+
+        private BitmapImage biharActive;
+        public BitmapImage BiharActive
+        {
+            get
+            {
+                if (biharActive == null)
+                    biharActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/bihar_active.png", UriKind.Relative));
+
+                return biharActive;
+            }
+        }
+
+        private BitmapImage guwahatiActive;
+        public BitmapImage GuwahatiActive
+        {
+            get
+            {
+                if (guwahatiActive == null)
+                    guwahatiActive = new BitmapImage(new Uri("/View/images/stickers/categorySets/guwahati_active.png", UriKind.Relative));
+
+                return guwahatiActive;
             }
         }
 
