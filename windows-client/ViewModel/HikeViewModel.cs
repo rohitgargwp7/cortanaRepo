@@ -203,16 +203,11 @@ namespace windows_client.ViewModel
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
+            _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
 
-            List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
-            for (int i = 0; i < convList.Count; i++)
-            {
-                ConversationListObject convListObj = convList[i];
+            foreach (ConversationListObject convListObj in convList)
                 _convMap[convListObj.Msisdn] = convListObj;
-                listConversationBox.Add(convListObj);
-            }
-            _messageListPageCollection = new ObservableCollection<ConversationListObject>(listConversationBox);
 
             LoadViewModelObjects();
         }
