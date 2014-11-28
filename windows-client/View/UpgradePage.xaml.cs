@@ -591,10 +591,9 @@ namespace windows_client.View
             HikeViewModel.StickerHelper.InitialiseLowResStickers();
             foreach (StickerCategory stickerCategoryObj in HikeViewModel.StickerHelper.DictStickersCategories.Values)
             {
-                if (stickerCategoryObj.ListStickers.Count > 0)
-                {
-                    HikeViewModel.StickerHelper.UpdateVisibility(stickerCategoryObj.Category, true);
-                }
+                stickerCategoryObj.OverlayText = StickerHelper.GetOverLayText(stickerCategoryObj.Category);
+                stickerCategoryObj.OverlayBackgroundColorString = StickerHelper.GetOverLayColor(stickerCategoryObj.Category);
+                HikeViewModel.StickerHelper.UpdateVisibility(stickerCategoryObj.Category, stickerCategoryObj.ListStickers.Count > 0);
             }
         }
     }
