@@ -130,7 +130,7 @@ namespace windows_client.Controls
             StickerCategory stickerCategory;
             if (App.newChatThreadPage != null && (stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(_category)) != null)
             {
-                App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
+                App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory, false, true);
             }
         }
 
@@ -159,7 +159,7 @@ namespace windows_client.Controls
                         }
                         else
                             ShowLoadingStickers();
-                        App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory);
+                        App.newChatThreadPage.PostRequestForBatchStickers(stickerCategory, false, false);
                     }
                 }
             }

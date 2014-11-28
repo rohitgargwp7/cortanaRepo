@@ -3536,6 +3536,11 @@ namespace windows_client.View
 
         private void ShowStickerPallet()
         {
+            if (App.appSettings.Contains(HikeConstants.AppSettings.STICKER_ICON_CLICKED))
+            {
+                Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_BUTTON_CLICKED);
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.STICKER_ICON_CLICKED);
+            }
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
 
@@ -6731,6 +6736,7 @@ namespace windows_client.View
 
             if (stickerCategory.ShowDownloadMessage)
             {
+                Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_OVERLAY_SEEN);
                 ShowDownloadOverlay(true);
                 if (stickerCategory.ListStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
@@ -6756,7 +6762,7 @@ namespace windows_client.View
             }
         }
 
-        public void PostRequestForBatchStickers(StickerCategory stickerCategory)
+        public void PostRequestForBatchStickers(StickerCategory stickerCategory, bool downloadTapped, bool isRetry)
         {
             JObject json = new JObject();
             json[HikeConstants.Stickers.CATEGORY_ID] = stickerCategory.Category;
@@ -6771,6 +6777,7 @@ namespace windows_client.View
                 json[HikeConstants.Stickers.STICKER_IDS] = existingIds;
                 json[HikeConstants.Stickers.RESOLUTION_ID] = ResolutionId;
                 json[HikeConstants.Stickers.NUMBERS_TO_DOWNLOAD] = 10;
+                json[HikeConstants.Stickers.DOWNLOAD_SOURCE] = isRetry ? 3 : (downloadTapped ? 0 : 1);
 
                 stickerCategory.IsDownLoading = true;
                 AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
@@ -7013,7 +7020,7 @@ namespace windows_client.View
                 _currenPivot.ShowStickers();
             else
                 _currenPivot.ShowLoadingStickers();
-            PostRequestForBatchStickers(stickerCategory);
+            PostRequestForBatchStickers(stickerCategory, true, false);
         }
 
         private void CreateStickerCategories()
@@ -7870,6 +7877,7 @@ namespace windows_client.View
 
         private void gridStickerShop(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_SETTINGS_BUTTON_CLICKED);
             NavigationService.Navigate(new Uri("/View/MyStickers.xaml", UriKind.RelativeOrAbsolute));
         }
 

@@ -811,6 +811,13 @@ namespace windows_client
 
                 HikeViewModel.StickerHelper.CreateDefaultCategories();
             }
+
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.9.0.2") < 0)
+            {
+                appSettings[HikeConstants.AppSettings.STICKER_ICON_CLICKED] = true;
+                appSettings[HikeConstants.AppSettings.STICKER_CATEGORIES_CHECKED] = true;
+                appSettings[HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED] = true;
+            }
             #endregion
             #region TUTORIAL
             if (!isNewInstall && Utils.compareVersion("2.6.0.0", _currentVersion) == 1)
