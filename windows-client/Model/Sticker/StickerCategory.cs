@@ -69,7 +69,6 @@ namespace windows_client.Model.Sticker
             {
                 _isVisibile = value;
                 NotifyPropertyChanged("IsVisbile");
-                NotifyPropertyChanged("StickerShopIcon");
             }
         }
 
@@ -255,7 +254,7 @@ namespace windows_client.Model.Sticker
                     case StickerHelper.CATEGORY_BIHAR:
                         return UI_Utils.Instance.BiharShopIcon;
                     case StickerHelper.CATEGORY_GUWAHATI:
-                        return UI_Utils.Instance.GuwahatiShopIcon;//todo:change
+                        return UI_Utils.Instance.GuwahatiShopIcon;
                     default:
                         return new BitmapImage();
                 }

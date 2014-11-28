@@ -56,15 +56,5 @@ namespace windows_client.View
             cbx.Checked += CheckBox_Checked;
             cbx.Unchecked += CheckBox_Unchecked;
         }
-
-        private void gridStickerCategoryTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            StickerCategory stickerCategory = ((Grid)sender).DataContext as StickerCategory;
-
-            if (stickerCategory.Category == StickerHelper.CATEGORY_HUMANOID || stickerCategory.Category == StickerHelper.CATEGORY_EXPRESSIONS)
-                return;
-
-            stickerCategory.IsVisbile = !stickerCategory.IsVisbile;
-        }
     }
 }
