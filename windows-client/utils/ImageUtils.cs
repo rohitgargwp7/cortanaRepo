@@ -2642,6 +2642,20 @@ namespace windows_client.utils
             }
         }
 
+        private BitmapImage _stickerSettingWhite;
+
+        public BitmapImage StickerSettingWhite
+        {
+            get
+            {
+                if (_stickerSettingWhite == null)
+                    _stickerSettingWhite = new BitmapImage(new Uri("/View/images/stickers/categorySets/settings_white.png", UriKind.Relative));
+
+                return _stickerSettingWhite;
+            }
+        }
+
+
         #endregion
 
         #endregion

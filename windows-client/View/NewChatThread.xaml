@@ -1398,7 +1398,7 @@
                         </ListBox>
                         <Grid Margin="0 0 2 0" Grid.Column="1" Tap="gridStickerShop" MaxWidth="80" HorizontalAlignment="Right">
                             <Border BorderBrush="#F14B4B" Width="75" Height="50" BorderThickness="0" Background="#4d4d4d" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
-                            <Image Source="/View/images/circles.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Name="stickerSettingImage" Source="/View/images/stickers/categorySets/settings_blue.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </Grid>
                 </Grid>

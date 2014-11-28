@@ -1189,6 +1189,11 @@ namespace windows_client.View
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
+
+            if (!App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
+            {
+                stickerSettingImage.Source = UI_Utils.Instance.StickerSettingWhite;
+            }
         }
 
         void latestPinBW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -7877,6 +7882,11 @@ namespace windows_client.View
 
         private void gridStickerShop(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
+            {
+                stickerSettingImage.Source = UI_Utils.Instance.StickerSettingWhite;
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED);
+            }
             Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_SETTINGS_BUTTON_CLICKED);
             NavigationService.Navigate(new Uri("/View/MyStickers.xaml", UriKind.RelativeOrAbsolute));
         }

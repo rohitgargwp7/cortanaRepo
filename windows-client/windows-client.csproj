@@ -866,6 +866,8 @@
     <Content Include="View\images\stickers\categorySets\overlay_youi.png" />
     <Content Include="View\images\stickers\categorySets\rage_active.png" />
     <Content Include="View\images\stickers\categorySets\rage_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\settings_blue.png" />
+    <Content Include="View\images\stickers\categorySets\settings_white.png" />
     <Content Include="View\images\stickers\categorySets\sports_active.png" />
     <Content Include="View\images\stickers\categorySets\sports_inactive.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\avatars_shopIcon.png" />
