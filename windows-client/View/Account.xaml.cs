@@ -165,10 +165,12 @@ namespace windows_client.View
             App.appSettings[HikeConstants.FILE_SYSTEM_VERSION] = Utils.getAppVersion();
 
             //so that on signing up again user can see these tutorials 
-            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.REMOVE_EMMA, true);
-            App.WriteToIsoStorageSettings(HikeConstants.HIDDEN_TOOLTIP_STATUS, ToolTipMode.HIDDEN_MODE_GETSTARTED);
+            App.appSettings[HikeConstants.AppSettings.REMOVE_EMMA] = true;
+            App.appSettings[HikeConstants.HIDDEN_TOOLTIP_STATUS] = ToolTipMode.HIDDEN_MODE_GETSTARTED;
+            App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
+
             MiscDBUtil.clearDatabase();
-            MiscDBUtil.DeleteExistingDbs();
+            MiscDBUtil.DeleteDatabase();
             PushHelper.Instance.closePushnotifications();
             SmileyParser.Instance.CleanRecentEmoticons();
             FileTransferManager.Instance.ClearTasks();

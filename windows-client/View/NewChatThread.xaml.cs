@@ -1134,7 +1134,7 @@ namespace windows_client.View
                     if (metadata != null)
                     {
                         JToken pinId = null;
-                        if (metadata.TryGetValue(HikeConstants.PINID, out pinId) && pinId != null) //to be Checked if value is null && load Last Pin Message
+                        if (metadata.TryGetValue(HikeConstants.PINID, out pinId) && pinId.Type != JTokenType.Null) //to be Checked if value is null && load Last Pin Message
                         {
                             BackgroundWorker latestPinBW = new BackgroundWorker();
                             latestPinBW.RunWorkerCompleted += latestPinBW_RunWorkerCompleted;
@@ -1644,6 +1644,10 @@ namespace windows_client.View
 
             for (i = 0; i < messagesList.Count; i++)
             {
+                //Once user exists the chat thread, prevent running of this thread
+                if (App.newChatThreadPage == null)
+                    return;
+
                 ConvMessage cm = messagesList[i];
                 Debug.WriteLine(cm.MessageId);
                 if (i == messageFetchCount - 1)
@@ -3231,7 +3235,7 @@ namespace windows_client.View
                 }
 
                 //done this way as on locking it is unable to serialize convmessage or attachment object
-                object[] attachmentForwardMessage = new object[7];
+                object[] attachmentForwardMessage = new object[8];
                 attachmentForwardMessage[0] = convMessage.FileAttachment.ContentType;
                 attachmentForwardMessage[1] = mContactNumber;
                 attachmentForwardMessage[2] = convMessage.MessageId;
@@ -3239,6 +3243,7 @@ namespace windows_client.View
                 attachmentForwardMessage[4] = convMessage.FileAttachment.FileKey;
                 attachmentForwardMessage[5] = convMessage.FileAttachment.Thumbnail;
                 attachmentForwardMessage[6] = convMessage.FileAttachment.FileName;
+                attachmentForwardMessage[7] = convMessage.FileAttachment.FileSize;
 
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
             }

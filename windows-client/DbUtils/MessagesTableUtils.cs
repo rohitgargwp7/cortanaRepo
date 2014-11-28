@@ -378,12 +378,14 @@ namespace windows_client.DbUtils
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = string.Format(msgtext, gp.FirstName);
+                        obj.LastMessage = String.Format(msgtext, gp.FirstName);
                     }
                     else // 1-1 chat
-                    {
-                        obj.LastMessage = string.Format(msgtext, obj.NameToShow);
-                    }
+                        obj.LastMessage = String.Format(msgtext, obj.NameToShow);
+
+                    if (obj.IsHidden)
+                        obj.ToastText = HikeConstants.TOAST_FOR_HIDDEN_MODE;
+
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion
