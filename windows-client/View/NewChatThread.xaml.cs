@@ -737,7 +737,9 @@ namespace windows_client.View
             base.OnNavigatingFrom(e);
 
             _isOnPage = false;
-            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[_currentSelectedIndex].Category);
+            if (_currentSelectedIndex > -1)
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[_currentSelectedIndex].Category);
+         
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
 
@@ -6583,9 +6585,14 @@ namespace windows_client.View
         bool isStickersLoaded = false;
         List<StickerCategory> listStickerCategories;
 
+        /// <summary>
+        /// Updates pivot correct values on scrolling
+        /// </summary>
+        /// <param name="index">index of item from category list</param>
+        /// <param name="pos">position of pivot to be updated with new value</param>
         private void ChangeStickerPivot(int index, int pos)
         {
-            StickerCategory stcikerCategoryObj = listStickerCategories.ElementAt(index);
+            StickerCategory stickerCategoryObj = listStickerCategories.ElementAt(index);
             StickerPivotItem pivotItem;
             if (pos == 2)
             {
@@ -6599,7 +6606,7 @@ namespace windows_client.View
             {
                 pivotItem = pvtItem0;
             }
-            pivotItem.UpdateStickerPivot(stcikerCategoryObj);
+            pivotItem.UpdateStickerPivot(stickerCategoryObj);
         }
 
         /// <summary>
@@ -6652,11 +6659,25 @@ namespace windows_client.View
                 }
             }
         }
-
+        /// <summary>
+        /// flag used to prevent calling of pivot selection changed when it is called by code
+        /// </summary>
         bool _pivotflag = false;
-        int _currentSelectedIndex = 0;
+        /// <summary>
+        /// index of category selected from list of categories
+        /// </summary>
+        int _currentSelectedIndex = -1;
+        /// <summary>
+        /// caching old pivot index to determine scroll behavior
+        /// </summary>
         int _pivotIndex = 0;
+        /// <summary>
+        /// flag used to prevent calling of listbox selection changed when it is called by code
+        /// </summary>
         bool _lbFlag = false;
+        /// <summary>
+        /// default-pivot zero, used to store current selected pivot, to update it when sticker download request fails/succeeds.
+        /// </summary>
         StickerPivotItem _currenPivot;
 
         private void PivotStickers_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -6812,7 +6833,7 @@ namespace windows_client.View
                         {
                             if (stickerCategory.HasNewStickers || (stickerCategory.Category != StickerHelper.CATEGORY_EXPRESSIONS && stickerCategory.Category != StickerHelper.CATEGORY_HUMANOID))
                                 _currenPivot.ShowDownloadFailed();
-                            _currenPivot.ShowHidMoreProgressBar(false);
+                            _currenPivot.ShowHideMoreProgressBar(false);
                         });
                     }
                 }
@@ -6928,7 +6949,7 @@ namespace windows_client.View
                     if (stickerCategory != null && _currenPivot.StickerCategory == stickerCategory.Category)
                     {
                         _currenPivot.ShowStickers();
-                        _currenPivot.ShowHidMoreProgressBar(false);
+                        _currenPivot.ShowHideMoreProgressBar(false);
                     }
                     stickerCategory.IsDownLoading = false;
                 });
@@ -6943,7 +6964,7 @@ namespace windows_client.View
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            _currenPivot.ShowHidMoreProgressBar(false);
+                            _currenPivot.ShowHideMoreProgressBar(false);
                         });
                     }
                 }
@@ -6967,14 +6988,14 @@ namespace windows_client.View
         public void ShowDownloadOverlay(bool show)
         {
             EnableDisableUI(!show);
-            StickerCategory stickerCategory = listStickerCategories[_currentSelectedIndex];
-            if (stickerCategory == null)
+            StickerCategory selectedCategoryObj = listStickerCategories[_currentSelectedIndex];
+            if (selectedCategoryObj == null)
                 return;
-            gridDownloadStickers.DataContext = stickerCategory;
+            gridDownloadStickers.DataContext = selectedCategoryObj;
 
             if (show)
             {
-                if (stickerCategory.Category == StickerHelper.CATEGORY_HUMANOID || stickerCategory.Category == StickerHelper.CATEGORY_EXPRESSIONS)
+                if (selectedCategoryObj.Category == StickerHelper.CATEGORY_HUMANOID || selectedCategoryObj.Category == StickerHelper.CATEGORY_EXPRESSIONS)
                 {
                     btnDownload.Content = AppResources.Installed_Txt;
                     btnDownload.IsHitTestVisible = false;
@@ -6992,8 +7013,8 @@ namespace windows_client.View
                     btnDownload.IsHitTestVisible = true;
                     btnFree.IsHitTestVisible = true;
                     btnDownload.Content = AppResources.Download_txt;
-                    if (stickerCategory.ShowDownloadMessage)
-                        stickerCategory.SetDownloadMessage(false);
+                    if (selectedCategoryObj.ShowDownloadMessage)
+                        selectedCategoryObj.SetDownloadMessage(false);
                 }
                 overlayBorder.Visibility = Visibility.Collapsed;
                 gridDownloadStickers.Visibility = Visibility.Collapsed;
@@ -7008,8 +7029,8 @@ namespace windows_client.View
         private void overlayBorder_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ShowDownloadOverlay(false);
-            StickerCategory s2 = listStickerCategories[_currentSelectedIndex];
-            if (s2 != null && s2.ListStickers.Count > 0)
+            StickerCategory selectedStickerCategory = listStickerCategories[_currentSelectedIndex];
+            if (selectedStickerCategory != null && selectedStickerCategory.ListStickers.Count > 0)
                 _currenPivot.ShowStickers();
             else
                 _currenPivot.ShowNoStickers();
