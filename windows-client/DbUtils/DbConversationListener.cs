@@ -549,13 +549,9 @@ namespace windows_client.DbUtils
 
                     //cannot use convMap here because object has pushed to map but not to ui
                     if (index < 0)//not present in convmap
-                    {
                         App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                    }
-                    else if (index > 0)
-                    {
+                    else if (index > 0) //if already at zero, do nothing
                         App.ViewModel.MessageListPageCollection.Move(index, 0);
-                    }//if already at zero, do nothing
                 });
 
             App.ViewModel.IsConversationUpdated = true;
