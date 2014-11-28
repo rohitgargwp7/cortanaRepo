@@ -21,7 +21,6 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-            App.createDatabaseAsync();
 
             // if addbook is not scanned and state is not scanning
             if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
@@ -152,6 +151,17 @@ namespace windows_client
         {
             getStartedButton.Opacity = 0;
 
+            if (!MiscDBUtil.DeleteDatabase())
+            {
+                MessageBox.Show(AppResources.Please_Try_Again_Txt);
+                getStartedButton.Opacity = 1;
+                return;
+            }
+
+            App.createDatabaseAsync();
+
+            
+
             if (!App.IS_MARKETPLACE) // this is done to save the server info
                 App.appSettings.Save();
 
@@ -163,6 +173,7 @@ namespace windows_client
             Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
             Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
             #endregion
+
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {

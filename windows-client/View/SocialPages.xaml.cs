@@ -175,30 +175,42 @@ namespace windows_client.View
                     client.OpenReadAsync(new Uri(profilePictureUrl));
                     client.OpenReadCompleted += (ss, ee) =>
                     {
-                        Stream s = ee.Result;
-                        byte[] imgBytes = null;
+                        try
+                        {
+                            Stream s = ee.Result;
+                            byte[] imgBytes = null;
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (s != null)
+                                {
+                                    try
+                                    {
+                                        BitmapImage b = new BitmapImage();
+                                        b.SetSource(s);
+                                        imgBytes = UI_Utils.Instance.ConvertToBytes(b);
+                                        MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, imgBytes);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("SocialPages.xaml :: LoginSucceded, LoginSucceded, Exception : " + ex.StackTrace);
+                                    }
+                                }
+
+                                if (imgBytes != null)
+                                    PhoneApplicationService.Current.State["img"] = imgBytes;
+
+                                PhoneApplicationService.Current.State["fbName"] = (string)result["name"];
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("LoginSucceded: photo not fetched " + ex.StackTrace);
+                        }
+
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (s != null)
-                            {
-                                try
-                                {
-                                    BitmapImage b = new BitmapImage();
-                                    b.SetSource(s);
-                                    imgBytes = UI_Utils.Instance.ConvertToBytes(b);
-                                    MiscDBUtil.saveLargeImage(HikeConstants.MY_PROFILE_PIC, imgBytes);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("SocialPages.xaml :: LoginSucceded, LoginSucceded, Exception : " + ex.StackTrace);
-                                }
-                            }
-
-                            if (imgBytes != null)
-                                PhoneApplicationService.Current.State["img"] = imgBytes;
-                            PhoneApplicationService.Current.State["fbName"] = (string)result["name"];
-                            if (NavigationService.CanGoBack)
-                                NavigationService.GoBack();
+                             if (NavigationService.CanGoBack)
+                                 NavigationService.GoBack();
                         });
                     };
                 }

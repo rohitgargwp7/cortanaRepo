@@ -20,6 +20,7 @@ namespace windows_client.FileTransfers
         protected int DefaultBlockSize = 1024;
         public static int MaxBlockSize;
         static readonly int MAX_RECONNECT_TIME = 20; // in seconds
+        public static readonly int HTTP_TIMEOUT = 55000; // in ms
         protected int BlockSize = 1024;
         protected int ChunkFactor = 1;
         protected short MaxRetryAttempts = 10;

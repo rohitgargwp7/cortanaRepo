@@ -2486,9 +2486,13 @@ namespace windows_client.View
                 }
             }
 
-            //scroll to the recent item(the most recent status update on tapping this bar)
-            if (App.ViewModel.StatusList.Count > pendingCount)
-                statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
+            try // handle scroll to exception
+            {
+                //scroll to the recent item(the most recent status update on tapping this bar)
+                if (App.ViewModel.StatusList.Count > pendingCount)
+                    statusLLS.ScrollTo(App.ViewModel.StatusList[pendingCount]);
+            }
+            catch { }
 
             RefreshBarCount = 0;
         }

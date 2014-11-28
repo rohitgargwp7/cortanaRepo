@@ -26,6 +26,9 @@ namespace windows_client.FileTransfers
         public string FileKey { get; set; }
         public bool IsFileExist { get; set; }
 
+        ManualResetEvent _getRequestTimeOut = new ManualResetEvent(false);
+        ManualResetEvent _postRequestTimeOut = new ManualResetEvent(false);
+
         public FileUploader()
             : base()
         {
@@ -245,7 +248,6 @@ namespace windows_client.FileTransfers
                     GetWritingIndexFromServer();
                     IsFileExist = false;
                 }
-
             }
             catch { }
         }
@@ -271,6 +273,11 @@ namespace windows_client.FileTransfers
                 req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
 
                 req.BeginGetResponse(UploadGetResponseCallback, new object[] { req });
+
+                bool isTimedOut = _getRequestTimeOut.WaitOne(FileInfoBase.HTTP_TIMEOUT);
+
+                if (isTimedOut)
+                    ProcessUploadGetResponse(null, HttpStatusCode.RequestTimeout);
             }
             else
             {
@@ -341,7 +348,8 @@ namespace windows_client.FileTransfers
             }
             finally
             {
-                ProcessUploadGetResponse(data, responseCode);
+                if (_getRequestTimeOut.Set())
+                    ProcessUploadGetResponse(data, responseCode);
             }
         }
 
@@ -412,7 +420,6 @@ namespace windows_client.FileTransfers
                 Id = Guid.NewGuid().ToString();
                 CurrentHeaderPosition = index;
 
-
                 FileState = FileTransferState.STARTED;
                 Save();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
@@ -452,6 +459,7 @@ namespace windows_client.FileTransfers
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = FileName;
             req.Headers["X-SESSION-ID"] = Id;
+            req.Headers["X-Thumbnail-Required"] = "0";
 
             var bytesLeft = TotalBytes - CurrentHeaderPosition;
             BlockSize = bytesLeft >= BlockSize ? BlockSize : bytesLeft;
@@ -478,6 +486,11 @@ namespace windows_client.FileTransfers
             var bytesToUpload = getMultiPartBytes(partialDataBytes);
             chunkStartTime = DateTime.Now;
             req.BeginGetRequestStream(UploadPostRequestCallback, new object[] { req, bytesToUpload });
+
+            bool isTimedOut = _postRequestTimeOut.WaitOne(FileInfoBase.HTTP_TIMEOUT);
+
+            if(isTimedOut)
+                ProcessUploadPostResponse(null, HttpStatusCode.RequestTimeout);
         }
 
         byte[] getMultiPartBytes(byte[] data)
@@ -532,25 +545,6 @@ namespace windows_client.FileTransfers
 
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
 
-            //Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //{
-            //    try
-            //    {
-            //        var netInterface = myHttpWebRequest.GetCurrentNetworkInterface();
-            //        MaxBlockSize = (netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_EDGE 
-            //            || netInterface.InterfaceSubtype == NetworkInterfaceSubType.Cellular_3G) ? MobileBuffer : WifiBuffer;
-
-            //        System.Diagnostics.Debug.WriteLine(netInterface.InterfaceType.ToString());
-            //    }
-            //    catch (NetworkException networkException)
-            //    {
-            //        if (networkException.NetworkErrorCode == NetworkError.WebRequestAlreadyFinished)
-            //        {
-            //            System.Diagnostics.Debug.WriteLine("Cannot call GetCurrentNetworkInterface if the webrequest is already complete");
-            //        }
-            //    }
-            //}); 
-
             HttpWebResponse response = null;
 
             string data = null;
@@ -583,7 +577,8 @@ namespace windows_client.FileTransfers
             }
             finally
             {
-                ProcessUploadPostResponse(data, responseCode);
+                if (_postRequestTimeOut.Set())
+                    ProcessUploadPostResponse(data, responseCode);
             }
         }
 

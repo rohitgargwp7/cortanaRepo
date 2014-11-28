@@ -15,6 +15,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using windows_client.utils.Sticker_Helper;
 using windows_client.utils.ServerTips;
+using System.Linq;
 
 namespace windows_client
 {
@@ -152,7 +153,6 @@ namespace windows_client
 
         private void ProcessAllPacketsExceptBulk(JObject jsonObj, string type, string msisdn)
         {
-
             #region MESSAGE
             if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
@@ -1136,6 +1136,19 @@ namespace windows_client
                     // if user is blocked ignore his requests
                     if (App.ViewModel.BlockedHashset.Contains(msisdn))
                         return;
+
+                    if (App.ViewModel.PendingRequests.ContainsKey(msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(msisdn);
+                        MiscDBUtil.SavePendingRequests();
+
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                BaseStatusUpdate update = App.ViewModel.StatusList.Where(u => u is FriendRequestStatusUpdate && u.Msisdn == msisdn).FirstOrDefault();
+                                if (update != null)
+                                    App.ViewModel.StatusList.Remove(update);
+                            });
+                    }
 
                     FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                     App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });

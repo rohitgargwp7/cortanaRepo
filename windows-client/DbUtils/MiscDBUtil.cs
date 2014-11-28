@@ -162,29 +162,39 @@ namespace windows_client.DbUtils
             #endregion
         }
 
-        /// <summary>
-        /// Deletes entire database
-        /// </summary>
-        public static void DeleteExistingDbs()
+        public static bool DeleteDatabase()
         {
-            using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+            bool isDeleted = true;
+            
+            try
             {
-                if (db.DatabaseExists())
-                    db.DeleteDatabase();
+                using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                App.RemoveKeyFromAppSettings(App.IS_DB_CREATED);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error while deleting db: " + e.Message + e.StackTrace);
+                isDeleted = false;
             }
 
-            using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                if (db.DatabaseExists())
-                    db.DeleteDatabase();
-            }
-
-            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
-            {
-                if (db.DatabaseExists())
-                    db.DeleteDatabase();
-            }
-            App.RemoveKeyFromAppSettings(App.IS_DB_CREATED);
+            return isDeleted;
         }
 
         #region STATUS UPDATES
