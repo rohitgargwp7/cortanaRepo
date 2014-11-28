@@ -571,7 +571,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.9.0.2", _currentVersion) == 1)
+            if (!isNewInstall && !String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.9.0.2", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -741,6 +741,10 @@ namespace windows_client
             {
                 ShowExceptionMessageBox();
             }
+            #endregion
+            #region HIDDEN_MODE EXIT SETTING
+            if (isNewInstall)
+                App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
             #endregion
             #region Hidden Mode
             if (isNewInstall || Utils.compareVersion(_currentVersion, "2.6.5.0") < 0)
@@ -1017,6 +1021,7 @@ namespace windows_client
         {
             if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
                 return;
+            
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -1024,30 +1029,23 @@ namespace windows_client
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
-                        {
+                        if (!String.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
                             store.CreateDirectory(MiscDBUtil.THUMBNAILS);
-                        }
-                        if (!string.IsNullOrEmpty(MiscDBUtil.MISC_DIR) && !store.DirectoryExists(MiscDBUtil.MISC_DIR))
-                        {
+                        
+                        if (!String.IsNullOrEmpty(MiscDBUtil.MISC_DIR) && !store.DirectoryExists(MiscDBUtil.MISC_DIR))
                             store.CreateDirectory(MiscDBUtil.MISC_DIR);
-                        }
+
                         if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
-                        {
                             store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
-                        }
+                        
                         if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
-                        {
                             store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
-                        }
+                        
                         if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                        {
                             store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                        }
+                        
                         if (!store.DirectoryExists(HikeConstants.FILE_TRANSFER_TEMP_LOCATION))
-                        {
                             store.CreateDirectory(HikeConstants.FILE_TRANSFER_TEMP_LOCATION);
-                        }
                     }
                     // Create the database if it does not exist.
                     using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
@@ -1067,6 +1065,7 @@ namespace windows_client
                         if (db.DatabaseExists() == false)
                             db.CreateDatabase();
                     }
+
                     WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                 }
                 catch (Exception ex)
@@ -1074,8 +1073,8 @@ namespace windows_client
                     Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
                     RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
-
             };
+
             bw.RunWorkerAsync();
         }
 

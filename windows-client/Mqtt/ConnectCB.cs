@@ -29,6 +29,7 @@ namespace windows_client.Mqtt
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 App.MqttManagerInstance.disconnectFromBroker(false);
                 MiscDBUtil.clearDatabase();
+                MiscDBUtil.DeleteDatabase();
 
                 HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
                 if (pushChannel != null)

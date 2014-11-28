@@ -44,7 +44,7 @@ namespace windows_client.utils
             TimeSpan span = now.Subtract(messageTime);
             messageTime = messageTime.ToLocalTime();
 
-            if (span.Days < 1)
+            if (span.Days < 1 && DateTime.Now.Date == messageTime.Date)
                 return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
                 return messageTime.ToString("ddd", CultureInfo.CurrentUICulture);
@@ -64,7 +64,7 @@ namespace windows_client.utils
             TimeSpan span = now.Subtract(messageTime);
             messageTime = messageTime.ToLocalTime();
 
-            if (span.Days < 1)
+            if (span.Days < 1 && DateTime.Now.Date == messageTime.Date)
                 return messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");
             else if (span.Days < 7)
                 return messageTime.ToString("ddd, ", CultureInfo.CurrentUICulture) + messageTime.ToShortTimeString().Replace(" AM","a").Replace(" PM","p");

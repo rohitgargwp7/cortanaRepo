@@ -162,6 +162,41 @@ namespace windows_client.DbUtils
             #endregion
         }
 
+        public static bool DeleteDatabase()
+        {
+            bool isDeleted = true;
+            
+            try
+            {
+                using (HikeChatsDb db = new HikeChatsDb(App.MsgsDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                using (HikeUsersDb db = new HikeUsersDb(App.UsersDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                {
+                    if (db.DatabaseExists())
+                        db.DeleteDatabase();
+                }
+
+                App.RemoveKeyFromAppSettings(App.IS_DB_CREATED);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error while deleting db: " + e.Message + e.StackTrace);
+                isDeleted = false;
+            }
+
+            return isDeleted;
+        }
+
         #region STATUS UPDATES
 
         public static void saveStatusImage(string msisdn, string serverId, byte[] imageBytes)
