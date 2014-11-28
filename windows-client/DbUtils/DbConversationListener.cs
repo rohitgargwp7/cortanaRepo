@@ -554,8 +554,7 @@ namespace windows_client.DbUtils
                     }
                     else if (index > 0)
                     {
-                        App.ViewModel.MessageListPageCollection.RemoveAt(index);
-                        App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                        App.ViewModel.MessageListPageCollection.Move(index, 0);
                     }//if already at zero, do nothing
                 });
 
