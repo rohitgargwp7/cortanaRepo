@@ -6692,10 +6692,7 @@ namespace windows_client.View
             _pivotIndex = pivotSticker.SelectedIndex;
             if ((oldIndex + 1) % 3 == _pivotIndex)//scroll right
             {
-                if (_currentSelectedIndex == (listStickerCategories.Count - 1))
-                    _currentSelectedIndex = 0;
-                else
-                    _currentSelectedIndex++;
+                _currentSelectedIndex = _currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : _currentSelectedIndex++;
                 ChangeStickerPivot(_currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : _currentSelectedIndex + 1, (_pivotIndex + 1) % 3);
             }
             else//scroll left

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using windows_client.Model.Sticker;
-using System.Collections.ObjectModel;
 using windows_client.utils;
 using windows_client.ViewModel;
 using windows_client.Model;

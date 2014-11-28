@@ -218,8 +218,16 @@ namespace windows_client.View
 
                 UpdateConverationsIndividually();
             }
-            //todo:check version
-            UpgradeStickersVisibilityInfo();
+            if (Utils.compareVersion("2.9.0.2", App.CURRENT_VERSION) == 1)
+            {
+                UpgradeStickersVisibilityInfo();
+
+                UpgradeContactsDBForPhoneKind();
+
+                UpgradeConvMessageDBForReadBy();
+
+                UpgradeGroupInfoForReadBy();
+            }
             Thread.Sleep(2000);
         }
 
