@@ -2005,13 +2005,13 @@ private copy.
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="CheckBackground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneRadioCheckBoxPressedBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="CheckMark">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneButtonBasePressedForegroundBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="IndeterminateMark">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneButtonBasePressedForegroundBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeBlue}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -2024,7 +2024,7 @@ private copy.
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource HikeGrey}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="IndeterminateMark">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentContainer">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
@@ -2064,9 +2064,9 @@ private copy.
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0" VerticalAlignment="Top">
-                                <Border x:Name="CheckBackground" BorderBrush="#2a8dde" BorderThickness="2" Background="{StaticResource HikeBGBrush}" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
-                                <Rectangle x:Name="IndeterminateMark" Fill="{StaticResource PhoneRadioCheckBoxCheckBrush}" HorizontalAlignment="Center" Height="16" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="16"/>
-                                <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="#2a8dde" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="2" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
+                                <Border x:Name="CheckBackground" BorderBrush="{StaticResource HikeBlue}" BorderThickness="2" Background="{StaticResource HikeBGBrush}" HorizontalAlignment="Left" Height="32" IsHitTestVisible="False" VerticalAlignment="Center" Width="32"/>
+                                <Rectangle x:Name="IndeterminateMark" Fill="{StaticResource HikeBlue}" HorizontalAlignment="Center" Height="16" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="16"/>
+                                <Path x:Name="CheckMark" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="{StaticResource HikeBlue}" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="21" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="2" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="23"/>
                             </Grid>
                             <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="12,0,0,0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Grid>

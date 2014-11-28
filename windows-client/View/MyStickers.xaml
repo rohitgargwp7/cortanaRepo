@@ -11,6 +11,8 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.IsVisible="False">
 
     <phone:PhoneApplicationPage.Resources>
@@ -57,11 +59,11 @@
         </Grid>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,12,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <phone:LongListSelector Name="llsCategories" Style="{StaticResource llsStickerCategoriesStyle}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="12 15 0 15" HorizontalAlignment="Stretch"> 
+                        <Grid Margin="12 30 0 0" HorizontalAlignment="Stretch" Tap="gridStickerCategoryTap">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>

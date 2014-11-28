@@ -472,15 +472,16 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush untappedCategoryColor;
-        public SolidColorBrush UntappedCategoryColor
+        private SolidColorBrush _settingsCategoryColor;
+        public SolidColorBrush SettingsCategoryColor
         {
             get
             {
-                if (untappedCategoryColor == null)
-                    untappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
 
-                return untappedCategoryColor;
+                if (_settingsCategoryColor == null)
+                    _settingsCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x2C, 0x2D, 0x31));
+
+                return _settingsCategoryColor;
             }
         }
 
@@ -2641,20 +2642,6 @@ namespace windows_client.utils
                 return loadingImage;
             }
         }
-
-        private BitmapImage _stickerSettingWhite;
-
-        public BitmapImage StickerSettingWhite
-        {
-            get
-            {
-                if (_stickerSettingWhite == null)
-                    _stickerSettingWhite = new BitmapImage(new Uri("/View/images/stickers/categorySets/settings_white.png", UriKind.Relative));
-
-                return _stickerSettingWhite;
-            }
-        }
-
 
         #endregion
 

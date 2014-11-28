@@ -90,7 +90,7 @@ namespace windows_client.Model.Sticker
             set
             {
                 _hasMoreStickers = value;
-                NotifyPropertyChanged("BorderThickness");
+                NotifyPropertyChanged("StickersAvailableVisibility");
             }
         }
 
@@ -121,7 +121,7 @@ namespace windows_client.Model.Sticker
             set
             {
                 _hasNewStickers = value;
-                NotifyPropertyChanged("BorderThickness");
+                NotifyPropertyChanged("StickersAvailableVisibility");
             }
         }
 
@@ -255,28 +255,18 @@ namespace windows_client.Model.Sticker
                     case StickerHelper.CATEGORY_BIHAR:
                         return UI_Utils.Instance.BiharShopIcon;
                     case StickerHelper.CATEGORY_GUWAHATI:
-                        return UI_Utils.Instance.BiharShopIcon;//todo:change
+                        return UI_Utils.Instance.GuwahatiShopIcon;//todo:change
                     default:
                         return new BitmapImage();
                 }
             }
         }
-        public SolidColorBrush BackgroundColor
-        {
-            get
-            {
-                return UI_Utils.Instance.UntappedCategoryColor;
-            }
-        }
 
-        public Thickness BorderThickness
+        public Visibility  StickersAvailableVisibility
         {
             get
             {
-                if (_hasNewStickers || _hasMoreStickers)
-                    return UI_Utils.Instance.NewCategoryThickness;
-                else
-                    return UI_Utils.Instance.ZeroThickness;
+                return (_hasNewStickers || _hasMoreStickers) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -339,7 +329,7 @@ namespace windows_client.Model.Sticker
                     int count = StickerHelper.GetStickersCount(_category);
                     if (ListStickers.Count > count)
                         count = ListStickers.Count;
-                    
+
                     _stickerCount = string.Format(HikeConstants.Stickers.STICKER_COUNT_TEXT, count);
                 }
                 return _stickerCount;

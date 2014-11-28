@@ -739,7 +739,7 @@ namespace windows_client.View
             _isOnPage = false;
             if (_currentSelectedIndex > -1)
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[_currentSelectedIndex].Category);
-         
+
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
 
@@ -1194,7 +1194,7 @@ namespace windows_client.View
 
             if (!App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
             {
-                stickerSettingImage.Source = UI_Utils.Instance.StickerSettingWhite;
+                gridStickerSetting.Background = UI_Utils.Instance.SettingsCategoryColor;
             }
         }
 
@@ -6692,7 +6692,7 @@ namespace windows_client.View
             _pivotIndex = pivotSticker.SelectedIndex;
             if ((oldIndex + 1) % 3 == _pivotIndex)//scroll right
             {
-                _currentSelectedIndex = _currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : _currentSelectedIndex++;
+                _currentSelectedIndex = _currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : (_currentSelectedIndex + 1);
                 ChangeStickerPivot(_currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : _currentSelectedIndex + 1, (_pivotIndex + 1) % 3);
             }
             else//scroll left
@@ -7898,11 +7898,11 @@ namespace windows_client.View
                 _isPinAlter = false;
         }
 
-        private void gridStickerShop(object sender, System.Windows.Input.GestureEventArgs e)
+        private void gridSettingStickerTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
             {
-                stickerSettingImage.Source = UI_Utils.Instance.StickerSettingWhite;
+                gridStickerSetting.Background = UI_Utils.Instance.SettingsCategoryColor;
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED);
             }
             Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_SETTINGS_BUTTON_CLICKED);

@@ -866,7 +866,6 @@
     <Content Include="View\images\stickers\categorySets\overlay_youi.png" />
     <Content Include="View\images\stickers\categorySets\rage_active.png" />
     <Content Include="View\images\stickers\categorySets\rage_inactive.png" />
-    <Content Include="View\images\stickers\categorySets\settings_blue.png" />
     <Content Include="View\images\stickers\categorySets\settings_white.png" />
     <Content Include="View\images\stickers\categorySets\sports_active.png" />
     <Content Include="View\images\stickers\categorySets\sports_inactive.png" />
@@ -881,6 +880,7 @@
     <Content Include="View\images\stickers\categorySets\StickerShop\expressions_shopIcon.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\goofy_shopIcon.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\gujarat_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\guwahati_shopIcon.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\humanoid2_shopIcon.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\humanoid_shopIcon.png" />
     <Content Include="View\images\stickers\categorySets\StickerShop\hyderabad_shopIcon.png" />
