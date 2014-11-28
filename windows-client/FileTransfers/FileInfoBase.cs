@@ -17,7 +17,7 @@ namespace windows_client.FileTransfers
         protected const string FILE_TRANSFER_DIRECTORY_NAME = "FileTransfer";
         protected const string FILE_TRANSFER_UPLOAD_DIRECTORY_NAME = "Upload";
         protected const string FILE_TRANSFER_DOWNLOAD_DIRECTORY_NAME = "Download";
-        protected const int DefaultBlockSize = 1024;
+        protected int DefaultBlockSize = 1024;
         public static int MaxBlockSize;
         static readonly int MAX_RECONNECT_TIME = 20; // in seconds
         protected int BlockSize = 1024;

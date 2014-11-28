@@ -29,6 +29,7 @@ namespace windows_client.FileTransfers
         public FileUploader()
             : base()
         {
+            BlockSize = DefaultBlockSize = 8 * 1024;
         }
 
         public FileUploader(string msisdn, string messageId, string fileName, string contentType, int size, string fileKey)
@@ -40,6 +41,8 @@ namespace windows_client.FileTransfers
                 FileKey = fileKey;
 
             IsFileExist = false;
+
+            BlockSize = DefaultBlockSize = 8 * 1024;
 
             Save();
         }
@@ -249,23 +252,34 @@ namespace windows_client.FileTransfers
 
         private void GetWritingIndexFromServer()
         {
-            var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
-
-            if (!App.appSettings.Contains(App.UID_SETTING))
+            if (CurrentHeaderPosition != 0)
             {
-                Delete();
-                return;
+                var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+
+                if (!App.appSettings.Contains(App.UID_SETTING))
+                {
+                    Delete();
+                    return;
+                }
+
+                AccountUtils.AddToken(req);
+                req.Method = "GET";
+
+                req.Headers["Connection"] = "Keep-Alive";
+                req.Headers["Content-Name"] = FileName;
+                req.Headers["X-SESSION-ID"] = Id;
+                req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+
+                req.BeginGetResponse(UploadGetResponseCallback, new object[] { req });
             }
-
-            AccountUtils.AddToken(req);
-            req.Method = "GET";
-
-            req.Headers["Connection"] = "Keep-Alive";
-            req.Headers["Content-Name"] = FileName;
-            req.Headers["X-SESSION-ID"] = Id;
-            req.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
-
-            req.BeginGetResponse(UploadGetResponseCallback, new object[] { req });
+            else
+            {
+                Id = Guid.NewGuid().ToString();
+                FileState = FileTransferState.STARTED;
+                Save();
+                OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
+                BeginUploadPostRequest();
+            }
         }
 
         public async override void CheckIfComplete()
@@ -394,9 +408,11 @@ namespace windows_client.FileTransfers
                 // fresh upload
 
                 // to be safe create new GUID
-                Id = Guid.NewGuid().ToString();
 
+                Id = Guid.NewGuid().ToString();
                 CurrentHeaderPosition = index;
+
+
                 FileState = FileTransferState.STARTED;
                 Save();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
@@ -417,6 +433,8 @@ namespace windows_client.FileTransfers
             }
         }
 
+        DateTime chunkStartTime;
+        Double _roundTripTime;
         void BeginUploadPostRequest()
         {
             var req = HttpWebRequest.Create(new Uri(AccountUtils.PARTIAL_FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
@@ -438,6 +456,8 @@ namespace windows_client.FileTransfers
             var bytesLeft = TotalBytes - CurrentHeaderPosition;
             BlockSize = bytesLeft >= BlockSize ? BlockSize : bytesLeft;
 
+            Debug.WriteLine("Chunk Size: " + BlockSize);
+
             var endPosition = CurrentHeaderPosition + BlockSize;
             endPosition -= 1;
 
@@ -456,7 +476,7 @@ namespace windows_client.FileTransfers
             }
 
             var bytesToUpload = getMultiPartBytes(partialDataBytes);
-
+            chunkStartTime = DateTime.Now;
             req.BeginGetRequestStream(UploadPostRequestCallback, new object[] { req, bytesToUpload });
         }
 
@@ -505,6 +525,9 @@ namespace windows_client.FileTransfers
 
         void UploadPostResponseCallback(IAsyncResult result)
         {
+            _roundTripTime = DateTime.Now.Subtract(chunkStartTime).TotalSeconds;
+            Debug.WriteLine("RoundTripTime:" + _roundTripTime.ToString());
+
             object[] vars = (object[])result.AsyncState;
 
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
@@ -602,26 +625,12 @@ namespace windows_client.FileTransfers
 
                 CurrentHeaderPosition += BlockSize;
 
-                if (FileState == FileTransferState.STARTED)
-                {
-                    var newSize = (ChunkFactor + ChunkFactor) * DefaultBlockSize;
+                BlockSize = (int)(BlockSize * 20.00 / _roundTripTime);
 
-                    if (newSize <= MaxBlockSize)
-                    {
-                        ChunkFactor += ChunkFactor;
-                        BlockSize = ChunkFactor * DefaultBlockSize;
-                    }
-                    else
-                    {
-                        ChunkFactor /= 2;
-                        BlockSize = MaxBlockSize;
-                    }
-                }
-                else
-                {
-                    ChunkFactor = 1;
+                // To make sure the blocksize never reaches 0.
+                if (BlockSize == 0)
                     BlockSize = DefaultBlockSize;
-                }
+
 
                 Save();
 
@@ -635,22 +644,23 @@ namespace windows_client.FileTransfers
                 if (FileState == FileTransferState.STARTED || (!App.appSettings.Contains(App.AUTO_RESUME_SETTING) && FileState != FileTransferState.MANUAL_PAUSED))
                     BeginUploadPostRequest();
             }
-            else if ((code == HttpStatusCode.NotFound && MaxRetryAttempts == 1) || code == HttpStatusCode.InternalServerError) // server error during upload
+            else if (code == HttpStatusCode.InternalServerError) // server error during upload
             {
+                // Fresh retry.
                 FileState = FileTransferState.FAILED;
                 Delete();
                 OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
             }
             else
             {
-                MaxRetryAttempts = code == HttpStatusCode.NotFound ? (short)1 : (short)10;
-
                 if (code != HttpStatusCode.BadRequest && ShouldRetry())
                 {
+                    BlockSize = DefaultBlockSize;
                     Start(null);
                 }
                 else // Bad Network and retry timed out
                 {
+                    //Manual retry.
                     FileState = FileTransferState.FAILED;
                     Save();
                     OnStatusChanged(new FileTransferSatatusChangedEventArgs(this, true));
