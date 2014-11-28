@@ -353,6 +353,9 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MyStickers.xaml.cs">
+      <DependentUpon>MyStickers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UserProfile.xaml.cs">
       <DependentUpon>UserProfile.xaml</DependentUpon>
     </Compile>
@@ -522,6 +525,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ShareLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MyStickers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -859,8 +866,33 @@
     <Content Include="View\images\stickers\categorySets\overlay_youi.png" />
     <Content Include="View\images\stickers\categorySets\rage_active.png" />
     <Content Include="View\images\stickers\categorySets\rage_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\settings_white.png" />
     <Content Include="View\images\stickers\categorySets\sports_active.png" />
     <Content Include="View\images\stickers\categorySets\sports_inactive.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\avatars_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\bangalore_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\bhopal_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\bihar_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\bolly_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\chennai_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\delhi_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\doggy_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\expressions_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\goofy_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\gujarat_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\guwahati_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\humanoid2_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\humanoid_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\hyderabad_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\indian_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\jelly_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\kerala_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\kitty_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\kolkata_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\love_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\mumbai_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\rage_shopIcon.png" />
+    <Content Include="View\images\stickers\categorySets\StickerShop\sports_shopIcon.png" />
     <Content Include="View\images\stickers\WVGA\expressions\001_gn.png" />
     <Content Include="View\images\stickers\WVGA\expressions\002_lol.png" />
     <Content Include="View\images\stickers\WVGA\expressions\003_rofl.png" />

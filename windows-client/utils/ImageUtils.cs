@@ -472,15 +472,16 @@ namespace windows_client.utils
             }
         }
 
-        private SolidColorBrush untappedCategoryColor;
-        public SolidColorBrush UntappedCategoryColor
+        private SolidColorBrush _settingsCategoryColor;
+        public SolidColorBrush SettingsCategoryColor
         {
             get
             {
-                if (untappedCategoryColor == null)
-                    untappedCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x4d, 0x4d, 0x4d));
 
-                return untappedCategoryColor;
+                if (_settingsCategoryColor == null)
+                    _settingsCategoryColor = new SolidColorBrush(Color.FromArgb(255, 0x2C, 0x2D, 0x31));
+
+                return _settingsCategoryColor;
             }
         }
 
@@ -2341,6 +2342,290 @@ namespace windows_client.utils
                     recentIconActive = new BitmapImage(new Uri("/View/images/recent_active.png", UriKind.Relative));
 
                 return recentIconActive;
+            }
+        }
+
+        private BitmapImage humanoidShopIcon;
+        public BitmapImage HumanoidShopIcon
+        {
+            get
+            {
+                if (humanoidShopIcon == null)
+                    humanoidShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/humanoid_shopIcon.png", UriKind.Relative));
+
+                return humanoidShopIcon;
+            }
+        }
+
+        private BitmapImage humanoid2ShopIcon;
+        public BitmapImage Humanoid2ShopIcon
+        {
+            get
+            {
+                if (humanoid2ShopIcon == null)
+                    humanoid2ShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/humanoid2_shopIcon.png", UriKind.Relative));
+
+                return humanoid2ShopIcon;
+            }
+        }
+
+        private BitmapImage doggyShopIcon;
+        public BitmapImage DoggyShopIcon
+        {
+            get
+            {
+                if (doggyShopIcon == null)
+                    doggyShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/doggy_shopIcon.png", UriKind.Relative));
+
+                return doggyShopIcon;
+            }
+        }
+
+        private BitmapImage kittyShopIcon;
+        public BitmapImage KittyShopIcon
+        {
+            get
+            {
+                if (kittyShopIcon == null)
+                    kittyShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/kitty_shopIcon.png", UriKind.Relative));
+
+                return kittyShopIcon;
+            }
+        }
+
+        private BitmapImage bollywoodShopIcon;
+        public BitmapImage BollywoodShopIcon
+        {
+            get
+            {
+                if (bollywoodShopIcon == null)
+                    bollywoodShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/bolly_shopIcon.png", UriKind.Relative));
+
+                return bollywoodShopIcon;
+            }
+        }
+
+        private BitmapImage trollShopIcon;
+        public BitmapImage TrollShopIcon
+        {
+            get
+            {
+                if (trollShopIcon == null)
+                    trollShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/rage_shopIcon.png", UriKind.Relative));
+
+                return trollShopIcon;
+            }
+        }
+
+        private BitmapImage expressionsShopIcon;
+        public BitmapImage ExpressionsShopIcon
+        {
+            get
+            {
+                if (expressionsShopIcon == null)
+                    expressionsShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/expressions_shopIcon.png", UriKind.Relative));
+
+                return expressionsShopIcon;
+            }
+        }
+
+        private BitmapImage smileyExpressionsShopIcon;
+        public BitmapImage SmileyExpressionsShopIcon
+        {
+            get
+            {
+                if (smileyExpressionsShopIcon == null)
+                    smileyExpressionsShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/goofy_shopIcon.png", UriKind.Relative));
+
+                return smileyExpressionsShopIcon;
+            }
+        }
+
+        private BitmapImage avatarsShopIcon;
+        public BitmapImage AvatarsShopIcon
+        {
+            get
+            {
+                if (avatarsShopIcon == null)
+                    avatarsShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/avatars_shopIcon.png", UriKind.Relative));
+
+                return avatarsShopIcon;
+            }
+        }
+
+        private BitmapImage indianShopIcon;
+        public BitmapImage IndianShopIcon
+        {
+            get
+            {
+                if (indianShopIcon == null)
+                    indianShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/indian_shopIcon.png", UriKind.Relative));
+
+                return indianShopIcon;
+            }
+        }
+        private BitmapImage jellyShopIcon;
+        public BitmapImage JellyShopIcon
+        {
+            get
+            {
+                if (jellyShopIcon == null)
+                    jellyShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/jelly_shopIcon.png", UriKind.Relative));
+
+                return jellyShopIcon;
+            }
+        }
+        private BitmapImage sportsShopIcon;
+        public BitmapImage SportsShopIcon
+        {
+            get
+            {
+                if (sportsShopIcon == null)
+                    sportsShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/sports_shopIcon.png", UriKind.Relative));
+
+                return sportsShopIcon;
+            }
+        }
+        private BitmapImage loveShopIcon;
+        public BitmapImage LoveShopIcon
+        {
+            get
+            {
+                if (loveShopIcon == null)
+                    loveShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/love_shopIcon.png", UriKind.Relative));
+
+                return loveShopIcon;
+            }
+        }
+
+        private BitmapImage delhiShopIcon;
+        public BitmapImage DelhiShopIcon
+        {
+            get
+            {
+                if (delhiShopIcon == null)
+                    delhiShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/delhi_shopIcon.png", UriKind.Relative));
+
+                return delhiShopIcon;
+            }
+        }
+
+        private BitmapImage mumbaiShopIcon;
+        public BitmapImage MumbaiShopIcon
+        {
+            get
+            {
+                if (mumbaiShopIcon == null)
+                    mumbaiShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/mumbai_shopIcon.png", UriKind.Relative));
+
+                return mumbaiShopIcon;
+            }
+        }
+
+        private BitmapImage gujaratShopIcon;
+        public BitmapImage GujaratShopIcon
+        {
+            get
+            {
+                if (gujaratShopIcon == null)
+                    gujaratShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/gujarat_shopIcon.png", UriKind.Relative));
+
+                return gujaratShopIcon;
+            }
+        }
+
+        private BitmapImage bangaloreShopIcon;
+        public BitmapImage BangaloreShopIcon
+        {
+            get
+            {
+                if (bangaloreShopIcon == null)
+                    bangaloreShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/bangalore_shopIcon.png", UriKind.Relative));
+
+                return bangaloreShopIcon;
+            }
+        }
+        private BitmapImage hyderabadShopIcon;
+        public BitmapImage HyderabadShopIcon
+        {
+            get
+            {
+                if (hyderabadShopIcon == null)
+                    hyderabadShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/hyderabad_shopIcon.png", UriKind.Relative));
+
+                return hyderabadShopIcon;
+            }
+        }
+
+        private BitmapImage bhopalShopIcon;
+        public BitmapImage BhopalShopIcon
+        {
+            get
+            {
+                if (bhopalShopIcon == null)
+                    bhopalShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/bhopal_shopIcon.png", UriKind.Relative));
+
+                return bhopalShopIcon;
+            }
+        }
+
+        private BitmapImage chennaiShopIcon;
+        public BitmapImage ChennaiShopIcon
+        {
+            get
+            {
+                if (chennaiShopIcon == null)
+                    chennaiShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/chennai_shopIcon.png", UriKind.Relative));
+
+                return chennaiShopIcon;
+            }
+        }
+
+        private BitmapImage keralaShopIcon;
+        public BitmapImage KeralaShopIcon
+        {
+            get
+            {
+                if (keralaShopIcon == null)
+                    keralaShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/kerala_shopIcon.png", UriKind.Relative));
+
+                return keralaShopIcon;
+            }
+        }
+
+        private BitmapImage kolkataShopIcon;
+        public BitmapImage KolkataShopIcon
+        {
+            get
+            {
+                if (kolkataShopIcon == null)
+                    kolkataShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/kolkata_shopIcon.png", UriKind.Relative));
+
+                return kolkataShopIcon;
+            }
+        }
+
+        private BitmapImage biharShopIcon;
+        public BitmapImage BiharShopIcon
+        {
+            get
+            {
+                if (biharShopIcon == null)
+                    biharShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/bihar_shopIcon.png", UriKind.Relative));
+
+                return biharShopIcon;
+            }
+        }
+
+        private BitmapImage guwahatiShopIcon;
+        public BitmapImage GuwahatiShopIcon
+        {
+            get
+            {
+                if (guwahatiShopIcon == null)
+                    guwahatiShopIcon = new BitmapImage(new Uri("/View/images/stickers/categorySets/StickerShop/guwahati_shopIcon.png", UriKind.Relative));
+
+                return guwahatiShopIcon;
             }
         }
 

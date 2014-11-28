@@ -571,7 +571,7 @@ namespace windows_client
 
             string targetPage = e.Uri.ToString();
 
-            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.8.1.0", _currentVersion) == 1)
+            if (!String.IsNullOrEmpty(_currentVersion) && Utils.compareVersion("2.9.0.2", _currentVersion) == 1)
             {
                 PhoneApplicationService.Current.State[HikeConstants.PAGE_TO_NAVIGATE_TO] = targetPage;
                 instantiateClasses(true);
@@ -809,7 +809,14 @@ namespace windows_client
                 if (!isNewInstall && Utils.compareVersion("2.2.2.0", _currentVersion) == 1)
                     StickerHelper.DeleteCategory(StickerHelper.CATEGORY_HUMANOID);
 
-                StickerHelper.CreateDefaultCategories();
+                HikeViewModel.StickerHelper.CreateDefaultCategories();
+            }
+
+            if (isNewInstall || Utils.compareVersion(_currentVersion, "2.9.0.2") < 0)
+            {
+                appSettings[HikeConstants.AppSettings.STICKER_ICON_CLICKED] = true;
+                appSettings[HikeConstants.AppSettings.STICKER_CATEGORIES_CHECKED] = true;
+                appSettings[HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED] = true;
             }
             #endregion
             #region TUTORIAL

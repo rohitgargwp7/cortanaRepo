@@ -739,7 +739,7 @@ namespace windows_client.View
             _isOnPage = false;
             if (_currentSelectedIndex > -1)
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.LAST_SELECTED_STICKER_CATEGORY, listStickerCategories[_currentSelectedIndex].Category);
-         
+
             if (_microphone != null)
                 _microphone.BufferReady -= microphone_BufferReady;
 
@@ -1191,6 +1191,11 @@ namespace windows_client.View
             chatBackgroundList.SelectedItem = ChatBackgroundHelper.Instance.BackgroundList.Where(c => c == App.ViewModel.SelectedBackground).First();
 
             ChangeBackground(false);
+
+            if (!App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
+            {
+                gridStickerSetting.Background = UI_Utils.Instance.SettingsCategoryColor;
+            }
         }
 
         void latestPinBW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -3538,6 +3543,11 @@ namespace windows_client.View
 
         private void ShowStickerPallet()
         {
+            if (App.appSettings.Contains(HikeConstants.AppSettings.STICKER_ICON_CLICKED))
+            {
+                Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_BUTTON_CLICKED);
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.STICKER_ICON_CLICKED);
+            }
             gridEmoticons.Visibility = Visibility.Collapsed;
             gridStickers.Visibility = Visibility.Visible;
 
@@ -6682,10 +6692,7 @@ namespace windows_client.View
             _pivotIndex = pivotSticker.SelectedIndex;
             if ((oldIndex + 1) % 3 == _pivotIndex)//scroll right
             {
-                if (_currentSelectedIndex == (listStickerCategories.Count - 1))
-                    _currentSelectedIndex = 0;
-                else
-                    _currentSelectedIndex++;
+                _currentSelectedIndex = _currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : (_currentSelectedIndex + 1);
                 ChangeStickerPivot(_currentSelectedIndex == (listStickerCategories.Count - 1) ? 0 : _currentSelectedIndex + 1, (_pivotIndex + 1) % 3);
             }
             else//scroll left
@@ -6752,6 +6759,7 @@ namespace windows_client.View
 
             if (stickerCategory.ShowDownloadMessage)
             {
+                Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_OVERLAY_SEEN);
                 ShowDownloadOverlay(true);
                 if (stickerCategory.ListStickers.Count == 0)
                     stickerPivot.ShowNoStickers();
@@ -6777,7 +6785,7 @@ namespace windows_client.View
             }
         }
 
-        public void PostRequestForBatchStickers(StickerCategory stickerCategory)
+        public void PostRequestForBatchStickers(StickerCategory stickerCategory, bool downloadTapped, bool isRetry)
         {
             JObject json = new JObject();
             json[HikeConstants.Stickers.CATEGORY_ID] = stickerCategory.Category;
@@ -6792,6 +6800,7 @@ namespace windows_client.View
                 json[HikeConstants.Stickers.STICKER_IDS] = existingIds;
                 json[HikeConstants.Stickers.RESOLUTION_ID] = ResolutionId;
                 json[HikeConstants.Stickers.NUMBERS_TO_DOWNLOAD] = 10;
+                json[HikeConstants.Stickers.DOWNLOAD_SOURCE] = isRetry ? 3 : (downloadTapped ? 0 : 1);
 
                 stickerCategory.IsDownLoading = true;
                 AccountUtils.GetStickers(json, new AccountUtils.parametrisedPostResponseFunction(StickersRequestCallBack), stickerCategory);
@@ -7034,7 +7043,7 @@ namespace windows_client.View
                 _currenPivot.ShowStickers();
             else
                 _currenPivot.ShowLoadingStickers();
-            PostRequestForBatchStickers(stickerCategory);
+            PostRequestForBatchStickers(stickerCategory, true, false);
         }
 
         private void CreateStickerCategories()
@@ -7067,45 +7076,50 @@ namespace windows_client.View
             return -1;
         }
 
-        public void UpdateCategoryOrder(List<string> listNewCategoryOrder)
+        public async void UpdateCategoryOrder(List<string> listNewCategoryOrder)
         {
-            string currentSelectedCategory = listStickerCategories[_currentSelectedIndex].Category;
-            List<StickerCategory> newListCategory = new List<StickerCategory>(listNewCategoryOrder.Count);
-            StickerCategory stickerCategory;
-            int newIndex = 0;
-            for (int i = 0; i < listNewCategoryOrder.Count; i++)
-            {
-                string category = listNewCategoryOrder[i];
-                if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category)) != null)
+            await Task.Run(() =>
                 {
-                    newListCategory.Add(stickerCategory);
-                }
-                if (category == currentSelectedCategory)
-                    newIndex = i;
-            }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    _currentSelectedIndex = newIndex;
-                    _lbFlag = false;
-                    if (pivotSticker.SelectedIndex != 0)
+                    string currentSelectedCategory = listStickerCategories[_currentSelectedIndex].Category;
+                    List<StickerCategory> newListCategory = new List<StickerCategory>(listNewCategoryOrder.Count);
+                    StickerCategory stickerCategory;
+                    int newIndex = 0;
+                    for (int i = 0; i < listNewCategoryOrder.Count; i++)
                     {
-                        _pivotflag = false;
-                        _pivotIndex = 0;
-                        pivotSticker.SelectedIndex = 0;
+                        string category = listNewCategoryOrder[i];
+                        if ((stickerCategory = HikeViewModel.StickerHelper.GetStickersByCategory(category)) != null)
+                        {
+                            newListCategory.Add(stickerCategory);
+                        }
+                        if (category == currentSelectedCategory)
+                            newIndex = i;
                     }
-                    lbStickerCategories.ItemsSource = listStickerCategories = newListCategory;
-
-                    ChangeStickerPivot(_currentSelectedIndex, 0);
-                    ChangeStickerPivot(_currentSelectedIndex == 0 ? newListCategory.Count - 1 : _currentSelectedIndex - 1, 2);
-                    ChangeStickerPivot(_currentSelectedIndex == newListCategory.Count - 1 ? 0 : _currentSelectedIndex + 1, 1);
-
-                    lbStickerCategories.SelectedIndex = _currentSelectedIndex;
-                    //using dispatcher so that it should create a delay for ui update
+                    if (newIndex == 0 && HikeViewModel.StickerHelper.RecentStickerHelper.RecentStickers.Count == 0)
+                        newIndex = 1;//switch to humanoid
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
-                    });
+                        {
+                            _currentSelectedIndex = newIndex;
+                            _lbFlag = false;
+                            if (pivotSticker.SelectedIndex != 0)
+                            {
+                                _pivotflag = false;
+                                _pivotIndex = 0;
+                                pivotSticker.SelectedIndex = 0;
+                            }
+                            lbStickerCategories.ItemsSource = listStickerCategories = newListCategory;
 
+                            ChangeStickerPivot(_currentSelectedIndex, 0);
+                            ChangeStickerPivot(_currentSelectedIndex == 0 ? newListCategory.Count - 1 : _currentSelectedIndex - 1, 2);
+                            ChangeStickerPivot(_currentSelectedIndex == newListCategory.Count - 1 ? 0 : _currentSelectedIndex + 1, 1);
+
+                            lbStickerCategories.SelectedIndex = _currentSelectedIndex;
+                            //using dispatcher so that it should create a delay for ui update
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                lbStickerCategories.ScrollIntoView(lbStickerCategories.SelectedItem);
+                            });
+
+                        });
                 });
         }
         #endregion
@@ -7882,6 +7896,17 @@ namespace windows_client.View
         {
             if (_isNewPin)
                 _isPinAlter = false;
+        }
+
+        private void gridSettingStickerTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (App.appSettings.Contains(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED))
+            {
+                gridStickerSetting.Background = UI_Utils.Instance.SettingsCategoryColor;
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.STICKER_SETTING_ICON_CLICKED);
+            }
+            Analytics.SendClickEvent(HikeConstants.ANALYTICS_STICKER_SETTINGS_BUTTON_CLICKED);
+            NavigationService.Navigate(new Uri("/View/MyStickers.xaml", UriKind.RelativeOrAbsolute));
         }
 
     }

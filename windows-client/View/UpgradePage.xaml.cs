@@ -211,14 +211,23 @@ namespace windows_client.View
 
                 DeleteAngryStickerCategory();
             }
-            
+
             if (Utils.compareVersion("2.8.1.0", App.CURRENT_VERSION) == 1)
             {
                 UpgradeGroupInfoForReadBy();
 
                 UpdateConverationsIndividually();
             }
-            
+            if (Utils.compareVersion("2.9.0.2", App.CURRENT_VERSION) == 1)
+            {
+                UpgradeStickersVisibilityInfo();
+
+                UpgradeContactsDBForPhoneKind();
+
+                UpgradeConvMessageDBForReadBy();
+
+                UpgradeGroupInfoForReadBy();
+            }
             Thread.Sleep(2000);
         }
 
@@ -445,7 +454,7 @@ namespace windows_client.View
                         {
                             dbUpdater.Execute();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("db not upgrade in v 2.5.3.0");
                         }
@@ -557,7 +566,7 @@ namespace windows_client.View
                     DatabaseSchemaUpdater dbUpdater = db.CreateDatabaseSchemaUpdater();
                     int version = dbUpdater.DatabaseSchemaVersion;
 
-                   //db maximum version 3
+                    //db maximum version 3
                     if (version < 4)
                     {
                         dbUpdater.AddColumn<GroupInfo>("ReadByInfo");
@@ -568,11 +577,23 @@ namespace windows_client.View
                         {
                             dbUpdater.Execute();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("group info db not upgraded. ex:{0}", ex.Message);
                         }
                     }
+                }
+            }
+        }
+
+        private void UpgradeStickersVisibilityInfo()
+        {
+            HikeViewModel.StickerHelper.InitialiseLowResStickers();
+            foreach (StickerCategory stickerCategoryObj in HikeViewModel.StickerHelper.DictStickersCategories.Values)
+            {
+                if (stickerCategoryObj.ListStickers.Count > 0)
+                {
+                    HikeViewModel.StickerHelper.UpdateVisibility(stickerCategoryObj.Category, true);
                 }
             }
         }

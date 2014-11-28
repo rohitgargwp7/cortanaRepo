@@ -101,7 +101,7 @@
                                 <TextBlock x:Name="lastSeenTxt" FontSize="16" Foreground="White" FontWeight="Normal"/>
                             </StackPanel>
                         </StackPanel>
-                        
+
                         <Grid x:Name="openNewPinGrid" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="2" Tap="createPin_Tap" Margin="0,0" Background="Transparent" Visibility="Collapsed">
                             <Button x:Name="openNewPinButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Margin="22,0,0,2">
                                 <Button.Content>
@@ -109,7 +109,7 @@
                                 </Button.Content>
                             </Button>
                         </Grid>
-                        
+
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.Column="3" Tap="chatPaint_Tap" Margin="0,0" Background="Transparent">
                             <Button x:Name="openChatBackgroundButton" Style="{StaticResource ButtonWithImageNoPaddingStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" toolkit:TiltEffect.IsTiltEnabled="True" Margin="22,0,0,2">
                                 <Button.Content>
@@ -1172,7 +1172,7 @@
                                     </Grid>
                                 </DataTemplate>
                             </templateSelector:ChatThreadTemplateSelector.DtGCPin>
-                            
+
                         </templateSelector:ChatThreadTemplateSelector>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
@@ -1375,22 +1375,33 @@
                         </phone:Pivot>
                     </Grid>
 
-                    <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.Row="1" SelectionChanged="StickerCategory_SelectionChanged">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                    <Grid Grid.Row="1" HorizontalAlignment="Stretch" Background="#1A1B1E">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ListBox Name="lbStickerCategories" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto"  SelectionChanged="StickerCategory_SelectionChanged" MaxWidth="410">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
 
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0 0 2 0">
-                                    <Border BorderBrush="#F14B4B" Width="75" Height="50" BorderThickness="{Binding BorderThickness}" Background="{Binding BackgroundColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
-                                    <Image Source="{Binding CategoryIcon}" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="80" Height="70">
+                                        <Border BorderBrush="#34353a" Height="30"  BorderThickness="0 0 1 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
+                                        <Image Source="{Binding CategoryIcon}" Height="32" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" Canvas.ZIndex="0"/>
+                                        <Ellipse Width="10" Height="10" Fill="#f43636" Visibility="{Binding StickersAvailableVisibility}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="25,18,0,0" Canvas.ZIndex="1" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Grid Name="gridStickerSetting" Grid.Column="1" Tap="gridSettingStickerTap"  HorizontalAlignment="Right" Background="#0f8fe1">
+                            <Border Width="70" Height="70" BorderBrush="#1A1B1E" BorderThickness="0,1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="-1"/>
+                            <Image Source="/View/images/stickers/categorySets/settings_white.png" Height="30" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
 
@@ -1459,7 +1470,7 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                
+
             </Grid>
         </StackPanel>
         <ProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 

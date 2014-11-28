@@ -474,6 +474,12 @@ namespace windows_client
         public static readonly string ANALYTICS_EMAIL_MENU = "menu";
         public static readonly string ANALYTICS_EMAIL_LONGPRESS = "lpress";
 
+        public static readonly string ANALYTICS_STICKER_BUTTON_CLICKED = "stickerBtnClicked";
+        public static readonly string ANALYTICS_STICKER_SETTINGS_BUTTON_CLICKED = "stickerSettingBtnClicked";
+        public static readonly string ANALYTICS_STICKERCATEGORY_CHECKED = "stickerChkBoxClicked";
+        public static readonly string ANALYTICS_STICKERCATEGORY_UNCHECKED = "stickerUnchkBoxClicked";
+        public static readonly string ANALYTICS_STICKER_OVERLAY_SEEN = "stickerPopUpSeen";
+
         #endregion
 
         public static class Extras
@@ -554,6 +560,9 @@ namespace windows_client
             public static readonly string LAST_SELECTED_EMOTICON_CATEGORY = "lastSelectedEmoticonCategory";
             public static readonly string LAST_USER_JOIN_TIMESTAMP = "lastUjTs";
             public static readonly string PREFERRED_STICKER_CATEGORY = "prefCategory";
+            public static readonly string STICKER_ICON_CLICKED = "stickerIconClicked";
+            public static readonly string STICKER_CATEGORIES_CHECKED = "stickerCategoriesChecked";
+            public static readonly string STICKER_SETTING_ICON_CLICKED = "settingIconClicked";
 
         }
 
@@ -595,6 +604,8 @@ namespace windows_client
             public static readonly string NUMBERS_TO_DOWNLOAD = "nos";
             public static readonly string CATEGORY_IDS_COLLECTION = "catIds";
             public static readonly string VISIBILITY = "visibility";
+            public static readonly string DOWNLOAD_SOURCE = "dsrc";
+            public static readonly string STICKER_COUNT_TEXT = "{0} stickers, free";
 
         }
         #region Server URL Constants

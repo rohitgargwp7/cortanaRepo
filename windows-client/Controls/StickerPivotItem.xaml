@@ -45,11 +45,11 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" LayoutMode="Grid" MinHeight="200" GridCellSize="145,145">
+        <phone:LongListSelector Name="llsStickerCategory" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" LayoutMode="Grid" MinHeight="200" GridCellSize="145,135">
             <phone:LongListSelector.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Image Margin="20,10,0,10" Source="{Binding StickerImage}" MaxHeight="125" MaxWidth="125" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Margin="20,10,0,10" Source="{Binding StickerImage}" MaxHeight="120" MaxWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center">
                         </Image>
                     </Grid>
                 </DataTemplate>
