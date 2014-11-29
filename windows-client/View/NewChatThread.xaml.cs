@@ -87,6 +87,7 @@ namespace windows_client.View
         bool enableStickerButton = true;
         bool isDisplayPicSet = false;
 
+        bool voiceCommandEnabled = false;
         /// <summary>
         /// this map is required for mapping attachment object with convmessage only for 
         /// messages stored in db, other messages would have their attachment object set
@@ -1097,6 +1098,48 @@ namespace windows_client.View
 
                     userImage.Source = avatarImage;
                 }
+            }
+            #endregion
+            #region cortana page
+            else if (PhoneApplicationService.Current.State.ContainsKey("fromcortanapage"))
+            {
+                ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["fromcortanapage"];
+                
+                if (obj.HasCustomPhoto) // represents group chat
+                {
+                    GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
+                    isGroupChat = true;
+                    BlockTxtBlk.Text = AppResources.SelectUser_BlockedGroupMsg_Txt;
+                    _groupInfo = GroupTableUtils.getGroupInfoForId(obj.Msisdn);
+                    if (_groupInfo != null)
+                    {
+                        groupOwner = _groupInfo.GroupOwner;
+                        isGroupAlive = _groupInfo.GroupAlive;
+                    }
+                    ConversationListObject cobj;
+                    if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
+                        IsMute = cobj.IsMute;
+                }
+                
+                mContactNumber = obj.Msisdn;
+                
+                if (obj.Name != null)
+                    mContactName = obj.Name;
+                else
+                    mContactName = obj.Msisdn;
+
+                isAddUser = !obj.IsInAddressBook;
+                isOnHike = obj.OnHike;
+
+                avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
+                userImage.Source = avatarImage;
+                voiceCommandEnabled = true;
+                
+                if(PhoneApplicationService.Current.State.ContainsKey("cortanaMessage"))
+                    sendMsgTxtbox.Text = PhoneApplicationService.Current.State["cortanaMessage"] as string;
+
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
             }
             #endregion
 

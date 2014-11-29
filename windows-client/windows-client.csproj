@@ -269,6 +269,9 @@
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CortanaPage.xaml.cs">
+      <DependentUpon>CortanaPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ForwardTo.xaml.cs">
       <DependentUpon>ForwardTo.xaml</DependentUpon>
     </Compile>
@@ -417,6 +420,10 @@
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CortanaPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ForwardTo.xaml">
       <SubType>Designer</SubType>
@@ -578,6 +585,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="HikeVoiceCommandDefinition.xml" />
     <Content Include="RPALManifest.xml" />
     <Content Include="View\images\AppBar\icon_send_video.png" />
     <Content Include="View\images\ConversationPage\backspace.png" />

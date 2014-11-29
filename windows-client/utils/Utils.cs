@@ -854,7 +854,7 @@ namespace windows_client.utils
         }
 
 
-        public static void GetContact(string searchText)
+        public static List<ContactInfo> GetContact(string searchText)
         {
             int number;
             List<ContactInfo> list = int.TryParse(searchText, out number) ? UsersTableUtils.GetContact(number.ToString()) : UsersTableUtils.GetContactFromName(searchText);
@@ -867,12 +867,13 @@ namespace windows_client.utils
             }
             if (list != null && list.Count > 0)
             {
-                MessageBox.Show(string.Format("{0} contacts found", list.Count));
+                Debug.WriteLine(string.Format("{0} contacts found", list.Count));
             }
             else
             {
-                MessageBox.Show(string.Format("Contact not found", list.Count));
+                Debug.WriteLine("Contact not found");
             }
+            return list;
         }
 
         private static List<ContactInfo> FetchFromChats(string searchText)
@@ -880,7 +881,7 @@ namespace windows_client.utils
             List<ContactInfo> list = new List<ContactInfo>();
             foreach (var conv in App.ViewModel.MessageListPageCollection)
             {
-                if (conv.Msisdn.Contains(searchText) || conv.ContactName.Contains(searchText))
+                if (conv.Msisdn.Contains(searchText) || (conv.ContactName != null && conv.ContactName.Contains(searchText)))
                 {
                     ContactInfo cInfo = new ContactInfo();
                     cInfo.Name = conv.NameToShow;
@@ -899,7 +900,7 @@ namespace windows_client.utils
             List<ContactInfo> list = new List<ContactInfo>();
             foreach (var conv in App.ViewModel.FavList)
             {
-                if (conv.Msisdn.Contains(searchText) || conv.ContactName.Contains(searchText))
+                if (conv.Msisdn.Contains(searchText) || (conv.ContactName!=null&&conv.ContactName.Contains(searchText)))
                 {
                     ContactInfo cInfo = new ContactInfo();
                     cInfo.Name = conv.NameToShow;
