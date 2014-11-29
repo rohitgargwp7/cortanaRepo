@@ -13,6 +13,8 @@ using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
 using Windows.Phone.Speech.VoiceCommands;
+using System.Threading.Tasks;
+
 namespace windows_client.View
 {
     public partial class CortanaPage : PhoneApplicationPage
@@ -30,7 +32,7 @@ namespace windows_client.View
 
             contactInput.Settings.ExampleText = "Which contact did you mean?";
             contactInput.Settings.ExampleText = "one";
-            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5" ,"6","7","8","9","10"});
+            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5" ,"6","7","8","9","10" });
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -44,47 +46,67 @@ namespace windows_client.View
 
                 if (commandName == "ChatWith" && this.NavigationContext.QueryString.TryGetValue("reco", out str))
                 {
-                    command.Text = str;
+                    command.Text = "Hiking " + str;
                     List<ContactInfo> res = Utils.GetContact(str);
-
-                    if (res.Count == 1)
-                        PhoneApplicationService.Current.State["fromcortanapage"] = res[0];
+                    
+                    if (res == null || res.Count == 0)
+                    {
+                        noContactGrid.Visibility = Visibility.Visible;
+                        MessageBox.Show("We are sorry!");
+                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    }
                     else
                     {
-                        chooseContactListBox.ItemsSource = res;
-                        chooseContactListBox.Visibility = Visibility.Visible;
-                        
-                        await speechOutput.SpeakTextAsync("Which " + str + " do you want?");
-                        recoResult = await contactInput.RecognizeWithUIAsync();
-                        
-                        int contactPos;
-                        
-                        if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos < res.Count)
-                            PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];    
+                        if (res.Count == 1)
+                        {
+                            PhoneApplicationService.Current.State["fromcortanapage"] = res[0];
+                            AskForMessage();
+                        }
+                        else
+                        {
+                            command.Text = "Which " + str + " do you want to hike with?";
+                            chooseContactListBox.ItemsSource = res;
+                            chooseContactListBox.Visibility = Visibility.Visible;
+
+                            await speechOutput.SpeakTextAsync("Which " + str + " do you want?");
+                            recoResult = await contactInput.RecognizeWithUIAsync();
+
+                            int contactPos;
+
+                            if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos > 0  &&  contactPos <= res.Count)
+                            {
+                                PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];
+                                AskForMessage();
+                            }
+                        }
                     }
-
-                    await speechOutput.SpeakTextAsync("Say your message");
-                    recoResult = await messageInput.RecognizeWithUIAsync();
-                    
-                    PhoneApplicationService.Current.State["cortanaMessage"] = (recoResult.RecognitionResult == null) ? String.Empty : recoResult.RecognitionResult.Text ;
-
-                    if (PhoneApplicationService.Current.State.ContainsKey("fromcortanapage"))
-                        NavigationService.Navigate(new Uri("/View/NewChatThread.xaml",UriKind.Relative));
                 }
             }
             base.OnNavigatedTo(e);
         }
 
-        private void StackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void Contact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ContactInfo ci = (ContactInfo)((sender as StackPanel).DataContext);
+            ContactInfo ci = (ContactInfo)((sender as Grid).DataContext);
 
             if (ci == null)
                 return;
 
             PhoneApplicationService.Current.State["fromcortanapage"] = ci;
-            PhoneApplicationService.Current.State["cortanaMessage"]=string.Empty;
-            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml",UriKind.Relative));
+            AskForMessage();
         }
+
+        private async void AskForMessage()
+        {
+            await speechOutput.SpeakTextAsync("Say your message");
+            recoResult = await messageInput.RecognizeWithUIAsync();
+
+            PhoneApplicationService.Current.State["cortanaMessage"] = (recoResult.RecognitionResult == null) ? String.Empty : recoResult.RecognitionResult.Text;
+
+            if (PhoneApplicationService.Current.State.ContainsKey("fromcortanapage"))
+                NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+        }
+
+
     }
 }

@@ -286,6 +286,7 @@ namespace windows_client.View
 
             FrameworkDispatcher.Update();
 
+            Utils.UpdatePhraseList();
         }
 
 
