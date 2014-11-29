@@ -740,7 +740,7 @@ namespace windows_client.utils
 
             if (!Directory.Exists(HikeConstants.HikeDirectoryPath))
                 Directory.CreateDirectory(HikeConstants.HikeDirectoryPath);
-            
+
             try
             {
                 string targetFile = HikeConstants.HikeDirectoryName + "\\" + targetFileName;
@@ -787,7 +787,7 @@ namespace windows_client.utils
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("Utils.cs ::  GetAbsolutePath , Exception : " + ex.StackTrace);
             }
@@ -843,7 +843,7 @@ namespace windows_client.utils
 
                             foreach (byte b in hashAlgorithm.Hash)
                                 sb.Append(b.ToString("x2"));
-                            
+
                             return sb.ToString();
                         }
                     }
@@ -851,6 +851,67 @@ namespace windows_client.utils
                 else
                     return string.Empty;
             }
+        }
+
+
+        public static List<ContactInfo> GetContact(string searchText)
+        {
+            int number;
+            List<ContactInfo> list = int.TryParse(searchText, out number) ? UsersTableUtils.GetContact(number.ToString()) : UsersTableUtils.GetContactFromName(searchText);
+
+            if (list == null || list.Count == 0)
+            {
+                list = FetchFromChats(searchText);
+                if (list.Count == 0)
+                    list = FetchFromFavourites(searchText);
+            }
+            if (list != null && list.Count > 0)
+            {
+                Debug.WriteLine(string.Format("{0} contacts found", list.Count));
+            }
+            else
+            {
+                Debug.WriteLine("Contact not found");
+            }
+            return list;
+        }
+
+        private static List<ContactInfo> FetchFromChats(string searchText)
+        {
+            List<ContactInfo> list = new List<ContactInfo>();
+            foreach (var conv in App.ViewModel.MessageListPageCollection)
+            {
+                if (conv.Msisdn.Contains(searchText) || (conv.ContactName != null && conv.ContactName.Contains(searchText)))
+                {
+                    ContactInfo cInfo = new ContactInfo();
+                    cInfo.Name = conv.NameToShow;
+                    cInfo.ContactListLabel = conv.Msisdn;
+                    cInfo.OnHike = conv.IsOnhike;
+                    cInfo.Msisdn = conv.Msisdn;
+                    cInfo.Avatar = conv.Avatar;
+                    list.Add(cInfo);
+                }
+            }
+            return list;
+        }
+
+        private static List<ContactInfo> FetchFromFavourites(string searchText)
+        {
+            List<ContactInfo> list = new List<ContactInfo>();
+            foreach (var conv in App.ViewModel.FavList)
+            {
+                if (conv.Msisdn.Contains(searchText) || (conv.ContactName!=null&&conv.ContactName.Contains(searchText)))
+                {
+                    ContactInfo cInfo = new ContactInfo();
+                    cInfo.Name = conv.NameToShow;
+                    cInfo.ContactListLabel = conv.Msisdn;
+                    cInfo.OnHike = conv.IsOnhike;
+                    cInfo.Msisdn = conv.Msisdn;
+                    cInfo.Avatar = conv.Avatar;
+                    list.Add(cInfo);
+                }
+            }
+            return list;
         }
     }
 }

@@ -285,6 +285,8 @@ namespace windows_client.View
             #endregion
 
             FrameworkDispatcher.Update();
+            //Utils.GetContact("test");
+
         }
 
 
