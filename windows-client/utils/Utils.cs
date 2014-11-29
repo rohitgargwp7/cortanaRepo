@@ -19,6 +19,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using System.Text;
+using Windows.Phone.Speech.VoiceCommands;
 
 namespace windows_client.utils
 {
@@ -900,7 +901,7 @@ namespace windows_client.utils
             List<ContactInfo> list = new List<ContactInfo>();
             foreach (var conv in App.ViewModel.FavList)
             {
-                if (conv.Msisdn.Contains(searchText) || (conv.ContactName!=null&&conv.ContactName.Contains(searchText)))
+                if (conv.Msisdn.Contains(searchText) || (conv.ContactName != null && conv.ContactName.Contains(searchText)))
                 {
                     ContactInfo cInfo = new ContactInfo();
                     cInfo.Name = conv.NameToShow;
@@ -913,5 +914,42 @@ namespace windows_client.utils
             }
             return list;
         }
+
+
+        private static HashSet<string> GetHikeNames()
+        {
+            List<ContactInfo> contactInfoList = UsersTableUtils.GetAllHikeContacts();
+            HashSet<string> hikeNames = new HashSet<string>();
+
+            foreach (var ci in contactInfoList)
+            {
+                if (ci.Name != null)
+                    hikeNames.Add(ci.Name.Substring(0, ci.Name.IndexOf(' ') != -1 ? ci.Name.IndexOf(' ') : ci.Name.Length));
+            }
+
+            return hikeNames;
+        }
+
+        public async static void UpdatePhraseList()
+        {
+
+            List<string> NamesList = GetHikeNames().ToList();
+            try
+            {
+                VoiceCommandSet vcs = null;
+                if (VoiceCommandService.InstalledCommandSets.TryGetValue("HikeCommandEnus", out vcs))
+                {
+                    await vcs.UpdatePhraseListAsync("name", NamesList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(delegate
+                {
+                    MessageBox.Show("Exception in UpdateNumberPhraseList " + ex.Message);
+                });
+            }
+        }
+
     }
 }

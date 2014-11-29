@@ -12,7 +12,7 @@ using Windows.Phone.Speech.Recognition;
 using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
-
+using Windows.Phone.Speech.VoiceCommands;
 namespace windows_client.View
 {
     public partial class CortanaPage : PhoneApplicationPage
@@ -30,7 +30,7 @@ namespace windows_client.View
 
             contactInput.Settings.ExampleText = "Which contact did you mean?";
             contactInput.Settings.ExampleText = "one";
-            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5" ,"6","7","8" });
+            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5" ,"6","7","8","9","10"});
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

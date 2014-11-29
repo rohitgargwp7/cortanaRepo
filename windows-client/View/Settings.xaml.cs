@@ -178,6 +178,8 @@ namespace windows_client.View
                 return;
             }
 
+            Utils.UpdatePhraseList();
+            
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
