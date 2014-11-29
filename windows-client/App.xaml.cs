@@ -24,6 +24,7 @@ using System.Text;
 using Microsoft.Phone.Tasks;
 using windows_client.Languages;
 using System.Threading.Tasks;
+using Windows.Phone.Speech.VoiceCommands;
 
 namespace windows_client
 {
@@ -357,6 +358,7 @@ namespace windows_client
 
             (App.Current.Resources["PhoneSubtleBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneSubtleColor"];
             (App.Current.Resources["PhoneAccentBrush"] as SolidColorBrush).Color = (Color)App.Current.Resources["PhoneAccentColor"];
+            RegisterVoiceCommands();
         }
 
         void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -1261,5 +1263,18 @@ namespace windows_client
             get { return Current.Resources["GlobalMedia"] as MediaElement; }
         }
 
+        private async void RegisterVoiceCommands()
+        {
+            try
+            {
+                Uri voiceCommandUri = new Uri("ms-appx:///HikeVoiceCommandDefinition.xml");
+                await VoiceCommandService.InstallCommandSetsFromFileAsync(voiceCommandUri);
+                Debug.WriteLine("Voice Commands Enabled....:)");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Voice Commad Registration Failed...:(" + e.StackTrace);
+            }
+        }
     }
 }
