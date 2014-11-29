@@ -12,6 +12,7 @@ using Windows.Phone.Speech.Recognition;
 using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
+using Windows.Phone.Speech.VoiceCommands;
 using System.Threading.Tasks;
 
 namespace windows_client.View

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.0">
-  <CommandSet xml:lang="en-US">
+  <CommandSet xml:lang="en-US" Name="HikeCommandEnus">
     <CommandPrefix>Hike</CommandPrefix>
     <Example>Hike Natasha</Example>
 
@@ -13,10 +13,6 @@
     </Command>
     
     <PhraseList Label="name">
-      <Item> Abhishek </Item>
-      <Item> Gagan </Item>
-      <Item> Rohit </Item>
-      <Item> Tom </Item>
     </PhraseList>
 
   </CommandSet>
