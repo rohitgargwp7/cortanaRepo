@@ -43,11 +43,18 @@ using Windows.Storage;
 using windows_client.Model.Sticker;
 using windows_client.utils.ServerTips;
 using System.Windows.Resources;
+using Windows.Phone.Speech.Synthesis;
+using Windows.Phone.Speech.Recognition;
 
 namespace windows_client.View
 {
     public partial class NewChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
+
+        private SpeechSynthesizer speechOutput = new SpeechSynthesizer();
+        private SpeechRecognizerUI messageInput = new SpeechRecognizerUI();
+        private SpeechRecognizerUI promptInput = new SpeechRecognizerUI();
+
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = AppResources.SelectUser_FreeMsg_Txt;
@@ -228,6 +235,12 @@ namespace windows_client.View
 
             TipManager.Instance.ChatScreenTipChanged -= Instance_ShowServerTip;
             TipManager.Instance.ChatScreenTipChanged += Instance_ShowServerTip;
+
+            promptInput.Settings.ListenText = "Reply or ignore";
+            promptInput.Settings.ExampleText = "reply";
+            promptInput.Settings.ShowConfirmation = false;
+            //messageInput.Settings.ShowConfirmation = false;
+            promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
         }
 
         private void Instance_ShowServerTip(object sender, EventArgs e)
@@ -2921,12 +2934,13 @@ namespace windows_client.View
             SendMsg();
         }
 
-        private void SendMsg()
+        private void SendMsg(bool isFocus = true)
         {
             if (mUserIsBlocked)
                 return;
 
             this.Focus();
+
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = string.Empty;
             lastText = string.Empty;
@@ -2934,7 +2948,7 @@ namespace windows_client.View
             sendIconButton.IsEnabled = false;
             actionIcon.Source = UI_Utils.Instance.WalkieTalkieImage;
 
-            if (emoticonPanel.Visibility == Visibility.Collapsed)
+            if (emoticonPanel.Visibility == Visibility.Collapsed && isFocus)
                 sendMsgTxtbox.Focus();
 
             if (chatBackgroundPopUp.Visibility == Visibility.Visible)
@@ -4183,7 +4197,7 @@ namespace windows_client.View
         #region PUBSUB EVENTS
 
         /* this function is running on pubsub thread and not UI thread*/
-        public void onEventReceived(string type, object obj)
+        public async void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
 
@@ -4241,6 +4255,19 @@ namespace windows_client.View
 
                             AddMessageToOcMessages(convMessage, false, true);
                         });
+
+                        await speechOutput.SpeakTextAsync(convMessage.Message + ". Reply or Ignore");
+                        SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+                    
+                        if (recoResult.RecognitionResult!=null && recoResult.RecognitionResult.Text == "reply")
+                        {
+                            recoResult = await messageInput.RecognizeWithUIAsync();
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                sendMsgTxtbox.Text = recoResult.RecognitionResult.Text ?? String.Empty;
+                                SendMsg(false);
+                            });
+                        }
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -4300,6 +4327,8 @@ namespace windows_client.View
                     }
                     // Update status to received read in db.
                     mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, msgids);
+
+                    
                 }
             }
 
