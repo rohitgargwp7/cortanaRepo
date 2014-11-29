@@ -451,6 +451,27 @@ namespace windows_client.View
 
                 loadMessages(INITIAL_FETCH_COUNT, true);
 
+                if (PhoneApplicationService.Current.State.ContainsKey("cortanaMessage"))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        sendMsgTxtbox.Text = PhoneApplicationService.Current.State["cortanaMessage"] as string;
+                        PhoneApplicationService.Current.State.Remove("cortanaMessage");
+                    });
+                }
+                else if (PhoneApplicationService.Current.State.ContainsKey("sendNudge"))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ConvMessage convMessage = new ConvMessage(string.Format("{0}!", AppResources.Nudge), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.HasAttachment = false;
+                        convMessage.MetaDataString = "{poke:1}";
+                        sendMsg(convMessage, false);
+                    });
+                    PhoneApplicationService.Current.State.Remove("sendNudge");
+                }
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     var worker = new BackgroundWorker();
@@ -1104,7 +1125,8 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey("fromcortanapage"))
             {
                 ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["fromcortanapage"];
-                
+                PhoneApplicationService.Current.State.Remove("fromcortanapage");
+
                 if (obj.HasCustomPhoto) // represents group chat
                 {
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
@@ -1120,9 +1142,9 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
                         IsMute = cobj.IsMute;
                 }
-                
+
                 mContactNumber = obj.Msisdn;
-                
+
                 if (obj.Name != null)
                     mContactName = obj.Name;
                 else
@@ -1134,9 +1156,6 @@ namespace windows_client.View
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
                 voiceCommandEnabled = true;
-                
-                if(PhoneApplicationService.Current.State.ContainsKey("cortanaMessage"))
-                    sendMsgTxtbox.Text = PhoneApplicationService.Current.State["cortanaMessage"] as string;
 
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
