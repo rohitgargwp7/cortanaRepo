@@ -66,7 +66,7 @@ namespace windows_client.DbUtils
                     context.SubmitChanges();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine("UserTableUtils :: addContacts : submit changes, Exception : " + e.StackTrace);
             }
@@ -141,6 +141,25 @@ namespace windows_client.DbUtils
                 return users.ToList<ContactInfo>();
             }
         }
+
+        public static List<ContactInfo> GetContact(string number)
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.PhoneNo == number select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
+        public static List<ContactInfo> GetContactFromName(string name)
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.Name.Contains(name) select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
