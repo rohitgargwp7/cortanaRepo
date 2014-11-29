@@ -28,15 +28,35 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="noContactGrid" Visibility="Collapsed">
+                <StackPanel Orientation="Vertical">
+                    <Image Source="images/noresult.png" Width="250" Height="250"/>
+                    <TextBlock Text="No contacts found" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
             <StackPanel>
-                <TextBlock x:Name="command" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="30"/>
+                <TextBlock x:Name="command" Foreground="Cyan" Text ="Hello" VerticalAlignment="Center" FontSize="36"/>
                 <ListBox x:Name="chooseContactListBox" Visibility="Visible">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="10,10" Tap="StackPanel_Tap">
-                                <TextBlock Text="{Binding Name}" />
-                                <TextBlock Text="{Binding Msisdn}" />
-                            </StackPanel>
+                            <Grid Background="Transparent" Tap="Contact_Tap">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding AvatarImage}" Width="50" Height="50" />
+                                <Grid Grid.Column="1">
+                                    <StackPanel Margin="20,10">
+                                        <TextBlock Text="{Binding Name}" FontSize="24" Foreground="White"  />
+                                        <TextBlock Text="{Binding Msisdn}" FontSize="20" Foreground="Gray" />
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
