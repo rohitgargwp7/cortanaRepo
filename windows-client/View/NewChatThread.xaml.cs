@@ -4237,18 +4237,7 @@ namespace windows_client.View
                             AddMessageToOcMessages(convMessage, false, true);
                         });
 
-                        await speechOutput.SpeakTextAsync(convMessage.Message + ". Reply or Ignore");
-                        SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
-                    
-                        if (recoResult.RecognitionResult!=null && recoResult.RecognitionResult.Text == "reply")
-                        {
-                            recoResult = await messageInput.RecognizeWithUIAsync();
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                sendMsgTxtbox.Text = recoResult.RecognitionResult.Text ?? String.Empty;
-                                SendMsg(false);
-                            });
-                        }
+                        
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -4306,10 +4295,59 @@ namespace windows_client.View
                             vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                         }
                     }
+
                     // Update status to received read in db.
                     mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, msgids);
+                }
 
-                    
+                ConvMessage voiceConvMsg = (listConvMessage != null && listConvMessage.Count > 0) ? listConvMessage[0] : null;
+
+                if (voiceConvMsg != null)
+                {
+                    string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
+
+                    if (voiceConvMsg.Msisdn != mContactNumber)
+                    {
+                        ConversationListObject mObj = (ConversationListObject)vals[1];
+
+                        if (mObj!=null && !mObj.IsMute)
+                        {
+                            spokenAloud = ((mObj.ContactName != null) ? mObj.ContactName : voiceConvMsg.Msisdn) + " sent " + spokenAloud;
+                        }
+                        //GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, voiceConvMsg.GroupParticipant, voiceConvMsg.Msisdn);
+                        //spokenAloud = (gp == null) ? spokenAloud : gp.FirstName + " sent " + spokenAloud;
+                    }
+                        
+                    await speechOutput.SpeakTextAsync(spokenAloud);
+                    SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+
+                    if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
+                    {
+                        recoResult = await messageInput.RecognizeWithUIAsync();
+
+                        if (recoResult.RecognitionResult != null)
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                string message = recoResult.RecognitionResult.Text ?? String.Empty;
+                                //sendMsgTxtbox.Text = recoResult.RecognitionResult.Text ?? String.Empty;
+
+                                ConvMessage convMessage = new ConvMessage(message, voiceConvMsg.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                                convMessage.IsSms = !isOnHike;
+
+                                if (voiceConvMsg.Msisdn == mContactNumber)
+                                    sendMsg(convMessage, false);
+                                else
+                                {
+                                    object[] valsTemp = new object[3];
+                                    valsTemp[0] = convMessage;
+                                    valsTemp[1] = false;
+                                    mPubSub.publish(HikePubSub.MESSAGE_SENT, valsTemp);
+                                }
+                                //SendMsg(false);
+                            });
+                        }
+                    }
                 }
             }
 
