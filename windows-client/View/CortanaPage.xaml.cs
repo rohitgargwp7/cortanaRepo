@@ -52,9 +52,8 @@ namespace windows_client.View
 
                     if (res == null || res.Count == 0)
                     {
-                        noContactGrid.Visibility = Visibility.Visible;
-                        MessageBox.Show("We are sorry!");
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                        noContactGrid.Visibility = Visibility.Visible; 
+                        FailedState();
                     }
                     else
                     {
@@ -79,6 +78,8 @@ namespace windows_client.View
                                 PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];
                                 AskForMessage();
                             }
+                            else
+                                FailedState();
                         }
                     }
                 }
@@ -122,6 +123,13 @@ namespace windows_client.View
                 }
             }
             base.OnNavigatedTo(e);
+        }
+
+        private void FailedState()
+        {
+
+            MessageBox.Show("We are sorry!");
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
         private void Contact_Tap(object sender, System.Windows.Input.GestureEventArgs e)

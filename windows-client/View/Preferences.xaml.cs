@@ -222,5 +222,20 @@ namespace windows_client.View
             }
         }
 
+        private void handsFreeSettingsToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            handsFreeSettingToggle.Loaded -= handsFreeSettingsToggle_Loaded;
+            handsFreeSettingToggle.Checked += handsFreeSettingsToggle_Checked;
+            handsFreeSettingToggle.Unchecked += handsFreeSettingsToggle_UnChecked;
+        }
+        private void handsFreeSettingsToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            App.WriteToIsoStorageSettings("handsFree",true);
+        }
+        private void handsFreeSettingsToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            if (App.appSettings.Contains("handsFree"))
+                App.RemoveKeyFromAppSettings("handsFree");
+        }
     }
 }
