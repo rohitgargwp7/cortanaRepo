@@ -212,7 +212,8 @@ namespace windows_client.ViewModel
             //messageInput.Settings.ShowConfirmation = false;
             promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
             askConfirm.Settings.ShowConfirmation = false;
-            askConfirm.Settings.ListenText = "yes";
+            askConfirm.Settings.ListenText = "Confirm";
+            askConfirm.Settings.ExampleText = "yes";
             askConfirm.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "yes", "no" });
             List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
@@ -1250,6 +1251,7 @@ namespace windows_client.ViewModel
 
         public async void VoiceOnSendMessage(ConversationListObject mObj)
         {
+        AskAgain:
             await speechOutput.SpeakTextAsync("say your message");
             SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
 
@@ -1292,6 +1294,8 @@ namespace windows_client.ViewModel
                                 App.newChatThreadPage.sendMsgTxtbox.Text = message;
                             }
                         });
+
+                        goto AskAgain;
                     }
                     _isVoiceInUse = false;
                 }
