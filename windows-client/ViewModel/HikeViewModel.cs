@@ -1230,7 +1230,7 @@ namespace windows_client.ViewModel
         public async void VoiceOnReceiveMessage(ConversationListObject mObj, ConvMessage voiceConvMsg)
         {
             _isVoiceInUse = true;
-            string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
+            string spokenAloud = voiceConvMsg.Message + (!App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE) ? ". Reply or Ignore" : string.Empty);
 
             if (App.newChatThreadPage == null || (App.newChatThreadPage != null && mObj.Msisdn != App.newChatThreadPage.mContactNumber))
             {
@@ -1241,13 +1241,21 @@ namespace windows_client.ViewModel
             }
 
             await speechOutput.SpeakTextAsync(spokenAloud);
-            SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+            if (!App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE))
+            {
+                SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
 
-            if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
+                if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
+                {
+                    VoiceOnSendMessage(mObj);
+                }
+            }
+            else
             {
                 VoiceOnSendMessage(mObj);
             }
         }
+
 
         public async void VoiceOnSendMessage(ConversationListObject mObj)
         {
@@ -1255,59 +1263,74 @@ namespace windows_client.ViewModel
 
             while (noOfRetry < 3)
             {
-            
+
                 await speechOutput.SpeakTextAsync("say your message");
                 SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
 
                 if (recoResult.RecognitionResult != null)
                 {
                     string message = recoResult.RecognitionResult.Text ?? String.Empty;
-                    await speechOutput.SpeakTextAsync("confirm sending yes or no");
-                    recoResult = await askConfirm.RecognizeWithUIAsync();
-
-                    if (recoResult.RecognitionResult != null)
+                    if (!App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE))
                     {
-                        string confirmation = recoResult.RecognitionResult.Text;
+                        await speechOutput.SpeakTextAsync("confirm sending yes or no");
+                        recoResult = await askConfirm.RecognizeWithUIAsync();
 
-                        if (confirmation != null && confirmation.Equals("yes"))
+                        if (recoResult.RecognitionResult != null)
                         {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                ConvMessage convMessage = App.newChatThreadPage == null ? new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED) : new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, App.newChatThreadPage.Orientation);
-                                convMessage.IsSms = !mObj.IsOnhike;
+                            string confirmation = recoResult.RecognitionResult.Text;
 
-                                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
-                                    App.newChatThreadPage.sendMsg(convMessage, false);
-                                else
-                                {
-                                    object[] valsTemp = new object[3];
-                                    valsTemp[0] = convMessage;
-                                    valsTemp[1] = false;
-                                    App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, valsTemp);
-                                }
-                                //SendMsg(false);
-                            });
-                            break;
-                        }
-                        else
-                        {
-                            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            if (confirmation != null && confirmation.Equals("yes"))
                             {
-                                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                SendMessage(mObj, message);
+                                break;
+                            }
+                            else
+                            {
+                                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    App.newChatThreadPage.sendMsgTxtbox.Text = message;
-                                }
-                            });
+                                    if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                    {
+                                        App.newChatThreadPage.sendMsgTxtbox.Text = message;
+                                    }
+                                });
 
-                            noOfRetry++;
+                                noOfRetry++;
+                            }
                         }
                     }
+                    else
+                    {
+                        SendMessage(mObj, message);
+                        break;
+                    }
                 }
+                else
+                    break;
             }
-
             _isVoiceInUse = false;
 
+        }
+
+
+        private static void SendMessage(ConversationListObject mObj, string message)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ConvMessage convMessage = App.newChatThreadPage == null ? new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED) : new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, App.newChatThreadPage.Orientation);
+                convMessage.IsSms = !mObj.IsOnhike;
+
+                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                    App.newChatThreadPage.sendMsg(convMessage, false);
+                else
+                {
+                    object[] valsTemp = new object[3];
+                    valsTemp[0] = convMessage;
+                    valsTemp[1] = false;
+                    App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, valsTemp);
+                }
+                //SendMsg(false);
+            });
         }
 
         #endregion

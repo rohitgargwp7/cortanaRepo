@@ -563,6 +563,7 @@ namespace windows_client
             public static readonly string STICKER_ICON_CLICKED = "stickerIconClicked";
             public static readonly string STICKER_CATEGORIES_CHECKED = "stickerCategoriesChecked";
             public static readonly string STICKER_SETTING_ICON_CLICKED = "settingIconClicked";
+            public static readonly string FASTER_VOICE = "fasterVoice";
 
         }
 

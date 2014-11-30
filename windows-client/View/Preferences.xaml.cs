@@ -86,6 +86,10 @@ namespace windows_client.View
             value = App.appSettings.Contains("handsFree");
             handsFreeSettingToggle.IsChecked = value;
             this.handsFreeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
+
+            value = App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE);
+            fasterVoiceToggle.IsChecked = value;
+            this.fasterVoiceToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -241,6 +245,25 @@ namespace windows_client.View
             handsFreeSettingToggle.Content = AppResources.Off;
             if (App.appSettings.Contains("handsFree"))
                 App.RemoveKeyFromAppSettings("handsFree");
+        }
+
+        private void fasterVoiceToggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            fasterVoiceToggle.Loaded -= fasterVoiceToggle_Loaded;
+            fasterVoiceToggle.Checked += fasterVoiceToggle_Checked;
+            fasterVoiceToggle.Unchecked += fasterVoiceToggle_UnChecked;
+        }
+
+        private void fasterVoiceToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            fasterVoiceToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FASTER_VOICE, true);
+        }
+        private void fasterVoiceToggle_UnChecked(object sender, RoutedEventArgs e)
+        {
+            fasterVoiceToggle.Content = AppResources.Off;
+            if (App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE))
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FASTER_VOICE);
         }
     }
 }
