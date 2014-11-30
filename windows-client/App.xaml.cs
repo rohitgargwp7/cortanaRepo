@@ -744,6 +744,10 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
+
+            if (App.appSettings.Contains("handsFree"))
+                App.RemoveKeyFromAppSettings("handsFree");
+
             #region HIDDEN_MODE EXIT SETTING
             if (isNewInstall)
                 App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);

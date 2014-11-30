@@ -76,10 +76,10 @@ namespace windows_client.View
                             if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos > 0 && contactPos <= res.Count)
                             {
                                 PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];
-                                AskForMessage();
+                                //AskForMessage();
                             }
-                            else
-                                FailedState();
+                            //else
+                              //  FailedState();
                         }
                     }
                 }

@@ -416,6 +416,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
         }
 
+        private readonly object syncRoot= new Object();
+
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
@@ -448,8 +450,21 @@ namespace windows_client.ViewModel
                         }//if already at zero, do nothing
                     });
 
-                if (voiceConvMsg != null)
-                    VoiceOnReceiveMessage(mObj, voiceConvMsg);
+                if (App.appSettings.Contains("handsFree"))
+                { 
+                    try
+                    {
+                        lock (syncRoot)
+                        {
+                            if (voiceConvMsg != null)
+                                VoiceOnReceiveMessage(mObj, voiceConvMsg);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Voice exception: "+ e.Message + e.StackTrace);
+                    }
+                }
 
                 if (showPush &&
                     ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
