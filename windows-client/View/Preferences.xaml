@@ -34,6 +34,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="0" x:Name="blackSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
@@ -50,6 +51,8 @@
                                               Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="6" x:Name="handsFreeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
                                               Header="Hands Free" Loaded="handsFreeSettingsToggle_Loaded"/>
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="7" Name="fasterVoiceToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
+                                              Header="Faster Voice" Loaded="fasterVoiceToggle_Loaded"/>
             </Grid>
        </ScrollViewer>
     </Grid>
