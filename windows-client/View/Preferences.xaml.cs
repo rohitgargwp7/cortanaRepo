@@ -83,6 +83,9 @@ namespace windows_client.View
             blackSettingToggle.IsChecked = value;
             this.blackSettingToggle.Content = value ? AppResources.On : AppResources.Off;
 
+            value = App.appSettings.Contains("handsFree");
+            handsFreeSettingToggle.IsChecked = value;
+            this.handsFreeSettingToggle.Content = value ? AppResources.On : AppResources.Off;
         }
 
         private void locationToggle_Loaded(object sender, RoutedEventArgs e)
@@ -230,10 +233,12 @@ namespace windows_client.View
         }
         private void handsFreeSettingsToggle_Checked(object sender, RoutedEventArgs e)
         {
+            handsFreeSettingToggle.Content = AppResources.On;
             App.WriteToIsoStorageSettings("handsFree",true);
         }
         private void handsFreeSettingsToggle_UnChecked(object sender, RoutedEventArgs e)
         {
+            handsFreeSettingToggle.Content = AppResources.Off;
             if (App.appSettings.Contains("handsFree"))
                 App.RemoveKeyFromAppSettings("handsFree");
         }

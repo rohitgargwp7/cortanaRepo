@@ -416,6 +416,8 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
         }
 
+        private readonly object syncRoot = new Object();
+
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
@@ -448,8 +450,21 @@ namespace windows_client.ViewModel
                         }//if already at zero, do nothing
                     });
 
-                if (voiceConvMsg != null)
-                    VoiceOnReceiveMessage(mObj, voiceConvMsg);
+                if (App.appSettings.Contains("handsFree") && !_isVoiceInUse)
+                {
+                    try
+                    {
+                        lock (syncRoot)
+                        {
+                            if (voiceConvMsg != null)
+                                VoiceOnReceiveMessage(mObj, voiceConvMsg);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Voice exception: " + e.Message + e.StackTrace);
+                    }
+                }
 
                 if (showPush &&
                     ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
@@ -1210,9 +1225,10 @@ namespace windows_client.ViewModel
         private SpeechRecognizerUI messageInput = new SpeechRecognizerUI();
         private SpeechRecognizerUI promptInput = new SpeechRecognizerUI();
         private SpeechRecognizerUI askConfirm = new SpeechRecognizerUI();
-
+        private bool _isVoiceInUse = false;
         public async void VoiceOnReceiveMessage(ConversationListObject mObj, ConvMessage voiceConvMsg)
         {
+            _isVoiceInUse = true;
             string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
 
             if (App.newChatThreadPage == null || (App.newChatThreadPage != null && mObj.Msisdn != App.newChatThreadPage.mContactNumber))
@@ -1277,6 +1293,7 @@ namespace windows_client.ViewModel
                             }
                         });
                     }
+                    _isVoiceInUse = false;
                 }
             }
 

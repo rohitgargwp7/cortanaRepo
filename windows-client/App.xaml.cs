@@ -744,6 +744,7 @@ namespace windows_client
                 ShowExceptionMessageBox();
             }
             #endregion
+
             #region HIDDEN_MODE EXIT SETTING
             if (isNewInstall)
                 App.WriteToIsoStorageSettings(HikeConstants.ACTIVATE_HIDDEN_MODE_ON_EXIT, true);
