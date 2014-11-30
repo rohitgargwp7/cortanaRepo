@@ -212,7 +212,8 @@ namespace windows_client.ViewModel
             //messageInput.Settings.ShowConfirmation = false;
             promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
             askConfirm.Settings.ShowConfirmation = false;
-            askConfirm.Settings.ListenText = "yes";
+            askConfirm.Settings.ListenText = "Confirm";
+            askConfirm.Settings.ExampleText = "yes";
             askConfirm.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "yes", "no" });
             List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
@@ -1255,46 +1256,62 @@ namespace windows_client.ViewModel
             }
         }
 
+
         public async void VoiceOnSendMessage(ConversationListObject mObj)
         {
-            await speechOutput.SpeakTextAsync("say your message");
-            SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
+            int noOfRetry = 0;
 
-            if (recoResult.RecognitionResult != null)
+            while (noOfRetry < 3)
             {
-                string message = recoResult.RecognitionResult.Text ?? String.Empty;
-                if (!App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE))
+
+                await speechOutput.SpeakTextAsync("say your message");
+                SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
+
+                if (recoResult.RecognitionResult != null)
                 {
-                    await speechOutput.SpeakTextAsync("confirm sending yes or no");
-                    recoResult = await askConfirm.RecognizeWithUIAsync();
-
-                    if (recoResult.RecognitionResult != null)
+                    string message = recoResult.RecognitionResult.Text ?? String.Empty;
+                    if (!App.appSettings.Contains(HikeConstants.AppSettings.FASTER_VOICE))
                     {
-                        string confirmation = recoResult.RecognitionResult.Text;
+                        await speechOutput.SpeakTextAsync("confirm sending yes or no");
+                        recoResult = await askConfirm.RecognizeWithUIAsync();
 
-                        if (confirmation != null && confirmation.Equals("yes"))
+                        if (recoResult.RecognitionResult != null)
                         {
-                            SendMessage(mObj, message);
-                        }
-                        else
-                        {
-                            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            string confirmation = recoResult.RecognitionResult.Text;
+
+                            if (confirmation != null && confirmation.Equals("yes"))
                             {
-                                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                SendMessage(mObj, message);
+                                break;
+                            }
+                            else
+                            {
+                                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
+                                Deployment.Current.Dispatcher.BeginInvoke(() =>
                                 {
-                                    App.newChatThreadPage.sendMsgTxtbox.Text = message;
-                                }
-                            });
+                                    if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                    {
+                                        App.newChatThreadPage.sendMsgTxtbox.Text = message;
+                                    }
+                                });
+
+                                noOfRetry++;
+                            }
                         }
+                    }
+                    else
+                    {
+                        SendMessage(mObj, message);
+                        break;
                     }
                 }
                 else
-                    SendMessage(mObj, message);
+                    break;
             }
             _isVoiceInUse = false;
 
         }
+
 
         private static void SendMessage(ConversationListObject mObj, string message)
         {

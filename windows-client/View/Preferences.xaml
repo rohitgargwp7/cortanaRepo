@@ -39,9 +39,9 @@
 
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="0" x:Name="blackSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                               Header="{Binding Path= LocalizedResources.BlackSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="blackSettingToggle_Loaded"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="1" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="6" x:Name="autoDownloadToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoDownloadToggle_Loaded"
                                               Header="{Binding Path= LocalizedResources.Auto_Download_Settings_Header, Source={StaticResource LocalizedStrings}}" />
-                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="2" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="7" x:Name="autoResumeToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  Loaded="autoUploadToggle_Loaded"
                                               Header="{Binding Path= LocalizedResources.Auto_Upload_Settings_Header, Source={StaticResource LocalizedStrings}}" />
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="3" x:Name="locationToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                               Header="{Binding Path= LocalizedResources.Settings_LocationToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="locationToggle_Loaded"/>
@@ -49,9 +49,9 @@
                                               Header="{Binding Path= LocalizedResources.Settings_EnterToSendToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Loaded="enterToSendToggle_Loaded"/>
                 <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="5" x:Name="nudgeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
                                               Header="{Binding Path= LocalizedResources.NudgeSettings_Txt, Source={StaticResource LocalizedStrings}}" Loaded="nudgeSettingsToggle_Loaded"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="6" x:Name="handsFreeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="1" x:Name="handsFreeSettingToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
                                               Header="Hands Free" Loaded="handsFreeSettingsToggle_Loaded"/>
-                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="7" Name="fasterVoiceToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
+                <toolkit:ToggleSwitch Margin="0 0 0 -10" Grid.Row="2" Name="fasterVoiceToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="False"  
                                               Header="Faster Voice" Loaded="fasterVoiceToggle_Loaded"/>
             </Grid>
        </ScrollViewer>
