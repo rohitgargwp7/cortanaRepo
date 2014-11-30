@@ -7,7 +7,7 @@
 
     <Command Name="ChatWith">
       <Example>Hike Tom</Example>
-      <ListenFor>{name}</ListenFor>
+      <ListenFor>[message] {name}</ListenFor>
       <Feedback> Opening Hike...</Feedback>
       <Navigate Target="\View\CortanaPage.xaml"/>
     </Command>
