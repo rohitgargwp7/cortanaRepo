@@ -1249,6 +1249,10 @@ namespace windows_client.ViewModel
                 {
                     VoiceOnSendMessage(mObj);
                 }
+                else
+                {
+                    _isVoiceInUse = false;
+                }
             }
             else
             {
