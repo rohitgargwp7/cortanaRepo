@@ -31,6 +31,8 @@ using System.Threading.Tasks;
 using Microsoft.Phone.Net.NetworkInformation;
 using Coding4Fun.Phone.Controls;
 using System.Windows.Media;
+using Windows.Phone.Speech.Synthesis;
+using Windows.Phone.Speech.Recognition;
 
 namespace windows_client.ViewModel
 {
@@ -204,8 +206,17 @@ namespace windows_client.ViewModel
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
 
+            promptInput.Settings.ListenText = "Reply or ignore";
+            promptInput.Settings.ExampleText = "reply";
+            promptInput.Settings.ShowConfirmation = false;
+            //messageInput.Settings.ShowConfirmation = false;
+            promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
+            askConfirm.Settings.ShowConfirmation = false;
+            askConfirm.Settings.ListenText = "yes";
+            askConfirm.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "yes", "no" });
             List<ConversationListObject> listConversationBox = new List<ConversationListObject>();
             // this order should be maintained as _convMap should be populated before loading fav list
+
             for (int i = 0; i < convList.Count; i++)
             {
                 ConversationListObject convListObj = convList[i];
@@ -222,6 +233,14 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
 
+            promptInput.Settings.ListenText = "Reply or ignore";
+            promptInput.Settings.ExampleText = "reply";
+            promptInput.Settings.ShowConfirmation = false;
+            //messageInput.Settings.ShowConfirmation = false;
+            promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
+            askConfirm.Settings.ShowConfirmation = false;
+            askConfirm.Settings.ListenText = "yes";
+            askConfirm.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "yes", "no" });
             LoadViewModelObjects();
         }
 
@@ -404,6 +423,9 @@ namespace windows_client.ViewModel
             {
                 object[] vals = (object[])obj;
 
+                List<ConvMessage> listConvMessage = vals[0] is ConvMessage ? new List<ConvMessage>() { (ConvMessage)vals[0] } : (List<ConvMessage>)vals[0];
+                ConvMessage voiceConvMsg = (listConvMessage != null && listConvMessage.Count == 1) ? listConvMessage[0] : null;
+
                 bool showPush = true;
                 if (vals.Length == 3 && vals[2] is bool)
                     showPush = (Boolean)vals[2];
@@ -425,6 +447,9 @@ namespace windows_client.ViewModel
                             App.ViewModel.MessageListPageCollection.Move(index, 0);
                         }//if already at zero, do nothing
                     });
+
+                if (voiceConvMsg != null)
+                    VoiceOnReceiveMessage(mObj, voiceConvMsg);
 
                 if (showPush &&
                     ((App.newChatThreadPage == null && mObj.IsHidden && !IsHiddenModeActive)
@@ -1175,6 +1200,86 @@ namespace windows_client.ViewModel
                 MediaPlayer.Resume();
                 resumeMediaPlayerAfterDone = false;
             }
+        }
+
+        #endregion
+
+        #region Cortana Support
+
+        private SpeechSynthesizer speechOutput = new SpeechSynthesizer();
+        private SpeechRecognizerUI messageInput = new SpeechRecognizerUI();
+        private SpeechRecognizerUI promptInput = new SpeechRecognizerUI();
+        private SpeechRecognizerUI askConfirm = new SpeechRecognizerUI();
+
+        public async void VoiceOnReceiveMessage(ConversationListObject mObj, ConvMessage voiceConvMsg)
+        {
+            string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
+
+            if (App.newChatThreadPage == null || (App.newChatThreadPage != null && mObj.Msisdn != App.newChatThreadPage.mContactNumber))
+            {
+                if (mObj != null && !mObj.IsMute)
+                {
+                    spokenAloud = ((mObj.ContactName != null) ? mObj.ContactName : mObj.Msisdn) + " sent " + spokenAloud;
+                }
+            }
+
+            await speechOutput.SpeakTextAsync(spokenAloud);
+            SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+
+            if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
+            {
+                VoiceOnSendMessage(mObj);
+            }
+        }
+
+        public async void VoiceOnSendMessage(ConversationListObject mObj)
+        {
+            await speechOutput.SpeakTextAsync("say your message");
+            SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
+
+            if (recoResult.RecognitionResult != null)
+            {
+                string message = recoResult.RecognitionResult.Text ?? String.Empty;
+                await speechOutput.SpeakTextAsync("confirm sending yes or no");
+                recoResult = await askConfirm.RecognizeWithUIAsync();
+
+                if (recoResult.RecognitionResult != null)
+                {
+                    string confirmation = recoResult.RecognitionResult.Text;
+
+                    if (confirmation != null && confirmation.Equals("yes"))
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            ConvMessage convMessage = App.newChatThreadPage == null ? new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED) : new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, App.newChatThreadPage.Orientation);
+                            convMessage.IsSms = !mObj.IsOnhike;
+
+                            if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                App.newChatThreadPage.sendMsg(convMessage, false);
+                            else
+                            {
+                                object[] valsTemp = new object[3];
+                                valsTemp[0] = convMessage;
+                                valsTemp[1] = false;
+                                App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, valsTemp);
+                            }
+                            //SendMsg(false);
+                        });
+                    }
+                    else
+                    {
+                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                            {
+                                App.newChatThreadPage.sendMsgTxtbox.Text = message;
+                            }
+                        });
+                    }
+                }
+            }
+
         }
 
         #endregion

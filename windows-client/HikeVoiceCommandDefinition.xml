@@ -11,6 +11,13 @@
       <Feedback> Opening Hike...</Feedback>
       <Navigate Target="\View\CortanaPage.xaml"/>
     </Command>
+
+    <Command Name="NudgePerson">
+      <Example>Hike Nudge Tom</Example>
+      <ListenFor>[and] Nudge {name}</ListenFor>
+      <Feedback> Opening Hike...</Feedback>
+      <Navigate Target="\View\CortanaPage.xaml"/>
+    </Command>
     
     <PhraseList Label="name">
     </PhraseList>

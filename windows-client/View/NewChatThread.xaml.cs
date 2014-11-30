@@ -54,7 +54,7 @@ namespace windows_client.View
         private SpeechSynthesizer speechOutput = new SpeechSynthesizer();
         private SpeechRecognizerUI messageInput = new SpeechRecognizerUI();
         private SpeechRecognizerUI promptInput = new SpeechRecognizerUI();
-
+        private SpeechRecognizerUI askConfirm = new SpeechRecognizerUI();
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = AppResources.SelectUser_FreeMsg_Txt;
@@ -94,7 +94,6 @@ namespace windows_client.View
         bool enableStickerButton = true;
         bool isDisplayPicSet = false;
 
-        bool voiceCommandEnabled = false;
         /// <summary>
         /// this map is required for mapping attachment object with convmessage only for 
         /// messages stored in db, other messages would have their attachment object set
@@ -241,6 +240,9 @@ namespace windows_client.View
             promptInput.Settings.ShowConfirmation = false;
             //messageInput.Settings.ShowConfirmation = false;
             promptInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "reply", "ignore" });
+            askConfirm.Settings.ShowConfirmation = false;
+            askConfirm.Settings.ListenText = "yes";
+            askConfirm.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "yes", "no" });
         }
 
         private void Instance_ShowServerTip(object sender, EventArgs e)
@@ -432,7 +434,7 @@ namespace windows_client.View
 
         bool _isDraftMessage;
 
-        private void ManagePage()
+        private async void ManagePage()
         {
             bool isGC = false;
             mPubSub = App.HikePubSubInstance;
@@ -448,7 +450,7 @@ namespace windows_client.View
             this.llsMessages.ItemsSource = ocMessages;
 
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s, e) =>
+            bw.DoWork += async (s, e) =>
             {
                 // whenever CT is opened , mark last msg as read if received read
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
@@ -463,6 +465,43 @@ namespace windows_client.View
                     _groupInfo = GroupTableUtils.getGroupInfoForId(mContactNumber);
 
                 loadMessages(INITIAL_FETCH_COUNT, true);
+
+                if (PhoneApplicationService.Current.State.ContainsKey("cortanaMessage"))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        sendMsgTxtbox.Text = PhoneApplicationService.Current.State["cortanaMessage"] as string;
+                        PhoneApplicationService.Current.State.Remove("cortanaMessage");
+                    });
+
+                    await speechOutput.SpeakTextAsync("confirm sending yes or no");
+                    SpeechRecognitionUIResult recoResult = await askConfirm.RecognizeWithUIAsync();
+
+                    if (recoResult.RecognitionResult != null)
+                    {
+                        string confirmation = recoResult.RecognitionResult.Text;
+
+                        if (confirmation != null && confirmation.Equals("yes"))
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                SendMsg();
+                            });
+                        }
+                    }
+                }
+                else if (PhoneApplicationService.Current.State.ContainsKey("sendNudge"))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ConvMessage convMessage = new ConvMessage(string.Format("{0}!", AppResources.Nudge), mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.HasAttachment = false;
+                        convMessage.MetaDataString = "{poke:1}";
+                        sendMsg(convMessage, false);
+                    });
+                    PhoneApplicationService.Current.State.Remove("sendNudge");
+                }
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -1117,7 +1156,8 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey("fromcortanapage"))
             {
                 ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["fromcortanapage"];
-                
+                PhoneApplicationService.Current.State.Remove("fromcortanapage");
+
                 if (obj.HasCustomPhoto) // represents group chat
                 {
                     GroupManager.Instance.LoadGroupParticipants(obj.Msisdn);
@@ -1133,9 +1173,9 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.TryGetValue(obj.Msisdn, out cobj))
                         IsMute = cobj.IsMute;
                 }
-                
+
                 mContactNumber = obj.Msisdn;
-                
+
                 if (obj.Name != null)
                     mContactName = obj.Name;
                 else
@@ -1146,10 +1186,6 @@ namespace windows_client.View
 
                 avatarImage = UI_Utils.Instance.GetBitmapImage(mContactNumber, isOnHike);
                 userImage.Source = avatarImage;
-                voiceCommandEnabled = true;
-                
-                if(PhoneApplicationService.Current.State.ContainsKey("cortanaMessage"))
-                    sendMsgTxtbox.Text = PhoneApplicationService.Current.State["cortanaMessage"] as string;
 
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
@@ -3059,7 +3095,7 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup)
+        public void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
             if (isNewGroup) // this is used for new group as well as when you add members to existing group
             {
@@ -4237,7 +4273,19 @@ namespace windows_client.View
                             AddMessageToOcMessages(convMessage, false, true);
                         });
 
-                        
+
+                        //await speechOutput.SpeakTextAsync(convMessage.Message + ". Reply or Ignore");
+                        //SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+
+                        //if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text == "reply")
+                        //{
+                        //    recoResult = await messageInput.RecognizeWithUIAsync();
+                        //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        //    {
+                        //        sendMsgTxtbox.Text = recoResult.RecognitionResult != null ? recoResult.RecognitionResult.Text : String.Empty;
+                        //        SendMsg(false);
+                        //    });
+                        //}
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -4300,55 +4348,55 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, msgids);
                 }
 
-                ConvMessage voiceConvMsg = (listConvMessage != null && listConvMessage.Count > 0) ? listConvMessage[0] : null;
+                //ConvMessage voiceConvMsg = (listConvMessage != null && listConvMessage.Count > 0) ? listConvMessage[0] : null;
 
-                if (voiceConvMsg != null)
-                {
-                    string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
+                //if (voiceConvMsg != null)
+                //{
+                //    string spokenAloud = voiceConvMsg.Message + ". Reply or Ignore";
 
-                    if (voiceConvMsg.Msisdn != mContactNumber)
-                    {
-                        ConversationListObject mObj = (ConversationListObject)vals[1];
+                //    if (voiceConvMsg.Msisdn != mContactNumber)
+                //    {
+                //        ConversationListObject mObj = (ConversationListObject)vals[1];
 
-                        if (mObj!=null && !mObj.IsMute)
-                        {
-                            spokenAloud = ((mObj.ContactName != null) ? mObj.ContactName : voiceConvMsg.Msisdn) + " sent " + spokenAloud;
-                        }
-                        //GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, voiceConvMsg.GroupParticipant, voiceConvMsg.Msisdn);
-                        //spokenAloud = (gp == null) ? spokenAloud : gp.FirstName + " sent " + spokenAloud;
-                    }
+                //        if (mObj!=null && !mObj.IsMute)
+                //        {
+                //            spokenAloud = ((mObj.ContactName != null) ? mObj.ContactName : voiceConvMsg.Msisdn) + " sent " + spokenAloud;
+                //        }
+                //        //GroupParticipant gp = GroupManager.Instance.GetGroupParticipant(null, voiceConvMsg.GroupParticipant, voiceConvMsg.Msisdn);
+                //        //spokenAloud = (gp == null) ? spokenAloud : gp.FirstName + " sent " + spokenAloud;
+                //    }
                         
-                    await speechOutput.SpeakTextAsync(spokenAloud);
-                    SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
+                //    await speechOutput.SpeakTextAsync(spokenAloud);
+                //    SpeechRecognitionUIResult recoResult = await promptInput.RecognizeWithUIAsync();
 
-                    if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
-                    {
-                        recoResult = await messageInput.RecognizeWithUIAsync();
+                //    if (recoResult.RecognitionResult != null && recoResult.RecognitionResult.Text.Equals("reply"))
+                //    {
+                //        recoResult = await messageInput.RecognizeWithUIAsync();
 
-                        if (recoResult.RecognitionResult != null)
-                        {
-                            Deployment.Current.Dispatcher.BeginInvoke(() =>
-                            {
-                                string message = recoResult.RecognitionResult.Text ?? String.Empty;
-                                //sendMsgTxtbox.Text = recoResult.RecognitionResult.Text ?? String.Empty;
+                //        if (recoResult.RecognitionResult != null)
+                //        {
+                //            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //            {
+                //                string message = recoResult.RecognitionResult.Text ?? String.Empty;
+                //                //sendMsgTxtbox.Text = recoResult.RecognitionResult.Text ?? String.Empty;
 
-                                ConvMessage convMessage = new ConvMessage(message, voiceConvMsg.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
-                                convMessage.IsSms = !isOnHike;
+                //                ConvMessage convMessage = new ConvMessage(message, voiceConvMsg.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, this.Orientation);
+                //                convMessage.IsSms = !isOnHike;
 
-                                if (voiceConvMsg.Msisdn == mContactNumber)
-                                    sendMsg(convMessage, false);
-                                else
-                                {
-                                    object[] valsTemp = new object[3];
-                                    valsTemp[0] = convMessage;
-                                    valsTemp[1] = false;
-                                    mPubSub.publish(HikePubSub.MESSAGE_SENT, valsTemp);
-                                }
-                                //SendMsg(false);
-                            });
-                        }
-                    }
-                }
+                //                if (voiceConvMsg.Msisdn == mContactNumber)
+                //                    sendMsg(convMessage, false);
+                //                else
+                //                {
+                //                    object[] valsTemp = new object[3];
+                //                    valsTemp[0] = convMessage;
+                //                    valsTemp[1] = false;
+                //                    mPubSub.publish(HikePubSub.MESSAGE_SENT, valsTemp);
+                //                }
+                //                //SendMsg(false);
+                //            });
+                //        }
+                //    }
+                //}
             }
 
             # endregion

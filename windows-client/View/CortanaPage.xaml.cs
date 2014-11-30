@@ -23,16 +23,17 @@ namespace windows_client.View
         private SpeechRecognizerUI messageInput = new SpeechRecognizerUI();
         private SpeechRecognizerUI contactInput = new SpeechRecognizerUI();
         private SpeechRecognitionUIResult recoResult;
+        private string _commandName;
 
         public CortanaPage()
         {
             InitializeComponent();
-            messageInput.Settings.ListenText  = "Say your message";
+            messageInput.Settings.ListenText = "Say your message";
             messageInput.Settings.ExampleText = "Good morning";
 
             contactInput.Settings.ExampleText = "Which contact did you mean?";
             contactInput.Settings.ExampleText = "one";
-            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5" ,"6","7","8","9","10" });
+            contactInput.Recognizer.Grammars.AddGrammarFromList("mainPageCommands", new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -41,19 +42,18 @@ namespace windows_client.View
             if (this.NavigationContext.QueryString != null && this.NavigationContext.QueryString.ContainsKey("voiceCommandName"))
             {
                 // Page was launched by Voice Command
-                string commandName = NavigationContext.QueryString["voiceCommandName"];
+                _commandName = NavigationContext.QueryString["voiceCommandName"];
                 string str;
 
-                if (commandName == "ChatWith" && this.NavigationContext.QueryString.TryGetValue("reco", out str))
+                if (_commandName == "ChatWith" && this.NavigationContext.QueryString.TryGetValue("reco", out str))
                 {
                     command.Text = "Hiking " + str;
                     List<ContactInfo> res = Utils.GetContact(str);
-                    
+
                     if (res == null || res.Count == 0)
                     {
-                        noContactGrid.Visibility = Visibility.Visible;
-                        MessageBox.Show("We are sorry!");
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                        noContactGrid.Visibility = Visibility.Visible; 
+                        FailedState();
                     }
                     else
                     {
@@ -73,16 +73,63 @@ namespace windows_client.View
 
                             int contactPos;
 
-                            if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos > 0  &&  contactPos <= res.Count)
+                            if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos > 0 && contactPos <= res.Count)
                             {
                                 PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];
                                 AskForMessage();
+                            }
+                            else
+                                FailedState();
+                        }
+                    }
+                }
+                else if (_commandName == "NudgePerson" && this.NavigationContext.QueryString.TryGetValue("reco", out str))
+                {
+                    str = str.Substring(str.IndexOf("Nudge") + 5, str.Length - str.IndexOf("Nudge") - 5).Trim();
+                    command.Text = "Nudging " + str;
+                    List<ContactInfo> res = Utils.GetContact(str);
+
+                    if (res == null || res.Count == 0)
+                    {
+                        noContactGrid.Visibility = Visibility.Visible;
+                        MessageBox.Show("We are sorry!");
+                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    }
+                    else
+                    {
+                        if (res.Count == 1)
+                        {
+                            PhoneApplicationService.Current.State["fromcortanapage"] = res[0];
+                            SendNudge();
+                        }
+                        else
+                        {
+                            command.Text = "Which " + str + " do you want to hike with?";
+                            chooseContactListBox.ItemsSource = res;
+                            chooseContactListBox.Visibility = Visibility.Visible;
+
+                            await speechOutput.SpeakTextAsync("Which " + str + " do you want?");
+                            recoResult = await contactInput.RecognizeWithUIAsync();
+
+                            int contactPos;
+
+                            if (recoResult.RecognitionResult != null && Int32.TryParse(recoResult.RecognitionResult.Text, out contactPos) && contactPos > 0 && contactPos <= res.Count)
+                            {
+                                PhoneApplicationService.Current.State["fromcortanapage"] = res[contactPos - 1];
+                                SendNudge();
                             }
                         }
                     }
                 }
             }
             base.OnNavigatedTo(e);
+        }
+
+        private void FailedState()
+        {
+
+            MessageBox.Show("We are sorry!");
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
         private void Contact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -93,7 +140,19 @@ namespace windows_client.View
                 return;
 
             PhoneApplicationService.Current.State["fromcortanapage"] = ci;
-            AskForMessage();
+
+            if (_commandName == "ChatWith")
+                AskForMessage();
+            else if (_commandName == "NudgePerson")
+            {
+                SendNudge();
+            }
+        }
+
+        private void SendNudge()
+        {
+            PhoneApplicationService.Current.State["sendNudge"] = true;
+            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
         private async void AskForMessage()
