@@ -1251,55 +1251,62 @@ namespace windows_client.ViewModel
 
         public async void VoiceOnSendMessage(ConversationListObject mObj)
         {
-        AskAgain:
-            await speechOutput.SpeakTextAsync("say your message");
-            SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
+            int noOfRetry = 0;
 
-            if (recoResult.RecognitionResult != null)
+            while (noOfRetry < 3)
             {
-                string message = recoResult.RecognitionResult.Text ?? String.Empty;
-                await speechOutput.SpeakTextAsync("confirm sending yes or no");
-                recoResult = await askConfirm.RecognizeWithUIAsync();
+            
+                await speechOutput.SpeakTextAsync("say your message");
+                SpeechRecognitionUIResult recoResult = await messageInput.RecognizeWithUIAsync();
 
                 if (recoResult.RecognitionResult != null)
                 {
-                    string confirmation = recoResult.RecognitionResult.Text;
+                    string message = recoResult.RecognitionResult.Text ?? String.Empty;
+                    await speechOutput.SpeakTextAsync("confirm sending yes or no");
+                    recoResult = await askConfirm.RecognizeWithUIAsync();
 
-                    if (confirmation != null && confirmation.Equals("yes"))
+                    if (recoResult.RecognitionResult != null)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            ConvMessage convMessage = App.newChatThreadPage == null ? new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED) : new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, App.newChatThreadPage.Orientation);
-                            convMessage.IsSms = !mObj.IsOnhike;
+                        string confirmation = recoResult.RecognitionResult.Text;
 
-                            if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
-                                App.newChatThreadPage.sendMsg(convMessage, false);
-                            else
-                            {
-                                object[] valsTemp = new object[3];
-                                valsTemp[0] = convMessage;
-                                valsTemp[1] = false;
-                                App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, valsTemp);
-                            }
-                            //SendMsg(false);
-                        });
-                    }
-                    else
-                    {
-                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        if (confirmation != null && confirmation.Equals("yes"))
                         {
-                            if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
-                                App.newChatThreadPage.sendMsgTxtbox.Text = message;
-                            }
-                        });
+                                ConvMessage convMessage = App.newChatThreadPage == null ? new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED) : new ConvMessage(message, mObj.Msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED, App.newChatThreadPage.Orientation);
+                                convMessage.IsSms = !mObj.IsOnhike;
 
-                        goto AskAgain;
+                                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                    App.newChatThreadPage.sendMsg(convMessage, false);
+                                else
+                                {
+                                    object[] valsTemp = new object[3];
+                                    valsTemp[0] = convMessage;
+                                    valsTemp[1] = false;
+                                    App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, valsTemp);
+                                }
+                                //SendMsg(false);
+                            });
+                            break;
+                        }
+                        else
+                        {
+                            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = mObj;
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (App.newChatThreadPage != null && mObj.Msisdn == App.newChatThreadPage.mContactNumber)
+                                {
+                                    App.newChatThreadPage.sendMsgTxtbox.Text = message;
+                                }
+                            });
+
+                            noOfRetry++;
+                        }
                     }
-                    _isVoiceInUse = false;
                 }
             }
+
+            _isVoiceInUse = false;
 
         }
 
